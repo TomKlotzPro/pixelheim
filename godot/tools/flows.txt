@@ -193,6 +193,17 @@ route-map | --map overworld --routes saltmere:6,blackiron:3 --built waystation_s
 lamps-heal-early | --map overworld --routes blackiron:6 --built waystation_blackiron --lit blackiron:2 --at 25,22 | map=overworld healed=earth\d+,grass\d+,meadow\d+,grove0 air=ash | travel field
 lamps-heal-whole | --map overworld --routes blackiron:6 --built waystation_blackiron --lit blackiron:5 --at 25,22 | map=overworld healed=earth\d+,grass\d+,meadow\d+,grove\d+ air=open | travel field
 lamps-heal-night | --map overworld --routes blackiron:6 --built waystation_blackiron --lit blackiron:5 --at 25,22 night | healed=earth\d+,grass\d+,meadow\d+,grove\d+ air=open waystations=blackiron:lit | travel field night
+# Lamp kinds by region (PIX-324): the Saltmere road's lamp in sea glass
+# reaching a cell further, the Frostgate road's frost lily as far as an
+# ember's, and the grave moss lamp at the Mirefen Pass, the hero by it out
+# of the Mirefen's fog, which rolls in as before with no lamp there; each
+# burning in its own colour at night; Aske home, every ring a third wider;
+# and a healed lamp's morning find by it and Bram out from the village.
+lamp-kinds | --map overworld --routes saltmere:6,frostgate:5 --built waystation_saltmere,waystation_frostgate,lamp_mirefen --lit saltmere:9,frostgate:3,mirefen:9 --at 6,37 | map=overworld lamps=saltmere:sea_glass:6:cold,frostgate:frost_lily:5:cold,mirefen:grave_moss:5:cold air=open | travel field
+lamp-kinds-night | --map overworld --routes saltmere:6,frostgate:5 --built waystation_saltmere,waystation_frostgate,lamp_mirefen --lit saltmere:9,frostgate:3,mirefen:9 --at 6,37 night | lamps=saltmere:sea_glass:6:lit,frostgate:frost_lily:5:lit,mirefen:grave_moss:5:lit air=open | travel field night
+lamp-fog | --map overworld --routes saltmere:6 --built waystation_saltmere --lit saltmere:9 --at 6,37 | map=overworld lamps=saltmere:sea_glass:6:cold air=mire | travel field
+lamp-aske | --map overworld --routes blackiron:6 --built waystation_blackiron --lit blackiron:9 --hunted rimefang --at 25,22 | lamps=blackiron:ember:7:cold home=aske | travel field
+lamp-morning | --map overworld --routes saltmere:6 --built waystation_saltmere --lit saltmere:9 --day 26 --at 19,50 | finds=saltmere:sea_glass visitors=Bram | travel field
 # The mire's mimic chest shudders, then ambushes (PIX-129).
 mimic | --map mirefen mimic --wait 0.75 | map=mirefen cell=\(42, 13\) hp=42 | combat field
 # The mayor's word opens the town ledger; the board on the square opens it too (PIX-147).
@@ -403,6 +414,19 @@ hamlet-fort | --map greyhold --at 14,25 | map=greyhold hamlet=fort:flat3 | trave
 hamlet-mines | --map blackiron --at 25,18 | map=blackiron hamlet=mine:stand4,wall2 | travel field
 hamlet-frost | --map frostgate --at 14,39 | map=frostgate hamlet=frost: | travel field
 hamlet-smithy | --map mountain_road --at 17,7 | map=mountain_road hamlet=smithy:glow1,roof1 | travel field story
+# The hubs grow as their post roads fill (PIX-324): three pieces carried
+# and Saltmere's lighthouse stands mended on the point; seven, and it's lit
+# at night; arriving there, the place's tour of its new steps; the stall at
+# the miners' camp, Mabel's tent become a market, Gunnar's lodge with its
+# fire lit at night; and a piece handed over at Saltmere that makes it grow
+# redraws it round the hero.
+hub-lighthouse | --map saltmere --routes saltmere:3 --at 34,27 | map=saltmere hub=saltmere:1:lighthouse_dark | travel field
+hub-lighthouse-night | --map saltmere --routes saltmere:7 --at 34,27 night | map=saltmere hub=saltmere:3:lighthouse | travel field night
+hub-tour | --map saltmere --routes saltmere:7 hubtour --wait 1.6 | open=reveal_screen tour=.*Saltmere.* | travel story
+hub-stall | --map blackiron --routes blackiron:7 --at 38,24 | map=blackiron hub=blackiron:3:keg\+box\+ore_stall | travel field
+hub-market | --map greyhold --routes greyhold:7 --at 18,29 | map=greyhold hub=greyhold:3:sutler_tent\+market_stall\+market_stall_blue | travel field
+hub-lodge | --map frostgate --routes frostgate:7 --at 37,40 night | map=frostgate hub=frostgate:3:lodge | travel field night
+hub-delivered | --map saltmere --post club_ola --routes saltmere:2 --keys e,e --wait 0.6 | map=saltmere post=box:3,bag:1,sent:1 hub=saltmere:1:lighthouse_dark | travel story quest
 mouth-ice | --map observatory --at 12,8 | map=observatory entrance=ice_stair | rooms
 # The roads beyond the village (PIX-307): the Reach's road south of the
 # river rutted, Greyhold's courtyard flagged and its paths in sandstone

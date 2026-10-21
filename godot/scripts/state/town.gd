@@ -153,9 +153,13 @@ static func work(work_id: String) -> Dictionary:
 
 ## Whether a work is offered yet: its `needs` (a main quest step) met, and
 ## a waystation's `route` (PIX-322) having carried enough of the Post's
-## post (`post`, the hero's; none: not yet).
+## post (`post`, the hero's; none: not yet), and the work it comes `after`
+## built (PIX-324: the Mirefen Pass's lamp, once the Saltmere road's
+## waystation stands).
 static func work_offered(work_id: String, progression: ProgressionState, settlement: SettlementState, post: PostState = null) -> bool:
 	var entry := work(work_id)
+	if entry.has("after") and String(entry["after"]) not in done_projects(settlement):
+		return false
 	if entry.has("route"):
 		return post != null and Routes.station_offered(post, String(entry["route"]))
 	var needs := String(entry.get("needs", ""))

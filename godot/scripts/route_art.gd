@@ -26,6 +26,16 @@ const EMBER_FPS := 3.0
 const HALO_AT := Vector2(8.0, 8.5)
 ## The hut's window's glass (its pixels, frame left out), lit at night.
 const WINDOW := Rect2i(20, 21, 5, 4)
+## Each lamp's kind (PIX-324, Lamps.KINDS) is the ember lamp with its
+## cage's inks swapped: sea glass panes round the shard (Saltmere's), a
+## frost lily in it (the Frostgate's), its cage furred with grave moss (the
+## Mirefen's); `glow`, the inks its shard burns in at night, and `light`,
+## the colour it throws.
+const KIND_LOOKS := {
+	"sea_glass": {"inks": {"e": "m", "1": "T", "R": "M"}, "glow": {"a": "m", "Y": "M", "q": "y"}, "light": Color(0.62, 0.95, 0.88)},
+	"frost_lily": {"inks": {"e": "S", "1": "s", "R": "y"}, "glow": {"a": "S", "Y": "s", "q": "y"}, "light": Color(0.8, 0.9, 1.0)},
+	"grave_moss": {"inks": {"e": "f", "1": "F", "R": "v", "i": "F"}, "glow": {"a": "F", "Y": "v", "q": "Y"}, "light": Color(0.72, 0.95, 0.5)},
+}
 
 const PIECES := {
 	## A fingerpost at a fork: two arms on a post, the upper pointing one way
@@ -155,13 +165,22 @@ const PIECES := {
 
 
 static var _textures := {}
-static var _ember: SpriteFrames
+static var _embers := {}
 static var _pane: ImageTexture
 
 
 ## Piece `name` drawn (a "." clear), as an image, in HamletArt's inks.
 static func picture(name: String) -> Image:
 	return _drawn(PIECES[name])
+
+
+## `rows` with each ink in `swapped` (ink -> ink) swapped.
+static func _swapped(rows: Array, swapped: Dictionary) -> Array:
+	return rows.map(func(row: String) -> String:
+		var out := ""
+		for ink in row:
+			out += String(swapped.get(ink, ink))
+		return out)
 
 
 static func _drawn(rows: Array) -> Image:
@@ -187,19 +206,37 @@ static func size(name: String) -> Vector2i:
 	return Vector2i(String(rows[0]).length(), rows.size())
 
 
+## A lamp of `kind` by day (PIX-324): the ember lamp, its cage's inks
+## swapped for its kind's.
+static func lamp(kind: String) -> Texture2D:
+	if not KIND_LOOKS.has(kind):
+		return texture("ember_lamp")
+	var key := "ember_lamp:" + kind
+	if not _textures.has(key):
+		_textures[key] = ImageTexture.create_from_image(_drawn(_swapped(PIECES["ember_lamp"], KIND_LOOKS[kind]["inks"])))
+	return _textures[key]
+
+
+## The colour a lamp of `kind` throws at night.
+static func light_of(kind: String) -> Color:
+	return KIND_LOOKS[kind]["light"] if KIND_LOOKS.has(kind) else Lights.EMBER
+
+
 ## The shard alight over the lamp at night: clear but for the shard,
-## EMBER_LIT's beats played in a loop, slow as a coal breathes.
-static func ember() -> SpriteFrames:
-	if _ember == null:
-		_ember = SpriteFrames.new()
-		_ember.set_animation_speed("default", EMBER_FPS)
-		var lamp := size("ember_lamp")
+## EMBER_LIT's beats played in a loop, slow as a coal breathes; burning in
+## its kind's inks (PIX-324).
+static func ember(kind := "ember") -> SpriteFrames:
+	if not _embers.has(kind):
+		var frames := SpriteFrames.new()
+		frames.set_animation_speed("default", EMBER_FPS)
+		var lamp_size := size("ember_lamp")
 		for beat: Array in EMBER_LIT:
-			var image := Image.create(lamp.x, lamp.y, false, Image.FORMAT_RGBA8)
-			var shard := _drawn(beat)
+			var image := Image.create(lamp_size.x, lamp_size.y, false, Image.FORMAT_RGBA8)
+			var shard := _drawn(_swapped(beat, KIND_LOOKS[kind]["glow"]) if KIND_LOOKS.has(kind) else beat)
 			image.blend_rect(shard, Rect2i(Vector2i.ZERO, shard.get_size()), EMBER_AT)
-			_ember.add_frame("default", ImageTexture.create_from_image(image))
-	return _ember
+			frames.add_frame("default", ImageTexture.create_from_image(image))
+		_embers[kind] = frames
+	return _embers[kind]
 
 
 ## The hut's window lit (the frame and its bar left in the night): drawn

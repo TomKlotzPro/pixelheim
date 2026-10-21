@@ -128,12 +128,13 @@ static func store(map_id: String, kind: String, cell: Vector2i) -> String:
 ## Each piece is DRESSING's, with its "cells" and "kind" ("stand", "flat",
 ## "moored", "wall", "roof", "line", "glow"); a standing piece that doesn't
 ## fit (`fits`) is left out. `kept`: cells a piece must leave open (where
-## a villager stands, the hero arrives, a chest...).
-static func plan(map: MapData, kept: Dictionary) -> Dictionary:
+## a villager stands, the hero arrives, a chest...). `grown`: what the
+## place's hub has grown since (PIX-324, Hubs.dressing), laid after it.
+static func plan(map: MapData, kept: Dictionary, grown: Array[Dictionary] = []) -> Dictionary:
 	var pieces: Array[Dictionary] = []
 	var blocks: Array[Vector2i] = []
 	var out := {"look": look_of(map.id), "pieces": pieces, "blocks": blocks}
-	for entry: Dictionary in DRESSING.get(map.id, []):
+	for entry: Dictionary in DRESSING.get(map.id, []) + grown:
 		if entry.has("store"):
 			continue
 		var piece := entry.duplicate()
