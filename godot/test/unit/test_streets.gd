@@ -44,6 +44,34 @@ func test_each_age_paves_its_own_streets() -> void:
 			assert_false(ages[tier].has(cell), "%s stays a dirt road at age %d" % [cell, tier])
 
 
+## The fountain stands on its paving, centred (PIX-364). The grid marks one
+## cell "well" and the basin is 2x2 from it, so a Village paving round that
+## one cell kerbed a one-cell square under the basin's top-left quarter.
+## Whatever the square lays under and round it apart from its own paving (a
+## hole, the City's brick ring) is centred on the basin within an art pixel.
+func test_the_fountain_sits_on_its_base() -> void:
+	var grid := MapData.load_tiered("town", ["fountain"], 1).grid
+	var fountain: Dictionary = PunyProps.plan(grid)["props"].filter(func(p: Dictionary) -> bool: return p["kind"] == "fountain")[0]
+	var cell: Vector2i = fountain["cell"]
+	var basin := Rect2(Vector2(cell * 16), Vector2.ZERO)
+	for piece: Array in fountain["tiles"]:
+		basin = basin.merge(Rect2(Vector2((cell + piece[0]) * 16), Vector2(16, 16)))
+	var bases := 0
+	for tier in range(Town.MAX_TIER + 1):
+		var paved := Streets.plan("town", grid, tier)
+		var square: String = paved.get(cell + Vector2i(-3, 0), "")
+		var base := Rect2()
+		for y in range(cell.y - 1, cell.y + 3):
+			for x in range(cell.x - 1, cell.x + 3):
+				if paved.get(Vector2i(x, y), "") != square:
+					var at := Rect2(Vector2(x, y) * 16, Vector2(16, 16))
+					base = at if not base.has_area() else base.merge(at)
+		if base.has_area():
+			bases += 1
+			assert_lte(base.get_center().distance_to(basin.get_center()), 1.0, "age %d: the basin on its base (%s, %s)" % [tier, base, basin])
+	assert_gt(bases, 0, "the City's brick ring at least")
+
+
 func test_paving_lies_on_open_ground_and_leaves_the_grid_alone() -> void:
 	for map_id: String in ["town", "greyhold", "frostgate"]:
 		var data := MapData.load_by_id(map_id)
