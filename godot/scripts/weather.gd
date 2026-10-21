@@ -44,12 +44,13 @@ const RAIN_LIGHT := Color(0.72, 0.76, 0.85)
 
 ## The air at `cell`: its region's ("" for the open land), read cell by
 ## cell, for inside a lit lamp's ring the Ash's heat and embers fade over
-## the healed ground (PIX-323, Lamps).
+## the healed ground (PIX-323, Lamps), and a grave-moss lamp's thins the
+## Mirefen's fog (PIX-324, Lamps.clears).
 static func air_at(map: MapData, cell: Vector2i) -> String:
 	if map == null or not Lights.under_sky(map):
 		return ""
 	var air: String = AIRS.get(map.regions.get(cell, ""), "")
-	if air == "ash" and Lamps.shelters(cell, Lamps.now(map.id)):
+	if air != "" and Lamps.clears(air, cell, Lamps.now(map.id)):
 		return ""
 	return air
 

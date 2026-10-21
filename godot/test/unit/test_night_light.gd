@@ -165,6 +165,28 @@ func test_the_reach_with_every_waystation_lit() -> void:
 	GameState.post = kept_post
 
 
+## The hubs fully grown (PIX-324): the lighthouse lit, the miners' stall's
+## lantern, Gunnar's lodge's windows, each a light of its own, and every
+## hub's map within the budget; and the Reach with every lamp lit, the
+## Mirefen Pass's too.
+func test_the_hubs_grown_and_every_lamp_lit() -> void:
+	GameState.progression.prologue = Prologue.DONE
+	var kept_post := GameState.post
+	GameState.post = PostState.new()
+	for place: String in Hubs.places():
+		Routes.tally(GameState.post, place, "bram", int(Hubs.marks()[-1]))
+		_check("%s grown" % place, _drawn(MapData.load_by_id(place)), _moving_on([place]))
+	var done := Town.done_projects(GameState.settlement)
+	for place: String in Routes.places():
+		var lamp := Routes.lamp_of(place)
+		if not lamp.is_empty():
+			done.append(String(lamp["work"]))
+	GameState.settlement.projects.assign(done)
+	assert_eq(Routes.lamps(GameState.settlement).size(), 5, "an ember lamp at each waystation and at the Mirefen Pass")
+	_check("the Reach with every lamp lit", _drawn(MapData.load_by_id(Routes.MAP)), _moving_on([Routes.MAP]))
+	GameState.post = kept_post
+
+
 ## Dozens of ember lamps (PIX-323): a road of the Reach lined with them, a
 ## lamp to a cell. Those close to one already lit keep their halo alone, a
 ## cheaper light, and the Reach holds the budget.
