@@ -2393,6 +2393,10 @@ msgid "Behind the scenes: new ground for the regions to come (Shade's sea in thr
 msgstr "En coulisses : de nouveaux sols pour les régions à venir (la mer de Shade en trois profondeurs, quais, neige, glace et pavés) et un outil qui transforme un croquis en carte"
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: the ground, the rooms and the dungeons now have layers of their own too, so the game's biggest file has gone from about 3,300 lines to 1,300; every map looks exactly as before"
+msgstr "En coulisses : le sol, les intérieurs et les donjons ont eux aussi leurs propres couches, et le plus gros fichier du jeu est passé d'environ 3 300 lignes à 1 300 ; chaque carte reste exactement la même"
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: the map's gates, props and patches of ground are now drawn by layers of their own, the first step in breaking up the game's biggest file; every map looks exactly as before"
 msgstr "En coulisses : les portes, le décor et les parcelles de terrain sont désormais dessinés par des couches à part, premier pas pour découper le plus gros fichier du jeu ; chaque carte reste exactement la même"
 
@@ -3391,6 +3395,10 @@ msgstr "La cour de Greyhold est dallée et ses allées pavées, et la route de l
 #: assets/data/changelog.json
 msgid "Greyhold's south gate reads as a gate at last: two towers with the gate open between them, the road running through it and on up the courtyard to the keep's door, and the lamps standing before the towers to light both sides at night (Tom's playtest)"
 msgstr "La porte sud de Greyhold ressemble enfin à une porte : deux tours avec la porte ouverte entre elles, la route qui la traverse et remonte la cour jusqu'à la porte du donjon, et les lanternes devant les tours pour éclairer les deux côtés la nuit (playtest de Tom)"
+
+#: assets/data/changelog.json
+msgid "Ground Floor"
+msgstr "Rez-de-chaussée"
 
 #: assets/data/changelog.json
 msgid "Ground treasure is taken in stride: walk over a glint or herb patch and it is yours"

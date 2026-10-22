@@ -2393,6 +2393,10 @@ msgid "Behind the scenes: new ground for the regions to come (Shade's sea in thr
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: the ground, the rooms and the dungeons now have layers of their own too, so the game's biggest file has gone from about 3,300 lines to 1,300; every map looks exactly as before"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: the map's gates, props and patches of ground are now drawn by layers of their own, the first step in breaking up the game's biggest file; every map looks exactly as before"
 msgstr ""
 
@@ -3390,6 +3394,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Greyhold's south gate reads as a gate at last: two towers with the gate open between them, the road running through it and on up the courtyard to the keep's door, and the lamps standing before the towers to light both sides at night (Tom's playtest)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Ground Floor"
 msgstr ""
 
 #: assets/data/changelog.json
