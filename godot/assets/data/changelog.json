@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.280.0",
+      "date": "2026-10-22",
+      "codename": "Ask by Name",
+      "notes": [
+        "Behind the scenes: the bestiary, the villagers, the economy and the town now answer by name instead of being read straight from their tables, so the rules are easier to change without breaking another corner of the game"
+      ]
+    },
+    {
       "version": "0.279.0",
       "date": "2026-10-22",
       "codename": "Ten at a Time",

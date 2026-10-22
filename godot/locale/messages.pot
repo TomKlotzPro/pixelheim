@@ -2289,6 +2289,10 @@ msgid "Ascension is a scene now: letterbox bars, turning light, your hero marchi
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Ask by Name"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Aske comes home as Pixelheim's lamplighter, and your lantern reaches a third further; with all four keepsakes home, the board offers the Town"
 msgstr ""
 
@@ -2390,6 +2394,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Behind the scenes: new ground for the regions to come (Shade's sea in three depths, docks, snow, ice and cobbled stone) and a tool that turns a drawn sketch into a map"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Behind the scenes: the bestiary, the villagers, the economy and the town now answer by name instead of being read straight from their tables, so the rules are easier to change without breaking another corner of the game"
 msgstr ""
 
 #: assets/data/changelog.json
