@@ -9,6 +9,8 @@
 # .gitattributes); tools/test_areas.py refuses a glob named twice.
 all: project.godot scenes/* tools/flows.sh tools/flows.py assets/data/catalog.json
 none: README.md .gitignore .gutconfig.json export_presets.cfg addons/* test/unit/* test/hooks/* tools/*.py tools/check.sh tools/areas.txt tools/lookbook.sh assets/puny/LICENSE.txt assets/fonts/*.txt
+all: scripts/harness_flags.txt scripts/harness_report.txt
+none: scripts/lookbook_shots.jsonl
 town field: assets/audio/* assets/data/audio.json assets/data/hints.json
 town story: assets/data/npcs.json
 town rooms travel +town-age*: assets/maps/interactables.json

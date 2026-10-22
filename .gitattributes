@@ -6,3 +6,9 @@ godot/tools/flows.txt merge=union
 # The areas of the files that aren't scripts (PIX-353), a line each, merged
 # the same way: tools/test_areas.py refuses a glob named twice.
 godot/tools/areas.txt merge=union
+# The harness's flags and report fields and the look book's shots
+# (PIX-356), a line each, merged the same way: test_registries refuses a
+# name given twice.
+godot/scripts/harness_flags.txt merge=union
+godot/scripts/harness_report.txt merge=union
+godot/scripts/lookbook_shots.jsonl merge=union

@@ -126,8 +126,9 @@ and quits. It lives in
 `scripts/harness.gd`, which `world.gd` adds only when `--screenshot` is
 passed. Harness runs play a fresh throwaway hero and never touch save slots
 unless `--slot N` is passed. Every flag is declared once, with its argument
-and what it does, in `HarnessFlags.TABLE` (`scripts/harness_flags.gd`): the
-command line is parsed once against it, so a flag's argument never reads as
+and what it does, a line each in `scripts/harness_flags.txt` (`flag | takes |
+does`, read by `HarnessFlags`, PIX-356): the command line is parsed once
+against it, so a flag's argument never reads as
 another flag, and `test_harness_flags` fails on a name declared twice or a
 flag read or passed that the table doesn't know. `-- --help` prints it:
 
@@ -166,7 +167,7 @@ godot --path godot -- --screenshot inventory --keys i # press keys at whatever s
 godot --path godot -- --screenshot --map town --look browser   # the desktop renderer in another of the app's looks (below)
 ```
 
-The final `print` line reports the map id, hero cell, HP, gold, the save's place, draw calls, whether the world is held still (`paused=`) and which screens are open (`open=`), for assertions, then whatever else the run has, by name: after anything was won, what floated up from where it was won (`floats=+13 XP;+14 gold`) and how many lines the battle log showed (`logged=`); a gate's line (`gate=`), the packs on a wild map (`packs=`), and so on. Every field is a row of `HarnessReport.TABLE` (`scripts/harness_report.gd`, PIX-273) with its own function, `field_<name>()`, which returns its text, or nothing when the run has none: a new field is a row in its place by name (after the head) and its function in the same place. harness.gd never writes a field itself; a value it knows only part-way through (the clock as the hero wakes) it hands over with `report.note("clock", ...)`.
+The final `print` line reports the map id, hero cell, HP, gold, the save's place, draw calls, whether the world is held still (`paused=`) and which screens are open (`open=`), for assertions, then whatever else the run has, by name: after anything was won, what floated up from where it was won (`floats=+13 XP;+14 gold`) and how many lines the battle log showed (`logged=`); a gate's line (`gate=`), the packs on a wild map (`packs=`), and so on. Every field is a line of `scripts/harness_report.txt` (`field | says`, PIX-273, PIX-356) with its own function in `scripts/harness_report.gd`, `field_<name>()`, which returns its text, or nothing when the run has none: a new field is a row in its place by name (after the head) and its function in the same place. harness.gd never writes a field itself; a value it knows only part-way through (the clock as the hero wakes) it hands over with `report.note("clock", ...)`.
 
 ### Release flows
 
@@ -385,9 +386,9 @@ godot/tools/lookbook.sh --only strike                # one shot, by its name (or
 python3 godot/tools/lookbook_compare.py godot/lookbook-desktop/browser godot/lookbook-desktop/app godot/lookbook-compare
 ```
 
-A shot is a key of `SHOTS` in `scripts/lookbook.gd`: its name (the picture's
-file, never a number: every branch adding a shot took the same next one,
-PIX-273) and its `area`, one of `AREAS`, which orders the sheet (the village,
+A shot is a line of `scripts/lookbook_shots.jsonl` (PIX-356), a JSON object:
+its `shot`, the name (the picture's file, never a number: every branch adding
+a shot took the same next one, PIX-273), and its `area`, one of `AREAS`, which orders the sheet (the village,
 its rooms, the Reach, the regions, the ways between, underground, a fight,
 the game's pages). Each folder gets `shots.txt`, the sheet's order, which
 `lookbook_compare.py` follows.

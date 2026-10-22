@@ -3,137 +3,32 @@ extends RefCounted
 ## areas: all
 ## The screenshot harness's report line (PIX-273): `screenshot saved;
 ## map=town cell=(40, 33) hp=... gate=bridge`, every field declared once in
-## TABLE and written by its own function below. Each branch used to add its
+## the table (harness_report.txt) and written by its own function below. Each branch used to add its
 ## field to the end of one long print in harness.gd, so any two at once
 ## conflicted there, and a flow anchored on the line's end (`packs=...$`)
 ## broke when another field came after it. Now a field is a row and a
-## function, the line joins them in TABLE's order, and the flows
+## function, the line joins them in the table's order, and the flows
 ## (tools/flows.txt) match fields by name, never by where they stand.
 ##
-## A new field: a row in TABLE in its place by name (after the head), and
-## its function `field_<name>()` in the same place among the functions,
-## returning its text, or "" when this run has none (the line leaves it
-## out). A value the run knows only part-way (the clock as the hero wakes)
+## A new field: a row in harness_report.txt in its place by name (after the
+## head), and its function `field_<name>()` in the same place among the
+## functions, returning its text, or "" when this run has none (the line
+## leaves it out). A value the run knows only part-way (the clock as the hero wakes)
 ## is `note`d by the harness then, and its function reads it back with
 ## `noted`. test_harness_report keeps it so: no field twice, the head first
 ## and the rest by name, each with its function in the table's order,
 ## harness.gd writing no field itself, and every field a flow expects here.
 
-## Every field, in the order the line shows them, and what it says. The
-## head (every run's) first; then the rest by name.
-const TABLE := [
-	{"field": "map", "says": "the map the hero stands on"},
-	{"field": "cell", "says": "the hero's cell"},
-	{"field": "hp", "says": "the hero's hit points"},
-	{"field": "gold", "says": "the gold in the pack"},
-	{"field": "save", "says": "where the save stands: its map and cell (a dungeon floor's stays at the gate)"},
-	{"field": "draws", "says": "draw calls in the frame"},
-	{"field": "paused", "says": "whether the world is held still"},
-	{"field": "open", "says": "the screens and conversations open over the world, by script name, or none"},
-	{"field": "night", "says": "the Night of Ash's step"},
-	{"field": "mobs", "says": "monsters standing (not dying)"},
-	{"field": "air", "says": "on a map where an ember lamp burns: the air the hero breathes, ash, or open inside a lamp's ring, where the Ash's heat and embers fade (PIX-323)"},
-	{"field": "ascension", "says": "with rankup: the ascension's beat, closed once it's gone (PIX-244)"},
-	{"field": "backsteps", "says": "with motion: frames the hero stepped back on screen while walking forward, lost if found in too few to judge (PIX-135, PIX-275)"},
-	{"field": "barred", "says": "the way the story keeps shut that stopped the hero on this run: mountain or vault (PIX-257)"},
-	{"field": "bells", "says": "the Night of Bells' beat while it runs (lanterns, embers, hold, dawn), done once Fafnyr is freed (PIX-253 step 9)"},
-	{"field": "beside", "says": "with seamless: the maps drawn beside the hero's, by id, or none (PIX-269)"},
-	{"field": "book", "says": "in a room with a book drawn on a table: shut while its letter's answer waits, else open (PIX-348)"},
-	{"field": "boss", "says": "the bosses and named monsters standing on the map, each as id:what it does (alert, chase, cast, homeward, idle):its share of health, when there are any (PIX-288)"},
-	{"field": "bossbar", "says": "the boss bar across the top: its foe's share of health while it shows, or none once it has gone; on a fight or a boss's floor (PIX-288)"},
-	{"field": "burning", "says": "on the Night of Bells' embers: the roofs still burning (PIX-253 step 9)"},
-	{"field": "card", "says": "the card naming the place the hero has come to, while it's up (PIX-269)"},
-	{"field": "cards", "says": "with --slots: what each slot's card on the saves screen shows: hero, backup (the save before, its last unreadable), damaged, newer or empty (PIX-303)"},
-	{"field": "change", "says": "with fades: how the last change of scene looked: dissolve, dark or cut, or seamless for a line walked over (PIX-269)"},
-	{"field": "chapter", "says": "a chapter card's chapter, while it's up (PIX-253)"},
-	{"field": "clock", "says": "with sleep: the clock the hero woke at (PIX-246)"},
-	{"field": "continued", "says": "the honest card where the story runs out, while it's up: the chapter it waits on (PIX-253 step 8)"},
-	{"field": "cpu", "says": "with cpu: what a frame cost the CPU from the map settled to the report, ms median/95th percentile, headless too: 0.90/1.20 (PIX-355)"},
-	{"field": "credits", "says": "the credits' last line while they roll (PIX-253 step 10)"},
-	{"field": "dark", "says": "with fades: what's left of a fade from the dark (PIX-238)"},
-	{"field": "day", "says": "with --day: the day (PIX-250)"},
-	{"field": "decor", "says": "on a map in the open air: how many pieces of field decor its drawing grew, its trees, wheat, bushes, stumps and stones (PIX-304)"},
-	{"field": "delivered", "says": "Maren's letters delivered, once any is out (PIX-253)"},
-	{"field": "dest", "says": "the waypoint the map's list has chosen, while the map is open (PIX-241)"},
-	{"field": "detail", "says": "on a map in the open air: how many small things its open ground grew, tufts, clover, flowers, pebbles, twigs, reeds and sedge (PIX-305)"},
-	{"field": "dressed", "says": "on a dungeon floor: its look and what it is dressed in, counted by kind: mine:ore3,props6,rail68 (PIX-310)"},
-	{"field": "ending", "says":"the ending this hero chose for Morvax once it has played: home or stay (PIX-253 step 10)"},
-	{"field": "entrance", "says": "the ways in drawn as entrances in their setting on this map, by look: mine, sea_cave, mountain_gate, vault_door, ice_stair (PIX-290)"},
-	{"field": "feats", "says": "the feats done, by id, once any is (PIX-257)"},
-	{"field": "fell", "says": "bosses fallen, when one fell (PIX-232)"},
-	{"field": "finds", "says": "on the Reach: the morning's finds lying by the healed lamps, still to pick, by road: saltmere:sea_glass (PIX-324)"},
-	{"field": "fires", "says": "on a night with houses burning: how many, and what draws their fires: flames standing on what burns, smoke, sparks (none with Reduce motion) and coals (PIX-327)"},
-	{"field": "firstnight", "says": "hero creation's first night: play or skip (PIX-228)"},
-	{"field": "fled", "says": "monsters that ran from a hero far above them, when any did (PIX-251)"},
-	{"field": "floats", "says": "what floated up from where it was won, merged, when anything did (PIX-245)"},
-	{"field": "floor", "says": "on a floor of a region's dungeon: which of how many, 2/3 (PIX-255)"},
-	{"field": "frames", "says": "with crossing: the walk's frames, the most work and the 99th percentile in ms: 240 max 3.1 p99 2.4 (PIX-269)"},
-	{"field": "free", "says": "with launch: the slot New Game makes its hero in, 0 when none is free (PIX-303: never one holding a save the game can't read)"},
-	{"field": "gate", "says": "the gate the story keeps shut that said its line on this run (PIX-254)"},
-	{"field": "hamlet", "says": "on a settlement beyond Pixelheim: its look and its dressing counted by how each piece stands: fishing:line1,moored2,stand4,wall3 (PIX-313)"},
-	{"field": "healed", "says": "on a map where the ash heals round a lamp: its cells at each stage past the ash, as each is drawn (Lamps.LOOKS): earth9,grass8,meadow12,grove13 (PIX-323)"},
-	{"field": "hint", "says": "the first-time hint on the screen, by the id it's seen by, or held:<id> while one waits its turn (PIX-341: never over a boss's entrance)"},
-	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
-	{"field": "hour", "says": "at the Night of Ash's dawn: the HUD's clock as it reads, its dial a sun or a moon: 04:48 sun (PIX-346)"},
-	{"field": "hub", "says": "on a hub's map: its place, the step it has grown to and what of it stands, drawn: saltmere:3:lighthouse (PIX-324)"},
-	{"field": "hudclash", "says": "while a title card, a hint, the battle log, the arrow or anything rising over the world shows: the words on the screen that overlap, as pairs (card, hint, float, log, arrow, bar, next, plate, and the hero under a plate), or none (PIX-345: the Victory card on a boss's win, a hint pushed over the hero, the arrow on a floor's name): none"},
-	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
-	{"field": "jumps", "says": "with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)"},
-	{"field": "lamplight", "says": "on a map with lamps or lit windows, and in every room: its street lamps lit of all, its windows' lit glass, a room's candles burning and the day through its windows: posts 6/6 panes 12 flames 0 beams 0 (PIX-311)"},
-	{"field": "lamps", "says": "on the Reach: each lit lamp by road, its kind, how far its ring reaches once whole and whether it burns now: saltmere:sea_glass:6:lit (PIX-324)"},
-	{"field": "letters", "says": "Maren's letters in the pack, once any is out (PIX-253)"},
-	{"field": "lit", "says": "on the Night of Bells: the lanterns on the square lit (PIX-253 step 9)"},
-	{"field": "logged", "says": "with floats: the lines the battle log showed (PIX-245)"},
-	{"field": "mapped", "says": "the Post's roads drawn in gold on the map's page while the map is open, by place: saltmere,blackiron (PIX-322)"},
-	{"field": "maps", "says": "the maps drawn on the map's page, while the map is open: 7 on the Reach's with every region found (PIX-269)"},
-	{"field": "morvax", "says": "Morvax on the hero's map: his cell, and bench when he sits on his bench by the fountain (PIX-253 step 10)"},
-	{"field": "motes", "says": "with rankup: the ascension's motes and sparks flying (PIX-244)"},
-	{"field": "music", "says": "with fled: the track playing (PIX-251)"},
-	{"field": "next", "says": "the main quest's next step, by id, once the Night of Ash is over: shield (PIX-255)"},
-	{"field": "overflow", "says": "with overflow: pieces of an open screen running off the canvas (Solid Ground), or its words on the HUD's dock, clock or quill (PIX-346)"},
-	{"field": "packs", "says": "on a wild map: the packs standing in the hero's region, :asleep by their fire (PIX-252)"},
-	{"field": "page", "says": "the map's page, while the map is open (PIX-266)"},
-	{"field": "patches", "says": "with --day: the patches still to pick, by cell (PIX-250)"},
-	{"field": "pauseline", "says": "the pause menu's line under its title while it's open: when the game last saved, Saved 12 s ago (PIX-302 step 4)"},
-	{"field": "post", "says": "once the Pixelheim Post is open: standing when its box is drawn on this map, then the pieces in the box this morning, in the satchel and delivered, and while the map is open the addressees it marks on its page: standing,box:0,bag:2,sent:1,marked:1 (PIX-320)"},
-	{"field": "posthouse", "says": "on the square once the post house is built: standing when it's drawn behind the box (PIX-325)"},
-	{"field": "quill", "says": "the quill by the clock: the times it wrote of the saves made this session (moments write, the quiet autosaves don't), and slept when the last was a night's sleep, Saved under it: 1/3 slept (PIX-302 step 4)"},
-	{"field": "read", "says": "on the journal's Letters page: the letters it reads (PIX-253)"},
-	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
-	{"field": "rising", "says": "with fight kill pack: the wins rising over the world once the first of the pack fell, the rest still standing (PIX-343: at each kill, not held to the fight's end)"},
-	{"field": "rooms", "says": "with rooms: what the rooms are drawn from (paid, free or none), how many of them have walls and a floor, and those with a stair down: free walled 9/9 stairs keep,observatory (PIX-318)"},
-	{"field": "rose", "says": "a chapter card's title, how far it rose coming in (PIX-253)"},
-	{"field": "routes", "says": "once the Post has carried anything along a road: each route by place, the pieces it has carried, and signs once its signposts stand, offered while its waystation is on the board, built once it stands: saltmere:6:signs:offered,blackiron:2 (PIX-322)"},
-	{"field": "saves", "says": "with seamless: the saves crossing lines made (once for crossing back and forth, PIX-269)"},
-	{"field": "scene", "says": "the story scene playing over the world, by id: bells_dawn (PIX-253 step 9), vault_door (PIX-257)"},
-	{"field": "scorch", "says": "on a map with burnt land: its burnt rock's cells, the dead trees on it, the cinders glowing, and a mining country's rails, spoil and pieces standing at its workings: burnt120,snags40,cinders30,rails50,spoil9,standing14 (PIX-308)"},
-	{"field": "shortcut", "says": "on a dungeon floor with a shortcut out to its way in: open or shut (PIX-255)"},
-	{"field": "signposts", "says": "the signposts standing at the forks of the Post's roads on this map, by fork: gate,saltmere_fork (PIX-322)"},
-	{"field": "speaker", "says": "who the open conversation is with, by id: innkeeper (PIX-283)"},
-	{"field": "stair", "says": "on a dungeon's bottom floor, the way out where its boss fell: waiting (for its fall and its spoils), cracking, sinking, then open (PIX-339)"},
-	{"field": "stamps", "says": "once the courier's book has a page stamped: its places stamped, in the book's order: town,saltmere (PIX-321)"},
-	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
-	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
-	{"field": "street", "says": "the street under the hero: the paving its age lays (gravel, cobbles, sandstone, bricks, flags; drawn with the paid art, bare dirt without), or worn on a rutted road (PIX-307)"},
-	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
-	{"field": "tags", "says": "after a fight on this visit: the most foes' level tags shown at once while it was on (PIX-340: one a pack)"},
-	{"field": "tally", "says": "on Morvax's forge: the red strokes after his wall's newest row, one for each of the courier's ember lamps: fresh:4 (PIX-325)"},
-	{"field": "titleline", "says": "the title's line under its menu, by what it's about: slot (the slot in hand: unreadable, or its hero the save before, PIX-303) or full (New Game with no slot free, PIX-316)"},
-	{"field": "toast", "says": "the battle log's line on the screen (PIX-343): its boxes, their lines, and fits, or what's wrong: off (the screen), tracker (on the objective's line), dock, plate (the message plate up too), arrow (the quest arrow drawn over it): 1 box, 1 line, fits"},
-	{"field": "tone", "says": "on a map in the open air: how the region's tone takes the hero's cell: whole (tone), the mire's with its murk and puddles (mire), its dirt only beside the ash (fringe), or none (PIX-305)"},
-	{"field": "top", "says": "the screen drawn on top when one is opened over another (the title's Options); two sharing the top layer read a=b"},
-	{"field": "torches", "says": "on a dungeon floor: its torches on the walls, and N loose for any not hung on a wall's face (PIX-291)"},
-	{"field": "tour", "says": "while a tour shows the town or a hub what's new: the caption at its stop (PIX-324)"},
-	{"field": "tracked", "says": "the quest or bounty followed, while the journal is open or one is (PIX-239)"},
-	{"field": "turns", "says": "with turning: the most times the way the hero is drawn changed in any one second, a flicker showing as many (PIX-293)"},
-	{"field": "visitors", "says": "on the Reach: who has come out from the village to a healed lamp, by name: Bram (PIX-324)"},
-	{"field": "water", "says": "the inland water nearest the hero, within six cells: its tone and the way it runs, as the map's water mask has them: clear west, mire still (PIX-306)"},
-	{"field": "wayout", "says": "on a dungeon's bottom floor: its ways straight out to its way in, by cell, as they opened - the door, then one where its boss fell - or none (PIX-292)"},
-	{"field": "waystations", "says": "the waystations standing on this map, by their road's place, each lit when its ember lamp burns (at night) or cold: saltmere:lit (PIX-322)"},
-	{"field": "works", "says": "while the town's ledger is open: the works out on the roads it offers, by id: waystation_saltmere (PIX-322)"},
-]
-## How many of TABLE's first rows are the head every run shows.
+## Every field, a line each (PIX-356: a row a branch adds merges by union,
+## where a table in this script made catch-up merges conflict):
+## `field | says`, in the order the line shows them. The head (every run's)
+## first; then the rest by name.
+const TABLE_FILE := "res://scripts/harness_report.txt"
+## How many of the table's first rows are the head every run shows.
 const HEAD := 10
+
+## TABLE_FILE's rows, read once (`table()`).
+static var _table: Array[Dictionary] = []
 
 var harness: Node
 var world: Node
@@ -148,34 +43,41 @@ func _init(run: Node, given: HarnessFlags) -> void:
 	flags = given
 
 
-## The report line: every field this run has, in TABLE's order.
+## Every field's row, in TABLE_FILE's order.
+static func table() -> Array[Dictionary]:
+	if _table.is_empty():
+		_table = HarnessFlags.read_rows(TABLE_FILE, ["field", "says"])
+	return _table
+
+
+## The report line: every field this run has, in the table's order.
 func line() -> String:
 	var texts := {}
-	for row: Dictionary in TABLE:
+	for row: Dictionary in table():
 		texts[row["field"]] = String(call("field_" + String(row["field"])))
 	return joined(texts)
 
 
-## `screenshot saved; ` and each field with text, as `name=text`, in TABLE's
-## order (a field TABLE doesn't hold is never shown).
+## `screenshot saved; ` and each field with text, as `name=text`, in the
+## table's order (a field the table doesn't hold is never shown).
 static func joined(texts: Dictionary) -> String:
 	var parts: PackedStringArray = []
-	for row: Dictionary in TABLE:
+	for row: Dictionary in table():
 		var text: String = texts.get(row["field"], "")
 		if text != "":
 			parts.append("%s=%s" % [row["field"], text])
 	return "screenshot saved; " + " ".join(parts)
 
 
-## Whether TABLE holds `field`.
+## Whether the table holds `field`.
 static func has(field: String) -> bool:
-	return TABLE.any(func(row: Dictionary) -> bool: return row["field"] == field)
+	return table().any(func(row: Dictionary) -> bool: return row["field"] == field)
 
 
 ## A field's value the run knows part-way through (the clock as the hero
 ## wakes, the counter's tab as it opens), for the line at the end.
 func note(field: String, text: String) -> void:
-	assert(has(field), "%s is not a field in HarnessReport.TABLE" % field)
+	assert(has(field), "%s is not a field in scripts/harness_report.txt" % field)
 	_noted[field] = text
 
 

@@ -19,16 +19,16 @@ extends Node
 ## sheet. Each folder also gets shots.txt, the shots' names in the sheet's
 ## order, for tools/lookbook_compare.py. Run by tools/lookbook.sh.
 
-## Where in the day a shot stands (DayNight's wheel, 0..1).
-const DAY := 0.2
-const DUSK := 0.53
-const NIGHT := 0.75
+## Where in the day a shot stands (DayNight's wheel, 0..1), by its `time`.
+const TIMES := {"day": 0.2, "dusk": 0.53, "night": 0.75}
 ## The sheet's areas, in its order (PIX-273): the village and its rooms,
 ## the Reach around it, the regions beyond, the ways between them,
 ## underground, a fight, and the game's pages. A shot names its area, and
-## the sheet groups them so, in the order SHOTS gives within an area.
+## the sheet groups them so, in the order shots() gives within an area.
 const AREAS := ["town", "rooms", "reach", "regions", "ways", "dungeon", "combat", "screens"]
-## Each shot by its name (its picture's file, and `--only`'s word: never a
+## Each shot, a line each (PIX-356: a shot a branch adds merges by union,
+## where a table in this script made catch-up merges conflict), by
+## its name (its picture's file, and `--only`'s word: never a
 ## number, which every branch adding a shot took the same next one of): its
 ## area; a map and where on it (Upper Street, a pack's home, a cell, or the
 ## map's arrival); the hour, or the first shower by day
@@ -44,301 +44,9 @@ const AREAS := ["town", "rooms", "reach", "regions", "ways", "dungeon", "combat"
 ## Only a shot with `card` keeps
 ## the title card naming the place it enters (PIX-269). A new shot goes
 ## with its area's.
-const SHOTS := {
-	"town_day": {"area": "town", "map": "town", "at": "street", "time": DAY},
-	"town_dusk": {"area": "town", "map": "town", "at": "street", "time": DUSK},
-	"town_night": {"area": "town", "map": "town", "at": "street", "time": NIGHT},
-	"riverside": {"area": "town", "map": "town", "cell": Vector2i(72, 8), "time": DAY},
-	# The village's river where it turns west under the rampart (PIX-306):
-	# deep down its middle, flowing, foam at its banks; by day and at night.
-	"town_river": {"area": "town", "map": "town", "cell": Vector2i(60, 33), "time": DAY},
-	"town_river_night": {"area": "town", "map": "town", "cell": Vector2i(60, 33), "time": NIGHT},
-	# The village's gate from inside (PIX-248): one rampart, the gatehouse
-	# three wide between its towers, the road running on out through the
-	# fields; and its torches at night.
-	"town_gate": {"area": "town", "map": "town", "cell": Vector2i(40, 5), "time": DAY},
-	"town_gate_night": {"area": "town", "map": "town", "cell": Vector2i(40, 5), "time": NIGHT},
-	# The hero's walk (PIX-243), filmed (`film`) setting off, striding, turning
-	# right round and settling, then walking up the street.
-	"walk": {"area": "town", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true},
-	# Turning in the walk (PIX-293), filmed: down, then right with both keys
-	# held a moment on the way (the diagonal), up then left the same way,
-	# and down then right with no overlap; then a diagonal held and one key
-	# let go.
-	"turn": {"area": "town", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true, "legs": "turn"},
-	# Odo's store rising out of its ruin on the town's tour (PIX-264).
-	"rise": {"area": "town", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
-	# The Night of Ash (PIX-327, `ash`: the night at its fires for the shot
-	# alone): the village's ruins burning, the flames up their beams and
-	# posts, a blaze where each fell in, smoke and sparks rising off them.
-	"ash_fires": {"area": "town", "map": "town", "cell": Vector2i(26, 12), "time": NIGHT, "tier": 0, "ash": true},
-	# The streets by the town's age (PIX-307, `tier`): Upper Street trodden
-	# and rutted in the Ashes, the square in gravel in the Village, Upper
-	# Street cobbled in the Town, and the City's square in sandstone, brick
-	# round its fountain, by day and at night.
-	"streets_ashes": {"area": "town", "map": "town", "cell": Vector2i(40, 13), "time": DAY, "tier": 0},
-	"streets_village": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": DAY, "tier": 2},
-	"streets_town": {"area": "town", "map": "town", "cell": Vector2i(40, 13), "time": DAY, "tier": 3},
-	"streets_city": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": DAY},
-	"streets_city_night": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": NIGHT},
-	# The Pixelheim Post's box on the square past the bounty board (PIX-320,
-	# `post`: the Post open for the shot alone), holding the day's post, its
-	# pennant up; by day and at night.
-	"post_box": {"area": "town", "map": "town", "cell": Vector2i(44, 23), "time": DAY, "post": "box"},
-	"post_box_night": {"area": "town", "map": "town", "cell": Vector2i(44, 23), "time": NIGHT, "post": "box"},
-	"inn_night": {"area": "rooms", "map": "town_inn", "time": NIGHT},
-	# A room by day, the day through its windows lying on the floor, and
-	# Odo's store's patterned rug (PIX-311, PIX-315).
-	"inn_day": {"area": "rooms", "map": "town_inn", "time": DAY},
-	"odos_store": {"area": "rooms", "map": "town_shop", "time": DAY},
-	"smithy_day": {"area": "rooms", "map": "town_smith", "time": DAY},
-	# A house opens onto a room, the cave down a stair in its floor (PIX-256):
-	# Liane's room and Captain Hale's hall from beside the stairwell, then at
-	# its top, the stairs asking.
-	"lianes_room": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 7), "time": DAY},
-	"lianes_stair": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 6), "time": DAY, "down": true},
-	# Liane's observatory at night (PIX-311, PIX-315): her telescope at the
-	# window, the chart of the sky on the wall, the globe of it by her desk,
-	# her candles lit and the corners dark.
-	"lianes_room_night": {"area": "rooms", "map": "observatory", "cell": Vector2i(10, 6), "time": NIGHT},
-	# The frost round her stair at night (PIX-317): rime and crystals in cold
-	# blues under her candles' warm light, and the stair's own cold light
-	# keeping the way down seen.
-	"lianes_frost_night": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 7), "time": NIGHT},
-	"hales_hall": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 7), "time": DAY},
-	"hales_stair": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 6), "time": DAY, "down": true},
-	# Morvax's forge (PIX-253 step 8): the cot, the cold anvil, and fifty
-	# years of tally marks on the back wall.
-	"morvax_forge": {"area": "rooms", "map": "morvax_forge", "cell": Vector2i(11, 3), "time": DAY},
-	"forest": {"area": "reach", "map": "overworld", "at": "forest_2", "time": DAY},
-	"ash": {"area": "reach", "map": "overworld", "at": "ash_3", "time": DAY},
-	# Open ground (PIX-305): the Reach's meadow south-east of the village, its
-	# patches of lusher and drier grass, clover and the wind over it, by day
-	# and at night; and the Ash's road, where the region's tone used to leave
-	# wandering bands of dither either side of it.
-	"meadow": {"area": "reach", "map": "overworld", "cell": Vector2i(70, 40), "time": DAY},
-	"meadow_night": {"area": "reach", "map": "overworld", "cell": Vector2i(70, 40), "time": NIGHT},
-	"ash_road": {"area": "reach", "map": "overworld", "cell": Vector2i(30, 15), "time": DAY},
-	# The Ash scorched (PIX-308): its ground in patches of char and pale ash,
-	# cracked, burnt tufts and cinders, its outcrops burnt rock with dead
-	# trees on them, ash drifting; by day, and at night its cinders glowing.
-	"ash_scorched": {"area": "reach", "map": "overworld", "cell": Vector2i(18, 22), "time": DAY},
-	"ash_scorched_night": {"area": "reach", "map": "overworld", "cell": Vector2i(18, 22), "time": NIGHT},
-	"overworld_night": {"area": "reach", "map": "overworld", "at": "forest_2", "time": NIGHT},
-	# The ridge round the Reach (PIX-309): its rim and crown broken, pines
-	# and rocks stepping out of it, by day and at night; and the pass up to
-	# the Frostgate, its pines whitening toward the snow.
-	"ridge": {"area": "reach", "map": "overworld", "cell": Vector2i(30, 58), "time": DAY},
-	"ridge_night": {"area": "reach", "map": "overworld", "cell": Vector2i(30, 58), "time": NIGHT},
-	"frost_pass": {"area": "reach", "map": "overworld", "cell": Vector2i(68, 3), "time": DAY},
-	"rain": {"area": "reach", "map": "overworld", "at": "forest_1", "rain": true},
-	# The village seen from outside (PIX-248): up the road to its gate by day
-	# and at night, and its lit windows from the road along its west wall.
-	"village_road": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 40), "time": DAY},
-	"village_gate_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 41), "time": NIGHT},
-	"village_west_night": {"area": "reach", "map": "overworld", "cell": Vector2i(34, 47), "time": NIGHT},
-	# A country road's wear (PIX-307): the road south from the river to the
-	# village, its ruts, the grass on its crown and at its edges, its stones.
-	"country_road": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 36), "time": DAY},
-	"country_road_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 36), "time": NIGHT},
-	# The Reach's river at its bridge (PIX-306): its depth, its banks bent
-	# off the grid, streaks drifting downstream and foam at the bridge's
-	# piles; by day and at night.
-	"reach_river": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 32), "time": DAY},
-	"reach_river_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 32), "time": NIGHT},
-	# The Post's roads (PIX-322), every one carried as far as its waystation:
-	# the signposts at the gate's corner, Bram's, and the Saltmere
-	# waystation halfway down its road, its hut, bench, post box and ember
-	# lamp, by day and lit at night.
-	"post_signpost": {"area": "reach", "map": "overworld", "cell": Vector2i(45, 36), "time": DAY, "routes": true},
-	"waystation": {"area": "reach", "map": "overworld", "cell": Vector2i(23, 50), "time": DAY, "routes": true},
-	"waystation_night": {"area": "reach", "map": "overworld", "cell": Vector2i(23, 50), "time": NIGHT, "routes": true},
-	# Things lying on the ground beside the hero (PIX-286): the pouch on the
-	# road west of the village where it lies, and a patch of each kind laid
-	# round it, half a cell each.
-	"drops": {
-		"area": "reach", "map": "overworld", "cell": Vector2i(42, 59), "time": DAY,
-		"drops": {
-			Vector2i(40, 60): "forest_herb", Vector2i(41, 61): "blackiron_ore", Vector2i(43, 61): "ember_shard",
-			Vector2i(44, 59): "sea_glass", Vector2i(44, 57): "frost_lily", Vector2i(42, 57): "old_steel",
-		},
-	},
-	"mire": {"area": "regions", "map": "mirefen", "time": DAY},
-	# Open ground in the regions (PIX-305): the Mirefen's murk, sedge and
-	# puddles, the Frostgate's drifts, Saltmere's and Greyhold's fields; by
-	# day and at night.
-	"mire_fen": {"area": "regions", "map": "mirefen", "cell": Vector2i(30, 20), "time": DAY},
-	"mire_fen_night": {"area": "regions", "map": "mirefen", "cell": Vector2i(30, 20), "time": NIGHT},
-	"frostgate": {"area": "regions", "map": "frostgate", "time": DAY},
-	"frost_fields": {"area": "regions", "map": "frostgate", "cell": Vector2i(14, 40), "time": DAY},
-	"frost_fields_night": {"area": "regions", "map": "frostgate", "cell": Vector2i(14, 40), "time": NIGHT},
-	# Lamps by a door and a camp's torches on their stakes (PIX-311): Greyhold's
-	# keep by day and at night, its windows lit; the Frostgate's observatory
-	# at night.
-	"greyhold_keep": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 15), "time": DAY},
-	"greyhold_keep_night": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 15), "time": NIGHT},
-	"frostgate_night": {"area": "regions", "map": "frostgate", "cell": Vector2i(28, 12), "time": NIGHT},
-	"coast": {"area": "regions", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
-	"saltmere_fields": {"area": "regions", "map": "saltmere", "cell": Vector2i(8, 8), "time": DAY},
-	"saltmere_fields_night": {"area": "regions", "map": "saltmere", "cell": Vector2i(8, 8), "time": NIGHT},
-	"greyhold_fields": {"area": "regions", "map": "greyhold", "cell": Vector2i(12, 30), "time": DAY},
-	"deepwood": {"area": "regions", "map": "deepwood", "time": DAY},
-	# The Deepwood's forest, its pines and round trees (PIX-304: from One
-	# Land, v0.219, no map grew any).
-	"deepwood_trees": {"area": "regions", "map": "deepwood", "cell": Vector2i(44, 10), "time": DAY},
-	# The Deepwood as a forest (PIX-309): clumps of trees with their crowns
-	# overlapping, undergrowth, the ground dark under the canopy, the light
-	# through it by day and fireflies at night; from the glade at its heart.
-	"deepwood_forest": {"area": "regions", "map": "deepwood", "cell": Vector2i(30, 20), "time": DAY},
-	"deepwood_forest_night": {"area": "regions", "map": "deepwood", "cell": Vector2i(30, 20), "time": NIGHT},
-	# Saltmere's sea running on off the map's south edge (PIX-309), from the
-	# end of its pier, by day and at night.
-	"saltmere_south": {"area": "regions", "map": "saltmere", "cell": Vector2i(31, 29), "time": DAY},
-	"saltmere_south_night": {"area": "regions", "map": "saltmere", "cell": Vector2i(31, 29), "time": NIGHT},
-	# Still water inland (PIX-306): the Deepwood's dark lake, and the
-	# Mirefen's murky pools by a bridge, their lily pads and reeds; by day
-	# and at night.
-	"deepwood_lake": {"area": "regions", "map": "deepwood", "cell": Vector2i(18, 9), "time": DAY},
-	"deepwood_lake_night": {"area": "regions", "map": "deepwood", "cell": Vector2i(18, 9), "time": NIGHT},
-	"mire_pool": {"area": "regions", "map": "mirefen", "cell": Vector2i(21, 25), "time": DAY},
-	"mire_pool_night": {"area": "regions", "map": "mirefen", "cell": Vector2i(21, 25), "time": NIGHT},
-	# The mountain road (PIX-253 step 8): its switchbacks up the ash to the
-	# forge in the rock, and the lamp by its door.
-	"mountain_road": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 8), "time": DAY},
-	# Blackiron a mining country (PIX-308): its outcrops worked, timber at
-	# their faces, a winch and carts, rails run between them over the
-	# scorched ground, spoil heaped by them; by day and at night; and the
-	# mountain road's flats scorched at night, their cinders glowing.
-	"blackiron_mines": {"area": "regions", "map": "blackiron", "cell": Vector2i(20, 14), "time": DAY},
-	"blackiron_mines_night": {"area": "regions", "map": "blackiron", "cell": Vector2i(20, 14), "time": NIGHT},
-	"blackiron_rails": {"area": "regions", "map": "blackiron", "cell": Vector2i(38, 25), "time": DAY},
-	"mountain_road_night": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 8), "time": NIGHT},
-	# Paving beyond the village (PIX-307): Greyhold's courtyard flagged, its
-	# paths cobbled, by day and at night; the Frostgate's observatory in its
-	# flagged yard at the end of a cobbled road.
-	# Each settlement beyond Pixelheim its own (PIX-313): Saltmere's
-	# fishing hamlet (gables, nets drying, a boat drawn up, the fish stall),
-	# Greyhold's cottage in its yard below the keep, the Frostgate's hut
-	# snowed in by its woodpile, Blackiron's miners' huts with their lamp,
-	# and Morvax's smithy at the top of the mountain road (PIX-312): its
-	# chimney smoking, its door aglow; by day and at night.
-	"saltmere_hamlet": {"area": "regions", "map": "saltmere", "cell": Vector2i(31, 15), "time": DAY},
-	"saltmere_hamlet_night": {"area": "regions", "map": "saltmere", "cell": Vector2i(31, 15), "time": NIGHT},
-	"greyhold_cottage": {"area": "regions", "map": "greyhold", "cell": Vector2i(14, 25), "time": DAY},
-	"greyhold_cottage_night": {"area": "regions", "map": "greyhold", "cell": Vector2i(14, 25), "time": NIGHT},
-	"frost_camp": {"area": "regions", "map": "frostgate", "cell": Vector2i(14, 39), "time": DAY},
-	"frost_camp_night": {"area": "regions", "map": "frostgate", "cell": Vector2i(14, 39), "time": NIGHT},
-	"frost_caravan": {"area": "regions", "map": "frostgate", "cell": Vector2i(39, 39), "time": DAY},
-	"blackiron_camp": {"area": "regions", "map": "blackiron", "cell": Vector2i(25, 18), "time": DAY},
-	"blackiron_camp_night": {"area": "regions", "map": "blackiron", "cell": Vector2i(25, 18), "time": NIGHT},
-	"morvax_smithy": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 7), "time": DAY},
-	"morvax_smithy_night": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 7), "time": NIGHT},
-	"courtyard": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 20), "time": DAY},
-	"courtyard_night": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 20), "time": NIGHT},
-	"frost_road": {"area": "regions", "map": "frostgate", "cell": Vector2i(28, 13), "time": DAY},
-	# The marks over the world (PIX-284, PIX-289): on Saltmere's sand the
-	# givers' parchment talk marks and Old Wenna's gold one, a letter of
-	# Maren's carried to her (`letter`, only for the shot), and the arrow
-	# toward the story at the view's edge; on the Frostgate's snow the same,
-	# by day and at night.
-	"coast_marks": {"area": "regions", "map": "saltmere", "cell": Vector2i(24, 19), "time": DAY, "letter": "letter_wenna"},
-	"coast_marks_night": {"area": "regions", "map": "saltmere", "cell": Vector2i(24, 19), "time": NIGHT, "letter": "letter_wenna"},
-	"snow_marks": {"area": "regions", "map": "frostgate", "cell": Vector2i(39, 36), "time": DAY},
-	"snow_marks_night": {"area": "regions", "map": "frostgate", "cell": Vector2i(39, 36), "time": NIGHT},
-	# The ways between maps (PIX-269): the river road running out through
-	# the cliffs at the Deepwood pass by day and by night, the Mirefen's way
-	# back (high on its east edge since the Reach became one plane), and the
-	# road south out through the ridge - bare ground, no post.
-	"deepwood_pass": {"area": "ways", "map": "overworld", "cell": Vector2i(91, 33), "time": DAY},
-	"deepwood_pass_night": {"area": "ways", "map": "overworld", "cell": Vector2i(91, 33), "time": NIGHT},
-	"mire_pass": {"area": "ways", "map": "mirefen", "cell": Vector2i(55, 5), "time": DAY},
-	"road_south": {"area": "ways", "map": "overworld", "cell": Vector2i(16, 60), "time": DAY},
-	# Come through the pass into the Mirefen: its name on a card, once.
-	"place_card": {"area": "ways", "map": "mirefen", "cell": Vector2i(55, 5), "time": DAY, "card": true},
-	# Each dungeon's way in, in its setting (PIX-290): the shafts' mine mouth
-	# in the cliff, its rails and winch, by day and by night; the sea cave's
-	# arch at the cliff's foot by the beach; the Ashen Mountain's gatehouse in
-	# the rock; the Kings' Vault's black iron door between its stone kings.
-	"mine_mouth": {"area": "ways", "map": "blackiron", "cell": Vector2i(26, 7), "time": DAY},
-	"mine_mouth_night": {"area": "ways", "map": "blackiron", "cell": Vector2i(26, 7), "time": NIGHT},
-	"sea_cave_mouth": {"area": "ways", "map": "saltmere", "cell": Vector2i(7, 26), "time": DAY},
-	"mountain_gate": {"area": "ways", "map": "overworld", "cell": Vector2i(48, 10), "time": DAY},
-	"vault_door": {"area": "ways", "map": "mountain_road", "cell": Vector2i(12, 5), "time": DAY},
-	# The story's last set pieces (PIX-312), at night, and open (`open`: the
-	# gate's promise kept and the dragon freed, for that shot alone): the
-	# mountain's gatehouse, its gate up, from the Reach and from the road
-	# inside; the Vault's door swung back, glinting.
-	"mountain_gate_night": {"area": "ways", "map": "overworld", "cell": Vector2i(48, 10), "time": NIGHT},
-	"mountain_gate_open": {"area": "ways", "map": "overworld", "cell": Vector2i(48, 10), "time": DAY, "open": true},
-	"mountain_gate_inside": {"area": "ways", "map": "mountain_road", "cell": Vector2i(17, 26), "time": DAY, "open": true},
-	"vault_door_night": {"area": "ways", "map": "mountain_road", "cell": Vector2i(12, 5), "time": NIGHT},
-	"vault_door_open": {"area": "ways", "map": "mountain_road", "cell": Vector2i(12, 5), "time": DAY, "open": true},
-	# The Kings' Vault (PIX-257): its first floor, laid from a seed in the
-	# vault's gilded stone, and its last, the Hollow King's hoard.
-	"vault": {"area": "dungeon", "map": "vault_1", "time": DAY},
-	"vault_hoard": {"area": "dungeon", "map": "vault_5", "cell": Vector2i(46, 11), "time": DAY},
-	# Torches on the walls (PIX-291): the shafts' first hall, handcrafted,
-	# its torches on the north wall's face, their flames glowing over its top.
-	"wall_torches": {"area": "dungeon", "map": "shafts", "cell": Vector2i(34, 5), "time": DAY},
-	# The ice cave's frozen lake (PIX-255): ice over the stone, its cracks,
-	# polish and glints, frost at its shore, and the cold light it gives.
-	"frozen_lake": {"area": "dungeon", "map": "icecave_lake", "cell": Vector2i(30, 14), "time": DAY},
-	# The arrow in the sea cave's dark (PIX-284), toward its way out.
-	"cave_marks": {"area": "dungeon", "map": "seacave", "cell": Vector2i(24, 18), "time": DAY},
-	# Each dungeon as its place (PIX-310), a room and a hall: the sea cave's
-	# wet rock and pools of the sea, the shafts' rail line, timber and ore,
-	# the cellars' crypt, the ice cave's frost, the Kings' Vault's rugs,
-	# banners and gilded walls; and a planned floor's entrance, its own.
-	"sea_cave_room": {"area": "dungeon", "map": "seacave", "cell": Vector2i(20, 12), "time": DAY},
-	"sea_cave_hall": {"area": "dungeon", "map": "seacave_galleries", "cell": Vector2i(25, 9), "time": DAY},
-	"shafts_room": {"area": "dungeon", "map": "shafts_gallery", "cell": Vector2i(19, 15), "time": DAY},
-	"shafts_hall": {"area": "dungeon", "map": "shafts", "cell": Vector2i(19, 8), "time": DAY},
-	"crypt_room": {"area": "dungeon", "map": "cellars_crypt", "cell": Vector2i(17, 12), "time": DAY},
-	"crypt_hall": {"area": "dungeon", "map": "cellars", "cell": Vector2i(19, 17), "time": DAY},
-	"ice_cave_room": {"area": "dungeon", "map": "icecave", "cell": Vector2i(20, 7), "time": DAY},
-	"ice_cave_hall": {"area": "dungeon", "map": "icecave", "cell": Vector2i(19, 15), "time": DAY},
-	"vault_room": {"area": "dungeon", "map": "vault_2", "cell": Vector2i(18, 12), "time": DAY},
-	"vault_hall": {"area": "dungeon", "map": "vault_1", "cell": Vector2i(12, 11), "time": DAY},
-	"gallery_entrance": {"area": "dungeon", "map": "shafts_gallery", "time": DAY},
-	"fight": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc"},
-	"strike": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc", "strike": true},
-	# A foe noticing the hero on the grass west of the village (PIX-289): its
-	# danger mark, caught as it notices (`notice`), and the arrow toward the
-	# village's gate (PIX-284); by day and at night.
-	"notice": {"area": "combat", "map": "overworld", "cell": Vector2i(28, 47), "time": DAY, "foe": "orc", "notice": true},
-	"notice_night": {"area": "combat", "map": "overworld", "cell": Vector2i(28, 47), "time": NIGHT, "foe": "orc", "notice": true},
-	# Bosses on the art's own grid (PIX-314): every named monster and Fafnyr
-	# as the Night of Bells sizes him in rows beside the hero, held still,
-	# wider than play (`bosses`, `zoom`); the Tidecaller beside the hero in
-	# its grotto (`named`, in its lair), its name and level over its head;
-	# Old Greymaw in his corner of the forest at night; Fafnyr come down on
-	# the square on the Night of Bells (`fafnyr`).
-	"bosses": {"area": "combat", "map": "overworld", "cell": Vector2i(77, 44), "time": DAY, "bosses": true, "zoom": 2.0},
-	"boss_lair": {"area": "combat", "map": "seacave_grotto", "cell": Vector2i(22, 12), "time": DAY, "named": "tidecaller"},
-	"boss_night": {"area": "combat", "map": "overworld", "cell": Vector2i(87, 59), "time": NIGHT, "named": "greymaw"},
-	"fafnyr_square": {"area": "combat", "map": "town", "cell": Vector2i(35, 28), "time": NIGHT, "fafnyr": true},
-	# The map (PIX-266) of a hero who has walked the whole Reach, its list
-	# scrolled down to the last waypoint, in Greyhold on the Reach's one page
-	# (PIX-269 step 7).
-	"map": {"area": "screens", "map": "town", "at": "street", "time": DAY, "chart": "greyhold_keep"},
-	# The Saves screen (PIX-302) over the street: two heroes' cards, the
-	# chapter and the hours each, and an empty slot (`slots`: the fixture
-	# folder read, never written).
-	"saves": {"area": "screens", "map": "town", "at": "street", "time": DAY, "slots": "res://test/fixtures/slots_room"},
-	# The journal's Post tab (PIX-320): the day's post taken, one piece
-	# handed over and its reply to carry back, the rest sealed; over the
-	# square by day and at night.
-	"post_tab": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": DAY, "post": "tab"},
-	"post_tab_night": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": NIGHT, "post": "tab"},
-	# The courier's book (PIX-321) after some weeks of post across the
-	# Reach (POST_ROUND), open at Pixelheim's page; and the Post page's
-	# newest letters from the new threads.
-	"post_book": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": DAY, "post": "book"},
-	"post_letters": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": DAY, "post": "letters"},
-	# The Post's roads in gold on the Reach's page (PIX-322), the Saltmere
-	# waystation chosen in the list.
-	"post_roads": {"area": "screens", "map": "overworld", "cell": Vector2i(19, 44), "time": DAY, "routes": true, "chart": "waystation_saltmere"},
-}
+const SHOTS_FILE := "res://scripts/lookbook_shots.jsonl"
+## SHOTS_FILE's shots by name, read once (`shots()`).
+static var _shots := {}
 ## The post the book's shots deliver (PIX-321), in order, each thread's
 ## pieces in turn: from Pixelheim to Saltmere, the Reach's road, the
 ## Mirefen, Blackiron and Greyhold.
@@ -442,7 +150,7 @@ func run() -> void:
 	# Developer output, not the player's: no words for the translators.
 	print("%s %s=%s" % ["LOOK", "look", DesktopLook.look])
 	for wanted in only:
-		if not SHOTS.has(wanted):
+		if not shots().has(wanted):
 			push_error("lookbook: no shot is called %s (%s)" % [wanted, ", ".join(ordered())])
 			return
 	var shot_names: PackedStringArray = []
@@ -450,7 +158,7 @@ func run() -> void:
 		if not only.is_empty() and not only.has(shot_name):
 			continue
 		shot_names.append(shot_name)
-		var shot: Dictionary = SHOTS[shot_name].duplicate()
+		var shot: Dictionary = shots()[shot_name].duplicate()
 		shot["name"] = shot_name
 		if shot.has("rise"):
 			await _clip(shot, folders, images)
@@ -494,13 +202,38 @@ func run() -> void:
 		print("%s %s/%s" % ["LOOK", ProjectSettings.globalize_path(folders[look]), "sheet.png"])
 
 
+## Every shot by its name, in SHOTS_FILE's order: its line as it's staged,
+## `cell` a Vector2i, `time` the wheel's, `drops` by Vector2i.
+static func shots() -> Dictionary:
+	if _shots.is_empty():
+		for line in FileAccess.get_file_as_string(SHOTS_FILE).split("\n"):
+			if line.strip_edges() == "" or line.begins_with("#"):
+				continue
+			var shot: Variant = SaveCodec.parse_json(line)
+			if not shot is Dictionary or not shot.has("shot"):
+				push_error("%s: a shot is a JSON object with its name in `shot`: %s" % [SHOTS_FILE, line])
+				continue
+			if shot.has("cell"):
+				shot["cell"] = Vector2i(shot["cell"][0], shot["cell"][1])
+			if shot.has("time"):
+				shot["time"] = TIMES[shot["time"]]
+			if shot.has("drops"):
+				var drops := {}
+				for at: String in shot["drops"]:
+					drops[Vector2i(int(at.get_slice(",", 0)), int(at.get_slice(",", 1)))] = shot["drops"][at]
+				shot["drops"] = drops
+			_shots[shot["shot"]] = shot
+			shot.erase("shot")
+	return _shots
+
+
 ## Every shot's name in the sheet's order: by area, as AREAS lists them, and
-## in SHOTS' order within an area.
+## in shots()' order within an area.
 static func ordered() -> PackedStringArray:
 	var out: PackedStringArray = []
 	for area: String in AREAS:
-		for shot_name: String in SHOTS:
-			if SHOTS[shot_name]["area"] == area:
+		for shot_name: String in shots():
+			if shots()[shot_name]["area"] == area:
 				out.append(shot_name)
 	return out
 

@@ -32,10 +32,10 @@ A feature that shows in the world and is checked by a flow touches, besides its 
 2. **Save**: a field in its state section and `SaveCodec.to_file`/`from_file` only if it can't be worked out from what's saved (`saves.md`).
 3. **Drawing**: a unit in `MapView`'s `planning`/`building` (`map_view.gd`), its pieces in its own `*_art.gd`; its blockers in `MapData.covered` (`art.md`, `world.md`).
 4. **Wiring**: `world.gd` or the `world_*.gd` piece it belongs to (E in `world_interaction.gd`, foes in `world_foes.gd`, the story in `world_stage.gd`).
-5. **Harness flag**: a row in `HarnessFlags.TABLE` (`harness_flags.gd`), read through `HarnessFlags.given()`: a preset before the first map in `world._ready`, a step in `harness.gd`'s `_run_test_harness`.
-6. **Report field**: a row in `HarnessReport.TABLE` and its `field_<name>()` in `harness_report.gd`, in place by name.
+5. **Harness flag**: a line in `scripts/harness_flags.txt` (`flag | takes | does`), read through `HarnessFlags.given()`: a preset before the first map in `world._ready`, a step in `harness.gd`'s `_run_test_harness`.
+6. **Report field**: a line in `scripts/harness_report.txt` and its `field_<name>()` in `harness_report.gd`, in place by name.
 7. **Flow**: lines in `godot/tools/flows.txt` under a comment with the ticket, ending on their tags.
-8. **Look book shot**: a key of `Lookbook.SHOTS` in `lookbook.gd`, by name, with its area.
+8. **Look book shot**: a line in `scripts/lookbook_shots.jsonl`, by name, with its area.
 9. **Areas**: an `## areas: …` line right under the new script's `class_name`/`extends` (PIX-353; other files: a line in `godot/tools/areas.txt`), so `quick` picks its flows; `test_areas.py` checks it.
 10. **Strings**: `python3 godot/tools/i18n.py`, then their French in `godot/locale/fr.po`.
 11. **Docs**: the root README's feature list when a player sees it; `python3 godot/tools/layout.py` for a new script; this skill's topic page when a rule changed.
@@ -50,7 +50,7 @@ Steps 5-9 append to shared registries: add your rows beside their kind, never ed
 ## How to finish
 
 1. `godot --headless --audio-driver Dummy --path godot --import`, then `bash godot/tools/check.sh quick`.
-2. Merge `origin/main`. In a conflict: `flows.txt` merges by union (a flow both sides changed comes out twice: keep one); the catalogue: take both sides, rerun `i18n.py`; godot/README.md's Layout: rerun `layout.py`.
+2. Merge `origin/main`. In a conflict: `flows.txt`, `areas.txt` and the harness's and look book's line files merge by union (a row both sides changed comes out twice: keep one); the catalogue: take both sides, rerun `i18n.py`; godot/README.md's Layout: rerun `layout.py`.
 3. Commit on a `tomklotz/pix-NNN-<slug>` branch in the repo's style: `feat:`, `fix:`, `chore:`, `docs:`, `test:` or `ci:`, a lower-case summary, `(PIX-NNN)`, then ` - ` and what changed and why.
 4. Push, open a PR against `main` (what changed, why, what was tested), and watch CI to green.
 5. Never bump the version or run `release.py` in a feature branch: the main session cuts releases and merges.
