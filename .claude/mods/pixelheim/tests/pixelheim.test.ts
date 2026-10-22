@@ -21,7 +21,15 @@ const world = (on: On, week: number) => {
   on('tool.register', () => ({ value: undefined }))
   on('tool.call', () => ({ result: 'ran' }))
   on('agent.spawn', () => ({ model: 'inherit' }))
+  on('ui.open', () => ({ value: { isPlaced: true as const } }))
 }
+
+const BAND = {
+  plugin: 'pixelheim',
+  component: 'AbovePrompt',
+  props: { hasSurvey: false, isWorking: false, maxRows: 4, bodyColumns: 100, scroll: { offset: 0, bodyRows: 4 }, view: {} },
+  viewport: { columns: 120, rows: 40, isFullscreen: false },
+} as const
 
 const start = ($: Parameters<Parameters<typeof test>[1]>[0]) =>
   $.session.start({ cwd: '/repo', surface: 'terminal', isInteractive: true })
@@ -76,13 +84,35 @@ test('the band above the prompt shows the summary', async ($, on) => {
   world(on, 7)
   on('ui.render', { component: 'AbovePrompt' }, ($, e) => $.ui.resolve(e).Box({ children: [] }))
   await start($)
-  const ui = await $.ui.mount({
+  const ui = await $.ui.mount({ ...BAND, surface: 'terminal' })
+  expect(await ui.find({ type: 'Text', text: /Niv\. 271/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /^5\/12$/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /^70%$/ })).toBeDefined()
+  await ui.unmount()
+})
+
+test('past the cap the band reads K.O.', async ($, on) => {
+  world(on, 20)
+  on('ui.render', { component: 'AbovePrompt' }, ($, e) => $.ui.resolve(e).Box({ children: [] }))
+  await start($)
+  const ui = await $.ui.mount({ ...BAND, surface: 'terminal' })
+  expect(await ui.find({ type: 'Text', text: /K\.O\./ })).toBeDefined()
+  await ui.unmount()
+})
+
+test('/pix opens a pane with the hero drawn in the terminal', async ($, on) => {
+  world(on, 7)
+  await start($)
+  await $.command.run({ command: 'pix', args: '' })
+  const pane = {
     plugin: 'pixelheim',
-    component: 'AbovePrompt',
-    surface: 'terminal',
-    props: { hasSurvey: false, isWorking: false, maxRows: 4, bodyColumns: 100, scroll: { offset: 0, bodyRows: 4 }, view: {} },
+    component: 'Pane',
+    requestId: 'pixelheim',
+    props: { title: 'Pixelheim', isFocused: false, bodyColumns: 60, placement: 'inline', scroll: { offset: 0, bodyRows: 10 }, view: {} },
     viewport: { columns: 120, rows: 40, isFullscreen: false },
-  })
-  expect(await ui.find({ type: 'Text', text: /v0\.271 · week 7% of 12% cap/ })).toBeDefined()
+  } as const
+  const ui = await $.ui.mount({ ...pane, surface: 'terminal' })
+  expect(await ui.find({ key: 'hero' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /compagnon en route/ })).toBeDefined()
   await ui.unmount()
 })
