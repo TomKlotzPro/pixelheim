@@ -78,6 +78,11 @@ const ROUTE_SLACK := 4
 ## wall, deaf to the hero, for good) is home at once where nobody sees it,
 ## or settles where it stands.
 const HOME_STUCK_SECONDS := 2.5
+## A foe at peace this far past the screen's edge rests (PIX-360): its tick
+## skipped, as each cost about 0.02 ms of the frame (the night's overworld
+## has 45). The hero (95 px/s) brings the edge a second nearer before it must
+## wake, so none is ever seen standing still or popping in.
+const REST_MARGIN := 6.0 * MapView.TILE
 ## Over the head (PIX-314): a foe's health bar stands BAR_Y over its feet,
 ## or HEAD_CLEAR over the top of a head that reaches higher (over_head).
 const BAR_Y := -20.0
@@ -150,6 +155,8 @@ var feeding := false
 ## hero at arm's length or a blow wakes it - and its pack with it.
 var asleep := false
 var _sleep_mark: Label
+## Resting well off the screen (PIX-360, rest): its tick skipped.
+var resting := false
 ## A named monster's entry (Hunts, PIX-156), or {}.
 var named := {}
 ## The health bar's full width: a named monster's is longer.
@@ -347,6 +354,12 @@ func show_level(level: int) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Resting (rest), it stands still but throws its wander's dice (the
+	# global ones), so the drops and blows they decide come out as before;
+	# called to a fight since Foes last looked, it is up this tick.
+	if resting and mode == "idle":
+		_wander(delta)
+		return
 	# A falling foe's tag goes with it (PIX-340: it stayed up over the body,
 	# and as the nearest kept the pack's living tags hidden).
 	if level_tag != null:
@@ -1072,6 +1085,30 @@ func _sleep_cue() -> Label:
 		drift.tween_interval(SLEEP_PAUSE_SECONDS)
 		drift.custom_step(randf() * (SLEEP_DRIFT_SECONDS + SLEEP_PAUSE_SECONDS))
 	return cue
+
+
+## Whether a foe at `at` rests (PIX-360): at peace (at_peace) and further
+## than REST_MARGIN past the edge of `view`, the screen. A view of no size
+## (no camera yet) rests nobody.
+static func rests(view: Rect2, at: Vector2, peaceful: bool) -> bool:
+	return peaceful and view.has_area() and not view.grow(REST_MARGIN).has_point(at)
+
+
+## At home and whole, in no fight: wandering, asleep or at a meal, nothing
+## ticking on it (an ailment, a shove), its hurts healed. Never a boss or a
+## named monster: few, and where it stands when its hunt starts is its
+## fight's timing.
+func at_peace() -> bool:
+	return mode == "idle" and not boss_like and not hunting and not dying and not stood_down and quarry == null and knock_left <= 0 and ailments.effects.is_empty() and int(fighter["hp"]) >= int(fighter["maxHp"])
+
+
+## Rests or wakes by `view`, the screen (Foes asks every frame): resting,
+## its physics tick only throws its wander's dice, so it neither moves nor
+## looks; its sprite still breathes, and the world's clocks (its pack's
+## hours) run on. Its tick is skipped, not switched off: the look book holds
+## foes still by switching it off, and waking mustn't undo that.
+func rest(view: Rect2) -> void:
+	resting = rests(view, global_position, at_peace())
 
 
 ## A step this way or that, never past the leash.

@@ -27,7 +27,7 @@ Read before a change that adds work per frame, nodes to a map, lights, or time t
 | town (day / night) | 0 | 675 | 0.25-0.38 / 0.22 |
 | town_inn | 0 | – | 0.20 |
 
-- **Mobs drive the CPU frame**: about 0.25 ms plus 0.021 ms per mob. Decor nodes cost almost nothing per frame once drawn; lights add little CPU.
+- **Mobs drove the CPU frame**: about 0.25 ms plus 0.021 ms per mob. Since PIX-360 a foe at peace (`Enemy.at_peace`: no boss) more than `REST_MARGIN` (6 cells) past the screen's edge rests, its tick skipped but for its wander's dice until the edge nears (`Enemy.rest`, asked by `Foes._process`): `cpu=` medians on 2026-10-22 went overworld 0.83 -> 0.45, night 0.95 -> 0.47, deepwood 0.48 -> 0.24, the line 0.55 -> 0.27 ms (every flow's report the same), and the `cpu-*` flows hold them under 1.50, 1.00 and 1.00. Decor nodes cost almost nothing per frame once drawn; lights add little CPU.
 - **Streaming** (`world_neighbours.gd`) adds up to `BUDGET_MS` 3 ms a frame while the Reach's maps beside are drawn in.
 - **The GPU side was not measured headless.** The 2026-10-09 baseline: about 43 draws, physics 0.7 ms on the overworld, about 2 ms of a 16.7 ms desktop frame used.
 - **The web build** (single-threaded wasm, Compatibility renderer) is unmeasured; on an assumed 2-3x GDScript slowdown the night overworld costs 2-3.5 ms of CPU, plus up to 3 ms while streaming. It downloads 18.7 MB gzipped (wasm 10.25 MB, pck 8.37 MB) before PIX-351 took the tests out (about 1.4 MB less).

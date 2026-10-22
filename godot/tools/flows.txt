@@ -527,10 +527,13 @@ line-motion | --map overworld --at 94,33 seamless motion --fps 144 | map=deepwoo
 # numbers need a window): cpu= is ms median/95th percentile of the frames
 # from the Reach worked out ahead to the report. The overworld at night (its
 # 45 monsters out), the Deepwood (its 1427 pieces of decor) and a walk over
-# the line between them.
-cpu-night | --map overworld night cpu --wait 2 | map=overworld cpu=\d+\.\d\d/\d+\.\d\d | field night
-cpu-wood | --map deepwood cpu --wait 2 | map=deepwood cpu=\d+\.\d\d/\d+\.\d\d | field
-cpu-line | --map overworld --at 93,33 seamless --walk r,r,r cpu --wait 1 | map=deepwood cpu=\d+\.\d\d/\d+\.\d\d | field travel
+# the line between them. Each median under a budget (PIX-360, foes at rest
+# off the screen): 0.47, 0.24 and 0.27 ms on the laptop, which CI's runners
+# read 1 to 2.2 times as long, so 1.50, 1.00 and 1.00 (the night read 0.95
+# before, 2.14 on a slow runner).
+cpu-night | --map overworld night cpu --wait 2 | map=overworld cpu=(?!1\.[5-9])[01]\.\d\d/\d+\.\d\d | field night
+cpu-wood | --map deepwood cpu --wait 2 | map=deepwood cpu=0\.\d\d/\d+\.\d\d | field
+cpu-line | --map overworld --at 93,33 seamless --walk r,r,r cpu --wait 1 | map=deepwood cpu=0\.\d\d/\d+\.\d\d | field travel
 # Out of Blackiron along the north lane of its road, where a rock stood in
 # the way and only the road's middle went through (PIX-332): the hero walks
 # on over the line into the Ash Fields.

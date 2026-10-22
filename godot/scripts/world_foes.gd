@@ -186,14 +186,20 @@ func come_in() -> void:
 ## step up clear of the tags kept, under the HUD's plates at the top
 ## (WorldFx.keep_clear, PIX-345). Out of a fight
 ## each foe's tag reads its own level again.
-## And the packs of a map walked into over a line come, a pack a frame.
+## And the packs of a map walked into over a line come, a pack a frame; and
+## each foe rests or wakes by the screen (Enemy.rest, PIX-360).
 func _process(_delta: float) -> void:
 	if world == null or world.player == null:
 		return
 	if _coming:
 		_coming = world.map != null and keep_hours(false, 1) > 0
 	var shown: Array = []
+	# Foes well off the screen rest, and wake as its edge nears (PIX-360):
+	# the whole screen, the world showing beside the dock too.
+	var rig: CameraRig = world.camera_rig
+	var view := Rect2() if rig.camera == null else rig.view_rect().grow_side(SIDE_BOTTOM, (720.0 - rig.dock_top()) / rig.camera.zoom.y)
 	for enemy in get_tree().get_nodes_in_group("mobs"):
+		enemy.rest(view)
 		if enemy.level_tag != null and enemy.level_tag.visible and not enemy.dying:
 			shown.append(enemy)
 	var hero: Vector2 = world.player.global_position
