@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.276.0",
+      "date": "2026-10-22",
+      "codename": "Ground Floor",
+      "notes": [
+        "Behind the scenes: the ground, the rooms and the dungeons now have layers of their own too, so the game's biggest file has gone from about 3,300 lines to 1,300; every map looks exactly as before"
+      ]
+    },
+    {
       "version": "0.275.0",
       "date": "2026-10-22",
       "codename": "Camps and Hamlets",
