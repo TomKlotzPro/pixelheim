@@ -179,71 +179,41 @@ static func saves_kept() -> bool:
 	return not OS.has_feature("web") or OS.is_userfs_persistent()
 
 
-## Picks the save to play: `--slot N` or the last slot played, else a new game
-## written straight to that slot. Harness runs (`--screenshot`) play a fresh
-## throwaway hero unless a slot is named explicitly. Runs once per session:
-## the world scene reloads after a slot switch and must not undo it. `flags`
-## is the command line, parsed (HarnessFlags, PIX-262).
-func boot(flags: HarnessFlags) -> void:
-	if _booted:
+## Picks the save to play: slot `asked` (`--slot N`; -1 when none is) or
+## the last slot played, else a new game written straight to that slot. Runs
+## once per session: the world scene reloads after a slot switch and must not
+## undo it. A harness run (`--screenshot`) boots through HarnessBoot.boot
+## instead (PIX-357): a fresh throwaway hero, its own settings.
+func boot(asked := -1) -> void:
+	if not begin_boot():
 		return
-	_booted = true
-	# A harness run throws the same dice every run (PIX-276): what a kill
-	# drops, a crit, where a foe wanders, a sound's pitch (it draws from the
-	# same dice), all as the run before; unseeded, a flow whose loot rolled
-	# another way read differently on every run. With GameClock and the
-	# stepped frames (tools/flows.sh), a flow is the same run each time.
-	if flags.has("--screenshot"):
-		seed(HARNESS_SEED)
 	settings.load_file()
-	# The game speaks the player's language from the first screen (PIX-195);
-	# `--lang xx` (harness) picks one for the run.
-	Text.apply(flags.value("--lang", settings.language))
-	# `--pseudo` (harness): every string stretched a third longer and
-	# accented, to see where a longer language would overflow (PIX-195).
-	if flags.has("--pseudo"):
-		ProjectSettings.set_setting("internationalization/pseudolocalization/expansion_ratio", 0.35)
-		TranslationServer.pseudolocalization_enabled = true
-		TranslationServer.set_locale("fr")
-		Text.forget()
-	if flags.has("--slot"):
-		slot = clampi(int(flags.value("--slot")), 1, SaveSlots.SLOT_COUNT)
-	elif flags.has("--screenshot"):
-		slot = NO_SLOT
-		settings.read_only = true
-		# `still`: the run with Reduce motion on, as a player can set it.
-		if flags.has("still"):
-			settings.reduce_motion = true
-		# `hints`: a new player's first-time hints, none seen (PIX-341).
-		if flags.has("hints"):
-			settings.hints = true
-			settings.hints_seen.clear()
-		# `--slots <dir>`: the slots read from a folder of fixtures, never
-		# written (PIX-230); `launch` opens its first slot as a plain launch
-		# opens the last one played (PIX-303: one it can't read).
-		if flags.has("--slots"):
-			slots = SaveSlots.new(flags.value("--slots"), true)
-			if flags.has("launch"):
-				slot = 1
-		else:
-			# The player's own slots, read at most: no key a run presses (a
-			# saves screen's, creation's Begin) writes or clears one.
-			slots.read_only = true
-	else:
-		slot = clampi(settings.last_slot, 1, SaveSlots.SLOT_COUNT)
+	# The game speaks the player's language from the first screen (PIX-195).
+	Text.apply(settings.language)
+	slot = clampi(asked if asked >= 0 else settings.last_slot, 1, SaveSlots.SLOT_COUNT)
+	wake(asked >= 0)
+
+
+## Whether the session is yet to boot, which it now is: once only.
+func begin_boot() -> bool:
+	if _booted:
+		return false
+	_booted = true
+	return true
+
+
+## Plays the hero in `slot`, or `loaded` (a save read from elsewhere, when
+## there's no slot), else a new game written straight to the slot. `named`:
+## the slot was asked for (`--slot N`).
+func wake(named: bool, loaded := {}) -> void:
 	var seen := slots.look(slot) if slot != NO_SLOT else {"kind": SaveSlots.EMPTY}
-	var saved: Dictionary = seen["state"] if seen["kind"] == SaveSlots.HERO else {}
-	# `--load <file>` (harness): a save played as it loads from a slot (a
-	# code or a v5 file: the fixtures in test/fixtures), nothing written back
-	# (PIX-302: where a save wakes).
-	if slot == NO_SLOT and flags.has("--load"):
-		saved = SaveCodec.parse_any(FileAccess.get_file_as_string(flags.value("--load")))
+	var saved: Dictionary = seen["state"] if seen["kind"] == SaveSlots.HERO else loaded
 	if saved.is_empty():
 		new_game()
 		# A plain launch waits for the title's hero; a named slot starts at
 		# once, unless what's in it can't be read: nothing is written over
 		# that, and a hero made at the title goes to a free slot (PIX-303).
-		standing_in = not flags.has("--slot") or seen["kind"] != SaveSlots.EMPTY
+		standing_in = not named or seen["kind"] != SaveSlots.EMPTY
 		slot_note = unread_note(slot, seen["kind"])
 		save_now()
 	else:

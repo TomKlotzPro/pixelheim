@@ -127,7 +127,8 @@ and quits. It lives in
 passed. Harness runs play a fresh throwaway hero and never touch save slots
 unless `--slot N` is passed. Every flag is declared once, with its argument
 and what it does, a line each in `scripts/harness_flags.txt` (`flag | takes |
-does`, read by `HarnessFlags`, PIX-356): the command line is parsed once
+does`, read by `HarnessFlags`, PIX-356; a step adds `| step | order`, its
+`step_<step>()` in `scripts/harness_steps/`, PIX-357): the command line is parsed once
 against it, so a flag's argument never reads as
 another flag, and `test_harness_flags` fails on a name declared twice or a
 flag read or passed that the table doesn't know. `-- --help` prints it:
@@ -491,8 +492,15 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/hamlet.gd` — Each settlement beyond Pixelheim its own (PIX-313, the audit's « bare and all alike »: Saltmere's long thatch slabs on an empty lawn, the same slate cottage at Greyhold, the Frostgate, Blackiron and the mountain, no fence, garden, net or boat, no smoke by day, and barrels as tall as the villagers beside them), and Morvax's smithy at the top of the mountain road (PIX-312: the stock cottage, no chimney, no fire).
 - `scripts/hamlet_art.gd` — What the settlements beyond Pixelheim are dressed in that Shade's sheets don't draw (PIX-313), and the story's last set pieces (PIX-312)
 - `scripts/harness.gd` — The agent verification harness, loaded only for `--screenshot` runs (world.gd adds it; it never ships in play)
+- `scripts/harness_boot.gd` — The screenshot harness's boot (PIX-357): a `--screenshot` run's throwaway hero and settings, and the presets its flows ask for before the first map is drawn (`--town-tier`, `--built`, `--bells`...).
 - `scripts/harness_flags.gd` — The screenshot harness's flags (PIX-262), every one in a single table: its name, what it takes and what it does.
 - `scripts/harness_report.gd` — The screenshot harness's report line (PIX-273)
+- `scripts/harness_steps/combat.gd` — The harness's fighting steps (PIX-357): the hero's level, gear and wounds, a foe fought, cast at or felled, the fall, the mimic, a flight.
+- `scripts/harness_steps/measure.gd` — The harness's measuring steps (PIX-357): what entering maps and rooms costs, the CPU's frames, the walking and turning checks, the look book, perf and what overflows.
+- `scripts/harness_steps/screens.gd` — The harness's screens (PIX-357): the sheets, the title and its menus, the pack, the codex, the journal, the counters and ledgers, the saves, and keys pressed at whatever opened.
+- `scripts/harness_steps/story.gd` — The harness's story steps (PIX-357): story scenes, the Night of Bells, quests, the Post, conversations, the town's tours, the ending.
+- `scripts/harness_steps/travel.gd` — The harness's steps that move the hero or the camera (PIX-357)
+- `scripts/harness_steps/world.gd` — The harness's steps in the world itself (PIX-357): the hour, the festival, the cast's lineup, a chest, a station or a bed used, and the shot held.
 - `scripts/home_screen.gd` — The house's fixtures, one screen per `mode` (HouseStorage, Trophies, Nook and the pack's Craft/Place in the web game)
 - `scripts/hub_art.gd` — What the hubs grow as their post roads fill (PIX-324, Hubs)
 - `scripts/hud_dock.gd` — The hero's dock along the bottom of the screen (PIX-138): one wooden plate in the windows' carved frame, centred, so the rest of the screen is world.

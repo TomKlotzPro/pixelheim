@@ -2389,6 +2389,10 @@ msgid "Behind the scenes: new ground for the regions to come (Shade's sea in thr
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: the test tool's setup no longer lives in the game's own code, and its 800-line script is now a list of small steps run in order, so the game is simpler to read and the tests easier to extend"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: the test tools' long lists (their options, report fields and look book shots) now live in plain files with one line each, so work done side by side no longer trips over itself"
 msgstr ""
 
@@ -4946,6 +4950,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Steady Steps"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Steps in Order"
 msgstr ""
 
 #: assets/data/changelog.json

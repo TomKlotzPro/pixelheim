@@ -57,6 +57,10 @@ func test_the_line_joins_the_fields_with_text_in_the_tables_order() -> void:
 
 func test_the_harness_writes_no_field_itself() -> void:
 	var source := FileAccess.get_file_as_string("res://scripts/harness.gd")
+	# And its steps (PIX-357).
+	for file in DirAccess.get_files_at("res://scripts/harness_steps"):
+		if file.ends_with(".gd"):
+			source += FileAccess.get_file_as_string("res://scripts/harness_steps/" + file)
 	assert_false(source.contains("screenshot saved"), "harness.gd prints HarnessReport.line()")
 	assert_null(RegEx.create_from_string("\" [a-z_]+=%").search(source), "no ` name=%s` piece of a line built by hand")
 	assert_null(RegEx.create_from_string("\\w+_report \\+?= ").search(source), "no line of fields kept beside the report")
