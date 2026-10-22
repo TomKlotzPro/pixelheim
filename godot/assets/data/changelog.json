@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.278.0",
+      "date": "2026-10-22",
+      "codename": "Known Woods",
+      "notes": [
+        "The woods are worked out once a session: going back into the Deepwood, or seeing it drawn in beside you, now takes half the time, and the towns and the snowy north are quicker too"
+      ]
+    },
+    {
       "version": "0.277.0",
       "date": "2026-10-22",
       "codename": "Sleeping Wolves",

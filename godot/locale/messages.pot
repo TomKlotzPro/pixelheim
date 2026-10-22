@@ -3665,6 +3665,10 @@ msgid "Know Your Trade"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Known Woods"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "LAMPS AT NIGHT: the town's torches stand cold by day and burn after dusk, with a warm glow around each, and the windows light up too"
 msgstr ""
 
@@ -6138,6 +6142,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The wind moves the world: trees, wheat and flowers sway, their tops more than their feet, as gusts roll across the land"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The woods are worked out once a session: going back into the Deepwood, or seeing it drawn in beside you, now takes half the time, and the towns and the snowy north are quicker too"
 msgstr ""
 
 #: assets/data/changelog.json
