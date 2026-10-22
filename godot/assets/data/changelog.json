@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.273.0",
+      "date": "2026-10-22",
+      "codename": "Steps in Order",
+      "notes": [
+        "Behind the scenes: the test tool's setup no longer lives in the game's own code, and its 800-line script is now a list of small steps run in order, so the game is simpler to read and the tests easier to extend"
+      ]
+    },
+    {
       "version": "0.272.0",
       "date": "2026-10-22",
       "codename": "One Line Each",

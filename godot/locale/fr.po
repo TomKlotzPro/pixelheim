@@ -2389,6 +2389,10 @@ msgid "Behind the scenes: new ground for the regions to come (Shade's sea in thr
 msgstr "En coulisses : de nouveaux sols pour les régions à venir (la mer de Shade en trois profondeurs, quais, neige, glace et pavés) et un outil qui transforme un croquis en carte"
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: the test tool's setup no longer lives in the game's own code, and its 800-line script is now a list of small steps run in order, so the game is simpler to read and the tests easier to extend"
+msgstr "En coulisses : les préparatifs de l'outil de test ne vivent plus dans le code du jeu lui-même, et son script de 800 lignes est devenu une liste de petites étapes jouées dans l'ordre : le jeu est plus simple à lire et les tests plus faciles à compléter"
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: the test tools' long lists (their options, report fields and look book shots) now live in plain files with one line each, so work done side by side no longer trips over itself"
 msgstr "En coulisses : les longues listes des outils de test (leurs options, les champs de leur rapport et les plans de l'album) vivent maintenant dans de simples fichiers, une ligne par entrée, pour que les travaux menés côte à côte ne se marchent plus dessus"
 
@@ -4947,6 +4951,10 @@ msgstr "Mains sûres"
 #: assets/data/changelog.json
 msgid "Steady Steps"
 msgstr "Pas assurés"
+
+#: assets/data/changelog.json
+msgid "Steps in Order"
+msgstr "Pas à pas"
 
 #: assets/data/changelog.json
 msgid "Still not a single audio file - every note is synthesized live, like the sprites"
