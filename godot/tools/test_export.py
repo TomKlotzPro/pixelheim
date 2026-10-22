@@ -1,5 +1,7 @@
 """The game ships no tests (PIX-351): every export preset's exclude_filter
-keeps test/ and addons/gut out of the pack, and nothing the game runs.
+keeps test/ and addons/gut out of the pack, and nothing the game runs; and
+its include_filter carries the files the game reads as they are, which
+Godot doesn't import (PIX-356).
 
     python3 -m unittest discover -s godot/tools -p 'test_*.py'
 """
@@ -11,13 +13,14 @@ import unittest
 PRESETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "export_presets.cfg")
 LEFT_OUT = ["test/unit/test_story.gd", "test/fixtures/slots/slot_1.json", "addons/gut/gut_cmdln.gd"]
 SHIPPED = ["scripts/world.gd", "scenes/main.tscn", "assets/data/catalog.json", "locale/fr.po"]
+NOT_IMPORTED = ["scripts/harness_flags.txt", "scripts/harness_report.txt", "scripts/lookbook_shots.jsonl"]
 
 
-def excluded(path, exclude_filter):
-    """Whether Godot's export leaves `path` out: a comma-separated filter
+def matched(path, export_filter):
+    """Whether an export filter takes `path`: a comma-separated filter
     matched case-blind against the path with and without res://, `*`
     crossing folders (String.matchn)."""
-    filters = [f.strip().lower() for f in exclude_filter.split(",") if f.strip()]
+    filters = [f.strip().lower() for f in export_filter.split(",") if f.strip()]
     paths = [path.lower(), "res://" + path.lower()]
     return any(fnmatch.fnmatchcase(p, f) for p in paths for f in filters)
 
@@ -32,10 +35,13 @@ class ExportTest(unittest.TestCase):
             preset = config[section]
             name = preset.get("name", section).strip('"')
             exclude_filter = preset.get("exclude_filter", '""').strip('"')
+            include_filter = preset.get("include_filter", '""').strip('"')
             for path in LEFT_OUT:
-                self.assertTrue(excluded(path, exclude_filter), f"{name} would ship {path}")
-            for path in SHIPPED:
-                self.assertFalse(excluded(path, exclude_filter), f"{name} would leave out {path}")
+                self.assertTrue(matched(path, exclude_filter), f"{name} would ship {path}")
+            for path in SHIPPED + NOT_IMPORTED:
+                self.assertFalse(matched(path, exclude_filter), f"{name} would leave out {path}")
+            for path in NOT_IMPORTED:
+                self.assertTrue(matched(path, include_filter), f"{name} would leave out {path}")
 
 
 if __name__ == "__main__":

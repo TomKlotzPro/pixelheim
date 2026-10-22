@@ -58,7 +58,9 @@ class AreasTest(unittest.TestCase):
                 self.assertTrue(areas.split() and globs.split(), "%s: areas and files both" % where)
                 self.assertEqual(unknown(areas.split(), known), [], "%s: areas no flow in flows.txt is tagged with" % where)
                 for pattern in globs.split():
-                    self.assertFalse(pattern.startswith("scripts/"), "%s: %s names its areas on its own '%s' line" % (where, pattern, HEAD))
+                    # A script's data beside it (PIX-356) has no head of its own.
+                    script = pattern.startswith("scripts/") and not pattern.endswith((".txt", ".jsonl"))
+                    self.assertFalse(script, "%s: %s names its areas on its own '%s' line" % (where, pattern, HEAD))
                     # What a union merge leaves of a line both branches changed.
                     self.assertFalse(pattern in seen, "%s: %s is on line %s already" % (where, pattern, seen.get(pattern)))
                     seen[pattern] = number

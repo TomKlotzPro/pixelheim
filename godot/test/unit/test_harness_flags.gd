@@ -15,7 +15,7 @@ const READ := "(?:flags|HarnessFlags\\.given\\(\\))\\.(?:has|value|list)\\(\\s*\
 
 func test_no_flag_is_declared_twice() -> void:
 	var seen := {}
-	for row: Dictionary in HarnessFlags.TABLE:
+	for row: Dictionary in HarnessFlags.table():
 		var flag: String = row["flag"]
 		assert_false(seen.has(flag), "%s is declared once" % flag)
 		seen[flag] = true
@@ -64,7 +64,7 @@ func test_a_list_splits_on_its_commas() -> void:
 
 func test_help_lists_every_flag_with_what_it_takes() -> void:
 	var help := HarnessFlags.help()
-	for row: Dictionary in HarnessFlags.TABLE:
+	for row: Dictionary in HarnessFlags.table():
 		var usage := String(row["flag"]) + ("" if row["takes"] == "" else " " + String(row["takes"]))
 		assert_true(help.contains("  " + usage + " "), "%s is in --help" % usage)
 		assert_true(help.contains(String(row["does"])))
@@ -84,12 +84,12 @@ func test_every_flag_the_scripts_read_is_in_the_table() -> void:
 	var read := _read_flags()
 	assert_gt(read.size(), 90, "the reads were found")
 	for flag: String in read:
-		assert_false(HarnessFlags.row_of(flag).is_empty(), "%s (read in %s) is in HarnessFlags.TABLE" % [flag, read[flag]])
+		assert_false(HarnessFlags.row_of(flag).is_empty(), "%s (read in %s) is in harness_flags.txt" % [flag, read[flag]])
 
 
 func test_every_flag_in_the_table_is_read() -> void:
 	var read := _read_flags()
-	for row: Dictionary in HarnessFlags.TABLE:
+	for row: Dictionary in HarnessFlags.table():
 		if row["flag"] in NOT_OURS:
 			continue
 		assert_true(read.has(row["flag"]), "%s is read somewhere (or it's a dead flag)" % row["flag"])
@@ -136,7 +136,7 @@ func _check(words: PackedStringArray, where: String) -> int:
 		if word == "" or word.contains("$"):
 			continue
 		var row := HarnessFlags.row_of(word)
-		assert_false(row.is_empty(), "%s (in %s) is in HarnessFlags.TABLE" % [word, where])
+		assert_false(row.is_empty(), "%s (in %s) is in harness_flags.txt" % [word, where])
 		checked += 1
 		if not row.is_empty() and row["takes"] != "":
 			at += 1

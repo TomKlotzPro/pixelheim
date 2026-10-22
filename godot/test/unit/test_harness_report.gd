@@ -12,13 +12,13 @@ const HEAD := ["map", "cell", "hp", "gold", "save", "draws", "paused", "open", "
 
 
 func _fields() -> Array:
-	return HarnessReport.TABLE.map(func(row: Dictionary) -> String: return row["field"])
+	return HarnessReport.table().map(func(row: Dictionary) -> String: return row["field"])
 
 
 func test_no_field_is_declared_twice() -> void:
 	var seen := {}
 	var word := RegEx.create_from_string("^[a-z]+$")
-	for row: Dictionary in HarnessReport.TABLE:
+	for row: Dictionary in HarnessReport.table():
 		var field: String = row["field"]
 		assert_false(seen.has(field), "%s is declared once" % field)
 		seen[field] = true
@@ -43,16 +43,16 @@ func test_each_field_has_its_function_in_the_tables_order() -> void:
 	for field: String in _fields():
 		var at := source.find("\nfunc field_%s() -> String:" % field)
 		assert_gt(at, -1, "field_%s() writes %s=" % [field, field])
-		assert_gt(at, last, "field_%s() stands where %s stands in TABLE" % [field, field])
+		assert_gt(at, last, "field_%s() stands where %s stands in harness_report.txt" % [field, field])
 		last = at
 	for found in RegEx.create_from_string("\\nfunc field_(\\w+)\\(").search_all(source):
-		assert_true(HarnessReport.has(found.get_string(1)), "field_%s() has its row in TABLE" % found.get_string(1))
+		assert_true(HarnessReport.has(found.get_string(1)), "field_%s() has its row in harness_report.txt" % found.get_string(1))
 
 
 func test_the_line_joins_the_fields_with_text_in_the_tables_order() -> void:
 	var line := HarnessReport.joined({"gate": "bridge", "fell": "", "map": "overworld", "cell": "(48, 31)", "nowhere": "x"})
 	assert_eq(line, "screenshot saved; map=overworld cell=(48, 31) gate=bridge",
-		"in TABLE's order, a field without text left out, one TABLE doesn't hold never shown")
+		"in the table's order, a field without text left out, one the table doesn't hold never shown")
 
 
 func test_the_harness_writes_no_field_itself() -> void:
@@ -65,7 +65,7 @@ func test_the_harness_writes_no_field_itself() -> void:
 	assert_gt(notes.size(), 3, "the notes were found")
 	for found in notes:
 		var field := found.get_string(1)
-		assert_true(HarnessReport.has(field), "%s (noted in harness.gd) is in HarnessReport.TABLE" % field)
+		assert_true(HarnessReport.has(field), "%s (noted in harness.gd) is in harness_report.txt" % field)
 		assert_true(report.contains("return noted(\"%s\")" % field), "field_%s() reads its note" % field)
 
 
@@ -80,6 +80,6 @@ func test_every_field_a_flow_expects_is_in_the_table() -> void:
 		if parts.size() != 4:
 			continue
 		for found in named.search_all(parts[2].strip_edges()):
-			assert_true(HarnessReport.has(found.get_string(1)), "%s= (expected by %s) is in HarnessReport.TABLE" % [found.get_string(1), parts[0].strip_edges()])
+			assert_true(HarnessReport.has(found.get_string(1)), "%s= (expected by %s) is in harness_report.txt" % [found.get_string(1), parts[0].strip_edges()])
 			checked += 1
 	assert_gt(checked, 150, "the flows' fields were checked")
