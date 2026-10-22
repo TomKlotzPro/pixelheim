@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.279.0",
+      "date": "2026-10-22",
+      "codename": "Ten at a Time",
+      "notes": [
+        "Behind the scenes: the checks that only look at a map now run ten to a single start of the game instead of starting it each time, so every change is checked faster"
+      ]
+    },
+    {
       "version": "0.278.0",
       "date": "2026-10-22",
       "codename": "Known Woods",

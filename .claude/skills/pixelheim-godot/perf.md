@@ -55,7 +55,7 @@ Most of the Deepwood's decor was not its 2142 tree sprites (about 10 ms) but wor
 
 ## Boot
 
-A bare `--quit` and the cheapest flow both take 1.7-1.9 s: autoloads 0.37 s, the main scene 0.9 s, and loading the other 173 scripts alone 1.1 s (GDScript compiling). Booting from an exported pack of binary-token scripts was tried and was no faster. So a flow is mostly a boot: about 78% of the headless flow time on CI.
+A bare `--quit` and the cheapest flow both take 1.7-1.9 s: autoloads 0.37 s, the main scene 0.9 s, and loading the other 173 scripts alone 1.1 s (GDScript compiling). Booting from an exported pack of binary-token scripts was tried and was no faster. So a flow is mostly a boot: about 78% of the headless flow time on CI. Since PIX-360 the look-only flows (77 of 406) and the boot check's 88 boots run ten to a Godot (`--batch`, `verify.md`), a flow after the first about 0.2 s instead of a boot's 2: on the laptop (12 at a time, 2026-10-22) every flow headless went 114.2 -> 101.3 s, the look-only ones alone 20.5 -> 5.6 s and `flows.sh --boot` 23.8 -> 4.6 s. CI's runners, fewer cores at 4.4 s a boot, should save more (about 77 + 88 boots less 17).
 
 ## GUT
 

@@ -66,6 +66,60 @@ static func boot(flags: HarnessFlags, state: Node) -> void:
 	state.wake(flags.has("--slot"), loaded)
 
 
+## Whether a batch (`--batch`, PIX-360) has a flow left, which then runs in
+## this Godot: at the next physics tick, the scene is freed, everything a
+## boot sets but a scene's reload doesn't is as a boot left it, and the main
+## scene is ready again, as at a launch, before the tick's work.
+static func next_flow(tree: SceneTree) -> bool:
+	if HarnessFlags.batch.is_empty():
+		return false
+	tree.physics_frame.connect(_reboot.bind(tree), CONNECT_ONE_SHOT)
+	return true
+
+
+static func _reboot(tree: SceneTree) -> void:
+	var main := tree.current_scene.scene_file_path
+	tree.current_scene.free()
+	HarnessFlags.next_in_batch()
+	tree.paused = false
+	Engine.time_scale = 1.0
+	# The game's clock at nought as the scene is ready, as at a launch.
+	GameClock.origin = Engine.get_physics_frames()
+	# The statics that hold a run's state, not what the data or the art
+	# work out the same each time (those stay): the kept ground (its woods
+	# too), the healed count, the screens open, the keys learned.
+	KeptGround.forget()
+	Lamps._counted = {}
+	InventoryState._uid_counter = 0
+	Dissolve.held_at = -1.0
+	preload("res://scripts/title_screen.gd")._risen = false
+	Controls.pad = false
+	Controls.learned = {}
+	Screen._holds = 0
+	Screen._changes_at = 0
+	Screen._shown.clear()
+	Screen._asides = 0
+	Screen._hud_layer = null
+	Screen._hud_showed = true
+	# A launch has no tween running (the scene's went with it).
+	for tween in tree.get_processed_tweens():
+		tween.kill()
+	# The autoloads (GameState, Sound) made again from their scripts: every
+	# variable as its _init and _ready leave it, Sound's players new.
+	for autoload: Node in [GameState, Sound]:
+		var script: Script = autoload.get_script()
+		for child in autoload.get_children():
+			child.free()
+		autoload.set_script(null)
+		autoload.set_script(script)
+		autoload.call("_ready")
+	var scene: Node = load(main).instantiate()
+	tree.root.add_child(scene)
+	tree.current_scene = scene
+	# This tick is the launch's first: a tick on.
+	GameClock.origin -= 1
+
+
 ## The presets, set before the first map is drawn so it's drawn with them.
 static func before_first_map(flags: HarnessFlags) -> void:
 	# `--town-tier N` previews the village at another age; without it
