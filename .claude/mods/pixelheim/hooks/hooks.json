@@ -1,0 +1,4 @@
+{
+  "description": "The pixelheim hooks module",
+  "modules": ["./register.js"]
+}
