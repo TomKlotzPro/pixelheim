@@ -22,10 +22,6 @@ const MAX_MOVE_SPEED := 0.4
 const MAX_DODGE_CUT := 0.6
 
 
-static func _combat() -> Dictionary:
-	return Bestiary._data()
-
-
 ## Base stat plus everything worn (effectiveStat).
 static func effective_stat(hero: HeroState, pack: InventoryState, stat: String) -> int:
 	return int(hero.stats.get(stat, 0)) + pack.granted_stat(stat)
@@ -75,7 +71,7 @@ static func walked(hero: HeroState) -> Array:
 
 
 static func path_node(id: String) -> Dictionary:
-	for node: Dictionary in _combat()["pathNodes"]:
+	for node: Dictionary in Bestiary.path_nodes():
 		if node["id"] == id:
 			return node
 	return {}
@@ -88,7 +84,7 @@ static func passives(hero: HeroState) -> Dictionary:
 	var path := walked(hero)
 	if not path.is_empty():
 		sources.append(path_node(path[-1]).get("passive", {}))
-	for node: Dictionary in _combat()["skillTrees"].get(hero.role_id, []):
+	for node: Dictionary in Skills.tree(hero.role_id):
 		if node["kind"] == "passive" and node["id"] in hero.skill_nodes and node.has("passive"):
 			sources.append(node["passive"])
 	for effects: Dictionary in sources:
@@ -122,7 +118,7 @@ static func rank_index(level: int) -> int:
 ## point (two on reaching a new rank).
 static func apply_level_ups(hero: HeroState) -> int:
 	var growth: Dictionary = Catalog.role(hero.role_id)["growth"]
-	var points := int(_combat()["statPointsPerLevel"])
+	var points := Bestiary.stat_points_per_level()
 	var gained := 0
 	while hero.xp >= hero.xp_to_next:
 		hero.xp -= hero.xp_to_next
@@ -134,7 +130,7 @@ static func apply_level_ups(hero: HeroState) -> int:
 		hero.skill_points += 1
 		if rank_index(hero.level) > rank_index(hero.level - 1):
 			hero.skill_points += 1
-		var heal := float(_combat()["levelUpHeal"])
+		var heal := Bestiary.level_up_heal()
 		hero.hp = mini(int(hero.stats["maxHp"]), hero.hp + ceili(int(hero.stats["maxHp"]) * heal))
 		hero.mp = mini(int(hero.stats["maxMp"]), hero.mp + ceili(int(hero.stats["maxMp"]) * heal))
 		gained += 1

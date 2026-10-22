@@ -23,6 +23,37 @@ static func shop_at(map_id: String) -> String:
 	return _data()["shopMaps"].get(map_id, "")
 
 
+## A rarity above common: its bonus bounds and affixes.
+static func rarity(rarity_id: String) -> Dictionary:
+	return _data()["rarities"][rarity_id]
+
+
+## The affixes: each stat's word, and how many a rarity rolls.
+static func affix_table() -> Dictionary:
+	return _data()["affixes"]
+
+
+## The deep tiers (PIX-191): their names and the bonus a tier adds.
+static func deep_tiers() -> Dictionary:
+	return _data()["deepTiers"]
+
+
+## Where a trade's station stands, {} for a trade without one.
+static func job_station(job: String) -> Dictionary:
+	return _data()["jobStations"].get(job, {})
+
+
+## The smith's terms for a work: "reforge", "salvage", "quench" or
+## "masterwork".
+static func forge_rules(work: String) -> Dictionary:
+	return _data()[work]
+
+
+## The share of the purse a fall costs (PIX-206).
+static func death_gold_share() -> float:
+	return float(_data()["deathGoldShare"])
+
+
 ## Item ids a shop stocks at a stage (`stock_stage`: the relics won), catalog
 ## order; then what the town's age has brought (PIX-159): stock the shop
 ## carries early once Pixelheim has grown, and each age's signature item.
@@ -297,18 +328,18 @@ static func _quest_stage(quest: Dictionary) -> float:
 ## age `town_tier`.
 static func material_sources(item_id: String, town_tier := 4, stock_stage := 99, with_quests := true) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	var combat := Bestiary._data()
 	var shop_maps := {}
 	for map_id: String in _data()["shopMaps"]:
 		shop_maps[_data()["shopMaps"][map_id]] = map_id
-	for npc: Dictionary in Npcs._data()["npcs"]:
+	for npc: Dictionary in Npcs.townsfolk():
 		if npc.has("shop"):
 			shop_maps[npc["shop"]] = npc["mapId"]
 	for shop_id: String in _data()["shops"]:
 		if item_id in shop_stock(shop_id, stock_stage, town_tier):
 			out.append(_lead("shop", Text.t("sold by %s") % shop(shop_id)["keeper"], place_stage(shop_maps.get(shop_id, ""))))
 	# A region's own material grows in its patches and turns up after its fights.
-	var home: Array = combat["regionMaterials"].keys().filter(func(region_id: String) -> bool: return combat["regionMaterials"][region_id] == item_id)
+	var materials := Bestiary.region_materials()
+	var home: Array = materials.keys().filter(func(region_id: String) -> bool: return materials[region_id] == item_id)
 	if not home.is_empty():
 		var nearest: float = home.map(func(region_id: String) -> float: return place_stage("", region_id)).min()
 		out.append(_lead("forage", Text.t("picked from patches and foraged after fights in %s") % _region_names(home), nearest))
@@ -323,8 +354,8 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 			out.append(_lead("chest", Text.t("in a chest in %s") % where, place_stage(chest["mapId"], region_id)))
 	var waters: Array[String] = []
 	var water_stage := 99.0
-	for spot: Dictionary in combat.get("fishingSpots", []):
-		var catches: Array = spot.get("catches", combat["fishing"]["catches"])
+	for spot: Dictionary in Bestiary.fishing_spots():
+		var catches: Array = spot.get("catches", Bestiary.fishing_rules()["catches"])
 		if catches.any(func(entry: Array) -> bool: return entry[0] == item_id):
 			var place := Text.mid(Catalog.place_name(spot["mapId"]))
 			if place not in waters:
@@ -336,7 +367,7 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 		if quest["reward"].get("itemId", "") == item_id:
 			var giver := Npcs.by_id(quest["giver"], [])
 			out.append(_lead("quest", Text.t("%s's reward for %s") % [giver.get("name", quest["giver"]), quest["name"]], _quest_stage(quest)))
-	for monster_id: String in combat["monsters"]:
+	for monster_id: String in Bestiary.monster_ids():
 		for carried: Dictionary in Bestiary.drops_of(monster_id):
 			if carried["itemId"] != item_id:
 				continue
@@ -350,7 +381,7 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 			], _monster_stage(monster_id)))
 	# Loot rolls by the foe's level, never past its region's dropFloor
 	# (PIX-183).
-	var looted: Array = combat["regions"].keys().filter(func(region_id: String) -> bool: return _region_loots(region_id, item_id))
+	var looted: Array = Bestiary.region_ids().filter(func(region_id: String) -> bool: return _region_loots(region_id, item_id))
 	if not looted.is_empty():
 		var nearest: float = looted.map(func(region_id: String) -> float: return place_stage("", region_id)).min()
 		out.append(_lead("loot", Text.t("now and then in loot in %s") % _region_names(looted), nearest))
@@ -361,36 +392,25 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 	return out
 
 
-## The loot pool a level rolls from: the deepest whose floor it has reached.
-static func _pool_for(pools: Array, at: int) -> Dictionary:
-	var pool: Dictionary = pools[0]
-	for entry: Dictionary in pools:
-		if int(entry["floor"]) <= at:
-			pool = entry
-	return pool
-
-
 ## Whether a region's foes can drop `item_id` as loot: each foe that lives
 ## there rolls the pool of its level (lifted as a dungeon's floor lifts it:
 ## the Kings' Vault's, PIX-257), held to the region's dropFloor.
 static func _region_loots(region_id: String, item_id: String) -> bool:
-	var combat := Bestiary._data()
 	var found: Array = Bestiary.region(region_id).get("monsters", []).map(func(entry: Dictionary) -> Array: return [entry["monsterId"], 0])
-	for spawn: Dictionary in combat["spawns"]:
+	for spawn: Dictionary in Bestiary.all_spawns():
 		if _map(spawn["mapId"]).region_at(Vector2i(spawn["x"], spawn["y"])) == region_id:
 			found.append([Bestiary.species_of(spawn, region_id), Depths.lift(spawn["mapId"])])
 	for pair: Array in found:
 		var fighter := {"id": pair[0], "level": int(Bestiary.monster(pair[0]).get("level", 1)) + int(pair[1])}
-		if item_id in _pool_for(combat["dropPools"], Bestiary.wild_drop_floor(region_id, fighter))["stackIds"]:
+		if item_id in Bestiary.drop_pool(Bestiary.wild_drop_floor(region_id, fighter))["stackIds"]:
 			return true
 	return false
 
 
 ## The nearest place a monster is met: its packs' regions.
 static func _monster_stage(monster_id: String) -> float:
-	var combat := Bestiary._data()
 	var nearest := 99.0
-	for spawn: Dictionary in combat["spawns"]:
+	for spawn: Dictionary in Bestiary.all_spawns():
 		var region_id: String = _map(spawn["mapId"]).region_at(Vector2i(spawn["x"], spawn["y"]))
 		if Bestiary.species_of(spawn, region_id) == monster_id:
 			nearest = minf(nearest, place_stage(spawn["mapId"], region_id))

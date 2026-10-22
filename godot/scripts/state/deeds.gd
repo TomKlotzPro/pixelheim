@@ -29,8 +29,8 @@ static func count(deed: Dictionary, hero: HeroState, pack: InventoryState, progr
 			var named := Hunts.all()
 			return [named.filter(func(entry: Dictionary) -> bool: return entry["id"] in progression.hunted).size(), named.size()]
 		"masteries":
-			var families: Array = Bestiary._data()["familyNames"].keys()
-			var top: int = Bestiary._data()["masteryTiers"].size()
+			var families: Array = Bestiary.family_names().keys()
+			var top: int = Bestiary.mastery_tiers().size()
 			return [families.filter(func(family: String) -> bool: return Bestiary.mastery_tier(hero.mastery, family) >= top).size(), families.size()]
 		"set":
 			# The most of any one set worn, against that set's whole.
@@ -45,7 +45,7 @@ static func count(deed: Dictionary, hero: HeroState, pack: InventoryState, progr
 				best = [0, Catalog._data()["sets"].values()[0]["pieces"].size()]
 			return best
 		"bestiary":
-			var kinds: Array = Bestiary._data()["monsters"].keys()
+			var kinds: Array = Bestiary.monster_ids()
 			return [kinds.filter(func(kind: String) -> bool: return progression.met.has(kind)).size(), kinds.size()]
 		"letters":
 			# Every one of Maren's letters handed over (PIX-257): the main
@@ -56,7 +56,7 @@ static func count(deed: Dictionary, hero: HeroState, pack: InventoryState, progr
 		"settlers":
 			# Every settler home (PIX-257): the four the Reach's errands
 			# bring and the families the letters bring.
-			var recruits: Array = Npcs._data()["recruits"].map(func(recruit: Dictionary) -> String: return recruit["id"])
+			var recruits: Array = Npcs.recruits().map(func(recruit: Dictionary) -> String: return recruit["id"])
 			var home: Array = settlement.settlers if settlement != null else []
 			return [recruits.filter(func(id: String) -> bool: return id in home).size(), recruits.size()]
 		"threads":

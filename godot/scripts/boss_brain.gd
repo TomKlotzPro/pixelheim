@@ -28,7 +28,7 @@ var pending := 0
 func _ready() -> void:
 	enemy = get_parent()
 	world = enemy.world
-	pattern = Bestiary._data()["bossPatterns"][enemy.fighter["id"]]
+	pattern = Bestiary.boss_pattern(enemy.fighter["id"])
 
 
 func _physics_process(delta: float) -> void:
@@ -72,7 +72,7 @@ static func phase_at(share: float) -> int:
 
 
 func _cast(move: String) -> void:
-	var attack: Dictionary = Bestiary._data()["bossAttacks"][move]
+	var attack: Dictionary = Bestiary.boss_attack(move)
 	enemy.mode = "cast"
 	enemy.velocity = Vector2.ZERO
 	var hero: Vector2 = world.player.global_position

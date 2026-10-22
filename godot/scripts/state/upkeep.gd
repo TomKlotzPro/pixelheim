@@ -187,7 +187,7 @@ func rest_at_inn() -> String:
 	if owner.holdings.project_built("the_inn"):
 		# Tam's stew back on the menu (PIX-255): longer, with a word for it.
 		var stew := owner.holdings.inn_rested()
-		var fights := int(Town._data()["rested"]["innFights"]) + int(stew["fights"])
+		var fights := int(Town.rested_terms("innFights")) + int(stew["fights"])
 		owner.settlement.house["rested"] = maxi(int(owner.settlement.house.get("rested", 0)), fights)
 		var rested := String(stew["line"]) if String(stew["line"]) != "" else Text.t("Well rested, too: more XP for your next %d fights.")
 		line += " " + rested % fights

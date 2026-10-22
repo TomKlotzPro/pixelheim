@@ -275,7 +275,7 @@ func is_settled(id: String) -> bool:
 func come_home(quiet := false) -> Array[String]:
 	var said: Array[String] = []
 	var moved := false
-	for recruit: Dictionary in Npcs._data()["recruits"]:
+	for recruit: Dictionary in Npcs.recruits():
 		var due: Dictionary = recruit.get("comesHome", {})
 		if due.is_empty() or is_settled(recruit["id"]) or String(due["named"]) not in owner.progression.hunted:
 			continue
@@ -321,7 +321,7 @@ func note_age_open() -> void:
 ## cook there (PIX-255: Tam's stew): {fights, line}, line "" for none.
 func inn_rested() -> Dictionary:
 	var out := {"fights": 0, "line": ""}
-	for recruit: Dictionary in Npcs._data()["recruits"]:
+	for recruit: Dictionary in Npcs.recruits():
 		if recruit.has("inn") and is_settled(recruit["id"]):
 			out["fights"] = int(out["fights"]) + int(recruit["inn"]["fights"])
 			out["line"] = String(recruit["inn"]["line"])
@@ -332,7 +332,7 @@ func inn_rested() -> Dictionary:
 ## at Hilda's bellows, "forge"), 0 with none: their `perkValues`.
 func settler_share(key: String) -> float:
 	var total := 0.0
-	for recruit: Dictionary in Npcs._data()["recruits"]:
+	for recruit: Dictionary in Npcs.recruits():
 		if is_settled(recruit["id"]):
 			total += float(recruit.get("perkValues", {}).get(key, 0.0))
 	return total

@@ -160,7 +160,7 @@ func _place_everyone() -> void:
 			_stand(villager, places[villager.data["id"]])
 	if not _actors.has("mayor"):
 		var mayor: Dictionary = {}
-		for npc: Dictionary in Npcs._data()["npcs"]:
+		for npc: Dictionary in Npcs.townsfolk():
 			if npc["id"] == "mayor":
 				mayor = npc.duplicate()
 		mayor.merge({"mapId": "town", "x": places["mayor"].x, "y": places["mayor"].y, "wander": false, "lines": []}, true)

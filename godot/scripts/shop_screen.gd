@@ -90,7 +90,7 @@ func _open() -> void:
 		tabs.append("Forge")
 		# Hilda breaks old gear down, and from Smithing 8 reforges it (PIX-182).
 		tabs.append("Salvage")
-		if int(GameState.hero.jobs["smithing"]["level"]) >= int(Economy._data()["reforge"]["smithing"]):
+		if int(GameState.hero.jobs["smithing"]["level"]) >= int(Economy.forge_rules("reforge")["smithing"]):
 			tabs.append("Reforge")
 		# Deep pieces can be quenched (PIX-218): the Vault's gold sink (PIX-257).
 		if GameState.pack.gear.any(func(piece: Dictionary) -> bool: return int(piece.get("deep", 0)) > 0):
@@ -446,7 +446,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 					row["price"] = Text.t("+ gem") if past else ""
 				out.append(row)
 		"Quench":
-			var gem := String(Economy._data()["quench"]["gem"])
+			var gem := String(Economy.forge_rules("quench")["gem"])
 			for instance in pack.gear:
 				if int(instance.get("deep", 0)) <= 0:
 					continue

@@ -178,7 +178,7 @@ static func where(quest: Dictionary, done: Variant = null) -> String:
 				out.append(relic["place"])
 			return Text.t("The five left them in %s.") % ", ".join(out)
 		"escort":
-			return Bestiary._data()["escorts"][objective["escort"]]["where"]
+			return Bestiary.escort(objective["escort"])["where"]
 		"craft":
 			# Made, not found (PIX-184): the station, and what goes into it.
 			for entry: Dictionary in Economy.recipes():

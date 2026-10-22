@@ -324,7 +324,7 @@ func escort_due() -> Dictionary:
 		var objective: Dictionary = quest["objective"]
 		var entry: Dictionary = owner.progression.quests.get(quest["id"], {})
 		if objective["kind"] == "escort" and not entry.is_empty() and not entry["done"] and int(entry["progress"]) < int(objective["count"]):
-			return {"quest": quest, "def": Bestiary._data()["escorts"][objective["escort"]]}
+			return {"quest": quest, "def": Bestiary.escort(objective["escort"])}
 	return {}
 
 

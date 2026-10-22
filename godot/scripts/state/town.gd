@@ -297,7 +297,7 @@ static func ruin_tiles(ruin: Dictionary) -> Dictionary:
 ## crate of their wares beside them; and Sela's tent, while the inn is.
 static func stall_crates(done: Array) -> Dictionary:
 	var out := {}
-	for npc: Dictionary in Npcs._data()["npcs"]:
+	for npc: Dictionary in Npcs.townsfolk():
 		var stall: Dictionary = npc.get("stall", {})
 		if stall.is_empty() or stall["project"] in done or npc["id"] == "innkeeper":
 			continue
@@ -429,7 +429,7 @@ static func footprint(project_id: String) -> Array[Rect2i]:
 static func brings(project_id: String) -> Array[String]:
 	var entry := project(project_id)
 	var out: Array[String] = []
-	for npc: Dictionary in Npcs._data()["npcs"]:
+	for npc: Dictionary in Npcs.townsfolk():
 		if npc.get("stall", {}).get("project", "") == project_id:
 			out.append(Text.t("%s is back at work indoors.") % npc["name"])
 	if entry.has("perk"):
@@ -474,9 +474,33 @@ static func till_cap(map_id: String, expanded: bool, current: int) -> int:
 	return daily_rent(map_id, expanded, current) * int(_data()["rent"]["tillDays"])
 
 
-## The shop a property is (economy.json shopMaps), or "".
-static func shop_of(map_id: String) -> String:
-	return String(Economy._data()["shopMaps"].get(map_id, ""))
+## The rent's terms: the owner's discount, an expansion's boost...
+static func rent_terms(key: String) -> Variant:
+	return _data()["rent"][key]
+
+
+## A rested hero's terms: the fights a night at home lasts, its XP bonus,
+## the inn's fights.
+static func rested_terms(key: String) -> Variant:
+	return _data()["rested"][key]
+
+
+static func deed_cost() -> int:
+	return int(_data()["houseDeedCost"])
+
+
+static func workbench_cost() -> int:
+	return int(_data()["workbenchCost"])
+
+
+## The wins the garden drinks before a harvest.
+static func garden_wins_per_yield() -> int:
+	return int(_data()["gardenWinsPerYield"])
+
+
+## What a harvest grows.
+static func garden_count() -> int:
+	return int(_data()["gardenCount"])
 
 
 ## The commissions offered once every age is built (PIX-180).
@@ -573,7 +597,7 @@ static func recruit_blocker(recruit: Dictionary, town_tier: int) -> String:
 ## grown where their arc is done (PIX-157).
 static func settler_perks(settlers: Array, quests := {}) -> Array[String]:
 	var out: Array[String] = []
-	for recruit_entry: Dictionary in Npcs._data()["recruits"]:
+	for recruit_entry: Dictionary in Npcs.recruits():
 		if recruit_entry["id"] in settlers:
 			var grown := perk_upgraded(recruit_entry["id"], quests)
 			out.append(String(recruit_entry["perkUp" if grown else "perk"]))
@@ -595,7 +619,7 @@ static func arc(key: String) -> Variant:
 
 
 static func recruit(id: String) -> Dictionary:
-	for entry: Dictionary in Npcs._data()["recruits"]:
+	for entry: Dictionary in Npcs.recruits():
 		if entry["id"] == id:
 			return entry
 	return {}

@@ -221,7 +221,7 @@ func brings(hero: HeroState) -> Array:
 	rows.append([bonus, UiStyle.GOLD])
 	var growth: Dictionary = Catalog.role(hero.role_id)["growth"]
 	rows.append([Text.t("Level %d: +%d stat points, +%d max HP, +%d max %s") % [
-		hero.level, int(Bestiary._data()["statPointsPerLevel"]), int(growth["maxHp"]), int(growth["maxMp"]),
+		hero.level, Bestiary.stat_points_per_level(), int(growth["maxHp"]), int(growth["maxMp"]),
 		Skills.resource_label(hero.role_id),
 	], UiStyle.CREAM])
 	if not choices.is_empty():

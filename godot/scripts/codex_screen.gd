@@ -53,16 +53,16 @@ func _show() -> void:
 
 ## Each family: kills, the tier earned, a bar toward the next and its bonus.
 func _masteries() -> void:
-	var data := Bestiary._data()
-	var tiers: Array = data["masteryTiers"]
+	var names := Bestiary.family_names()
+	var tiers := Bestiary.mastery_tiers()
 	var mastery: Variant = GameState.hero.mastery
-	for family: String in data["familyNames"]:
+	for family: String in names:
 		var kills: int = (mastery as Dictionary).get(family, 0) if mastery is Dictionary else 0
 		var tier := Bestiary.mastery_tier(mastery, family)
 		var next: Dictionary = tiers[tier] if tier < tiers.size() else {}
 		var line := HBoxContainer.new()
 		var name := UiStyle.label(
-			"%s%s" % [data["familyNames"][family], Text.t("   Slayer %s") % ["I", "II", "III"][tier - 1] if tier > 0 else ""],
+			"%s%s" % [names[family], Text.t("   Slayer %s") % ["I", "II", "III"][tier - 1] if tier > 0 else ""],
 			16, UiStyle.LAMP if tier > 0 else UiStyle.INK
 		)
 		name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -91,22 +91,21 @@ func _masteries() -> void:
 
 
 static func pages() -> int:
-	return ceili(Bestiary._data()["monsters"].size() / float(PAGE_ROWS))
+	return ceili(Bestiary.monster_ids().size() / float(PAGE_ROWS))
 
 
 ## Every monster, in the bestiary's order, a page at a time: the met ones
 ## in full.
 func _bestiary() -> void:
-	var data := Bestiary._data()
 	var mastery: Variant = GameState.hero.mastery
 	page = clampi(page, 0, pages() - 1)
 	var count := pages()
 	var turn := UiStyle.label(Text.t("Page %d of %d") % [page + 1, count], 13, UiStyle.FADED)
 	turn.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	body.add_child(turn)
-	for monster_id: String in data["monsters"].keys().slice(page * PAGE_ROWS, (page + 1) * PAGE_ROWS):
-		var monster: Dictionary = data["monsters"][monster_id]
-		var family: String = data["families"].get(monster_id, "")
+	for monster_id: String in Bestiary.monster_ids().slice(page * PAGE_ROWS, (page + 1) * PAGE_ROWS):
+		var monster: Dictionary = Bestiary.monster(monster_id)
+		var family: String = Bestiary.family_of(monster_id)
 		# Met by its kind, not its family (PIX-188); a save from before keeps
 		# the family's word for it.
 		var met_at := int(GameState.progression.met.get(monster_id, 0))
@@ -128,7 +127,7 @@ func _bestiary() -> void:
 			)
 			numbers.custom_minimum_size = Vector2(360, 0)
 			line.add_child(numbers)
-			line.add_child(UiStyle.label(data["familyNames"][family], 14, UiStyle.FADED))
+			line.add_child(UiStyle.label(Bestiary.family_names()[family], 14, UiStyle.FADED))
 		else:
 			line.add_child(UiStyle.label("Unmet. The wilds keep their secrets.", 14, UiStyle.FADED))
 		body.add_child(line)

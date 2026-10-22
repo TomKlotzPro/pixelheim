@@ -30,7 +30,7 @@ static func gear_uid() -> String:
 static func create_gear(item_id: String, rarity := "common", roll: Callable = Callable()) -> Dictionary:
 	var bonus := 0
 	if rarity != "common":
-		var def: Dictionary = Economy._data()["rarities"][rarity]
+		var def: Dictionary = Economy.rarity(rarity)
 		var weapon: bool = Catalog.item(item_id).get("category", "") == "weapons"
 		var bounds: Array = def["weaponBonus"] if weapon else def["armorBonus"]
 		var value: float = roll.call() if roll.is_valid() else randf()
@@ -45,7 +45,7 @@ static func create_gear(item_id: String, rarity := "common", roll: Callable = Ca
 
 ## One more stat on a piece, its amount from the rarity's range.
 static func _add_affix(piece: Dictionary, rarity: String, roll: Callable) -> void:
-	var table: Dictionary = Economy._data()["affixes"]
+	var table: Dictionary = Economy.affix_table()
 	var stats: Array = table["stats"].keys()
 	var affixes: Dictionary = piece.get("affixes", {})
 	var open := stats.filter(func(stat: String) -> bool: return not affixes.has(stat))
@@ -65,7 +65,7 @@ static func _add_affix(piece: Dictionary, rarity: String, roll: Callable) -> voi
 static func deepen(piece: Dictionary, tier: int, roll: Callable = Callable()) -> Dictionary:
 	if tier <= 0:
 		return piece
-	var deep: Dictionary = Economy._data()["deepTiers"]
+	var deep: Dictionary = Economy.deep_tiers()
 	piece["deep"] = tier
 	piece["deepBonus"] = int(deep["bonus"]) * tier
 	if piece["rarity"] == "common":
@@ -89,7 +89,7 @@ static func deep_affixes(piece: Dictionary, tier: int, roll: Callable = Callable
 static func deep_name(tier: int) -> String:
 	if tier <= 0:
 		return ""
-	var names: Array = Economy._data()["deepTiers"]["names"]
+	var names: Array = Economy.deep_tiers()["names"]
 	var named := Text.t(String(names[mini(tier, names.size()) - 1]))
 	return named if tier <= names.size() else "%s %s" % [named, roman(tier - names.size() + 1)]
 
@@ -120,7 +120,7 @@ static func gear_name(instance: Dictionary) -> String:
 	for stat: String in affixes:
 		if best == "" or int(affixes[stat]) > int(affixes[best]):
 			best = stat
-	return Text.t("{item} {affix}").format({"item": titled, "affix": Text.t(String(Economy._data()["affixes"]["stats"][best]))})
+	return Text.t("{item} {affix}").format({"item": titled, "affix": Text.t(String(Economy.affix_table()["stats"][best]))})
 
 
 ## A piece's affixes as the sheet reads them: "+2 STR, +1 END".
@@ -152,7 +152,7 @@ static func from_dict(data: Dictionary) -> InventoryState:
 	# forge's: it moves out, once, so the forge can work on it again.
 	for piece: Dictionary in pack.gear:
 		if int(piece.get("deep", 0)) > 0 and not piece.has("deepBonus"):
-			piece["deepBonus"] = int(Economy._data()["deepTiers"]["bonus"]) * int(piece["deep"])
+			piece["deepBonus"] = int(Economy.deep_tiers()["bonus"]) * int(piece["deep"])
 			piece["bonus"] = maxi(0, int(piece["bonus"]) - int(piece["deepBonus"]))
 	return pack
 

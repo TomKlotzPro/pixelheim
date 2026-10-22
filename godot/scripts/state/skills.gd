@@ -17,7 +17,7 @@ const BLURBS := {
 
 
 static func tree(role_id: String) -> Array:
-	return Bestiary._data()["skillTrees"].get(role_id, [])
+	return Bestiary.skill_tree(role_id)
 
 
 static func node(role_id: String, node_id: String) -> Dictionary:
@@ -117,7 +117,7 @@ static func tree_whole(hero: HeroState) -> bool:
 
 ## Beyond the tree (PIX-217): capped tracks a whole tree's spare points buy.
 static func beyond_tracks() -> Array:
-	return Bestiary._data()["beyondTree"]["tracks"]
+	return Bestiary.beyond_tracks()
 
 
 static func can_buy_beyond(hero: HeroState, track: Dictionary) -> bool:
@@ -140,7 +140,7 @@ static func all_learned(hero: HeroState) -> bool:
 ## (PIX-233; with tiers at 10, 13 and 17 a level-9 hero had a point and
 ## nothing to spend it on).
 static func tier_level(entry: Dictionary) -> int:
-	var levels: Array = Bestiary._data()["skillTierLevels"]
+	var levels: Array = Bestiary.skill_tier_levels()
 	return int(levels[clampi(int(entry.get("tier", 0)), 0, levels.size() - 1)])
 
 

@@ -379,7 +379,7 @@ func _credits(step: Dictionary) -> void:
 	roll.position = Vector2(0, VIEW.y - BAR)
 	for line: String in step.get("before", []):
 		roll.add_child(_credit_line(line))
-	for monster_id: String in Bestiary._data()["monsters"]:
+	for monster_id: String in Bestiary.monster_ids():
 		roll.add_child(_cast_member(monster_id))
 	for line: String in step.get("after", []):
 		roll.add_child(_credit_line(line))
@@ -419,7 +419,7 @@ func _cast_member(monster_id: String) -> Control:
 	sprite.position = Vector2(32, 36)
 	holder.add_child(sprite)
 	row.add_child(holder)
-	var name := UiStyle.label(String(Bestiary._data()["monsters"][monster_id]["name"]), 18, UiStyle.CREAM)
+	var name := UiStyle.label(String(Bestiary.monster(monster_id)["name"]), 18, UiStyle.CREAM)
 	name.custom_minimum_size = Vector2(320, 0)
 	row.add_child(name)
 	return row

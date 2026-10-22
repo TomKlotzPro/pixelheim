@@ -26,7 +26,7 @@ func spawn_for(data: MapData) -> void:
 		folk = Bells.folk(settlers, GameState.settlement.town_tier)
 	# A festival day's barker runs the ring toss on the square (PIX-159).
 	if data.id == "town" and GameState.holdings.festival_on() and GameState.progression.prologue == Prologue.DONE and not bells:
-		var barker: Dictionary = Npcs._data()["festivalBarker"].duplicate()
+		var barker: Dictionary = Npcs.festival_barker().duplicate()
 		barker.merge({"x": int(Town.festival("barker")["x"]), "y": int(Town.festival("barker")["y"])})
 		folk.append(barker)
 	# Someone out from the village to see a healed lamp (PIX-324).
