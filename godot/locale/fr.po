@@ -2389,6 +2389,10 @@ msgid "Behind the scenes: new ground for the regions to come (Shade's sea in thr
 msgstr "En coulisses : de nouveaux sols pour les régions à venir (la mer de Shade en trois profondeurs, quais, neige, glace et pavés) et un outil qui transforme un croquis en carte"
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: the map's gates, props and patches of ground are now drawn by layers of their own, the first step in breaking up the game's biggest file; every map looks exactly as before"
+msgstr "En coulisses : les portes, le décor et les parcelles de terrain sont désormais dessinés par des couches à part, premier pas pour découper le plus gros fichier du jeu ; chaque carte reste exactement la même"
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: the test tool's setup no longer lives in the game's own code, and its 800-line script is now a list of small steps run in order, so the game is simpler to read and the tests easier to extend"
 msgstr "En coulisses : les préparatifs de l'outil de test ne vivent plus dans le code du jeu lui-même, et son script de 800 lignes est devenu une liste de petites étapes jouées dans l'ordre : le jeu est plus simple à lire et les tests plus faciles à compléter"
 
@@ -3687,6 +3691,10 @@ msgstr "Les lanternes prennent la couleur de leur région et un don : le verre
 #: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
 msgstr "Terrains de chasse de fin de partie : trolls et golems sous les arbres, fantômes et mimiques dans la tourbière - les élites y pullulent"
+
+#: assets/data/changelog.json
+msgid "Layer by Layer"
+msgstr "Couche par couche"
 
 #: assets/data/changelog.json
 msgid "Layers stack the right way: look, then rank, then steel"

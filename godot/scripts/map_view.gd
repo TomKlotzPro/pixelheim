@@ -19,12 +19,6 @@ extends RefCounted
 ## a frame (Neighbours), the same units, so it draws the same map.
 
 const TILE := 16
-## Things lying on the ground to pick up (PIX-286): their icons at this
-## scale, half a cell; their shadow this far below their middle; and the
-## bob's beat, in seconds.
-const PICKUP_SCALE := 0.5
-const PICKUP_SHADOW := 3.0
-const PICKUP_BOB := 0.6
 
 var data: MapData
 ## What stands among the actors goes here: this drawing's own y-sorted layer
@@ -215,6 +209,10 @@ var prop_nodes := {}
 ## cost part by part. Off, nothing is noted.
 var timed := false
 var took := {}
+## What MapView draws through layers of their own (PIX-359,
+## scripts/map_layers/), in drawing order: each adds its units where its
+## kind stands in `planning` and `building`, and all are set for the hour.
+var _layers: Dictionary[String, MapLayer] = {"patches": PatchesLayer.new(), "props": PropsLayer.new(), "gates": GatesLayer.new()}
 
 ## How far the wind leans what grows, in pixels at its top (PIX-223): a
 ## tree or a sheaf, a flower, a forest's crowns (all of a piece, so less).
@@ -267,8 +265,6 @@ const EMBER_REACH := 80.0
 ## ground at night.
 const LANTERN_REACH := 44.0
 const FORGE_REACH := 52.0
-## How far a torch on the mountain's gatehouse lights the road (PIX-312).
-const GATE_TORCH_REACH := 64.0
 ## A lit window's light thrown on the ground below it, and the day through a
 ## room's window on its floor (Lights.spill, Lights.shaft), this far.
 const WINDOW_SPILL := 48.0
@@ -328,7 +324,6 @@ const DECOR_ROWS := 1
 ## The tiles whose decor is the woods' (Woods.pieces): a forest's trees, the
 ## ridge's pines and rocks on its rim.
 const WOODED := ["forest", "mountain"]
-const PROPS_A_UNIT := 16
 ## Each tile layer's rendering quadrant, this many cells a side (PIX-285).
 ## A rendering quadrant is one canvas item, and Godot lights a canvas item
 ## with only the first Lights.PER_ITEM lights that reach it: with quadrants
@@ -375,7 +370,7 @@ func planning(arrival_at: Vector2i, slices: Slicer) -> void:
 	slices.add("plan_houses", _plan_houses)
 	slices.add("plan_room", _plan_room)
 	slices.add("plan_props", _plan_props)
-	slices.add("plan_gates", _plan_gates)
+	_layers["gates"].plan(self, slices)
 	slices.add("plan_hamlet", _plan_hamlet)
 	slices.add("plan_routes", _plan_routes)
 	slices.add("plan_healed", func() -> void: healed = Lamps.healed(data.grid, Lamps.now(data.id)))
@@ -543,35 +538,6 @@ func _plan_props() -> void:
 			data.covered[house[1]] = true
 	for cell: Vector2i in camps:
 		data.covered[cell] = true
-
-
-## The gates the story still keeps shut (PIX-254): what's drawn across each
-## blocks its cells, and a burnt bridge has no planks there. Then the ways
-## on, and today's patches (PIX-250): a few dealt from each region's ground.
-func _plan_gates() -> void:
-	gate_hides = {}
-	gates = Gates.closed_on(data.id, GameState.progression, GameState.settlement, GameState.world.discovered)
-	for gate: Dictionary in gates:
-		for cell: Vector2i in Gates.cells_of(gate):
-			data.covered[cell] = true
-		for cell: Vector2i in GateArt.plan(gate, PunyProps.available())["hides"]:
-			gate_hides[cell] = true
-	ways = Ways.on(data)
-	# Each dungeon's way in as an entrance in its setting (PIX-290).
-	entrances = []
-	for way: Dictionary in ways:
-		var barred := Ways.barred(way["to"], GameState.progression, GameState.settlement)
-		var entrance := EntranceArt.plan(data, way, barred, PunyProps.available())
-		if entrance["look"] == "":
-			continue
-		entrances.append(entrance)
-		for cell: Vector2i in entrance["hides"]:
-			gate_hides[cell] = true
-		for cell: Vector2i in entrance["blocks"]:
-			data.covered[cell] = true
-	patches = {}
-	patch_day = -1
-	deal_patches(Gathering.day_of(GameState.world.steps))
 
 
 ## A settlement's set dressing (Hamlet, PIX-313): what stands blocks the
@@ -1644,25 +1610,12 @@ func _decor_units(slices: Slicer) -> void:
 			_add_camp_piece(cell, camps[cell]))
 	if data.id == "town":
 		slices.add("decor_ruins", _decor_ruins)
-	slices.add("decor_patches", func() -> void:
-		patch_sprites = {}
-		for cell: Vector2i in patches:
-			_add_patch_sprite(cell))
+	_layers["patches"].build(self, slices)
 	slices.add("decor_lights", _decor_lights)
 	slices.add("decor_shafts", _decor_shafts)
 	slices.add("decor_chests", _decor_chests)
-	var standing: Array = outdoor_props["props"]
-	slices.add_each("decor_props", ceili(standing.size() / float(PROPS_A_UNIT)), func(i: int) -> void:
-		for prop: Dictionary in standing.slice(i * PROPS_A_UNIT, (i + 1) * PROPS_A_UNIT):
-			_add_puny_prop(prop))
-	slices.add("decor_gates", func() -> void:
-		for gate: Dictionary in gates:
-			_add_gate(gate)
-		for entrance: Dictionary in entrances:
-			_add_entrance(entrance)
-		# A mining country's workings (PIX-308).
-		for piece: Dictionary in workings.get("pieces", []):
-			_add_gate_piece(piece))
+	_layers["props"].build(self, slices)
+	_layers["gates"].build(self, slices)
 	slices.add("decor_hamlet", _decor_hamlet)
 	slices.add("decor_routes", _decor_routes)
 	slices.add_each("decor_field", ceili(data.size.y / float(DECOR_ROWS)), _field_rows)
@@ -1807,7 +1760,7 @@ func _decor_chests() -> void:
 		if chest["look"] != "chest":
 			# A pouch on the road, herbs in the grass: picked up, the size
 			# of what lies about (PIX-286).
-			var lying := pickup(texture, cell)
+			var lying := PatchesLayer.pickup(texture, cell)
 			actors.add_child(lying)
 			chest_sprites[chest["id"]] = lying
 			continue
@@ -2254,9 +2207,8 @@ func set_night(night: bool) -> void:
 	if int(night) == _night:
 		return
 	_night = int(night)
-	for lamp: Dictionary in lamps:
-		if is_instance_valid(lamp["flame"]) and not lamp.get("out", false):
-			lamp["flame"].visible = night
+	for layer: MapLayer in _layers.values():
+		layer.set_night(self, night)
 	for glow in night_glows:
 		if is_instance_valid(glow):
 			glow.visible = night
@@ -2586,117 +2538,20 @@ func _add_door_glow(door: Vector2i) -> void:
 	props.add_child(Lights.make(Vector2(door * TILE) + Vector2(TILE / 2.0, TILE + 6), FORGE_REACH, Lights.FIRE, Lights.FIRE_ENERGY, true))
 
 
-## A patch on the ground: its material, hidden while it grows back.
-func _add_patch_sprite(cell: Vector2i) -> void:
-	var patch: Dictionary = patches[cell]
-	var root := pickup(ItemIcons.texture(patch["item"]), cell)
-	ground.add_child(root)
-	patch_sprites[patch["id"]] = root
-	root.visible = Gathering.is_ready(GameState.world, patch["id"])
-
-
-## Something lying on the ground to pick up (PIX-286): Shade's 16 px icon at
-## half its size, half a cell and smaller than the hero's head (at full size
-## a herb lay as big as the hero), on a small shadow, lifting a pixel off it
-## and down again, with a glint that comes and goes, so it reads as
-## something to pick by more than its size. In the middle of `cell`, its
-## pixels on the art's grid; still with Reduce motion but for the glint.
-static func pickup(texture: Texture2D, cell: Vector2i) -> Node2D:
-	var root := Node2D.new()
-	root.position = center(cell)
-	root.add_to_group("decor")
-	var beat := absf(sin(cell.x * 12.9 + cell.y * 78.2))
-	# Without the paid icons only the glint shows, as before: no shadow of
-	# nothing.
-	if texture != null:
-		var shadow := Sprite2D.new()
-		shadow.texture = _pickup_shadow()
-		shadow.position = Vector2(0, PICKUP_SHADOW)
-		shadow.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		root.add_child(shadow)
-	var sprite := Sprite2D.new()
-	sprite.name = "item"
-	sprite.texture = texture
-	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	sprite.scale = Vector2.ONE * PICKUP_SCALE
-	root.add_child(sprite)
-	if not GameState.settings.reduce_motion:
-		# A whole pixel of the art up, a while, and down: its own tween,
-		# gone with it.
-		var bob := sprite.create_tween().set_loops()
-		bob.tween_interval(PICKUP_BOB * (0.5 + beat))
-		bob.tween_property(sprite, "position:y", -1.0, 0.0)
-		bob.tween_interval(PICKUP_BOB)
-		bob.tween_property(sprite, "position:y", 0.0, 0.0)
-		bob.tween_interval(PICKUP_BOB * (1.5 - beat))
-	var glint := ColorRect.new()
-	glint.color = Color(1, 1, 0.9)
-	glint.size = Vector2(2, 2)
-	glint.position = Vector2(4, -6)
-	glint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	sprite.add_child(glint)
-	# The glint's own tween: it goes when the glint goes.
-	var twinkle := glint.create_tween().set_loops()
-	twinkle.tween_property(glint, "modulate:a", 0.0, 0.6).set_delay(beat * 1.5)
-	twinkle.tween_property(glint, "modulate:a", 1.0, 0.25)
-	return root
-
-
-## The shadow a pickup lies on: a soft dark lozenge, a little narrower than
-## the half-size icon, made once.
-static var _shadow_texture: Texture2D
-
-
-static func _pickup_shadow() -> Texture2D:
-	if _shadow_texture == null:
-		var image := Image.create(6, 2, false, Image.FORMAT_RGBA8)
-		image.fill(Color(0, 0, 0, 0.28))
-		for corner: Vector2i in [Vector2i(0, 0), Vector2i(5, 0), Vector2i(0, 1), Vector2i(5, 1)]:
-			image.set_pixelv(corner, Color(0, 0, 0, 0.12))
-		_shadow_texture = ImageTexture.create_from_image(image)
-	return _shadow_texture
-
-
-## Deals day `day`'s wild patches (PIX-250), unless they're dealt already;
-## whether they changed.
+## Deals day `day`'s wild patches, unless they're dealt already; whether
+## they changed (PatchesLayer).
 func deal_patches(day: int) -> bool:
-	if patch_decks.is_empty() or day == patch_day:
-		return false
-	patch_day = day
-	patches = Gathering.patches_on(patch_decks, day)
-	# Nothing grows under what the Post's routes put up (PIX-322).
-	for cell: Vector2i in routes["blocks"]:
-		patches.erase(cell)
-	# A healed lamp's morning find, picked as a patch is (PIX-324).
-	patches.merge(Lamps.finds(Lamps.now(data.id), day), true)
-	return true
+	return PatchesLayer.deal_patches(self, day)
 
 
-## Patches that have grown back show again; when the day turns while the
-## hero is here, yesterday's go and the new day's grow elsewhere (PIX-250).
+## Patches grown back show again, a new day's grow elsewhere (PatchesLayer).
 func refresh_patches() -> void:
-	if deal_patches(Gathering.day_of(GameState.world.steps)):
-		for spot_id: String in patch_sprites:
-			patch_sprites[spot_id].queue_free()
-		patch_sprites = {}
-		for cell: Vector2i in patches:
-			_add_patch_sprite(cell)
-	for spot_id: String in patch_sprites:
-		patch_sprites[spot_id].visible = Gathering.is_ready(GameState.world, spot_id)
+	PatchesLayer.refresh_patches(self)
 
 
-## The post box drawn as it stands (PIX-320): full, its pennant up and a
-## letter in its slot, while it holds the day's post; empty once it's taken
-## (or while the threads wait). Looked at again each second and as E takes
-## the post. The waystations' boxes too (PIX-322), the same day's post in
-## each. Nothing on a map without a box.
+## The post boxes drawn as they stand, full or empty (PatchesLayer).
 func show_post_box() -> void:
-	var boxes: Array[Sprite2D] = post_boxes.duplicate()
-	boxes.append(post_box)
-	var full := not GameState.posting.in_box().is_empty()
-	for box: Sprite2D in boxes:
-		if box != null and is_instance_valid(box):
-			box.texture = HamletArt.texture("post_box_full" if full else "post_box")
+	PatchesLayer.show_post_box(self)
 
 
 ## A tent pitched on the map as it stands (PIX-253 step 9: Iva's on the
@@ -2840,151 +2695,6 @@ func _add_solid_decor(choice: int, cell: Vector2i) -> void:
 	actors.add_child(root)
 
 
-## A gate still shut (PIX-254): its pieces (GateArt) among the actors or flat
-## on the ground, and a box on each of its cells, so it blocks like any prop.
-func _add_gate(gate: Dictionary) -> void:
-	for piece: Dictionary in GateArt.plan(gate, PunyProps.available())["pieces"]:
-		_add_gate_piece(piece)
-	for cell: Vector2i in Gates.cells_of(gate):
-		var body := StaticBody2D.new()
-		var shape := CollisionShape2D.new()
-		var rect := RectangleShape2D.new()
-		rect.size = Vector2(TILE, TILE)
-		shape.shape = rect
-		body.add_child(shape)
-		body.position = center(cell)
-		body.add_to_group("decor")
-		actors.add_child(body)
-
-
-## A dungeon's way in drawn in its setting (PIX-290): its pieces (EntranceArt,
-## GateArt's kind) among the actors or flat on the ground, and a box on each
-## open cell they stand on.
-func _add_entrance(entrance: Dictionary) -> void:
-	for piece: Dictionary in entrance["pieces"]:
-		_add_gate_piece(piece)
-	for cell: Vector2i in entrance["blocks"]:
-		var body := StaticBody2D.new()
-		var shape := CollisionShape2D.new()
-		var rect := RectangleShape2D.new()
-		rect.size = Vector2(TILE, TILE)
-		shape.shape = rect
-		body.add_child(shape)
-		body.position = center(cell)
-		body.add_to_group("decor")
-		actors.add_child(body)
-
-
-func _add_gate_piece(piece: Dictionary) -> void:
-	var cell: Vector2i = piece["cell"]
-	var at: Vector2 = piece["at"]
-	if piece["sheet"] == "villager":
-		# One of the old guard, standing his post, facing down the road.
-		var art := PunyArt.villager(piece["sprite"])
-		var guard := AnimatedSprite2D.new()
-		guard.sprite_frames = PunyArt.frames(art)
-		guard.play(PunyArt.pick(guard.sprite_frames, "idle", "left"))
-		# Sorted on the cell's foot, in front of the fence he keeps.
-		guard.position = Vector2(0, -TILE / 2.0 + PunyArt.lift(art))
-		var post := Node2D.new()
-		post.position = Vector2(cell * TILE) + Vector2(TILE / 2.0 + at.x, TILE)
-		post.add_to_group("decor")
-		post.add_child(guard)
-		actors.add_child(post)
-		return
-	if piece["sheet"] == "glint":
-		# The hoard's gold glinting through the Vault's open door (PIX-312):
-		# over the door, untouched by the dark.
-		var glint := AnimatedSprite2D.new()
-		glint.sprite_frames = HamletArt.glint()
-		glint.centered = false
-		glint.material = Lights.unshaded()
-		glint.position = at - Vector2(0, TILE)
-		glint.play()
-		var over := Node2D.new()
-		# Sorted a pixel past the door's own foot, so it shows on it.
-		over.position = Vector2(cell * TILE) + Vector2(0, TILE + 1)
-		over.add_to_group("decor")
-		over.add_child(glint)
-		actors.add_child(over)
-		return
-	if piece["sheet"] == "torch":
-		_add_gate_torch(cell, at)
-		return
-	var sprite := Sprite2D.new()
-	match String(piece["sheet"]):
-		"dungeon":
-			sprite.texture = PunyDungeon.sheet().tile_texture(piece["tile"])
-		"props":
-			sprite.texture = PunyProps.texture(piece["tile"])
-		"art":
-			sprite.texture = DungeonArt.texture(piece["tile"])
-		"ash":
-			sprite.texture = AshArt.texture(piece["tile"])
-		"hamlet":
-			sprite.texture = HamletArt.texture(piece["sprite"])
-		_:
-			sprite.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
-	sprite.centered = false
-	match String(piece["tone"]):
-		"snow":
-			sprite.material = _snow()
-		"charred":
-			sprite.modulate = GateArt.CHARRED
-		"iron":
-			sprite.modulate = EntranceArt.BLACK_IRON
-	if piece["flat"]:
-		sprite.position = Vector2(cell * TILE) + at
-		ground.add_child(sprite)
-		return
-	# Sorted on its own foot, the bottom of its sprite.
-	var root := Node2D.new()
-	root.position = Vector2(cell * TILE) + Vector2(0, TILE + at.y)
-	root.add_to_group("decor")
-	sprite.position = Vector2(at.x, -TILE)
-	root.add_child(sprite)
-	actors.add_child(root)
-
-
-## A torch on a tower of the mountain's gatehouse (PIX-312): Shade's CC0
-## flame on the tower's face, `at` from its cell, among the actors over the
-## tower; at night a halo round it and its light on the road below.
-func _add_gate_torch(cell: Vector2i, at: Vector2) -> void:
-	var flame := AnimatedSprite2D.new()
-	flame.sprite_frames = _camp_torch_frames()
-	flame.centered = false
-	flame.frame = absi(hash(cell)) % flame.sprite_frames.get_frame_count("default")
-	flame.play()
-	flame.position = at - Vector2(0, TILE)
-	var root := Node2D.new()
-	# Sorted a pixel past the tower's own foot, so it shows on its face.
-	root.position = Vector2(cell * TILE) + Vector2(0, TILE + 1)
-	root.add_to_group("decor")
-	root.add_child(flame)
-	actors.add_child(root)
-	var middle := Vector2(cell * TILE) + at + Vector2(TILE / 2.0, TILE / 2.0 - 2)
-	var halo := _add_halo(middle, LAMP_HALO, LAMP_HALO_PEAK)
-	var light := Lights.make(middle + Vector2(0, TILE), GATE_TORCH_REACH, Lights.FIRE, Lights.TORCH_ENERGY, true)
-	props.add_child(light)
-	halo.set_meta("light", light)
-
-
-static var _snow_tone: ShaderMaterial
-
-
-## The Frostgate's snow on whatever wears it (PIX-254: the avalanche): the
-## region tint's whitening, everywhere.
-static func _snow() -> ShaderMaterial:
-	if _snow_tone == null:
-		var tint := Image.create(1, 1, false, Image.FORMAT_RGBA8)
-		tint.fill(PunyTerrain.TINTS["snow"])
-		_snow_tone = ShaderMaterial.new()
-		_snow_tone.shader = preload("res://shaders/region_tint.gdshader")
-		_snow_tone.set_shader_parameter("tint_map", ImageTexture.create_from_image(tint))
-		_snow_tone.set_shader_parameter("map_pixels", Vector2(TILE, TILE))
-	return _snow_tone
-
-
 ## A chest or ground treasure as it stands: Shade's chest, pouch or herbs
 ## (PunyProps); without the paid pack his CC0 dungeon chest, and nothing for
 ## ground treasure. Null when it's gone.
@@ -2995,84 +2705,6 @@ static func treasure_texture(chest: Dictionary, opened: bool) -> Texture2D:
 	if chest["look"] != "chest":
 		return null
 	return PunyDungeon.sheet().tile_texture(PunyDungeon.CHEST_OPEN if opened else PunyDungeon.CHEST)
-
-
-## One of Shade's props among the actors (PunyProps): sorted on the bottom of
-## its foot, so the hero passes behind it from the north and in front from
-## the south, with a body exactly where the foot is.
-func _add_puny_prop(prop: Dictionary) -> Node2D:
-	var foot: Rect2 = prop["foot"]
-	var sort_y := foot.end.y if foot.has_area() else float(TILE)
-	var root := Node2D.new()
-	root.position = Vector2(prop["cell"] * TILE) + Vector2(0, sort_y)
-	root.add_to_group("decor")
-	if prop["kind"] == "fountain":
-		var jet := AnimatedSprite2D.new()
-		jet.sprite_frames = PunyProps.fountain_sprite_frames()
-		jet.centered = false
-		jet.position = Vector2(0, -TILE / 2.0 - sort_y)
-		jet.play()
-		root.add_child(jet)
-	elif prop["kind"] == "lamp":
-		_add_lamp_post(root, prop["cell"], sort_y)
-	elif prop["kind"] in ["barrel", "crate"]:
-		# At the Puny folk's scale (PIX-313: Shade's stood as tall as the
-		# villager beside it), as the settlement keeps them (Hamlet.store);
-		# its foot, and what it blocks, as before.
-		var art := Hamlet.store(data.id, prop["kind"], prop["cell"])
-		var still := Sprite2D.new()
-		still.texture = HamletArt.texture(art)
-		still.centered = false
-		still.position = Vector2(0, TILE - HamletArt.size(art).y) - Vector2(0, sort_y)
-		root.add_child(still)
-	else:
-		for piece: Array in prop["tiles"]:
-			var still := Sprite2D.new()
-			still.texture = PunyDungeon.sheet().tile_texture(piece[1]) if prop["sheet"] == "dungeon" else PunyProps.texture(piece[1])
-			still.centered = false
-			still.position = Vector2(piece[0] * TILE) - Vector2(0, sort_y)
-			root.add_child(still)
-	if foot.has_area():
-		var body := StaticBody2D.new()
-		var shape := CollisionShape2D.new()
-		var rect := RectangleShape2D.new()
-		rect.size = foot.size
-		shape.shape = rect
-		shape.position = foot.get_center() - Vector2(0, sort_y)
-		body.add_child(shape)
-		root.add_child(body)
-	actors.add_child(root)
-	prop_nodes[prop["cell"]] = root
-	return root
-
-
-## A street lamp (PIX-311: a cold torch read as a bug on the road by day):
-## a post with its lantern (LampArt), its foot on the bottom of the cell;
-## at night its glass lit (the dark doesn't touch it), a soft halo round
-## the glass and its light pooled on the ground about its foot.
-func _add_lamp_post(root: Node2D, cell: Vector2i, sort_y: float) -> void:
-	var top := Vector2(0, TILE - LampArt.size().y - sort_y)
-	var post := Sprite2D.new()
-	post.texture = LampArt.post()
-	post.centered = false
-	post.position = top
-	root.add_child(post)
-	var flame := AnimatedSprite2D.new()
-	flame.sprite_frames = LampArt.glass()
-	flame.material = Lights.unshaded()
-	flame.centered = false
-	flame.position = top
-	flame.play()
-	# Each lamp flickers on its own beat.
-	flame.frame = absi(hash(cell)) % flame.sprite_frames.get_frame_count("default")
-	root.add_child(flame)
-	var at := Vector2(cell * TILE) + Vector2(0, TILE - LampArt.size().y)
-	var halo := _add_halo(at + LampArt.HALO_AT, LAMP_HALO, LAMP_HALO_PEAK)
-	var light := Lights.make(Vector2(cell * TILE) + LAMP_POOL, LAMP_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
-	props.add_child(light)
-	halo.tree_exiting.connect(light.queue_free)
-	halo.set_meta("light", light)
-	lamps.append({"flame": flame, "unlit": post, "glow": halo})
 
 
 func _add_decor_sprite(texture_path: String, region: Rect2, cell: Vector2i, h: int) -> void:
@@ -3126,60 +2758,9 @@ func _build_props(data: MapData) -> Node2D:
 	return root
 
 
-## Placed furniture in the house: y-sorted sprites that block (rugs lie flat).
+## Placed furniture in the house (PropsLayer).
 func furnish() -> void:
-	for piece in actors.get_tree().get_nodes_in_group("furniture"):
-		piece.queue_free()
-	for cell: Vector2i in furniture_cells:
-		data.covered.erase(cell)
-	furniture_cells = []
-	if data.id != "town_house":
-		return
-	for placed: Dictionary in GameState.household.furniture():
-		var item_id: String = placed["itemId"]
-		var cell := Vector2i(placed["x"], placed["y"])
-		if PunyTown.available():
-			_place_furniture(item_id, cell)
-			continue
-		# Without the paid pack the piece isn't drawn, but it still stands
-		# in the way.
-		if not Town.furniture_blocks(item_id):
-			continue
-		furniture_cells.append(cell)
-		data.covered[cell] = true
-		var body := StaticBody2D.new()
-		var shape := CollisionShape2D.new()
-		var rect := RectangleShape2D.new()
-		rect.size = Vector2(TILE, TILE)
-		shape.shape = rect
-		body.add_child(shape)
-		body.position = center(cell)
-		body.add_to_group("furniture")
-		body.add_to_group("decor")
-		actors.add_child(body)
-
-
-## A piece the hero placed, in Shade's furniture (PunyInterior.PLACED): the
-## rug on the floor under everyone, the rest standing on their cell like any
-## prop, a whole cell their foot.
-func _place_furniture(item_id: String, cell: Vector2i) -> void:
-	var tiles: Array = PunyInterior.PLACED[item_id]
-	if not Town.furniture_blocks(item_id):
-		for piece: Array in tiles:
-			var rug := Sprite2D.new()
-			rug.texture = PunyProps.texture(piece[1])
-			rug.centered = false
-			rug.position = Vector2((cell + piece[0]) * TILE)
-			rug.add_to_group("furniture")
-			ground.add_child(rug)
-		return
-	var root := _add_puny_prop({
-		"kind": item_id, "cell": cell, "tiles": tiles, "sheet": "medieval", "frames": [],
-		"foot": Rect2(0, 0, TILE, TILE), "covers": [cell],
-	})
-	root.add_to_group("furniture")
-	furniture_cells.append(cell)
-	data.covered[cell] = true
+	PropsLayer.furnish(self)
 
 
 ## What the cells add to Shade's layers (ground, houses, rooms, props,

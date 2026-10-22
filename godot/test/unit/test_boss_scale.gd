@@ -210,7 +210,7 @@ func test_a_bosses_glow_lights_the_floor_alone_round_its_feet() -> void:
 func test_only_the_floor_answers_to_a_bosses_glow() -> void:
 	var standing: Array[CanvasItem] = [
 		autofree(preload("res://scripts/player.gd").new()),
-		autofree(MapView.pickup(PunyDungeon.sheet().tile_texture(PunyDungeon.POT), Vector2i(2, 2))),
+		autofree(PatchesLayer.pickup(PunyDungeon.sheet().tile_texture(PunyDungeon.POT), Vector2i(2, 2))),
 	]
 	var foe := _foe(Bestiary.spawn("orc"))
 	standing.append(foe.sprite)

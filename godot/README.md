@@ -519,6 +519,10 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/lights.gd` — Light and darkness (PIX-221).
 - `scripts/lookbook.gd` — The look book (PIX-220): the same scenes, staged the same way every time
 - `scripts/map_data.gd` — A world map loaded from its JSON (assets/maps/<id>.json, edited by hand or drawn as a sketch in maps-src and run through tools/mapgen.py)
+- `scripts/map_layers/gates_layer.gd` — The gates the story still keeps shut, each dungeon's way in drawn in its setting, and a mining country's workings (PIX-254, PIX-290, PIX-308)
+- `scripts/map_layers/map_layer.gd` — One kind of what MapView draws, in a script of its own (PIX-359)
+- `scripts/map_layers/patches_layer.gd` — What lies on the ground to be picked, and the post boxes as they stand (PIX-143, PIX-250, PIX-286, PIX-320)
+- `scripts/map_layers/props_layer.gd` — Shade's props standing outdoors, the street lamps among them, and the furniture the hero placed in the house (PunyProps, LampArt, PIX-163, PIX-311)
 - `scripts/map_screen.gd` — The map screen (M/Tab): a map in a window, painted with the tiles' map colours where the hero has been and night where they haven't (mapColors.ts port), the hero, the waypoints and the lairs the bounty board has posted (PIX-156) marked
 - `scripts/map_view.gd` — One visit to a map, as drawn (PIX-136): Shade's ground, houses, rooms and dungeons, the props, field scatter, chests and door signs, the house's placed furniture, and the invisible boxes on what the hero can't walk into.
 - `scripts/marks.gd` — The marks over the world (PIX-284, PIX-289), one family in the UI's palette

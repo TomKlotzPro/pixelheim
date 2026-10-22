@@ -50,7 +50,7 @@ func test_a_cell_centre_is_half_a_tile_in() -> void:
 ## under something), with a glint a pixel of the art.
 func test_a_pickup_lies_half_a_cell() -> void:
 	var icon := ImageTexture.create_from_image(Image.create(16, 16, false, Image.FORMAT_RGBA8))
-	var root: Node2D = autofree(MapView.pickup(icon, Vector2i(3, 4)))
+	var root: Node2D = autofree(PatchesLayer.pickup(icon, Vector2i(3, 4)))
 	assert_eq(root.position, MapView.center(Vector2i(3, 4)), "in the middle of its cell")
 	var item: Sprite2D = root.get_node("item")
 	var size: Vector2 = icon.get_size() * item.scale
@@ -65,7 +65,7 @@ func test_a_pickup_lies_half_a_cell() -> void:
 	assert_true(root.get_children().any(func(node: Node) -> bool: return node is Sprite2D and node != item), "on a shadow")
 	var glint: ColorRect = item.get_child(0)
 	assert_eq(glint.size * item.scale, Vector2.ONE, "a glint, a pixel of the art")
-	var bare: Node2D = autofree(MapView.pickup(null, Vector2i(3, 4)))
+	var bare: Node2D = autofree(PatchesLayer.pickup(null, Vector2i(3, 4)))
 	assert_eq(bare.get_child_count(), 1, "without the paid icon, only the glint: no shadow of nothing")
 
 
