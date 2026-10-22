@@ -5,6 +5,60 @@ const CAP = 12
 const LIVE = ['pending', 'running', 'waiting']
 // The harness's --slot writes real saves; only a godot run is refused, not a grep for the word.
 const SLOT_RUN = /(^|[\s;&|(])godot\s[^;&|]*--slot\b/
+const PANE = 'pixelheim'
+
+// The game's HUD colours (ui_style.gd), lifted a little for a dark terminal.
+const GOLD = '#f2c14e'
+const CREAM = '#f3e6c4'
+const WOOD = '#b47c44'
+const FADED = '#7d5f3e'
+const PV = '#e05a47'
+const EN = '#7cc464'
+
+// The red warrior's first frame, puny/characters/Warrior-Red.png (Shade, CC0).
+const HERO_COLOURS = {
+  a: 0x000000, b: 0xff1515, c: 0x363636, d: 0x4d4c4b, e: 0x7d7b76, f: 0xae0000, g: 0x290505, h: 0x1e1e1e,
+  i: 0xa29e96, j: 0x520c0c, k: 0xbebbb5, l: 0xe8e8e8, m: 0x040404, n: 0xf6a954, o: 0x84482a, p: 0xd97f40, q: 0x3f3013,
+}
+const HERO = [
+  'aa..aaaaaa..aa',
+  'abaacdeedcaaba',
+  'afghddiiddhgfa',
+  'ajfccdiidccfja',
+  '.ajdcceeccdja.',
+  '.adeiikkiieda.',
+  '.ahiikkkkiiha.',
+  '..adccddccda..',
+  '..aelmeemlea..',
+  '..mcddnnddcm..',
+  '.meecooooceem.',
+  'mnnmdeeeedmnnm',
+  'mnpmddddddmpnm',
+  '.mmmcddddcmmm.',
+  '...mqqmmqqm...',
+]
+const DEFAULT = 0x01000000
+
+// Two pixels a cell: the upper half block takes the top pixel as its colour and the bottom one as its background.
+function heroCells() {
+  const at = (x, y) => HERO_COLOURS[HERO[y]?.[x]] ?? DEFAULT
+  const cells = []
+  for (let y = 0; y < HERO.length; y += 2) {
+    for (let x = 0; x < HERO[0].length; x += 1) {
+      const top = at(x, y)
+      const bottom = at(x, y + 1)
+      if (top === DEFAULT && bottom === DEFAULT) cells.push(32, DEFAULT, DEFAULT)
+      else if (top === DEFAULT) cells.push(0x2584, bottom, DEFAULT)
+      else cells.push(0x2580, top, bottom)
+    }
+  }
+  return new Uint8Array(Uint32Array.from(cells).buffer).toBase64()
+}
+
+function bar(fraction, cells) {
+  const full = Math.round(Math.min(1, Math.max(0, fraction)) * cells)
+  return '▰'.repeat(full) + '▱'.repeat(cells - full)
+}
 
 let version = ''
 let week
@@ -27,6 +81,32 @@ async function refresh($) {
 
 function pct(n) {
   return n === undefined ? '?' : Math.round(n) + '%'
+}
+
+function level() {
+  return 'Niv. ' + (version.split('.')[1] ?? '?')
+}
+
+// The week's budget is the hero's PV (what's left of the cap), the five-hour window his EN.
+function gauges(Text) {
+  const left = week === undefined ? undefined : Math.max(0, cap - week)
+  const pv =
+    left === undefined
+      ? [Text({ color: FADED, children: ['PV ?'] })]
+      : [
+          Text({ color: WOOD, children: ['PV'] }),
+          Text({ color: PV, children: [bar(left / cap, 10)] }),
+          Text({ color: left > 0 ? CREAM : PV, children: [left > 0 ? Math.round(left) + '/' + cap : 'K.O.'] }),
+        ]
+  const en =
+    fiveHour === undefined
+      ? [Text({ color: FADED, children: ['EN ?'] })]
+      : [
+          Text({ color: WOOD, children: ['EN'] }),
+          Text({ color: EN, children: [bar(1 - fiveHour / 100, 10)] }),
+          Text({ color: CREAM, children: [Math.round(100 - fiveHour) + '%'] }),
+        ]
+  return { pv, en }
 }
 
 function summary() {
@@ -71,7 +151,27 @@ export function register(on) {
       await $.store.set('cap', cap)
     }
     await refresh($).catch(() => undefined)
+    await $.ui.open({ id: PANE, title: 'Pixelheim', closeOnEscape: true })
     return { text: summary() }
+  })
+
+  on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
+    const { Box, Text, Raster } = $.ui.resolve(e)
+    const { pv, en } = gauges(Text)
+    const sheet = Box({
+      flexDirection: 'column',
+      children: [
+        Text({ color: GOLD, weight: 'semibold', children: ['Pixelheim ' + version] }),
+        Text({ color: CREAM, children: [level() + ' · Fantassin'] }),
+        Box({ flexDirection: 'row', columnGap: 1, children: pv }),
+        Box({ flexDirection: 'row', columnGap: 1, children: en }),
+        Text({ color: agents ? GOLD : FADED, children: ['⚔ ' + agents + (agents === 1 ? ' compagnon en route' : ' compagnons en route')] }),
+        Text({ color: FADED, children: ['semaine ' + pct(week) + ' · plafond ' + cap + '% · /pix cap N'] }),
+      ],
+    })
+    if (e.surface !== 'terminal' || !Raster) return sheet
+    const hero = Raster({ key: 'hero', columns: HERO[0].length, rows: Math.ceil(HERO.length / 2), cells: heroCells() })
+    return Box({ flexDirection: 'row', columnGap: 2, children: [hero, sheet] })
   })
 
   on('tool.call', { tool: 'mcp__pixelheim__usage' }, async ($) => {
@@ -96,14 +196,22 @@ export function register(on) {
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const { Box, Text } = $.ui.resolve(e)
-    const color = week === undefined ? 'gray' : week >= cap ? 'red' : week >= cap * 0.8 ? 'yellow' : 'green'
-    const theirs = await next(e)
-    return Box({
-      flexDirection: 'column',
+    const { pv, en } = gauges(Text)
+    const line = Box({
+      flexDirection: 'row',
+      columnGap: 1,
       children: [
-        Text({ color, wrap: 'truncate-end', children: ['◆ ' + summary()] }),
-        ...(theirs ? [theirs] : []),
+        Text({ color: GOLD, children: ['✦ Pixelheim'] }),
+        Text({ color: CREAM, children: [level()] }),
+        Text({ color: FADED, children: ['│'] }),
+        ...pv,
+        Text({ color: FADED, children: ['│'] }),
+        ...en,
+        Text({ color: FADED, children: ['│'] }),
+        Text({ color: agents ? GOLD : FADED, children: ['⚔ ' + agents] }),
       ],
     })
+    const theirs = await next(e)
+    return Box({ flexDirection: 'column', children: [line, ...(theirs ? [theirs] : [])] })
   })
 }
