@@ -526,6 +526,11 @@ class Graph:
             out["built_at_commit"] = commit
         return out
 
+    ## How many calls reach into another script's _func (test_codegraph.py
+    ## holds it to a ceiling, PIX-361).
+    def private_count(self):
+        return sum(e["count"] for e in self.edges.values() if e.get("private") and e["relation"] == "calls")
+
     ## Every call that reaches into another script's _func, by the func
     ## called: who calls it and how often.
     def private_calls(self):
@@ -564,6 +569,13 @@ def head_commit(repo):
         return None
 
 
+## The graph of godot/scripts/ (and godot/test/ with `tests`).
+def build(repo, tests=False):
+    folders = ["scripts"] + (["test"] if tests else [])
+    paths = sorted(p for folder in folders for p in (repo / "godot" / folder).rglob("*.gd"))
+    return Graph([Script(p, repo) for p in paths], autoloads(repo))
+
+
 def main():
     parser = argparse.ArgumentParser(description="The game's scripts as a graphify graph (graphify-out/graph.json).")
     parser.add_argument("repo", nargs="?", default=str(REPO), help="the repo root (or its godot/ folder)")
@@ -575,9 +587,7 @@ def main():
         repo = repo.parent
     if not (repo / "godot" / "project.godot").exists():
         sys.exit("codegraph: no godot/project.godot under %s" % repo)
-    folders = ["scripts"] + (["test"] if args.tests else [])
-    paths = sorted(p for folder in folders for p in (repo / "godot" / folder).rglob("*.gd"))
-    graph = Graph([Script(p, repo) for p in paths], autoloads(repo))
+    graph = build(repo, args.tests)
     out = repo / "graphify-out" / "graph.json"
     out.parent.mkdir(exist_ok=True)
     out.write_text(json.dumps(graph.data(head_commit(repo)), indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -590,8 +600,7 @@ def main():
     print("%s: %d scripts, %d funcs, %d signals; %d edges (%s)" % (
         out.relative_to(repo), kinds["script"], kinds["function"], kinds["signal"], len(graph.edges),
         ", ".join("%s %d" % kv for kv in sorted(relations.items(), key=lambda kv: -kv[1]))))
-    private = sum(e["count"] for e in graph.edges.values() if e.get("private") and e["relation"] == "calls")
-    print("%d calls reach into another script's _func (--private lists them)" % private)
+    print("%d calls reach into another script's _func (--private lists them)" % graph.private_count())
     if args.private:
         print("\n".join(graph.private_calls()))
 

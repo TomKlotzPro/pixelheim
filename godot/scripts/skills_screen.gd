@@ -105,7 +105,7 @@ func _layout() -> void:
 func _path_graph(hero: HeroState) -> void:
 	var pending := Ranks.pending_tier(hero)
 	var walked := HeroRules.walked(hero)
-	var nodes: Array = Bestiary._data()["pathNodes"].filter(
+	var nodes: Array = Bestiary.path_nodes().filter(
 		func(node: Dictionary) -> bool: return node["roleId"] == hero.role_id
 	)
 	view.add_child(UiStyle.label(

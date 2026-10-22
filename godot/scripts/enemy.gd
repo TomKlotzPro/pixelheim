@@ -270,11 +270,11 @@ func _ready() -> void:
 	# has its family's one trick (PIX-155), a named monster one of its own
 	# besides (PIX-156).
 	# A boss or an elite shakes stuns off (PIX-186).
-	var guards: Dictionary = Bestiary._data()["stunGuard"]
+	var guards: Dictionary = Bestiary.stun_guard()
 	ailments.stun_guard = float(guards["boss"]) if Bestiary.is_boss(fighter["id"]) else (float(guards["elite"]) if fighter["elite"] or not named.is_empty() else 0.0)
-	if Bestiary._data()["bossPatterns"].has(fighter["id"]):
+	if not Bestiary.boss_pattern(fighter["id"]).is_empty():
 		add_child(preload("res://scripts/boss_brain.gd").new())
-	elif not named.is_empty() or (fighter["elite"] and Bestiary._data()["eliteMoves"].has(Bestiary.family_of(fighter["id"]))):
+	elif not named.is_empty() or (fighter["elite"] and not Bestiary.elite_moves(Bestiary.family_of(fighter["id"])).is_empty()):
 		add_child(preload("res://scripts/elite_brain.gd").new())
 
 	var shape := CollisionShape2D.new()
@@ -1151,7 +1151,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	# blow is its last.
 	_wake()
 	if guarding:
-		damage = maxi(1, roundi(damage * float(Bestiary._data()["eliteMoves"]["undead"]["block"])))
+		damage = maxi(1, roundi(damage * float(Bestiary.elite_moves("undead")["block"])))
 		world.fx.float_text(Text.t("blocked"), global_position + Vector2(0, -26), Color(0.7, 0.85, 1.0))
 	Sound.play("hit")
 	# Steel on armour throws sparks where the blow lands (PIX-225).

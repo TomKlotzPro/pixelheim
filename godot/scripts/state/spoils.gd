@@ -78,19 +78,19 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	if Town.house_tier(owner.household.owns_house(), int(owner.settlement.house.get("tier", 1))) >= 3:
 		var wins: int = owner.settlement.house.get("gardenWins", 0) + 1
 		owner.settlement.house["gardenWins"] = wins
-		if wins >= int(Town._data()["gardenWinsPerYield"]):
+		if wins >= Town.garden_wins_per_yield():
 			owner.settlement.house["gardenWins"] = 0
 			var harvests: int = owner.settlement.house.get("gardenHarvests", 0)
 			var crop := Town.garden_yield(harvests)
 			owner.settlement.house["gardenHarvests"] = harvests + 1
-			var grown := int(Town._data()["gardenCount"])
+			var grown := Town.garden_count()
 			owner.pack.add_item(crop, grown)
 			log.append(Text.t("Your garden ripens: %s.") % Text.count(grown, Catalog.item_name(crop)))
 	var passives := HeroRules.passives(owner.hero)
 	var gold := roundi(fighter["gold"] * (1 + passives["goldBonus"] + owner.holdings.commission_buff("gold") + owner.household.home_buff("gold")))
 	# A night in your own bed (PIX-179): more XP for a while.
 	var rested := int(owner.settlement.house.get("rested", 0))
-	var rested_xp := float(Town._data()["rested"]["xp"]) if rested > 0 else 0.0
+	var rested_xp := float(Town.rested_terms("xp")) if rested > 0 else 0.0
 	if rested > 0:
 		owner.settlement.house["rested"] = rested - 1
 	var xp := roundi(Bestiary.xp_for(fighter, owner.hero.level) * (1.0 + owner.holdings.commission_buff("xp") + owner.household.home_buff("xp") + rested_xp))
@@ -126,7 +126,7 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 		Gains.add_item(gains, drop["itemId"])
 	if spawn_id != "":
 		clear_pack(spawn_id)
-	var material: String = Bestiary._data()["regionMaterials"].get(region_id, "")
+	var material: String = Bestiary.region_materials().get(region_id, "")
 	if material != "" and owner.roll.call() < Bestiary.forage_chance(owner.hero.jobs["foraging"]["level"]):
 		var count := 1 + (1 if owner.roll.call() < Bestiary.double_forage_chance(owner.hero.jobs["foraging"]["level"]) else 0)
 		owner.pack.add_item(material, count)
@@ -151,8 +151,8 @@ func _record_kill(monster_id: String) -> String:
 	var after := Bestiary.mastery_tier(owner.hero.mastery, family)
 	if after <= before:
 		return ""
-	var name: String = Bestiary._data()["familyNames"][family]
-	var bonus := roundi(float(Bestiary._data()["masteryTiers"][after - 1]["bonus"]) * 100)
+	var name: String = Bestiary.family_names()[family]
+	var bonus := roundi(float(Bestiary.mastery_tiers()[after - 1]["bonus"]) * 100)
 	return Text.t("Mastery: %s Slayer %s. +%d%% damage against %s.") % [name, ["I", "II", "III"][after - 1], bonus, name.to_lower()]
 
 
@@ -340,5 +340,5 @@ func fish(spot_id: String) -> Dictionary:
 func death_toll() -> int:
 	if owner.progression.prologue != Prologue.DONE:
 		return 0
-	var share := floori(owner.pack.gold * float(Economy._data()["deathGoldShare"]))
+	var share := floori(owner.pack.gold * Economy.death_gold_share())
 	return mini(owner.pack.gold, maxi(Town.rest_cost_for(owner.town_tier()), share))

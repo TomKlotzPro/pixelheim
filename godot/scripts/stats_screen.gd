@@ -14,7 +14,7 @@ func _intro() -> String:
 	if Skills.beyond_open(GameState.hero):
 		return Text.t("Your tree is whole: %d skill point%s to spend beyond it, below.") % [GameState.hero.skill_points, "" if GameState.hero.skill_points == 1 else "s"]
 	if points == 0:
-		return Text.t("Every level brings %d stat points to spend.") % Bestiary._data()["statPointsPerLevel"]
+		return Text.t("Every level brings %d stat points to spend.") % Bestiary.stat_points_per_level()
 	# Only the shrine's keeper takes them back (PIX-331), for a price.
 	return Text.t("%d stat point%s to spend. %s at the shrine can undo it, for a price.") % [points, "" if points == 1 else "s", Npcs.by_id(Skills.FORGETTER, [])["name"]]
 

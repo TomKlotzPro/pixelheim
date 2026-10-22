@@ -25,7 +25,7 @@ var called: Array[Node] = []
 func _ready() -> void:
 	enemy = get_parent()
 	world = enemy.world
-	var family: Dictionary = Bestiary._data()["eliteMoves"].get(Bestiary.family_of(enemy.fighter["id"]), {})
+	var family: Dictionary = Bestiary.elite_moves(Bestiary.family_of(enemy.fighter["id"]))
 	if not family.is_empty():
 		# A lunge or a bolt opens the fight from range; the rest come later.
 		moves.append({"move": family, "cooldown": 0.5 if String(family["move"]) in ["lunge", "firebolt"] else 1.5})

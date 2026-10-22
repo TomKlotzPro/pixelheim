@@ -19,6 +19,22 @@ static func _data() -> Dictionary:
 	return _doc
 
 
+## The fixed townsfolk, every map's, whatever the town's age (on_map says
+## who stands where now).
+static func townsfolk() -> Array:
+	return _data()["npcs"]
+
+
+## The recruits, waiting in the wilds or settled in town.
+static func recruits() -> Array:
+	return _data()["recruits"]
+
+
+## The festival's barker, before the square gives him his cell.
+static func festival_barker() -> Dictionary:
+	return _data()["festivalBarker"]
+
+
 ## Who is on a map right now (npcsOn): Pixelheim's townsfolk the town has
 ## grown enough for, the other places' people (PIX-328: the town's age is
 ## Pixelheim's alone), and recruits where they wait — or at home in town

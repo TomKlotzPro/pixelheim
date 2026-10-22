@@ -76,10 +76,10 @@ static func all_jobs() -> Array:
 ## town hasn't grown for.
 static func person(job: Dictionary, settlers: Array, town_tier: int) -> Dictionary:
 	var who := String(job["who"])
-	for npc: Dictionary in Npcs._data()["npcs"]:
+	for npc: Dictionary in Npcs.townsfolk():
 		if npc["id"] == who:
 			return npc if int(npc.get("minTownTier", 1)) <= town_tier else {}
-	for recruit: Dictionary in Npcs._data()["recruits"]:
+	for recruit: Dictionary in Npcs.recruits():
 		if recruit["id"] == who:
 			return Npcs.as_npc(recruit, true, town_tier) if who in settlers else {}
 	return {}

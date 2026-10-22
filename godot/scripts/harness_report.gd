@@ -454,7 +454,7 @@ func field_hint() -> String:
 
 
 func field_home() -> String:
-	var homecomers: Array = Npcs._data()["recruits"].filter(func(recruit: Dictionary) -> bool:
+	var homecomers: Array = Npcs.recruits().filter(func(recruit: Dictionary) -> bool:
 		return recruit.has("comesHome") and GameState.holdings.is_settled(recruit["id"]))
 	if homecomers.is_empty():
 		return ""

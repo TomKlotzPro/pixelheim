@@ -127,7 +127,7 @@ func _physics_process(delta: float) -> void:
 	if _held_by_stun():
 		return
 	if dodging:
-		velocity = dodge_dir * float(Bestiary._data()["dodge"]["speed"])
+		velocity = dodge_dir * float(Bestiary.dodge_rules()["speed"])
 		var rolled_from := global_position
 		move_and_slide()
 		gait.walk(gait.drawn_way(dodge_dir, _dir_name()), (global_position - rolled_from).length(), delta)
@@ -240,7 +240,7 @@ func attack() -> void:
 func dodge() -> void:
 	if not dodge_ready or dodging or attacking or dead or ailments.is_stunned():
 		return
-	var rules: Dictionary = Bestiary._data()["dodge"]
+	var rules: Dictionary = Bestiary.dodge_rules()
 	var heading := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if scripted_dir != Vector2.ZERO:
 		heading = scripted_dir

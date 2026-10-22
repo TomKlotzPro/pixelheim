@@ -21,6 +21,122 @@ static func monster(id: String) -> Dictionary:
 	return _data()["monsters"].get(id, {})
 
 
+## Every kind, in the bestiary's order. What other scripts ask of
+## combat.json is a func a question from here on (PIX-361), so the table's
+## shape stays in this file.
+static func monster_ids() -> Array:
+	return _data()["monsters"].keys()
+
+
+static func region_ids() -> Array:
+	return _data()["regions"].keys()
+
+
+## Every pack in the world, the planned floors' too.
+static func all_spawns() -> Array:
+	return _data()["spawns"]
+
+
+## A boss's phases and moves, {} for a foe without (only bosses have them).
+static func boss_pattern(id: String) -> Dictionary:
+	return _data()["bossPatterns"].get(id, {})
+
+
+static func boss_attack(move: String) -> Dictionary:
+	return _data()["bossAttacks"][move]
+
+
+## An elite family's moves, {} for a family without.
+static func elite_moves(family: String) -> Dictionary:
+	return _data()["eliteMoves"].get(family, {})
+
+
+## How long a stun is halved after one takes hold: {elite, boss} (PIX-186).
+static func stun_guard() -> Dictionary:
+	return _data()["stunGuard"]
+
+
+## The hero's dodge roll: {speed, seconds, iframes, cooldown}.
+static func dodge_rules() -> Dictionary:
+	return _data()["dodge"]
+
+
+## Family id -> the name its mastery reads.
+static func family_names() -> Dictionary:
+	return _data()["familyNames"]
+
+
+static func mastery_tiers() -> Array:
+	return _data()["masteryTiers"]
+
+
+## Every rank's path node, all roles.
+static func path_nodes() -> Array:
+	return _data()["pathNodes"]
+
+
+static func stat_points_per_level() -> int:
+	return int(_data()["statPointsPerLevel"])
+
+
+## The share of max HP and MP a level-up gives back.
+static func level_up_heal() -> float:
+	return float(_data()["levelUpHeal"])
+
+
+static func skill_tree(role_id: String) -> Array:
+	return _data()["skillTrees"].get(role_id, [])
+
+
+static func beyond_tracks() -> Array:
+	return _data()["beyondTree"]["tracks"]
+
+
+static func skill_tier_levels() -> Array:
+	return _data()["skillTierLevels"]
+
+
+## The named foes (PIX-156), by id.
+static func named_foes() -> Dictionary:
+	return _data()["named"]
+
+
+static func pack_rules() -> Dictionary:
+	return _data()["packs"]
+
+
+## Region id -> the material its patches grow and its fights leave.
+static func region_materials() -> Dictionary:
+	return _data()["regionMaterials"]
+
+
+static func escort(escort_id: String) -> Dictionary:
+	return _data()["escorts"][escort_id]
+
+
+static func gathering_rules() -> Dictionary:
+	return _data()["gathering"]
+
+
+## {regrowSteps, catches}: a spot's catches when it names none.
+static func fishing_rules() -> Dictionary:
+	return _data()["fishing"]
+
+
+static func fishing_spots() -> Array:
+	return _data().get("fishingSpots", [])
+
+
+## The loot pool a level rolls from: the deepest whose floor it has reached.
+static func drop_pool(level: int) -> Dictionary:
+	var pools: Array = _data()["dropPools"]
+	var pool: Dictionary = pools[0]
+	for entry: Dictionary in pools:
+		if int(entry["floor"]) <= level:
+			pool = entry
+	return pool
+
+
 static func is_boss(id: String) -> bool:
 	return id in _data()["bossIds"]
 
@@ -343,11 +459,7 @@ static func monster_attack_damage(fighter: Dictionary, hero: HeroState, pack: In
 static func roll_drop(floor_level: int, kind: String, roll: Callable, forged := 0, luck := 0.0) -> Dictionary:
 	if roll.call() >= float(_data()["dropChance"][kind]) + luck:
 		return {}
-	var pools: Array = _data()["dropPools"]
-	var pool: Dictionary = pools[0]
-	for entry: Dictionary in pools:
-		if int(entry["floor"]) <= floor_level:
-			pool = entry
+	var pool := drop_pool(floor_level)
 	if roll.call() < float(_data()["gearShare"][kind]):
 		var item_id: String = _pick(pool["gearIds"], roll)
 		var rarity := _roll_rarity(_data()["rarityWeights"][kind], roll)

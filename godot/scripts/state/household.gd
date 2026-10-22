@@ -27,7 +27,7 @@ func owns_house() -> bool:
 func buy_house() -> String:
 	if owns_house():
 		return ""
-	var cost := int(Town._data()["houseDeedCost"])
+	var cost := Town.deed_cost()
 	if owner.pack.gold < cost:
 		return Text.t("For sale: this house. The deed costs %d gold.") % cost
 	owner.pack.gold -= cost
@@ -193,7 +193,7 @@ func house_interact(cell: Vector2i, tile: String) -> Dictionary:
 		"bed":
 			owner.make_whole()
 			# Well rested (PIX-179): more XP for the next fights, longer with the bench.
-			var fights := int(Town._data()["rested"]["fights"]) + roundi(home_buff("rested"))
+			var fights := int(Town.rested_terms("fights")) + roundi(home_buff("rested"))
 			owner.settlement.house["rested"] = fights
 			owner.pack_changed()
 			# A night in your own bed, till morning (PIX-246), saved as the
@@ -201,11 +201,11 @@ func house_interact(cell: Vector2i, tile: String) -> Dictionary:
 			owner.upkeep.sleep_till_morning()
 			owner.save_now(owner.SLEPT)
 			return {"text": Text.t("You sleep in your own bed till dawn. Fully restored, and well rested: +%d%% XP for your next %d fights.") % [
-				roundi(float(Town._data()["rested"]["xp"]) * 100), fights], "slept": true}
+				roundi(float(Town.rested_terms("xp")) * 100), fights], "slept": true}
 		"barrel":
 			return {"panel": "storage"}
 		"shelf":
-			var cost := int(Town._data()["workbenchCost"])
+			var cost := Town.workbench_cost()
 			if owner.settlement.house.get("workbench", false):
 				return {"panel": "workbench"}
 			if owner.pack.gold >= cost:
@@ -225,7 +225,7 @@ func house_interact(cell: Vector2i, tile: String) -> Dictionary:
 			return {"panel": "trophies"}
 		"garden":
 			return {"text": Text.t("The garden drinks your victories: %d/%d until the next harvest.") % [
-				owner.settlement.house.get("gardenWins", 0), Town._data()["gardenWinsPerYield"],
+				owner.settlement.house.get("gardenWins", 0), Town.garden_wins_per_yield(),
 			]}
 		"cauldron":
 			return {"panel": "nook"}

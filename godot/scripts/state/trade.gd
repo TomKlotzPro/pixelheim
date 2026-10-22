@@ -58,7 +58,7 @@ func stock_stage() -> int:
 func price_of(item_id: String) -> int:
 	var price := Economy.buy_price(item_id)
 	if owned_shop_map(active_shop()) != "":
-		price = roundi(price * (1.0 - float(Town._data()["rent"]["ownerDiscount"])))
+		price = roundi(price * (1.0 - float(Town.rent_terms("ownerDiscount"))))
 	# Vex brews cheaper in a brewery of her own (PIX-206).
 	if active_shop() == "alchemist" and owner.holdings.project_built("vexs_brewery"):
 		price = roundi(price * (1.0 - Town.project_perk("vexs_brewery", "buy")))
@@ -78,7 +78,7 @@ func shop_wares(shop_id: String) -> Array:
 ## The property a shop is, if the hero owns it ("" otherwise).
 func owned_shop_map(shop_id: String) -> String:
 	for map_id: String in owner.settlement.properties:
-		if Town.shop_of(map_id) == shop_id:
+		if Economy.shop_at(map_id) == shop_id:
 			return map_id
 	return ""
 
@@ -317,7 +317,7 @@ func salvage_gear(uid: String) -> String:
 		owner.pack.add_item(item_id, int(back[item_id]))
 		parts.append(Text.count(int(back[item_id]), Catalog.item_name(item_id)))
 	owner.pack.gear.erase(instance)
-	Economy.grant_job_xp(owner.hero.jobs, "smithing", int(Economy._data()["salvage"]["xp"]))
+	Economy.grant_job_xp(owner.hero.jobs, "smithing", int(Economy.forge_rules("salvage")["xp"]))
 	owner.pack_changed()
 	return Text.t("Hilda breaks it down: %s.") % ", ".join(parts)
 
@@ -327,7 +327,7 @@ func salvage_gear(uid: String) -> String:
 func reforge_gear(uid: String) -> String:
 	var instance := owner.pack.gear_by_uid(uid)
 	var shop_id := active_shop()
-	var rules: Dictionary = Economy._data()["reforge"]
+	var rules: Dictionary = Economy.forge_rules("reforge")
 	if instance.is_empty() or shop_id == "" or not Economy.shop(shop_id).get("forge", false):
 		return ""
 	if int(owner.hero.jobs["smithing"]["level"]) < int(rules["smithing"]):
@@ -357,7 +357,7 @@ func reforge_gear(uid: String) -> String:
 func quench_gear(uid: String) -> String:
 	var instance := owner.pack.gear_by_uid(uid)
 	var shop_id := active_shop()
-	var rules: Dictionary = Economy._data()["quench"]
+	var rules: Dictionary = Economy.forge_rules("quench")
 	if instance.is_empty() or int(instance.get("deep", 0)) <= 0 or shop_id == "" or not Economy.shop(shop_id).get("forge", false):
 		return ""
 	var cost := Economy.quench_cost(instance)
@@ -387,7 +387,7 @@ func upgrade_gear(uid: String) -> bool:
 	if masterwork and not Economy.masterwork_open(smithing, instance["bonus"]):
 		return false
 	var cost := forge_price(instance, smithing, masterwork)
-	var gem := String(Economy._data()["masterwork"]["gem"])
+	var gem := String(Economy.forge_rules("masterwork")["gem"])
 	if owner.pack.gold < cost or (masterwork and int(owner.pack.items.get(gem, 0)) < 1):
 		return false
 	owner.pack.gold -= cost

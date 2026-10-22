@@ -133,7 +133,7 @@ func step_reveal() -> void:
 		# A keepsake that brings someone home (PIX-255: the Tidecaller,
 		# Wenna) tours to their door instead.
 		if not Hunts.named(first).has("homecoming"):
-			GameState.reveals.assign(Npcs._data()["recruits"].filter(func(recruit: Dictionary) -> bool:
+			GameState.reveals.assign(Npcs.recruits().filter(func(recruit: Dictionary) -> bool:
 				return recruit.get("comesHome", {}).get("named", "") == first).map(func(recruit: Dictionary) -> String: return "settler:" + String(recruit["id"])))
 	else:
 		GameState.reveals.assign(["project:street_lamps", "age:2"])

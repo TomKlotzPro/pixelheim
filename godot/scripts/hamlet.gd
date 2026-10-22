@@ -243,10 +243,10 @@ static func kept_on(map: MapData, decks: Variant = null) -> Dictionary:
 			out[cell] = true
 	for cell: Vector2i in map.portals:
 		out[cell] = true
-	for npc: Dictionary in Npcs._data()["npcs"]:
+	for npc: Dictionary in Npcs.townsfolk():
 		if npc["mapId"] == map.id:
 			out[Vector2i(int(npc["x"]), int(npc["y"]))] = true
-	for recruit: Dictionary in Npcs._data()["recruits"]:
+	for recruit: Dictionary in Npcs.recruits():
 		var found: Dictionary = recruit.get("found", {})
 		if found.get("mapId", "") == map.id:
 			out[Vector2i(int(found["x"]), int(found["y"]))] = true

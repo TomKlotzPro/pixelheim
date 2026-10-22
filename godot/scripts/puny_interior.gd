@@ -174,7 +174,7 @@ static func reserved(data: MapData, placed: Array) -> Dictionary:
 	for cell: Vector2i in data.portals:
 		for step in [Vector2i.ZERO, Vector2i.UP, Vector2i.UP * 2]:
 			out[cell + step] = true
-	for npc: Dictionary in Npcs._data()["npcs"]:
+	for npc: Dictionary in Npcs.townsfolk():
 		if npc.get("mapId", "") == data.id:
 			var at := Vector2i(int(npc["x"]), int(npc["y"]))
 			for step in [Vector2i.ZERO, Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:

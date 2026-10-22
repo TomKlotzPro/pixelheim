@@ -2289,6 +2289,10 @@ msgid "Ascension is a scene now: letterbox bars, turning light, your hero marchi
 msgstr "L'ascension est désormais une scène : bandes noires, lumière tournoyante, votre héros qui défile dans sa NOUVELLE apparence, le titre frappé par-dessus"
 
 #: assets/data/changelog.json
+msgid "Ask by Name"
+msgstr "Demander par son nom"
+
+#: assets/data/changelog.json
 msgid "Aske comes home as Pixelheim's lamplighter, and your lantern reaches a third further; with all four keepsakes home, the board offers the Town"
 msgstr "Aske rentre comme allumeur de réverbères de Pixelheim, et votre lanterne porte un tiers plus loin ; avec les quatre souvenirs rapportés, le tableau d'avis propose la ville"
 
@@ -2391,6 +2395,10 @@ msgstr "En coulisses : tout ce que le jeu gardait seulement pour charger les t
 #: assets/data/changelog.json
 msgid "Behind the scenes: new ground for the regions to come (Shade's sea in three depths, docks, snow, ice and cobbled stone) and a tool that turns a drawn sketch into a map"
 msgstr "En coulisses : de nouveaux sols pour les régions à venir (la mer de Shade en trois profondeurs, quais, neige, glace et pavés) et un outil qui transforme un croquis en carte"
+
+#: assets/data/changelog.json
+msgid "Behind the scenes: the bestiary, the villagers, the economy and the town now answer by name instead of being read straight from their tables, so the rules are easier to change without breaking another corner of the game"
+msgstr "En coulisses : le bestiaire, les villageois, l'économie et le village répondent désormais par leur nom au lieu d'être lus directement dans leurs tables : les règles sont plus faciles à changer sans casser un autre coin du jeu"
 
 #: assets/data/changelog.json
 msgid "Behind the scenes: the checks that only look at a map now run ten to a single start of the game instead of starting it each time, so every change is checked faster"

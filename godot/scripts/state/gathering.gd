@@ -40,7 +40,7 @@ const STANDING := ["shrine", "cave", "door"]
 
 
 static func rules() -> Dictionary:
-	return Bestiary._data()["gathering"]
+	return Bestiary.gathering_rules()
 
 
 ## The day `steps` falls on: the turns of the day/night wheel (DayNight).
@@ -52,14 +52,14 @@ static func day_of(steps: float) -> int:
 
 ## What a wild patch grows: its region's forage material.
 static func material_at(map: MapData, cell: Vector2i) -> String:
-	return Bestiary._data()["regionMaterials"].get(map.region_at(cell), "")
+	return Bestiary.region_materials().get(map.region_at(cell), "")
 
 
 ## How many patches `region` grows a day: its material's daily supply,
 ## shared evenly between the regions it grows in (sea glass on the coast and
 ## in the sea cave). A fraction is a patch on some days only.
 static func daily_in(region: String) -> float:
-	var materials: Dictionary = Bestiary._data()["regionMaterials"]
+	var materials: Dictionary = Bestiary.region_materials()
 	var ground: Dictionary = rules()["ground"]
 	var material: String = materials.get(region, "")
 	if material == "" or not ground.has(region):
@@ -150,7 +150,7 @@ static func patches_on(decks: Dictionary, day: int) -> Dictionary:
 		var dealt := floori(day * rate + beat)
 		var today := floori((day + 1) * rate + beat) - dealt
 		for k in mini(today, deck.size()):
-			out[_card_apart(deck, dealt + k, out)] = {"id": "%s_patch_%d" % [region, k + 1], "item": Bestiary._data()["regionMaterials"][region]}
+			out[_card_apart(deck, dealt + k, out)] = {"id": "%s_patch_%d" % [region, k + 1], "item": Bestiary.region_materials()[region]}
 	return out
 
 
@@ -160,7 +160,7 @@ static func patches_on(decks: Dictionary, day: int) -> Dictionary:
 ## steel in Greyhold's courtyard, then in its cellars), never in both or
 ## neither.
 static func _beat(region: String) -> float:
-	var materials: Dictionary = Bestiary._data()["regionMaterials"]
+	var materials: Dictionary = Bestiary.region_materials()
 	var material: String = materials.get(region, "")
 	var homes: Array = rules()["ground"].keys().filter(func(other: String) -> bool: return materials.get(other, "") == material)
 	var start := float(absi(hash("%d:%s:beat" % [SEED, material])) % 1000) / 1000.0
@@ -203,10 +203,10 @@ static func _kept_clear(map: MapData) -> Dictionary:
 		var tile: String = map.grid[cell]
 		if tile.begins_with("roof") or tile.begins_with("door"):
 			_mark(out, cell, TOWN_REACH)
-	for npc: Dictionary in Npcs._data()["npcs"]:
+	for npc: Dictionary in Npcs.townsfolk():
 		if npc["mapId"] == map.id:
 			_mark(out, Vector2i(int(npc["x"]), int(npc["y"])), TOWN_REACH)
-	for recruit: Dictionary in Npcs._data()["recruits"]:
+	for recruit: Dictionary in Npcs.recruits():
 		var found: Dictionary = recruit.get("found", {})
 		if found.get("mapId", "") == map.id:
 			_mark(out, Vector2i(int(found["x"]), int(found["y"])), TOWN_REACH)
@@ -218,7 +218,7 @@ static func _kept_clear(map: MapData) -> Dictionary:
 			_mark(out, Vector2i(int(waypoint["arrival"]["x"]), int(waypoint["arrival"]["y"])), DOOR_REACH)
 	for chest: Dictionary in Interactables.chests_on(map.id):
 		_mark(out, Vector2i(int(chest["x"]), int(chest["y"])), 1)
-	for spot: Dictionary in Bestiary._data().get("fishingSpots", []):
+	for spot: Dictionary in Bestiary.fishing_spots():
 		if spot["mapId"] == map.id:
 			_mark(out, Vector2i(int(spot["x"]), int(spot["y"])), 1)
 	for spawn: Dictionary in Bestiary.spawns_on(map.id):
@@ -262,7 +262,7 @@ static func _shuffle(cells: Array, key: String) -> void:
 
 ## The places to fish from: stand there facing the water and press E.
 static func fishing_spot_at(map_id: String, cell: Vector2i) -> Dictionary:
-	for spot: Dictionary in Bestiary._data().get("fishingSpots", []):
+	for spot: Dictionary in Bestiary.fishing_spots():
 		if spot["mapId"] == map_id and Vector2i(int(spot["x"]), int(spot["y"])) == cell:
 			return spot
 	return {}
@@ -270,7 +270,7 @@ static func fishing_spot_at(map_id: String, cell: Vector2i) -> Dictionary:
 
 ## A fishing spot by its id, empty if there is none.
 static func fishing_spot(spot_id: String) -> Dictionary:
-	for spot: Dictionary in Bestiary._data().get("fishingSpots", []):
+	for spot: Dictionary in Bestiary.fishing_spots():
 		if spot["id"] == spot_id:
 			return spot
 	return {}
@@ -280,13 +280,13 @@ static func fishing_spot(spot_id: String) -> Dictionary:
 static func fish_ready(world: WorldState, spot_id: String) -> bool:
 	if not world.gathered_at.has(spot_id):
 		return true
-	return world.steps - float(world.gathered_at[spot_id]) >= float(Bestiary._data()["fishing"]["regrowSteps"])
+	return world.steps - float(world.gathered_at[spot_id]) >= float(Bestiary.fishing_rules()["regrowSteps"])
 
 
 ## What comes up on the line: a weighted pick of combat.json "fishing", or
 ## of the spot's own "catches" (the ice hole's icefin, PIX-169).
 static func catch(roll: Callable, spot := {}) -> String:
-	var catches: Array = spot.get("catches", Bestiary._data()["fishing"]["catches"])
+	var catches: Array = spot.get("catches", Bestiary.fishing_rules()["catches"])
 	var total := 0
 	for entry: Array in catches:
 		total += int(entry[1])

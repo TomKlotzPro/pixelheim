@@ -37,7 +37,7 @@ static func available() -> bool:
 ## map the door leads to ("" for the house, which opens by its deed).
 static func about(label: String, target: String, house_owned: bool) -> Dictionary:
 	if Town.deeds().has(target):
-		var shop := Economy.shop(String(Economy._data()["shopMaps"][target]))
+		var shop := Economy.shop(Economy.shop_at(target))
 		return {"name": Town.deeds()[target]["name"], "about": shop["keeper"]}
 	match target:
 		"town_inn":
@@ -47,13 +47,13 @@ static func about(label: String, target: String, house_owned: bool) -> Dictionar
 	if label == "HOME" or (target == "" and house_owned):
 		return {"name": "Home", "about": "Your house"}
 	if label == "FOR SALE":
-		return {"name": "For sale", "about": Text.t("A house: %dg, at the door") % int(Town._data()["houseDeedCost"])}
+		return {"name": "For sale", "about": Text.t("A house: %dg, at the door") % Town.deed_cost()}
 	return {"name": label.capitalize(), "about": ""}
 
 
 ## The one who keeps a place: the villager who stays put in it.
 static func _keeper(map_id: String, otherwise: String) -> String:
-	for npc: Dictionary in Npcs._data()["npcs"]:
+	for npc: Dictionary in Npcs.townsfolk():
 		if npc["mapId"] == map_id and not npc.get("wander", false):
 			return npc["name"]
 	return otherwise

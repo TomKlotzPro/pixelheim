@@ -74,7 +74,7 @@ static func wave(step: int) -> Dictionary:
 ## what they say then: [npc as for Npcs.on_map].
 static func survivors() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	for npc: Dictionary in Npcs._data()["npcs"]:
+	for npc: Dictionary in Npcs.townsfolk():
 		if not npc.has("prologue"):
 			continue
 		var at: Dictionary = npc["prologue"]
@@ -87,7 +87,7 @@ static func survivors() -> Array[Dictionary]:
 
 ## The step a conversation with `npc_id` finishes, or DONE when it finishes none.
 static func step_of(npc_id: String) -> int:
-	for npc: Dictionary in Npcs._data()["npcs"]:
+	for npc: Dictionary in Npcs.townsfolk():
 		if npc["id"] == npc_id and npc.has("prologue"):
 			return int(npc["prologue"]["step"])
 	return DONE

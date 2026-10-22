@@ -105,7 +105,7 @@ func reading() -> String:
 func follow(enemy: Node) -> void:
 	target = enemy
 	name_label.text = enemy.fighter["name"]
-	var phased: bool = Bestiary._data()["bossPatterns"].has(enemy.fighter["id"])
+	var phased: bool = not Bestiary.boss_pattern(enemy.fighter["id"]).is_empty()
 	for notch in notches:
 		notch.visible = phased
 	share = _health()

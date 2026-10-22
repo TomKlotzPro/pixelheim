@@ -43,6 +43,6 @@ static func path_choices(hero: HeroState) -> Array:
 		return []
 	var path := HeroRules.walked(hero)
 	var last: String = path[-1] if not path.is_empty() else ""
-	return Bestiary._data()["pathNodes"].filter(func(node: Dictionary) -> bool:
+	return Bestiary.path_nodes().filter(func(node: Dictionary) -> bool:
 		return node["roleId"] == hero.role_id and int(node["tier"]) == tier and (tier == 1 or last in node["from"])
 	)

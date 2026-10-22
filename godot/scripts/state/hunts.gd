@@ -12,7 +12,7 @@ class_name Hunts
 
 
 static func _named() -> Dictionary:
-	return Bestiary._data()["named"]
+	return Bestiary.named_foes()
 
 
 ## Every named monster, in the order the board posts them, each with its "id".

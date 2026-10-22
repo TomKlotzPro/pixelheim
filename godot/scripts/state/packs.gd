@@ -31,7 +31,7 @@ const FLIGHT_SLACK := -0.3
 
 
 static func rules() -> Dictionary:
-	return Bestiary._data()["packs"]
+	return Bestiary.pack_rules()
 
 
 static func tiles(key: String) -> float:

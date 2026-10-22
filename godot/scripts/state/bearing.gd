@@ -155,7 +155,7 @@ static func of_quest(quest: Dictionary, progression: ProgressionState, settlemen
 		"craft":
 			for entry: Dictionary in Economy.recipes():
 				if entry["itemId"] == objective["itemId"]:
-					var station: Dictionary = Economy._data()["jobStations"].get(entry["job"]["id"], {})
+					var station: Dictionary = Economy.job_station(entry["job"]["id"])
 					var keeper := Npcs.keeper_of(String(station.get("mapId", "")))
 					if not keeper.is_empty() and Npcs.at_stall(keeper, Town.done_projects(settlement)):
 						# Crafted at the keeper's stall while the station is
