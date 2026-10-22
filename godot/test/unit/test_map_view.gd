@@ -98,4 +98,4 @@ func _check_camps(map_id: String) -> void:
 		assert_true(map.covered.has(cell), "a camp at %s blocks" % cell)
 		assert_false(map.portals.has(cell))
 		if view.camps[cell]["kind"] == "tent":
-			assert_eq(view.camps[cell]["tile"], MapView.TENTS[map.region_at(cell)])
+			assert_eq(view.camps[cell]["tile"], CampsLayer.TENTS[map.region_at(cell)])

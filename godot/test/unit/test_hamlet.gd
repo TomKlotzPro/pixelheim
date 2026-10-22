@@ -125,7 +125,7 @@ func test_each_settlement_builds_in_its_own_grammar() -> void:
 			assert_eq(chimneys.size(), houses.size(), "%s: a chimney on every roof" % map_id)
 		for house: Dictionary in houses:
 			if house["door"].x >= 0 and not style.has("stack"):
-				assert_gte(MapView.chimney_of(house["door"], own["decor"]).x, 0, "%s: the door at %s smokes from its chimney" % [map_id, house["door"]])
+				assert_gte(SettlementsLayer.chimney_of(house["door"], own["decor"]).x, 0, "%s: the door at %s smokes from its chimney" % [map_id, house["door"]])
 
 
 func test_pixelheim_keeps_its_houses() -> void:

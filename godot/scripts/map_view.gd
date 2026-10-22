@@ -212,25 +212,16 @@ var took := {}
 ## What MapView draws through layers of their own (PIX-359,
 ## scripts/map_layers/), in drawing order: each adds its units where its
 ## kind stands in `planning` and `building`, and all are set for the hour.
-var _layers: Dictionary[String, MapLayer] = {"patches": PatchesLayer.new(), "props": PropsLayer.new(), "gates": GatesLayer.new()}
+var _layers: Dictionary[String, MapLayer] = {
+	"camps": CampsLayer.new(), "patches": PatchesLayer.new(), "props": PropsLayer.new(), "gates": GatesLayer.new(),
+	"settlements": SettlementsLayer.new(),
+}
 
 ## How far the wind leans what grows, in pixels at its top (PIX-223): a
 ## tree or a sheaf, a flower, a forest's crowns (all of a piece, so less).
 const TREE_SWAY := 1.3
 const FLOWER_SWAY := 0.7
 const CANOPY_SWAY := 0.4
-## The projects board on the square (PIX-145): a Puny World notice board.
-const PROJECT_BOARD := 846
-const BOARD_FOOT := Rect2(1, 8, 14, 8)
-## Mirelle's counting table (PIX-338): both its cells, its foot the length
-## of it, and where its candle burns (RoomArt's bank_desk).
-const DESK_FOOT := Rect2(1, 2, 14, 30)
-const DESK_FLAME := Vector2(7.5, 14)
-## Puny World tents by region: green in the woods, straw in the wetlands,
-## red on the ash.
-const TENTS := {"forest": 895, "deepwood": 895, "marsh": 706, "mire": 706, "ash": 905}
-## The CC0 dungeon sheet's torch flame, planted in the ground by a camp.
-const CAMP_TORCH := [16, 17, 18, 19, 20, 21, 22, 23]
 ## A wall torch's glow (PIX-291): [radius px, peak], round its flame, which
 ## burns this far from its cell's middle (over the wall's top).
 const TORCH_GLOW := [13, 0.28]
@@ -242,29 +233,9 @@ const LAMP_HALO := 11
 const LAMP_HALO_PEAK := 0.32
 const LAMP_POOL := Vector2(8, 12)
 const LAMP_REACH := 72.0
-## Chimney smoke (PIX-313): a cottage's grey, a forge's dark, each thinning
-## to nothing; out of the mouth of Shade's chimney, from its cell's top
-## left.
-const SMOKE := Color(0.55, 0.53, 0.53, 0.7)
-const SMOKE_FORGE := Color(0.22, 0.2, 0.21, 0.85)
-const CHIMNEY_MOUTH := Vector2(8, 2)
 ## A settlement's standing dressing's foot in its cell (Hamlet, PIX-313):
 ## the middle of the bottom of the cell, as every prop's.
 const HAMLET_FOOT := Rect2(2, 5, 12, 11)
-## The post house's foot (PIX-325): across its two cells, each blocked over
-## x 4..12, y 7..15 as every blocker must be.
-const POST_HOUSE_FOOT := Rect2(2, 5, 28, 11)
-## A waystation's ember lamp at night (PIX-322): the halo round its shard
-## and its warmth pooled on the ground about its foot (from its cell's top
-## left), reaching this far.
-const EMBER_HALO := 12
-const EMBER_HALO_PEAK := 0.36
-const EMBER_POOL := Vector2(8, 12)
-const EMBER_REACH := 80.0
-## How far a miner's lantern and the fire under Morvax's door light the
-## ground at night.
-const LANTERN_REACH := 44.0
-const FORGE_REACH := 52.0
 ## A lit window's light thrown on the ground below it, and the day through a
 ## room's window on its floor (Lights.spill, Lights.shaft), this far.
 const WINDOW_SPILL := 48.0
@@ -277,15 +248,6 @@ const CANDLE_HALO_PEAK := 0.45
 ## from its flame down onto the floor before it, centred this far below it.
 const TORCH_MOTES := Vector2(40, 40)
 const MOTES_BELOW := 9.0
-## Where a camp's pieces may stand around its home, best first: behind it,
-## then beside, then in front (the pack itself takes the home and its sides).
-const CAMP_RING := [
-	Vector2i(-1, -1), Vector2i(1, -1), Vector2i(-2, 0), Vector2i(2, 0), Vector2i(-1, 1), Vector2i(1, 1),
-	Vector2i(-2, -1), Vector2i(2, -1), Vector2i(-1, 2), Vector2i(1, 2), Vector2i(0, 2), Vector2i(-2, 1),
-	Vector2i(2, 1), Vector2i(0, -2),
-]
-const TENT_FOOT := Rect2(1, 5, 14, 11)
-const TORCH_FOOT := Rect2(5, 9, 6, 7)
 ## How many cells of ground are drawn on past the map's edges (PIX-269):
 ## more than the dock covers, so the camera looking past the south edge
 ## never shows the void.
@@ -306,11 +268,6 @@ const ICE_LIGHT_EVERY := Vector2i(6, 5)
 ## over its cell its plate stands.
 const WAY_OUT_GLOW := 80.0
 const WAY_OUT_PLATE := 4.0
-## A burnt house seen small from afar smokes with this share of a ruin's
-## motes in town (PIX-248).
-const VILLAGE_RUIN_SMOKE := 0.4
-## Its lamps lit one to each this many cells about (PIX-311).
-const VILLAGE_LAMPS_APART := 2
 ## A unit of drawing: a tile layers' physics quadrant, 16 cells square, and
 ## four whole rendering quadrants (LIGHT_BLOCK), laid and drawn once; the
 ## decor and the objects a few rows at a time; the props a handful.
@@ -333,12 +290,6 @@ const WOODED := ["forest", "mountain"]
 ## reach it (test_night_light). It divides BLOCK, so a unit of drawing
 ## still lays whole quadrants, each drawn once.
 const LIGHT_BLOCK := 8
-## A burning house lights the ground as a few soft pools (PIX-285): one for
-## each part of it at most FIRE_POOL cells a side, from the part's middle
-## to FIRE_REACH pixels past its corners. A light on every flame put three
-## dozen on the square and washed its ash white.
-const FIRE_POOL := 6
-const FIRE_REACH := 36.0
 
 
 func _init(map_data: MapData, actor_layer: Node2D) -> void:
@@ -369,7 +320,10 @@ func planning(arrival_at: Vector2i, slices: Slicer) -> void:
 	arrival = arrival_at
 	slices.add("plan_houses", _plan_houses)
 	slices.add("plan_room", _plan_room)
-	slices.add("plan_props", _plan_props)
+	# The props' plan and the camps' share one unit, as they always did.
+	slices.add("plan_props", func() -> void:
+		_plan_props()
+		CampsLayer.plan_in(self))
 	_layers["gates"].plan(self, slices)
 	slices.add("plan_hamlet", _plan_hamlet)
 	slices.add("plan_routes", _plan_routes)
@@ -486,7 +440,8 @@ func room_drawn() -> Dictionary:
 
 ## Outdoors, Shade's props stand where the web's did (PunyProps): what they
 ## stand on blocks, even ground the web left open (the fountain's basin).
-## Then the packs' camps, and the town's boards, stalls and tent.
+## The packs' camps and the town's boards, stalls and tent follow in the same
+## unit (CampsLayer.plan_in).
 func _plan_props() -> void:
 	var outdoor := PunyTerrain.is_outdoor(data.grid)
 	outdoor_props = KeptGround.props(data) if outdoor else {"props": [], "flat": {}, "drawn": {}}
@@ -505,39 +460,6 @@ func _plan_props() -> void:
 	for cell: Vector2i in rampart.get("covers", []):
 		data.covered[cell] = true
 		outdoor_props["drawn"][cell] = true
-	camps = plan_camps(data)
-	if data.id == "town":
-		camps[Town.project_board()] = {"kind": "board", "tile": PROJECT_BOARD}
-		# Its neighbour wears a wanted poster: the bounties (PIX-156).
-		camps[Town.bounty_board()] = {"kind": "board", "tile": PROJECT_BOARD, "wanted": true}
-		# A festival day's stalls (PIX-159), wherever the ground is open.
-		if GameState.holdings.festival_on():
-			for stall: Dictionary in Town.festival("stalls"):
-				var at := Vector2i(int(stall["x"]), int(stall["y"]))
-				if data.is_walkable(at) and not data.covered.has(at) and not camps.has(at):
-					camps[at] = {"kind": "tent", "tile": int(stall["tile"])}
-		# Sela's tent on the square while the inn is rubble (PIX-146).
-		var tent := Town.ashes_tent(Town.done_projects(GameState.settlement))
-		if tent.x >= 0:
-			camps[tent] = {"kind": "tent", "tile": TENTS["marsh"]}
-		# Mirelle's counting table by the hall once she's settled, her
-		# ledger open on it (PIX-338).
-		var desk := Town.bank_desk().position
-		if GameState.holdings.is_settled("settler_mirelle") and data.is_walkable(desk) and data.is_walkable(desk + Vector2i.DOWN) \
-				and not camps.has(desk) and not camps.has(desk + Vector2i.DOWN):
-			camps[desk] = {"kind": "desk", "art": "bank_desk"}
-			data.covered[desk + Vector2i.DOWN] = true
-	# The post box past the bounty board, once Maren's first letter reaches
-	# Saltmere (PIX-320).
-	if data.id == Post.box_map() and GameState.posting.is_open():
-		camps[Post.box_cell()] = {"kind": "post"}
-		# The post house behind it once built (PIX-325).
-		var house := Post.house_cells()
-		if Post.house_built(GameState.settlement) and house.all(func(cell: Vector2i) -> bool: return data.is_walkable(cell) and not camps.has(cell)):
-			camps[house[0]] = {"kind": "post_house"}
-			data.covered[house[1]] = true
-	for cell: Vector2i in camps:
-		data.covered[cell] = true
 
 
 ## A settlement's set dressing (Hamlet, PIX-313): what stands blocks the
@@ -1605,19 +1527,14 @@ func sign_way_out(cell: Vector2i) -> void:
 ## windows and hearths, the chests, the props a handful at a time, the
 ## gates, then the field's decor a few rows at a time.
 func _decor_units(slices: Slicer) -> void:
-	slices.add("decor_camps", func() -> void:
-		for cell: Vector2i in camps:
-			_add_camp_piece(cell, camps[cell]))
-	if data.id == "town":
-		slices.add("decor_ruins", _decor_ruins)
+	_layers["camps"].build(self, slices)
 	_layers["patches"].build(self, slices)
 	slices.add("decor_lights", _decor_lights)
 	slices.add("decor_shafts", _decor_shafts)
 	slices.add("decor_chests", _decor_chests)
 	_layers["props"].build(self, slices)
 	_layers["gates"].build(self, slices)
-	slices.add("decor_hamlet", _decor_hamlet)
-	slices.add("decor_routes", _decor_routes)
+	_layers["settlements"].build(self, slices)
 	slices.add_each("decor_field", ceili(data.size.y / float(DECOR_ROWS)), _field_rows)
 
 
@@ -1626,19 +1543,6 @@ func _field_rows(i: int) -> void:
 	for y in range(i * DECOR_ROWS, mini((i + 1) * DECOR_ROWS, data.size.y)):
 		for x in data.size.x:
 			_add_field_decor(Vector2i(x, y))
-
-
-## The town's ruins smoking, and on the night of the fire still burning
-## (PIX-151), but for the ones the hero put out (PIX-197): those smoulder,
-## as the ruins do the days after.
-func _decor_ruins() -> void:
-	var burning := GameState.progression.prologue != Prologue.DONE
-	var ruins := Town.ruins(Town.done_projects(GameState.settlement))
-	for i in ruins.size():
-		if burning and i not in GameState.progression.prologue_doused:
-			fires.append({"rect": ruins[i]["rect"], "nodes": _add_fire(ruins[i]["rect"]), "ruin": i})
-		else:
-			_add_smoke(ruins[i]["rect"])
 
 
 ## Lit windows at night, smoke from every finished house (PIX-149). A
@@ -1665,7 +1569,7 @@ func _decor_lights() -> void:
 			# it (PIX-225).
 			_add_hearth(center(cell) + Vector2(TILE / 2.0, 4), center(cell) + Vector2(TILE / 2.0, 6))
 		elif tile == PunyTown.DOOR and skyline.is_empty():
-			_add_chimney_smoke(cell)
+			SettlementsLayer._add_chimney_smoke(self, cell)
 	# A room's candles and sconces burn at night, each warming the floor
 	# round it, the corners left dark (PIX-311).
 	for part: String in ["objects", "tops", "lifted"]:
@@ -1674,7 +1578,7 @@ func _decor_lights() -> void:
 			if PunyInterior.FLAMES.has(pieces[cell]):
 				_add_candle(Vector2(cell * TILE) + PunyInterior.FLAMES[pieces[cell]] - Vector2(0, 6 if part == "lifted" else 0))
 	if not skyline.is_empty():
-		_add_village_life()
+		SettlementsLayer._add_village_life(self)
 
 
 ## A CC0 room's light (PIX-318), by the rules a room keeps with the pack
@@ -1912,144 +1816,10 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 	return Scatter.solid(data, kept, bare)
 
 
-## Where each wild pack's camp stands: a tent on the first open cell of its
-## region in CAMP_RING, and a torch on the next one within two of the tent.
-## A night pack keeps none (PIX-252): it comes out of the dark, and a camp,
-## drawn once for the visit, would stand empty all day.
-static func plan_camps(map: MapData) -> Dictionary:
-	var out := {}
-	if map.style == "cave":
-		return out
-	for spawn: Dictionary in Bestiary.spawns_on(map.id):
-		if Packs.of_the_night(spawn):
-			continue
-		var home := Vector2i(spawn["x"], spawn["y"])
-		var region := map.region_at(home)
-		var fits := func(cell: Vector2i) -> bool:
-			return map.is_walkable(cell) and map.region_at(cell) == region and not map.portals.has(cell) and not out.has(cell)
-		var tent := Vector2i(-1, -1)
-		for offset: Vector2i in CAMP_RING:
-			if fits.call(home + offset):
-				tent = home + offset
-				out[tent] = {"kind": "tent", "tile": TENTS.get(region, 706)}
-				break
-		if tent.x < 0:
-			continue
-		for offset: Vector2i in CAMP_RING:
-			var cell: Vector2i = home + offset
-			if fits.call(cell) and maxi(absi(cell.x - tent.x), absi(cell.y - tent.y)) <= 2:
-				out[cell] = {"kind": "torch", "tile": CAMP_TORCH[0]}
-				break
-	return out
-
-
-## A house on fire (the Night of Ash's ruins, the Night of Bells' roofs;
-## PIX-327, FireArt): our own flames standing on what burns, y-sorted with
-## the actors, each playing at its own pace (calmer with Reduce motion);
-## coals alight on a fallen floor, smoke rising off the house and sparks
-## flying from it (shaders/fire_*.gdshader; no sparks with Reduce motion).
-## Its light falls in a few soft pools (fire_pools), not one to a flame,
-## and flickers as a blaze does (Lights.blaze). No glow round each flame:
-## the flames are bright enough to bloom.
-func _add_fire(rect: Rect2i) -> Array[Node2D]:
-	var nodes: Array[Node2D] = []
-	for pool: Dictionary in fire_pools(rect):
-		var light := Lights.blaze(pool["at"], pool["radius"])
-		props.add_child(light)
-		nodes.append(light)
-	var still := GameState.settings.reduce_motion
-	for flame: Dictionary in FireArt.plan(rect, _burning(rect)):
-		var size: Vector2i = FireArt.KINDS[flame["kind"]]
-		var foot: Vector2 = flame["at"]
-		var sprite := AnimatedSprite2D.new()
-		sprite.sprite_frames = FireArt.frames(flame["kind"], flame["variant"])
-		sprite.centered = false
-		# Drawn in front of what stands above its sort line, its foot where
-		# it burns from.
-		sprite.position = Vector2(foot.x, flame["sort"])
-		sprite.offset = Vector2(-(size.x / 2), foot.y - float(flame["sort"]) - size.y)
-		sprite.frame = flame["frame"]
-		sprite.speed_scale = FireArt.pace(flame, still)
-		sprite.material = Lights.unshaded()
-		sprite.set_meta("fire", "flames")
-		sprite.add_to_group("decor")
-		actors.add_child(sprite)
-		sprite.play()
-		nodes.append(sprite)
-	var air := FireArt.air(rect)
-	var seed := float(absi(rect.position.x * 31 + rect.position.y * 17) % 97) / 9.7
-	nodes.append(_fire_air("coals", air["coals"], preload("res://shaders/fire_coals.gdshader"), 0, {"seed": seed}))
-	nodes.append(_fire_air("smoke", air["smoke"], preload("res://shaders/fire_smoke.gdshader"), 5, {
-		"source": air["source"], "spread": rect.size.x * TILE / 2.0, "seed": seed,
-	}))
-	if not still:
-		nodes.append(_fire_air("sparks", air["sparks"], preload("res://shaders/fire_sparks.gdshader"), 6, {"born": air["born"], "seed": seed}))
-	return nodes
-
-
-## What burns over `rect` (cells), for FireArt.plan: the grid's tiles (a
-## ruin's frame, rubble and ash; a standing house's roof), and a house's
-## windows where its front has them.
-func _burning(rect: Rect2i) -> Dictionary:
-	var tiles := {}
-	var pieces: Dictionary = buildings.get("pieces", {})
-	for y in range(rect.position.y, rect.end.y):
-		for x in range(rect.position.x, rect.end.x):
-			var cell := Vector2i(x, y)
-			tiles[cell] = "window" if pieces.get(cell, -1) == PunyTown.WINDOW else String(data.grid.get(cell, ""))
-	return tiles
-
-
-static var _blank: ImageTexture
-
-
-## A burning house's coals, smoke or sparks (`part`): a quad over `rect`
-## (map pixels, whole) drawn by `shader`, `z` over the actors. It fades
-## rather than shrinks as the fire goes out (douse).
-func _fire_air(part: String, rect: Rect2, shader: Shader, z: int, params: Dictionary) -> Sprite2D:
-	if _blank == null:
-		var white := Image.create(1, 1, false, Image.FORMAT_RGBA8)
-		white.fill(Color.WHITE)
-		_blank = ImageTexture.create_from_image(white)
-	var quad := Sprite2D.new()
-	quad.texture = _blank
-	quad.centered = false
-	quad.position = rect.position.floor()
-	quad.scale = rect.size.floor()
-	var material := ShaderMaterial.new()
-	material.shader = shader
-	material.set_shader_parameter("size", rect.size.floor())
-	for key: String in params:
-		material.set_shader_parameter(key, params[key])
-	quad.material = material
-	quad.z_index = z
-	quad.set_meta("fire", part)
-	quad.set_meta("fades", true)
-	quad.add_to_group("decor")
-	props.add_child(quad)
-	return quad
-
-
-## Where a burning house's light falls (PIX-285): [{at, radius}], a pool in
-## the middle of each part of `rect` (cells) at most FIRE_POOL cells a side,
-## in map pixels.
-static func fire_pools(rect: Rect2i) -> Array[Dictionary]:
-	var parts := Vector2i(ceili(rect.size.x / float(FIRE_POOL)), ceili(rect.size.y / float(FIRE_POOL)))
-	var part := Vector2(rect.size * TILE) / Vector2(parts)
-	var out: Array[Dictionary] = []
-	for j in parts.y:
-		for i in parts.x:
-			var at := Vector2(rect.position * TILE) + part * (Vector2(i, j) + Vector2(0.5, 0.5))
-			out.append({"at": at, "radius": part.length() / 2.0 + FIRE_REACH})
-	return out
-
-
-## A roof set burning on the Night of Bells (PIX-253 step 9): flames over
-## the house, as over the Night of Ash's ruins. Its index in `fires`, for
-## douse.
+## A roof set burning on the Night of Bells: its index in `fires`, for
+## douse (CampsLayer).
 func burn(rect: Rect2i) -> int:
-	fires.append({"rect": rect, "nodes": _add_fire(rect)})
-	return fires.size() - 1
+	return CampsLayer.burn(self, rect)
 
 
 ## Every lamp in the village out (PIX-253 step 9: Aske puts them out, all
@@ -2074,98 +1844,14 @@ func lamps_out() -> void:
 		glow.remove_meta("light")
 
 
-## The fire on ruin `ruin` (Town.ruins' order), if it still burns.
+## The fire on ruin `ruin`, if it still burns, put out (CampsLayer).
 func douse_ruin(ruin: int, seconds := 1.2) -> void:
-	for i in fires.size():
-		if int(fires[i].get("ruin", -1)) == ruin:
-			douse(i, seconds)
+	CampsLayer.douse_ruin(self, ruin, seconds)
 
 
-## The fire on one burning ruin (the Night of Ash's dawn, PIX-197) gutters
-## out: its flames shrink and fade over `seconds`, its smoke thins and its
-## sparks and coals die, its light dims, a last breath of smoke goes up, and
-## they're gone (a ruin smouldering on).
+## The fire on one burning ruin gutters out over `seconds` (CampsLayer).
 func douse(index: int, seconds := 1.2) -> void:
-	if index < 0 or index >= fires.size():
-		return
-	var fire: Dictionary = fires[index]
-	if fire.get("out", false):
-		return
-	fire["out"] = true
-	for node: Node2D in fire["nodes"]:
-		if not is_instance_valid(node):
-			continue
-		night_glows.erase(node)
-		var out := node.create_tween().set_parallel()
-		if node is PointLight2D:
-			# The LightRig brings a light up to its "energy" every frame.
-			out.tween_method(func(energy: float) -> void: node.set_meta("energy", energy), float(node.get_meta("energy", 0.0)), 0.0, seconds)
-		elif node.has_meta("fades"):
-			# The smoke thins and the sparks and coals die (PIX-327).
-			out.tween_property(node, "modulate:a", 0.0, seconds)
-		else:
-			out.tween_property(node, "scale", node.scale * Vector2(0.2, 0.05), seconds).set_ease(Tween.EASE_IN)
-			out.tween_property(node, "modulate:a", 0.0, seconds)
-		out.chain().tween_callback(node.queue_free)
-	var rect: Rect2i = fire["rect"]
-	var puff := _still(CPUParticles2D.new())
-	puff.position = Vector2(rect.position * TILE) + Vector2(rect.size * TILE) / 2.0
-	puff.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-	puff.emission_rect_extents = Vector2(rect.size * TILE) / 2.0
-	puff.amount = 24
-	puff.lifetime = 2.6
-	puff.one_shot = true
-	puff.explosiveness = 0.6
-	puff.direction = Vector2.UP
-	puff.spread = 25.0
-	puff.gravity = Vector2(4, -6)
-	puff.initial_velocity_min = 6.0
-	puff.initial_velocity_max = 14.0
-	puff.scale_amount_min = 2.0
-	puff.scale_amount_max = 4.0
-	var fade := Gradient.new()
-	fade.set_color(0, Color(0.55, 0.52, 0.5, 0.7))
-	fade.set_color(1, Color(0.6, 0.58, 0.56, 0.0))
-	puff.color_ramp = fade
-	puff.z_index = 6
-	puff.add_to_group("decor")
-	props.add_child(puff)
-	puff.finished.connect(puff.queue_free)
-	puff.emitting = true
-	# A ruin put out smoulders on, as the ruins do the days after.
-	if fire.has("ruin"):
-		_add_smoke(rect)
-
-
-## Smoke and embers over a burnt house (PIX-146): pixel motes drifting up
-## from its footing, the embers quicker and fewer (a `share` of them, for a
-## house seen small from afar). Still with Reduce motion.
-func _add_smoke(rect: Rect2i, share := 1.0) -> void:
-	if GameState.settings.reduce_motion:
-		return
-	var middle := Vector2(rect.position * TILE) + Vector2(rect.size * TILE) / 2.0
-	var extents := (Vector2(rect.size * TILE) / 2.0 - Vector2(10, 10)).max(Vector2(3, 3))
-	for ember in [false, true]:
-		var motes := _still(CPUParticles2D.new())
-		motes.position = middle
-		motes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-		motes.emission_rect_extents = extents
-		motes.amount = maxi(1, roundi((4 if ember else 12) * share))
-		motes.lifetime = 1.6 if ember else 3.5
-		motes.direction = Vector2.UP
-		motes.spread = 20.0
-		motes.gravity = Vector2(3, -4)
-		motes.initial_velocity_min = 10.0 if ember else 5.0
-		motes.initial_velocity_max = 18.0 if ember else 10.0
-		motes.scale_amount_min = 1.0 if ember else 2.0
-		motes.scale_amount_max = 1.0 if ember else 3.0
-		var fade := Gradient.new()
-		fade.set_color(0, Color(1.0, 0.55, 0.15, 0.95) if ember else Color(0.32, 0.3, 0.3, 0.55))
-		fade.set_color(1, Color(1.0, 0.3, 0.05, 0.0) if ember else Color(0.4, 0.38, 0.38, 0.0))
-		motes.color_ramp = fade
-		motes.z_index = 6
-		motes.add_to_group("decor")
-		props.add_child(motes)
+	CampsLayer.douse(self, index, seconds)
 
 
 static var _glow_textures := {}
@@ -2217,327 +1903,6 @@ func set_night(night: bool) -> void:
 			pane.visible = not night
 
 
-## A thread of smoke from a house's chimney (PIX-313: out of the chimney's
-## own mouth, where the house has one); without one, up from its door to
-## the roof's top, a little to the side. A house whose settlement raised a
-## stack of its own (Morvax's forge) smokes from that (_decor_hamlet).
-func _add_chimney_smoke(door: Vector2i) -> void:
-	for piece: Dictionary in hamlet["pieces"]:
-		if piece["kind"] == "roof" and absi(piece["cell"].x - door.x) <= 4 and piece["cell"].y < door.y:
-			return
-	var chimney := chimney_of(door, buildings["decor"])
-	if chimney.x >= 0:
-		_add_smoke_thread(Vector2(chimney * TILE) + CHIMNEY_MOUTH)
-		return
-	var top := door
-	while buildings["pieces"].has(top + Vector2i.UP):
-		top += Vector2i.UP
-	_add_smoke_thread(Vector2(top * TILE) + Vector2(TILE * 1.5, 2))
-
-
-## The chimney on the house whose door is `door`, among a drawing's `decor`
-## (PunyTown's chimneys): the nearest above the door within a house's
-## reach of it, or (-1, -1).
-static func chimney_of(door: Vector2i, decor: Dictionary) -> Vector2i:
-	var best := Vector2i(-1, -1)
-	for cell: Vector2i in decor:
-		if decor[cell] != PunyTown.CHIMNEY[1] or cell.y >= door.y or door.y - cell.y > 8 or absi(cell.x - door.x) > 6:
-			continue
-		if best.x < 0 or absi(cell.x - door.x) + door.y - cell.y < absi(best.x - door.x) + door.y - best.y:
-			best = cell
-	return best
-
-
-## The village far off (PIX-248): smoke from every roof (the houses are the
-## paid pack's) and over what still lies in ruins, and its lamps lit at
-## night (its windows light with the town's). Small glows with small lights:
-## the village is small here.
-func _add_village_life() -> void:
-	if PunyTown.available():
-		for at: Vector2 in skyline["smoke"]:
-			_add_smoke_thread(at)
-	for ruin: Rect2i in skyline["ruins"]:
-		_add_smoke(ruin, VILLAGE_RUIN_SMOKE)
-	# Every lamp glows, but the town's lamps stand close here, small: one
-	# light to each few (PIX-311), so its blocks of ground keep room for
-	# what moves at the City age (test_night_light).
-	var lit: Array[Vector2i] = []
-	for cell: Vector2i in skyline["lamps"]:
-		var halo := _add_halo(center(cell), 5, 0.5)
-		if lit.any(func(other: Vector2i) -> bool: return maxi(absi(other.x - cell.x), absi(other.y - cell.y)) <= VILLAGE_LAMPS_APART):
-			continue
-		lit.append(cell)
-		var light := Lights.make(center(cell), 26.0, Lights.LAMP, Lights.LAMP_ENERGY, true)
-		props.add_child(light)
-		halo.set_meta("light", light)
-
-
-## A thread of chimney smoke rising from `at`, grey enough to read on a
-## bright day (PIX-313: a cottage's was a few pale specks), thinning to
-## nothing as the wind takes it; a forge's (`forge`) thick and dark. Still
-## with Reduce motion.
-func _add_smoke_thread(at: Vector2, forge := false) -> void:
-	if GameState.settings.reduce_motion:
-		return
-	var motes := _still(CPUParticles2D.new())
-	motes.position = at
-	motes.amount = 10 if forge else 7
-	motes.lifetime = 4.5 if forge else 4.0
-	# Already rising when the map comes into view.
-	motes.preprocess = motes.lifetime
-	motes.direction = Vector2.UP
-	motes.spread = 10.0
-	motes.gravity = Vector2(4, -3)
-	motes.initial_velocity_min = 5.0
-	motes.initial_velocity_max = 9.0
-	motes.scale_amount_min = 3.0 if forge else 2.0
-	motes.scale_amount_max = 4.0 if forge else 3.0
-	var fade := Gradient.new()
-	var first: Color = SMOKE_FORGE if forge else SMOKE
-	fade.set_color(0, first)
-	fade.set_color(1, Color(first.lightened(0.35), 0.0))
-	fade.add_point(0.35, Color(first.lightened(0.15), first.a * 0.8))
-	motes.color_ramp = fade
-	motes.z_index = 6
-	motes.add_to_group("decor")
-	props.add_child(motes)
-
-
-## A settlement's set dressing (Hamlet, PIX-313): what stands sorted among
-## the actors on its foot with a box on each cell it blocks, what lies flat
-## on the ground, boats afloat on the swell, lanterns on the walls lit at
-## night, a washing line between two walls, Morvax's forge stack smoking and
-## his fire's light under the door.
-func _decor_hamlet() -> void:
-	for piece: Dictionary in hamlet["pieces"]:
-		var cell: Vector2i = piece["cell"]
-		match String(piece["kind"]):
-			"line":
-				var line := Sprite2D.new()
-				line.texture = HamletArt.washing(int(piece["line"]))
-				line.centered = false
-				_stand_on(line, cell, Vector2.ZERO)
-			"glow":
-				_add_door_glow(cell)
-			"flat":
-				var flat := Sprite2D.new()
-				flat.texture = HamletArt.texture(piece["art"])
-				flat.centered = false
-				flat.position = Vector2(cell * TILE) + Vector2(0, TILE - HamletArt.size(piece["art"]).y)
-				flat.add_to_group("decor")
-				ground.add_child(flat)
-			"moored":
-				var boat := AnimatedSprite2D.new()
-				boat.sprite_frames = HamletArt.afloat(piece["art"])
-				boat.centered = false
-				boat.frame = absi(hash(cell)) % 2
-				boat.play()
-				_stand_on(boat, cell, Vector2(-HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
-			_:
-				var art: String = piece["art"]
-				var still := Sprite2D.new()
-				still.texture = HamletArt.texture(art)
-				still.centered = false
-				var root := _stand_on(still, cell, Vector2(0, TILE - HamletArt.size(art).y))
-				if piece["kind"] == "stand":
-					for taken: Vector2i in piece["cells"]:
-						_block(taken)
-					if piece.get("lit", false):
-						_add_shine(root, cell, art)
-					if piece.has("smoke"):
-						# Its chimney's mouth, in its pixels (Gunnar's lodge, PIX-324).
-						_add_smoke_thread(Vector2(cell * TILE) + Vector2(piece["smoke"][0], TILE - HamletArt.size(art).y + int(piece["smoke"][1])))
-				elif art == "lantern":
-					_add_lantern_light(root, cell)
-				elif art == "forge_stack":
-					# The fire's glow in its mouth, untouched by the dark.
-					var fire := Sprite2D.new()
-					fire.texture = HamletArt.texture("forge_mouth")
-					fire.centered = false
-					fire.material = Lights.unshaded()
-					fire.position = still.position
-					root.add_child(fire)
-					var mouth := Vector2(cell * TILE) + HamletArt.STACK_MOUTH
-					_add_smoke_thread(mouth, true)
-					if not GameState.settings.reduce_motion:
-						var embers := _still(Motes.make_embers(3))
-						embers.position = mouth
-						embers.z_index = 6
-						props.add_child(embers)
-
-
-## What the Post's routes put up (PIX-322, Routes.plan), standing among the
-## actors on their cells, each blocking them: a fingerpost at each fork
-## signed, its name on a plate as the hero comes near ("Bram's Corner", the
-## post roads it points down); and each waystation built, its hut (its
-## window lit at night, its name on a plate), its post box (full while the
-## day's post waits, as the square's), its bench and its ember lamp.
-func _decor_routes() -> void:
-	waystations = []
-	ember_lamps = {}
-	post_boxes = []
-	# Lamps close together share a light (PIX-323, Lamps.lit_among).
-	var lamp_cells: Array[Vector2i] = []
-	for piece: Dictionary in routes["pieces"]:
-		if piece["kind"] == "lamp":
-			lamp_cells.append(piece["cell"])
-	var own_light := Lamps.lit_among(lamp_cells)
-	for piece: Dictionary in routes["pieces"]:
-		var cell: Vector2i = piece["cell"]
-		var kind := String(piece["kind"])
-		var art: String = {"signpost": "signpost", "hut": "hut", "bench": "bench", "lamp": "ember_lamp"}.get(kind, "")
-		var sprite := Sprite2D.new()
-		sprite.centered = false
-		if kind == "box":
-			sprite.texture = HamletArt.texture("post_box")
-			post_boxes.append(sprite)
-			_stand_on(sprite, cell, Vector2(0, TILE - HamletArt.size("post_box").y))
-		else:
-			# Each lamp in its kind's look (PIX-324).
-			sprite.texture = RouteArt.lamp(String(piece.get("lamp", "ember"))) if kind == "lamp" else RouteArt.texture(art)
-			var root := _stand_on(sprite, cell, Vector2(0, TILE - RouteArt.size(art).y))
-			if kind == "lamp":
-				_add_ember_lamp(root, cell, String(piece["place"]), cell in own_light, String(piece.get("lamp", "ember")))
-			elif kind == "hut":
-				_add_hut_window(root)
-				waystations.append(String(piece["place"]))
-		for taken: Vector2i in piece["cells"]:
-			_block(taken)
-		if kind == "signpost":
-			door_signs.append({
-				"door": cell, "name": Routes.fork_name(piece["fork"], GameState.post),
-				"about": Routes.fork_about(piece["fork"], GameState.post), "node": null, "over": RouteArt.size("signpost").y - TILE + 4,
-			})
-		elif kind == "hut":
-			door_signs.append({
-				"door": cell, "name": String(Routes.station(piece["place"])["name"]),
-				"about": Text.t("Halfway to %s") % Text.mid(Catalog.place_name(piece["place"])), "node": null, "over": RouteArt.size("hut").y - TILE + 4,
-			})
-	show_post_box()
-
-
-## A waystation's ember lamp (PIX-322): a shard of the mountain's warmth in
-## its cage, dull by day; at night alight (the dark doesn't touch it), a
-## soft halo round it and its warmth on the ground about its foot. One
-## light: test_night_light's budget holds with every waystation built; a
-## lamp close by one that has it (`own_light` false) keeps its halo alone,
-## a cheaper light, so dozens of lamps hold it too (PIX-323). It burns in
-## its `kind`'s colour (PIX-324: sea glass, frost lily, grave moss).
-func _add_ember_lamp(root: Node2D, cell: Vector2i, place: String, own_light := true, kind := "ember") -> void:
-	var lit := AnimatedSprite2D.new()
-	lit.sprite_frames = RouteArt.ember(kind)
-	lit.material = Lights.unshaded()
-	lit.centered = false
-	lit.position = Vector2(0, -RouteArt.size("ember_lamp").y)
-	lit.frame = absi(hash(cell)) % lit.sprite_frames.get_frame_count("default")
-	lit.play()
-	lit.visible = false
-	root.add_child(lit)
-	night_glows.append(lit)
-	ember_lamps[place] = lit
-	var top := Vector2(cell * TILE) + Vector2(0, TILE - RouteArt.size("ember_lamp").y)
-	var halo := _add_halo(top + RouteArt.HALO_AT, EMBER_HALO, EMBER_HALO_PEAK, RouteArt.light_of(kind) if RouteArt.KIND_LOOKS.has(kind) else HALO_TINT)
-	if not own_light:
-		return
-	var light := Lights.make(Vector2(cell * TILE) + EMBER_POOL, EMBER_REACH, RouteArt.light_of(kind), Lights.EMBER_ENERGY, true)
-	props.add_child(light)
-	halo.tree_exiting.connect(light.queue_free)
-	halo.set_meta("light", light)
-
-
-## A waystation's window lit at night (PIX-322): its glass alone, the dark
-## not touching it; no light of its own, so the lamp keeps the budget.
-func _add_hut_window(root: Node2D) -> void:
-	var pane := Sprite2D.new()
-	pane.texture = RouteArt.lit_window()
-	pane.centered = false
-	pane.material = Lights.unshaded()
-	pane.position = Vector2(0, -RouteArt.size("hut").y)
-	pane.visible = false
-	root.add_child(pane)
-	night_glows.append(pane)
-
-
-## `sprite` standing among the actors on the foot of `cell` (sorted on the
-## bottom of its row), drawn `at` from the cell's top-left: its root.
-func _stand_on(sprite: Node2D, cell: Vector2i, at: Vector2) -> Node2D:
-	var root := Node2D.new()
-	root.position = Vector2(cell * TILE) + Vector2(0, TILE)
-	root.add_to_group("decor")
-	sprite.position = at - Vector2(0, TILE)
-	root.add_child(sprite)
-	actors.add_child(root)
-	return root
-
-
-## A box on `cell` (PIX-313's dressing): covering the middle of the bottom
-## of the cell, as every prop's foot does.
-func _block(cell: Vector2i) -> void:
-	var body := StaticBody2D.new()
-	var shape := CollisionShape2D.new()
-	var rect := RectangleShape2D.new()
-	rect.size = HAMLET_FOOT.size
-	shape.shape = rect
-	body.add_child(shape)
-	body.position = Vector2(cell * TILE) + HAMLET_FOOT.get_center()
-	body.add_to_group("decor")
-	actors.add_child(body)
-
-
-## A miner's lantern by a door lit at night (PIX-313): its glass (the dark
-## doesn't touch it), a soft halo and its light on the ground below.
-func _add_lantern_light(root: Node2D, cell: Vector2i) -> void:
-	var lit := Sprite2D.new()
-	lit.texture = HamletArt.texture("lantern_lit")
-	lit.centered = false
-	lit.material = Lights.unshaded()
-	lit.position = Vector2(0, -TILE)
-	lit.visible = false
-	root.add_child(lit)
-	night_glows.append(lit)
-	var at := Vector2(cell * TILE) + HamletArt.LANTERN_GLASS
-	var halo := _add_halo(at, LAMP_HALO - 3, LAMP_HALO_PEAK)
-	var light := Lights.make(at + Vector2(0, TILE * 0.75), LANTERN_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
-	props.add_child(light)
-	halo.set_meta("light", light)
-
-
-## A hub's lit piece at night (PIX-324: the lighthouse's lantern, the
-## lodge's windows, the stall's lantern): what burns in it (the dark doesn't
-## touch it), a halo and its light on the ground about it.
-func _add_shine(root: Node2D, cell: Vector2i, art: String) -> void:
-	var lit := Sprite2D.new()
-	lit.texture = HamletArt.shine(art)
-	lit.centered = false
-	lit.material = Lights.unshaded()
-	lit.position = Vector2(0, -HamletArt.size(art).y)
-	lit.visible = false
-	root.add_child(lit)
-	night_glows.append(lit)
-	var at := Vector2(cell * TILE) + Vector2(0, TILE - HamletArt.size(art).y) + HamletArt.shine_at(art)
-	var halo := _add_halo(at, LAMP_HALO, LAMP_HALO_PEAK)
-	var light := Lights.make(at + Vector2(0, TILE * 0.5), LAMP_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
-	props.add_child(light)
-	halo.set_meta("light", light)
-
-
-## The fire's light under Morvax's door (PIX-312): the gap under it, its
-## keyhole and a warm wash on the step, flickering by day and night (added
-## onto what's under it, never darkened), and at night its light on the
-## ground before the door.
-func _add_door_glow(door: Vector2i) -> void:
-	var glow := AnimatedSprite2D.new()
-	glow.sprite_frames = HamletArt.door_glow()
-	glow.centered = false
-	glow.material = Lights.glow()
-	glow.position = Vector2(door * TILE)
-	glow.frame = absi(hash(door)) % glow.sprite_frames.get_frame_count("default")
-	glow.play()
-	glow.add_to_group("decor")
-	props.add_child(glow)
-	props.add_child(Lights.make(Vector2(door * TILE) + Vector2(TILE / 2.0, TILE + 6), FORGE_REACH, Lights.FIRE, Lights.FIRE_ENERGY, true))
-
-
 ## Deals day `day`'s wild patches, unless they're dealt already; whether
 ## they changed (PatchesLayer).
 func deal_patches(day: int) -> bool:
@@ -2554,122 +1919,9 @@ func show_post_box() -> void:
 	PatchesLayer.show_post_box(self)
 
 
-## A tent pitched on the map as it stands (PIX-253 step 9: Iva's on the
-## square's edge, the Night of Bells): drawn among the actors, its cell
-## blocked, gone with the visit.
+## A tent pitched on the map as it stands, its cell blocked (CampsLayer).
 func pitch_tent(cell: Vector2i) -> void:
-	if camps.has(cell):
-		return
-	camps[cell] = {"kind": "tent", "tile": TENTS["marsh"]}
-	data.covered[cell] = true
-	_add_camp_piece(cell, camps[cell])
-
-
-## A camp's tent or torch: sorted among the actors at its foot, which blocks.
-func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
-	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post": HAMLET_FOOT, "post_house": POST_HOUSE_FOOT, "desk": DESK_FOOT}.get(piece["kind"], TORCH_FOOT)
-	var root := Node2D.new()
-	root.position = Vector2(cell * TILE) + Vector2(0, foot.end.y)
-	root.add_to_group("decor")
-	var sprite: Node2D
-	if piece["kind"] == "torch":
-		var flame := AnimatedSprite2D.new()
-		flame.sprite_frames = _camp_torch_frames()
-		flame.play()
-		flame.material = Lights.unshaded()
-		# A camp's fire lights the camp (PIX-221), and sparks rise off it
-		# (PIX-225).
-		root.add_child(Lights.make(Vector2(TILE / 2.0, -foot.end.y + 4), 72.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
-		var embers := _still(Motes.make_embers(3))
-		embers.position = Vector2(TILE / 2.0, -foot.end.y - 2 - LampArt.STAKE_LIFT)
-		embers.z_index = 6
-		root.add_child(embers)
-		# Each camp's fire flickers on its own beat.
-		flame.frame = absi(hash(cell)) % CAMP_TORCH.size()
-		sprite = flame
-		# On a stake driven into the ground, not a flame afloat (PIX-311).
-		var stake := Sprite2D.new()
-		stake.texture = LampArt.stake()
-		stake.centered = false
-		stake.position = Vector2(0, -foot.end.y)
-		root.add_child(stake)
-	elif piece["kind"] == "post":
-		# The post box (PIX-320), its pennant up while it holds the day's
-		# post (show_post_box), standing on the bottom of its cell.
-		post_box = Sprite2D.new()
-		sprite = post_box
-		show_post_box()
-	elif piece["kind"] == "post_house":
-		post_house = Sprite2D.new()
-		post_house.texture = HamletArt.texture("post_house")
-		sprite = post_house
-	else:
-		var tent := Sprite2D.new()
-		tent.texture = RoomArt.texture(piece["art"]) if piece.has("art") else PunyTerrain.sheet().tile_texture(piece["tile"])
-		sprite = tent
-		# Her ledger read by its candle at night.
-		if piece["kind"] == "desk":
-			_add_candle(Vector2(cell * TILE) + DESK_FLAME)
-	sprite.set("centered", false)
-	sprite.position = Vector2(0, -foot.end.y - (LampArt.STAKE_LIFT if piece["kind"] == "torch" else 0))
-	if piece["kind"] in ["post", "post_house"]:
-		sprite.position.y = TILE - HamletArt.size("post_box" if piece["kind"] == "post" else "post_house").y - foot.end.y
-	root.add_child(sprite)
-	if piece.get("wanted", false):
-		var poster := Sprite2D.new()
-		poster.texture = _wanted_poster()
-		poster.centered = false
-		poster.position = Vector2(4, 3)
-		sprite.add_child(poster)
-	var body := StaticBody2D.new()
-	var shape := CollisionShape2D.new()
-	var rect := RectangleShape2D.new()
-	rect.size = foot.size
-	shape.shape = rect
-	shape.position = foot.get_center() - Vector2(0, foot.end.y)
-	body.add_child(shape)
-	root.add_child(body)
-	actors.add_child(root)
-
-
-static var _torch_frames: SpriteFrames
-static var _poster: ImageTexture
-
-
-## The Slayer's Ledger's bounty pinned over the board's notes (PIX-338): a
-## red pin, the beast's claw raked across it, the reward's line under.
-const POSTER := [
-	"....r....",
-	"ffffrffff",
-	"ffkffkffk",
-	"ffkffkffk",
-	"fkffkffkf",
-	"fkffkffkf",
-	"fffffffff",
-	"fsssssssf",
-	"sssssssss",
-]
-const POSTER_INKS := {"f": "f1e3c0", "s": "c9b48a", "r": "b33a2c", "k": "8a2a20"}
-
-
-static func _wanted_poster() -> ImageTexture:
-	if _poster == null:
-		var art := Image.create(POSTER[0].length(), POSTER.size(), false, Image.FORMAT_RGBA8)
-		for y in POSTER.size():
-			for x in POSTER[y].length():
-				if POSTER[y][x] != ".":
-					art.set_pixel(x, y, Color(POSTER_INKS[POSTER[y][x]]))
-		_poster = ImageTexture.create_from_image(art)
-	return _poster
-
-
-static func _camp_torch_frames() -> SpriteFrames:
-	if _torch_frames == null:
-		_torch_frames = SpriteFrames.new()
-		_torch_frames.set_animation_speed("default", 8.0)
-		for tile: int in CAMP_TORCH:
-			_torch_frames.add_frame("default", PunyDungeon.sheet().tile_texture(tile))
-	return _torch_frames
+	CampsLayer.pitch_tent(self, cell)
 
 
 ## A bush, stump or tree that blocks: on its cell's centre (no jitter, so the

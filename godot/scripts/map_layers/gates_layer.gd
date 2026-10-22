@@ -165,7 +165,7 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 ## tower; at night a halo round it and its light on the road below.
 static func _add_gate_torch(view: MapView, cell: Vector2i, at: Vector2) -> void:
 	var flame := AnimatedSprite2D.new()
-	flame.sprite_frames = MapView._camp_torch_frames()
+	flame.sprite_frames = CampsLayer._camp_torch_frames()
 	flame.centered = false
 	flame.frame = absi(hash(cell)) % flame.sprite_frames.get_frame_count("default")
 	flame.play()

@@ -16364,6 +16364,10 @@ msgstr "valider"
 msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
 
+#: scripts/map_layers/settlements_layer.gd
+msgid "Halfway to %s"
+msgstr "À mi-chemin vers %s"
+
 #: scripts/map_screen.gd
 msgid "Forgetting"
 msgstr "Oubli"
@@ -16371,10 +16375,6 @@ msgstr "Oubli"
 #: scripts/map_screen.gd
 msgid "Goal"
 msgstr "Objectif"
-
-#: scripts/map_screen.gd
-msgid "Halfway to %s"
-msgstr "À mi-chemin vers %s"
 
 #: scripts/map_screen.gd
 msgid "Lair"

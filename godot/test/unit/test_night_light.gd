@@ -104,7 +104,7 @@ func test_the_night_of_ash_burns_in_soft_pools() -> void:
 	# A burning house lights the ground as a few pools, not one to a flame.
 	var pools := 0
 	for ruin: Dictionary in ruins:
-		pools += MapView.fire_pools(ruin["rect"]).size()
+		pools += CampsLayer.fire_pools(ruin["rect"]).size()
 	assert_lt(pools, ruins.size() * 3, "a few pools to a burning house")
 	assert_gte(_reaches(root).size(), pools, "every pool is a light")
 	_check("the Night of Ash", root)
@@ -114,11 +114,11 @@ func test_a_burning_house_is_lit_from_end_to_end() -> void:
 	for ruin: Dictionary in Town.ruins([]):
 		var rect: Rect2i = ruin["rect"]
 		var area := Rect2(Vector2(rect.position * MapView.TILE), Vector2(rect.size * MapView.TILE))
-		for pool: Dictionary in MapView.fire_pools(rect):
+		for pool: Dictionary in CampsLayer.fire_pools(rect):
 			assert_true(area.has_point(pool["at"]), "a pool in the house it lights")
 		# Every corner of the house is under a pool, short of its rim.
 		for corner: Vector2 in [area.position, area.position + Vector2(area.size.x, 0), area.end, area.position + Vector2(0, area.size.y)]:
-			var lit := MapView.fire_pools(rect).any(func(pool: Dictionary) -> bool: return (pool["at"] as Vector2).distance_to(corner) < float(pool["radius"]) * 0.8)
+			var lit := CampsLayer.fire_pools(rect).any(func(pool: Dictionary) -> bool: return (pool["at"] as Vector2).distance_to(corner) < float(pool["radius"]) * 0.8)
 			assert_true(lit, "the corner %s of the house at %s is lit" % [corner, rect])
 
 

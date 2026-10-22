@@ -16364,16 +16364,16 @@ msgstr ""
 msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr ""
 
+#: scripts/map_layers/settlements_layer.gd
+msgid "Halfway to %s"
+msgstr ""
+
 #: scripts/map_screen.gd
 msgid "Forgetting"
 msgstr ""
 
 #: scripts/map_screen.gd
 msgid "Goal"
-msgstr ""
-
-#: scripts/map_screen.gd
-msgid "Halfway to %s"
 msgstr ""
 
 #: scripts/map_screen.gd
