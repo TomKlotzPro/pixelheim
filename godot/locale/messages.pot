@@ -2389,6 +2389,10 @@ msgid "Behind the scenes: new ground for the regions to come (Shade's sea in thr
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: the map's gates, props and patches of ground are now drawn by layers of their own, the first step in breaking up the game's biggest file; every map looks exactly as before"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: the test tool's setup no longer lives in the game's own code, and its 800-line script is now a list of small steps run in order, so the game is simpler to read and the tests easier to extend"
 msgstr ""
 
@@ -3686,6 +3690,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Layer by Layer"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.274.0",
+      "date": "2026-10-22",
+      "codename": "Layer by Layer",
+      "notes": [
+        "Behind the scenes: the map's gates, props and patches of ground are now drawn by layers of their own, the first step in breaking up the game's biggest file; every map looks exactly as before"
+      ]
+    },
+    {
       "version": "0.273.0",
       "date": "2026-10-22",
       "codename": "Steps in Order",
