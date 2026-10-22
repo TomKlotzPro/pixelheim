@@ -6,7 +6,7 @@ class_name HarnessFlags
 ## and froze the hero in every clip until the filming became `film`), and
 ## nothing said so while each step searched the command line on its own. So
 ## a flag is declared once, the command line is parsed once against the
-## table, and every reader - the harness's steps, the world, GameState, the
+## table, and every reader - the harness's boot and steps, the world, the
 ## lights, the look book - asks the parse. test_harness_flags keeps it so (no
 ## name twice; every flag the scripts read, and the tools and the README
 ## pass, is here) and `-- --help` prints it.
@@ -18,7 +18,8 @@ class_name HarnessFlags
 ## Every flag, a line each (PIX-356: a row a branch adds merges by union,
 ## where a table in this script made catch-up merges conflict):
 ## `flag | takes | does`, the argument it takes ("" for none) and what it
-## does. Its head says the order.
+## does, then `| step | order` for a flag that is a step of the run
+## (PIX-357). Its head says the order.
 const TABLE_FILE := "res://scripts/harness_flags.txt"
 
 ## The run's own flags, parsed once (`given()`).
@@ -71,25 +72,26 @@ static func given() -> HarnessFlags:
 ## Every flag's row, in TABLE_FILE's order.
 static func table() -> Array[Dictionary]:
 	if _table.is_empty():
-		_table = read_rows(TABLE_FILE, ["flag", "takes", "does"])
+		_table = read_rows(TABLE_FILE, ["flag", "takes", "does", "step", "order"], 2)
 	return _table
 
 
 ## The rows of a registry kept a line each (this table, HarnessReport's):
-## `a | b | c` under `columns`, the last taking the rest of the line; blank
-## lines and `#` ones skipped.
-static func read_rows(path: String, columns: PackedStringArray) -> Array[Dictionary]:
+## `a | b | c` under `columns`, the last taking the rest of the line, or
+## leaving out the last `optional` columns (they read ""); blank lines and
+## `#` ones skipped.
+static func read_rows(path: String, columns: PackedStringArray, optional := 0) -> Array[Dictionary]:
 	var rows: Array[Dictionary] = []
 	for line in FileAccess.get_file_as_string(path).split("\n"):
 		if line.strip_edges() == "" or line.begins_with("#"):
 			continue
 		var cells := line.split(" | ", true, columns.size() - 1)
-		if cells.size() != columns.size():
+		if cells.size() < columns.size() - optional:
 			push_error("%s: a row is %s: %s" % [path, " | ".join(columns), line])
 			continue
 		var row := {}
 		for at in columns.size():
-			row[columns[at]] = cells[at].strip_edges()
+			row[columns[at]] = cells[at].strip_edges() if at < cells.size() else ""
 		rows.append(row)
 	return rows
 
@@ -118,6 +120,17 @@ func value(flag: String, default := "") -> String:
 ## commas; empty when it wasn't given.
 func list(flag: String) -> PackedStringArray:
 	return value(flag).split(",") if has(flag) else PackedStringArray()
+
+
+## The rows of the flags given that are steps (PIX-357), by their order:
+## harness.gd awaits each in turn.
+func steps() -> Array[Dictionary]:
+	var rows: Array[Dictionary] = []
+	for flag: String in _found:
+		if row_of(flag)["step"] != "":
+			rows.append(row_of(flag))
+	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["order"]) < int(b["order"]))
+	return rows
 
 
 ## A flag read that the table doesn't declare is a mistake in the reader.

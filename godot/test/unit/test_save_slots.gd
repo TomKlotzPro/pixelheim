@@ -121,7 +121,7 @@ func test_the_notes_read_are_remembered_and_a_harness_run_writes_nothing() -> vo
 
 func test_boot_starts_a_new_game_in_the_last_slot_then_resumes_it() -> void:
 	var first := _fresh_state()
-	first.boot(HarnessFlags.new())
+	first.boot()
 	assert_eq(first.slot, 1)
 	assert_false(FileAccess.file_exists(slots.path_for(1)), "the title's stand-in isn't written")
 	first.new_hero_in(first.free_slot(), "Robin", "warrior")
@@ -129,13 +129,13 @@ func test_boot_starts_a_new_game_in_the_last_slot_then_resumes_it() -> void:
 	first.pack.gold = 999
 	first.save_now()
 	var second := _fresh_state()
-	second.boot(HarnessFlags.new())
+	second.boot()
 	assert_eq(second.pack.gold, 999)
 
 
 func test_boot_honors_a_named_slot_and_remembers_it() -> void:
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "2"])))
+	state.boot(2)
 	assert_eq(state.slot, 2)
 	var settings := GameSettings.new(DIR + "/settings.cfg")
 	settings.load_file()
@@ -144,7 +144,7 @@ func test_boot_honors_a_named_slot_and_remembers_it() -> void:
 
 func test_harness_runs_never_touch_saves() -> void:
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--screenshot"])))
+	HarnessBoot.boot(HarnessFlags.new(PackedStringArray(["--screenshot"])), state)
 	assert_eq(state.slot, GameStateScript.NO_SLOT)
 	state.pack.gold = 5
 	state.save_now()
@@ -154,26 +154,26 @@ func test_harness_runs_never_touch_saves() -> void:
 
 func test_boot_runs_once_per_session() -> void:
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	state.boot(1)
 	state.new_hero_in(2, "Robin", "warrior")
-	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))  # the world scene reloaded
+	state.boot(1)  # the world scene reloaded
 	assert_eq(state.slot, 2, "a reload must not undo the switch")
 
 
 func test_a_first_visit_lasts_until_a_hero_is_made() -> void:
 	var first := _fresh_state()
-	first.boot(HarnessFlags.new())
+	first.boot()
 	assert_true(first.standing_in)
 	first.save_now()
 	var second := _fresh_state()
-	second.boot(HarnessFlags.new())
+	second.boot()
 	assert_true(second.standing_in, "the stand-in behind the title is never written")
 	for slot in range(1, SaveSlots.SLOT_COUNT + 1):
 		assert_false(FileAccess.file_exists(slots.path_for(slot)), "slot %d stays empty" % slot)
 	assert_eq(second.free_slot(), second.slot, "the new hero takes the slot in hand")
 	second.new_hero_in(second.free_slot(), "Robin", "ranger", 1)
 	var third := _fresh_state()
-	third.boot(HarnessFlags.new())
+	third.boot()
 	assert_false(third.standing_in)
 	assert_eq(third.hero.hero_name, "Robin")
 	assert_eq(third.hero.role_id, "ranger")
@@ -186,7 +186,7 @@ func test_an_empty_slot_is_no_hero_to_play() -> void:
 	# past creation and the Night of Ash. Now it's refused (the saves screen
 	# opens creation for it instead).
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	state.boot(1)
 	state.pack.gold = 777
 	assert_false(state.play_slot(3))
 	assert_eq(state.slot, 1, "the hero in hand stays")
@@ -202,7 +202,7 @@ func test_an_empty_slot_is_no_hero_to_play() -> void:
 
 func test_importing_writes_the_slot_and_plays_it() -> void:
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	state.boot(1)
 	var imported := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/slots/slot_3.save"))
 	state.import_into(2, imported)
 	assert_eq(state.slot, 2)
@@ -215,7 +215,7 @@ func test_importing_writes_the_slot_and_plays_it() -> void:
 
 func test_new_hero_replaces_a_slot() -> void:
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	state.boot(1)
 	state.pack.gold = 500
 	state.save_now()
 	state.new_hero_in(1)
@@ -224,7 +224,7 @@ func test_new_hero_replaces_a_slot() -> void:
 
 func test_any_slot_clears_and_the_hero_in_hand_becomes_a_stand_in() -> void:
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	state.boot(1)
 	state.new_hero_in(2, "Robin", "warrior")
 	assert_true(state.clear_slot(1))
 	assert_eq(slots.read(1), {})
@@ -461,7 +461,7 @@ func test_read_only_slots_are_never_written_or_erased() -> void:
 func test_a_launch_that_cant_read_its_slot_never_writes_over_it() -> void:
 	_put(slots.path_for(1), "{ damaged")
 	var first := _fresh_state()
-	first.boot(HarnessFlags.new())
+	first.boot()
 	assert_eq(first.slot, 1, "the last slot played")
 	assert_true(first.standing_in, "a stand-in, no Continue")
 	assert_string_contains(first.slot_note, "1")
@@ -480,7 +480,7 @@ func test_a_named_slot_it_cant_read_stands_in_too() -> void:
 	var newer := _newer_text()
 	_put(slots.path_for(1), newer)
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	state.boot(1)
 	assert_true(state.standing_in)
 	assert_string_contains(state.slot_note, "1")
 	state.save_now()
@@ -491,7 +491,7 @@ func test_new_game_skips_every_slot_it_cant_read() -> void:
 	_put(slots.path_for(1), "{ damaged")
 	_put(slots.path_for(2), _newer_text())
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new())
+	state.boot()
 	assert_eq(state.free_slot(), 3)
 	_put(slots.path_for(3), "{ damaged too")
 	assert_eq(state.free_slot(), 0, "none free: creation says so")
@@ -499,7 +499,7 @@ func test_new_game_skips_every_slot_it_cant_read() -> void:
 
 func test_an_unread_slot_is_no_hero_to_play_but_clears() -> void:
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	state.boot(1)
 	state.pack.gold = 777
 	_put(slots.path_for(2), "{ damaged")
 	_put(slots.path_for(3), _newer_text())
@@ -516,7 +516,7 @@ func test_a_hero_from_the_save_before_is_told_and_saved_back() -> void:
 	DirAccess.remove_absolute(slots.path_for(1))
 	_put(slots.path_for(1), "{ broken")
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new())
+	state.boot()
 	assert_false(state.standing_in)
 	assert_eq(state.pack.gold, 100, "the save before")
 	assert_string_contains(state.slot_note, "Wanderer")
@@ -622,7 +622,7 @@ func test_new_game_with_every_slot_taken_says_so_and_starts_nothing() -> void:
 func test_a_harness_run_reads_the_players_slots_and_never_writes_them() -> void:
 	slots.write(1, _state(100))
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--screenshot"])))
+	HarnessBoot.boot(HarnessFlags.new(PackedStringArray(["--screenshot"])), state)
 	assert_true(slots.read_only)
 	state.new_hero_in(2, "Robin", "warrior")
 	assert_false(FileAccess.file_exists(slots.path_for(2)), "creation's Begin writes nothing")
@@ -666,7 +666,7 @@ func test_a_v5_save_beside_an_older_one_plays() -> void:
 func test_a_launch_on_an_older_slot_stands_in_and_says_so() -> void:
 	var old := _put_older(1)
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new())
+	state.boot()
 	assert_eq(state.slot, 1)
 	assert_true(state.standing_in, "no one to continue")
 	assert_string_contains(state.slot_note, "1")
@@ -682,7 +682,7 @@ func test_an_older_slot_plays_no_one_and_clears_with_all_its_files() -> void:
 	_put_older(2)
 	_put(slots.older_for(2)[1], "the save before it")
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	state.boot(1)
 	assert_false(state.play_slot(2))
 	assert_eq(state.slot, 1)
 	assert_true(state.clear_slot(2), "cleared, once the screen has asked twice")
@@ -744,7 +744,7 @@ func test_the_fixture_slots_hold_an_older_save_a_hero_and_room() -> void:
 
 func test_play_time_is_saved_on_leaving_even_with_nothing_else_changed() -> void:
 	var state := _fresh_state()
-	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	state.boot(1)
 	state.title_seen = true
 	state.save_now()
 	state._process(30.0)

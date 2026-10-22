@@ -143,7 +143,38 @@ func _check(words: PackedStringArray, where: String) -> int:
 	return checked
 
 
-## flag -> the script that reads it, from every script's source.
+## Every flag's step (PIX-357) is the `step_<name>()` of one of the steps'
+## scripts, named by that flag alone, and no two steps share an order: the
+## order is the run's.
+func test_every_step_is_there_and_no_two_share_an_order() -> void:
+	var areas: Array = preload("res://scripts/harness.gd").STEPS.map(func(script: GDScript) -> Object: return script.new())
+	var orders := {}
+	var named := {}
+	for row: Dictionary in HarnessFlags.table():
+		var flag: String = row["flag"]
+		if row["step"] == "":
+			assert_eq(row["order"], "", "%s has no step, so no order" % flag)
+			continue
+		var step := "step_" + String(row["step"])
+		assert_eq(areas.filter(func(area: Object) -> bool: return area.has_method(step)).size(), 1,
+			"%s's %s() is in one of scripts/harness_steps/" % [flag, step])
+		assert_false(named.has(step), "%s is %s's step, not %s's too" % [step, named.get(step), flag])
+		named[step] = flag
+		assert_true(String(row["order"]).is_valid_int(), "%s's order is a number" % flag)
+		var order := int(row["order"])
+		assert_false(orders.has(order), "%s and %s share the order %d" % [orders.get(order), flag, order])
+		orders[order] = flag
+	assert_gt(named.size(), 70, "the steps were found")
+
+
+func test_the_steps_given_run_by_their_order() -> void:
+	var flags := HarnessFlags.new(PackedStringArray(["--screenshot", "--keys", "esc", "fight", "--map", "town", "--level", "5"]))
+	var steps: Array = flags.steps().map(func(row: Dictionary) -> String: return row["step"])
+	assert_eq(steps, ["level", "fight", "breath", "keys"], "by order, whatever the command line's; --map is no step")
+
+
+## flag -> the script that reads it, from every script's source; a flag that
+## is a step is read by harness.gd as it runs it (PIX-357).
 func _read_flags() -> Dictionary:
 	var reads := RegEx.create_from_string(READ)
 	var out := {}
@@ -151,6 +182,9 @@ func _read_flags() -> Dictionary:
 	for path: String in scripts:
 		for found in reads.search_all(scripts[path]):
 			out[found.get_string(1)] = path.get_file()
+	for row: Dictionary in HarnessFlags.table():
+		if row["step"] != "":
+			out[row["flag"]] = "harness.gd"
 	return out
 
 

@@ -7,8 +7,9 @@ extends GutTest
 ## The scripts that time the machine itself, and may read its clock: what a
 ## frame costs, what a map's build costs, what entering a map costs, and the
 ## milliseconds a frame of drawing the map beside the hero may take (One
-## Reach, PIX-269: Slicer's budget is the machine's work).
-const MEASURES := ["perf_probe.gd", "map_view.gd", "harness.gd", "slicer.gd"]
+## Reach, PIX-269: Slicer's budget is the machine's work); the harness's
+## steps that measure, and its walk's frame clock (`crossing`, PIX-357).
+const MEASURES := ["perf_probe.gd", "map_view.gd", "harness.gd", "slicer.gd", "harness_steps/measure.gd", "harness_steps/travel.gd"]
 
 
 func test_it_counts_the_physics_ticks() -> void:
@@ -25,15 +26,15 @@ func test_play_reads_the_game_clock_not_the_machines() -> void:
 	var scripts := _scripts("res://scripts")
 	assert_gt(scripts.size(), 50)
 	for path: String in scripts:
-		if path.get_file() in MEASURES:
+		if MEASURES.any(func(measure: String) -> bool: return path.ends_with("/" + measure)):
 			continue
 		var found := machine.search(scripts[path])
 		assert_null(found, "%s reads GameClock (%s is the machine's clock)" % [path, found.get_string() if found else ""])
 
 
 func test_a_harness_run_throws_the_same_dice() -> void:
-	var source := FileAccess.get_file_as_string("res://scripts/state/game_state.gd")
-	assert_string_contains(source, "seed(HARNESS_SEED)")
+	var source := FileAccess.get_file_as_string("res://scripts/harness_boot.gd")
+	assert_string_contains(source, "seed(GameState.HARNESS_SEED)")
 	seed(GameState.HARNESS_SEED)
 	var first := [randf(), randi(), [1, 2, 3, 4, 5].pick_random()]
 	seed(GameState.HARNESS_SEED)
