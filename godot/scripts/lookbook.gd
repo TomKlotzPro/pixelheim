@@ -299,8 +299,8 @@ func _stage(shot: Dictionary) -> void:
 		# once the world has drawn the hero turned (run).
 		world.player.face(Vector2.UP)
 	for cell: Vector2i in shot.get("drops", {}):
-		# Laid as the map lays a patch (MapView.pickup), gone with the visit.
-		world.view.ground.add_child(MapView.pickup(ItemIcons.texture(shot["drops"][cell]), cell))
+		# Laid as the map lays a patch (PatchesLayer.pickup), gone with the visit.
+		world.view.ground.add_child(PatchesLayer.pickup(ItemIcons.texture(shot["drops"][cell]), cell))
 	if shot.get("post", "") == "box":
 		world.player.face(Vector2.UP)
 	if shot.get("post", "") == "tab":

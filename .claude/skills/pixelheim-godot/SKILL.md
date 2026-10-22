@@ -30,7 +30,7 @@ A feature that shows in the world and is checked by a flow touches, besides its 
 
 1. **Rules**: a pure class in `scripts/state/<name>.gd` and `test/unit/test_<name>.gd`; data in `assets/data/*.json` with a test keeping it whole.
 2. **Save**: a field in its state section and `SaveCodec.to_file`/`from_file` only if it can't be worked out from what's saved (`saves.md`).
-3. **Drawing**: a unit in `MapView`'s `planning`/`building` (`map_view.gd`), its pieces in its own `*_art.gd`; its blockers in `MapData.covered` (`art.md`, `world.md`).
+3. **Drawing**: a layer under `scripts/map_layers/` (`MapLayer`: `plan`, `build`, `set_night`; PIX-359) whose units `MapView` calls where its kind stands in `planning`/`building`, its pieces in its own `*_art.gd`; its blockers in `MapData.covered` (`art.md`, `world.md`).
 4. **Wiring**: `world.gd` or the `world_*.gd` piece it belongs to (E in `world_interaction.gd`, foes in `world_foes.gd`, the story in `world_stage.gd`).
 5. **Harness flag**: a line in `scripts/harness_flags.txt` (`flag | takes | does`), read through `HarnessFlags.given()`: a preset before the first map in `HarnessBoot.before_first_map` (`harness_boot.gd`), or a step: `| step | order` on its line and its `step_<step>()` in `scripts/harness_steps/<area>.gd` (PIX-357).
 6. **Report field**: a line in `scripts/harness_report.txt` and its `field_<name>()` in `harness_report.gd`, in place by name.
