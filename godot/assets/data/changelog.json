@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.277.0",
+      "date": "2026-10-22",
+      "codename": "Sleeping Wolves",
+      "notes": [
+        "Monsters far off the screen now rest until you come near, so the Reach takes half the work it did each frame, by day and at night; they wake well before they come into view, and packs, night raids and loot are just as before"
+      ]
+    },
+    {
       "version": "0.276.0",
       "date": "2026-10-22",
       "codename": "Ground Floor",

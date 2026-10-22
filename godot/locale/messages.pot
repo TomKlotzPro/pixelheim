@@ -3949,6 +3949,10 @@ msgid "Monsters far below your level run when they see you: a pale exclamation m
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Monsters far off the screen now rest until you come near, so the Reach takes half the work it did each frame, by day and at night; they wake well before they come into view, and packs, night raids and loot are just as before"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Monsters fight dirty now: wyverns poison, the dragon burns, golems stun"
 msgstr ""
 
@@ -4890,6 +4894,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Sleep till morning: face a bed at the inn (for the night's coin) or your own bed at home and press E; the screen goes dark and you wake at dawn, restored. Walking into the inn no longer takes a bed by itself"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Sleeping Wolves"
 msgstr ""
 
 #: assets/data/changelog.json
