@@ -2377,6 +2377,10 @@ msgid "Begin"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: camps, fires, smoke and tents, and the hamlets with their chimneys, lanterns and lamps, are now drawn by layers of their own; the game's biggest file is down by a third, and every map looks exactly as before"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: each script now names the checks it needs, the project's notes are slimmer and up to date, and every change is timed on the overworld at night, in the Deepwood and across a road out, so a slowdown is caught before it reaches you"
 msgstr ""
 
@@ -2534,6 +2538,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "CURRENT WORDS: Loras wants his lute back from the troll and Mirelle two gems for her vault, as their quests say, not old prices; the Town age's goal says its fountain will still want Fafnyr's scale; a recipe's missing material always names itself"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Camps and Hamlets"
 msgstr ""
 
 #: assets/data/changelog.json
