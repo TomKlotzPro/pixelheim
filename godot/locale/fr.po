@@ -2393,6 +2393,10 @@ msgid "Behind the scenes: new ground for the regions to come (Shade's sea in thr
 msgstr "En coulisses : de nouveaux sols pour les régions à venir (la mer de Shade en trois profondeurs, quais, neige, glace et pavés) et un outil qui transforme un croquis en carte"
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: the checks that only look at a map now run ten to a single start of the game instead of starting it each time, so every change is checked faster"
+msgstr "En coulisses : les vérifications qui ne font que regarder une carte passent désormais par dix dans un seul lancement du jeu au lieu de le relancer à chaque fois, et chaque changement est vérifié plus vite"
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: the ground, the rooms and the dungeons now have layers of their own too, so the game's biggest file has gone from about 3,300 lines to 1,300; every map looks exactly as before"
 msgstr "En coulisses : le sol, les intérieurs et les donjons ont eux aussi leurs propres couches, et le plus gros fichier du jeu est passé d'environ 3 300 lignes à 1 300 ; chaque carte reste exactement la même"
 
@@ -5411,6 +5415,10 @@ msgstr "Parler est simple désormais : E trouve qui se tient à côté de vous
 #: assets/data/changelog.json
 msgid "Tam's Ladle, Captain Hale and Maren's lines now agree with where things were found, and the credits end: Thank you for staying."
 msgstr "La louche de Tam, le capitaine Hale et Maren s'accordent avec ce qui a été trouvé, et le générique se termine par : Merci d'avoir choisi de rester."
+
+#: assets/data/changelog.json
+msgid "Ten at a Time"
+msgstr "Dix d'un coup"
 
 #: assets/data/changelog.json
 msgid "Ten floors of monsters, from cellar slimes to Fafnyr the Ashen"
