@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.275.0",
+      "date": "2026-10-22",
+      "codename": "Camps and Hamlets",
+      "notes": [
+        "Behind the scenes: camps, fires, smoke and tents, and the hamlets with their chimneys, lanterns and lamps, are now drawn by layers of their own; the game's biggest file is down by a third, and every map looks exactly as before"
+      ]
+    },
+    {
       "version": "0.274.0",
       "date": "2026-10-22",
       "codename": "Layer by Layer",

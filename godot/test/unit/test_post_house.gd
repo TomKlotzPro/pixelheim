@@ -124,7 +124,7 @@ func test_it_stands_behind_the_box_at_every_age() -> void:
 		for npc: Dictionary in Npcs.on_map("town", tier, [], done) + Npcs.on_map("town", tier, settled, done):
 			for offset: Vector2i in Npcs.LOOP if npc["wander"] else [Vector2i.ZERO]:
 				assert_does_not_have(cells, Vector2i(npc["x"], npc["y"]) + offset, "age %d: %s keeps off it" % [tier, npc["id"]])
-	var foot := MapView.POST_HOUSE_FOOT
+	var foot := CampsLayer.POST_HOUSE_FOOT
 	for left in [0, MapView.TILE]:
 		assert_true(foot.has_point(Vector2(left + 4, 7)) and foot.has_point(Vector2(left + 12, 15)), "each cell blocked over x 4..12, y 7..15")
 	assert_eq(HamletArt.size("post_house"), Vector2i(32, 44), "two cells wide")
