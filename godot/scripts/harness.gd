@@ -202,6 +202,9 @@ func _run_test_harness() -> void:
 		# shared screenshot.png would be whichever run saved last.
 		(await DesktopLook.snapshot(self)).save_png(flags.value("--shot", "res://screenshot.png"))
 	print(line)
+	# `--batch` (PIX-360): the batch's next flow, from a boot's state.
+	if HarnessBoot.next_flow(get_tree()):
+		return
 	# Let the audio server let go of the music before the engine shuts down.
 	get_tree().paused = true  # nothing may start a track again
 	Sound.stop_all()

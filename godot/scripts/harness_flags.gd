@@ -62,11 +62,33 @@ func _init(args := PackedStringArray()) -> void:
 		at += 1
 
 
-## The command line's flags, parsed the first time they're asked for.
+## The command line's flags, parsed the first time they're asked for; in a
+## batch (`--batch <file>`, PIX-360), the flags of the flow it's on.
 static func given() -> HarnessFlags:
 	if _given == null:
-		_given = HarnessFlags.new(OS.get_cmdline_user_args())
+		var flags := HarnessFlags.new(OS.get_cmdline_user_args())
+		_given = flags
+		if flags.has("--batch"):
+			batch = FileAccess.get_file_as_string(flags.value("--batch")).split("\n", false)
+			next_in_batch()
 	return _given
+
+
+## `--batch <file>`'s flows still to run, `name|harness arguments` a line each
+## (tools/flows.sh: the look-only flows, one Godot booting once for several).
+static var batch := PackedStringArray()
+
+
+## The batch's next flow: its name on a line of its own (flows.sh splits the
+## output there) and its flags given, the command line's with `--batch <file>`
+## given way to the flow's arguments, as flows.sh runs a flow alone.
+static func next_in_batch() -> void:
+	var flow := batch[0].split("|")
+	batch.remove_at(0)
+	print("BATCH " + flow[0])
+	var line := OS.get_cmdline_user_args()
+	var at := line.find("--batch")
+	_given = HarnessFlags.new(line.slice(0, at) + flow[1].split(" ", false) + line.slice(at + 2))
 
 
 ## Every flag's row, in TABLE_FILE's order.

@@ -20,11 +20,16 @@ class_name GameClock
 ## Measuring the machine itself (what a frame or a load costs: PerfProbe,
 ## MapView.timed, the harness's `reentry`) still reads Time.
 
+## The tick the clock counts from: 0, the engine's start, but in a harness
+## batch (`--batch`, PIX-360), where each flow's boot starts it again.
+static var origin := 0
+
+
 ## Seconds since the engine started, a tick at a time.
 static func seconds() -> float:
-	return Engine.get_physics_frames() / float(Engine.physics_ticks_per_second)
+	return (Engine.get_physics_frames() - origin) / float(Engine.physics_ticks_per_second)
 
 
 ## The same in whole milliseconds.
 static func msec() -> int:
-	return Engine.get_physics_frames() * 1000 / Engine.physics_ticks_per_second
+	return (Engine.get_physics_frames() - origin) * 1000 / Engine.physics_ticks_per_second

@@ -19,6 +19,7 @@ the next ` name=`. A field the report doesn't show fails the flow.
 
     python3 godot/tools/flows.py list            # every flow: name|args|expect|tags
     python3 godot/tools/flows.py list --boot     # every map booted, by day and at night
+    python3 godot/tools/flows.py look-only [--boot]   # the flows run in batches, a name a line
     python3 godot/tools/flows.py match EXPECT REPORT   # why REPORT fails EXPECT ("" if it doesn't)
 """
 import glob
@@ -36,6 +37,16 @@ NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 FIELD_START = re.compile(r" +(?=[a-z_]+=)")
 FIELD = re.compile(r"([a-z_]+)=(.*)", re.S)
 REPORT_HEAD = "screenshot saved;"
+
+# The look-only flows (PIX-360): every word of their arguments is one of these,
+# a preset set before the first map, where the hero stands, the camera, the
+# hour or a wait, so nothing is pressed, walked, fought or opened. flows.sh
+# --quiet runs them in batches, several in one Godot (the harness's --batch),
+# each from a boot's state. Anything else runs alone, `cc0` (its art kept
+# for the session), `--lang` and `--fps` among them.
+LOOK_TAKES = {"--map", "--at", "--zoom", "--wait", "--town-tier", "--built", "--house-tier", "--day",
+              "--settlers", "--seen", "--hunted", "--delivered", "--post", "--routes", "--lit"}
+LOOK_BARE = {"night", "overview"}
 
 
 class FlowError(Exception):
@@ -133,6 +144,20 @@ def read_flows(path=FLOWS):
     return flows
 
 
+def look_only(args):
+    """Whether a flow's harness arguments only boot and look (LOOK_TAKES, LOOK_BARE)."""
+    words = args.split()
+    at = 0
+    while at < len(words):
+        if words[at] in LOOK_TAKES:
+            at += 2
+        elif words[at] in LOOK_BARE:
+            at += 1
+        else:
+            return False
+    return True
+
+
 def boot_flows():
     """Every map the game can stand in (--boot), from the game's own data, so
     a new map is checked without a line in flows.txt: each map file (a house
@@ -173,6 +198,11 @@ def main(argv):
         if argv[:1] == ["list"] and argv[1:] in ([], ["--boot"]):
             for flow in (boot_flows() if argv[1:] else read_flows()):
                 print("|".join(flow))
+            return 0
+        if argv[:1] == ["look-only"] and argv[1:] in ([], ["--boot"]):
+            for flow in (boot_flows() if argv[1:] else read_flows()):
+                if look_only(flow[1]):
+                    print(flow[0])
             return 0
         if argv[:1] == ["match"] and len(argv) == 3:
             why = mismatch(argv[1], argv[2])

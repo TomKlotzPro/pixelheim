@@ -57,6 +57,15 @@
 # flake hunt (.github/workflows/flakes.yml, nightly) runs every flow round
 # after round under load to keep it so.
 #
+# A quiet run (--boot's too) runs the look-only flows (tools/flows.py: their
+# arguments only set the scene up and look) in batches of FLOWS_BATCH (10),
+# one Godot for each batch, launched first (PIX-360): a boot was most of a
+# flow's time. The harness's --batch runs them one after another, each from
+# a boot's state (HarnessBoot.next_flow), so each reports what it does
+# alone; its share of the output and the log goes to its own folder, and
+# the batch's whole ones stay in batch-<its first flow>/. FLOWS_BATCH=1
+# runs every flow alone.
+#
 # --boot boots every map the game can stand in (PIX-270): each map in
 # assets/maps, the village at each of its ages, the house at each of its
 # tiers and every dungeon's planned floors (the Kings' Vault's among them),
@@ -107,8 +116,16 @@ case $jobs in
 		exit 2
 		;;
 esac
-# A run that never quits is killed after this many seconds (a watchdog).
+# A run that never quits is killed after this many seconds (a watchdog;
+# a batch's, as many for each of its flows).
 watchdog=${FLOWS_WATCHDOG:-60}
+batch=${FLOWS_BATCH:-10}
+case $batch in
+	"" | *[!0-9]* | 0)
+		echo "flows.sh: FLOWS_BATCH takes the look-only flows a Godot runs (1: each alone)" >&2
+		exit 2
+		;;
+esac
 
 # name|harness arguments|expected report fields|tags, a line each, from
 # flows.txt (or, with --boot, every map the game can stand in: flows.py
@@ -145,11 +162,11 @@ runs="$PWD/flows/$([[ $boot == 1 ]] && echo boot || echo runs)"
 now() { perl -MTime::HiRes=time -e 'printf "%.2f", time'; }
 since() { perl -MTime::HiRes=time -e 'printf "%.1f", time - $ARGV[0]' "$1"; }
 
-# One Godot run of a flow, in job slot $3, its output in its folder's
-# output.txt. A watchdog: a run that never quits fails instead of stalling
-# the rest.
+# One Godot run of a flow (or a batch), in job slot $3, its output in its
+# folder's output.txt. A watchdog, after $4 seconds (the watchdog's): a run
+# that never quits fails instead of stalling the rest.
 run_godot() {
-	local dir=$1 args=$2 slot=$3 godot watcher ran fps=60 pace=' --fps ([0-9]+) '
+	local dir=$1 args=$2 slot=$3 alarm=${4:-$watchdog} godot watcher ran fps=60 pace=' --fps ([0-9]+) '
 	local window=(--headless) drawing=()
 	if [[ $quiet == 0 ]]; then
 		# Each slot's window a little down and right of the one before:
@@ -164,7 +181,7 @@ run_godot() {
 	# Stepped: 60 frames a second of the game's time, or the flow's --fps.
 	[[ " $args " =~ $pace ]] && fps=${BASH_REMATCH[1]}
 	# shellcheck disable=SC2086 # the arguments are meant to split
-	perl -e "alarm $watchdog; exec @ARGV" godot "${window[@]}" --fixed-fps "$fps" --audio-driver Dummy --log-file "$dir/godot.log" --path . -- --screenshot $args ${drawing[@]+"${drawing[@]}"} --shot "$dir/shot.png" ${FLOWS_EXTRA:-} >"$dir/output.txt" 2>&1 &
+	perl -e "alarm $alarm; exec @ARGV" godot "${window[@]}" --fixed-fps "$fps" --audio-driver Dummy --log-file "$dir/godot.log" --path . -- --screenshot $args ${drawing[@]+"${drawing[@]}"} --shot "$dir/shot.png" ${FLOWS_EXTRA:-} >"$dir/output.txt" 2>&1 &
 	godot=$!
 	# A script that doesn't parse leaves Godot on an empty scene until the
 	# watchdog: every run would wait out its minute. It has failed, so it
@@ -186,21 +203,61 @@ shows() {
 	why=$(python3 tools/flows.py match "$1" "$2")
 }
 
-# Runs flow $1 (its index in FLOWS) in job slot $2 and leaves its result in
-# its folder: status|name|seconds|line, written whole as its last act.
+# Runs flow $1 (its index in FLOWS) in job slot $2 and judges it.
 run_flow() {
-	local name args expect tags
-	IFS="|" read -r name args expect tags <<<"${FLOWS[$1]}"
-	local dir="$runs/$name" status=ok line start ran output report errors why=""
+	local dir="$runs/${FLOWS[$1]%%|*}" args start
+	args=${FLOWS[$1]#*|}
 	mkdir -p "$dir"
 	start=$(now)
-	run_godot "$dir" "$args" "$2"
+	run_godot "$dir" "${args%%|*}" "$2"
+	judge "$1" $? "$(since "$start")"
+}
+
+# Runs the look-only flows $2... (their indexes in FLOWS) one after another
+# in one Godot, in job slot $1 (the harness's --batch, PIX-360), then puts
+# each one's share of the output and the log in its own folder (from its
+# BATCH line to the next) and judges it as if it had run alone, its time
+# the batch's shared out.
+run_batch() {
+	local slot=$1 dir i name args rest start ran took file
+	shift
+	dir="$runs/batch-${FLOWS[$1]%%|*}"
+	mkdir -p "$dir"
+	for i in "$@"; do
+		IFS="|" read -r name args rest <<<"${FLOWS[i]}"
+		mkdir -p "$runs/$name"
+		echo "$name|$args"
+	done >"$dir/flows.txt"
+	start=$(now)
+	run_godot "$dir" "--batch $dir/flows.txt" "$slot" $((watchdog * $#))
 	ran=$?
-	output=$(<"$dir/output.txt")
+	took=$(perl -e 'printf "%.1f", $ARGV[0] / $ARGV[1]' "$(since "$start")" $#)
+	for file in output.txt godot.log; do
+		awk -v runs="$runs" -v file="$file" -v first="${FLOWS[$1]%%|*}" '
+			BEGIN { to = runs "/" first "/" file }
+			/^BATCH [a-z0-9_-]+$/ { close(to); to = runs "/" $2 "/" file; next }
+			{ print > to }' "$dir/$file"
+	done
+	for i in "$@"; do
+		judge "$i" "$ran" "$took"
+	done
+}
+
+# Judges flow $1 (its index in FLOWS) by the output in its folder, from a
+# Godot that ended with $2 after $3 seconds, and leaves its result there:
+# status|name|seconds|line, written whole as its last act.
+judge() {
+	local name args expect tags
+	IFS="|" read -r name args expect tags <<<"${FLOWS[$1]}"
+	local dir="$runs/$name" status=ok line ran=$2 output report errors why=""
+	output=$(cat "$dir/output.txt" 2>/dev/null)
 	report=$(grep "screenshot saved" <<<"$output")
 	# 128 + SIGALRM: the watchdog's.
 	if [[ $ran == 142 && -z $report ]]; then
-		report="none: the watchdog stopped it after ${watchdog}s"
+		report="none: the watchdog stopped it (or its batch)"
+	fi
+	if [[ ! -f $dir/output.txt ]]; then
+		report="none: its batch stopped at a flow before it"
 	fi
 	# A script error fails the flow even when the report looks right: a broken
 	# map build once logged errors on every map but the town while the report
@@ -217,7 +274,7 @@ run_flow() {
 		status=FAIL
 		line="expected $expect (${why:-but no picture}), got: ${report:-no report}"
 	fi
-	printf "%s|%s|%s|%s\n" "$status" "$name" "$(since "$start")" "$line" >"$dir/result.part"
+	printf "%s|%s|%s|%s\n" "$status" "$name" "$3" "$line" >"$dir/result.part"
 	mv "$dir/result.part" "$dir/result"
 }
 
@@ -241,7 +298,7 @@ done
 count=${#picked[@]}
 # The last run's results go first: a result in a flow's folder is this run's.
 for i in ${picked[@]+"${picked[@]}"}; do
-	rm -rf "${runs:?}/${FLOWS[i]%%|*}"
+	rm -rf "${runs:?}/${FLOWS[i]%%|*}" "${runs:?}/batch-${FLOWS[i]%%|*}"
 done
 
 failed=0
@@ -327,8 +384,37 @@ launch() {
 	pid_of[$1]=$!
 }
 
+# Starts the flows at positions $@ of the picked ones as a batch in a free slot.
+launch_batch() {
+	local slot k flows=()
+	free_slot
+	for k in "$@"; do
+		flows+=("${picked[k]}")
+	done
+	run_batch "$slot" "${flows[@]}" &
+	slot_pid[slot]=$!
+	for k in "$@"; do
+		pid_of[k]=$!
+	done
+}
+
+# The look-only flows, headless, in batches (PIX-360), started first: each
+# batch is a longer run than a flow.
+batched=" "
+if [[ $quiet == 1 && $batch -gt 1 ]]; then
+	look=" $(python3 tools/flows.py look-only $([[ $boot == 1 ]] && echo --boot) | tr '\n' ' ') "
+	together=()
+	for ((k = 0; k < count; k++)); do
+		[[ $look == *" ${FLOWS[${picked[k]}]%%|*} "* ]] && together+=("$k") && batched+="$k "
+	done
+	for ((at = 0; at < ${#together[@]}; at += batch)); do
+		launch_batch "${together[@]:at:batch}"
+	done
+fi
+
 later=()
 for ((k = 0; k < count; k++)); do
+	[[ $batched == *" $k "* ]] && continue
 	name=${FLOWS[${picked[k]}]%%|*}
 	if [[ $windowed == *" $name "* ]]; then
 		if [[ $quiet == 1 ]]; then

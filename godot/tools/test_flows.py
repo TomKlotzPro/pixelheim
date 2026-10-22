@@ -19,7 +19,7 @@ FLOWS_SH = os.path.join(TOOLS, "flows.sh")
 ## The tickets flows.sh may name: the runner's own (the release flows, the
 ## French run, side by side, the job summary, the tags, this, the stepped
 ## runs). A flow's ticket goes beside it in flows.txt.
-RUNNER_TICKETS = {"PIX-129", "PIX-196", "PIX-270", "PIX-271", "PIX-272", "PIX-273", "PIX-276"}
+RUNNER_TICKETS = {"PIX-129", "PIX-196", "PIX-270", "PIX-271", "PIX-272", "PIX-273", "PIX-276", "PIX-360"}
 
 REPORT = ("screenshot saved; map=town cell=(79, 4) hp=120 gold=90 save=town(79, 4) draws=212 paused=false"
           " open=none night=0 mobs=3 card=The Mirefen floats=+60 gold logged=0 packs=slime,goblin:asleep")
@@ -113,6 +113,17 @@ class FileTest(unittest.TestCase):
         self.assertIn(("town-night", "--map town night", "map=town", ""), boots)
         for name, args, expect, tags in boots:
             flows.expectation(expect)
+
+    def test_only_a_flow_that_boots_and_looks_is_batched(self):
+        for args in ("--map town", "--map town --at 40,13 night --wait 0.5", "--map overworld --day 3 overview",
+                     "--map town --town-tier 0 --built the_inn --zoom play"):
+            self.assertTrue(flows.look_only(args), args)
+        # A step that plays, a flag the batch can't put back, a flag's
+        # argument that reads as a flag elsewhere: alone.
+        for args in ("--map town fight kill", "--map town --keys e", "--map town cc0", "--map town --lang fr",
+                     "--map town --fps 120", "--map town --walk r,r", "--map night fight"):
+            self.assertFalse(flows.look_only(args), args)
+        self.assertTrue(all(flows.look_only(args) for name, args, expect, tags in flows.boot_flows()))
 
 
 class RunnerTest(unittest.TestCase):
