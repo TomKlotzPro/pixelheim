@@ -15,7 +15,8 @@ extends RefCounted
 ## seven maps under the Reach's sky are worked out early in the session,
 ## long before the hero reaches an edge. The props, the village far off and
 ## the field's blocking scatter, the slow parts of planning a map, are kept
-## the same way (props, skyline, solid).
+## the same way (props, skyline, solid), and so are its woods, the slowest
+## part of drawing one (woods: the Deepwood's 25 ms of 33, PIX-360).
 ## One per drawing of a map (a village that has grown since works its own
 ## out again and replaces it), a tile to an int: everything kept for the
 ## whole Reach, the village and its six regions is about a megabyte.
@@ -99,6 +100,8 @@ static var _decks := {}
 static var _props := {}
 static var _skylines := {}
 static var _solids := {}
+## The same drawing -> its woods: {"fingerprint", "value"} (woods).
+static var _woods := {}
 
 
 ## `data`'s ground as drawn (`look`: the village far off drawn in on the
@@ -388,6 +391,17 @@ static func solid(data: MapData, kept: Dictionary, drawn: Dictionary) -> Diction
 		func() -> Dictionary: return Scatter.solid(data, kept, drawn))
 
 
+## What the woods stand on `data` (Woods.pieces in the look Woods.look_at
+## gives it): cell -> its pieces, empty at first, MapView filling it a cell
+## at a time as it draws them and reading it back on every drawing after.
+## A cell's pieces follow from the map's ground, its regions and the paid
+## pack alone (hashes, no dice), so it's kept while those don't change: a
+## village that grows, its ground another, starts its own.
+static func woods(data: MapData) -> Dictionary:
+	return _keep(_woods, data.id + data.variant, hash([data.grid.hash(), data.regions.hash(), PunyTown.available()]),
+		func() -> Dictionary: return {})
+
+
 static func _keep(store: Dictionary, drawing: String, fingerprint: int, work: Callable) -> Dictionary:
 	var kept: Dictionary = store.get(drawing, {})
 	if not kept.is_empty() and int(kept["fingerprint"]) == fingerprint:
@@ -494,3 +508,4 @@ static func forget() -> void:
 	_props.clear()
 	_skylines.clear()
 	_solids.clear()
+	_woods.clear()

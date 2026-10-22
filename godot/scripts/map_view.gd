@@ -99,6 +99,8 @@ var bare := {}
 ## the trees, the wheat, the bushes, stumps, stones and tufts. The harness
 ## reports how many (decor=).
 var field := {}
+## The woods' pieces by cell, as worked out this session (KeptGround.woods).
+var woods := {}
 var ground: Node2D
 var ground_tint: ShaderMaterial
 ## The same toning for what the wind moves (PIX-223): each tree and wheat
@@ -703,6 +705,8 @@ func _decor_units(slices: Slicer) -> void:
 
 ## The field decor of DECOR_ROWS rows from the `i`-th band down.
 func _field_rows(i: int) -> void:
+	if i == 0:
+		woods = KeptGround.woods(data)
 	for y in range(i * DECOR_ROWS, mini((i + 1) * DECOR_ROWS, data.size.y)):
 		for x in data.size.x:
 			_add_field_decor(Vector2i(x, y))
@@ -879,8 +883,11 @@ func _add_field_decor(cell: Vector2i) -> void:
 	elif _is_flat_decor(cell, choice):
 		ground.add_child(_flat_decor(cell, choice))
 	elif data.grid[cell] in WOODED:
-		# The woods in clumps, and the ridge's rim (Woods, PIX-309).
-		for piece: Dictionary in Woods.pieces(data.grid[cell], cell, choice, Woods.look_at(data, cell), PunyTown.available()):
+		# The woods in clumps, and the ridge's rim (Woods, PIX-309), worked
+		# out once a session (PIX-360).
+		if not woods.has(cell):
+			woods[cell] = Woods.pieces(data.grid[cell], cell, choice, Woods.look_at(data, cell), PunyTown.available())
+		for piece: Dictionary in woods[cell]:
 			_add_wood(piece, cell)
 	else:
 		_add_decor_sprite(PunyTerrain.SHEET, PunyTerrain.region(choice), cell, absi(hash(cell)))

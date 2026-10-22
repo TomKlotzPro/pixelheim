@@ -101,3 +101,30 @@ func test_what_is_kept_stays_small() -> void:
 		KeptGround.of(map, map.grid, MapView.EDGE_PAD)
 		KeptGround.decks(map)
 	assert_lt(KeptGround.bytes(), 2 * 1024 * 1024, "the whole Reach kept in under 2 MB")
+
+
+## The woods (Woods.pieces, the slowest part of drawing the Deepwood) are
+## worked out on a map's first drawing and taken from there on the next,
+## which stands every tree where it stood; a map whose ground changed works
+## its own out again (PIX-360).
+func test_the_woods_are_worked_out_once() -> void:
+	var views: Array[MapView] = []
+	for visit in 2:
+		var root := Node2D.new()
+		add_child_autofree(root)
+		var standing := Node2D.new()
+		root.add_child(standing)
+		var view := MapView.new(MapData.load_by_id("deepwood"), standing)
+		view.plan(view.data.spawn)
+		view.build(root)
+		views.append(view)
+	assert_gt(views[0].woods.size(), 1000, "the Deepwood's woods worked out on its first drawing")
+	assert_same(views[1].woods, views[0].woods, "and taken from what was kept on the next")
+	var trees: Array = views.map(func(view: MapView) -> Array:
+		return view.stand.get_children().filter(func(node: Node) -> bool: return node is Sprite2D and node.material in [view.decor_sway, view.woods_sway]) \
+			.map(func(sprite: Sprite2D) -> Array: return [sprite.texture, sprite.position, sprite.offset, sprite.material == view.woods_sway]))
+	assert_gt((trees[0] as Array).size(), 2000, "its trees drawn")
+	assert_eq(trees[1], trees[0], "the same trees, where they stood")
+	var changed := MapData.load_by_id("deepwood")
+	changed.grid[Vector2i(10, 3)] = "grass"
+	assert_false(is_same(KeptGround.woods(changed), views[0].woods), "a map whose ground changed works its woods out again")
