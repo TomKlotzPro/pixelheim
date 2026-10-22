@@ -16372,6 +16372,10 @@ msgstr "valider"
 msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
 
+#: scripts/map_layers/dungeon_layer.gd
+msgid "Way out"
+msgstr "Sortie"
+
 #: scripts/map_layers/settlements_layer.gd
 msgid "Halfway to %s"
 msgstr "À mi-chemin vers %s"
@@ -16427,10 +16431,6 @@ msgstr "Vous"
 #: scripts/map_screen.gd
 msgid "maps"
 msgstr "cartes"
-
-#: scripts/map_view.gd
-msgid "Way out"
-msgstr "Sortie"
 
 #: scripts/options_screen.gd
 msgid "%s already does %s. Choose another key."

@@ -16372,6 +16372,10 @@ msgstr ""
 msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr ""
 
+#: scripts/map_layers/dungeon_layer.gd
+msgid "Way out"
+msgstr ""
+
 #: scripts/map_layers/settlements_layer.gd
 msgid "Halfway to %s"
 msgstr ""
@@ -16426,10 +16430,6 @@ msgstr ""
 
 #: scripts/map_screen.gd
 msgid "maps"
-msgstr ""
-
-#: scripts/map_view.gd
-msgid "Way out"
 msgstr ""
 
 #: scripts/options_screen.gd

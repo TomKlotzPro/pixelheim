@@ -62,7 +62,7 @@ func _ready() -> void:
 	_stair.material.set_shader_parameter("ember", Lights.WAY_OUT)
 	_stair.material.set_shader_parameter("dissolve", 1.0)
 	add_child(_stair)
-	_glow = Lights.make(Vector2(TILE, TILE) / 2.0, MapView.WAY_OUT_GLOW, Lights.WAY_OUT, 0.0)
+	_glow = Lights.make(Vector2(TILE, TILE) / 2.0, DungeonLayer.WAY_OUT_GLOW, Lights.WAY_OUT, 0.0)
 	_glow.set_meta("pulse", true)
 	add_child(_glow)
 
