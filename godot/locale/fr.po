@@ -3665,6 +3665,10 @@ msgid "Know Your Trade"
 msgstr "Connaître son métier"
 
 #: assets/data/changelog.json
+msgid "Known Woods"
+msgstr "Bois connus"
+
+#: assets/data/changelog.json
 msgid "LAMPS AT NIGHT: the town's torches stand cold by day and burn after dusk, with a warm glow around each, and the windows light up too"
 msgstr "LUMIÈRES NOCTURNES : les torches de la ville restent froides le jour et brûlent après le crépuscule, chacune nimbée d'une lueur chaude, et les fenêtres s'allument aussi"
 
@@ -6139,6 +6143,10 @@ msgstr "Le jeu sur le web n'embarque plus ses tests : environ 1,4 Mo de moins 
 #: assets/data/changelog.json
 msgid "The wind moves the world: trees, wheat and flowers sway, their tops more than their feet, as gusts roll across the land"
 msgstr "Le vent anime le monde : arbres, blé et fleurs se balancent, la cime plus que le pied, au gré des rafales qui traversent les terres"
+
+#: assets/data/changelog.json
+msgid "The woods are worked out once a session: going back into the Deepwood, or seeing it drawn in beside you, now takes half the time, and the towns and the snowy north are quicker too"
+msgstr "Les bois ne sont plus calculés qu'une fois par session : retourner dans les Bois-Profonds, ou les voir apparaître à vos côtés, prend désormais deux fois moins de temps, et les villes comme le nord enneigé vont plus vite eux aussi"
 
 #: assets/data/changelog.json
 msgid "The world got redrawn: mottled grass, real cobblestone roads, rippled sand, sunlit tree canopies, and water with depth, crests and foam where it meets the land"
