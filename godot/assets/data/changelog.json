@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.272.0",
+      "date": "2026-10-22",
+      "codename": "One Line Each",
+      "notes": [
+        "Behind the scenes: the test tools' long lists (their options, report fields and look book shots) now live in plain files with one line each, so work done side by side no longer trips over itself"
+      ]
+    },
+    {
       "version": "0.271.0",
       "date": "2026-10-21",
       "codename": "On Its Base",
