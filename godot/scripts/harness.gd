@@ -158,6 +158,8 @@ var flags: HarnessFlags
 var report: HarnessReport
 ## `cpu`'s clock (PerfProbe.clock), read into the report at the end.
 var cpu := {}
+## `perf`'s line (PerfProbe.sample), for the web page's numbers.
+var perf := ""
 
 
 ## Runs the steps of the flags it was given, in the table's order (each
@@ -202,6 +204,11 @@ func _run_test_harness() -> void:
 		# shared screenshot.png would be whichever run saved last.
 		(await DesktopLook.snapshot(self)).save_png(flags.value("--shot", "res://screenshot.png"))
 	print(line)
+	# The web build's numbers on its page (PIX-361), where tools/web_perf.py
+	# reads them: a page's console is no file to grep.
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.pixelheimPerf = " + JSON.stringify({
+			"map": world.map.id, "cpu": report.noted("cpu"), "frames": report.noted("frames"), "perf": perf, "report": line}))
 	# `--batch` (PIX-360): the batch's next flow, from a boot's state.
 	if HarnessBoot.next_flow(get_tree()):
 		return

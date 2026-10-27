@@ -395,6 +395,9 @@ const engine = new Engine(GODOT_CONFIG);
 		}
 	} else {
 		engine.startGame({
+			// A harness run's command line (PIX-361, tools/web_perf.py sets it
+			// before the page loads); never from the URL, so no link can.
+			'args': window.pixelheimArgs || [],
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					loading.progress(current / total);

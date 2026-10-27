@@ -147,7 +147,8 @@ func step_perf() -> void:
 	if flags.has("lookbook"):
 		return
 	# `perf`: what this scene's frames cost (PerfProbe, the perf guard).
-	print("PERF " + await PerfProbe.sample(world))
+	h.perf = await PerfProbe.sample(world)
+	print("PERF " + h.perf)
 
 
 ## `overflow` (Solid Ground): every visible piece of an open screen that
