@@ -7,13 +7,19 @@ Godot doesn't import (PIX-356).
 """
 import configparser
 import fnmatch
+import glob
 import os
 import unittest
 
 PRESETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "export_presets.cfg")
 LEFT_OUT = ["test/unit/test_story.gd", "test/fixtures/slots/slot_1.json", "addons/gut/gut_cmdln.gd"]
 SHIPPED = ["scripts/world.gd", "scenes/main.tscn", "assets/data/catalog.json", "locale/fr.po"]
-NOT_IMPORTED = ["scripts/harness_flags.txt", "scripts/harness_report.txt", "scripts/lookbook_shots.jsonl"]
+GODOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+# And every feature's rows beside its feature.gd (PIX-361): read as they
+# are, so a feature's flags or fields left out would break the shipped game.
+FEATURE_ROWS = sorted(os.path.relpath(path, GODOT) for path in glob.glob(os.path.join(GODOT, "scripts", "features", "*", "*"))
+                      if not path.endswith((".gd", ".uid")))
+NOT_IMPORTED = ["scripts/harness_flags.txt", "scripts/harness_report.txt", "scripts/lookbook_shots.jsonl"] + FEATURE_ROWS
 
 
 def matched(path, export_filter):
@@ -31,6 +37,7 @@ class ExportTest(unittest.TestCase):
         config.read(PRESETS)
         presets = [s for s in config.sections() if s.count(".") == 1]
         self.assertGreaterEqual(len(presets), 3, "the Web, macOS and Windows presets")
+        self.assertIn("scripts/features/lamps/harness_flags.txt", FEATURE_ROWS, "the features' rows were found")
         for section in presets:
             preset = config[section]
             name = preset.get("name", section).strip('"')

@@ -29,7 +29,8 @@
 #   a script's "## areas:" line under its class_name/extends says which areas
 #   it touches, and tools/areas.txt says it for every other file (PIX-353). A
 #   changed map also runs the flows that name it, a changed scripts/<x>.gd
-#   the flows whose report shows open=<x>, and a changed flows.txt the flows
+#   the flows whose report shows open=<x>, and a changed flows.txt (or a
+#   feature's tools/flows.d/<feature>.txt) the flows
 #   it adds or changes. A file neither names, or whose areas no flow covers,
 #   runs every flow, and quick says so; a flow without a tag either knows
 #   runs every time.
@@ -311,16 +312,16 @@ pick() {
 		assets/maps/*.json) map=${file#assets/maps/} map=${map%.json} ;;
 		maps-src/*.txt) map=${file#maps-src/} map=${map%.txt} ;;
 	esac
-	if [[ $file == tools/flows.txt ]]; then
-		# The flows (PIX-273): those whose lines the branch added or changed.
-		# Given files, or a flows.txt git doesn't know yet, have no diff to
-		# read: every flow.
-		if [[ -z ${fork:-} ]] || ! git -C "$root" ls-files --error-unmatch godot/tools/flows.txt >/dev/null 2>&1; then
+	if [[ $file == tools/flows.txt || $file == tools/flows.d/*.txt ]]; then
+		# The flows (PIX-273; a feature's, PIX-361): those whose lines the
+		# branch added or changed. Given files, or a flows file git doesn't
+		# know yet, have no diff to read: every flow.
+		if [[ -z ${fork:-} ]] || ! git -C "$root" ls-files --error-unmatch "godot/$file" >/dev/null 2>&1; then
 			everything=1
 			why="the flows: every flow (no diff to read)"
 			return
 		fi
-		for flow in $(git -C "$root" diff --no-renames -U0 "$fork" -- godot/tools/flows.txt | grep -E '^\+[a-z0-9]' | cut -d"|" -f1 | tr -d '+ '); do
+		for flow in $(git -C "$root" diff --no-renames -U0 "$fork" -- "godot/$file" | grep -E '^\+[a-z0-9]' | cut -d"|" -f1 | tr -d '+ '); do
 			count=$((count + 1))
 			[[ $picked == *" $flow "* ]] || picked+="$flow "
 		done

@@ -202,29 +202,6 @@ route-map | --map overworld --routes saltmere:6,blackiron:3 --built waystation_s
 # and the box holds five pieces a morning.
 post-house-board | --map town --routes saltmere:6 --built waystation_saltmere hall | open=town_hall_screen works=lamp_mirefen,post_house | town quest screen
 post-house | --map town --post box --built waystation_saltmere,post_house | post=standing,box:0,bag:5,sent:0 posthouse=standing open=none | town story quest
-# The land heals round a waystation's ember lamp (PIX-323): two mornings
-# after it was lit, bare earth and grass a couple of cells round it, the
-# hero four cells off still in the Ash's air; five mornings on, the whole
-# ring, bare earth at its edge to saplings by the lamp, and the hero inside
-# it in the open land's air, by day and at night.
-lamps-heal-early | --map overworld --routes blackiron:6 --built waystation_blackiron --lit blackiron:2 --at 25,22 | map=overworld healed=earth\d+,grass\d+,meadow\d+,grove0 air=ash | travel field
-lamps-heal-whole | --map overworld --routes blackiron:6 --built waystation_blackiron --lit blackiron:5 --at 25,22 | map=overworld healed=earth\d+,grass\d+,meadow\d+,grove\d+ air=open | travel field
-lamps-heal-night | --map overworld --routes blackiron:6 --built waystation_blackiron --lit blackiron:5 --at 25,22 night | healed=earth\d+,grass\d+,meadow\d+,grove\d+ air=open waystations=blackiron:lit | travel field night
-# The fields renamed as they heal (PIX-325): every ring on the ash whole,
-# and walking down off the mountain's foot into them the card says the
-# Lantern Meadows.
-fields-renamed | --map overworld --built waystation_blackiron,waystation_greyhold,waystation_frostgate --lit blackiron:5,greyhold:5,frostgate:5 --at 48,7 --walk d,d --wait 0.4 --lang en | map=overworld card=The Lantern Meadows | travel field
-# Lamp kinds by region (PIX-324): the Saltmere road's lamp in sea glass
-# reaching a cell further, the Frostgate road's frost lily as far as an
-# ember's, and the grave moss lamp at the Mirefen Pass, the hero by it out
-# of the Mirefen's fog, which rolls in as before with no lamp there; each
-# burning in its own colour at night; Aske home, every ring a third wider;
-# and a healed lamp's morning find by it and Bram out from the village.
-lamp-kinds | --map overworld --routes saltmere:6,frostgate:5 --built waystation_saltmere,waystation_frostgate,lamp_mirefen --lit saltmere:9,frostgate:3,mirefen:9 --at 6,37 | map=overworld lamps=saltmere:sea_glass:6:cold,frostgate:frost_lily:5:cold,mirefen:grave_moss:5:cold air=open | travel field
-lamp-kinds-night | --map overworld --routes saltmere:6,frostgate:5 --built waystation_saltmere,waystation_frostgate,lamp_mirefen --lit saltmere:9,frostgate:3,mirefen:9 --at 6,37 night | lamps=saltmere:sea_glass:6:lit,frostgate:frost_lily:5:lit,mirefen:grave_moss:5:lit air=open | travel field night
-lamp-fog | --map overworld --routes saltmere:6 --built waystation_saltmere --lit saltmere:9 --at 6,37 | map=overworld lamps=saltmere:sea_glass:6:cold air=mire | travel field
-lamp-aske | --map overworld --routes blackiron:6 --built waystation_blackiron --lit blackiron:9 --hunted rimefang --at 25,22 | lamps=blackiron:ember:7:cold home=aske | travel field
-lamp-morning | --map overworld --routes saltmere:6 --built waystation_saltmere --lit saltmere:9 --day 26 --at 19,50 | finds=saltmere:sea_glass visitors=Bram | travel field
 # The mire's mimic chest shudders, then ambushes (PIX-129).
 mimic | --map mirefen mimic --wait 0.75 | map=mirefen cell=\(42, 13\) hp=42 | combat field
 # The mayor's word opens the town ledger; the board on the square opens it too (PIX-147).

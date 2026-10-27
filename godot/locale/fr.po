@@ -2381,6 +2381,10 @@ msgid "Begin"
 msgstr "Commencer"
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: a new part of the game can now live in a single folder that plugs itself in, instead of touching seven shared files; the lamps are the first to move"
+msgstr "En coulisses : une nouvelle partie du jeu peut désormais tenir dans un seul dossier qui se branche tout seul, au lieu de toucher sept fichiers partagés ; les lampes sont les premières à déménager"
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: camps, fires, smoke and tents, and the hamlets with their chimneys, lanterns and lamps, are now drawn by layers of their own; the game's biggest file is down by a third, and every map looks exactly as before"
 msgstr "En coulisses : les camps, les feux, la fumée et les tentes, ainsi que les hameaux avec leurs cheminées, leurs lanternes et leurs lampes, sont désormais dessinés par des couches à part ; le plus gros fichier du jeu a perdu un tiers de sa taille, et chaque carte reste exactement la même"
 
@@ -4303,6 +4307,10 @@ msgstr "Une fois le Gardien du Filon tombé, la cage à minerai vous remonte jus
 #: assets/data/changelog.json
 msgid "Once your whole skill tree is learned, spare skill points buy ranks beyond it in Stats: more skill power, health back from every blow, and more health, each capped"
 msgstr "Une fois tout l'arbre de compétences appris, les points restants achètent des rangs au-delà, dans Stats : plus de puissance, de la santé rendue à chaque coup et plus de santé, chacun plafonné"
+
+#: assets/data/changelog.json
+msgid "One Folder Each"
+msgstr "Un dossier chacune"
 
 #: assets/data/changelog.json
 msgid "One Game"

@@ -1,0 +1,9 @@
+# The lamps' report fields (PIX-323, PIX-324): `field | says`, as the core's
+# (scripts/harness_report.txt), which they join after its head, by name;
+# each field's function is `field_<name>(report)` in feature.gd, in the
+# same order.
+air | on a map where an ember lamp burns: the air the hero breathes, ash, or open inside a lamp's ring, where the Ash's heat and embers fade (PIX-323)
+finds | on the Reach: the morning's finds lying by the healed lamps, still to pick, by road: saltmere:sea_glass (PIX-324)
+healed | on a map where the ash heals round a lamp: its cells at each stage past the ash, as each is drawn (Lamps.LOOKS): earth9,grass8,meadow12,grove13 (PIX-323)
+lamps | on the Reach: each lit lamp by road, its kind, how far its ring reaches once whole and whether it burns now: saltmere:sea_glass:6:lit (PIX-324)
+visitors | on the Reach: who has come out from the village to a healed lamp, by name: Bram (PIX-324)

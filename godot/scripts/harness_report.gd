@@ -13,7 +13,9 @@ extends RefCounted
 ## A new field: a row in harness_report.txt in its place by name (after the
 ## head), and its function `field_<name>()` in the same place among the
 ## functions, returning its text, or "" when this run has none (the line
-## leaves it out). A value the run knows only part-way (the clock as the hero wakes)
+## leaves it out); a feature's field is a row in its own folder's
+## harness_report.txt and its `field_<name>(report)` in its feature.gd
+## (Feature, PIX-361). A value the run knows only part-way (the clock as the hero wakes)
 ## is `note`d by the harness then, and its function reads it back with
 ## `noted`. test_harness_report keeps it so: no field twice, the head first
 ## and the rest by name, each with its function in the table's order,
@@ -43,18 +45,28 @@ func _init(run: Node, given: HarnessFlags) -> void:
 	flags = given
 
 
-## Every field's row, in TABLE_FILE's order.
+## Every field's row, in TABLE_FILE's order, each feature's (PIX-361) among
+## the rest by name.
 static func table() -> Array[Dictionary]:
 	if _table.is_empty():
-		_table = HarnessFlags.read_rows(TABLE_FILE, ["field", "says"])
+		var columns: PackedStringArray = ["field", "says"]
+		var rows := HarnessFlags.read_rows(TABLE_FILE, columns)
+		for feature in Features.all():
+			rows.append_array(Features.rows(feature, "harness_report.txt", columns))
+		var rest := rows.slice(HEAD)
+		rest.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return String(a["field"]) < String(b["field"]))
+		_table = rows.slice(0, HEAD)
+		_table.append_array(rest)
 	return _table
 
 
-## The report line: every field this run has, in the table's order.
+## The report line: every field this run has, in the table's order (a
+## feature's from its own `field_<name>(report)`).
 func line() -> String:
 	var texts := {}
 	for row: Dictionary in table():
-		texts[row["field"]] = String(call("field_" + String(row["field"])))
+		var function := "field_" + String(row["field"])
+		texts[row["field"]] = String(row["feature"].call(function, self) if row.has("feature") else call(function))
 	return joined(texts)
 
 
@@ -172,13 +184,6 @@ func field_mobs() -> String:
 
 
 # --- The rest, by name -------------------------------------------------------
-
-func field_air() -> String:
-	if world.map == null or Lamps.now(world.map.id).is_empty():
-		return ""
-	var air: String = world.atmosphere.air
-	return air if air != "" else "open"
-
 
 func field_ascension() -> String:
 	if not flags.has("rankup"):
@@ -359,18 +364,6 @@ func field_fell() -> String:
 	return str(world.foes.bosses_fallen) if world.foes.bosses_fallen > 0 else ""
 
 
-func field_finds() -> String:
-	if world.view == null:
-		return ""
-	var out: PackedStringArray = []
-	for cell: Vector2i in world.view.patches:
-		var patch: Dictionary = world.view.patches[cell]
-		if String(patch["id"]).begins_with("lamp_find_") and Gathering.is_ready(GameState.world, patch["id"]):
-			out.append("%s:%s" % [String(patch["id"]).trim_prefix("lamp_find_"), patch["item"]])
-	out.sort()
-	return ",".join(out)
-
-
 func field_fires() -> String:
 	if world.view == null:
 		return ""
@@ -431,17 +424,6 @@ func field_hamlet() -> String:
 	var names: Array = kinds.keys()
 	names.sort()
 	return "%s:%s" % [world.view.hamlet["look"], ",".join(names.map(func(kind: String) -> String: return "%s%d" % [kind, kinds[kind]]))]
-
-
-func field_healed() -> String:
-	if world.view == null or world.view.healed.is_empty():
-		return ""
-	var parts: PackedStringArray = []
-	for stage in range(Lamps.EARTH, Lamps.SAPLINGS + 1):
-		var look: String = Lamps.LOOKS[stage]
-		var count: int = world.view.healed.values().count(look)
-		parts.append("%s%d" % [look, count])
-	return ",".join(parts)
 
 
 func field_hint() -> String:
@@ -545,17 +527,6 @@ func field_lamplight() -> String:
 	var shown := func(nodes: Array) -> int:
 		return nodes.filter(func(node: Node) -> bool: return is_instance_valid(node) and (node as CanvasItem).visible).size()
 	return "posts %d/%d panes %d flames %d beams %d" % [lit, view.lamps.size(), shown.call(view.panes), shown.call(view.flames), shown.call(view.beams)]
-
-
-func field_lamps() -> String:
-	if world.map == null or world.view == null:
-		return ""
-	var out: PackedStringArray = []
-	for ring: Dictionary in Lamps.now(world.map.id):
-		var ember: Variant = world.view.ember_lamps.get(ring["place"])
-		var lit: bool = ember != null and is_instance_valid(ember) and (ember as Node2D).visible
-		out.append("%s:%s:%d:%s" % [ring["place"], ring["kind"], ring["reach"], "lit" if lit else "cold"])
-	return ",".join(out)
 
 
 func field_letters() -> String:
@@ -891,15 +862,6 @@ func field_tracked() -> String:
 
 func field_turns() -> String:
 	return noted("turns")
-
-
-func field_visitors() -> String:
-	var names: PackedStringArray = []
-	for npc: Node in world.get_tree().get_nodes_in_group("npcs"):
-		if String(npc.data.get("id", "")).begins_with("lamp_visitor_"):
-			names.append(String(npc.data["name"]))
-	names.sort()
-	return ",".join(names)
 
 
 func field_water() -> String:

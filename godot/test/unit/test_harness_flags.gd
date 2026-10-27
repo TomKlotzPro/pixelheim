@@ -99,7 +99,11 @@ func test_every_flag_the_tools_and_the_readme_pass_is_in_the_table() -> void:
 	var checked := 0
 	# The release flows, a line each in flows.txt (PIX-273): `name | harness
 	# arguments | expected | tags`; and FLOWS_EXTRA in flows.sh.
-	var entries := RegEx.create_from_string("(?m)^[\\w-]+\\s*\\|([^|]*)\\|").search_all(FileAccess.get_file_as_string("res://tools/flows.txt"))
+	# Each feature's too, in tools/flows.d (PIX-361).
+	var listed := FileAccess.get_file_as_string("res://tools/flows.txt")
+	for file in DirAccess.get_files_at("res://tools/flows.d"):
+		listed += "\n" + FileAccess.get_file_as_string("res://tools/flows.d/" + file)
+	var entries := RegEx.create_from_string("(?m)^[\\w-]+\\s*\\|([^|]*)\\|").search_all(listed)
 	assert_gt(entries.size(), 50, "the flows were found")
 	for found in entries:
 		checked += _check(found.get_string(1).split(" ", false), "tools/flows.txt")

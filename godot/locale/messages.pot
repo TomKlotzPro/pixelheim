@@ -2381,6 +2381,10 @@ msgid "Begin"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: a new part of the game can now live in a single folder that plugs itself in, instead of touching seven shared files; the lamps are the first to move"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: camps, fires, smoke and tents, and the hamlets with their chimneys, lanterns and lamps, are now drawn by layers of their own; the game's biggest file is down by a third, and every map looks exactly as before"
 msgstr ""
 
@@ -4302,6 +4306,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Once your whole skill tree is learned, spare skill points buy ranks beyond it in Stats: more skill power, health back from every blow, and more health, each capped"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "One Folder Each"
 msgstr ""
 
 #: assets/data/changelog.json

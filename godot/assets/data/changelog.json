@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.282.0",
+      "date": "2026-10-28",
+      "codename": "One Folder Each",
+      "notes": [
+        "Behind the scenes: a new part of the game can now live in a single folder that plugs itself in, instead of touching seven shared files; the lamps are the first to move"
+      ]
+    },
+    {
       "version": "0.281.0",
       "date": "2026-10-27",
       "codename": "In the Browser",

@@ -2,7 +2,9 @@
 """The release flows' list and their check (PIX-273), for tools/flows.sh.
 
 The flows live in tools/flows.txt, one a line (`name | harness arguments |
-what the report must show | tags`), each under its own comment. They used
+what the report must show | tags`), each under its own comment; a
+feature's flows are in tools/flows.d/<feature>.txt, read after it, file by
+file, as if they ended it (PIX-361). They used
 to be a bash array in flows.sh under one long sentence that named every
 flow, and every branch that added a flow edited that sentence and the end
 of the array: two branches at once always conflicted. A new flow is now an
@@ -31,6 +33,8 @@ import sys
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 GODOT = os.path.dirname(TOOLS)
 FLOWS = os.path.join(TOOLS, "flows.txt")
+# Each feature's flows (PIX-361), a file each, read after FLOWS by name.
+FLOWS_D = os.path.join(TOOLS, "flows.d")
 
 NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 # Where the next field starts: a space, then a field's name and its `=`.
@@ -110,37 +114,44 @@ def mismatch(expect, report):
     return "; ".join(wrong)
 
 
-def read_flows(path=FLOWS):
-    """Every flow in flows.txt as (name, args, expect, tags), in order. Refuses
-    a line that isn't one, a name given twice and a flow without its comment."""
+def flow_files():
+    """flows.txt, then every feature's flows file (flows.d/*.txt) by name."""
+    return [FLOWS] + sorted(glob.glob(os.path.join(FLOWS_D, "*.txt")))
+
+
+def read_flows(*paths):
+    """Every flow in flows.txt and flows.d (or in `paths`) as (name, args,
+    expect, tags), in order. Refuses a line that isn't one, a name given
+    twice (in any of the files) and a flow without its comment."""
     flows = []
     seen = {}
-    before = ""
-    with open(path, encoding="utf-8") as file:
-        for number, raw in enumerate(file, 1):
-            line = raw.rstrip("\n")
-            where = "%s:%d" % (os.path.relpath(path, GODOT), number)
-            stripped = line.strip()
-            if not stripped or stripped.startswith("#"):
+    for path in paths or flow_files():
+        before = ""
+        with open(path, encoding="utf-8") as file:
+            for number, raw in enumerate(file, 1):
+                line = raw.rstrip("\n")
+                where = "%s:%d" % (os.path.relpath(path, GODOT), number)
+                stripped = line.strip()
+                if not stripped or stripped.startswith("#"):
+                    before = stripped
+                    continue
+                parts = [part.strip() for part in line.split("|")]
+                if len(parts) != 4:
+                    raise FlowError("%s: a flow is name | harness arguments | expected | tags, %d fields here" % (where, len(parts)))
+                name, args, expect, tags = parts
+                if not NAME.fullmatch(name):
+                    raise FlowError("%s: %r is not a flow's name (lowercase words joined by -)" % (where, name))
+                if name in seen:
+                    raise FlowError("%s: %s is already the flow at %s" % (where, name, seen[name]))
+                if before == "":
+                    raise FlowError("%s: %s has no comment: put a line above it saying what it walks through (PIX-...)" % (where, name))
+                try:
+                    expectation(expect)
+                except FlowError as error:
+                    raise FlowError("%s: %s: %s" % (where, name, error))
+                seen[name] = where
+                flows.append((name, " ".join(args.split()), expect, " ".join(tags.split())))
                 before = stripped
-                continue
-            parts = [part.strip() for part in line.split("|")]
-            if len(parts) != 4:
-                raise FlowError("%s: a flow is name | harness arguments | expected | tags, %d fields here" % (where, len(parts)))
-            name, args, expect, tags = parts
-            if not NAME.fullmatch(name):
-                raise FlowError("%s: %r is not a flow's name (lowercase words joined by -)" % (where, name))
-            if name in seen:
-                raise FlowError("%s: %s is already the flow on line %d" % (where, name, seen[name]))
-            if before == "":
-                raise FlowError("%s: %s has no comment: put a line above it saying what it walks through (PIX-...)" % (where, name))
-            try:
-                expectation(expect)
-            except FlowError as error:
-                raise FlowError("%s: %s: %s" % (where, name, error))
-            seen[name] = number
-            flows.append((name, " ".join(args.split()), expect, " ".join(tags.split())))
-            before = stripped
     return flows
 
 

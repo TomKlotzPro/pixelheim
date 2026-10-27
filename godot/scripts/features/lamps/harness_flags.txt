@@ -1,0 +1,4 @@
+# The lamps' harness flags (PIX-323): `flag | takes | does`, as the core's
+# (scripts/harness_flags.txt), in its table after feature.gd's
+# flags_after().
+--lit | <place:mornings,...> | the waystation on the road to each place lit that many mornings ago (PIX-323: built with --built), the land round its ember lamp healed as far; the report adds healed= and air=

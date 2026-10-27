@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # The flows a release must not break (PIX-129), each driven through the
 # screenshot harness on a throwaway hero. The flows themselves are in
-# tools/flows.txt, one a line under its own comment (PIX-273): its name, the
+# tools/flows.txt, then each feature's in tools/flows.d/<feature>.txt (as
+# tools/flows.py lists them), one a line under its own comment (PIX-273): its name, the
 # harness's arguments, the report fields it expects and its tags. Every flow
 # leaves its picture in godot/flows/<name>.png for a human to look at, and
 # the harness's report line must show the fields the flow expects

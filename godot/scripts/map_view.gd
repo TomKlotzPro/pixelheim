@@ -218,6 +218,10 @@ var _layers: Dictionary[String, MapLayer] = {
 	"camps": CampsLayer.new(), "patches": PatchesLayer.new(), "props": PropsLayer.new(), "gates": GatesLayer.new(),
 	"settlements": SettlementsLayer.new(),
 }
+## Every feature's layers (Features, PIX-361), in `_layers` too so the hour
+## sets them: their units come after the core's, in the plan and in the
+## drawing before the set pieces.
+var _feature_layers := Features.layers()
 
 ## A street lamp at night (PIX-311): a soft halo this big round its glass,
 ## and its light pooled on the ground about its foot (from its cell's top
@@ -279,6 +283,7 @@ func _init(map_data: MapData, actor_layer: Node2D) -> void:
 	data = map_data
 	_actor_layer = actor_layer
 	actors = actor_layer
+	_layers.merge(_feature_layers)
 
 
 ## A cell's centre in map pixels.
@@ -312,6 +317,8 @@ func planning(arrival_at: Vector2i, slices: Slicer) -> void:
 	slices.add("plan_routes", _plan_routes)
 	slices.add("plan_healed", func() -> void: healed = Lamps.healed(data.grid, Lamps.now(data.id)))
 	slices.add("plan_scatter", _plan_scatter)
+	for layer: MapLayer in _feature_layers.values():
+		layer.plan(self, slices)
 
 
 ## Where patches may grow, then the houses: the town's own, or the village
@@ -498,6 +505,8 @@ func building(root: Node, slices: Slicer) -> void:
 		for cell: Vector2i in Depths.exits(data):
 			light_way_out(cell))
 	_decor_units(slices)
+	for layer: MapLayer in _feature_layers.values():
+		layer.build(self, slices)
 	slices.add("set_pieces", _add_set_pieces.bind(data))
 	slices.add("rest", func() -> void:
 		furnish()
