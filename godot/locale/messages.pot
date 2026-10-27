@@ -2421,7 +2421,7 @@ msgid "Behind the scenes: the test tools' long lists (their options, report fiel
 msgstr ""
 
 #: assets/data/changelog.json
-msgid "Behind the scenes: the version you play in the browser is now timed on every change, at night on the Reach and across a road into the Deepwood, so a slowdown on the web is caught before it reaches you"
+msgid "Behind the scenes: the version you play in the browser can now be timed, at night on the Reach and across a road into the Deepwood: it runs about six times slower than the desktop, and every frame still fits"
 msgstr ""
 
 #: assets/data/changelog.json

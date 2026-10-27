@@ -45,7 +45,7 @@ The export (CC0 art) served as GitHub Pages serves it and opened in headless Chr
 - The night's PerfProbe (averages): physics 0.29-0.36, process 1.08-1.19, render 1.19-1.35 ms; 81 draws, 1068 objects, 1818 nodes. The scripts (physics and process, 1.4-1.6 ms) cost about 3 times the desktop's, as assumed; the browser's drawing about as much again.
 - The crossing's walk: 37 frames, the slowest 12.1-13.8 ms (the map beside handed over, streaming's 3 ms a frame): inside a 60 Hz frame, with little to spare there.
 - So a web frame costs about 3 ms of 16.7 away from the lines: room to spend, on the web too. A page boots and runs in about 5 s (10 s the first time, the wasm compiled).
-- CI's `web` job runs it on every pull request, on a runner without a GPU (WebGL drawn by SwiftShader), so its numbers read slower: compare a CI run with CI runs (the `web-perf` artifact, a small JSON, and the log), not with these. It fails nothing yet.
+- Local only: on CI's GPU-less runners (WebGL drawn by SwiftShader) the page booted but didn't finish a run within 240 s (PR #419), so there is no CI job; run it on a Mac before and after a change that could slow the web build.
 
 Run it on the laptop (Playwright for Python drives the installed Google Chrome; no browser download):
 
