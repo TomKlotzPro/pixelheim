@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.281.0",
+      "date": "2026-10-27",
+      "codename": "In the Browser",
+      "notes": [
+        "Behind the scenes: the version you play in the browser can now be timed, at night on the Reach and across a road into the Deepwood: it runs about six times slower than the desktop, and every frame still fits"
+      ]
+    },
+    {
       "version": "0.280.0",
       "date": "2026-10-22",
       "codename": "Ask by Name",

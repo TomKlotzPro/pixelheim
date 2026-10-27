@@ -11,6 +11,7 @@ Read before a change that adds work per frame, nodes to a map, lights, or time t
 | `motion`, `line-motion` | steps back in the hero's walk, by pixels | **yes** (CI's windowed jobs walk them) |
 | `lookbook.sh --perf`, `lookbook`, `film` | the GPU side: draws, shaders, lights | **yes** |
 | `cpu=` (PIX-355) | each frame timed to the next once the Reach is worked out ahead, ms median/95th percentile; the `cpu-*` flows hold it to budgets with room for CI's runners, headless only and each alone after the rest (`flows.sh`: beside other runs, or a window's software drawing, a CI frame read 4-7x its cost) | no, and never beside other runs |
+| `tools/web_perf.py` (PIX-361) | the web export in headless Chrome: `cpu=`, PerfProbe's sample and the crossing's frames, read off the page (`window.pixelheimPerf`) | no (headless Chrome draws) |
 | `--screenshot reentry` | entering each outdoor map, first and again; BESIDE lines part by part | no |
 | `godot --headless --fixed-fps 60 --print-fps -- --screenshot --map X --wait 240` | CPU per frame (frames run back to back) | no |
 | `turning`, `overflow`, `--benchmark` | the turning walk, words off the canvas, boot phases | no |
@@ -30,7 +31,31 @@ Read before a change that adds work per frame, nodes to a map, lights, or time t
 - **Mobs drove the CPU frame**: about 0.25 ms plus 0.021 ms per mob. Since PIX-360 a foe at peace (`Enemy.at_peace`: no boss) more than `REST_MARGIN` (6 cells) past the screen's edge rests, its tick skipped but for its wander's dice until the edge nears (`Enemy.rest`, asked by `Foes._process`): `cpu=` medians on 2026-10-22 went overworld 0.83 -> 0.45, night 0.95 -> 0.47, deepwood 0.48 -> 0.24, the line 0.55 -> 0.27 ms (every flow's report the same), and the `cpu-*` flows hold them under 1.50, 1.00 and 1.00. Decor nodes cost almost nothing per frame once drawn; lights add little CPU.
 - **Streaming** (`world_neighbours.gd`) adds up to `BUDGET_MS` 3 ms a frame while the Reach's maps beside are drawn in.
 - **The GPU side was not measured headless.** The 2026-10-09 baseline: about 43 draws, physics 0.7 ms on the overworld, about 2 ms of a 16.7 ms desktop frame used.
-- **The web build** (single-threaded wasm, Compatibility renderer) is unmeasured; on an assumed 2-3x GDScript slowdown the night overworld costs 2-3.5 ms of CPU, plus up to 3 ms while streaming. It downloads 18.7 MB gzipped (wasm 10.25 MB, pck 8.37 MB) before PIX-351 took the tests out (about 1.4 MB less).
+- **The web build** (single-threaded wasm, Compatibility renderer) downloads 18.7 MB gzipped (wasm 10.25 MB, pck 8.37 MB) before PIX-351 took the tests out (about 1.4 MB less). Its frame is measured below.
+
+## The web build (`tools/web_perf.py`, PIX-361)
+
+The export (CC0 art) served as GitHub Pages serves it and opened in headless Chrome, the harness's command line handed over by the page (`window.pixelheimArgs`, read by `web/shell.html`, never from the URL), and the numbers read back off the page: `harness.gd` sets `window.pixelheimPerf` (map, `cpu`, `frames`, `perf`, the report line) on the web only. Chrome's frame rate is uncapped and the run stepped (`--fixed-fps 60`), so the frames run back to back, as headless on the desktop, but drawn. Two runs, the desktop's `cpu-night` with `perf` and `cpu-line` with `crossing`. On 2026-10-27, the laptop (its GPU), Chrome 156, three runs, ms median/95th percentile:
+
+| Run | Web `cpu=` | Desktop headless `cpu=` (same day) |
+|---|---|---|
+| the overworld at night, 45 mobs | 2.70-3.10 / 3.20-3.80 | 0.49/0.90 |
+| over the line into the Deepwood | 2.70-3.20 / 4.40-6.10 | 0.31/1.14 |
+
+- The night's PerfProbe (averages): physics 0.29-0.36, process 1.08-1.19, render 1.19-1.35 ms; 81 draws, 1068 objects, 1818 nodes. The scripts (physics and process, 1.4-1.6 ms) cost about 3 times the desktop's, as assumed; the browser's drawing about as much again.
+- The crossing's walk: 37 frames, the slowest 12.1-13.8 ms (the map beside handed over, streaming's 3 ms a frame): inside a 60 Hz frame, with little to spare there.
+- So a web frame costs about 3 ms of 16.7 away from the lines: room to spend, on the web too. A page boots and runs in about 5 s (10 s the first time, the wasm compiled).
+- Local only: on CI's GPU-less runners (WebGL drawn by SwiftShader) the page booted but didn't finish a run within 240 s (PR #419), so there is no CI job; run it on a Mac before and after a change that could slow the web build.
+
+Run it on the laptop (Playwright for Python drives the installed Google Chrome; no browser download):
+
+```
+godot --headless --audio-driver Dummy --path godot --export-release Web export/web/index.html
+python3 -m venv /tmp/pw && /tmp/pw/bin/pip install playwright==1.56.0
+/tmp/pw/bin/python godot/tools/web_perf.py --out /tmp/web-perf.json
+```
+
+An export with the paid art installed measures that art too: keep its numbers, never the export.
 
 ## Entering a map (`reentry`, ms)
 

@@ -178,23 +178,11 @@ jobs:
           retention-days: 7
 
 
-  # The windowed checks (PIX-275): what needs a real window - the motion
-  # flow (it measures the hero's pixels frame by frame) and the pictures -
-  # beside the godot job, so a visual change is reviewed without a window
-  # on the Mac. A virtual display (xvfb) and Mesa's software rendering: the
-  # flows on the desktop renderer as on the Mac (Forward+ on lavapipe, the
-  # app's look), the look book on the browser's (Compatibility on
-  # llvmpipe), as lookbook.sh shoots it. On Shade's CC0 art alone, always:
-  # this repository is public, and so are its artifacts to anyone signed in
-  # to GitHub, so the paid art is never fetched here nor pictured (no deploy
-  # key, and not the godot job's import either: its paid art's imports
-  # would draw it). A fresh import of the free art takes seconds.
-  #
-  # The flows in four shares side by side (PIX-276, PIX-350; flows.sh
-  # --shard), each its own runner, and the look book on a fifth: the run
-  # waits on its slowest share, so none carries the look book too. The
-  # pictures job below puts their pictures on one sheet and links them in
-  # one comment.
+  # The web build measured (PIX-361): its own export on Shade's CC0 art (the
+  # godot job's carries the paid art, and is the run's slowest), beside the
+  # other jobs, in headless Chrome (tools/web_perf.py): what a frame costs
+  # the browser, the overworld at night and over a line. The numbers are in
+  # the log and a small JSON; they fail nothing yet (new, and relative).
   windowed:
     runs-on: ubuntu-latest
     timeout-minutes: 25
