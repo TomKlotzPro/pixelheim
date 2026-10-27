@@ -2421,6 +2421,10 @@ msgid "Behind the scenes: the test tools' long lists (their options, report fiel
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: the version you play in the browser is now timed on every change, at night on the Reach and across a road into the Deepwood, so a slowdown on the web is caught before it reaches you"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Below a quarter of your health, the health bar beats, and in a fight you hear your heart"
 msgstr ""
 
@@ -3594,6 +3598,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "In the Ashes, Hilda's and Vex's crafts are at their stalls on the square; Sela's slimes are in her stores, Wren lost her stable to the fire, and Ana warns of the packs, not the grass"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "In the Browser"
 msgstr ""
 
 #: assets/data/changelog.json
