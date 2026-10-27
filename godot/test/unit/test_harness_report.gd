@@ -38,15 +38,24 @@ func test_the_head_comes_first_then_the_rest_by_name() -> void:
 
 
 func test_each_field_has_its_function_in_the_tables_order() -> void:
-	var source := FileAccess.get_file_as_string("res://scripts/harness_report.gd")
-	var last := -1
-	for field: String in _fields():
-		var at := source.find("\nfunc field_%s() -> String:" % field)
-		assert_gt(at, -1, "field_%s() writes %s=" % [field, field])
-		assert_gt(at, last, "field_%s() stands where %s stands in harness_report.txt" % [field, field])
-		last = at
-	for found in RegEx.create_from_string("\\nfunc field_(\\w+)\\(").search_all(source):
-		assert_true(HarnessReport.has(found.get_string(1)), "field_%s() has its row in harness_report.txt" % found.get_string(1))
+	# The core's in harness_report.gd; a feature's in its feature.gd, given
+	# the report (PIX-361).
+	var sources := {"": FileAccess.get_file_as_string("res://scripts/harness_report.gd")}
+	var lasts := {}
+	for row: Dictionary in HarnessReport.table():
+		var field: String = row["field"]
+		var script := String(row["feature"].folder.path_join("feature.gd")) if row.has("feature") else ""
+		if not sources.has(script):
+			sources[script] = FileAccess.get_file_as_string(script)
+		var head := "\nfunc field_%s(report: HarnessReport) -> String:" if script != "" else "\nfunc field_%s() -> String:"
+		var at: int = sources[script].find(head % field)
+		assert_gt(at, -1, "field_%s() writes %s= (%s)" % [field, field, script if script != "" else "harness_report.gd"])
+		assert_gt(at, lasts.get(script, -1), "field_%s() stands where %s stands in its harness_report.txt" % [field, field])
+		lasts[script] = at
+	assert_gt(sources.size(), 1, "a feature's fields were checked")
+	for script: String in sources:
+		for found in RegEx.create_from_string("\\nfunc field_(\\w+)\\(").search_all(sources[script]):
+			assert_true(HarnessReport.has(found.get_string(1)), "field_%s() has its row in a harness_report.txt" % found.get_string(1))
 
 
 func test_the_line_joins_the_fields_with_text_in_the_tables_order() -> void:
@@ -76,7 +85,11 @@ func test_the_harness_writes_no_field_itself() -> void:
 func test_every_field_a_flow_expects_is_in_the_table() -> void:
 	var named := RegEx.create_from_string("(?:^| )([a-z_]+)=")
 	var checked := 0
-	for line in FileAccess.get_file_as_string("res://tools/flows.txt").split("\n"):
+	# flows.txt and each feature's flows (PIX-361).
+	var lines := FileAccess.get_file_as_string("res://tools/flows.txt").split("\n")
+	for file in DirAccess.get_files_at("res://tools/flows.d"):
+		lines.append_array(FileAccess.get_file_as_string("res://tools/flows.d/" + file).split("\n"))
+	for line in lines:
 		if line.strip_edges() == "" or line.strip_edges().begins_with("#"):
 			continue
 		var parts := line.split("|")

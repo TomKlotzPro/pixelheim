@@ -483,6 +483,9 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/enemy.gd` — A monster in the field: wanders near its home, notices a hero it can see (a "!" and a hop first), chases, bites after a tell, and gives up a chase that strays too far, walking home to heal (PIX-142).
 - `scripts/entrance_art.gd` — What a dungeon's way in looks like (PIX-290, Tom: « Pas super beau les entrées de donjon, porte du Fernoir et le premier »).
 - `scripts/escort.gd` — An escort (PIX-192): Gunnar's last wagon down the Frostgate - an old mammoth hauling the pass's last crates.
+- `scripts/features/feature.gd` — A feature that plugs itself in from a folder of its own (PIX-361): its harness flags, presets, report fields, look book shots and map layers, beside the core's.
+- `scripts/features/features.gd` — Every feature under scripts/features/ (PIX-361), found once: each folder there is one, its feature.gd a Feature, in the folders' name order.
+- `scripts/features/lamps/feature.gd` — The lamps in the harness (PIX-323, PIX-324; PIX-361's first feature)
 - `scripts/fire_art.gd` — The fires of a burning house (PIX-327): the Night of Ash's ruins and the Night of Bells' roofs.
 - `scripts/firebolt.gd` — A fireborn elite's firebolt (PIX-155): flies straight, burns the hero it meets, and gutters out against a wall or after eight tiles.
 - `scripts/gait.gd` — How the cast walks (PIX-243): the hero, the villagers, the monsters and the wagon all step through their sheet's walk (PunyArt.WALKS) by the ground they cover, not by the clock, so their feet keep pace with the ground at any speed

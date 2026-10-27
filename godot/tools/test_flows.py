@@ -25,14 +25,19 @@ REPORT = ("screenshot saved; map=town cell=(79, 4) hp=120 gold=90 save=town(79, 
           " open=none night=0 mobs=3 card=The Mirefen floats=+60 gold logged=0 packs=slime,goblin:asleep")
 
 
-def written(text):
-    """A flows.txt with `text`, in a temp file, read back."""
-    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as file:
-        file.write(text)
+def written(*texts):
+    """A flows.txt with each of `texts` (the next ones a feature's flows,
+    PIX-361), in temp files, read back."""
+    paths = []
+    for text in texts:
+        with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as file:
+            file.write(text)
+        paths.append(file.name)
     try:
-        return flows.read_flows(file.name)
+        return flows.read_flows(*paths)
     finally:
-        os.unlink(file.name)
+        for path in paths:
+            os.unlink(path)
 
 
 class MatchTest(unittest.TestCase):
@@ -102,6 +107,18 @@ class FileTest(unittest.TestCase):
             with self.assertRaises(flows.FlowError):
                 written(text)
 
+    def test_a_features_flows_come_after_and_share_no_name(self):
+        # A feature's flows, tools/flows.d/<feature>.txt (PIX-361): read after
+        # flows.txt, a name in two files refused as in one.
+        self.assertEqual(flows.flow_files()[0], flows.FLOWS)
+        self.assertIn(os.path.join(flows.FLOWS_D, "lamps.txt"), flows.flow_files())
+        self.assertIn("lamps-heal-early", [flow[0] for flow in flows.read_flows()])
+        spawn = "# a\nspawn | --map town | map=town | town\n"
+        self.assertEqual([flow[0] for flow in written(spawn, "# b\nportal | --map town portal | map=town_.* | town\n")],
+                         ["spawn", "portal"])
+        with self.assertRaises(flows.FlowError):
+            written(spawn, "# b\nspawn | --map town_inn | map=town_inn | rooms\n")
+
     def test_the_list_is_what_flows_sh_reads(self):
         for line in flows.read_flows():
             self.assertNotIn("|", "".join(line), "a | in a field would part it")
@@ -147,7 +164,9 @@ class RunnerTest(unittest.TestCase):
         # Two branches adding flows at the same place keep both on a rebase;
         # a flow both changed comes out twice, which read_flows refuses.
         with open(os.path.join(TOOLS, "..", "..", ".gitattributes"), encoding="utf-8") as file:
-            self.assertIn("godot/tools/flows.txt merge=union", file.read())
+            attributes = file.read()
+        self.assertIn("godot/tools/flows.txt merge=union", attributes)
+        self.assertIn("godot/tools/flows.d/*.txt merge=union", attributes)
 
 
 if __name__ == "__main__":

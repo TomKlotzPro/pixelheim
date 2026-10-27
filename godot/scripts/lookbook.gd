@@ -206,12 +206,18 @@ func run() -> void:
 ## `cell` a Vector2i, `time` the wheel's, `drops` by Vector2i.
 static func shots() -> Dictionary:
 	if _shots.is_empty():
-		for line in FileAccess.get_file_as_string(SHOTS_FILE).split("\n"):
+		# The core's shots, then every feature's (PIX-361).
+		var lines := FileAccess.get_file_as_string(SHOTS_FILE).split("\n")
+		for feature in Features.all():
+			var own := feature.folder.path_join("lookbook_shots.jsonl")
+			if FileAccess.file_exists(own):
+				lines.append_array(FileAccess.get_file_as_string(own).split("\n"))
+		for line in lines:
 			if line.strip_edges() == "" or line.begins_with("#"):
 				continue
 			var shot: Variant = SaveCodec.parse_json(line)
 			if not shot is Dictionary or not shot.has("shot"):
-				push_error("%s: a shot is a JSON object with its name in `shot`: %s" % [SHOTS_FILE, line])
+				push_error("a shot is a JSON object with its name in `shot`: %s" % line)
 				continue
 			if shot.has("cell"):
 				shot["cell"] = Vector2i(shot["cell"][0], shot["cell"][1])

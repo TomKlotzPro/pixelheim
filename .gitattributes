@@ -12,3 +12,7 @@ godot/tools/areas.txt merge=union
 godot/scripts/harness_flags.txt merge=union
 godot/scripts/harness_report.txt merge=union
 godot/scripts/lookbook_shots.jsonl merge=union
+# A feature's own flows and rows (PIX-361), merged the same way.
+godot/tools/flows.d/*.txt merge=union
+godot/scripts/features/*/*.txt merge=union
+godot/scripts/features/*/*.jsonl merge=union

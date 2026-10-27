@@ -91,10 +91,19 @@ static func next_in_batch() -> void:
 	_given = HarnessFlags.new(line.slice(0, at) + flow[1].split(" ", false) + line.slice(at + 2))
 
 
-## Every flag's row, in TABLE_FILE's order.
+## Every flag's row, in TABLE_FILE's order, each feature's (PIX-361) after
+## the flag it names (Feature.flags_after).
 static func table() -> Array[Dictionary]:
 	if _table.is_empty():
-		_table = read_rows(TABLE_FILE, ["flag", "takes", "does", "step", "order"], 2)
+		var columns: PackedStringArray = ["flag", "takes", "does", "step", "order"]
+		_table = read_rows(TABLE_FILE, columns, 2)
+		for feature in Features.all():
+			var at := _table.find_custom(func(row: Dictionary) -> bool: return row["flag"] == feature.flags_after()) + 1
+			if at == 0:
+				at = _table.size()
+			for row in Features.rows(feature, "harness_flags.txt", columns, 2):
+				_table.insert(at, row)
+				at += 1
 	return _table
 
 

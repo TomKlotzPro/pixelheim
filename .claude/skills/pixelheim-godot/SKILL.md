@@ -24,9 +24,17 @@ Pixelheim is a Godot 4.7 game (`godot/`), live at the GitHub Pages root and as a
 - **No backward compatibility until the beta**: legacy paths can go; don't add migrations.
 - macOS has no `timeout`; don't wrap commands in it.
 
-## How a feature plugs in today
+## How a feature plugs in
 
-A feature that shows in the world and is checked by a flow touches, besides its own files:
+**A feature lives in one folder (PIX-361)**: `godot/scripts/features/<name>/`, with its flows in `godot/tools/flows.d/<name>.txt`. `features/lamps/` is the worked example. `Features.all()` finds the folder, so no shared file changes:
+
+- `feature.gd`: `extends Feature`, its `## areas:` line right under that, then only what it needs: `flags_after()` (the flag its flags follow in `--help`; "" puts them at the end), `before_first_map(flags)` (its presets, run after the core's), `layers()` (its `MapLayer`s by name, planned and drawn after the core's, set for the hour with them) and one `field_<name>(report: HarnessReport) -> String` per report field, in its rows' order.
+- Beside it, only the files it needs, each in the core's format: `harness_flags.txt` (`flag | takes | does`), `harness_report.txt` (`field | says`, joined to the core's after the head, by name) and `lookbook_shots.jsonl` (after the core's shots in their area). `scripts/*.txt`/`*.jsonl` are already in the export filters (`test_export.py`).
+- `tools/flows.d/<name>.txt`: its flows, as in flows.txt, read after it.
+- `test_registries` refuses a name the core or another feature already has; run `layout.py` for the new script.
+- A flag that is a step still needs its `step_<step>()` in `scripts/harness_steps/`; rules, save, wiring, strings and docs stay where they are (below).
+
+A feature without a folder of its own touches, besides its own files:
 
 1. **Rules**: a pure class in `scripts/state/<name>.gd` and `test/unit/test_<name>.gd`; data in `assets/data/*.json` with a test keeping it whole.
 2. **Save**: a field in its state section and `SaveCodec.to_file`/`from_file` only if it can't be worked out from what's saved (`saves.md`).
@@ -41,7 +49,7 @@ A feature that shows in the world and is checked by a flow touches, besides its 
 11. **Docs**: the root README's feature list when a player sees it; `python3 godot/tools/layout.py` for a new script; this skill's topic page when a rule changed.
 12. **Release note**: the main session's (`release.md`).
 
-Steps 5-9 append to shared registries: add your rows beside their kind, never edit another's (`verify.md`).
+Steps 3 and 5-8 can go in the feature's folder instead (above). In the shared registries, add your rows beside their kind, never edit another's (`verify.md`).
 
 ## How to verify
 
