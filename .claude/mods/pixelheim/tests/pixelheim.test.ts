@@ -109,3 +109,55 @@ test('/pix opens a pane with the hero drawn in the terminal', async ($, on) => {
   expect(await ui.find({ type: 'Text', text: /compagnon en route/ })).toBeDefined()
   await ui.unmount()
 })
+
+const pr = (checks: [string, string][]) => ({
+  exitCode: 0,
+  stdout: JSON.stringify({
+    headRefOid: 'abcdef1234',
+    state: 'OPEN',
+    statusCheckRollup: checks.map(([name, conclusion]) => ({ name, conclusion, status: 'COMPLETED' })),
+  }),
+  stderr: '',
+})
+const EIGHT = ['desktop', 'godot', 'windowed (1)', 'windowed (2)', 'windowed (3)', 'windowed (4)', 'windowed (look)', 'pictures']
+
+const gh = (on: On, checks: [string, string][]) => {
+  const ran: string[] = []
+  on('process.run', ($, e) => {
+    ran.push(e.argv.join(' '))
+    if (e.argv[1] === 'pr' && e.argv[2] === 'view') return { value: pr(checks) }
+    if (e.argv[0] === 'git' && e.argv[1] === 'rev-parse') return { value: { exitCode: 0, stdout: '/repo/.git\n', stderr: '' } }
+    return { value: { exitCode: 0, stdout: 'abc1234 Merge pull request\n', stderr: '' } }
+  })
+  return ran
+}
+
+test('ship refuses a pull request with a red check', async ($, on) => {
+  world(on, 5)
+  const ran = gh(on, EIGHT.map(n => [n, n === 'pictures' ? 'FAILURE' : 'SUCCESS']))
+  await start($)
+  const r = await $.tool.call({ tool: 'mcp__pixelheim__ship', pr: 427 })
+  expect(String(r.result)).toContain('red: pictures FAILURE')
+  expect(String(r.result)).toContain('not merged')
+  expect(ran.some(c => c.startsWith('gh pr merge'))).toBe(false)
+})
+
+test('ship merges when all eight are green and fast-forwards the main checkout', async ($, on) => {
+  world(on, 5)
+  const ran = gh(on, EIGHT.map(n => [n, 'SUCCESS']))
+  await start($)
+  const r = await $.tool.call({ tool: 'mcp__pixelheim__ship', pr: 436 })
+  expect(String(r.result)).toContain('8/8 green')
+  expect(String(r.result)).toContain('merged; main checkout at abc1234')
+  expect(ran).toContain('gh pr merge 436 --merge')
+  expect(ran).toContain('git -C /repo merge --ff-only -q origin/main')
+})
+
+test('pr_status says which checks are still running', async ($, on) => {
+  world(on, 5)
+  gh(on, [['desktop', 'SUCCESS'], ['godot', 'IN_PROGRESS']])
+  await start($)
+  const r = await $.tool.call({ tool: 'mcp__pixelheim__pr_status', pr: 437 })
+  expect(String(r.result)).toContain('waiting: godot')
+  expect(String(r.result)).toContain('only 2 of 8 checks reported')
+})
