@@ -1,6 +1,6 @@
 {
   "name": "pixelheim",
   "version": "0.1.0",
-  "description": "Pixelheim's band above the prompt (version, weekly usage against Tom's cap, agents), a usage tool for Claude, and Tom's house rules: no attribution lines, no --slot runs, no agents past the cap",
+  "description": "Pixelheim's band above the prompt (version, weekly usage against Tom's cap, agents), a usage tool for Claude, and Tom's house rules: no --slot runs, no agents past the cap",
   "author": { "name": "Tom Klotz" }
 }
