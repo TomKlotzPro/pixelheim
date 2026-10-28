@@ -674,7 +674,9 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 	var result := GameState.spoils.open_chest(chest)
 	world.messages.flash(result["message"])
 	if result["opened"]:
-		world.view.chest_sprites[chest["id"]].queue_free()
+		# The CC0 art has no pouch or herb, so it may lie undrawn (PIX-380).
+		if world.view.chest_sprites.has(chest["id"]):
+			world.view.chest_sprites[chest["id"]].queue_free()
 		world.view.chest_sprites.erase(chest["id"])
 		world.fx.show_gains(result["gains"], MapView.center(cell) + WorldFx.OVER_HERO)
 

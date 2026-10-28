@@ -4229,6 +4229,10 @@ msgid "Nodes you can afford glow. Learning them still feels as permanent as it i
 msgstr "Les nœuds à votre portée brillent. Les apprendre semble toujours aussi définitif que ça l'est."
 
 #: assets/data/changelog.json
+msgid "Nothing Underfoot"
+msgstr "Rien sous le pied"
+
+#: assets/data/changelog.json
 msgid "Now and then a shower crosses the open land: rain slants down and splashes, the light turns grey, the lamps come up, the birds fall quiet and you hear the rain"
 msgstr "De temps en temps, une averse traverse les terres : la pluie tombe en biais et éclabousse, la lumière se fait grise, les lampes s'allument, les oiseaux se taisent et l'on entend la pluie"
 
@@ -5111,6 +5115,10 @@ msgstr "Mains sûres"
 #: assets/data/changelog.json
 msgid "Steady Steps"
 msgstr "Pas assurés"
+
+#: assets/data/changelog.json
+msgid "Stepping onto a herb patch or a glint on the road no longer trips the game when its picture is missing"
+msgstr "Marcher sur une touffe d'herbes ou un éclat sur la route ne fait plus trébucher le jeu quand son image manque"
 
 #: assets/data/changelog.json
 msgid "Steps in Order"

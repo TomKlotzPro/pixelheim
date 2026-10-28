@@ -4229,6 +4229,10 @@ msgid "Nodes you can afford glow. Learning them still feels as permanent as it i
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Nothing Underfoot"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Now and then a shower crosses the open land: rain slants down and splashes, the light turns grey, the lamps come up, the birds fall quiet and you hear the rain"
 msgstr ""
 
@@ -5110,6 +5114,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Steady Steps"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Stepping onto a herb patch or a glint on the road no longer trips the game when its picture is missing"
 msgstr ""
 
 #: assets/data/changelog.json

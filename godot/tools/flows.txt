@@ -709,6 +709,10 @@ look-vault | --map vault_3 | map=vault_3 dressed=vault:banners\d+,rugs\d+ | dung
 patches | --map overworld --day 2 | day=2 patches=14,36;26,21;30,57;31,43;42,18;63,39;66,52;75,45 | gathering field
 regrown | --map overworld --day 3 | day=3 patches=14,22;17,41;18,34;24,51;77,44;79,53;81,18;86,36 | gathering field
 forage | --map overworld --day 2 --at 75,46 --walk u | cell=\(75, 45\) day=2 patches=14,36;26,21;30,57;31,43;42,18;63,39;66,52 | gathering field
+# The treasure on the ground is picked as the hero steps on it, though
+# the CC0 art draws no herb and no pouch (PIX-380: a script error).
+herb-patch | --map overworld --at 56,59 --walk u --wait 0.5 | cell=\(56, 58\) floats=.+ x3 logged=0 | gathering field
+road-glint | --map overworld --at 40,59 --walk u --wait 0.5 | cell=\(40, 58\) gold=75 floats=\+45 [a-z]+ | gathering field
 # The Night of Ash's dawn (PIX-197).
 dawn | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5 | open=dawn_screen | story screen
 # Walking without the camera shake (PIX-135): needs a window, so --quiet skips it.
