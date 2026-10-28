@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.299.0",
+      "date": "2026-10-28",
+      "codename": "The Farmyard",
+      "notes": [
+        "Animals live round Pixelheim now, more with each age: hens and chicks pecking in the yards, sheep on the east meadow, pigs in their sty by the field, and cows and a bull along the river; they amble about by day and sleep where they stand at night"
+      ]
+    },
+    {
       "version": "0.298.0",
       "date": "2026-10-28",
       "codename": "New Frames",

@@ -113,7 +113,8 @@ static func kept_on(map: MapData, decks: Variant, pieces: Array) -> Dictionary:
 	var out := Hamlet.kept_on(map, decks)
 	out.merge(Yards.kept(map))
 	for piece: Dictionary in pieces:
-		out[piece["cell"]] = true
+		for cell: Vector2i in piece["cells"]:
+			out[cell] = true
 	return out
 
 

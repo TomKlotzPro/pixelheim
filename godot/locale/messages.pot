@@ -2289,6 +2289,10 @@ msgid "An empty lot sits between the lower houses. For sale? Soon."
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Animals live round Pixelheim now, more with each age: hens and chicks pecking in the yards, sheep on the east meadow, pigs in their sty by the field, and cows and a bull along the river; they amble about by day and sleep where they stand at night"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Answer \"Come home.\" for the festival ending or \"Stay with them.\" for the lanterns ending, each with its own tour of the village and new credits"
 msgstr ""
 
@@ -5674,6 +5678,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Ember Seal"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Farmyard"
 msgstr ""
 
 #: assets/data/changelog.json

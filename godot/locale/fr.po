@@ -2289,6 +2289,10 @@ msgid "An empty lot sits between the lower houses. For sale? Soon."
 msgstr "Un terrain vide attend entre les maisons du bas. À vendre ? Bientôt."
 
 #: assets/data/changelog.json
+msgid "Animals live round Pixelheim now, more with each age: hens and chicks pecking in the yards, sheep on the east meadow, pigs in their sty by the field, and cows and a bull along the river; they amble about by day and sleep where they stand at night"
+msgstr "Des animaux vivent désormais autour de Pixelheim, plus nombreux à chaque époque : poules et poussins qui picorent dans les cours, moutons sur le pré de l'est, cochons dans leur enclos près du champ, vaches et taureau le long de la rivière ; ils flânent le jour et dorment là où ils se trouvent la nuit"
+
+#: assets/data/changelog.json
 msgid "Answer \"Come home.\" for the festival ending or \"Stay with them.\" for the lanterns ending, each with its own tour of the village and new credits"
 msgstr "Répondez « Rentrez à la maison. » pour la fin de la fête, ou « Restez avec eux. » pour celle des lanternes, chacune avec sa visite du village et un nouveau générique"
 
@@ -5675,6 +5679,10 @@ msgstr "Le E s'affiche juste au-dessus de ce qu'il ouvre et ne le cache plus"
 #: assets/data/changelog.json
 msgid "The Ember Seal"
 msgstr "Le Sceau de braise"
+
+#: assets/data/changelog.json
+msgid "The Farmyard"
+msgstr "La basse-cour"
 
 #: assets/data/changelog.json
 msgid "The First Fields"
