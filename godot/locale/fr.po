@@ -5,6 +5,10 @@ msgstr ""
 "Language: fr\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: assets/data/catalog.json
+msgid "+10% gold: kills, quests, sales, tips"
+msgstr "+10 % d'or : combats, quêtes, ventes, pourboires"
+
+#: assets/data/catalog.json
 msgid "A ball of ice that never melts, held in the off hand. Blows come slower near it. Crafted, never sold."
 msgstr "Une boule de glace qui ne fond jamais, tenue dans la main gauche. Près d'elle, les coups ralentissent. Fait main, jamais en vente."
 
@@ -313,6 +317,10 @@ msgid "Blight"
 msgstr "Flétrissure"
 
 #: assets/data/catalog.json
+msgid "Blocks the first blow of every fight"
+msgstr "Pare le premier coup de chaque combat"
+
+#: assets/data/catalog.json
 msgid "Blue as the ice it came over the pass on. Cold to wear, clear to think in."
 msgstr "Bleu comme la glace sur laquelle il a passé le col. Froid à porter, clair pour penser."
 
@@ -473,6 +481,10 @@ msgid "Drowned Signet"
 msgstr "Chevalière noyée"
 
 #: assets/data/catalog.json
+msgid "Dry as a sermon. A night at the inn or in your own bed and it's brimming again."
+msgstr "Sèche comme un sermon. Une nuit à l'auberge ou dans votre lit, et la revoilà pleine à ras bord."
+
+#: assets/data/catalog.json
 msgid "Duelist's Ring"
 msgstr "Anneau du duelliste"
 
@@ -507,6 +519,10 @@ msgstr "Robe enchantée"
 #: assets/data/catalog.json
 msgid "Everflask"
 msgstr "Flasque éternelle"
+
+#: assets/data/catalog.json
+msgid "Everflask (empty)"
+msgstr "Flasque éternelle (vide)"
 
 #: assets/data/catalog.json
 msgid "Every bed in Pixelheim slept in. Sela has started turning people away, and loves it."
@@ -605,8 +621,8 @@ msgid "Forged from a skull that once breathed fire at its wearer."
 msgstr "Forgée dans un crâne qui, jadis, crachait le feu sur celui qui la porte."
 
 #: assets/data/catalog.json
-msgid "Forged from the beams that burned on the Night of Ash. Nothing gets through it twice."
-msgstr "Taillée dans les poutres qui ont brûlé pendant la Nuit des Cendres. Rien ne la traverse deux fois."
+msgid "Forged from the beams that burned on the Night of Ash. The first blow of every fight never reaches you. The second, sadly, does."
+msgstr "Taillée dans les poutres qui ont brûlé pendant la Nuit des Cendres. Le premier coup de chaque combat ne vous atteint jamais. Le deuxième, hélas, si."
 
 #: assets/data/catalog.json
 msgid "Fountain Day Roast"
@@ -1225,6 +1241,10 @@ msgid "Reedwoven Buckler"
 msgstr "Targe de roseaux"
 
 #: assets/data/catalog.json
+msgid "Refills when you sleep"
+msgstr "Se remplit pendant votre sommeil"
+
+#: assets/data/catalog.json
 msgid "Reforged from the garrison's broken blades. It remembers what it was for. Crafted, never sold."
 msgstr "Reforgée à partir des lames brisées de la garnison. Elle se souvient de sa raison d'être. Fait main, jamais en vente."
 
@@ -1593,8 +1613,8 @@ msgid "The miners' axe, reforged for war. It bites like the cold. Crafted, never
 msgstr "La hache des mineurs, reforgée pour la guerre. Elle mord comme le froid. Fait main, jamais en vente."
 
 #: assets/data/catalog.json
-msgid "The old king's seal, bought back from a valley merchant. Pixelheim's own, for whoever saved it."
-msgstr "Le sceau du vieux roi, racheté à un marchand de la vallée. Il appartient à Pixelheim, et revient à qui l'a sauvée."
+msgid "The old king's seal, bought back from a valley merchant. Wear it and the valley pays its saviour a tenth more for everything."
+msgstr "Le sceau du vieux roi, racheté à un marchand de la vallée. Portez-le, et la vallée paie un dixième de plus à qui l'a sauvée, pour tout."
 
 #: assets/data/catalog.json
 msgid "The seamstress swears it was black when she started."
@@ -1661,8 +1681,8 @@ msgid "Vex won't say what's in it, only that it was hard to catch."
 msgstr "Vex refuse de dire ce qu'il y a dedans, seulement que ça n'a pas été facile à attraper."
 
 #: assets/data/catalog.json
-msgid "Vex's finest: a flask that brings everything back, every wound and every spent breath."
-msgstr "Le meilleur de Vex : une flasque qui ramène tout, chaque blessure refermée, chaque souffle perdu."
+msgid "Vex's finest: brings everything back, every wound and every spent breath. Drunk dry, it fills itself again while you sleep, at the inn or in your own bed."
+msgstr "Le meilleur de Vex : elle ramène tout, chaque blessure refermée, chaque souffle perdu. Bue jusqu'à la dernière goutte, elle se remplit pendant votre sommeil, à l'auberge ou dans votre lit."
 
 #: assets/data/catalog.json
 msgid "Volcanic glass, sharper than regret and twice as dark."
@@ -5541,6 +5561,10 @@ msgid "The Cartographer"
 msgstr "Le Cartographe"
 
 #: assets/data/changelog.json
+msgid "The City's showpieces earn their price: the Aegis of the Ash turns the first blow of every fight, the Everflask fills itself again while you sleep, and the King's Signet adds a tenth to the gold you earn"
+msgstr "Les trésors de la cité valent leur prix : l'Égide des Cendres pare le premier coup de chaque combat, la Flasque éternelle se remplit pendant votre sommeil, et la Chevalière du roi ajoute un dixième à l'or que vous gagnez"
+
+#: assets/data/changelog.json
 msgid "The Deep Hunt"
 msgstr "La Traque des Profondeurs"
 
@@ -6039,6 +6063,10 @@ msgstr "La porte de la montagne s'ouvre sur la route de la montagne, cendres et 
 #: assets/data/changelog.json
 msgid "The night classes stepped into the light: the necromancer's robes and the rogue's leathers brightened so they read on every lawn"
 msgstr "Les classes de la nuit sortent de l'ombre : les robes du nécromancien et les cuirs du voleur s'éclaircissent pour rester lisibles sur toutes les pelouses"
+
+#: assets/data/changelog.json
+msgid "The north pays its way: Frostgate, the ice cave and Greyhold's foes now carry about twice the gold, and the Mirefen's mimics a little less"
+msgstr "Le nord paie enfin : les monstres de la Porte-Givre, de la grotte de glace et de Greyhold portent environ deux fois plus d'or, et les mimiques des Marais de Fange un peu moins"
 
 #: assets/data/changelog.json
 msgid "The old web version is gone for good: no more offer to bring a hero over from it, and its old pages are off the site"
@@ -6667,6 +6695,10 @@ msgstr "Ça vaut la traque"
 #: assets/data/changelog.json
 msgid "Worth Making"
 msgstr "Ça vaut l'ouvrage"
+
+#: assets/data/changelog.json
+msgid "Worth the Gold"
+msgstr "À la hauteur de leur prix"
 
 #: assets/data/changelog.json
 msgid "Wren the Stablemaster walks horses by the gate - two wolf pelts for saddle leather and fast travel drops you straight at Pixelheim Square, no gate queue"
@@ -16731,6 +16763,10 @@ msgstr "Aucune compétence sur cette touche. Apprenez-en d'autres, ou réglez le
 #: scripts/player.gd
 msgid "dodged"
 msgstr "esquivé"
+
+#: scripts/player.gd
+msgid "warded"
+msgstr "paré"
 
 #: scripts/rankup_screen.gd
 msgid "+1 bonus skill point"

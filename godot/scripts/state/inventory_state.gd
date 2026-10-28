@@ -236,6 +236,29 @@ func is_equipped(uid: String) -> bool:
 	return uid in equipped.values()
 
 
+## What worn gear adds to the gold a kill, quest, sale, tip or chest pays
+## (PIX-376: the King's Signet's tenth); never a till's, rent or the bank's,
+## which would grow on their own.
+func worn_gold_bonus() -> float:
+	var bonus := 0.0
+	for item_id: String in worn_items().values():
+		bonus += float(Catalog.item(item_id).get("goldBonus", 0.0))
+	return bonus
+
+
+## Gold earned, the worn bonus on it; what came into the purse.
+func earn(amount: int) -> int:
+	var paid := roundi(amount * (1.0 + worn_gold_bonus()))
+	gold += paid
+	return paid
+
+
+## Whether a worn piece has `rule` in its catalog entry (PIX-376: the
+## Aegis's blocksFirstBlow).
+func wears_rule(rule: String) -> bool:
+	return worn_items().values().any(func(item_id: String) -> bool: return Catalog.item(item_id).get(rule, false))
+
+
 ## Stackables plus unequipped gear; what you wear does not weigh you down.
 func carried_weight() -> int:
 	var worn := equipped.values()

@@ -232,6 +232,13 @@ road | --prologue 1 | map=overworld cell=\(48, 34\) | story travel
 dodge | --map town --keys shift --wait 0.4 | map=town cell=\(40, 33\) | combat
 # A named monster slain, its bounty paid (PIX-156).
 hunt | --map overworld --at 70,40 fight slay --foe greymaw --wait 0.3 | map=overworld gold=160 | combat field quest
+# The City's showpieces (PIX-376): the King's Signet worn, a frost wolf
+# pays a tenth more (signet-bare is the same kill without it); the Aegis
+# of the Ash takes a fight's first blow whole, a blow no hero survives
+# warded (the hero stays on the square, where `die` wakes at the inn).
+signet-bare | --map frostgate fight slay --foe frost_wolf --wait 0.3 | map=frostgate gold=56 | combat field trade
+signet-gold | --map frostgate fight slay --foe frost_wolf --wear kings_signet --wait 0.3 | map=frostgate gold=59 | combat field trade
+aegis-ward | --wear aegis_of_the_ash die | map=town hp=42 | combat
 # A named monster's bar goes once it falls, worn down first so the last
 # blow lands while a blow's ghost still eases (PIX-288).
 hunt-bar | --map overworld --at 70,40 fight kill --foe greymaw --foe-left 0.05 --wait 2.5 | map=overworld fell=1 bossbar=none | combat field
@@ -858,6 +865,11 @@ fit-skills | --map town --keys k overflow --lang fr | open=skills_screen overflo
 fit-stats | --map town --keys c overflow --lang fr | open=stats_screen overflow=0 | screen lang
 fit-codex | --map town --keys b overflow --lang fr | open=codex_screen overflow=0 | screen lang
 fit-shop | --map town_shop shop overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
+# The City's showpieces at their counters in French, the last row of
+# each Buy list, their rules said on the card (PIX-376).
+fit-signet | --map town_shop --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
+fit-aegis | --map town_smith --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
+fit-everflask | --map town_alchemist --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
 fit-craft | --map town_alchemist shop --tab 2 overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
 fit-refusal | --map town_alchemist station --keys e overflow --lang fr | open=shop_screen tab=Craft overflow=0 | screen lang trade
 fit-rankup | --map town rankup --rank-beat unlocks overflow --lang fr | open=rankup_screen overflow=0 | screen lang rank

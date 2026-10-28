@@ -196,7 +196,7 @@
       "attack": 37,
       "defense": 12,
       "xp": 120,
-      "gold": 170,
+      "gold": 100,
       "level": 13
     },
     "imp": {
@@ -330,7 +330,7 @@
       "attack": 22,
       "defense": 5,
       "xp": 40,
-      "gold": 24,
+      "gold": 34,
       "level": 8,
       "drops": [
         {
@@ -347,7 +347,7 @@
       "attack": 25,
       "defense": 3,
       "xp": 42,
-      "gold": 26,
+      "gold": 36,
       "level": 8
     },
     "cutthroat": {
@@ -358,7 +358,7 @@
       "attack": 28,
       "defense": 4,
       "xp": 50,
-      "gold": 32,
+      "gold": 42,
       "level": 9,
       "inflicts": {
         "kind": "poison",
@@ -375,7 +375,7 @@
       "attack": 26,
       "defense": 7,
       "xp": 52,
-      "gold": 20,
+      "gold": 40,
       "level": 9,
       "drops": [
         {
@@ -392,7 +392,7 @@
       "attack": 26,
       "defense": 4,
       "xp": 46,
-      "gold": 18,
+      "gold": 40,
       "level": 9,
       "drops": [
         {
@@ -409,7 +409,7 @@
       "attack": 30,
       "defense": 6,
       "xp": 58,
-      "gold": 24,
+      "gold": 48,
       "level": 10,
       "drops": [
         {
@@ -426,7 +426,7 @@
       "attack": 32,
       "defense": 5,
       "xp": 60,
-      "gold": 26,
+      "gold": 50,
       "level": 10,
       "inflicts": {
         "kind": "stun",
@@ -443,7 +443,7 @@
       "attack": 32,
       "defense": 10,
       "xp": 80,
-      "gold": 30,
+      "gold": 55,
       "level": 11,
       "drops": [
         {

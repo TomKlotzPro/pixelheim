@@ -84,9 +84,10 @@ func owned_shop_map(shop_id: String) -> String:
 
 
 ## What a shop pays for what the hero sells, over its listed rate: a gem on
-## the trophy shelf, and Odo's rebuilt store (PIX-206).
+## the trophy shelf, Odo's rebuilt store (PIX-206) and the King's Signet
+## worn (PIX-376).
 func sale_multiplier(shop_id: String) -> float:
-	return trophy_sell_multiplier() * (1.0 + Town.project_perk("odos_store", "sell") if shop_id == "odo" and owner.holdings.project_built("odos_store") else 1.0)
+	return trophy_sell_multiplier() * (1.0 + Town.project_perk("odos_store", "sell") if shop_id == "odo" and owner.holdings.project_built("odos_store") else 1.0) * (1.0 + owner.pack.worn_gold_bonus())
 
 
 ## A gem on the trophy shelf sweetens every sale by 10% (trophySellMultiplier).
