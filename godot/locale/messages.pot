@@ -3481,6 +3481,10 @@ msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate'
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Greyhold's fort stands in solid grey stone now, with battlements along its walls, weathering and moss, instead of pale striped blocks"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Greyhold's south gate reads as a gate at last: two towers with the gate open between them, the road running through it and on up the courtyard to the keep's door, and the lamps standing before the towers to light both sides at night (Tom's playtest)"
 msgstr ""
 
@@ -5142,6 +5146,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Still not a single audio file - every note is synthesized live, like the sprites"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Stone and Battlement"
 msgstr ""
 
 #: assets/data/changelog.json
