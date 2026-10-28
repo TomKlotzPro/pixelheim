@@ -52,7 +52,10 @@ func test_a_swing_knows_when_it_was_a_crit() -> void:
 	assert_gt(sure["damage"], plain["damage"])
 
 
-## A blow shoves a common foe about 10 px, an elite half that, a boss not at all.
+## A blow shoves a common foe about 6 px, an elite half that, a boss not at
+## all; never so far that a foe telling its bite from CONTACT_RADIUS is out
+## of BITE_REACH (PIX-377: at 10 px a hero swinging every 0.45 s was hardly
+## ever bitten).
 func test_a_blow_shoves_by_weight() -> void:
 	var EnemyScript := preload("res://scripts/enemy.gd")
 	var common := EnemyScript.knock_push(Bestiary.spawn("wolf"))
@@ -66,7 +69,24 @@ func test_a_blow_shoves_by_weight() -> void:
 	while left > 0:
 		travelled += common * (left / EnemyScript.KNOCK_TIME) / 60.0
 		left -= 1.0 / 60.0
-	assert_between(travelled, 8.0, 12.0, "about 10 px")
+	assert_between(travelled, 5.0, 8.0, "about 6 px")
+	assert_lt(EnemyScript.CONTACT_RADIUS + travelled, EnemyScript.BITE_REACH, "a foe telling its bite keeps it in reach")
+
+
+## PIX-377: monsters last a real fight. A wild foe's health grows by a scale
+## that tapers to the forest's levels, a boss's by one that falls as its row
+## grows, and the Night of Bells keeps its own numbers.
+func test_monster_health_is_scaled_for_real_time() -> void:
+	assert_eq(Bestiary.health_scale(1), Bestiary.LOW_HEALTH_SCALE, "a level-1 foe the least")
+	assert_lt(Bestiary.health_scale(4), Bestiary.health_scale(5), "rising through the forest and the coast")
+	assert_eq(Bestiary.health_scale(Bestiary.FULL_HEALTH_LEVEL), Bestiary.HEALTH_SCALE)
+	assert_eq(Bestiary.health_scale(20), Bestiary.HEALTH_SCALE)
+	assert_eq(int(Bestiary.spawn("orc")["maxHp"]), roundi(int(Bestiary.monster("orc")["maxHp"]) * Bestiary.health_scale(5)))
+	assert_eq(int(Bestiary.spawn("orc", true)["maxHp"]), roundi(int(Bestiary.monster("orc")["maxHp"]) * Bestiary.health_scale(5) * float(Bestiary._data()["eliteHp"])), "an elite's on top")
+	assert_eq(Bestiary.boss_health_scale(5), Bestiary.BOSS_HEALTH_SCALE)
+	assert_eq(Bestiary.boss_health_scale(21), Bestiary.TOP_BOSS_HEALTH_SCALE)
+	assert_gt(int(Hunts.fighter("hollow_king")["maxHp"]), int(Hunts.fighter("greymaw")["maxHp"]), "the last guardian still outlasts the first")
+	assert_eq(int(Bells.fafnyr()["maxHp"]), int(Bells.fafnyr_spec()["maxHp"]), "Fafnyr keeps his")
 
 
 func test_the_fight_has_its_own_blips() -> void:

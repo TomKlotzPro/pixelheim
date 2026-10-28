@@ -166,7 +166,12 @@ func fight(kit: Array, foe: Dictionary) -> Dictionary:
 		if skill.get("kind", "") == "damage":
 			hit = roundi((hit + Bestiary.through_armor(Skills.skill_power(hero, pack, skill), int(foe["defense"]) / 2.0)) / 2.0)
 	var bite := Bestiary.through_armor(int(foe["attack"]), HeroRules.total_defense(hero, pack))
-	var swings := ceili(float(foe["maxHp"]) / hit)
+	# On the rows' health: these margins weigh the gear against the rows,
+	# blow for blow. The real-time scale over them (PIX-377) is measured in
+	# whole fights, skills and dodges and all, by the playtest driver.
+	var level := Bestiary.level_of(foe)
+	var row_hp := float(foe["maxHp"]) / (Bestiary.boss_health_scale(level) if foe.has("named") else Bestiary.health_scale(level))
+	var swings := ceili(row_hp / hit)
 	var bites := ceili(float(hero.stats["maxHp"]) / bite)
 	return {"swings": swings, "bites": bites, "margin": 2.0 * bites / swings}
 

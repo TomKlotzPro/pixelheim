@@ -39,9 +39,11 @@ const BITE_REACH := 20.0
 const CONTACT_COOLDOWN := 0.9
 const ELITE_TINT := Color(1.0, 0.82, 0.7)
 ## A blow's shove (PIX-209): a push that fades to nothing over KNOCK_TIME,
-## riding on top of the foe's own walk - 10 px all told (v·t/2) for a common
-## foe, half for an elite or a named one, none for a boss.
-const KNOCK_PUSH := 166.0
+## riding on top of the foe's own walk - 6 px all told (v·t/2) for a common
+## foe, half for an elite or a named one, none for a boss. PIX-377: it was
+## 10 px, which threw a foe telling its bite at CONTACT_RADIUS out of
+## BITE_REACH, so a hero swinging every 0.45 s was hardly ever bitten.
+const KNOCK_PUSH := 100.0
 const KNOCK_TIME := 0.12
 ## The bite's wind-up (PIX-226): how far it leans back and tilts away.
 const LEAN_BACK := 3.0

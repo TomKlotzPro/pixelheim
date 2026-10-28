@@ -95,7 +95,8 @@ func test_a_named_monster_fights_as_an_elite_of_its_kind_with_its_own_numbers() 
 	assert_eq(fighter["name"], "Old Greymaw")
 	assert_true(fighter["elite"])
 	assert_eq(fighter["hp"], fighter["maxHp"])
-	assert_eq(fighter["maxHp"], int(Hunts.named("greymaw")["maxHp"]))
+	# Its row's health, grown as a boss's (PIX-377).
+	assert_eq(fighter["maxHp"], roundi(int(Hunts.named("greymaw")["maxHp"]) * Bestiary.boss_health_scale(5)))
 	assert_eq(Bestiary.family_of(fighter["id"]), "beasts")
 	# Its own level sets the XP a strong hero still earns.
 	assert_eq(Bestiary.xp_for(fighter, 5), int(fighter["xp"]))

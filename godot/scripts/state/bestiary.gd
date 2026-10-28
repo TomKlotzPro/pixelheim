@@ -149,9 +149,34 @@ static func fights_like_boss(fighter: Dictionary) -> bool:
 	return is_boss(String(fighter["id"])) or fighter.has("named")
 
 
+## Monster health over its row's (PIX-377): the rows were sized for the web's
+## turns, and in real time a hero at a wild foe's level felled it in a second
+## (playtest 4a). HEALTH_SCALE from FULL_HEALTH_LEVEL up, tapering to
+## LOW_HEALTH_SCALE at level 1 so the forest and the coast stay fair to a new
+## hero; elites and night packs grow on top. Bosses and named foes have
+## their own (boss_health_scale).
+const HEALTH_SCALE := 6.5
+const LOW_HEALTH_SCALE := 1.5
+const FULL_HEALTH_LEVEL := 6
+## A boss's or a named foe's (PIX-377): BOSS_HEALTH_SCALE at level 5, falling
+## to TOP_BOSS_HEALTH_SCALE at 21, as the rows grow fifteenfold from Greymaw
+## to the Hollow King while a matched hero's blows grow about twofold: about
+## 15-25 s of a matched hero's swings and skills each.
+const BOSS_HEALTH_SCALE := 7.5
+const TOP_BOSS_HEALTH_SCALE := 2.2
+
+
+static func health_scale(level: int) -> float:
+	return lerpf(LOW_HEALTH_SCALE, HEALTH_SCALE, clampf((level - 1) / float(FULL_HEALTH_LEVEL - 1), 0.0, 1.0))
+
+
+static func boss_health_scale(level: int) -> float:
+	return lerpf(BOSS_HEALTH_SCALE, TOP_BOSS_HEALTH_SCALE, clampf((level - 5) / 16.0, 0.0, 1.0))
+
+
 ## A fighting monster (spawnMonster): elites hit and pay half again, and armor
 ## up 30%; their health grows by combat.json's eliteHp (PIX-186: sized for
-## real time, where a hero swings every 0.45 s).
+## real time, where a hero swings every 0.45 s), all of it by health_scale.
 static func spawn(monster_id: String, elite := false, lift := 0) -> Dictionary:
 	var base := monster(monster_id)
 	# Lifted above its kind on the mountain, or below it on the Night of
@@ -159,7 +184,7 @@ static func spawn(monster_id: String, elite := false, lift := 0) -> Dictionary:
 	if lift != 0:
 		base = lifted(base, lift)
 	var mult := 1.5 if elite else 1.0
-	var max_hp := roundi(base["maxHp"] * (float(_data()["eliteHp"]) if elite else 1.0))
+	var max_hp := roundi(float(base["maxHp"]) * health_scale(int(base.get("level", 1))) * (float(_data()["eliteHp"]) if elite else 1.0))
 	var fighter := {
 		"id": monster_id,
 		"name": Text.t("Elite %s") % base["name"] if elite else String(base["name"]),

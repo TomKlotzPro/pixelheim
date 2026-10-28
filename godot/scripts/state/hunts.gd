@@ -134,17 +134,19 @@ static func of_the_wilds(named_id: String) -> bool:
 
 ## Its fighting record, as Bestiary.spawn makes one: its kind's sprite and
 ## family (its "id" is the kind's), its own name and numbers, and "named"
-## for the bounty. It fights as an elite (its family's trick, gold bar).
+## for the bounty. It fights as an elite (its family's trick, gold bar), with
+## a boss's health (Bestiary.boss_health_scale, PIX-377).
 static func fighter(named_id: String) -> Dictionary:
 	var entry := named(named_id)
 	var kind := Bestiary.monster(entry["monsterId"])
+	var hp := roundi(int(entry["maxHp"]) * Bestiary.boss_health_scale(int(entry["level"])))
 	return {
 		"id": entry["monsterId"],
 		"named": named_id,
 		"name": entry["name"],
 		"elite": true,
-		"hp": int(entry["maxHp"]),
-		"maxHp": int(entry["maxHp"]),
+		"hp": hp,
+		"maxHp": hp,
 		"attack": int(entry["attack"]),
 		"defense": int(entry["defense"]),
 		"xp": int(entry["xp"]),

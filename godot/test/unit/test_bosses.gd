@@ -39,9 +39,10 @@ func test_the_wilds_have_more_stories() -> void:
 ## PIX-186: sized for real time. A hero matched to the boss (their level,
 ## the stage's weapon forged up two, their points in what they hit with),
 ## swinging every 0.45 s for half the fight (the rest is spent stepping out
-## of marks and closing in), takes 20-45 s to bring it down: long enough to
-## be a fight. Fafnyr and Morvax were measured on the old floors 10 and 15;
-## since PIX-257 the last guardian is the Hollow King, on the Kings' Vault's
+## of marks and closing in), takes 40-70 s of swings alone to bring it down;
+## the skills between halve that (PIX-377: 22-27 s in the playtest driver's
+## fights, 20-45 s of swings before its health grew). Fafnyr and Morvax
+## were measured on the old floors 10 and 15; since PIX-257 the last guardian is the Hollow King, on the Kings' Vault's
 ## hoard, and the stage's weapons are the Vault's finds.
 const WEAPONS := {"warrior": "obsidian_blade", "mage": "starfall_staff", "ranger": "gale_longbow"}
 const MAIN := {"warrior": ["strength", 2], "mage": ["intelligence", 3], "ranger": ["dexterity", 3]}
@@ -62,7 +63,7 @@ func test_the_last_guardian_lasts_a_real_fight() -> void:
 			var swing := Bestiary.hero_attack_damage(hero, pack, boss, false, func() -> float: return 0.5)
 			var seconds := float(boss["maxHp"]) / (swing * UPTIME / 0.45)
 			gut.p("%s (L%d, %d HP): a %s hits %d, %.0f s" % [boss["name"], boss["level"], boss["maxHp"], role, swing, seconds])
-			assert_between(seconds, 20.0, 45.0, "%s against a matched %s" % [boss["name"], role])
+			assert_between(seconds, 40.0, 70.0, "%s against a matched %s" % [boss["name"], role])
 
 
 func test_a_guardian_outlasts_its_kind() -> void:
