@@ -2425,6 +2425,10 @@ msgid "Behind the scenes: the map's gates, props and patches of ground are now d
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: the test runs can now field a real hero of any class and level, fight each region's own foes for their own loot, see the biggest bosses through, and close without leaving anything behind; one long-fight error with an elite's summoned wolf is gone too"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: the test tool's setup no longer lives in the game's own code, and its 800-line script is now a list of small steps run in order, so the game is simpler to read and the tests easier to extend"
 msgstr ""
 
@@ -4698,6 +4702,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Real Flames"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Real Heroes"
 msgstr ""
 
 #: assets/data/changelog.json

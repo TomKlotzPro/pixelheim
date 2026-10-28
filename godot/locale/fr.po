@@ -2425,6 +2425,10 @@ msgid "Behind the scenes: the map's gates, props and patches of ground are now d
 msgstr "En coulisses : les portes, le décor et les parcelles de terrain sont désormais dessinés par des couches à part, premier pas pour découper le plus gros fichier du jeu ; chaque carte reste exactement la même"
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: the test runs can now field a real hero of any class and level, fight each region's own foes for their own loot, see the biggest bosses through, and close without leaving anything behind; one long-fight error with an elite's summoned wolf is gone too"
+msgstr "En coulisses : les essais peuvent désormais aligner un vrai héros de n'importe quelle classe et de n'importe quel niveau, affronter les monstres de chaque région pour leur propre butin, venir à bout des plus grands boss et se fermer sans rien laisser traîner ; une erreur dans les longs combats contre le loup invoqué d'un élite a aussi disparu"
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: the test tool's setup no longer lives in the game's own code, and its 800-line script is now a list of small steps run in order, so the game is simpler to read and the tests easier to extend"
 msgstr "En coulisses : les préparatifs de l'outil de test ne vivent plus dans le code du jeu lui-même, et son script de 800 lignes est devenu une liste de petites étapes jouées dans l'ordre : le jeu est plus simple à lire et les tests plus faciles à compléter"
 
@@ -4699,6 +4703,10 @@ msgstr "Le danger se lit"
 #: assets/data/changelog.json
 msgid "Real Flames"
 msgstr "Vraies flammes"
+
+#: assets/data/changelog.json
+msgid "Real Heroes"
+msgstr "De vrais héros"
 
 #: assets/data/changelog.json
 msgid "Recipes now demand skill: Smithing forges gear, Alchemy brews, and locked recipes show what level they ask"

@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.289.0",
+      "date": "2026-10-28",
+      "codename": "Real Heroes",
+      "notes": [
+        "Behind the scenes: the test runs can now field a real hero of any class and level, fight each region's own foes for their own loot, see the biggest bosses through, and close without leaving anything behind; one long-fight error with an elite's summoned wolf is gone too"
+      ]
+    },
+    {
       "version": "0.288.0",
       "date": "2026-10-28",
       "codename": "Fair Trade",
