@@ -3049,6 +3049,10 @@ msgid "Escape pauses the game: copy your save code, open options, or quit to the
 msgstr "Esc met le jeu en pause : copiez votre code de sauvegarde, ouvrez les options, ou revenez à l'écran titre et reprenez là où vous étiez"
 
 #: assets/data/changelog.json
+msgid "Even Keel"
+msgstr "À niveau"
+
+#: assets/data/changelog.json
 msgid "Every Class Starts Right"
 msgstr "Chaque classe part du bon pied"
 
@@ -3091,6 +3095,10 @@ msgstr "Chaque nouveau son est créé en code (godot/tools/synth.py) dans la mê
 #: assets/data/changelog.json
 msgid "Every piece of furniture answers to E now: the hearth crackles, the counter dreams of dinner - silence never reads as a bug again"
 msgstr "Chaque meuble répond désormais à E : l'âtre crépite, le comptoir rêve du dîner - un silence ne passe plus jamais pour un bug"
+
+#: assets/data/changelog.json
+msgid "Every piece of music now plays at the same loudness, the battle theme no longer clicks, and the sounds that hid (your own hurt, a foe noticing you, the wind in the woods) can be heard again"
+msgstr "Toutes les musiques jouent désormais au même volume, le thème de combat ne claque plus, et les sons qui se cachaient (vos propres blessures, un monstre qui vous repère, le vent dans les bois) s'entendent à nouveau"
 
 #: assets/data/changelog.json
 msgid "Every place has its own music now: a warm folk tune in town, old minor wanderings in the Deepwood, drowned bells over the Mirefen, a cozy lull indoors, a pulse before the dungeon plunge - and bosses get their own menace"
@@ -5551,6 +5559,10 @@ msgstr "Dix d'un coup"
 #: assets/data/changelog.json
 msgid "Ten floors of monsters, from cellar slimes to Fafnyr the Ashen"
 msgstr "Dix étages de monstres, des gelées de la cave à Fafnyr des Cendres"
+
+#: assets/data/changelog.json
+msgid "The Aegis rings when it turns a blow, treasure picked off the ground clinks, and the saves, bank, shelves and bounty board answer your choices"
+msgstr "L'Égide résonne quand elle pare un coup, un trésor ramassé au sol tinte, et les sauvegardes, la banque, les étagères et le tableau des primes répondent à vos choix"
 
 #: assets/data/changelog.json
 msgid "The Ashen Mountain"
