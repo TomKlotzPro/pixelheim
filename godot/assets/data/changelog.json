@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.286.0",
+      "date": "2026-10-28",
+      "codename": "Plugged In",
+      "notes": [
+        "Behind the scenes: a part of the game in its own folder can now keep time, answer E and run its own checks without touching the shared code; Lantern Night and the lookout have moved onto these hooks"
+      ]
+    },
+    {
       "version": "0.285.0",
       "date": "2026-10-28",
       "codename": "Clear Screen",

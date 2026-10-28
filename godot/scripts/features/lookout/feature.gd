@@ -2,13 +2,23 @@ extends Feature
 ## areas: travel night screen +mountain_road*
 ## The lookout on the mountain road in the harness (PIX-363): its spyglass
 ## (Lookout, a map layer) and the report's lookout=, its row beside this
-## script and its flows in tools/flows.d/lookout.txt. E at it is
-## world_interaction.gd's (a feature has no hook for E or the prompt yet);
-## the view is LookoutScreen.
+## script and its flows in tools/flows.d/lookout.txt; E at it and its
+## prompt (`interact`, `prompt_at`); the view is LookoutScreen.
 
 
 func layers() -> Dictionary[String, MapLayer]:
 	return {"lookout": Lookout.new()}
+
+
+## The prompt over the spyglass, as tall as it's drawn.
+func prompt_at(world: Node, cell: Vector2i) -> Variant:
+	if not Lookout.at(world.map.id, cell):
+		return null
+	return Rect2(Vector2(cell * MapView.TILE), Vector2.ONE * MapView.TILE).grow_side(SIDE_TOP, Lookout.PIECE.size() - MapView.TILE)
+
+
+func interact(world: Node, cell: Vector2i) -> bool:
+	return Lookout.use(world, cell)
 
 
 # --- The report's fields, by name ---------------------------------------------

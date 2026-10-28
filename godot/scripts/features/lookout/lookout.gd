@@ -54,24 +54,11 @@ func build(view: MapView, slices: Slicer) -> void:
 	if view.data.id != MAP:
 		return
 	slices.add("lookout", func() -> void:
-		var root := Node2D.new()
-		root.position = Vector2(CELL * TILE) + Vector2(0, TILE)
-		root.add_to_group("decor")
 		var sprite := Sprite2D.new()
 		sprite.centered = false
 		sprite.texture = texture()
-		sprite.position = Vector2(0, -PIECE.size())
-		root.add_child(sprite)
-		view.actors.add_child(root)
-		var shape := RectangleShape2D.new()
-		shape.size = MapView.HAMLET_FOOT.size
-		var foot := CollisionShape2D.new()
-		foot.shape = shape
-		var body := StaticBody2D.new()
-		body.position = Vector2(CELL * TILE) + MapView.HAMLET_FOOT.get_center()
-		body.add_to_group("decor")
-		body.add_child(foot)
-		view.actors.add_child(body))
+		stand_on(view, sprite, CELL, Vector2(0, TILE - PIECE.size()))
+		block(view, CELL))
 
 
 ## The spyglass in HamletArt's inks, drawn once a session.
