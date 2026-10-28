@@ -4421,7 +4421,7 @@ msgid "Options on the title screen opens again: it was opening behind the title"
 msgstr ""
 
 #: assets/data/changelog.json
-msgid "Own Hooks"
+msgid "Plugged In"
 msgstr ""
 
 #: assets/data/changelog.json

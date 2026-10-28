@@ -4421,8 +4421,8 @@ msgid "Options on the title screen opens again: it was opening behind the title"
 msgstr "Les options de l'écran titre s'ouvrent de nouveau : elles s'ouvraient derrière le titre"
 
 #: assets/data/changelog.json
-msgid "Own Hooks"
-msgstr "Leurs propres crochets"
+msgid "Plugged In"
+msgstr "Bien branchés"
 
 #: assets/data/changelog.json
 msgid "Owned businesses pay RENT: +2g each after every victory, straight into your purse with a line in the battle log"
