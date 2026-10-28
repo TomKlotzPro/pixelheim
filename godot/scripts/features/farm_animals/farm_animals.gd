@@ -3,39 +3,41 @@ extends MapLayer
 ## areas: town night
 ## Pixelheim's farm animals by its age (PIX-387, the village's step 2): hens
 ## and chicks pecking round the farmhouses and kitchen gardens, sheep on the
-## meadow by the river, pigs in the farmyard by the east field, cows and the
-## bull in the field along the river's bank. A few hens in the Hamlet, more
+## meadow by the river, pigs in the sty by the east field, cows and the bull
+## in the field along the river's bank. A few hens in the Hamlet, more
 ## of everything in the Village, the whole farmyard in the Town and the
 ## City; none in the Ashes. Each animal has a small patch of the town by
 ## hand (`HERD`) and wanders it a cell at a time (Herd), never onto a road,
 ## a door or its step, a villager's place or pacing, a stall, wherever the
 ## story stands someone (Yards.kept) or what the yards lay. They block
 ## nothing and are no foes. Drawn from ninth-jedi's Farm Animals, a paid
-## pack (scripts/fetch-private-art.sh), at half its size and the cattle at
-## two thirds (Herd.SCALE): without it, none. The plan is pure (`plan_herd`).
+## pack (scripts/fetch-private-art.sh), at two thirds of its size
+## (Herd.SCALE): without it, none. The plan is pure (`plan_herd`).
 
 const MAP := "town"
 const FOLDER := "res://assets/puny/animals"
 ## Each sheet's kind, as the report counts them.
 const KINDS := {"chicken1": "hen", "chicken2": "hen", "chick": "chick", "sheep": "sheep", "pig": "pig", "cow": "cow", "bull": "bull"}
 
-## Their patches: Maren's back yard; the farmyard between the east field,
-## the slate hall and the wall, its barrel and crate; the lane between the
-## two cottages and their gardens; the yard behind the house by the inn; the
-## meadow by the east lawn's garden; the field along the river's bank.
+## Their patches: Maren's back yard; inside the sty fenced between the east
+## field, the road and the wall (the town map's, its gate on the road); the
+## lane between the two cottages and their gardens; the yard behind the
+## house by the inn; the meadow by the east lawn's garden; the field along
+## the river's bank, a column short of the water (a cow is wider than its
+## cell: on the bank's last column its tail stood in the river).
 const MARENS_YARD := Rect2i(18, 4, 8, 2)
-const FARMYARD := Rect2i(77, 18, 5, 3)
+const STY := Rect2i(78, 18, 4, 2)
 const COTTAGES := Rect2i(9, 28, 6, 5)
 const UPPER_YARD := Rect2i(57, 4, 7, 2)
 const MEADOW := Rect2i(50, 28, 8, 5)
-const RIVER_FIELD := Rect2i(63, 21, 4, 9)
+const RIVER_FIELD := Rect2i(63, 21, 3, 9)
 
 ## Each animal by hand: its sheet, its patch and the age it comes at.
 const HERD := [
-	# The Hamlet: a few hens about Maren's and the farm by the east field.
+	# The Hamlet: a few hens about Maren's and the sty by the east field.
 	{"sheet": "chicken1", "pen": MARENS_YARD, "age": 1},
 	{"sheet": "chicken2", "pen": MARENS_YARD, "age": 1},
-	{"sheet": "chicken2", "pen": FARMYARD, "age": 1},
+	{"sheet": "chicken2", "pen": STY, "age": 1},
 	# The Village: chicks, the cottages' hens, sheep, pigs and a cow.
 	{"sheet": "chick", "pen": MARENS_YARD, "age": 2},
 	{"sheet": "chick", "pen": MARENS_YARD, "age": 2},
@@ -45,8 +47,8 @@ const HERD := [
 	{"sheet": "sheep", "pen": MEADOW, "age": 2},
 	{"sheet": "sheep", "pen": MEADOW, "age": 2},
 	{"sheet": "sheep", "pen": MEADOW, "age": 2},
-	{"sheet": "pig", "pen": FARMYARD, "age": 2},
-	{"sheet": "pig", "pen": FARMYARD, "age": 2},
+	{"sheet": "pig", "pen": STY, "age": 2},
+	{"sheet": "pig", "pen": STY, "age": 2},
 	{"sheet": "cow", "pen": RIVER_FIELD, "age": 2},
 	# The Town, and the City after it: the whole farmyard.
 	{"sheet": "chicken1", "pen": UPPER_YARD, "age": 3},
@@ -56,7 +58,7 @@ const HERD := [
 	{"sheet": "chick", "pen": COTTAGES, "age": 3},
 	{"sheet": "sheep", "pen": MEADOW, "age": 3},
 	{"sheet": "sheep", "pen": MEADOW, "age": 3},
-	{"sheet": "pig", "pen": FARMYARD, "age": 3},
+	{"sheet": "pig", "pen": STY, "age": 3},
 	{"sheet": "cow", "pen": RIVER_FIELD, "age": 3},
 	{"sheet": "bull", "pen": RIVER_FIELD, "age": 3},
 ]
@@ -146,10 +148,11 @@ static func frames(sheet: String) -> SpriteFrames:
 
 ## The herd, wandering among the actors once the yards are laid.
 func build(view: MapView, slices: Slicer) -> void:
-	if view.data.id != MAP:
+	# Without the pack, nothing to plan: kept_on's merge isn't free.
+	if view.data.id != MAP or not available():
 		return
 	slices.add("decor_animals", func() -> void:
-		var herd := plan_herd(view.data, GameState.town_tier(), kept_on(view.data, view.patch_decks, view.hamlet["pieces"]), available())
+		var herd := plan_herd(view.data, GameState.town_tier(), kept_on(view.data, view.patch_decks, view.hamlet["pieces"]), true)
 		if herd.is_empty():
 			return
 		var node := Herd.new(herd, view.actors)

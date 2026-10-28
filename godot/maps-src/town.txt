@@ -10,6 +10,9 @@
 # ran out from the green, two planks into a river four wide, and read as a
 # bridge left half built, from the green and from the Reach: PIX-287.)
 # The ages build on the lots south of Hearth Lane and across the bridge.
+# The farmyard across it is a sty (PIX-387): fenced against the wall, the
+# east field a row shorter for it, its gate on the road and its barrel and
+# crate beside it by the wall.
 # One rampart round it all, a wall drawn once (PIX-248: the double rampart
 # looked strange from inside): the top two rows and the columns beyond the
 # west and east walls are the fields outside, the road running on north out
@@ -71,12 +74,12 @@ map
 .#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSS......~~~~.....="""".#.
 .#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSS......~~~~.....="""".#.
 .#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSS......~~~~.....="""".#.
-.#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSSc.....~~~~.....="""".#.
-.#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSsSDSSSSSb.....~~~~.....=.....#.
-.#^.........++++++.TTpTDTTTT...===lSSSSSDSSSSSl====================HHHH======...b.#.
-.#^................=========....=================.=================HHHH======...c.#.
-.#..RRRRRR.RRRRRRRRR............=================..................~~~~.=========.#.
-.#..RRRRRR.RRRRRRRRR..MMMMMM....=================..................~~~~.=========.#.
+.#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSSc.....~~~~.....=+++++#.
+.#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSsSDSSSSSb.....~~~~.....=+....#.
+.#^.........++++++.TTpTDTTTT...===lSSSSSDSSSSSl====================HHHH======+....#.
+.#^................=========....=================.=================HHHH======++.++#.
+.#..RRRRRR.RRRRRRRRR............=================..................~~~~.=========b#.
+.#..RRRRRR.RRRRRRRRR..MMMMMM....=================..................~~~~.=========c#.
 .#..RRRRRR.RRRRRRRRR..MMMMMM....=================......FF....FF....~~~~.++++=+++++#.
 .#..RRRRRR.RRRRRRRRR..MMMMMM....=================......FFF....F....~~~~.."""""""".#.
 .#..RRdRRR.RRRRdRRRR..MMdMMM....=================........*FF*......~~~~.."""""""".#.

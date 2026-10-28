@@ -78,7 +78,7 @@ The town's yards (PIX-382, `Yards`, 2026-10-28, `--town-tier 4`, with the paid p
 
 Greyhold's walls in stone (PIX-386, `StoneWalls`, 2026-10-28, with the paid pack, three runs interleaved with main's): nodes 703 -> 704 (the ruins' tile layer), BESIDE 16.5 -> 16.9 ms (plan 3.9 -> 4.5), "again" 19.6 -> 20.5 ms; other maps' plan +0.1-0.2 ms (the scan for walls). The ruins' atlas holds 120 tiles more: about 3 ms more, once a session, on the first map with ruins or walls (the Mirefen's first visit 75 -> 79 ms).
 
-The town's farm animals (PIX-387, 2026-10-28, `--town-tier 4`, with the packs, two runs each): nodes 1734 -> 1759 (24 sprites and the herd), BESIDE 31.0-31.7 -> 32.6-33.2 ms (decor 10.5-11.2 -> 12.0-12.1), "again" 32.8-33.5 -> 33.9-36.3 ms. `cpu=` by the river field with every animal near the screen 0.28/0.60-0.66 -> 0.28-0.30/0.65 ms: noise.
+The town's farm animals (PIX-387, 2026-10-28, `--town-tier 4`, with the packs, two runs each): nodes 1734 -> 1759 (24 sprites and the herd), BESIDE 31.0-31.7 -> 32.6-33.2 ms (decor 10.5-11.2 -> 12.0-12.1), "again" 32.8-33.5 -> 33.9-36.3 ms. `cpu=` by the river field with every animal near the screen 0.28/0.60-0.66 -> 0.28-0.30/0.65 ms: noise. With the sty fenced (the review), the same build with and without the pack: nodes 1774 -> 1799, BESIDE 32.6-33.0 -> 33.0-33.3 ms (decor 11.2-11.3 -> 12.1-12.2); without it, nothing of the herd is planned.
 
 ## Saves (a hero who has seen every cell of 29 maps)
 

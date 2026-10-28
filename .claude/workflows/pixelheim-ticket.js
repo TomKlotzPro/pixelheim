@@ -12,7 +12,7 @@ export const meta = {
 const RULES = [
   'Load the `pixelheim-godot` skill first and follow it.',
   'Tom is the sole author: no Co-Authored-By trailer and no "Generated with" footer in commits or PR bodies.',
-  'Never commit paid art (godot/assets/puny/shade, medieval, gegx) or any picture made from it; copy it in from /Users/klotztom/playground/pixelheim/godot/assets/puny/ when you need it and delete it after.',
+  'Never commit paid art (godot/assets/puny/shade, medieval, gegx, animals) or any picture made from it; copy it in from /Users/klotztom/playground/pixelheim/godot/assets/puny/ when you need it and delete it after.',
   'Quiet runs (--audio-driver Dummy); never --slot. Do not cut a release, merge or watch CI: the main session does.',
   'Do not touch repo settings or secrets; do not delete branches.',
 ].join('\n- ')

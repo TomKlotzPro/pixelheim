@@ -14790,7 +14790,7 @@ msgstr "Fafnyr : « Vu d'en haut, on dirait un trésor. Du bon. Pas un seul 
 
 #: assets/data/story.json
 msgid "Farm Animals by ninth-jedi"
-msgstr "Animaux de la ferme de ninth-jedi"
+msgstr "« Farm Animals » de ninth-jedi"
 
 #: assets/data/story.json
 msgid "Fifty years ago five of the village climbed up to keep it that way. Only one came home, and she never talked about it."

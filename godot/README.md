@@ -23,7 +23,9 @@ under `retro-rpg/shade/`. `scripts/fetch-private-art.sh`
 installs the atlas into `godot/assets/puny/medieval/` and every icon
 `icons.json` names into `godot/assets/puny/shade/`, and GegX's UI kit, prepared
 by `tools/ui_kit_prep.gd` and named in `assets/puny/ui_kit.json`, into
-`godot/assets/puny/gegx/` (all git-ignored) with your GitHub login; the deploy and the Godot CI run the same script on a checkout
+`godot/assets/puny/gegx/`, and ninth-jedi's paid Farm Animals (the town's
+hens, sheep, pigs and cattle, `retro-rpg/ninth-jedi/farm-animals/`, PIX-387)
+into `godot/assets/puny/animals/` (all git-ignored) with your GitHub login; the deploy and the Godot CI run the same script on a checkout
 made with a read-only deploy key (secret `PIXELHEIM_ASSETS_KEY`). Without it
 the game runs on Shade's free art alone: the town's houses, props and paid
 icons are missing, and collision is the same.

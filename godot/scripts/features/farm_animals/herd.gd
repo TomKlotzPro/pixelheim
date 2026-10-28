@@ -13,10 +13,10 @@ extends Node
 
 ## Each kind's pace, in pixels a second: a cell in two to three seconds.
 const SPEED := {"hen": 7.0, "chick": 6.0, "sheep": 6.0, "pig": 6.0, "cow": 5.0, "bull": 5.0}
-## Drawn at half the pack's size, a hen half a villager high; the cattle at
-## two thirds, a cow nearly as tall as one and longer (an art pixel two
-## screen pixels at the play zoom).
-const SCALE := {"hen": 0.5, "chick": 0.5, "sheep": 0.5, "pig": 0.5, "cow": 2.0 / 3.0, "bull": 2.0 / 3.0}
+## Every kind drawn at two thirds of the pack's size, so an art pixel is two
+## screen pixels at the play zoom for all of them (at half, three of them
+## came out at one and a half: outlines a pixel, then two).
+const SCALE := 2.0 / 3.0
 ## Seconds standing between two steps.
 const STAND := Vector2(2.0, 7.0)
 ## Where in its cell an animal's feet stand.
@@ -43,7 +43,7 @@ func _init(plan: Array[Dictionary], actors: Node2D) -> void:
 		var size := sprite.sprite_frames.get_frame_texture("walk", 0).get_size()
 		sprite.centered = false
 		sprite.offset = Vector2(-size.x / 2.0, -size.y)
-		sprite.scale = Vector2.ONE * SCALE[entry["kind"]]
+		sprite.scale = Vector2.ONE * SCALE
 		sprite.position = foot(entry["cell"])
 		sprite.add_to_group("decor")
 		actors.add_child(sprite)
