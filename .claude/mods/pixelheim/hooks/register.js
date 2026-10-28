@@ -109,6 +109,48 @@ function gauges(Text) {
   return { pv, en }
 }
 
+// The checks main requires (the required-checks ruleset) plus the windowed shares behind `pictures`.
+const CHECKS = 8
+const DONE = ['SUCCESS', 'FAILURE', 'CANCELLED', 'SKIPPED', 'TIMED_OUT', 'NEUTRAL', 'ACTION_REQUIRED', 'STARTUP_FAILURE', 'STALE']
+
+async function pullRequest($, pr) {
+  const r = await $.process.run(['gh', 'pr', 'view', String(pr), '--json', 'headRefOid,state,statusCheckRollup'])
+  if (r.exitCode !== 0) throw new Error(r.stderr.trim() || 'gh pr view failed')
+  const j = JSON.parse(r.stdout)
+  return {
+    head: j.headRefOid.slice(0, 8),
+    state: j.state,
+    checks: j.statusCheckRollup.map(c => ({ name: c.name, state: c.conclusion || c.status })),
+  }
+}
+
+function verdict(info) {
+  const waiting = info.checks.filter(c => !DONE.includes(c.state)).map(c => c.name)
+  const red = info.checks.filter(c => DONE.includes(c.state) && c.state !== 'SUCCESS').map(c => c.name + ' ' + c.state)
+  const green = info.checks.length >= CHECKS && waiting.length === 0 && red.length === 0
+  const line = '#' + info.pr + ' ' + info.state + ' head ' + info.head + ': ' +
+    info.checks.filter(c => c.state === 'SUCCESS').length + '/' + info.checks.length + ' green' +
+    (waiting.length ? ' · waiting: ' + waiting.join(', ') : '') + (red.length ? ' · red: ' + red.join(', ') : '') +
+    (info.checks.length < CHECKS ? ' · only ' + info.checks.length + ' of ' + CHECKS + ' checks reported' : '')
+  return { green, line }
+}
+
+// Merges only when every check is green, then fast-forwards the main checkout (not a worktree).
+async function ship($, pr) {
+  const info = { pr, ...(await pullRequest($, pr)) }
+  const v = verdict(info)
+  if (info.state !== 'OPEN') return v.line + ' - not open, nothing merged'
+  if (!v.green) return v.line + ' - not merged'
+  const m = await $.process.run(['gh', 'pr', 'merge', String(pr), '--merge'])
+  if (m.exitCode !== 0) return v.line + ' - merge refused: ' + m.stderr.trim()
+  const common = await $.process.run(['git', 'rev-parse', '--path-format=absolute', '--git-common-dir'])
+  const main = common.stdout.trim().replace(/\/\.git$/, '')
+  await $.process.run(['git', '-C', main, 'fetch', '-q', 'origin'])
+  const ff = await $.process.run(['git', '-C', main, 'merge', '--ff-only', '-q', 'origin/main'])
+  const head = await $.process.run(['git', '-C', main, 'log', '--oneline', '-1'])
+  return v.line + ' - merged; main checkout ' + (ff.exitCode === 0 ? 'at ' + head.stdout.trim() : 'NOT fast-forwarded: ' + ff.stderr.trim())
+}
+
 function summary() {
   return [
     'Pixelheim ' + (version || '?'),
@@ -129,6 +171,17 @@ export function register(on) {
       description: "Tom's plan usage this week and in the last five hours, against his weekly Pixelheim cap. Check it before spawning agents.",
       inputSchema: { type: 'object', properties: {} },
       isDeferred: false,
+    })
+    const prArg = { type: 'object', properties: { pr: { type: 'integer', description: 'the pull request number' } }, required: ['pr'] }
+    await $.tool.register({
+      name: 'pr_status',
+      description: "A Pixelheim pull request's CI in one line: head, how many checks are green, which are waiting or red.",
+      inputSchema: prArg,
+    })
+    await $.tool.register({
+      name: 'ship',
+      description: "Merge a Pixelheim pull request only if all its checks are green, then fast-forward the main checkout. Refuses otherwise and says why. Use this instead of gh pr merge.",
+      inputSchema: prArg,
     })
     await $.command.register({
       name: 'pix',
@@ -172,6 +225,22 @@ export function register(on) {
     if (e.surface !== 'terminal' || !Raster) return sheet
     const hero = Raster({ key: 'hero', columns: HERO[0].length, rows: Math.ceil(HERO.length / 2), cells: heroCells() })
     return Box({ flexDirection: 'row', columnGap: 2, children: [hero, sheet] })
+  })
+
+  on('tool.call', { tool: 'mcp__pixelheim__pr_status' }, async ($, e) => {
+    try {
+      return { result: verdict({ pr: e.pr, ...(await pullRequest($, e.pr)) }).line }
+    } catch (err) {
+      return { result: 'pr_status failed: ' + String(err?.message ?? err) }
+    }
+  })
+
+  on('tool.call', { tool: 'mcp__pixelheim__ship' }, async ($, e) => {
+    try {
+      return { result: await ship($, e.pr) }
+    } catch (err) {
+      return { result: 'ship failed, nothing merged: ' + String(err?.message ?? err) }
+    }
   })
 
   on('tool.call', { tool: 'mcp__pixelheim__usage' }, async ($) => {
