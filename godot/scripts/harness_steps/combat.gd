@@ -15,20 +15,16 @@ var flags: HarnessFlags
 ## as it's known.
 var report: HarnessReport
 
+## How long `kill` swings at most, in the game's seconds (PIX-379: a level-1
+## hero's swings fell the Hollow King in about 222).
+const KILL_SECONDS := 300.0
+
 
 func step_clear() -> void:
 	# Fell every foe on the map at once (a floor of the Kings' Vault, PIX-257).
 	for foe in h.get_tree().get_nodes_in_group("mobs"):
 		foe.take_hit(99999, foe.global_position + Vector2.LEFT)
 	await h.get_tree().create_timer(0.6).timeout
-
-
-func step_level() -> void:
-	# A hero of that level: the rank's title (a rank no longer changes how
-	# the hero looks) - before the walking check, so `--level 20 motion`
-	# measures a ranked hero.
-	GameState.hero.level = int(flags.value("--level"))
-	world.hud.on_hp_changed(GameState.hero.hp, int(GameState.hero.stats["maxHp"]))
 
 
 ## `--wear iron_helm,iron_armor`: gear put on the hero (drawn on them, PIX-129).
@@ -67,7 +63,7 @@ func step_die() -> void:
 func step_cast() -> void:
 	# A foe two steps away, then the first skill: the strike, the flash, the log.
 	world.player.invulnerable = true
-	world.foes.spawn_enemy("orc", world.player_cell + Vector2i(2, 0), "ash")
+	world.foes.spawn_enemy("orc", world.player_cell + Vector2i(2, 0), world.map.region_at(world.player_cell + Vector2i(2, 0)))
 	world.player.face(Vector2.RIGHT)
 	await h.get_tree().create_timer(0.2).timeout
 	world.player.cast(0)
@@ -100,13 +96,14 @@ func step_fight() -> void:
 		else:
 			opponent = world.foes.spawn_named(foe, at)
 	else:
-		opponent = world.foes.spawn_enemy(foe, at, "ash", "", flags.has("elite"))
+		# The map's region where it stands (PIX-379): its loot, its shards.
+		opponent = world.foes.spawn_enemy(foe, at, world.map.region_at(at), "", flags.has("elite"))
 	world.player.face(Vector2.RIGHT)
 	# `pack` (PIX-340): the rest of its pack round it, all on the hunt.
 	var pack: Array[Node] = [opponent]
 	if flags.has("pack"):
 		for i in Foes.PACK_SIZE - 1:
-			pack.append(world.foes.spawn_enemy(foe, at + [Vector2i.DOWN, Vector2i.UP][i % 2], "ash"))
+			pack.append(world.foes.spawn_enemy(foe, at + [Vector2i.DOWN, Vector2i.UP][i % 2], world.map.region_at(at)))
 		for member in pack:
 			member.notice()
 	# `--foe-left S` (PIX-288): the fight already on, the foe hunting the
@@ -128,18 +125,14 @@ func step_fight() -> void:
 		await h.get_tree().create_timer(0.2).timeout
 		opponent.guarding = false
 		opponent.take_hit(int(opponent.fighter["hp"]), opponent.global_position + Vector2.LEFT)
-		# One that stands down rather than falls (PIX-255) has its say:
-		# the run waits for its words, which --keys then read through.
-		var waited := 0.0
-		while opponent.stood_down and waited < 3.0 and not world.get_children().any(func(node: Node) -> bool:
-				return node.get_script() == preload("res://scripts/dialogue_box.gd")):
-			await h.get_tree().create_timer(0.1).timeout
-			waited += 0.1
-	# `kill` swings until the foe drops (or 12 swings); plain `fight`
-	# captures mid-swing.
-	var swings := (12 if flags.has("kill") else 1) * pack.size()
+		await _hear_out(opponent)
+	# `kill` swings until the foe (its pack) drops, KILL_SECONDS at most
+	# (PIX-379); plain `fight` swings once a foe and is caught mid-swing.
+	var swings := pack.size()
 	var kills_before: int = world.foes.kills
-	for i in swings:
+	var since := GameClock.seconds()
+	var i := 0
+	while flags.has("kill") or i < swings:
 		# A pack's: at the nearest of it still standing. A Variant, as a
 		# freed foe can't be passed as a Node to be checked (PIX-372).
 		var standing := pack.filter(func(member: Variant) -> bool: return is_instance_valid(member) and not member.dying)
@@ -148,14 +141,19 @@ func step_fight() -> void:
 			standing.sort_custom(func(a: Node2D, b: Node2D) -> bool: return a.global_position.distance_to(hero) < b.global_position.distance_to(hero))
 			world.player.face(standing[0].global_position - hero)
 		world.player.attack()
-		if i < swings - 1:
+		i += 1
+		if flags.has("kill") or i < swings:
 			await h.get_tree().create_timer(0.45).timeout
-		if world.foes.kills - kills_before >= pack.size():
+		# Down when it fell or stood down, not when something else did
+		# (PIX-379: a bone knight beside the Bone Abbot).
+		if pack.all(func(member: Variant) -> bool: return not is_instance_valid(member) or member.dying) or GameClock.seconds() - since > KILL_SECONDS:
 			break
 		# The wins rising while some of the pack still stand (PIX-343:
 		# at each kill, not held to the fight's end).
 		if world.foes.kills > kills_before and report.noted("rising") == "":
 			report.note("rising", str(world.fx.rising_now()))
+	if flags.has("kill"):
+		await _hear_out(opponent)
 	await h.get_tree().create_timer(0.4 if flags.has("kill") else 0.1).timeout
 	if flags.has("die"):
 		await _die()
@@ -176,6 +174,17 @@ func step_flee() -> void:
 			mob.notice()
 	world.use_portal(world.map.portals.values()[0])
 	await h.get_tree().create_timer(0.5).timeout
+
+
+## One that stands down rather than falls (PIX-255) has its say: the run
+## waits for its words, which --keys then read through. A Variant: the
+## foe may be freed (PIX-372).
+func _hear_out(foe: Variant) -> void:
+	var waited := 0.0
+	while is_instance_valid(foe) and foe.stood_down and waited < 3.0 and not world.get_children().any(func(node: Node) -> bool:
+			return node.get_script() == preload("res://scripts/dialogue_box.gd")):
+		await h.get_tree().create_timer(0.1).timeout
+		waited += 0.1
 
 
 ## A blow no hero survives: the fall, then waking at the inn.

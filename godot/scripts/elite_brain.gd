@@ -179,5 +179,6 @@ func _howl(move: Dictionary) -> void:
 
 
 func _calling() -> int:
-	called.assign(called.filter(func(wolf: Node) -> bool: return is_instance_valid(wolf) and not wolf.dying))
+	# A Variant: a freed wolf can't be passed as a Node to be checked (PIX-379).
+	called.assign(called.filter(func(wolf: Variant) -> bool: return is_instance_valid(wolf) and not wolf.dying))
 	return called.size()

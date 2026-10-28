@@ -219,8 +219,14 @@ func _run_test_harness() -> void:
 	# `--batch` (PIX-360): the batch's next flow, from a boot's state.
 	if HarnessBoot.next_flow(get_tree()):
 		return
-	# Let the audio server let go of the music before the engine shuts down.
+	# Let the audio server let go of every sound before the engine shuts down
+	# (PIX-379: one still playing leaked at exit, its AudioStreamWAV and
+	# playback). Its mixer retires a stopped sound on its own thread, in the
+	# machine's time, which a stepped run's frames outrun; the frame after
+	# frees it.
 	get_tree().paused = true  # nothing may start a track again
 	Sound.stop_all()
-	await get_tree().create_timer(0.1).timeout
+	Sound.release()
+	OS.delay_msec(100)
+	await get_tree().process_frame
 	get_tree().quit()

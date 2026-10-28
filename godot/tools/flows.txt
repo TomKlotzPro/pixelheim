@@ -130,6 +130,13 @@ spoils | fight kill | floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* logged=0 | combat
 # where it fell, on one line, while the rest still stand (PIX-343: v0.256
 # held them to the fight's end).
 pack-tags | fight kill pack --foe slime --wait 0.8 | tags=1 mobs=0 rising=[1-9] floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* | combat
+# A harness hero built as the game makes one (PIX-379): a level-10 mage's
+# growth, its points 2:1 on intelligence and endurance, its tree bought
+# and the band's staff in hand, healed whole.
+hero-mage-10 | --map town --role mage --level 10 | hp=91 hero=mage:10:91/140:3,28,4,12:skills12:arch_staff | combat rank
+# A kill takes the map's region (PIX-379: every harness kill was the Ash
+# Fields', an Ember Shard): on the Mirefen, its Grave Moss.
+loot-mirefen | --map mirefen fight kill --wait 1 --lang en | map=mirefen floats=.*Grave Moss.* | combat field
 # A feat done mid-walk, in French (PIX-343: two lines of it stood over the
 # screen, the quest arrow on them): one box, one line, on the screen, clear
 # of the objective's line and the dock, over the arrow, no plate beside it.
@@ -654,6 +661,9 @@ vault-open | --map mountain_road --seen bells_collar --at 12,4 --walk u,u --wait
 vault-word | --map mountain_road --story vault_door --wait 1.5 | map=mountain_road scene=vault_door | story
 vault-down | --map vault_1 --at 61,9 --walk r --keys s,e --wait 0.4 | map=vault_2 cell=\(3, 9\) floor=2/5 | dungeon travel
 vault-hoard | --map vault_5 clear --wait 0.6 | map=vault_5 floor=5/5 fell=1 shortcut=open wayout=\(46, 7\) | dungeon combat
+# `kill` swings until a big boss falls, not twelve swings (PIX-379): the
+# Hollow King down to a level-20 hero's blows.
+vault-king-kill | --map vault_5 --level 20 fight kill --foe hollow_king --wait 1 | map=vault_5 fell=1 bossbar=none stair=waiting | dungeon combat
 # Torches hang on the walls' faces, the wall running on through them, on
 # the handcrafted floors and the planned ones, the Kings' Vault's too
 # (PIX-291).
