@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.300.0",
+      "date": "2026-10-28",
+      "codename": "Mind the Hens",
+      "notes": [
+        "The farm animals have bodies now: the hero bumps into them instead of walking through, they never wander into him, and one he stands facing steps out of his way, even asleep, so none can ever shut him in"
+      ]
+    },
+    {
       "version": "0.299.0",
       "date": "2026-10-28",
       "codename": "The Farmyard",

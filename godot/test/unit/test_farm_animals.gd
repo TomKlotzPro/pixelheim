@@ -3,7 +3,8 @@ extends GutTest
 ## none ever standing or stepping where a road, a door, a villager, a stall,
 ## the story or the yards are, nor cattle by the water, the pigs inside their
 ## sty, the same plan on every run, none without the pack; a step stays in
-## its patch, off its herd-mates; and the herd's day (Herd).
+## its patch, off its herd-mates; the herd's day (Herd); and their bodies,
+## which the hero bumps into and which step aside from him (PIX-389).
 
 const Towns := preload("res://test/unit/test_yards.gd")
 
@@ -111,18 +112,8 @@ func test_a_step_stays_in_the_patch_off_the_others() -> void:
 ## never stand on or head for the same cell (Herd._taken). In a viewport of
 ## their own, with frames of their own (no pack needed).
 func test_the_herd_rests_sleeps_and_keeps_its_cells() -> void:
-	var blank := ImageTexture.create_from_image(Image.create(16, 16, false, Image.FORMAT_RGBA8))
-	var frames := SpriteFrames.new()
-	for anim: String in FarmAnimals.FPS:
-		frames.add_animation(anim)
-		for n in 4:
-			frames.add_frame(anim, blank)
-	FarmAnimals._frames["test_hen"] = frames
-	var screen := SubViewport.new()
-	screen.size = Vector2i(320, 180)
-	add_child_autofree(screen)
-	var actors := Node2D.new()
-	screen.add_child(actors)
+	var screen := _screen()
+	var actors: Node2D = screen.get_child(0)
 	var row: Array[Vector2i] = [Vector2i(2, 2), Vector2i(3, 2), Vector2i(4, 2)]
 	var plan: Array[Dictionary] = [
 		{"sheet": "test_hen", "kind": "hen", "cell": row[0], "area": row},
@@ -191,3 +182,68 @@ func _assert_cells_kept(herd: Herd) -> void:
 				assert_false(held.has(animal[key]), "%s held once" % animal[key])
 				held[animal[key]] = true
 	assert_eq(herd._taken, held, "the cells held are theirs")
+
+
+## A hen between the hero and a free cell: he bumps into her, she never
+## steps into him, and facing her at night he sends her to the free cell,
+## where she lies down again.
+func test_the_hero_bumps_into_them_and_they_step_aside() -> void:
+	var screen := _screen()
+	var actors: Node2D = screen.get_child(0)
+	var row: Array[Vector2i] = [Vector2i(2, 2), Vector2i(3, 2), Vector2i(4, 2)]
+	var plan: Array[Dictionary] = [{"sheet": "test_hen", "kind": "hen", "cell": row[1], "area": row}]
+	var herd := Herd.new(plan, actors)
+	herd.set_process(false)
+	actors.add_child(herd)
+	# The hero on the row's east cell, his box as player.gd's.
+	var hero := CharacterBody2D.new()
+	var box := CollisionShape2D.new()
+	box.shape = RectangleShape2D.new()
+	(box.shape as RectangleShape2D).size = Vector2(10, 8)
+	box.position = Vector2(0, 3)
+	hero.add_child(box)
+	hero.position = Vector2(row[2] * MapView.TILE) + Vector2(8, 8)
+	actors.add_child(hero)
+	assert_true(hero.test_move(hero.global_transform, Vector2(-MapView.TILE, 0)), "he bumps into her")
+	var hen: Dictionary = herd.animals[0]
+	for i in 600:
+		herd._process(0.1)
+		assert_ne(hen.get("goal", hen["cell"]), row[2], "she never heads into him")
+		assert_ne(hen["cell"], row[2], "nor stands on him")
+	# Night: she sleeps where she stands, until he faces her.
+	herd._process(0.1)
+	for i in 100:
+		if not hen.has("goal"):
+			break
+		herd._process(0.1)
+	herd.sleep(true)
+	var at: Vector2i = hen["cell"]
+	var free: Vector2i = row[0] if at == row[1] else row[1]
+	herd.shoo(row[2], at)
+	for i in 100:
+		herd._process(0.1)
+		if hen["cell"] == free:
+			break
+	assert_eq(hen["cell"], free, "facing her, he sends her to the free cell")
+	assert_eq(hen["body"].position, Herd.foot(free), "her body with her")
+	var sprite: AnimatedSprite2D = hen["sprite"]
+	assert_true(sprite.is_playing() and sprite.animation == "sleep", "where she lies down again")
+	_assert_cells_kept(herd)
+	FarmAnimals._frames.erase("test_hen")
+
+
+## A viewport of its own with an actors layer (its first child), and blank
+## frames for the hens (no pack needed).
+func _screen() -> SubViewport:
+	var blank := ImageTexture.create_from_image(Image.create(16, 16, false, Image.FORMAT_RGBA8))
+	var frames := SpriteFrames.new()
+	for anim: String in FarmAnimals.FPS:
+		frames.add_animation(anim)
+		for n in 4:
+			frames.add_frame(anim, blank)
+	FarmAnimals._frames["test_hen"] = frames
+	var screen := SubViewport.new()
+	screen.size = Vector2i(320, 180)
+	add_child_autofree(screen)
+	screen.add_child(Node2D.new())
+	return screen
