@@ -144,7 +144,8 @@ func test_esc_skips_it_every_lamp_lit_at_once_and_the_night_flown_once() -> void
 
 ## PIX-367: begun with the hero in town, its stalls went up only the next
 ## time the town was drawn; now the town is drawn again round the hero as it
-## begins, as an age's festival's is once the board shuts.
+## begins, as an age's festival's is once the board shuts. Watched each
+## second through the feature's hook (PIX-369), as world.gd calls it.
 func test_begun_with_the_hero_in_town_its_stalls_go_up_round_them() -> void:
 	var kept: Array = [GameState.progression, GameState.settlement, GameState.world.steps]
 	GameState.progression = _progression()
@@ -152,8 +153,9 @@ func test_begun_with_the_hero_in_town_its_stalls_go_up_round_them() -> void:
 	GameState.world.steps = DAY * DayNight.DAY_CYCLE_STEPS
 	var world: FakeWorld = autofree(FakeWorld.new())
 	world.map.id = "town"
-	LanternPass.watch(world)
-	LanternPass.watch(world)
+	var lantern_night: Feature = Features.all().filter(func(feature: Feature) -> bool: return feature.folder.ends_with("/lantern_night"))[0]
+	lantern_night.every_second(world)
+	lantern_night.every_second(world)
 	GameState.progression = kept[0]
 	GameState.settlement = kept[1]
 	GameState.world.steps = kept[2]

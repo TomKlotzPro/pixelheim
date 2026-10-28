@@ -141,7 +141,8 @@ func _ascension() -> Node:
 
 
 ## The steps' scripts, an area each (PIX-357): the step a flag names in
-## harness_flags.txt is its `step_<name>()` in one of them.
+## harness_flags.txt is its `step_<name>()` in one of them; a feature's
+## (PIX-369) is its feature.gd's `step_<name>(h)`.
 const STEPS := [
 	preload("res://scripts/harness_steps/world.gd"),
 	preload("res://scripts/harness_steps/travel.gd"),
@@ -186,7 +187,11 @@ func _run_test_harness() -> void:
 		return area)
 	for row: Dictionary in flags.steps():
 		var step := "step_" + String(row["step"])
-		await areas.filter(func(area: Object) -> bool: return area.has_method(step))[0].call(step)
+		# A feature's flag is its own feature.gd's step, given the harness (PIX-369).
+		if row.has("feature"):
+			await row["feature"].call(step, self)
+		else:
+			await areas.filter(func(area: Object) -> bool: return area.has_method(step))[0].call(step)
 	# What the run left: every field the report has (HarnessReport.TABLE),
 	# read at the same step whether the run has a window or not (PIX-276):
 	# a windowed run read it after its picture, which takes frames of its

@@ -79,3 +79,23 @@ func test_the_spyglass_stands_off_the_road() -> void:
 	assert_ne(road.tile_at(Lookout.CELL), "path", "off the road")
 	assert_false(road.portals.has(Lookout.CELL), "no way out under it")
 	assert_eq(Lookout.texture().get_size(), Vector2(16, Lookout.PIECE.size()))
+
+
+## The world as the hooks ask it: its map.
+class FakeWorld extends Node2D:
+	var map := MapData.new()
+
+
+## PIX-369: E and its prompt are the feature's hooks, no call in
+## world_interaction.gd: the prompt over the spyglass as tall as it's drawn,
+## and nothing of the lookout's anywhere else.
+func test_its_prompt_and_e_are_the_features_hooks() -> void:
+	var lookout: Feature = Features.all().filter(func(feature: Feature) -> bool: return feature.folder.ends_with("/lookout"))[0]
+	var world: FakeWorld = autofree(FakeWorld.new())
+	world.map.id = Lookout.MAP
+	var tall := Lookout.PIECE.size()
+	assert_eq(lookout.prompt_at(world, Lookout.CELL), Rect2(Vector2(Lookout.CELL * MapView.TILE) + Vector2(0, MapView.TILE - tall), Vector2(MapView.TILE, tall)))
+	assert_null(lookout.prompt_at(world, Lookout.CELL + Vector2i.RIGHT), "the road beside it is the core's")
+	world.map.id = "town"
+	assert_null(lookout.prompt_at(world, Lookout.CELL), "only on the mountain road")
+	assert_false(lookout.interact(world, Lookout.CELL), "E elsewhere isn't the lookout's")

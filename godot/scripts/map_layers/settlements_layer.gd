@@ -135,7 +135,7 @@ static func _decor_hamlet(view: MapView) -> void:
 				var line := Sprite2D.new()
 				line.texture = HamletArt.washing(int(piece["line"]))
 				line.centered = false
-				_stand_on(view, line, cell, Vector2.ZERO)
+				stand_on(view, line, cell, Vector2.ZERO)
 			"glow":
 				_add_door_glow(view, cell)
 			"flat":
@@ -151,16 +151,16 @@ static func _decor_hamlet(view: MapView) -> void:
 				boat.centered = false
 				boat.frame = absi(hash(cell)) % 2
 				boat.play()
-				_stand_on(view, boat, cell, Vector2(-HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
+				stand_on(view, boat, cell, Vector2(-HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
 			_:
 				var art: String = piece["art"]
 				var still := Sprite2D.new()
 				still.texture = HamletArt.texture(art)
 				still.centered = false
-				var root := _stand_on(view, still, cell, Vector2(0, TILE - HamletArt.size(art).y))
+				var root := stand_on(view, still, cell, Vector2(0, TILE - HamletArt.size(art).y))
 				if piece["kind"] == "stand":
 					for taken: Vector2i in piece["cells"]:
-						_block(view, taken)
+						block(view, taken)
 					if piece.get("lit", false):
 						_add_shine(view, root, cell, art)
 					if piece.has("smoke"):
@@ -210,18 +210,18 @@ static func _decor_routes(view: MapView) -> void:
 		if kind == "box":
 			sprite.texture = HamletArt.texture("post_box")
 			view.post_boxes.append(sprite)
-			_stand_on(view, sprite, cell, Vector2(0, TILE - HamletArt.size("post_box").y))
+			stand_on(view, sprite, cell, Vector2(0, TILE - HamletArt.size("post_box").y))
 		else:
 			# Each lamp in its kind's look (PIX-324).
 			sprite.texture = RouteArt.lamp(String(piece.get("lamp", "ember"))) if kind == "lamp" else RouteArt.texture(art)
-			var root := _stand_on(view, sprite, cell, Vector2(0, TILE - RouteArt.size(art).y))
+			var root := stand_on(view, sprite, cell, Vector2(0, TILE - RouteArt.size(art).y))
 			if kind == "lamp":
 				_add_ember_lamp(view, root, cell, String(piece["place"]), cell in own_light, String(piece.get("lamp", "ember")))
 			elif kind == "hut":
 				_add_hut_window(view, root)
 				view.waystations.append(String(piece["place"]))
 		for taken: Vector2i in piece["cells"]:
-			_block(view, taken)
+			block(view, taken)
 		if kind == "signpost":
 			view.door_signs.append({
 				"door": cell, "name": Routes.fork_name(piece["fork"], GameState.post),
@@ -277,32 +277,6 @@ static func _add_hut_window(view: MapView, root: Node2D) -> void:
 	pane.visible = false
 	root.add_child(pane)
 	view.night_glows.append(pane)
-
-
-## `sprite` standing among the actors on the foot of `cell` (sorted on the
-## bottom of its row), drawn `at` from the cell's top-left: its root.
-static func _stand_on(view: MapView, sprite: Node2D, cell: Vector2i, at: Vector2) -> Node2D:
-	var root := Node2D.new()
-	root.position = Vector2(cell * TILE) + Vector2(0, TILE)
-	root.add_to_group("decor")
-	sprite.position = at - Vector2(0, TILE)
-	root.add_child(sprite)
-	view.actors.add_child(root)
-	return root
-
-
-## A box on `cell` (PIX-313's dressing): covering the middle of the bottom
-## of the cell, as every prop's foot does.
-static func _block(view: MapView, cell: Vector2i) -> void:
-	var body := StaticBody2D.new()
-	var shape := CollisionShape2D.new()
-	var rect := RectangleShape2D.new()
-	rect.size = MapView.HAMLET_FOOT.size
-	shape.shape = rect
-	body.add_child(shape)
-	body.position = Vector2(cell * TILE) + MapView.HAMLET_FOOT.get_center()
-	body.add_to_group("decor")
-	view.actors.add_child(body)
 
 
 ## A miner's lantern by a door lit at night (PIX-313): its glass (the dark

@@ -28,12 +28,13 @@ Pixelheim is a Godot 4.7 game (`godot/`), live at the GitHub Pages root and as a
 
 **A feature lives in one folder (PIX-361)**: `godot/scripts/features/<name>/`, with its flows in `godot/tools/flows.d/<name>.txt`. `features/lamps/` is the worked example. `Features.all()` finds the folder, so no shared file changes:
 
-- `feature.gd`: `extends Feature`, its `## areas:` line right under that, then only what it needs: `flags_after()` (the flag its flags follow in `--help`; "" puts them at the end), `before_first_map(flags)` (its presets, run after the core's), `layers()` (its `MapLayer`s by name, planned and drawn after the core's, set for the hour after them and the night's glows, so one may keep a glow dark: PIX-362) and one `field_<name>(report: HarnessReport) -> String` per report field, in its rows' order.
+- `feature.gd`: `extends Feature`, its `## areas:` line right under that, then only what it needs: `flags_after()` (the flag its flags follow in `--help`; "" puts them at the end), `before_first_map(flags)` (its presets, run after the core's), `layers()` (its `MapLayer`s by name, planned and drawn after the core's, set for the hour after them and the night's glows, so one may keep a glow dark: PIX-362), one `field_<name>(report: HarnessReport) -> String` per report field, in its rows' order, and one `step_<step>(h)` per flag of its own that is a step (`| step | order` on its row; `h` is the harness, `h.world` the world; `features/lantern_night/`'s `step_lantern`).
+- Hooks the core calls for every feature, in the features' order, after its own (PIX-369): `every_second(world)` (world.gd's once-a-second watch: Lantern Night's festival and pass), `prompt_at(world, cell)` (the rect E's prompt stands over, or null: `_prompt_target`, once the core has nothing there) and `interact(world, cell) -> bool` (E: after the core's things on a cell, its signposts and gates, before the folk beside the hero, as the lookout's spyglass always took E over a villager by). `features/lookout/` uses the last two.
+- A prop of its own stands with `MapLayer.stand_on(view, sprite, cell, at)` and blocks its cell with `MapLayer.block(view, cell)`, as the core's dressing does.
 - Beside it, only the files it needs, each in the core's format: `harness_flags.txt` (`flag | takes | does`), `harness_report.txt` (`field | says`, joined to the core's after the head, by name) and `lookbook_shots.jsonl` (after the core's shots in their area). `scripts/*.txt`/`*.jsonl` are already in the export filters (`test_export.py`).
 - `tools/flows.d/<name>.txt`: its flows, as in flows.txt, read after it.
 - `test_registries` refuses a name the core or another feature already has; run `layout.py` for the new script.
-- A flag that is a step still needs its `step_<step>()` in `scripts/harness_steps/`; rules, save, wiring, strings and docs stay where they are (below).
-- No hook yet for a tick or for E: each takes one direct call in the core, `world.gd`'s once-a-second watch (PIX-362, `LanternPass.watch`) and `world_interaction.gd`'s `interact` and `_prompt_target` (PIX-363, `Lookout.use`/`Lookout.at`).
+- Rules, save, strings and docs stay where they are (below); wiring beyond the hooks still goes in the core.
 
 A feature without a folder of its own touches, besides its own files:
 

@@ -3,9 +3,9 @@ extends Feature
 ## Lantern Night in the harness (PIX-362): `--lantern` and its preset, and
 ## the report's lantern=, their rows beside this script and their flows in
 ## tools/flows.d/lantern_night.txt; the lamps' hold until Fafnyr's pass
-## (LanternLayer). The rules are LanternNight's, the moment LanternPass's;
-## the world's watch calls it (world.gd) and `--lantern fly`'s step is
-## step_lantern (scripts/harness_steps/story.gd).
+## (LanternLayer). The rules are LanternNight's, the moment LanternPass's,
+## watched each second (`every_second`) and by `--lantern fly`'s step
+## (`step_lantern`).
 
 
 ## After the lamps' `--lit`.
@@ -23,6 +23,21 @@ func before_first_map(flags: HarnessFlags) -> void:
 
 func layers() -> Dictionary[String, MapLayer]:
 	return {"lantern_night": LanternLayer.new()}
+
+
+## Lantern Night's festival, and Fafnyr's pass over the Reach.
+func every_second(world: Node) -> void:
+	LanternPass.watch(world)
+
+
+## `--lantern fly`: Fafnyr's pass, as the world's next second would play it
+## on Lantern Night after dark; --keys esc skips it, --wait lets it play out.
+## A second of the night first, so its light has settled before the world
+## holds still for him, as in play.
+func step_lantern(h: Node) -> void:
+	await h.get_tree().create_timer(1.0).timeout
+	LanternPass.watch(h.world)
+	await h.get_tree().create_timer(0.3).timeout
 
 
 # --- The report's fields, by name ---------------------------------------------

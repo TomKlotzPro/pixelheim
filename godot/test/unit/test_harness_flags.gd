@@ -149,10 +149,12 @@ func _check(words: PackedStringArray, where: String) -> int:
 
 
 ## Every flag's step (PIX-357) is the `step_<name>()` of one of the steps'
-## scripts, named by that flag alone, and no two steps share an order: the
-## order is the run's.
+## scripts, or a feature's flag's of its own feature.gd (PIX-369), in that
+## one place alone, named by that flag alone, and no two steps share an
+## order: the order is the run's.
 func test_every_step_is_there_and_no_two_share_an_order() -> void:
 	var areas: Array = preload("res://scripts/harness.gd").STEPS.map(func(script: GDScript) -> Object: return script.new())
+	var places: Array = areas + Features.all()
 	var orders := {}
 	var named := {}
 	for row: Dictionary in HarnessFlags.table():
@@ -161,8 +163,11 @@ func test_every_step_is_there_and_no_two_share_an_order() -> void:
 			assert_eq(row["order"], "", "%s has no step, so no order" % flag)
 			continue
 		var step := "step_" + String(row["step"])
-		assert_eq(areas.filter(func(area: Object) -> bool: return area.has_method(step)).size(), 1,
-			"%s's %s() is in one of scripts/harness_steps/" % [flag, step])
+		var owners: Array = places.filter(func(place: Object) -> bool: return place.has_method(step))
+		assert_eq(owners.size(), 1, "%s's %s() is in one place: scripts/harness_steps/ or a feature.gd" % [flag, step])
+		if owners.size() == 1:
+			assert_true(owners[0] == row["feature"] if row.has("feature") else owners[0] in areas,
+				"%s's %s() is %s" % [flag, step, "its feature's" if row.has("feature") else "in scripts/harness_steps/"])
 		assert_false(named.has(step), "%s is %s's step, not %s's too" % [step, named.get(step), flag])
 		named[step] = flag
 		assert_true(String(row["order"]).is_valid_int(), "%s's order is a number" % flag)

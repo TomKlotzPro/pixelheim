@@ -27,3 +27,31 @@ func build(_view: MapView, _slices: Slicer) -> void:
 ## Lit from dusk's end to dawn, cold by day (MapView.set_night).
 func set_night(_view: MapView, _night: bool) -> void:
 	pass
+
+
+# --- A prop's place, for every layer and feature (PIX-369) ---------------------
+
+## `sprite` standing among the actors on the foot of `cell` (sorted on the
+## bottom of its row), drawn `at` from the cell's top-left: its root.
+static func stand_on(view: MapView, sprite: Node2D, cell: Vector2i, at: Vector2) -> Node2D:
+	var root := Node2D.new()
+	root.position = Vector2(cell * TILE) + Vector2(0, TILE)
+	root.add_to_group("decor")
+	sprite.position = at - Vector2(0, TILE)
+	root.add_child(sprite)
+	view.actors.add_child(root)
+	return root
+
+
+## A box on `cell` (PIX-313's dressing): covering the middle of the bottom
+## of the cell, as every prop's foot does (MapView.HAMLET_FOOT).
+static func block(view: MapView, cell: Vector2i) -> void:
+	var body := StaticBody2D.new()
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = MapView.HAMLET_FOOT.size
+	shape.shape = rect
+	body.add_child(shape)
+	body.position = Vector2(cell * TILE) + MapView.HAMLET_FOOT.get_center()
+	body.add_to_group("decor")
+	view.actors.add_child(body)
