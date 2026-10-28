@@ -657,4 +657,5 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/world_soundscape.gd` — What the hero hears (Solid Ground, PIX-260: moved out of world.gd as it was)
 - `scripts/world_stage.gd` — The story played over the world (Solid Ground, PIX-260: moved out of world.gd as it was)
 - `scripts/world_tiles.gd` — Tile tables: the tile ids a map file may use (test_map_files refuses any other), which the hero walks on, and their colours on the map screen.
+- `scripts/yards.gd` — What Pixelheim's households keep about their houses, and the square's dress, by the town's age (PIX-382).
 <!-- layout.py: to here -->

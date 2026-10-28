@@ -74,6 +74,8 @@ Decor (one node a piece) is the largest part of drawing a map. A first visit cos
 
 Most of the Deepwood's decor was not its 2142 tree sprites (about 10 ms) but working out its clumps (`Woods.look_at` and `.pieces`, about 25 ms). Since PIX-360 a map's woods are kept for the session (`KeptGround.woods`, cell by cell as they are first drawn). On 2026-10-22, nodes the same, "again" went deepwood 56 -> 26 ms, town 36 -> 26, greyhold 23 -> 17 and frostgate 21 -> 15. BESIDE went deepwood 52.7 -> 23.1 ms, town 34.9 -> 25.0, greyhold 20.1 -> 13.4 and frostgate 17.4 -> 11.6. The cost is +2.7 MB of memory kept after both rounds (+12.7 MB in all).
 
+The town's yards (PIX-382, `Yards`, 2026-10-28, `--town-tier 4`, with the paid pack): nodes 1366 -> 1733, BESIDE 27.2 -> 30.5 ms (plan 8.8 -> 10.2, decor 9.1 -> 10.9), "again" about 30 -> 33.5 ms. The data's villager spots are worked out once a session (`Yards.kept`); the rest is `Hamlet.plan` fitting about 60 standing pieces and a node or four each.
+
 ## Saves (a hero who has seen every cell of 29 maps)
 
 `to_dict` 0.04 ms (4.6 ms the first time, every map packed); `SaveSlots.write` (temp, read back, decode, rename) 0.85 ms; `SaveSlots.read` 0.27 ms; `GameState.apply` 5.6 ms (the fog unpacked, once per load); a `PXH2` code 0.3 ms either way. The file is 8.8 KB, the code 1.3 KB. Nothing to do.

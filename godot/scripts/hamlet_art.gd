@@ -8,7 +8,8 @@ class_name HamletArt
 ## bed, a miner's lantern by a door, Morvax's forge stack and the light
 ## under his door, and the Kings' Vault's black iron door in its carved
 ## surround, shut and open; and Pixelheim's post box (PIX-320), empty or
-## with the day's post in it, and the post house behind it (PIX-325). Drawn here in code in Shade's palette (his
+## with the day's post in it, and the post house behind it (PIX-325). Pixelheim's
+## yards take its window boxes and the City's bunting (PIX-382, Yards). Drawn here in code in Shade's palette (his
 ## outline, his woods, irons and greys), at 1x on his 16 px grid, so they
 ## sit beside his art as his. Our own, so CC0 like the rest of the
 ## repository: they draw the same with or without the paid pack. Pictures
@@ -339,6 +340,28 @@ const PIECES := {
 		"................",
 		"................",
 	],
+	## A window box (PIX-382, Pixelheim's yards): a planter of planks hung
+	## under a window's sill, its flowers over the glass's foot and spilling
+	## over its edges; red here, the others by WINDOW_TINTS. On the wall, so
+	## it blocks nothing.
+	"window_box": [
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"...e.....e...e..",
+		"..eRe.F.eRe.eRe.",
+		"..RrRFvFRrRFRrR.",
+		".FvRFfvFvRFvFRvF",
+		".oooooooooooooo.",
+		".o665666656665o.",
+		".o444344443444o.",
+		".o332333323332o.",
+		"..oooooooooooo..",
+	],
 	## A vegetable bed in a fenced yard: dark tilled earth, rows of cabbages
 	## and carrot tops.
 	"garden": [
@@ -619,14 +642,40 @@ const PIECES := {
 
 static var _textures := {}
 static var _lines := {}
+static var _bunting := {}
 static var _afloat := {}
 static var _glint: SpriteFrames
 static var _door_glow: SpriteFrames
 
 
-## Piece `name`'s rows: ours, or what the hubs grow (HubArt, PIX-324).
+## The window box's flowers in the town's other colours (PIX-382): its
+## reds swapped, blossom, shade and highlight.
+const WINDOW_TINTS := {
+	"window_box_gold": {"R": "Y", "e": "a", "r": "q"},
+	"window_box_white": {"R": "B", "e": "b", "r": "y"},
+	"window_box_blue": {"R": "U", "e": "u", "r": "s"},
+}
+## The bunting strung across the City's square (PIX-382): its pennants'
+## [ink, shade] in turn, a lantern in place of every LANTERN_EVERY-th, and
+## how far its rope sags at most.
+const PENNANTS := [["R", "e"], ["Y", "a"], ["U", "u"], ["B", "b"]]
+const LANTERN_EVERY := 5
+const BUNTING_SAG := 7
+
+
+## Piece `name`'s rows: ours, what the hubs grow (HubArt, PIX-324), or
+## what the Post's roads put up (RouteArt: the town's benches, PIX-382).
 static func rows_of(name: String) -> Array:
-	return PIECES[name] if PIECES.has(name) else HubArt.PIECES[name]
+	if WINDOW_TINTS.has(name):
+		var swap: Dictionary = WINDOW_TINTS[name]
+		return PIECES["window_box"].map(func(row: String) -> String:
+			var out := ""
+			for ink in row:
+				out += String(swap.get(ink, ink))
+			return out)
+	if PIECES.has(name):
+		return PIECES[name]
+	return HubArt.PIECES[name] if HubArt.PIECES.has(name) else RouteArt.PIECES[name]
 
 
 ## Piece `name` drawn (a "." clear), as an image.
@@ -722,6 +771,51 @@ static func washing(cells: int) -> Texture2D:
 			turn += 1
 		_lines[cells] = ImageTexture.create_from_image(image)
 	return _lines[cells]
+
+
+## The bunting over the City's square (PIX-382): a rope tied under the
+## lanterns of two lamps `cells` + 1 cells apart (it starts at the left
+## lamp's middle, half a cell before its first cell), sagging between, a
+## pennant in the town's colours every few pixels and a small lantern in
+## place of every LANTERN_EVERY-th. By day ("day"), what burns in its
+## lanterns at night ("lit", drawn over it unshaded) and each lantern's
+## middle ("lights"). Two cells tall, its foot the bottom of its row.
+static func bunting(cells: int) -> Dictionary:
+	if not _bunting.has(cells):
+		var width := (cells + 1) * TILE
+		var day := Image.create(width, TILE * 2, false, Image.FORMAT_RGBA8)
+		var lit := Image.create(width, TILE * 2, false, Image.FORMAT_RGBA8)
+		var lights: Array[Vector2] = []
+		var sag := mini(BUNTING_SAG, 2 + cells / 3)
+		var rope: Array[int] = []
+		for x in width:
+			var t := x / float(width - 1)
+			# Tied a pixel above its row, where a lamp's post meets its lantern.
+			rope.append(TILE - 1 + roundi(sag * 4.0 * t * (1.0 - t)))
+			day.set_pixel(x, rope[x], INKS["3"])
+		var x := 4
+		var turn := 0
+		while x + 5 < width - 3:
+			var top: int = rope[x + 2] + 1
+			if turn % LANTERN_EVERY == LANTERN_EVERY - 1:
+				# A lantern on its hook: cap, glass, foot.
+				day.set_pixel(x + 2, top, INKS["o"])
+				for dy in [1, 2]:
+					day.set_pixel(x + 1, top + dy, INKS["o"])
+					day.set_pixel(x + 2, top + dy, INKS["Q"])
+					day.set_pixel(x + 3, top + dy, INKS["o"])
+					lit.set_pixel(x + 2, top + dy, INKS["q"])
+				day.set_pixel(x + 2, top + 3, INKS["o"])
+				lights.append(Vector2(x + 2.5, top + 2.0))
+			else:
+				var pennant: Array = PENNANTS[turn % PENNANTS.size()]
+				for dy in 3:
+					for dx in range(dy, 5 - dy):
+						day.set_pixel(x + dx, top + dy, INKS[pennant[1] if dy == 2 or dx == 4 - dy else pennant[0]])
+			x += 6
+			turn += 1
+		_bunting[cells] = {"day": ImageTexture.create_from_image(day), "lit": ImageTexture.create_from_image(lit), "lights": lights}
+	return _bunting[cells]
 
 
 ## Boat `name` afloat (Saltmere's at the jetty, PIX-313): two beats, riding
