@@ -149,6 +149,9 @@ func _ready() -> void:
 	# holds the world still, not the saving.
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_watch_the_page()
+	# A harness run whose world can't load fails rather than idling (PIX-372).
+	if HarnessFlags.given().has("--screenshot"):
+		HarnessBoot.failed_to_load(get_tree(), [load("res://scripts/world.gd")])
 
 
 ## Every key pressed teaches the labels what this keyboard calls it (PIX-201);

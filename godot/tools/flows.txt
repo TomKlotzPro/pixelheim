@@ -14,7 +14,9 @@
 # not town_shop (`map=town_.*` for any of its rooms), `open=shop_screen` that
 # screen alone. Spaces are fine inside a pattern (`cell=\(79, 4\)`); a field
 # starts at the next ` name=`. A field the report doesn't show fails the
-# flow. Never `|` in a pattern: it parts the columns.
+# flow, unless its pattern matches nothing at all: the report leaves out a
+# field with no text, so `card=` expects no card up (PIX-371). Never `|` in
+# a pattern: it parts the columns.
 #
 # The tags (PIX-272) are the areas of the game the flow walks through, which
 # tools/check.sh quick matches against the files a branch changed (its AREAS),
@@ -488,6 +490,9 @@ line-mire | --map overworld --at 2,32 seamless --walk l,l,l fades --lang en | ma
 line-mire-back | --map mirefen --at 56,5 seamless --walk r,r,r fades | map=overworld change=seamless beside=.*mirefen.* | travel
 line-wood | --map overworld --at 93,33 seamless --walk r,r,r fades --lang en | map=deepwood change=seamless card=The Deepwood beside=overworld | travel
 line-wood-back | --map deepwood --at 2,5 seamless --walk l,l,l fades | map=overworld change=seamless beside=.*deepwood.* | travel
+# Over the line, back and out again: the Deepwood was named moments ago, so
+# no card, and the Ashenreach's doesn't stay up in the wood (PIX-371).
+line-wood-twice | --map overworld --at 93,33 seamless --walk r,r,r,l,l,l,r,r,r --lang en | map=deepwood card= | travel
 line-mines | --map overworld --at 2,20 seamless --walk l,l,l fades | map=blackiron change=seamless beside=.*overworld.* | travel
 line-mines-back | --map blackiron --at 53,30 seamless --walk r,r,r fades | map=overworld change=seamless beside=.*blackiron.* | travel
 line-coast | --map overworld --seen maren_tin --at 16,61 seamless --walk d,d,d fades | map=saltmere change=seamless beside=.*overworld.* | travel story
@@ -723,6 +728,10 @@ fit-create | create overflow --lang fr | open=create_screen overflow=0 | screen 
 # in the other words.
 fit-create-en | create overflow --lang en | open=create_screen overflow=0 | screen lang title
 fit-whatsnew | title whatsnew overflow --lang fr | overflow=0 | screen lang title
+# The town's tour has the canvas, the HUD put aside: its "E next / Esc skip"
+# stood on the clock and the quill (PIX-370).
+fit-reveal | --map town --town-tier 2 reveal --wait 2 overflow --lang fr | open=reveal_screen overflow=0 | town story screen lang
+fit-reveal-en | --map town --town-tier 2 reveal --wait 2 overflow --lang en | open=reveal_screen overflow=0 | town story screen lang
 # The Saves screen (PIX-302 step 3), reached by Esc and Saves: one column,
 # each hero's card with the place, the chapter and the hours played; two
 # heroes and room for one more, in both languages.

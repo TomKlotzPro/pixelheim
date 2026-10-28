@@ -171,6 +171,8 @@ func _run_test_harness() -> void:
 	flags = HarnessFlags.given()
 	if not flags.has("--screenshot"):
 		return
+	if HarnessBoot.failed_to_load(get_tree(), STEPS):
+		return
 	for problem in flags.problems:
 		push_warning("harness: %s (-- --help lists the flags)" % problem)
 	# `--dissolve-at S`: a door's dissolve held S seconds in (PIX-269).

@@ -17,7 +17,9 @@ by where they stand on it: a flow once anchored on the line's end
 regular expression the field's whole value must match (`map=town` is the
 town, not town_shop: say `map=town_.*` for any of its rooms). A field may
 hold spaces (`cell=\\(79, 4\\)`, `card=The Mirefen`): the next field starts at
-the next ` name=`. A field the report doesn't show fails the flow.
+the next ` name=`. A field the report doesn't show fails the flow, unless
+its pattern matches nothing at all: the report leaves out a field with no
+text, so `card=` expects no card up (PIX-371).
 
     python3 godot/tools/flows.py list            # every flow: name|args|expect|tags
     python3 godot/tools/flows.py list --boot     # every map booted, by day and at night
@@ -108,7 +110,8 @@ def mismatch(expect, report):
     wrong = []
     for name, pattern in expectation(expect):
         if name not in shown:
-            wrong.append("no %s=" % name)
+            if not pattern.fullmatch(""):
+                wrong.append("no %s=" % name)
         elif not pattern.fullmatch(shown[name]):
             wrong.append("%s=%s, not /%s/" % (name, shown[name], pattern.pattern))
     return "; ".join(wrong)
