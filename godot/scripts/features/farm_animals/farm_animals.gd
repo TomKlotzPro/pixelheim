@@ -9,10 +9,11 @@ extends MapLayer
 ## City; none in the Ashes. Each animal has a small patch of the town by
 ## hand (`HERD`) and wanders it a cell at a time (Herd), never onto a road,
 ## a door or its step, a villager's place or pacing, a stall, wherever the
-## story stands someone (Yards.kept) or what the yards lay. They block
-## nothing and are no foes. Drawn from ninth-jedi's Farm Animals, a paid
-## pack (scripts/fetch-private-art.sh), at two thirds of its size
-## (Herd.SCALE): without it, none. The plan is pure (`plan_herd`).
+## story stands someone (Yards.kept) or what the yards lay. The hero bumps
+## into them and they step aside from him (Herd, PIX-389); they're no
+## foes. Drawn from ninth-jedi's Farm Animals, a paid pack
+## (scripts/fetch-private-art.sh), at two thirds of its size (Herd.SCALE):
+## without it, none. The plan is pure (`plan_herd`).
 
 const MAP := "town"
 const FOLDER := "res://assets/puny/animals"
