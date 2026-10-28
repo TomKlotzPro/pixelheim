@@ -70,6 +70,52 @@ func test_a_ring_is_junk_only_under_both_worn() -> void:
 	assert_false(state.trade.junk_piece(grit), "+1 STR against the clarity ring's none: not worse than both")
 
 
+func test_a_weapon_is_junk_only_against_one_that_scales_with_the_same_stat() -> void:
+	# PIX-374: a mage's staff went as junk, set against a worn great axe.
+	_wear("iron_sword")
+	assert_false(state.trade.junk_piece(_carry("apprentice_staff")), "7 damage under 8, but INT against STR: not junk")
+	assert_true(state.trade.junk_piece(_carry("rusty_sword")), "a plainly worse sword still is")
+
+
+func test_the_frostweave_mages_lot_keeps_her_staff_and_wand() -> void:
+	# PIX-374: at Hilda's her Fine Frost Staff +3 and Stormglass Wand went for 1382g.
+	state.apply(SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/frostweave_mage.json")))
+	state.world.map_id = "town_smith"
+	assert_eq(state.trade.junk()["gear"], [], "INT pieces against a STR great axe, a deep shield: none of it junk")
+
+
+func test_nothing_gold_the_deep_or_a_named_foe_put_in_is_junk() -> void:
+	var worn := _wear("iron_sword")
+	worn["affixes"] = {"endurance": 3}
+	var forged := _carry("rusty_sword")
+	state.world.map_id = "town_smith"
+	state.pack.gold = 1000
+	assert_true(state.trade.upgrade_gear(forged["uid"]))
+	assert_false(state.trade.junk_piece(forged), "+1 at Hilda's, still under 8: gold went into it")
+	var quenched := _carry("rusty_sword")
+	quenched["quenched"] = {"endurance": 1}
+	assert_false(state.trade.junk_piece(quenched), "quenched")
+	var deep := _carry("rusty_sword")
+	deep["deep"] = 1
+	assert_false(state.trade.junk_piece(deep), "deep-forged")
+	var plain := _carry("rusty_sword")
+	assert_true(state.trade.junk_piece(plain), "the same sword, nothing put in")
+	var helm := _wear("iron_helm")
+	helm["affixes"] = {"dexterity": 1}
+	assert_false(state.trade.junk_piece(_carry("greymaw_hood")), "the Greymaw's own hood: a prize, under armour 4 and +1 DEX or not")
+	assert_true(state.trade.junk_piece(_carry("leather_cap")), "a cap under the helm is")
+
+
+func test_a_stacks_tag_says_how_many_of_it_go() -> void:
+	# PIX-374: "junk" stood on all ten herbs when the lot sells four.
+	assert_eq(ShopScreen.junk_tag(4, 10), "4 junk")
+	assert_eq(ShopScreen.junk_tag(2, 2), "junk", "all of it")
+	assert_eq(ShopScreen.junk_tag(0, 10), "")
+	Text.apply("fr")
+	assert_eq(ShopScreen.junk_tag(4, 10), "4 en camelote")
+	Text.apply("en")
+
+
 func test_sell_all_junk_sells_the_lot_for_its_sum() -> void:
 	state.pack.items = {"forest_herb": 10, "old_boot": 2, "wolf_pelt": 3, "potion_hp": 2}
 	_wear("iron_sword")

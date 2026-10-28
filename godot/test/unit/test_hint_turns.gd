@@ -28,6 +28,7 @@ class FakeFx extends RefCounted:
 class FakeWorld extends Node:
 	var foes := FakeFoes.new()
 	var fx := FakeFx.new()
+	var messages: Messages = null
 
 
 var world: FakeWorld
@@ -130,3 +131,23 @@ func test_a_title_card_stands_clear_of_what_rises() -> void:
 	var card := hud.title_card("Victoire", "L'Appelle-Marée n'est plus.")
 	assert_false(card.get_rect().intersects(win), "clear of the win and LEVEL UP")
 	assert_gt(card.position.y, win.end.y, "under them")
+
+
+## PIX-378: « Rect2 size is negative » at the start of fights. A message's
+## plate not laid out yet (Messages.fit sets it to no size, and its wrapping
+## words measure at no width, a letter a line) stood far over the top of the
+## screen, and the arrow's area under it came out of a negative height. Only
+## a plate on the screen counts, and the area is never negative.
+func test_a_plate_not_laid_out_leaves_the_arrow_room() -> void:
+	world.messages = Messages.new()
+	world.add_child(world.messages)
+	world.messages.build_log(hud.root)
+	world.messages.build_plate(hud.root)
+	world.messages.message_label.text = "Le Roi Creux se dresse sur son trône et tire son épée de cendre."
+	world.messages.message_label.size = Vector2.ZERO
+	world.messages.message_box.modulate.a = 1.0
+	world.messages.fit()
+	# Where Hud.update_objective stands it: grown upward from the line.
+	world.messages.message_box.position.y = 682.0 - world.messages.message_box.size.y
+	assert_gte(hud._words_top(), 0.0, "on the screen")
+	assert_gte(hud.arrow_area().size.y, 0.0, "never negative")

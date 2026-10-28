@@ -267,14 +267,25 @@ func worn_against(item_id: String) -> Dictionary:
 	return owner.pack.gear_by_uid(owner.pack.equipped.get(slot, ""))
 
 
-## A piece the counter calls junk (PIX-336): not worn, no set's, and worse
-## than what's worn in its slot (than both rings, for a ring).
+## A piece the counter calls junk (PIX-336): worse for the hero in every
+## way that matters, so selling it loses nothing (PIX-374: a mage's staff
+## went, set against a great axe). Not worn, no set's, no quest's, no named
+## foe's prize, nothing gold or the deep went into (forged, reforged,
+## quenched, deep-forged); and worse than what's worn in its slot (than
+## both rings, for a ring), scaling with the same stat.
 func junk_piece(instance: Dictionary) -> bool:
 	var item := Catalog.item(instance["itemId"])
 	if owner.pack.is_equipped(instance["uid"]) or item.has("set") or item.get("quest", false):
 		return false
+	if instance.get("forged", false) or instance.has("quenched") or int(instance.get("deep", 0)) > 0:
+		return false
+	if Bestiary.named_foes().values().any(func(foe: Dictionary) -> bool: return foe.get("drop", "") == instance["itemId"]):
+		return false
+	var scaling: String = item.get("scaling", "")
 	var slots: Array = ["ring1", "ring2"] if item.get("slot", "") == "ring" else [item.get("slot", "")]
-	return slots.all(func(slot: String) -> bool: return worse(instance, owner.pack.gear_by_uid(owner.pack.equipped.get(slot, ""))))
+	return slots.all(func(slot: String) -> bool:
+		var worn := owner.pack.gear_by_uid(owner.pack.equipped.get(slot, ""))
+		return worse(instance, worn) and Catalog.item(worn["itemId"]).get("scaling", "") == scaling)
 
 
 ## Everything "Sell all junk" sells here (PIX-336): {items: {id: count},
@@ -336,6 +347,7 @@ func reforge_gear(uid: String) -> String:
 	if owner.pack.gold < cost:
 		return ""
 	owner.pack.gold -= cost
+	instance["forged"] = true
 	var ranks := ["common", "fine", "epic"]
 	var rolled := Bestiary._roll_rarity(rules["weights"], owner.roll)
 	var rarity: String = rolled if ranks.find(rolled) > ranks.find(instance["rarity"]) else instance["rarity"]
@@ -394,6 +406,8 @@ func upgrade_gear(uid: String) -> bool:
 	if masterwork:
 		owner.pack.remove_item(gem)
 	instance["bonus"] += 1
+	# Gold went into it: never junk (PIX-374).
+	instance["forged"] = true
 	Economy.grant_job_xp(owner.hero.jobs, "smithing", 10)
 	owner.pack_changed()
 	return true

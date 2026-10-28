@@ -421,6 +421,16 @@ static func place_for(npc_id: String, progression: ProgressionState, settlement:
 	return place_of(String(at["mapId"])) if not at.is_empty() else ""
 
 
+## The page a piece for `npc_id` is stamped on, and the road it counts on
+## (PIX-375): where they stand, but a settler's where they were found, so
+## bringing Iva or Loras home doesn't take the Mirefen's or the Deepwood's
+## page and signposts away for good.
+static func page_for(npc_id: String, progression: ProgressionState, settlement: SettlementState) -> String:
+	if npc_id in settlement.settlers:
+		return place_of(String(Npcs.by_id(npc_id, [])["mapId"]))
+	return place_for(npc_id, progression, settlement)
+
+
 ## A piece delivered at `place` on day `day`: kept on that page, and the
 ## page stamped with the day the first time.
 static func stamp(post: PostState, piece_id: String, place: String, day: int) -> void:
