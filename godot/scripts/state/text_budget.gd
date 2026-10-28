@@ -116,8 +116,11 @@ static func _numbers() -> RegEx:
 ## How far up a word over the world at `rect` stands (from `lifted`, never
 ## back down: it doesn't jump about as things move), in whole pixels, to be
 ## just clear of every one of `taken`, `margin` apart: over each it meets
-## in turn. At most `most` - past that it stays as high as it may and shows
-## anyway, never dropped.
+## in turn. At most `most`: with no room over them all, it takes the lowest
+## height under that which is clear, back down if it must (PIX-378: a blow's
+## number on a foe beside a boss stood stepped up as far as it goes, on the
+## boss's win risen past it); nowhere clear, as high as it may, shown anyway,
+## never dropped.
 static func rise(taken: Array[Rect2], rect: Rect2, margin: float, lifted := 0.0, most := 36.0) -> float:
 	var lift := lifted
 	for tries in taken.size() + 1:
@@ -129,7 +132,15 @@ static func rise(taken: Array[Rect2], rect: Rect2, margin: float, lifted := 0.0,
 		var top: float = hit.map(func(other: Rect2) -> float: return other.position.y).max()
 		lift = ceilf(rect.end.y + margin - top)
 		if lift >= most:
-			return maxf(lifted, most)
+			break
+	var heights: Array[float] = [0.0]
+	for other in taken:
+		heights.append(ceilf(rect.end.y + margin - other.position.y))
+	heights.sort()
+	for height in heights:
+		var there := Rect2(rect.position - Vector2(0, height), rect.size).grow(margin)
+		if height >= 0.0 and height <= most and not taken.any(func(other: Rect2) -> bool: return other.intersects(there)):
+			return height
 	return maxf(lifted, minf(lift, most))
 
 

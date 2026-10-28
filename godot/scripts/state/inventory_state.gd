@@ -4,7 +4,8 @@ extends Resource
 ## Gold and everything carried (web GameState: gold, inventory, gear,
 ## equipped). Stackables are item id -> count; weapons and apparel are gear
 ## instances ({uid, itemId, rarity, bonus}) so each piece keeps its rarity roll,
-## and since PIX-191 its affixes ({stat: n}) and how deep it was forged (deep).
+## and since PIX-191 its affixes ({stat: n}) and how deep it was forged (deep);
+## `forged` once Hilda forged or reforged it for gold (PIX-374: never junk).
 
 ## Rarity name prefixes (RARITIES in rarity.ts); common pieces have none.
 const RARITY_LABELS := {"common": "", "fine": "Fine", "epic": "Epic"}

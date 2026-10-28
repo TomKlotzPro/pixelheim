@@ -241,6 +241,25 @@ func test_handing_post_over_puts_the_signposts_up_and_says_so() -> void:
 	assert_eq(state.post.signs.get("gate", ""), "ola")
 
 
+func test_a_settler_brought_home_keeps_their_places_page_and_road() -> void:
+	# PIX-375: Iva home in the village, her post stamped Pixelheim's page and
+	# the Mirefen's road never had its signposts.
+	state.mark_seen(Letters.scene_id())
+	state.progression.quests["letter_wenna"] = {"progress": 1, "done": true}
+	state.settlement.settlers.append("settler_iva")
+	assert_eq(Post.place_for("settler_iva", state.progression, state.settlement), "town", "she lives in the village now")
+	assert_eq(Post.page_for("settler_iva", state.progression, state.settlement), "mirefen", "her page is still the fen's")
+	Routes.tally(state.post, "mirefen", "vex", Routes.signs_at("mirefen") - 1)
+	state.post.threads["reagents"] = Post.thread("reagents")["pieces"].map(func(entry: Dictionary) -> String: return entry["id"]).find("reagents_reeds")
+	state.post.bag.assign(["reagents_reeds"])
+	assert_ne(state.posting.deliver("settler_iva"), "", "Vex's reeds handed over in the village")
+	assert_eq(state.post.places.get("reagents_reeds", ""), "mirefen", "stamped on the Mirefen's page")
+	assert_true(state.post.stamps.has("mirefen"))
+	assert_eq(Routes.count(state.post, "mirefen"), Routes.signs_at("mirefen"), "counted on the Mirefen's road")
+	for fork: String in Routes.route("mirefen")["forks"]:
+		assert_true(state.post.signs.has(fork), "the signpost at %s goes up" % fork)
+
+
 # ---- Waystations ---------------------------------------------------------------------
 
 func test_a_road_that_has_carried_enough_has_its_waystation_on_the_board() -> void:
