@@ -63,7 +63,11 @@ func _open() -> void:
 	status.custom_minimum_size = Vector2(1120, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	add_child(UiStyle.screen_footer(_footer()))
+	var keys := UiStyle.screen_footer(_footer())
+	add_child(keys)
+	# The info card keeps off both (PIX-373: Layout.overflows checks it).
+	status.set_meta(Layout.CLEAR, true)
+	keys.set_meta(Layout.CLEAR, true)
 	_refresh()
 
 

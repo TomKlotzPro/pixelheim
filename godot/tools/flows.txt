@@ -732,6 +732,14 @@ fit-whatsnew | title whatsnew overflow --lang fr | overflow=0 | screen lang titl
 # stood on the clock and the quill (PIX-370).
 fit-reveal | --map town --town-tier 2 reveal --wait 2 overflow --lang fr | open=reveal_screen overflow=0 | town story screen lang
 fit-reveal-en | --map town --town-tier 2 reveal --wait 2 overflow --lang en | open=reveal_screen overflow=0 | town story screen lang
+# The ledger keeps its words in their frame, clear of its status line and
+# keys (PIX-373): Saltmere's waystation chosen at the Hamlet, its "missing"
+# line said; the Frostgate one at the City, where every commission's blurb
+# once ran the card 708 px tall, under the keys and off the canvas.
+fit-ledger-road | --map town --routes saltmere:6 hall --keys e overflow --lang fr | open=town_hall_screen overflow=0 | town screen lang
+fit-ledger-road-en | --map town --routes saltmere:6 hall --keys e overflow --lang en | open=town_hall_screen overflow=0 | town screen lang
+fit-ledger-city | --map town --town-tier 4 --routes all --built odos_store,hildas_forge,vexs_brewery,the_inn,street_lamps,market_stalls,thatch_cottage,fountain,slate_hall,moss_cottage,grand_avenue,flower_beds hall --keys s,s,s,e overflow --lang fr | open=town_hall_screen overflow=0 | town screen lang
+fit-ledger-city-en | --map town --town-tier 4 --routes all --built odos_store,hildas_forge,vexs_brewery,the_inn,street_lamps,market_stalls,thatch_cottage,fountain,slate_hall,moss_cottage,grand_avenue,flower_beds hall --keys s,s,s,e overflow --lang en | open=town_hall_screen overflow=0 | town screen lang
 # The Saves screen (PIX-302 step 3), reached by Esc and Saves: one column,
 # each hero's card with the place, the chapter and the hours played; two
 # heroes and room for one more, in both languages.

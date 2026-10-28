@@ -10,18 +10,43 @@ class_name Layout
 const SLACK := 2.0
 ## Meta on a piece that moves past the edge on purpose (a shine sweeping in).
 const DECOR := &"layout_decor"
+## Meta on a screen's piece no other piece of it may stand on (PIX-373: the
+## ledger's info card grew under its status line and keys, still on the
+## canvas in English). Opt-in, so no screen fails on a rule it never had.
+const CLEAR := &"layout_clear"
 
 
 ## Every visible Control under the open screens of `root` whose rect runs
 ## past a `view`-sized canvas, or a list wider than it was laid out
 ## (`spills`): "screen path rect" lines, the outermost culprit of each branch
-## only.
+## only; and every piece standing on one its screen keeps clear (`crowded`).
 static func overflows(root: Node, view: Vector2) -> Array[String]:
 	var out: Array[String] = []
 	var bounds := Rect2(Vector2.ZERO, view).grow(SLACK)
 	for layer in root.find_children("*", "", true, false):
 		if layer is Screen and (layer as Screen).visible:
 			_scan(layer, layer as CanvasLayer, bounds, out)
+			out.append_array(crowded(layer as Screen))
+	return out
+
+
+## The screen's own pieces (its children) that stand on one it keeps clear
+## (`CLEAR`), or two such on each other: "screen path ^ path" lines. What
+## stands all round a kept piece (the dim, a page) is its ground, not on it.
+static func crowded(screen: Screen) -> Array[String]:
+	var out: Array[String] = []
+	var pieces: Array[Control] = []
+	for child in screen.get_children():
+		if child is Control and (child as Control).is_visible_in_tree():
+			pieces.append(child)
+	for i in pieces.size():
+		for j in range(i + 1, pieces.size()):
+			var a := pieces[i]
+			var b := pieces[j]
+			var at := a.get_global_rect()
+			var bt := b.get_global_rect()
+			if at.intersects(bt) and (a.has_meta(CLEAR) and not bt.encloses(at) or b.has_meta(CLEAR) and not at.encloses(bt)):
+				out.append("%s %s ^ %s" % [screen.get_script().resource_path.get_file(), screen.get_path_to(a), screen.get_path_to(b)])
 	return out
 
 

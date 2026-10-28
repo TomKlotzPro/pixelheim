@@ -18245,10 +18245,6 @@ msgid "- %s: %dg earned, %dg in the till (%dg a day)"
 msgstr "- %s : %d o gagnés, %d o en caisse (%d o par jour)"
 
 #: scripts/town_hall_screen.gd
-msgid "- %s: %s"
-msgstr "- %s : %s"
-
-#: scripts/town_hall_screen.gd
 msgid "Already commissioned."
 msgstr "Déjà commandé."
 
@@ -18263,6 +18259,10 @@ msgstr "Prochain âge : %s"
 #: scripts/town_hall_screen.gd
 msgid "COMMISSIONED"
 msgstr "COMMANDÉ"
+
+#: scripts/town_hall_screen.gd
+msgid "City commissions"
+msgstr "Commandes de la cité"
 
 #: scripts/town_hall_screen.gd
 msgid "Commissions: costly works the town would build in your honour, each a lasting edge."
@@ -18295,6 +18295,10 @@ msgstr "Une fois bâti : %s."
 #: scripts/town_hall_screen.gd
 msgid "Pixelheim today: %s (age %d of %d)"
 msgstr "Pixelheim aujourd'hui : %s (âge %d sur %d)"
+
+#: scripts/town_hall_screen.gd
+msgid "Town works"
+msgstr "Travaux du bourg"
 
 #: scripts/town_hall_screen.gd
 msgid "Townsfolk"
