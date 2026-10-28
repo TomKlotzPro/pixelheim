@@ -4609,6 +4609,10 @@ msgid "Pixelheim is an open-world game now: you live on the map, not in menus"
 msgstr "Pixelheim est désormais un jeu en monde ouvert : vous vivez sur la carte, plus dans les menus"
 
 #: assets/data/changelog.json
+msgid "Pixelheim looks lived in, and more so with each age: woodpiles, kegs and window boxes at the Hamlet; awninged stalls, a flowering hedge, washing lines and kitchen gardens at the Village; benches, carts and lanterns at the Town; flowers at every window and bunting with little lanterns over the square at the City"
+msgstr "Pixelheim a l'air habité, et de plus en plus à chaque époque : bûches, tonneaux et jardinières au Hameau ; étals sous auvent, haie fleurie, cordes à linge et potagers au Village ; bancs, charrettes et lanternes au Bourg ; des fleurs à chaque fenêtre et des guirlandes de petites lanternes au-dessus de la place à la Cité"
+
+#: assets/data/changelog.json
 msgid "Pixelheim town doubled too: wide streets, a proper market square, and room to grow for what's coming"
 msgstr "La ville de Pixelheim a doublé elle aussi : de larges rues, une vraie place du marché et de l'espace pour ce qui s'annonce"
 
@@ -6423,6 +6427,10 @@ msgstr "Pour emmener un héros sur une autre machine, utilisez Copier le mien ic
 #: assets/data/changelog.json
 msgid "Told True"
 msgstr "Au plus juste"
+
+#: assets/data/changelog.json
+msgid "Tooltips and scrollbars now wear the game's parchment and brass, and the mouse is a little brass pointer that turns into a hand over buttons"
+msgstr "Les infobulles et les barres de défilement portent désormais le parchemin et le laiton du jeu, et la souris est un petit pointeur de laiton qui devient une main au-dessus des boutons"
 
 #: assets/data/changelog.json
 msgid "Town tours clear the screen like cutscenes, so their keys no longer sit on the clock, and walking back and forth over a line no longer leaves the last place's name hanging"
