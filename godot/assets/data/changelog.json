@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.295.0",
+      "date": "2026-10-28",
+      "codename": "Old Stones",
+      "notes": [
+        "The old shrine in the Mirefen and the courtyard in the Deepwood are real ruins now: low broken walls of grey stone with moss, cracks and fallen heaps, rubble at their feet and worn slabs inside, and the stone knight stands on his plinth again"
+      ]
+    },
+    {
       "version": "0.294.0",
       "date": "2026-10-28",
       "codename": "Even Keel",
