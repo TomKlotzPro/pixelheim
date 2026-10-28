@@ -16993,6 +16993,10 @@ msgid "  (worn)"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "%d junk"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "%s\nA bigger house: its new rooms wait the next time you walk in."
 msgstr ""
 
@@ -17233,6 +17237,14 @@ msgid "Your pack"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "buy"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "forge"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "junk"
 msgstr ""
 
@@ -17245,7 +17257,27 @@ msgid "owned"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "quench"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "reforge"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "salvage"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "sell"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "sold"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr ""
 
 #: scripts/shop_screen.gd

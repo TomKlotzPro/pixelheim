@@ -185,6 +185,9 @@ post-book | --map town --post book journal --tab book | open=journal_screen post
 # home, Ola's cup handed over on her jetty once the stair's guardian fell.
 post-dragon | --map town --post box --seen ending_home | post=standing,box:0,bag:\d,sent:1 stamps=saltmere open=none | town story quest
 post-heirloom | --map saltmere --post heir_cup --hunted hollowmother --seen ending_home --keys e,e | post=box:\d,bag:0,sent:1 stamps=saltmere open=none | story quest
+# A settler's page kept (PIX-375): Iva home in the village, Vex's reeds
+# handed over at her door still stamp the Mirefen's page.
+post-settler-page | --settlers iva --map town --post reagents_reeds --talk-to settler_iva --keys e,e,e --wait 0.5 | stamps=mirefen routes=mirefen:1 | town story quest
 # The Post's roads (PIX-322): three pieces carried down the Saltmere road
 # and signposts stand at its forks, Bram's Corner by the gate and Bram's
 # Fork; six, and its waystation is on the town's board; built, it stands

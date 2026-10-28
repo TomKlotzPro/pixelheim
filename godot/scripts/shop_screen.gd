@@ -47,6 +47,7 @@ var selected := 0
 var _chosen := {}
 var rows: Array[Dictionary] = []
 var tab_buttons: Array[Button] = []
+var footer: HBoxContainer
 ## The left and right pages, their headings, scrolling windows and lists.
 var pages: Array[Panel] = []
 var headings: Array[Label] = []
@@ -217,7 +218,7 @@ func _open() -> void:
 	other_button = UiStyle.button("", _other)
 	actions.add_child(other_button)
 
-	add_child(UiStyle.screen_footer(Text.t("{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close") % "/".join(tabs.map(func(tab: String) -> String: return Text.t(tab))).to_lower()))
+	_set_footer()
 	if collected > 0:
 		status.text = Text.t("%s hands you the till: +%d gold.") % [String(shop.get("keeper", "")), collected]
 	# A keeper who sells their business explains deeds once (PIX-179).
@@ -297,7 +298,22 @@ func _switch(index: int) -> void:
 	amount = 0
 	asking_junk = false
 	status.text = ""
+	_set_footer()
 	_refresh()
+
+
+## The footer (PIX-374): what E does on this tab, a verb (a tab's name is
+## a noun in French: « Forge », « Artisanat »), and Z only where a stack sells.
+func _set_footer() -> void:
+	if footer != null:
+		remove_child(footer)
+		footer.queue_free()
+	var verb: String = {"Buy": Text.t("buy"), "Sell": Text.t("sell"), "Forge": Text.t("forge"), "Salvage": Text.t("salvage"),
+		"Reforge": Text.t("reforge"), "Quench": Text.t("quench"), "Craft": Text.t("craft")}[tabs[tab]]
+	var line := Text.t("{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close") if tabs[tab] == "Sell" \
+		else Text.t("{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close")
+	footer = UiStyle.screen_footer(line % verb)
+	add_child(footer)
 
 
 func _select(index: int) -> void:
@@ -320,6 +336,14 @@ func _craft_job() -> String:
 		if GameState.trade.at_station(job) and Economy.station_shop(job) == shop_id:
 			return job
 	return ""
+
+
+## A stack's junk tag (PIX-374): "junk" when all of it goes, else how many
+## of it the lot sells ("4 junk" on ten herbs), "" for none.
+static func junk_tag(junk: int, count: int) -> String:
+	if junk <= 0:
+		return ""
+	return Text.t("junk") if junk >= count else Text.t("%d junk") % junk
 
 
 ## Rows for a tab: {label, cost or price, detail or card words, action,
@@ -404,7 +428,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				var junk: int = lot["items"].get(item_id, 0)
 				out.append({
 					"label": Catalog.item_name(item_id), "count": count, "cost": trade.item_pays(item_id), "icon": item_id, "item_id": item_id,
-					"tag": Text.t("junk") if junk > 0 else "",
+					"tag": junk_tag(junk, count),
 					"junk": (Text.t("Junk: nothing needs it.") if junk == count else Text.t("Junk: %d past what crafting keeps.") % junk) if junk > 0 else "",
 					"words": String(Catalog.item(item_id).get("description", "")), "verb": "Sell", "enabled": true, "stack": item_id,
 					# A stack asks how many (PIX-336); one alone goes.

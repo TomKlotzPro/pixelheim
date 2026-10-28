@@ -75,7 +75,7 @@ func carried_for(npc_id: String) -> Dictionary:
 
 ## The piece for `npc_id` handed over as the word with them ends: their
 ## tip (and now and then a thing to keep, or a recipe for the book), the
-## thread on a step, the courier's book stamped where they stand (PIX-321),
+## thread on a step, the courier's book stamped on their page (PIX-321, PIX-375),
 ## and its reply, if one follows, in the satchel to carry back (said in the
 ## log, with a page stamped for the first time); and counted toward the
 ## routes it travelled (PIX-322: signposts going up, a waystation offered on
@@ -85,7 +85,7 @@ func deliver(npc_id: String) -> String:
 	var entry := carried_for(npc_id)
 	if entry.is_empty():
 		return ""
-	var place := Post.place_for(npc_id, owner.progression, owner.settlement)
+	var place := Post.page_for(npc_id, owner.progression, owner.settlement)
 	var new_page := place != "" and not owner.post.stamps.has(place)
 	var reply := Post.hand_over(owner.post, String(entry["id"]))
 	Post.stamp(owner.post, String(entry["id"]), place, today())
