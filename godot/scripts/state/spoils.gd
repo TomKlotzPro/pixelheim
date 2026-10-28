@@ -87,7 +87,8 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 			owner.pack.add_item(crop, grown)
 			log.append(Text.t("Your garden ripens: %s.") % Text.count(grown, Catalog.item_name(crop)))
 	var passives := HeroRules.passives(owner.hero)
-	var gold := roundi(fighter["gold"] * (1 + passives["goldBonus"] + owner.holdings.commission_buff("gold") + owner.household.home_buff("gold")))
+	# The King's Signet's tenth (PIX-376) is the pack's worn bonus.
+	var gold := roundi(fighter["gold"] * (1 + passives["goldBonus"] + owner.holdings.commission_buff("gold") + owner.household.home_buff("gold") + owner.pack.worn_gold_bonus()))
 	# A night in your own bed (PIX-179): more XP for a while.
 	var rested := int(owner.settlement.house.get("rested", 0))
 	var rested_xp := float(Town.rested_terms("xp")) if rested > 0 else 0.0
@@ -168,8 +169,7 @@ func hunted(named_id: String) -> Array[String]:
 	Journal.let_go(owner.progression)
 	var lines: Array[String] = []
 	if int(entry["bounty"]) > 0:
-		owner.pack.gold += int(entry["bounty"])
-		lines.append(Text.t("The bounty on %s is yours: +%d gold.") % [entry["name"], int(entry["bounty"])])
+		lines.append(Text.t("The bounty on %s is yours: +%d gold.") % [entry["name"], owner.pack.earn(int(entry["bounty"]))])
 	# Gear comes as a fresh piece; anything else (a relic) into the pack. A
 	# guardian of the Kings' Vault's is epic and forged as deep as its floor
 	# forges (PIX-219, PIX-257).
@@ -258,8 +258,7 @@ func open_chest(chest: Dictionary) -> Dictionary:
 		return {"opened": true, "message": Text.t("The chest bares its teeth — a mimic!"), "mimic": true, "gains": gains}
 	var loot: Dictionary = chest["loot"]
 	if loot["kind"] == "gold":
-		owner.pack.gold += loot["amount"]
-		gains["gold"] = int(loot["amount"])
+		gains["gold"] = owner.pack.earn(int(loot["amount"]))
 		owner.gold_changed.emit(owner.pack.gold)
 	else:
 		var qty: int = loot["qty"] if loot["kind"] == "item" else 1

@@ -5,6 +5,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
 #: assets/data/catalog.json
+msgid "+10% gold: kills, quests, sales, tips"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "A ball of ice that never melts, held in the off hand. Blows come slower near it. Crafted, never sold."
 msgstr ""
 
@@ -313,6 +317,10 @@ msgid "Blight"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Blocks the first blow of every fight"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Blue as the ice it came over the pass on. Cold to wear, clear to think in."
 msgstr ""
 
@@ -473,6 +481,10 @@ msgid "Drowned Signet"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Dry as a sermon. A night at the inn or in your own bed and it's brimming again."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Duelist's Ring"
 msgstr ""
 
@@ -506,6 +518,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Everflask"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Everflask (empty)"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -605,7 +621,7 @@ msgid "Forged from a skull that once breathed fire at its wearer."
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "Forged from the beams that burned on the Night of Ash. Nothing gets through it twice."
+msgid "Forged from the beams that burned on the Night of Ash. The first blow of every fight never reaches you. The second, sadly, does."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1225,6 +1241,10 @@ msgid "Reedwoven Buckler"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Refills when you sleep"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Reforged from the garrison's broken blades. It remembers what it was for. Crafted, never sold."
 msgstr ""
 
@@ -1593,7 +1613,7 @@ msgid "The miners' axe, reforged for war. It bites like the cold. Crafted, never
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "The old king's seal, bought back from a valley merchant. Pixelheim's own, for whoever saved it."
+msgid "The old king's seal, bought back from a valley merchant. Wear it and the valley pays its saviour a tenth more for everything."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1661,7 +1681,7 @@ msgid "Vex won't say what's in it, only that it was hard to catch."
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "Vex's finest: a flask that brings everything back, every wound and every spent breath."
+msgid "Vex's finest: brings everything back, every wound and every spent breath. Drunk dry, it fills itself again while you sleep, at the inn or in your own bed."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -16730,6 +16750,10 @@ msgstr ""
 
 #: scripts/player.gd
 msgid "dodged"
+msgstr ""
+
+#: scripts/player.gd
+msgid "warded"
 msgstr ""
 
 #: scripts/rankup_screen.gd

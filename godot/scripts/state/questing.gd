@@ -162,7 +162,7 @@ func resolve_quests(giver_id: String) -> String:
 			# Handed in, it's no longer followed (PIX-239): the story leads.
 			Journal.let_go(owner.progression)
 			var reward: Dictionary = quest["reward"]
-			owner.pack.gold += int(reward["gold"])
+			var gold := owner.pack.earn(int(reward["gold"]))
 			var level_line := owner.spoils.earn_xp(int(reward["xp"]))
 			if reward.has("itemId"):
 				owner.pack.add_item(reward["itemId"])
@@ -174,8 +174,8 @@ func resolve_quests(giver_id: String) -> String:
 			owner.pack_changed()
 			owner.save_now()
 			var paid: Array[String] = []
-			if int(reward["gold"]) > 0:
-				paid.append(Text.t("+%d gold") % reward["gold"])
+			if gold > 0:
+				paid.append(Text.t("+%d gold") % gold)
 			paid.append(Text.t("+%d XP") % reward["xp"])
 			var done := Text.t("Quest complete: %s. %s. \u201c%s\u201d") % [quest["name"], ", ".join(paid), quest["completed"]]
 			return done + ("\n" + level_line if level_line != "" else "")
@@ -255,13 +255,13 @@ func deliver(npc_id: String) -> String:
 	owner.progression.quests[quest["id"]] = {"progress": int(objective["count"]), "done": true}
 	Journal.let_go(owner.progression)
 	var reward: Dictionary = quest["reward"]
-	owner.pack.gold += int(reward.get("gold", 0))
+	var gold := owner.pack.earn(int(reward.get("gold", 0)))
 	var level_line := owner.spoils.earn_xp(int(reward.get("xp", 0)))
 	owner.pack_changed()
 	owner.save_now()
 	var paid: Array[String] = []
-	if int(reward.get("gold", 0)) > 0:
-		paid.append(Text.t("+%d gold") % reward["gold"])
+	if gold > 0:
+		paid.append(Text.t("+%d gold") % gold)
 	if int(reward.get("xp", 0)) > 0:
 		paid.append(Text.t("+%d XP") % reward["xp"])
 	var done := Text.t("Delivered: %s.") % quest["name"]
@@ -301,15 +301,15 @@ func choose(quest_id: String, option_id: String) -> String:
 	entry["choice"] = option_id
 	Journal.let_go(owner.progression)
 	var reward: Dictionary = option["reward"]
-	owner.pack.gold += int(reward.get("gold", 0))
+	var gold := owner.pack.earn(int(reward.get("gold", 0)))
 	var level_line := owner.spoils.earn_xp(int(reward.get("xp", 0)))
 	if reward.has("itemId"):
 		owner.pack.add_item(reward["itemId"])
 	owner.pack_changed()
 	owner.save_now()
 	var paid: Array[String] = []
-	if int(reward.get("gold", 0)) > 0:
-		paid.append(Text.t("+%d gold") % reward["gold"])
+	if gold > 0:
+		paid.append(Text.t("+%d gold") % gold)
 	paid.append(Text.t("+%d XP") % reward.get("xp", 0))
 	if reward.has("itemId"):
 		paid.append(Catalog.item_name(reward["itemId"]))

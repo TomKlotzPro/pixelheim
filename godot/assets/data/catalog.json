@@ -1749,7 +1749,9 @@
         "endurance": 2
       },
       "slot": "ring",
-      "description": "The old king's seal, bought back from a valley merchant. Pixelheim's own, for whoever saved it."
+      "goldBonus": 0.1,
+      "perk": "+10% gold: kills, quests, sales, tips",
+      "description": "The old king's seal, bought back from a valley merchant. Wear it and the valley pays its saviour a tenth more for everything."
     },
     "aegis_of_the_ash": {
       "name": "Aegis of the Ash",
@@ -1765,7 +1767,9 @@
         0.36
       ],
       "shape": "kite",
-      "description": "Forged from the beams that burned on the Night of Ash. Nothing gets through it twice."
+      "blocksFirstBlow": true,
+      "perk": "Blocks the first blow of every fight",
+      "description": "Forged from the beams that burned on the Night of Ash. The first blow of every fight never reaches you. The second, sadly, does."
     },
     "thornwood_bow": {
       "name": "Thornwood Bow",
@@ -2038,7 +2042,19 @@
       "value": 2200,
       "restoreHp": 999,
       "restoreMp": 999,
-      "description": "Vex's finest: a flask that brings everything back, every wound and every spent breath."
+      "emptiesTo": "everflask_empty",
+      "perk": "Refills when you sleep",
+      "description": "Vex's finest: brings everything back, every wound and every spent breath. Drunk dry, it fills itself again while you sleep, at the inn or in your own bed."
+    },
+    "everflask_empty": {
+      "name": "Everflask (empty)",
+      "category": "potions",
+      "sprite": "elixir",
+      "weight": 1,
+      "value": 2200,
+      "fillsTo": "everflask",
+      "perk": "Refills when you sleep",
+      "description": "Dry as a sermon. A night at the inn or in your own bed and it's brimming again."
     },
     "medal_every_bounty": {
       "name": "Medal of Every Bounty",
