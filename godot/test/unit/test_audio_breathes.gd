@@ -37,6 +37,15 @@ func test_a_stinger_varies_and_sounds_once_in_a_breath() -> void:
 	assert_eq(_playing("hit").filter(func(voice: AudioStreamPlayer) -> bool: return voice.pitch_scale == 1.0).size(), 1, "unvaried when asked")
 
 
+## The audio pass: each sound at its measured level, the hero's hurt lifted
+## to sit beside their hit.
+func test_a_stinger_plays_at_its_own_level() -> void:
+	var level := Sound.level_of("sfx/hurt")
+	assert_gt(level, 0.0)
+	Sound.play("hurt")
+	assert_between(_playing("hurt")[0].volume_db, level - Sound.VARY_DB, level + Sound.VARY_DB)
+
+
 func test_steps_are_soft_and_alternate() -> void:
 	Sound.play("step")
 	var first: AudioStreamPlayer = _playing("step")[0]

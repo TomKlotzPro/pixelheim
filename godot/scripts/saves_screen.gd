@@ -273,7 +273,7 @@ func _clear_unread(kind: String) -> void:
 	if pending == "clear-sure":
 		GameState.clear_slot(_target())
 		_refresh()
-		_say("", Text.t("Slot %d is empty now.") % _target())
+		_say("cleared", Text.t("Slot %d is empty now.") % _target())
 	elif pending == "clear-unread":
 		pending = "clear-sure"
 		status.text = Text.t("Once cleared, it's gone for good: nothing brings it back. Press X once more to clear slot %d.") % _target()
@@ -406,12 +406,17 @@ func _keep() -> void:
 	_say("", "")
 
 
-## A word under the planks (`kind` for the tests), any question dropped.
+## A word under the planks (`kind` for the tests), any question dropped;
+## heard as a yes when it was done, a no when a word says why not.
 func _say(kind: String, text: String) -> void:
 	pending = ""
 	_pasting = {}
 	said = kind
 	status.text = text
+	if kind in ["copied", "deleted", "back", "code", "pasted", "cleared"]:
+		Sound.play_ui("confirm")
+	elif text != "":
+		Sound.play_ui("deny")
 
 
 ## Every slot read again, then drawn.
