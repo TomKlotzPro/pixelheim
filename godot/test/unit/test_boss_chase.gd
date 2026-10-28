@@ -176,3 +176,22 @@ func test_a_boss_that_turns_back_as_its_bar_fades_keeps_it() -> void:
 		bar._process(0.1)
 	assert_eq(bar.modulate.a, 1.0, "back in full")
 	assert_eq(bar.reading(), "100%")
+
+
+## PIX-378: the Bone Abbot a few points from his fall read 0% and drew an
+## empty bar while he still stood. While it stands, 1% and a sliver at least.
+func test_a_boss_still_standing_never_reads_nothing() -> void:
+	var bar: Control = BossBarScript.new()
+	add_child_autofree(bar)
+	var foe: Foe = autofree(Foe.new())
+	foe.fighter["maxHp"] = 1000
+	bar.follow(foe)
+	foe.fighter["hp"] = 4
+	for i in 20:
+		bar._process(0.1)
+	assert_eq(bar.reading(), "1%")
+	assert_gt(bar.fill.size.x, 0.0, "a sliver of red")
+	foe.dying = true
+	for i in 20:
+		bar._process(0.1)
+	assert_eq(bar.reading(), "fading 0%", "fallen: nothing")

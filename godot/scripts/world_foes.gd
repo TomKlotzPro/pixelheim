@@ -518,6 +518,7 @@ func stood_down(enemy: Node) -> void:
 		on_enemy_died(enemy)
 		GameState.spoils.slay_boss()
 		world.hud.title_card(String(said.get("card", Text.t("Stood down"))), String(said.get("line", "")))
+		world.messages.make_way()
 		Sound.play("victory")
 		enemy.lie_down()
 	var lines: Array = said.get("lines", [])
@@ -538,6 +539,7 @@ func boss_fell(boss: Node) -> void:
 	bosses_fallen += 1
 	GameState.spoils.slay_boss()
 	world.hud.title_card(Text.t("Victory"), Text.t("%s is no more.") % boss.fighter["name"])
+	world.messages.make_way()
 	world.messages.log_lines([Text.t("Boss slayer: +%d%% damage for %d minutes.") % [roundi(Spoils.SLAYER_DAMAGE * 100), roundi(Spoils.SLAYER_SECONDS / 60.0)]], true)
 	Sound.stop_music()
 	world.soundscape.hush(BOSS_HUSH_S)

@@ -210,7 +210,7 @@ func keep_hint_clear() -> void:
 		hint(held[0], held[1], held[2])
 	if is_instance_valid(hint_card) and not hint_card.is_queued_for_deletion():
 		hint_card.position.y = _hint_top()
-		var hold := _card_up()
+		var hold := card_up()
 		if hint_card.visible == hold:
 			hint_card.visible = not hold
 			var show: Tween = hint_card.get_meta("show")
@@ -229,13 +229,13 @@ func keep_hint_clear() -> void:
 func hints_wait() -> bool:
 	if is_instance_valid(hint_card) and not hint_card.is_queued_for_deletion():
 		return true
-	if _card_up():
+	if card_up():
 		return true
 	return world.foes.boss_hunting() != null and GameClock.seconds() - world.foes.boss_noticed_at < BOSS_HINT_S
 
 
 ## Whether a title card is up (title_card).
-func _card_up() -> bool:
+func card_up() -> bool:
 	return is_instance_valid(_card) and not _card.is_queued_for_deletion()
 
 
@@ -313,7 +313,7 @@ func plates_over() -> Array[Rect2]:
 		return plates
 	if boss_bar.following():
 		plates.append(to_world(boss_bar.plate.get_global_rect()))
-	if _card_up():
+	if card_up():
 		plates.append(to_world(_card.get_global_rect()))
 	if is_instance_valid(hint_card) and hint_card.visible and not hint_card.is_queued_for_deletion():
 		plates.append(to_world(hint_card.get_global_rect()))
@@ -337,15 +337,18 @@ func hero_on_screen() -> Rect2:
 
 ## The top of the HUD's words over the dock (PIX-345): the objective's
 ## line, a message's plate while it shows, the battle log while it holds a
-## line (the floor's name on entering it, which the arrow stood on).
+## line (the floor's name on entering it, which the arrow stood on). Only a
+## plate laid out on the screen counts (PIX-378: one not laid out yet, its
+## wrapping words measured at no width, stood far over the top and the
+## arrow's area came out negative).
 func _words_top() -> float:
 	var top: float = world.camera_rig.dock_top() if world.get("camera_rig") != null else 720.0
 	if objective_box != null:
 		top = minf(top, objective_box.position.y)
 	var messages: Messages = world.get("messages")
-	if messages != null and messages.message_box.modulate.a > 0.0:
+	if messages != null and messages.message_box.modulate.a > 0.0 and messages.message_box.position.y >= 0.0:
 		top = minf(top, messages.message_box.position.y)
-	if messages != null and messages.log_box.size.y > 0.0:
+	if messages != null and messages.log_box.size.y > 0.0 and messages.log_box.position.y >= 0.0:
 		top = minf(top, messages.log_box.position.y)
 	return top
 
@@ -554,8 +557,7 @@ func update_arrow() -> void:
 	# Above the words over the dock too (the objective's plate, a message,
 	# the battle log's line: PIX-345, it stood on a dungeon floor's name),
 	# never on them.
-	var bottom := _words_top() - 4.0
-	var area := Rect2(Vector2(ARROW_INSET, ARROW_INSET), Vector2(1280.0 - 2.0 * ARROW_INSET, bottom - 2.0 * ARROW_INSET))
+	var area := arrow_area()
 	var on_screen := Vector2.ZERO
 	if target != Vector2.INF:
 		on_screen = get_viewport().get_canvas_transform() * target
@@ -568,6 +570,13 @@ func update_arrow() -> void:
 	# Drawn for the nearest of eight ways, never turned (PIX-284): its pixels
 	# stay square, and where it stands on the edge says the rest.
 	arrow.way = Marks.way_of(heading)
+
+
+## Where the arrow keeps to: the screen inside its inset, above the words
+## over the dock, never of a negative size (PIX-378).
+func arrow_area() -> Rect2:
+	var bottom := _words_top() - 4.0
+	return Rect2(Vector2(ARROW_INSET, ARROW_INSET), Vector2(1280.0 - 2.0 * ARROW_INSET, maxf(0.0, bottom - 2.0 * ARROW_INSET)))
 
 
 ## Where the arrow points in the world, or Vector2.INF for nowhere.

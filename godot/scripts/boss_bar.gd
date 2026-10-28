@@ -72,9 +72,18 @@ func _strip(color: Color) -> ColorRect:
 	return strip
 
 
-## A share of the bar in whole art pixels (two canvas pixels each).
+## A share of the bar in whole art pixels (two canvas pixels each): one at
+## least while there's any (PIX-378: a boss a few points from its fall drew
+## an empty bar).
 static func _width(at: float) -> float:
-	return floorf((SIZE.x - 4) * clampf(at, 0.0, 1.0) / 2.0) * 2.0
+	var width := floorf((SIZE.x - 4) * clampf(at, 0.0, 1.0) / 2.0) * 2.0
+	return maxf(width, 2.0) if at > 0.0 else width
+
+
+## A share as the bar reads it: 1% at least while there's any (PIX-378: a
+## boss still standing read 0%).
+static func percent(at: float) -> int:
+	return maxi(1, roundi(at * 100.0)) if at > 0.0 else 0
 
 
 ## Where the bar ends, for what stands under it (a first-time hint).
@@ -97,7 +106,7 @@ func showing() -> bool:
 ## What the bar reads (the report's `bossbar`): its foe's share of health,
 ## `fading` once that foe is out of the fight.
 func reading() -> String:
-	var shown := "%d%%" % roundi(maxf(share, ghost_share) * 100.0)
+	var shown := "%d%%" % percent(maxf(share, ghost_share))
 	return shown if _live() else "fading " + shown
 
 
