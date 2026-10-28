@@ -3049,6 +3049,10 @@ msgid "Escape pauses the game: copy your save code, open options, or quit to the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Even Keel"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every Class Starts Right"
 msgstr ""
 
@@ -3090,6 +3094,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Every piece of furniture answers to E now: the hearth crackles, the counter dreams of dinner - silence never reads as a bug again"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Every piece of music now plays at the same loudness, the battle theme no longer clicks, and the sounds that hid (your own hurt, a foe noticing you, the wind in the woods) can be heard again"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5550,6 +5558,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Ten floors of monsters, from cellar slimes to Fafnyr the Ashen"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Aegis rings when it turns a blow, treasure picked off the ground clinks, and the saves, bank, shelves and bounty board answer your choices"
 msgstr ""
 
 #: assets/data/changelog.json
