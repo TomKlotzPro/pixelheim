@@ -1,0 +1,4 @@
+# Lantern Night's harness flags (PIX-362): `flag | takes | does`, as the
+# core's (scripts/harness_flags.txt), in its table after feature.gd's
+# flags_after().
+--lantern | <wait|fly> | Lantern Night after the story (PIX-362): "Come home." told and the clock on the first one's morning, before the first map; with night the Reach's lamps wait dark for Fafnyr, and `fly` plays his pass as the world's next second would (harness runs skip it otherwise); the report adds lantern= | lantern | 625

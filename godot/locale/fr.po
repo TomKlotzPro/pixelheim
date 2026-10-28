@@ -14601,6 +14601,10 @@ msgid "Fafnyr: \"A hundred years on a pile of gold. Do you know what gold is lik
 msgstr "Fafnyr : « Cent ans couché sur un tas d'or. Vous savez ce que c'est, dormir sur de l'or ? Des coins. Rien que des coins. »"
 
 #: assets/data/story.json
+msgid "Fafnyr: \"From up here they look like a hoard. The good kind. No corners.\""
+msgstr "Fafnyr : « Vu d'en haut, on dirait un trésor. Du bon. Pas un seul coin. »"
+
+#: assets/data/story.json
 msgid "Fifty years ago five of the village climbed up to keep it that way. Only one came home, and she never talked about it."
 msgstr "Il y a cinquante ans, cinq villageois sont montés pour que ça dure. Une seule est revenue, et elle n'en a jamais parlé."
 
@@ -14639,6 +14643,10 @@ msgstr "J'étais si fière de cette marque. Regardez-la. Toujours là."
 #: assets/data/story.json
 msgid "It wasn't a rockfall. Morvax wanted the kings' gold, to make Pixelheim a city fit for us. Fafnyr was half awake, so Morvax promised him his freedom for the hoard."
 msgstr "Ce n'était pas un éboulement. Morvax voulait l'or des rois, pour faire de Pixelheim une cité digne de nous. Fafnyr était à moitié réveillé, alors Morvax lui a promis sa liberté contre le trésor."
+
+#: assets/data/story.json
+msgid "Lantern Night. A shadow crosses the stars, and down every road of the Reach the lamps catch, one after another."
+msgstr "La Nuit des Lanternes. Une ombre passe devant les étoiles, et sur chaque route de la Marche les lampes s'allument, l'une après l'autre."
 
 #: assets/data/story.json
 msgid "Maren and Morvax open the collar together. Neither of them says a word. Neither of them needs to."

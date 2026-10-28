@@ -486,6 +486,10 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/feature.gd` — A feature that plugs itself in from a folder of its own (PIX-361): its harness flags, presets, report fields, look book shots and map layers, beside the core's.
 - `scripts/features/features.gd` — Every feature under scripts/features/ (PIX-361), found once: each folder there is one, its feature.gd a Feature, in the folders' name order.
 - `scripts/features/lamps/feature.gd` — The lamps in the harness (PIX-323, PIX-324; PIX-361's first feature)
+- `scripts/features/lantern_night/feature.gd` — Lantern Night in the harness (PIX-362): `--lantern` and its preset, and the report's lantern=, their rows beside this script and their flows in tools/flows.d/lantern_night.txt
+- `scripts/features/lantern_night/lantern_layer.gd` — The Reach's lamps on Lantern Night (PIX-362)
+- `scripts/features/lantern_night/lantern_night.gd` — Lantern Night's rules (PIX-362, the Post's step 7b)
+- `scripts/features/lantern_night/lantern_pass.gd` — Fafnyr's pass on Lantern Night (PIX-362)
 - `scripts/fire_art.gd` — The fires of a burning house (PIX-327): the Night of Ash's ruins and the Night of Bells' roofs.
 - `scripts/firebolt.gd` — A fireborn elite's firebolt (PIX-155): flies straight, burns the hero it meets, and gutters out against a wall or after eight tiles.
 - `scripts/gait.gd` — How the cast walks (PIX-243): the hero, the villagers, the monsters and the wagon all step through their sheet's walk (PunyArt.WALKS) by the ground they cover, not by the clock, so their feet keep pace with the ground at any speed

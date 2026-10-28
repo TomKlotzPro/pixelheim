@@ -1,0 +1,5 @@
+# Lantern Night's report fields (PIX-362): `field | says`, as the core's
+# (scripts/harness_report.txt), which they join after its head, by name;
+# each field's function is `field_<name>(report)` in feature.gd, in the
+# same order.
+lantern | on the Reach on Lantern Night: whether its lamps still wait for Fafnyr's pass, or it has flown (PIX-362)

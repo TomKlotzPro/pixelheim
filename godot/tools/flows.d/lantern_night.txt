@@ -1,0 +1,11 @@
+# Lantern Night's flows (PIX-361: a feature's flows, read after
+# tools/flows.txt as its own, scripts/features/lantern_night/), a line each
+# as in flows.txt.
+# Lantern Night (PIX-362): after the story, the last night of the Reach's
+# year; after dark the Saltmere road's lamp waits cold for Fafnyr; his pass
+# crosses the sky and lights it, played out or skipped with Esc, and with
+# Reduce motion it is lit as the moment opens, nothing flying.
+lantern-waits | --map overworld --routes saltmere:6 --built waystation_saltmere --lit saltmere:9 --lantern wait --at 19,50 night | map=overworld lamps=saltmere:sea_glass:6:cold lantern=waiting | travel field night story
+lantern-flies | --map overworld --routes saltmere:6 --built waystation_saltmere --lit saltmere:9 --lantern fly --at 19,50 night --wait 9 | lamps=saltmere:sea_glass:6:lit lantern=flown open=none | travel field night story
+lantern-skip | --map overworld --routes saltmere:6 --built waystation_saltmere --lit saltmere:9 --lantern fly --at 19,50 night --keys esc | lamps=saltmere:sea_glass:6:lit lantern=flown open=none | travel field night story
+lantern-still | --map overworld --routes saltmere:6 --built waystation_saltmere --lit saltmere:9 --lantern fly still --at 19,50 night | lamps=saltmere:sea_glass:6:lit lantern=waiting scene=lantern_night | travel field night story
