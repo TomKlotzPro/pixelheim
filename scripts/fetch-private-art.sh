@@ -2,9 +2,11 @@
 # Installs the paid art the Godot build draws from the private
 # TomKlotzPro/pixelheim-assets repo (retro-rpg/shade/): the Medieval Age atlas
 # into godot/assets/puny/medieval/ (PIX-133), and every icon
-# godot/assets/puny/icons.json names into godot/assets/puny/shade/ (PIX-138).
-# Both folders are git-ignored: the packs may not be redistributed, so they
-# never enter this repo.
+# godot/assets/puny/icons.json names into godot/assets/puny/shade/ (PIX-138),
+# and GegX's UI kit as UiStyle's pieces (retro-rpg/gegx/pixel-ui-kit/pixelheim/,
+# made by godot/tools/ui_kit_prep.gd) into godot/assets/puny/gegx/ (PIX-385).
+# All three folders are git-ignored: the packs may not be redistributed, even
+# modified, so they never enter this repo.
 #
 #   scripts/fetch-private-art.sh            clones the repo (your GitHub login)
 #   scripts/fetch-private-art.sh <checkout> uses a checkout already made (CI)
@@ -56,3 +58,9 @@ print("\n".join(seen))
 PY
 )
 echo "Installed $count icons into godot/assets/puny/shade/"
+
+# GegX's UI kit, prepared (PIX-385): the pieces godot/assets/puny/ui_kit.json names.
+kit="$src/retro-rpg/gegx/pixel-ui-kit/pixelheim"
+mkdir -p godot/assets/puny/gegx
+cp "$kit"/*.png godot/assets/puny/gegx/
+echo "Installed $(ls "$kit"/*.png | wc -l | tr -d ' ') UI kit pieces into godot/assets/puny/gegx/"

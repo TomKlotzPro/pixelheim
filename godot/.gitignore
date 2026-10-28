@@ -8,4 +8,5 @@ flows/
 # instead keeps the links out too (check.sh would count them as changed).
 /assets/puny/medieval
 /assets/puny/shade
+/assets/puny/gegx
 lookbook*/
