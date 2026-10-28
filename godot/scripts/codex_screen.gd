@@ -42,8 +42,8 @@ func _show() -> void:
 	Layout.clear(body)
 	for index in TABS.size():
 		var chip := PanelContainer.new()
-		chip.add_theme_stylebox_override("panel", UiStyle.plank(index == tab, 6))
-		chip.add_child(UiStyle.label(TABS[index], 16, UiStyle.GOLD if index == tab else UiStyle.CREAM))
+		chip.add_theme_stylebox_override("panel", UiStyle.tab(index == tab))
+		chip.add_child(UiStyle.label(TABS[index], 16, UiStyle.plank_ink(index == tab)))
 		tabs_row.add_child(chip)
 	if tab == 0:
 		_masteries()

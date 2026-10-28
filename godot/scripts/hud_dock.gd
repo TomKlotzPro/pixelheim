@@ -186,6 +186,8 @@ func _skills() -> Control:
 		)
 		var face := Control.new()
 		face.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		# The icon's room: the slot grows round it in the kit's thicker frame (PIX-385).
+		face.custom_minimum_size = Vector2(SLOT - 12, SLOT - 12)
 		slot.add_child(face)
 		var mark := UiStyle.strong("", 16, UiStyle.INK)
 		mark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -322,7 +324,10 @@ func _process(delta: float) -> void:
 		var has: bool = index < skills.size() and not skills[index].is_empty()
 		var ready: bool = has and states[index]
 		# Ready to cast: a brass rim; spent, too dear or not yet reached: dim.
-		slot.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.WINDOW if has else UiStyle.CARD, UiStyle.BRASS if ready else UiStyle.RIM, 4))
+		slot.add_theme_stylebox_override("panel", UiStyle.slot(
+			"ready" if ready else "spent" if has else "",
+			UiStyle.box(UiStyle.WINDOW if has else UiStyle.CARD, UiStyle.BRASS if ready else UiStyle.RIM, 4)
+		))
 		slot.modulate.a = 1.0 if ready or not has else 0.55
 		var icon := ItemIcons.skill(skills[index]["name"]) if has else null
 		var art: TextureRect = slots[index]["art"]

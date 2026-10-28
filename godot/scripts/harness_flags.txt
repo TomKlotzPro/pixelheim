@@ -14,7 +14,7 @@
 --help |  | this table, then quit (nothing booted, no save touched)
 --batch | <file> | the flows in that file (name|harness arguments, a line each) one after another in this one Godot, each from a boot's state, each after a BATCH line with its name: tools/flows.sh --quiet runs the look-only ones so, a boot for several (PIX-360)
 touch |  | the phone's canvas: the screen's own shape, not letterboxed (PIX-162)
-cc0 |  | the paid Medieval Age pack held back though it's here (PunyTown.available() false), as a build without the private art draws: no houses, props or signs, rooms from Shade's CC0 sheets (PIX-318)
+cc0 |  | the paid Medieval Age pack and GegX's UI kit held back though they're here (PunyTown.available() false, UiStyle.withheld), as a build without the private art draws: no houses, props or signs, rooms from Shade's CC0 sheets (PIX-318), the menus' frames drawn in code (PIX-385)
 --lang | <xx> | the game in that language for the run (PIX-195)
 --pseudo |  | every string a third longer and accented: where a longer language would overflow (PIX-195)
 --slot | <n> | play save slot n, not a throwaway hero (it WRITES the slot)

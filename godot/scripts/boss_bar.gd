@@ -22,6 +22,9 @@ var fill: ColorRect
 var shine: ColorRect
 var ghost: ColorRect
 var notches: Array[ColorRect] = []
+## Where the bar's strips start inside its frame: the drawn outline's two
+## pixels, or the kit's frame's content rect (PIX-385).
+var inset := Vector2(2, 2)
 ## The health shown, its ghost, and how long the ghost still holds.
 var share := 1.0
 var ghost_share := 1.0
@@ -42,9 +45,20 @@ func _ready() -> void:
 	name_label = UiStyle.strong("", 16, UiStyle.CREAM)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(name_label)
-	var outline := ColorRect.new()
-	outline.color = UiStyle.NIGHT
-	outline.custom_minimum_size = SIZE
+	# The kit's wooden frame when it's in (PIX-385), the strips inside it;
+	# else a dark outline round them.
+	var frame := UiStyle.bar_frame()
+	var outline: Control
+	if frame == null:
+		outline = ColorRect.new()
+		(outline as ColorRect).color = UiStyle.NIGHT
+		outline.custom_minimum_size = SIZE
+	else:
+		outline = Panel.new()
+		outline.add_theme_stylebox_override("panel", frame)
+		inset = Vector2(frame.content_margin_left, frame.content_margin_top)
+		outline.custom_minimum_size = SIZE - Vector2(4, 4) + frame.get_minimum_size()
+	outline.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(outline)
 	ghost = _strip(GHOST)
 	outline.add_child(ghost)
@@ -57,8 +71,9 @@ func _ready() -> void:
 	for at: float in BossBrain.PHASES:
 		var notch := ColorRect.new()
 		notch.color = UiStyle.NIGHT
-		notch.size = Vector2(2, SIZE.y)
-		notch.position.x = 2 + _width(at)
+		# Through the drawn outline; inside the kit's frame.
+		notch.size = Vector2(2, SIZE.y if frame == null else SIZE.y - 4)
+		notch.position = Vector2(inset.x + _width(at), 0.0 if frame == null else inset.y)
 		outline.add_child(notch)
 		notches.append(notch)
 	plate.resized.connect(func() -> void: plate.position = Vector2(roundf((1280 - plate.size.x) / 2.0), 14))
@@ -67,7 +82,7 @@ func _ready() -> void:
 func _strip(color: Color) -> ColorRect:
 	var strip := ColorRect.new()
 	strip.color = color
-	strip.position = Vector2(2, 2)
+	strip.position = inset
 	strip.size = SIZE - Vector2(4, 4)
 	return strip
 

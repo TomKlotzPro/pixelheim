@@ -98,7 +98,8 @@ func _open() -> void:
 
 	tab_row = HBoxContainer.new()
 	tab_row.position = Vector2(490, 72)
-	tab_row.add_theme_constant_override("separation", 6)
+	# GegX's tabs (PIX-385) share their clear shoulders, so eight fit the page.
+	tab_row.add_theme_constant_override("separation", -6 if UiStyle.kit_shown() else 6)
 	add_child(tab_row)
 	scroll = ScrollContainer.new()
 	scroll.position = Vector2(490, LIST_TOP)
@@ -147,7 +148,7 @@ func _refresh() -> void:
 	Layout.clear(tab_row)
 	for index in TABS.size():
 		var button := UiStyle.button(TABS[index][1], _switch.bind(index))
-		UiStyle.focus(button, index == tab)
+		UiStyle.tab_button(button, index == tab)
 		var count := _tab_count(TABS[index][0])
 		if count > 0 and index > 0:
 			button.add_child(_count_badge(count))
@@ -550,7 +551,12 @@ func _slot(slot: String, label: String) -> Control:
 	box.custom_minimum_size = Vector2(52, 52)
 	# Its tooltip is a window that samples as its owner does: crisp (PIX-384).
 	box.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	box.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.LAMP if not instance.is_empty() else UiStyle.RIM, 4))
+	# Worn, the kit's slot wears the piece's rarity (PIX-385), as its name does.
+	var colourway := ""
+	if not instance.is_empty():
+		var rarity := String(instance.get("rarity", ""))
+		colourway = rarity if rarity in ["fine", "epic"] else "focus"
+	box.add_theme_stylebox_override("panel", UiStyle.slot(colourway, UiStyle.box(UiStyle.CARD, UiStyle.LAMP if not instance.is_empty() else UiStyle.RIM, 4)))
 	if instance.is_empty():
 		var ghost := _icon(GHOSTS[slot])
 		ghost.modulate = Color(UiStyle.INK, 0.28)

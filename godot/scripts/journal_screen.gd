@@ -47,9 +47,10 @@ const KINDS := {"main": "Main story", "quest": "Quest you follow", "bounty": "Bo
 const AT := Vector2(80, 72)
 const SIZE := Vector2(1120, 588)
 ## A window's margin inside its frame; how wide words run inside it, and in
-## a row, its own margin and mark off too.
+## a row, its own margin and mark off too: inside GegX's thicker frame too
+## (22 a side, PIX-385).
 const PAD := 18
-const TEXT_WIDTH := 1080.0
+const TEXT_WIDTH := 1076.0
 const ROW_TEXT := 1030.0
 
 var tab := "quests"
@@ -150,8 +151,8 @@ func _show() -> void:
 	Layout.clear(tabs_row)
 	for id: String in _tabs():
 		var chip := PanelContainer.new()
-		chip.add_theme_stylebox_override("panel", UiStyle.plank(id == tab, 6))
-		chip.add_child(UiStyle.label(TAB_NAMES[id], 16, UiStyle.GOLD if id == tab else UiStyle.CREAM))
+		chip.add_theme_stylebox_override("panel", UiStyle.tab(id == tab))
+		chip.add_child(UiStyle.label(TAB_NAMES[id], 16, UiStyle.plank_ink(id == tab)))
 		chip.gui_input.connect(_on_tab_input.bind(id))
 		tabs_row.add_child(chip)
 	Layout.clear(content)

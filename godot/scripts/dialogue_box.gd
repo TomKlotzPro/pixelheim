@@ -72,9 +72,9 @@ func _open() -> void:
 
 	# The name tab sits on the window's top edge, over the frame.
 	tab = PanelContainer.new()
-	tab.add_theme_stylebox_override("panel", UiStyle.plank(true, 8))
+	tab.add_theme_stylebox_override("panel", UiStyle.tab(true, 8))
 	tab.position = AT + Vector2(PORTRAIT + 36 if npc.has("sprite") else 24, -22)
-	tab.add_child(UiStyle.strong(npc["name"], 16, UiStyle.GOLD))
+	tab.add_child(UiStyle.strong(npc["name"], 16, UiStyle.plank_ink(true)))
 	add_child(tab)
 	_show()
 
