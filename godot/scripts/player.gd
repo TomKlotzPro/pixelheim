@@ -288,6 +288,8 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 		return
 	# The Aegis of the Ash takes a fight's first blow whole (PIX-376).
 	if GameState.upkeep.wards(GameClock.seconds()):
+		# Steel taking the blow: the equip's two clinks.
+		Sound.play("equip")
 		world.fx.float_text(Text.t("warded"), global_position + Vector2(0, -22), Color(1.0, 0.72, 0.45))
 		return
 	GameState.upkeep.hurt(damage)
