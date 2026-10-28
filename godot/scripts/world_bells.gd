@@ -521,8 +521,8 @@ func dragon_spent(enemy: Node) -> void:
 		_dawning = false
 		return
 	_frame_dawn(enemy)
-	# The scenes play over the square itself: nothing of the HUD over it.
-	world.hud.root.visible = false
+	# The scenes play over the square itself: nothing of the HUD over it
+	# (every cutscene puts it aside, PIX-368).
 	var dawn := Cutscene.new()
 	dawn.scene_id = Bells.dawn_id()
 	dawn.on_done = _collar.bind(enemy)
@@ -582,7 +582,6 @@ func _day() -> void:
 	_dawning = false
 	dragon = null
 	_show_clock(false)
-	world.hud.root.visible = true
 	world.camera_rig.follows = true
 	world.map = world.load_map("town")
 	world.enter_map(world.map, Town.square() + Vector2i(0, 4))

@@ -61,6 +61,9 @@ static func _story() -> Dictionary:
 
 func _open() -> void:
 	layer = 9
+	# The letterbox has the whole canvas: the HUD steps aside until the scene
+	# ends, so no sign's plate or card stands half under a bar (PIX-368).
+	_put_hud_aside()
 	still = GameState.settings.reduce_motion
 	steps = scenes().get(scene_id, [])
 	shaker = Control.new()

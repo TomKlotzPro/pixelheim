@@ -3,6 +3,11 @@ extends GutTest
 ## Cutscene screen plays; Esc always skips to what comes next, once.
 
 
+## The world as a screen finds it (Screen._put_hud_aside): its HUD.
+class FakeWorld extends Node:
+	var hud: Hud
+
+
 func _press(action: StringName) -> InputEventAction:
 	var event := InputEventAction.new()
 	event.action = action
@@ -84,3 +89,36 @@ func test_a_seen_moment_is_kept_in_the_save_and_only_once() -> void:
 	var back := ProgressionState.from_dict(written)
 	assert_eq(back.story_seen, ["fafnyr"] as Array[String])
 
+
+
+## PIX-368: Lantern Night's pass opened with the Saltmere waystation's sign
+## near the top of the screen, and the letterbox's top bar cut it in half.
+## Every cutscene puts the HUD aside while it plays, and it's back after.
+func test_nothing_of_the_hud_stands_under_a_cutscene_bar() -> void:
+	var tree := get_tree()
+	var kept := tree.current_scene
+	var world := FakeWorld.new()
+	world.hud = Hud.new()
+	world.hud.root = CanvasLayer.new()
+	world.add_child(world.hud.root)
+	tree.root.add_child(world)
+	tree.current_scene = world
+	# The sign's plate where the shot had it, over the hut at the top.
+	var plate := PanelContainer.new()
+	plate.position = Vector2(498, 52)
+	plate.size = Vector2(284, 66)
+	world.hud.root.add_child(plate)
+	var scene := Cutscene.new()
+	tree.root.add_child(scene)
+	var bar := Rect2(0, 0, Cutscene.VIEW.x, Cutscene.BAR)
+	var under := world.hud.root.visible and plate.get_global_rect().intersects(bar)
+	scene.finish()
+	await tree.process_frame
+	await tree.process_frame
+	var back := world.hud.root.visible
+	tree.current_scene = kept
+	world.hud.free()
+	world.free()
+	tree.paused = false
+	assert_false(under, "the sign's plate under the top bar")
+	assert_true(back, "the HUD back once the scene ends")

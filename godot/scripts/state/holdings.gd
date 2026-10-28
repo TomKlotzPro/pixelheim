@@ -380,13 +380,15 @@ func _top_up_potions() -> int:
 
 ## The festival day (PIX-159): an age complete, the town celebrates for a
 ## day - stalls and confetti on the square, everyone out, and a ring toss
-## with a prize for the best throw (once per festival).
+## with a prize for the best throw (once per festival). Merged into the
+## record, so an age finished on Lantern Night keeps the night's marks
+## (PIX-367): its lamps still wait for Fafnyr, or stay lit once he's flown.
 func start_festival(age: int) -> void:
-	owner.settlement.festival = {
+	owner.settlement.festival.merge({
 		"until": int(owner.world.steps) + int(Town.festival("days")) * DayNight.DAY_CYCLE_STEPS,
 		"age": age,
 		"won": false,
-	}
+	}, true)
 
 
 func festival_on() -> bool:

@@ -41,9 +41,11 @@ static func begins(progression: ProgressionState, settlement: SettlementState, d
 
 ## The town's festival for Lantern Night `day`, as an age's (Holdings.
 ## start_festival) but until the next morning: stalls, the ring toss (its
-## prize by the town's `age`), everyone on the square.
+## prize by the town's `age`), everyone on the square. An age's festival
+## already on keeps its day if it runs later (PIX-367).
 static func begin(settlement: SettlementState, day: int, age: int) -> void:
-	settlement.festival = {"until": (day + 1) * DayNight.DAY_CYCLE_STEPS, "age": age, "won": false, "lantern": day}
+	var until := maxi(int(settlement.festival.get("until", 0)), (day + 1) * DayNight.DAY_CYCLE_STEPS)
+	settlement.festival = {"until": until, "age": age, "won": false, "lantern": day}
 
 
 ## Fafnyr's pass over on day `day`: once a Lantern Night.
