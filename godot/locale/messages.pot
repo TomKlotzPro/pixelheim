@@ -4421,10 +4421,6 @@ msgid "Options on the title screen opens again: it was opening behind the title"
 msgstr ""
 
 #: assets/data/changelog.json
-msgid "Plugged In"
-msgstr ""
-
-#: assets/data/changelog.json
 msgid "Owned businesses pay RENT: +2g each after every victory, straight into your purse with a line in the battle log"
 msgstr ""
 
@@ -4562,6 +4558,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Plain Sight"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Plugged In"
 msgstr ""
 
 #: assets/data/changelog.json
