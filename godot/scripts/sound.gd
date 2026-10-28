@@ -54,6 +54,8 @@ var _played_at := {}
 var _sfx_at := {}
 var _began := {}
 var _foot := 0
+## Let go for good (`release`): nothing plays again.
+var released := false
 
 
 func _ready() -> void:
@@ -77,6 +79,14 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	release()
+
+
+## Every player stopped at once, fades and all, every sound let go, and
+## none played after (a screen freed at the end says "close"): at the
+## engine's end, and a harness run's (PIX-379).
+func release() -> void:
+	released = true
 	if _fade != null:
 		_fade.kill()
 	if _bed_fade != null:
@@ -224,6 +234,8 @@ func play(sfx: String, vary := true) -> void:
 ## Plays `stream` on a free voice at `pitch` and `level` dB; with all busy,
 ## a priority sound takes the voice that began longest ago.
 func _voice_for(stream: AudioStream, pitch: float, level: float, priority: bool) -> void:
+	if released:
+		return
 	var chosen: AudioStreamPlayer = null
 	for voice in _voices:
 		if not voice.playing:

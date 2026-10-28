@@ -21,6 +21,8 @@ cc0 |  | the paid Medieval Age pack held back though it's here (PunyTown.availab
 --load | <file> | play that save (a PXH2 code or a v5 file, res://test/fixtures) as a slot would load it, nothing written: where a save wakes (PIX-302)
 still |  | Reduce motion on, as a player can set it
 hints |  | the first-time hints on and none seen yet, as a new player has them (PIX-341)
+--role | <id> | a new hero of that role before the first map, its starting weapon in hand (PIX-379): warrior, mage, ranger, cleric, paladin, rogue or necromancer; the report adds hero=
+--level | <n> | a hero of that level as the game makes one (PIX-379): its level-ups' health, mana and points, the stat points 2:1 on its weapon's stat and endurance, its role's tree bought in order, a kit of gear for the level worn; the rank's title (the hero looks the same at every rank); the report adds hero=
 --town-tier | <n> | the village at that age (default the Hamlet the flows were written for; 0 is a new hero's Ashes)
 --built | <ids> | those village projects built too, whatever the age (PIX-283: --town-tier 0 --built the_inn is the Ashes with only Sela's inn rebuilt)
 --prologue | <n> | the Night of Ash at its step n (harness runs skip it otherwise)
@@ -39,7 +41,6 @@ clear |  | fell every foe on the map at once (a floor of the Kings' Vault, its g
 light |  | with --bells: the five lanterns lit one by one, as E would (PIX-253 step 9) | light | 40
 douse |  | with --bells: every burning roof doused, as the well's water would (PIX-253 step 9) | douse | 60
 daybreak |  | with --bells 3: the dawn clock run out, Fafnyr standing down, then the dawn's scene (PIX-253 step 9); the report adds scene= | daybreak | 70
---level | <n> | a hero of that level: the rank's title (the hero looks the same at every rank) | level | 80
 rooms |  | every room entered in turn as a door enters it, the run's own room last: ROOM lines with what each is drawn from (paid, free or none) and its walls, floor and stairs down; the report adds rooms= (PIX-318) | rooms | 90
 --fps | <n> | the frames a second the run is stepped at (PIX-276): tools/flows.sh gives Godot --fixed-fps n (60 when not given, a frame a physics tick); with motion, its walk measured over as many frames as 0.75 s takes at that pace
 --wear | <ids> | gear put on the hero, drawn on them (PIX-129) | wear | 100
@@ -125,7 +126,7 @@ wounded |  | the hero at a quarter of their health as the run starts (PIX-322: a
 hurt |  | with fight or --bells: the foe may bite back (the throwaway hero is untouchable otherwise)
 elite |  | with fight: an elite foe
 slay |  | with fight: the foe felled outright, for what its death pays
-kill |  | with fight: swing until it drops (12 swings at most)
+kill |  | with fight: swing until it drops (five minutes of play at most, PIX-379: a level-1 hero fells the Hollow King), or until it stands down
 pack |  | with fight: the foe's pack round it, Foes.PACK_SIZE of its kind all on the hunt; with kill, swings at the nearest until the whole pack is down (PIX-340)
 flee |  | run for the map's first way out mid-fight (PIX-232) | flee | 690
 chapter |  | chapter cards on (harness runs skip them otherwise): the card of the chapter the story is at, as the world shows it once free, waited for with its entrance; the report adds chapter= and rose= (PIX-253 step 2) | chapter | 700

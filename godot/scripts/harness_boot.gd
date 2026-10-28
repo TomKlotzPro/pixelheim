@@ -10,6 +10,13 @@ class_name HarnessBoot
 ## The level a harness run's hero comes home to the Night of Bells at
 ## (`--bells`, PIX-253 step 9): the story's, about 13.
 const BELLS_LEVEL := 13
+## `--level`'s kit by the level it's worn from (PIX-379, playtest 4's): the
+## weapon for the role's own stat, then the armour.
+const KITS := {
+	5: {"strength": "iron_sword", "intelligence": "moon_wand", "dexterity": "hunting_bow", "armour": ["leather_armor", "leather_cap", "steel_shield"]},
+	10: {"strength": "war_hammer", "intelligence": "arch_staff", "dexterity": "longbow", "armour": ["runic_armor", "wyrm_visor", "runed_grips", "tower_shield"]},
+	20: {"strength": "obsidian_blade", "intelligence": "starfall_staff", "dexterity": "gale_longbow", "armour": ["city_plate", "blackiron_helm", "blackiron_gauntlets", "blackiron_sabatons", "blackiron_bulwark"]},
+}
 
 
 ## Whether one of `scripts` failed to load (PIX-372): a stale import's
@@ -134,6 +141,15 @@ static func _reboot(tree: SceneTree) -> void:
 
 ## The presets, set before the first map is drawn so it's drawn with them.
 static func before_first_map(flags: HarnessFlags) -> void:
+	# `--role mage` (PIX-379): a new hero of that role, its starting weapon in
+	# hand, before the presets after it (not again on a scene's reload).
+	var role := flags.value("--role", GameState.hero.role_id)
+	if Catalog.role(role).is_empty():
+		push_error("--role: no role %s" % role)
+	elif role != GameState.hero.role_id:
+		GameState.new_game("", role)
+	if flags.has("--level"):
+		_level_up(int(flags.value("--level")))
 	# `--town-tier N` previews the village at another age; without it
 	# a run shows the Hamlet its flows were written for (`--town-tier 0` is a
 	# new hero's Ashes).
@@ -242,3 +258,37 @@ static func before_first_map(flags: HarnessFlags) -> void:
 	# Every feature's presets, after the core's (PIX-361).
 	for feature in Features.all():
 		feature.before_first_map(flags)
+
+
+## `--level N` (PIX-379, from playtest 4's driver): a hero of that level as
+## the game makes one, each level-up's growth and points; the stat points
+## two to one on the role's own stat and endurance, its tree bought in order
+## while points last, the band's kit worn, then healed whole. Before the
+## first map, so it's drawn in the kit and no skill's first-time hint shows.
+static func _level_up(level: int) -> void:
+	var hero := GameState.hero
+	while hero.level < level:
+		hero.xp = hero.xp_to_next
+		HeroRules.apply_level_ups(hero)
+	# The role's own stat: its starting weapon's.
+	var stat: String = Catalog.item(GameState.STARTER_WEAPONS.get(hero.role_id, "rusty_sword"))["scaling"]
+	var band := 0
+	for at: int in KITS:
+		if level >= at:
+			band = at
+	if band > 0:
+		for item_id: String in [KITS[band][stat]] + KITS[band]["armour"]:
+			var piece := InventoryState.create_gear(item_id)
+			GameState.pack.gear.append(piece)
+			GameState.upkeep.equip(piece["uid"])
+	var to_stat := hero.stat_points * 2 / 3
+	Skills.apply_stat_point(hero, stat, to_stat)
+	Skills.apply_stat_point(hero, "endurance", hero.stat_points - to_stat)
+	hero.stat_points = 0
+	var bought := true
+	while bought:
+		bought = false
+		for entry: Dictionary in Skills.tree(hero.role_id):
+			bought = GameState.training.buy_skill_node(entry["id"]) or bought
+	hero.hp = int(hero.stats["maxHp"])
+	hero.mp = int(hero.stats["maxMp"])

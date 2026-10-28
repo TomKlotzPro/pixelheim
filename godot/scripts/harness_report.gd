@@ -426,6 +426,14 @@ func field_hamlet() -> String:
 	return "%s:%s" % [world.view.hamlet["look"], ",".join(names.map(func(kind: String) -> String: return "%s%d" % [kind, kinds[kind]]))]
 
 
+func field_hero() -> String:
+	if not flags.has("--role") and not flags.has("--level"):
+		return ""
+	var hero := GameState.hero
+	var stats := ["strength", "intelligence", "dexterity", "endurance"].map(func(stat: String) -> String: return str(hero.stats[stat]))
+	return "%s:%d:%d/%d:%s:skills%d:%s" % [hero.role_id, hero.level, int(hero.stats["maxHp"]), int(hero.stats["maxMp"]), ",".join(stats), hero.skill_nodes.size(), GameState.pack.worn_items().get("weapon", "none")]
+
+
 func field_hint() -> String:
 	var hud: Hud = world.hud
 	if is_instance_valid(hud.hint_card) and not hud.hint_card.is_queued_for_deletion():

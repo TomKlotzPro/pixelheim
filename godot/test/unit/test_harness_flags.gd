@@ -178,9 +178,9 @@ func test_every_step_is_there_and_no_two_share_an_order() -> void:
 
 
 func test_the_steps_given_run_by_their_order() -> void:
-	var flags := HarnessFlags.new(PackedStringArray(["--screenshot", "--keys", "esc", "fight", "--map", "town", "--level", "5"]))
+	var flags := HarnessFlags.new(PackedStringArray(["--screenshot", "--keys", "esc", "fight", "--map", "town", "--wear", "iron_helm"]))
 	var steps: Array = flags.steps().map(func(row: Dictionary) -> String: return row["step"])
-	assert_eq(steps, ["level", "fight", "breath", "keys"], "by order, whatever the command line's; --map is no step")
+	assert_eq(steps, ["wear", "fight", "breath", "keys"], "by order, whatever the command line's; --map is no step")
 
 
 ## flag -> the script that reads it, from every script's source; a flag that
