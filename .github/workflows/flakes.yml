@@ -194,7 +194,7 @@ jobs:
 
       - name: Import assets (Shade's CC0 art only)
         run: |
-          if [ -e godot/assets/puny/medieval ] || [ -e godot/assets/puny/shade ] || [ -e godot/assets/puny/gegx ]; then
+          if [ -e godot/assets/puny/medieval ] || [ -e godot/assets/puny/shade ] || [ -e godot/assets/puny/gegx ] || [ -e godot/assets/puny/animals ]; then
             echo "::error::the paid art is here, and this run's artifacts are public"
             exit 1
           fi

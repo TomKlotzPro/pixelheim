@@ -484,6 +484,9 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/enemy.gd` — A monster in the field: wanders near its home, notices a hero it can see (a "!" and a hop first), chases, bites after a tell, and gives up a chase that strays too far, walking home to heal (PIX-142).
 - `scripts/entrance_art.gd` — What a dungeon's way in looks like (PIX-290, Tom: « Pas super beau les entrées de donjon, porte du Fernoir et le premier »).
 - `scripts/escort.gd` — An escort (PIX-192): Gunnar's last wagon down the Frostgate - an old mammoth hauling the pass's last crates.
+- `scripts/features/farm_animals/farm_animals.gd` — Pixelheim's farm animals by its age (PIX-387, the village's step 2)
+- `scripts/features/farm_animals/feature.gd` — The town's farm animals in the harness (PIX-387)
+- `scripts/features/farm_animals/herd.gd` — The town's farm animals as they live (PIX-387)
 - `scripts/features/feature.gd` — A feature that plugs itself in from a folder of its own (PIX-361): its harness flags, presets, report fields, look book shots and map layers, beside the core's.
 - `scripts/features/features.gd` — Every feature under scripts/features/ (PIX-361), found once: each folder there is one, its feature.gd a Feature, in the folders' name order.
 - `scripts/features/lamps/feature.gd` — The lamps in the harness (PIX-323, PIX-324; PIX-361's first feature)

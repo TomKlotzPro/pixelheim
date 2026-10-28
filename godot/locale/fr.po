@@ -14773,6 +14773,10 @@ msgid "Fafnyr: \"From up here they look like a hoard. The good kind. No corners.
 msgstr "Fafnyr : « Vu d'en haut, on dirait un trésor. Du bon. Pas un seul coin. »"
 
 #: assets/data/story.json
+msgid "Farm Animals by ninth-jedi"
+msgstr "Animaux de la ferme de ninth-jedi"
+
+#: assets/data/story.json
 msgid "Fifty years ago five of the village climbed up to keep it that way. Only one came home, and she never talked about it."
 msgstr "Il y a cinquante ans, cinq villageois sont montés pour que ça dure. Une seule est revenue, et elle n'en a jamais parlé."
 
