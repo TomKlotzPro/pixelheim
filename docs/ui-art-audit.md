@@ -62,8 +62,8 @@ Sizes are in canvas pixels, with art pixels in brackets. Margins are 9-slice mar
 
 | Bar | Script, function | Size | States |
 |---|---|---|---|
-| HP and EN (MP for casters) | `HudDock._bar`, `_set_bar`, `_warn_low_hp` | 132x10. Outline 2, fill, 2-px shine | Fill and shine colours per bar (`HudDock.BARS`); a low-HP heartbeat pulse |
-| XP line | `HudDock._xp_line`, `_set_xp`, `flash_xp` | Dock width x4 | Flash on gain |
+| HP and EN (MP for casters) | `HudDock._bar`, `_set_bar`, `_warn_low_hp` | 144x20 since PIX-388: the kit's `bar_frame`, or a brass rim drawn without it; a dark trough, the fill, a 2-px shine, its numbers beside it | Fill and shine colours per bar (`HudDock.BARS`); a low-HP heartbeat pulse |
+| XP strip | `HudDock._xp_line`, `_set_xp`, `_draw_xp`, `flash_xp` | Dock width x10 since PIX-388: outline, trough, fill and shine, a notch every tenth (in code, kit or not) | Flash on gain; its numbers under the mouse |
 | Boss bar | `BossBar._ready`, `_strip`, `_process` | 420x12 inside a plate, with 2-px phase notches | Fill, a pale ghost that drains, notches, fade in and out |
 | Pack weight | `InventoryScreen` (track and `weight_fill`) | 124x12 | Fill only |
 | Codex progress | `CodexScreen` track | Small | Fill only |
@@ -245,7 +245,7 @@ Colours per piece: wood 16–23, stone 15–22, parchment 26–33. Each parchmen
 | `plank()`, `button()` | `wood/base/button_wide`, `button_narrow` | About 14/9/14/12 (the bottom lip is thicker) | normal, hover, pressed, disabled; red colourway for the chosen one | **Labels are baked in**, even in "disabled", despite the README. **No row repeats**, so height is fixed at 45 (today about 34). Columns repeat only over 2–6 px, so the label must be erased and a clean column cut before it can stretch |
 | Tabs: journal, shop, inventory | `parchment/base/tab_left`/`tab_right` (wood's `tabs_pair` has no states) | About 12/8/12/8 | 4 states x 5 colours | 41 tall against 32 today. Labels baked in |
 | Boss bar | `wood/base/bar_empty` (281x29) | About 12/6/12/8, with our fill drawn inside | none | The boss plate grows to about 29 px of bar. `bar_health` and `bar_mana` carry baked numbers ("225/300", "HP 75/100") |
-| Dock HP and EN bars (132x10), XP line | none | | | The kit's bars are 29–45 tall. Keep the code |
+| Dock HP and EN bars (132x10), XP line | none | | | The kit's bars are 29–45 tall. Keep the code. **Superseded (PIX-388):** HP and EN now sit in `bar_frame` at 144x20; the XP strip stays in code, 10 px with notches |
 | Rank-up or codex medallion | `badge_lion`, `badge_round_a`/`b` (66–73) | fixed | 4 states x 5 colours | Decorative only; too big for count badges |
 | Dialogue portrait frame | `wood/base/slot_ornate` or `parchment/base/slot_square` | About 10 all round | | Possible, once cleaned |
 
@@ -311,7 +311,7 @@ This follows the paid-art pattern:
    - **`plank(lit, padding, dim)`** and **`button()`** use `button_*`, with a real pressed state. **`focus()`** uses `button_chosen`.
    - **`_style()`** stays as the fallback's builder. The kit's styleboxes carry their own content margins, at least the frame, so the words never sit on the frame (mock 2's middle row is what happens otherwise).
    - **Stay as today:** `plate()`, `keycap_style()`, `coin()`, `arrow()` and `trend()`, since the kit has none of them. The same goes for the tooltip, scrollbar and cursor (recommendation 1: `setup()` gains `TooltipPanel`, `VScrollBar` and `HSeparator` theme items drawn in code, and a cursor pre-scaled to the window, since hardware cursors don't follow `canvas_items` scaling).
-5. **Bars:** only the boss bar takes the kit. In `BossBar._ready`, the `NIGHT` outline `ColorRect` becomes a `Panel` with `_kit("bar_frame")`, and the fill, ghost and notches are drawn inside its content rect. The dock's bars (`HudDock._bar`, `_xp_line`), the weight and codex tracks, and `Enemy`'s and `Escort`'s world bars stay in code.
+5. **Bars:** only the boss bar takes the kit. In `BossBar._ready`, the `NIGHT` outline `ColorRect` becomes a `Panel` with `_kit("bar_frame")`, and the fill, ghost and notches are drawn inside its content rect. The dock's bars (`HudDock._bar`, `_xp_line`), the weight and codex tracks, and `Enemy`'s and `Escort`'s world bars stay in code. (PIX-388 later put the dock's HP and EN in `bar_frame` too; its XP strip stays drawn.)
 6. **Layouts:** the kit's frames are thicker than ours:
    - window content margin about 22 against 12;
    - buttons 45 tall against about 34;

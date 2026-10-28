@@ -14,6 +14,10 @@ const MARGIN := 8  # canvas pixels between the dock and the screen's bottom
 const BAR := Vector2(144, 20)
 const XP_HEIGHT := 10
 const SLOT := 48
+## A skill's key tab: a digit on dark, an art pixel of it above and below,
+## standing TAG_RISE above the slot's outer edge.
+const TAG := Vector2(20, 18)
+const TAG_RISE := 10
 const PORTRAIT := 40
 const BARS := {
 	"hp": [Color("d8433f"), Color("ff8a80")],
@@ -44,7 +48,8 @@ var xp_track: ColorRect
 var slots: Array[Dictionary] = []
 var menu_button: Button
 ## The Menu's key beside it, the pad's Back, shown while a pad plays (the
-## keyboard has none: its screens each have their own, listed in it).
+## keyboard has none: its screens each have their own, listed in it); its
+## room is kept either way.
 var menu_key: PanelContainer
 var menu: PanelContainer
 var menu_rows := {}
@@ -226,7 +231,7 @@ func _bar(key: String) -> Control:
 
 ## Six slots, one per skill key: the skill's icon (Shade's, ItemIcons) in
 ## the kit's slot, brass when it can be cast, dark while it can't; its key
-## on a dark tab in the corner; after a cast a veil over every icon draws
+## on a dark tab over its top edge; after a cast a veil over every icon draws
 ## back up as the skills' shared turn runs out (PIX-388). A click casts it
 ## too. Without the paid icons a slot shows the skill's initials.
 func _skills() -> Control:
@@ -270,13 +275,25 @@ func _skills() -> Control:
 		veil.size = Vector2(SLOT - 12, 0)
 		veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		face.add_child(veil)
-		# The key on a dark tag over the slot's top left corner, as action
-		# bars number theirs (the pack's tabs count theirs alike).
-		var key := PanelContainer.new()
+		# The key on a dark tab over the middle of the slot's top edge, as the
+		# pack's tabs count theirs: a fixed rise from the slot's outer edge,
+		# so it sits on the frame, clear of the icon, in either look.
+		var key := Panel.new()
 		key.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.NIGHT, UiStyle.NIGHT, 2))
 		key.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		key.position = Vector2(-inset - 4, -inset - 6)
-		key.add_child(UiStyle.strong(str(index + 1), 12, UiStyle.CREAM))
+		key.anchor_left = 0.5
+		key.anchor_right = 0.5
+		key.offset_left = -TAG.x / 2.0
+		key.offset_right = TAG.x / 2.0
+		key.offset_top = -inset - TAG_RISE
+		key.offset_bottom = key.offset_top + TAG.y
+		var number := UiStyle.strong(str(index + 1), 12, UiStyle.CREAM)
+		number.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		number.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		number.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		# The font's line is taller than its digits: it overhangs the tab evenly.
+		number.grow_vertical = Control.GROW_DIRECTION_BOTH
+		key.add_child(number)
 		face.add_child(key)
 		row.add_child(slot)
 		slots.append({"slot": slot, "mark": mark, "art": art, "veil": veil})
@@ -290,7 +307,8 @@ func _purse() -> Control:
 	block.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	block.alignment = BoxContainer.ALIGNMENT_CENTER
 	purse = UiStyle.purse(0)
-	purse.alignment = BoxContainer.ALIGNMENT_CENTER
+	# Over the Menu, flush right: the pad's key keeps its room to its left.
+	purse.alignment = BoxContainer.ALIGNMENT_END
 	block.add_child(purse)
 	var line := HBoxContainer.new()
 	line.add_theme_constant_override("separation", 6)
@@ -436,7 +454,8 @@ func _process(delta: float) -> void:
 	var states := skills.map(func(skill: Dictionary) -> bool:
 		return not skill.is_empty() and Skills.cast_block(hero, skill) == "" and world.player.skill_ready
 	)
-	var shown := [skills.map(func(skill: Dictionary) -> String: return skill.get("name", "")), states]
+	# The turn too: its end dims what still can't be cast (slot alpha below).
+	var shown := [skills.map(func(skill: Dictionary) -> String: return skill.get("name", "")), states, _turn_from >= 0.0]
 	if shown == _shown:
 		return
 	_shown = shown
@@ -460,20 +479,23 @@ func _process(delta: float) -> void:
 
 
 ## The skills' shared turn after a cast (Player.SKILL_TURN): a veil over
-## each skill's icon, as tall as the share of the turn left, drawing back up
-## in whole art pixels.
+## each skill's icon, drawing back up as the turn runs out.
 func _sweep(skills: Array) -> void:
-	var left := 0.0
 	if world.player.skill_ready:
 		_turn_from = -1.0
-	else:
-		if _turn_from < 0.0:
-			_turn_from = GameClock.seconds()
-		left = clampf(1.0 - (GameClock.seconds() - _turn_from) / world.player.SKILL_TURN, 0.0, 1.0)
+	elif _turn_from < 0.0:
+		_turn_from = GameClock.seconds()
+	var high := veil_height(SLOT - 12, GameClock.seconds() - _turn_from, world.player.SKILL_TURN) if _turn_from >= 0.0 else 0.0
 	for index in slots.size():
 		var veil: ColorRect = slots[index]["veil"]
 		var has: bool = index < skills.size() and not (skills[index] as Dictionary).is_empty()
-		veil.size.y = floorf((SLOT - 12) * left / 2.0) * 2.0 if has else 0.0
+		veil.size.y = high if has else 0.0
+
+
+## The veil over a `full`-pixel icon `since` seconds into a `turn`: as tall
+## as the share of the turn left, in whole art pixels (two canvas pixels).
+static func veil_height(full: float, since: float, turn: float) -> float:
+	return floorf(full * clampf(1.0 - since / turn, 0.0, 1.0) / 2.0) * 2.0
 
 
 static func low_hp(hp: int, most: int) -> bool:
@@ -561,10 +583,11 @@ func refresh() -> void:
 		row["art"].texture = ItemIcons.skill(docked[index]["name"]) if has else null
 	_show_focus()
 	_pad_shown = Controls.pad
-	menu_key.visible = _pad_shown
+	# Its room stays kept, so the dock's width (and every slot) holds when the hands change.
+	menu_key.modulate.a = 1.0 if _pad_shown else 0.0
 	# Points to spend light the menu, so they're never missed.
 	UiStyle.focus(menu_button, waiting_any)
-	# Back to the size its words need now (a shorter name, the pad's key gone).
+	# Back to the size its words need now (a shorter rank, less gold).
 	plate.reset_size()
 
 
