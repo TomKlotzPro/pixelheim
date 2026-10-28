@@ -2509,6 +2509,10 @@ msgid "Bosses and named monsters no longer give up the chase and heal when you s
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Bosses hit a little softer and the fire-breathers mark their bolts on the ground, so dodging is the skill and potions the backup"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Branches of Power"
 msgstr ""
 
@@ -3046,6 +3050,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Every Class Starts Right"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Every Class Through"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4333,6 +4341,10 @@ msgid "On a phone the controls are sized for a thumb on any screen, the attack, 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On the Night of Bells, Sela brings a bowl of broth to whoever holds the square, so every class can see the dawn; the cleric starts sturdier, and the first fields ease in more gently"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "On the first night, the burning houses light the square in soft pools: no more lit and dark areas ending in straight lines"
 msgstr ""
 
@@ -4518,6 +4530,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Packs change at dusk and dawn only out of your sight, and every quest's quarry can be found at any hour"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Packs now spread round you and take their turns instead of bunching up for one sweep, so a pack of three is a real fight; a stun can no longer follow a stun within three seconds"
 msgstr ""
 
 #: assets/data/changelog.json

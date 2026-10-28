@@ -2509,6 +2509,10 @@ msgid "Bosses and named monsters no longer give up the chase and heal when you s
 msgstr "Les boss et les monstres nommés n'abandonnent plus la poursuite pour aller se soigner quand vous vous éloignez, et impossible de partir tant que l'un d'eux vous traque"
 
 #: assets/data/changelog.json
+msgid "Bosses hit a little softer and the fire-breathers mark their bolts on the ground, so dodging is the skill and potions the backup"
+msgstr "Les boss frappent un peu moins fort et les cracheurs de feu marquent le chemin de leurs traits au sol : l'esquive devient l'art, et les potions le recours"
+
+#: assets/data/changelog.json
 msgid "Branches of Power"
 msgstr "Les branches du pouvoir"
 
@@ -3047,6 +3051,10 @@ msgstr "Esc met le jeu en pause : copiez votre code de sauvegarde, ouvrez les 
 #: assets/data/changelog.json
 msgid "Every Class Starts Right"
 msgstr "Chaque classe part du bon pied"
+
+#: assets/data/changelog.json
+msgid "Every Class Through"
+msgstr "Chaque classe passe"
 
 #: assets/data/changelog.json
 msgid "Every Corner in French"
@@ -4333,6 +4341,10 @@ msgid "On a phone the controls are sized for a thumb on any screen, the attack, 
 msgstr "Sur téléphone, les commandes ont la taille d'un pouce sur tous les écrans, les boutons attaquer, rouler et utiliser montrent une épée, une flèche et une main dessinées au lieu de mots, et les six touches de compétence sont à l'écran, chacune avec son icône"
 
 #: assets/data/changelog.json
+msgid "On the Night of Bells, Sela brings a bowl of broth to whoever holds the square, so every class can see the dawn; the cleric starts sturdier, and the first fields ease in more gently"
+msgstr "Pendant la Nuit des Cloches, Sela apporte un bol de bouillon à qui tient la place, pour que chaque classe voie l'aube ; le clerc commence plus solide, et les premiers champs s'adoucissent encore"
+
+#: assets/data/changelog.json
 msgid "On the first night, the burning houses light the square in soft pools: no more lit and dark areas ending in straight lines"
 msgstr "La première nuit, les maisons en feu éclairent la place en halos doux : fini les zones claires et sombres coupées en lignes droites"
 
@@ -4519,6 +4531,10 @@ msgstr "VISER PLUS HAUT, ÇA PAIE : un ennemi de niveau supérieur rapporte 5�
 #: assets/data/changelog.json
 msgid "Packs change at dusk and dawn only out of your sight, and every quest's quarry can be found at any hour"
 msgstr "Les meutes changent au crépuscule et à l'aube seulement hors de votre vue, et la proie de chaque quête se trouve à toute heure"
+
+#: assets/data/changelog.json
+msgid "Packs now spread round you and take their turns instead of bunching up for one sweep, so a pack of three is a real fight; a stun can no longer follow a stun within three seconds"
+msgstr "Les meutes se déploient désormais autour de vous et attaquent chacune leur tour au lieu de s'agglutiner sous un seul coup, et une meute de trois devient un vrai combat ; un étourdissement ne peut plus en suivre un autre dans les trois secondes"
 
 #: assets/data/changelog.json
 msgid "Pad in Hand"
