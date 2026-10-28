@@ -10,7 +10,8 @@ extends Node
 ## plays once, then what it names or the place's music. Ambience rolls its
 ## chances every tick like ambience.ts, the extras the world asks for with
 ## it, over a looping bed (wind). Volumes are the player's (GameSettings),
-## on Music, SFX and Ambience buses.
+## on Music, SFX and Ambience buses, each sound at its own level first
+## (audio.json's "levels", `level_of`).
 ## Autoload `Sound`.
 
 const FADE_S := 0.35
@@ -54,6 +55,9 @@ var _played_at := {}
 var _sfx_at := {}
 var _began := {}
 var _foot := 0
+## How many sounds have been asked for, so a screen can tell whether what
+## it just did made one of its own.
+var asked := 0
 ## Let go for good (`release`): nothing plays again.
 var released := false
 
@@ -113,6 +117,15 @@ func apply_volumes() -> void:
 	AudioServer.set_bus_mute(0, settings.muted)
 
 
+## A sound's own level in dB, by its file under assets/audio/ without a
+## variant's number ("sfx/hurt", "music/theme_dawn", "ambience/greenwood_1",
+## "ambience/birds"): the renders came out at whatever loudness their synth
+## gave, so the audio pass measured each and evened them out here, the
+## music to one loudness and each family of effects to itself.
+func level_of(key: String) -> float:
+	return float(_doc["levels"].get(key, 0.0))
+
+
 func _stream(path: String) -> AudioStreamWAV:
 	if not _streams.has(path):
 		_streams[path] = load(path)
@@ -126,7 +139,9 @@ func _stream(path: String) -> AudioStreamWAV:
 ## The fight has three of its own (PIX-209): a swing's swish, a skill's
 ## rising shimmer and the thud of a killing blow.
 const UI_SOUNDS := {
-	"open": [[0.05, "noise", 0.0, 0.0, 0.10], [0.05, "triangle", 660.0, 880.0, 0.10]],
+	# The open at the close's level (the audio pass): it came 4 dB over every
+	# other page sound and most stingers, on the game's most common moment.
+	"open": [[0.05, "noise", 0.0, 0.0, 0.065], [0.05, "triangle", 660.0, 880.0, 0.065]],
 	"tick": [[0.025, "square", 1320.0, 1320.0, 0.05]],
 	"close": [[0.07, "triangle", 620.0, 360.0, 0.10]],
 	"swing": [[0.05, "noise", 0.0, 0.0, 0.05], [0.03, "triangle", 420.0, 280.0, 0.04]],
@@ -228,12 +243,13 @@ func play(sfx: String, vary := true) -> void:
 	elif vary:
 		pitch = randf_range(1.0 - VARY_PITCH, 1.0 + VARY_PITCH)
 		level = randf_range(-VARY_DB, VARY_DB)
-	_voice_for(_stream("res://assets/audio/sfx/%s.wav" % sfx), pitch, level, sfx in PRIORITY)
+	_voice_for(_stream("res://assets/audio/sfx/%s.wav" % sfx), pitch, level + level_of("sfx/" + sfx), sfx in PRIORITY)
 
 
 ## Plays `stream` on a free voice at `pitch` and `level` dB; with all busy,
 ## a priority sound takes the voice that began longest ago.
 func _voice_for(stream: AudioStream, pitch: float, level: float, priority: bool) -> void:
+	asked += 1
 	if released:
 		return
 	var chosen: AudioStreamPlayer = null
@@ -273,7 +289,7 @@ func play_track(name: String) -> void:
 	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	stream.loop_begin = 0
 	stream.loop_end = roundi(float(_doc["tracks"][name]["seconds"]) * stream.mix_rate)
-	_crossfade(stream)
+	_crossfade(stream, level_of("music/" + name))
 
 
 ## A story theme (PIX-158: a boss's intro, the dawn, an ending), once
@@ -285,7 +301,7 @@ func play_theme(name: String, then := "") -> void:
 	_after_theme = then
 	var stream := _stream("res://assets/audio/music/theme_%s.wav" % name)
 	stream.loop_mode = AudioStreamWAV.LOOP_DISABLED
-	_crossfade(stream)
+	_crossfade(stream, level_of("music/theme_" + name))
 
 
 func _theme_over(player: AudioStreamPlayer) -> void:
@@ -297,7 +313,7 @@ func _theme_over(player: AudioStreamPlayer) -> void:
 	_after_theme = ""
 
 
-func _crossfade(stream: AudioStreamWAV) -> void:
+func _crossfade(stream: AudioStreamWAV, level: float) -> void:
 	if _fade != null:
 		_fade.kill()
 	var outgoing := _music
@@ -310,7 +326,7 @@ func _crossfade(stream: AudioStreamWAV) -> void:
 	_music.stream = stream
 	_music.volume_db = -40.0
 	_fade.tween_callback(_music.play)
-	_fade.tween_property(_music, "volume_db", 0.0, FADE_S)
+	_fade.tween_property(_music, "volume_db", level, FADE_S)
 
 
 func stop_music() -> void:
@@ -360,7 +376,7 @@ func set_bed(name: String) -> void:
 		_bed.volume_db = -40.0
 		_bed.play()
 	)
-	_bed_fade.tween_property(_bed, "volume_db", 0.0, FADE_S * 3)
+	_bed_fade.tween_property(_bed, "volume_db", level_of("ambience/bed_" + name), FADE_S * 3)
 
 
 ## The weather of a place: "greenwood", "deepforest", "marsh", "indoor" or "".
@@ -382,17 +398,18 @@ func _process(delta: float) -> void:
 		for name in extras:
 			var extra: Dictionary = _doc["ambienceExtras"][name]
 			if randf() < float(extra["chance"]):
-				_ambient_file("res://assets/audio/ambience/%s_%d.wav" % [name, randi() % int(extra["variants"])])
+				_ambient_file("res://assets/audio/ambience/%s_%d.wav" % [name, randi() % int(extra["variants"])], level_of("ambience/" + name))
 
 
 func _ambient(index: int, variant: int) -> void:
-	_ambient_file("res://assets/audio/ambience/%s_%d_%d.wav" % [ambience, index, variant])
+	_ambient_file("res://assets/audio/ambience/%s_%d_%d.wav" % [ambience, index, variant], level_of("ambience/%s_%d" % [ambience, index]))
 
 
-func _ambient_file(path: String) -> void:
+func _ambient_file(path: String, level: float) -> void:
 	for voice in _ambient_voices:
 		if not voice.playing:
 			voice.stream = _stream(path)
+			voice.volume_db = level
 			voice.play()
 			return
 

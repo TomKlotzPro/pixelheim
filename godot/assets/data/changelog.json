@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.294.0",
+      "date": "2026-10-28",
+      "codename": "Even Keel",
+      "notes": [
+        "Every piece of music now plays at the same loudness, the battle theme no longer clicks, and the sounds that hid (your own hurt, a foe noticing you, the wind in the woods) can be heard again",
+        "The Aegis rings when it turns a blow, treasure picked off the ground clinks, and the saves, bank, shelves and bounty board answer your choices"
+      ]
+    },
+    {
       "version": "0.293.0",
       "date": "2026-10-28",
       "codename": "Nothing Underfoot",

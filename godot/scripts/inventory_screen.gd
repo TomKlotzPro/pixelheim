@@ -548,6 +548,8 @@ func _slot(slot: String, label: String) -> Control:
 	var instance := GameState.pack.gear_by_uid(GameState.pack.equipped.get(slot, ""))
 	var box := PanelContainer.new()
 	box.custom_minimum_size = Vector2(52, 52)
+	# Its tooltip is a window that samples as its owner does: crisp (PIX-384).
+	box.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	box.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.LAMP if not instance.is_empty() else UiStyle.RIM, 4))
 	if instance.is_empty():
 		var ghost := _icon(GHOSTS[slot])
