@@ -158,3 +158,39 @@ func test_the_pieces_are_made_ahead_and_the_data_is_whole() -> void:
 				assert_true(Rect2i(Vector2i.ZERO, data.size).encloses(rect), "%s's %s inside the map" % [map_id, area["name"]])
 	for look: String in Streets.KERBED:
 		assert_true(Streets.LOOKS.has(look))
+
+
+## No street runs into the water (PIX-390): Tom found the south street's
+## kerb right on the river, the grass beside it too, from the Ashes to the
+## City. A bank lies between them now, and every map with streets keeps
+## one, at every age, the town's ruins standing or every project built.
+func test_no_street_runs_into_the_water() -> void:
+	var projects := []
+	for age: Dictionary in Town.ages():
+		for project: Dictionary in age["projects"]:
+			projects.append(project["id"])
+	for map_id: String in ["town", "greyhold", "frostgate"]:
+		for done: Array in [[], projects]:
+			var grid := MapData.load_tiered(map_id, done, 1).grid
+			for tier in range(Town.MAX_TIER + 1):
+				assert_eq(Streets.on_water(grid, Streets.plan(map_id, grid, tier)), [] as Array[Vector2i], "%s at age %d, %d built" % [map_id, tier, done.size()])
+	var town := MapData.load_by_id("town")
+	for x in range(2, 64):
+		assert_eq(town.tile_at(Vector2i(x, 35)), "grass", "the bank below the south street at (%d, 35)" % x)
+		assert_eq(town.tile_at(Vector2i(x, 36)), "water", "the river at its foot at (%d, 36)" % x)
+
+
+## What counts as running into the water: a road or a paved cell with water
+## at a side; not a corner, not a bridge's end, not grass.
+func test_a_street_on_the_water_is_one_with_water_at_a_side() -> void:
+	var grid := {
+		Vector2i(0, 0): "path", Vector2i(1, 0): "water",
+		Vector2i(0, 1): "well", Vector2i(1, 1): "sea",
+		Vector2i(0, 2): "path", Vector2i(1, 2): "bridge",
+		Vector2i(0, 3): "path", Vector2i(1, 4): "water",
+		Vector2i(0, 5): "grass", Vector2i(1, 5): "water",
+	}
+	var paved := {Vector2i(0, 1): "sandstone"}
+	var found := Streets.on_water(grid, paved)
+	found.sort()
+	assert_eq(found, [Vector2i(0, 0), Vector2i(0, 1)] as Array[Vector2i])

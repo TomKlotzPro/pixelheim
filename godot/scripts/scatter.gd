@@ -46,6 +46,9 @@ const DETAIL := {
 	"earth": [12, ["tuft_small", "tuft_small", "pebbles", "twig"]],
 	"meadow": [40, ["flowers_white", "flowers_yellow", "flowers_red", "flowers_blue", "clover", "tuft"]],
 	"grove": [70, ["sapling", "sapling", "sapling", "sapling", "flowers_yellow", "flowers_white", "tuft"]],
+	# The river's shallows along a grassy bank (PIX-390: `bank`), reeds at
+	# the bank's foot, so a straight shore reads as a riverside.
+	"bank": [45, ["reeds"]],
 }
 
 
@@ -93,10 +96,13 @@ static func _rim_share(grid: Dictionary, cell: Vector2i) -> int:
 
 
 ## The small detail a cell grows ("" for none): one of DETAIL's kinds for
-## its tile (the mire's grass is the mire's, PunyTerrain.REGION_GRASS),
-## never where choice grows something.
+## its tile (the mire's grass is the mire's, PunyTerrain.REGION_GRASS; the
+## river's water by grass is its bank's shallows), never where choice grows
+## something.
 static func detail(grid: Dictionary, cell: Vector2i, region := "") -> String:
 	var tile: String = grid.get(cell, "")
+	if tile == "water" and [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN].any(func(step: Vector2i) -> bool: return grid.get(cell + step, "") == "grass"):
+		tile = "bank"
 	if not DETAIL.has(tile) or choice(grid, cell) >= 0:
 		return ""
 	if tile == "grass" and PunyTerrain.REGION_GRASS.has(region):

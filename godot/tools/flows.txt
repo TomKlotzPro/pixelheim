@@ -47,6 +47,12 @@ streets-village | --map town --town-tier 2 --at 40,12 | map=town street=gravel |
 streets-town | --map town --town-tier 3 --at 40,12 | map=town street=cobbles | town
 streets-city | --map town --town-tier 4 --at 36,22 | map=town street=sandstone | town
 streets-fountain | --map town --town-tier 4 --at 39,24 | map=town street=bricks | town
+# The river's bank below the south street at every age (PIX-390): the hero
+# stands on the grass between the kerb and the water, unpaved, and no
+# street cell on the map has water at a side.
+bank-ashes | --map town --town-tier 0 --at 20,35 | map=town cell=\(20, 35\) bank=0 street= | town
+bank-village | --map town --town-tier 2 --at 20,35 | map=town cell=\(20, 35\) bank=0 street= | town
+bank-city-night | --map town --town-tier 4 --at 40,35 night | map=town cell=\(40, 35\) bank=0 street= | town night
 # Pixelheim's yards and square by its age (PIX-382): what each household
 # keeps by its house, the square's rims, the City's bunting lit at night;
 # with the paid pack (on Shade's CC0 art alone, none).

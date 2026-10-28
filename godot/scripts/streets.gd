@@ -113,6 +113,23 @@ static func look_at(area: Dictionary, tier: int) -> String:
 	return look
 
 
+## The street cells of `grid` (its roads, and whatever `paved` lays) with
+## water at a side (PunyTerrain.WATERS): none on a settlement's map
+## (PIX-390). Tom found Pixelheim's south street running straight into its
+## river, the kerb on the water; a grassy bank lies between them now, with
+## Shade's shore and reeds at its foot (Scatter's `bank`).
+static func on_water(grid: Dictionary, paved: Dictionary) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	for cell: Vector2i in grid:
+		if grid[cell] != "path" and not paved.has(cell):
+			continue
+		for step: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			if grid.get(cell + step, "") in PunyTerrain.WATERS:
+				out.append(cell)
+				break
+	return out
+
+
 static func _rect(area: Dictionary) -> Rect2i:
 	if not area.has("rect"):
 		return Rect2i()
