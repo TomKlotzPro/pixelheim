@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.293.0",
+      "date": "2026-10-28",
+      "codename": "Nothing Underfoot",
+      "notes": [
+        "Stepping onto a herb patch or a glint on the road no longer trips the game when its picture is missing"
+      ]
+    },
+    {
       "version": "0.292.0",
       "date": "2026-10-28",
       "codename": "Every Class Through",
