@@ -23,7 +23,9 @@ const COMBAT_LINGER_S := 3.0
 const CALM_S := 0.6
 ## In a fight a pack shows one level tag (PIX-340): foes this close to one
 ## another (a chain of them) are one pack, and tags stand this far apart.
-const PACK_REACH := 3.0 * MapView.TILE
+## As far as the ring round the hero reaches (PIX-377: its waiting foes
+## stand a third of a turn apart, 3 tiles from one another).
+const PACK_REACH := 4.0 * MapView.TILE
 const TAG_MARGIN := 4.0
 ## A boss's fall (PIX-210): how long the music keeps quiet, and how slow the
 ## world runs as it falls.
@@ -58,6 +60,10 @@ var stood := 0
 ## reports it), and when the last did.
 var fled := 0
 var frightened_at := -100.0
+## The ring round the hero (ring_spot): each hunter's spot, and the physics
+## tick it was worked out on.
+var _ring := {}
+var _ring_tick := -1
 
 
 ## Packs at their homes (the spawns): the species its region and position
@@ -428,6 +434,30 @@ func on_enemy_frightened(_enemy: Node) -> void:
 	if now - frightened_at > 1.5:
 		Sound.play_ui("fright")
 	frightened_at = now
+
+
+## Where `enemy` stands in the ring round the hero (PIX-377, Packs.ring), or
+## Vector2.INF when it is in none: the hunters within the ring's reach,
+## bosses and named monsters aside, two or more of them. Worked out once a
+## physics tick for all; a spot a wall stands between is the hero's own.
+func ring_spot(enemy: Node) -> Vector2:
+	var tick := Engine.get_physics_frames()
+	if tick != _ring_tick:
+		_ring_tick = tick
+		_ring.clear()
+		var hero: Vector2 = world.player.global_position
+		var reach := float(Packs.rules()["ring"]["reachTiles"]) * MapView.TILE
+		var hunters: Array[Node] = []
+		var at: Array[Vector2] = []
+		for mob in get_tree().get_nodes_in_group("mobs"):
+			if mob.in_ring() and mob.global_position.distance_to(hero) <= reach:
+				hunters.append(mob)
+				at.append(mob.global_position)
+		if hunters.size() > 1:
+			var spots := Packs.ring(hero, at)
+			for index in hunters.size():
+				_ring[hunters[index]] = spots[index] if Packs.walks_straight(world.map, hero, spots[index]) else hero
+	return _ring.get(enemy, Vector2.INF)
 
 
 ## A boss or a named monster (PIX-156): the boss's music plays.

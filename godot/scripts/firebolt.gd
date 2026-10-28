@@ -1,3 +1,4 @@
+class_name Firebolt
 extends Node2D
 ## areas: combat field
 ## A fireborn elite's firebolt (PIX-155): flies straight, burns the hero it
@@ -5,6 +6,9 @@ extends Node2D
 
 const TILE := 16.0
 const RANGE := 8.0 * TILE
+## It burns a hero whose chest it passes this close to (the width of the way
+## an elite marks for it: elite_brain.gd).
+const REACH := 9.0
 
 var world: Node2D
 var caster: Dictionary
@@ -36,7 +40,7 @@ func _physics_process(delta: float) -> void:
 	position += step
 	flown += step.length()
 	var player: CharacterBody2D = world.player
-	if not player.dead and position.distance_to(player.global_position + Vector2(0, -6)) < 9.0:
+	if not player.dead and position.distance_to(player.global_position + Vector2(0, -6)) < REACH:
 		var damage := roundi(Bestiary.monster_attack_damage(caster, GameState.hero, GameState.pack, GameState.roll) * power)
 		player.take_hit(damage, position, caster.get("inflicts"))
 		queue_free()

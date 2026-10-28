@@ -44,9 +44,11 @@ func test_steps_are_soft_and_alternate() -> void:
 	assert_eq(first.volume_db, Sound.STEP_DB)
 	Sound._sfx_at.clear()
 	Sound.play("step")
-	var pitches: Array = _playing("step").map(func(voice: AudioStreamPlayer) -> float: return voice.pitch_scale)
-	assert_eq(pitches.size(), 2)
-	assert_ne(pitches[0], pitches[1], "left foot, right foot")
+	# The first step is short and may have finished on a slow runner, so look only for the new voice.
+	var others: Array = _playing("step").filter(func(voice: AudioStreamPlayer) -> bool: return voice != first)
+	assert_eq(others.size(), 1, "a second voice")
+	if not others.is_empty():
+		assert_ne(others[0].pitch_scale, first_pitch, "left foot, right foot")
 	assert_true(Sound.STEP_PITCHES.any(func(pitch: float) -> bool: return is_equal_approx(pitch, first_pitch)), "one of the two feet")
 
 

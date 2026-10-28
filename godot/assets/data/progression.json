@@ -1778,7 +1778,7 @@
     }
   },
   "bells": {
-    "about": "PIX-253 step 9, chapter 7: the Night of Bells, played on the town map. Arriving home with the run home next starts it (Bells.due); its beats are the chapter's `bells` steps: the five lanterns on the square, then the embers (imps, as on the Night of Ash: Bram's imps count them) and the roofs (the well's water, or the fountain's where it stands), then Fafnyr held on the square until the sky turns (`fafnyr`: his numbers for the night; he stands down at dawn, `dawnSeconds` of holding the square, or at his `yieldsAt` share). The beat is never saved (ProgressionState.bells): a save made in the night plays it again from its start. The townsfolk out that night and their jobs are `jobs`, each only where its person lives in Pixelheim (a settler home, a townsperson the town has grown for); `job` says what it does (bell: a stun every `every` seconds; arrows and cheese: blows every `every` seconds; heal: whole again at their tent, at most every `every` seconds; shelter: whole again for a word; song: Loras's crit for the fight; lamps, goose, watch: words only). At dawn the scenes `dawn` and `collar` play (story.json), the collar's id goes in the story ledger (the night over for good), Fafnyr's scale goes in the fountain (the project built), and the day begins.",
+    "about": "PIX-253 step 9, chapter 7: the Night of Bells, played on the town map. Arriving home with the run home next starts it (Bells.due); its beats are the chapter's `bells` steps: the five lanterns on the square, then the embers (imps, as on the Night of Ash: Bram's imps count them) and the roofs (the well's water, or the fountain's where it stands), then Fafnyr held on the square until the sky turns (`fafnyr`: his numbers for the night; he stands down at dawn, `dawnSeconds` of holding the square, or at his `yieldsAt` share). The beat is never saved (ProgressionState.bells): a save made in the night plays it again from its start. The townsfolk out that night and their jobs are `jobs`, each only where its person lives in Pixelheim (a settler home, a townsperson the town has grown for); `job` says what it does (bell: a stun every `every` seconds; arrows and cheese: blows every `every` seconds; heal: whole again at their tent, at most every `every` seconds; shelter: whole again for a word, and with `every` and `mend` a bowl of `mend` health passed across the square every `every` seconds to a hero holding it, PIX-377, so a mage's few hit points last the night as a warrior's many do; song: Loras's crit for the fight; lamps, goose, watch: words only). At dawn the scenes `dawn` and `collar` play (story.json), the collar's id goes in the story ledger (the night over for good), Fafnyr's scale goes in the fountain (the project built), and the day begins.",
     "collar": "bells_collar",
     "dawnScene": "bells_dawn",
     "fountain": "fountain",
@@ -1880,6 +1880,9 @@
         "who": "innkeeper",
         "job": "shelter",
         "at": [49, 11],
+        "every": 8,
+        "mend": 60,
+        "log": "Bowls of Sela's stew come hand to hand across the square to whoever holds it.",
         "said": "Sela sits you on the bench by the door and puts a bowl in your hands. Whole again. Out you go.",
         "lines": [
           "The inn's a shelter tonight: a bench, a bowl, five minutes. Then back out there.",

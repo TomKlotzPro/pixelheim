@@ -69,14 +69,19 @@ func _try(move: Dictionary) -> bool:
 			_tell(move, Telegraph.circle(at, float(move["radius"]) * TILE), "")
 		"guard":
 			_guard(move)
-		"firebolt":
-			_flash(move, func() -> void: _bolt(move, (hero - enemy.global_position).normalized()))
-		"firefan":
+		"firebolt", "firefan":
+			# Each bolt's way is marked on the ground while it is told
+			# (PIX-377: Cinderjaw's fan flew unmarked, and a hero who
+			# dodged was burned as often as one who stood).
+			var ahead := (hero - at).normalized()
+			var count := int(move.get("count", 1))
+			var ways: Array[Vector2] = []
+			for i in count:
+				ways.append(ahead.rotated(float(move.get("spread", 0.0)) * (i - (count - 1) / 2.0)))
+				Telegraph.mark(world, Telegraph.band(at, at + ways[i], Firebolt.RANGE, Firebolt.REACH * 2.0), float(move["tell"]), Callable(), i == 0)
 			_flash(move, func() -> void:
-				var ahead := (hero - enemy.global_position).normalized()
-				var count := int(move["count"])
-				for i in count:
-					_bolt(move, ahead.rotated(float(move["spread"]) * (i - (count - 1) / 2.0)))
+				for way in ways:
+					_bolt(move, way)
 			)
 		"grasp", "boulder":
 			_tell(move, Telegraph.circle(hero, float(move["radius"]) * TILE), "")
@@ -149,7 +154,7 @@ func _flash(move: Dictionary, then: Callable) -> void:
 ## A bolt of fire flying `heading` from the caster; a move's "tint" turns
 ## the flame (Rimefang's frost, PIX-169).
 func _bolt(move: Dictionary, heading: Vector2) -> void:
-	var bolt := preload("res://scripts/firebolt.gd").new()
+	var bolt := Firebolt.new()
 	if move.has("tint"):
 		var tint: Array = move["tint"]
 		bolt.modulate = Color(float(tint[0]), float(tint[1]), float(tint[2]))
