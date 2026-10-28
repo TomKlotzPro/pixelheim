@@ -4,9 +4,11 @@ class_name RuinArt
 ## Shade's Puny Dungeon wall tops and faces (CC0) in each look's stone, grown
 ## over the look's way or knocked about on one side, then the ground at their
 ## foot - the shadow they cast, rubble, a tuft in a crack - and the plinth
-## the shrine's stone knight stands on. His stone and our own pixels in his
-## dungeon palette: the same with or without the paid pack. Every tile is
-## made with the tileset (a tile made later redraws every layer on it).
+## the shrine's stone knight stands on. The walls still standing in the open
+## (StoneWalls, PIX-386) are built of the same stone, whole, a fort's with
+## battlements. His stone and our own pixels in his dungeon palette: the
+## same with or without the paid pack. Every tile is made with the tileset
+## (a tile made later redraws every layer on it).
 
 const TILE := 16
 const COLUMNS := 16
@@ -57,7 +59,34 @@ const MOUNDS_AT := WALLS + 4 * SHADOWS * LITTER
 const MOUNDS := 4
 ## How many stones each heap is.
 const HEAPED := [5, 4, 3, 2]
-const COUNT := MOUNDS_AT + 4 * MOUNDS
+## A standing wall's battlements (StoneWalls, PIX-386): which sides of its
+## top are lined with merlons.
+const BATTLED_N := 1
+const BATTLED_W := 2
+const BATTLED_E := 4
+## Every battled shape a standing wall takes: x its base (in BASES), y its
+## battlements: a run's north end (its north and its outer side), down a run
+## (its outer side), a face across (along its top). Unbattled, a standing
+## wall is a ruin's PLAIN or GROWN piece.
+const SHAPES := [
+	Vector2i(0, 3), Vector2i(0, 5), Vector2i(1, 1), Vector2i(1, 3), Vector2i(2, 1), Vector2i(3, 1), Vector2i(3, 5),
+	Vector2i(4, 2), Vector2i(4, 4), Vector2i(5, 2), Vector2i(7, 4),
+	Vector2i(8, 1), Vector2i(9, 1), Vector2i(10, 1), Vector2i(11, 1),
+]
+## A standing wall's weathering, the ruins' first two: PLAIN or GROWN.
+const STANDING_VARIANTS := 2
+const STANDING_AT := MOUNDS_AT + 4 * MOUNDS
+## The merlons: a crenel this wide every MERLON_EVERY pixels from
+## CRENEL_FROM (so a run's meet the next cell's), cut this deep into a
+## face's top, and into a top's sides.
+const MERLON_EVERY := 8
+const CRENEL_FROM := 5
+const CRENEL := 3
+const CRENEL_DEPTH := 3
+const CRENEL_SIDE := 2
+## SHAPES.size(), as a constant (test_stone_walls holds them together).
+const SHAPE_COUNT := 15
+const COUNT := STANDING_AT + 4 * SHAPE_COUNT * STANDING_VARIANTS
 
 ## The shadow a wall casts south and east (the light from the north-west):
 ## its alpha a pixel row (column) at a time from the wall's foot.
@@ -118,6 +147,11 @@ static func mound(look: int, variant: int) -> int:
 	return MOUNDS_AT + look * MOUNDS + variant
 
 
+## A standing wall's tile: `look`, `shape` (in SHAPES), `variant`.
+static func standing(look: int, shape: int, variant: int) -> int:
+	return STANDING_AT + (look * SHAPES.size() + shape) * STANDING_VARIANTS + variant
+
+
 static func coords(tile: int) -> Vector2i:
 	return Vector2i(tile % COLUMNS, tile / COLUMNS)
 
@@ -175,6 +209,12 @@ static func atlas() -> Image:
 					_chip(piece, dice, variant, STONE[name])
 					_grow(piece, dice, GROWTH[name], 1)
 				_atlas.blit_rect(piece, Rect2i(0, 0, TILE, TILE), coords(wall(look, base, variant)) * TILE)
+				# The same stone standing with its battlements.
+				for shape in SHAPES.size():
+					if variant < STANDING_VARIANTS and SHAPES[shape].x == base:
+						var battled := piece.duplicate() as Image
+						_battle(battled, SHAPES[shape].y, STONE[name])
+						_atlas.blit_rect(battled, Rect2i(0, 0, TILE, TILE), coords(standing(look, shape, variant)) * TILE)
 		for shadow in SHADOWS:
 			for litter in LITTER:
 				var dice := RandomNumberGenerator.new()
@@ -185,6 +225,29 @@ static func atlas() -> Image:
 			dice.seed = hash([name, variant, "mound"])
 			_atlas.blit_rect(_mound(name, variant, dice), Rect2i(0, 0, TILE, TILE), coords(mound(look, variant)) * TILE)
 	return _atlas
+
+
+## Merlons along the `battled` sides of a wall's top: crenels cut out (the
+## ground shows through), the stone round each outlined as Shade outlines.
+static func _battle(image: Image, battled: int, tint: Color) -> void:
+	var cut := {}
+	for at in range(CRENEL_FROM, TILE, MERLON_EVERY):
+		for i in CRENEL:
+			for d in CRENEL_DEPTH:
+				if battled & BATTLED_N:
+					cut[Vector2i(at + i, d)] = true
+				if d < CRENEL_SIDE and battled & BATTLED_W:
+					cut[Vector2i(d, at + i)] = true
+				if d < CRENEL_SIDE and battled & BATTLED_E:
+					cut[Vector2i(TILE - 1 - d, at + i)] = true
+	for pixel: Vector2i in cut:
+		image.set_pixelv(pixel, Color(0, 0, 0, 0))
+	var edge := Color(INKS["B"] * tint, 1.0)
+	for pixel: Vector2i in cut:
+		for step: Vector2i in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
+			var next := pixel + step
+			if Rect2i(0, 0, TILE, TILE).has_point(next) and not cut.has(next) and image.get_pixelv(next).a > 0.0:
+				image.set_pixelv(next, edge)
 
 
 ## A heap of fallen stones filling a cell (it still blocks): a dark bed
