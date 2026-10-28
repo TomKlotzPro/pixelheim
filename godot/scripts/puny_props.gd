@@ -70,10 +70,12 @@ static func available() -> bool:
 ##   "frames", "foot": Rect2 (no size: walk through), "covers": [cells]}],
 ##  "flat": {cell: tile} (flowers, drawn on the ground under everyone),
 ##  "drawn": {cell: true} (web prop cells these replace)}.
-## Without the pack only the lamps, drawn in code (LampArt, PIX-311).
+## Without the pack only the lamps, drawn in code (LampArt, PIX-311), and
+## the shrine's knight, from the CC0 dungeon sheet (PIX-381: a ruin's floor
+## had a hole of bright grass where he stands).
 static func compose(grid: Dictionary) -> Dictionary:
 	if not available():
-		var lamps: Array = plan(grid)["props"].filter(func(prop: Dictionary) -> bool: return prop["kind"] == "lamp")
+		var lamps: Array = plan(grid)["props"].filter(func(prop: Dictionary) -> bool: return prop["kind"] in ["lamp", "shrine"])
 		var drawn := {}
 		for lamp: Dictionary in lamps:
 			drawn[lamp["cell"]] = true

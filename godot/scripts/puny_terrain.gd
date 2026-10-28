@@ -522,7 +522,9 @@ static func tint_rows(image: Image, grid: Dictionary, regions: Dictionary, from:
 static func toned_as(tile: String, region: String) -> String:
 	if tile == "path" and REGION_PATHS.has(region):
 		return REGION_PATHS[region]
-	if tile == "grass" and REGION_GRASS.has(region):
+	# A wall stands on its region's grass (PIX-381: between a ruin's fallen
+	# stones in the mire showed Shade's bright lawn).
+	if (tile == "grass" or tile == "wall") and REGION_GRASS.has(region):
 		return REGION_GRASS[region]
 	if not TINTS.has(tile) and REGION_TINTS.has(region):
 		return REGION_TINTS[region]

@@ -4309,6 +4309,10 @@ msgid "Old Pell comes home with his canary and takes the room above Hilda's forg
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Old Stones"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Old Wenna comes home with you: she moves into Sela's inn and puts Tam's stew back on the menu, so the inn's rest lasts ten fights longer"
 msgstr ""
 
@@ -6110,6 +6114,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The north pays its way: Frostgate, the ice cave and Greyhold's foes now carry about twice the gold, and the Mirefen's mimics a little less"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The old shrine in the Mirefen and the courtyard in the Deepwood are real ruins now: low broken walls of grey stone with moss, cracks and fallen heaps, rubble at their feet and worn slabs inside, and the stone knight stands on his plinth again"
 msgstr ""
 
 #: assets/data/changelog.json
