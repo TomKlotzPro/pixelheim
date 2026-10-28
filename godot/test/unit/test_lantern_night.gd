@@ -4,6 +4,25 @@ extends GutTest
 ## Reach in one pass: once a night, kept in the save's festival, skippable.
 
 const DAY := LanternNight.NIGHT
+const GameStateScript := preload("res://scripts/state/game_state.gd")
+
+
+## The world as the watch asks it (LanternPass.watch): a map, the hero's
+## cell, and the map drawn again round them.
+class FakeWorld extends Node:
+	var harness := false
+	var map := MapData.new()
+	var player_cell := Vector2i(43, 27)
+	## Each drawing: the map, where the hero stands, whether the festival's on.
+	var drawn: Array = []
+
+	func load_map(id: String) -> MapData:
+		var next := MapData.new()
+		next.id = id
+		return next
+
+	func enter_map(next: MapData, at: Vector2i) -> void:
+		drawn.append([next.id, at, GameState.holdings.festival_on()])
 
 
 func _progression(ended := true) -> ProgressionState:
@@ -121,3 +140,48 @@ func test_esc_skips_it_every_lamp_lit_at_once_and_the_night_flown_once() -> void
 	assert_eq(moment.lit, places.size())
 	moment.finish()
 	assert_eq(moment.lit, places.size(), "over once")
+
+
+## PIX-367: begun with the hero in town, its stalls went up only the next
+## time the town was drawn; now the town is drawn again round the hero as it
+## begins, as an age's festival's is once the board shuts.
+func test_begun_with_the_hero_in_town_its_stalls_go_up_round_them() -> void:
+	var kept: Array = [GameState.progression, GameState.settlement, GameState.world.steps]
+	GameState.progression = _progression()
+	GameState.settlement = SettlementState.new()
+	GameState.world.steps = DAY * DayNight.DAY_CYCLE_STEPS
+	var world: FakeWorld = autofree(FakeWorld.new())
+	world.map.id = "town"
+	LanternPass.watch(world)
+	LanternPass.watch(world)
+	GameState.progression = kept[0]
+	GameState.settlement = kept[1]
+	GameState.world.steps = kept[2]
+	assert_eq(world.drawn, [["town", Vector2i(43, 27), true]], "drawn again where the hero stands, the festival on, once")
+
+
+## PIX-367: an age finished on Lantern Night replaced the night's record, so
+## the lamps didn't wait and Fafnyr didn't fly; now the town has both, the
+## age's festival day and the night's pass, in the one record.
+func test_an_age_finished_on_lantern_night_keeps_the_night() -> void:
+	var state: Node = autofree(GameStateScript.new())
+	state.new_game("Robin", "warrior")
+	state.progression = _progression()
+	var town: SettlementState = state.settlement
+	var evening := (DAY + 0.4) * DayNight.DAY_CYCLE_STEPS
+	state.world.steps = evening
+	LanternNight.begin(town, DAY, 1)
+	state.holdings.start_festival(2)
+	assert_true(LanternNight.waits(state.progression, town, DAY), "the lamps still wait for him")
+	assert_false(LanternNight.begins(state.progression, town, DAY), "the night isn't begun again")
+	assert_eq([int(town.festival["until"]), town.festival["age"]], [int(evening) + DayNight.DAY_CYCLE_STEPS, 2], "the age's festival day")
+	LanternNight.fly(town, DAY, 2)
+	state.holdings.start_festival(3)
+	assert_true(LanternNight.flown(town, DAY), "an age after his pass: he flew once")
+	# The age first, the night begun after it: the age's day is kept.
+	var other: SettlementState = SettlementState.new()
+	state.settlement = other
+	state.holdings.start_festival(2)
+	LanternNight.begin(other, DAY, 2)
+	assert_eq(int(other.festival["until"]), int(evening) + DayNight.DAY_CYCLE_STEPS, "the age's day, past the night's morning")
+	assert_true(LanternNight.waits(state.progression, other, DAY))

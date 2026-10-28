@@ -9,3 +9,6 @@ lantern-waits | --map overworld --routes saltmere:6 --built waystation_saltmere 
 lantern-flies | --map overworld --routes saltmere:6 --built waystation_saltmere --lit saltmere:9 --lantern fly --at 19,50 night --wait 9 | lamps=saltmere:sea_glass:6:lit lantern=flown open=none | travel field night story
 lantern-skip | --map overworld --routes saltmere:6 --built waystation_saltmere --lit saltmere:9 --lantern fly --at 19,50 night --keys esc | lamps=saltmere:sea_glass:6:lit lantern=flown open=none | travel field night story
 lantern-still | --map overworld --routes saltmere:6 --built waystation_saltmere --lit saltmere:9 --lantern fly still --at 19,50 night | lamps=saltmere:sea_glass:6:lit lantern=waiting scene=lantern_night | travel field night story
+# Begun with the hero in town (PIX-367): the town drawn again round them,
+# its stalls up and the barker at his ring toss.
+lantern-town | --map town --lantern fly --at 43,27 --keys w,e,e,e | map=town open=ring_toss_screen | town screen story
