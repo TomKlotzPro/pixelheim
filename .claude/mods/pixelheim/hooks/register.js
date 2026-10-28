@@ -179,8 +179,6 @@ export function register(on) {
     return { result: summary() + (week !== undefined && week >= cap ? ' - over the cap: ask Tom before more work.' : '') }
   })
 
-  // Tom is the sole author: no Co-Authored-By trailer, no "Generated with" footer.
-  on('attribution.text', { kind: ['commit', 'pr'] }, async () => ({ text: '' }))
 
   on('tool.call', { tool: 'Bash' }, async ($, e, next) => {
     if (SLOT_RUN.test(e.command)) return { deny: 'Never pass --slot to the game: it writes real saves. Use the harness without it.' }
