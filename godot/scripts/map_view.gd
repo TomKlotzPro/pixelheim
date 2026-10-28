@@ -422,12 +422,19 @@ func _plan_props() -> void:
 ## any day's patches may grow.
 func _plan_hamlet() -> void:
 	hamlet = {"look": "", "pieces": [], "blocks": []}
-	if Hamlet.look_of(data.id) == "":
+	# Pixelheim's yards and square by its age (PIX-382), laid as a
+	# settlement's dressing is.
+	var yards := Yards.plan(data, buildings["pieces"], GameState.town_tier(), PunyTown.available()) if data.id == "town" else ([] as Array[Dictionary])
+	if Hamlet.look_of(data.id) == "" and yards.is_empty():
 		return
 	var kept := Hamlet.kept_on(data, patch_decks)
+	if not yards.is_empty():
+		kept.merge(Yards.kept(data))
 	kept[arrival] = true
 	# What its hub has grown as its post road filled (PIX-324).
-	hamlet = Hamlet.plan(data, kept, Hubs.dressing(data.id, GameState.post))
+	var grown := Hubs.dressing(data.id, GameState.post)
+	grown.append_array(yards)
+	hamlet = Hamlet.plan(data, kept, grown)
 	for cell: Vector2i in hamlet["blocks"]:
 		data.covered[cell] = true
 

@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.296.0",
+      "date": "2026-10-28",
+      "codename": "Lived In",
+      "notes": [
+        "Pixelheim looks lived in, and more so with each age: woodpiles, kegs and window boxes at the Hamlet; awninged stalls, a flowering hedge, washing lines and kitchen gardens at the Village; benches, carts and lanterns at the Town; flowers at every window and bunting with little lanterns over the square at the City",
+        "Tooltips and scrollbars now wear the game's parchment and brass, and the mouse is a little brass pointer that turns into a hand over buttons"
+      ]
+    },
+    {
       "version": "0.295.0",
       "date": "2026-10-28",
       "codename": "Old Stones",

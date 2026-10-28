@@ -111,3 +111,4 @@ water | the inland water nearest the hero, within six cells: its tone and the wa
 wayout | on a dungeon's bottom floor: its ways straight out to its way in, by cell, as they opened - the door, then one where its boss fell - or none (PIX-292)
 waystations | the waystations standing on this map, by their road's place, each lit when its ember lamp burns (at night) or cold: saltmere:lit (PIX-322)
 works | while the town's ledger is open: the works out on the roads it offers, by id: waystation_saltmere (PIX-322)
+yards | on the town (with the paid pack): its age and its yards and square counted by how each piece stands: 4:flat15,line7,stand61,wall31 (PIX-382)

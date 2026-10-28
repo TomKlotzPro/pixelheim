@@ -75,6 +75,131 @@ static func setup() -> void:
 		root.theme = Theme.new()
 	root.theme.default_font = body_font()
 	root.theme.default_font_size = TEXT
+	# Tooltips and scrollbars (PIX-384) go in the engine's own theme: the
+	# root's stops at a CanvasLayer, and every screen is one.
+	var engine := ThemeDB.get_default_theme()
+	# Godot's type names, spelt so tools/i18n.py doesn't take them for words.
+	var tip := "tooltip_label".to_pascal_case()
+	engine.set_stylebox("panel", "tooltip_panel".to_pascal_case(), tooltip())
+	engine.set_font("font", tip, body_font())
+	engine.set_font_size("font_size", tip, TEXT)
+	engine.set_color("font_color", tip, INK)
+	engine.set_color("font_shadow_color", tip, Color(0, 0, 0, 0))
+	# A grabber long enough to catch on the longest list (the changelog's).
+	for bar: String in ["VScrollBar", "HScrollBar"]:
+		engine.set_stylebox("scroll", bar, _rail(WOOD, WOOD_DARK))
+		engine.set_stylebox("scroll_focus", bar, _rail(WOOD, WOOD_DARK))
+		engine.set_stylebox("grabber", bar, _rail(BRASS_LIGHT, BRASS, 24))
+		engine.set_stylebox("grabber_highlight", bar, _rail(KEY_LIGHT, BRASS_LIGHT, 24))
+		engine.set_stylebox("grabber_pressed", bar, _rail(BRASS, BRASS_DARK, 24))
+	Input.set_custom_mouse_cursor(cursor(), Input.CURSOR_ARROW, ARROW_TIP)
+	Input.set_custom_mouse_cursor(cursor(true), Input.CURSOR_POINTING_HAND, HAND_TIP)
+
+
+## A tooltip (PIX-384): a slip of parchment in a brass rim, lit top and
+## left, and the dark outline; its words in ink.
+static func tooltip() -> StyleBoxTexture:
+	if not _frames.has("tooltip"):
+		var art := Image.create(8, 8, false, Image.FORMAT_RGBA8)
+		art.fill(WINDOW)
+		for i in range(1, 7):
+			art.set_pixel(i, 1, BRASS_LIGHT)
+			art.set_pixel(1, i, BRASS_LIGHT)
+			art.set_pixel(i, 6, BRASS_DARK)
+			art.set_pixel(6, i, BRASS_DARK)
+		_ring(art, 0, NIGHT, true)
+		_frames["tooltip"] = _texture(art)
+	var style := _style(_frames["tooltip"], 2, 8)
+	style.content_margin_top = 4
+	style.content_margin_bottom = 6
+	return style
+
+
+## A scrollbar's track or grabber (PIX-384), four art pixels across (its
+## content margins make it 8 on the canvas): a `lit` column and a `face`
+## one in the dark outline, at least `length` long. Slim, so the rows
+## beside it keep their room (Layout.spills).
+static func _rail(lit: Color, face: Color, length := 8) -> StyleBoxTexture:
+	var key := "rail_%s_%s" % [lit.to_html(), face.to_html()]
+	if not _frames.has(key):
+		var art := Image.create(4, 4, false, Image.FORMAT_RGBA8)
+		art.fill(face)
+		art.set_pixel(1, 1, lit)
+		art.set_pixel(1, 2, lit)
+		_ring(art, 0, NIGHT, true)
+		_frames[key] = _texture(art)
+	var style := _style(_frames[key], 1, 0)
+	style.content_margin_top = length / 2.0
+	style.content_margin_bottom = length / 2.0
+	return style
+
+
+## The mouse (PIX-384), pixel art like the marks, shown at UI_SCALE: a brass
+## arrow, and a brass hand over a button, in the dark outline. Rows of
+## letters: o the outline, x brass (lit on its left, shaded on its right and
+## underside), . clear.
+const ARROW := [
+	"o.........",
+	"oo........",
+	"oxo.......",
+	"oxxo......",
+	"oxxxo.....",
+	"oxxxxo....",
+	"oxxxxxo...",
+	"oxxxxxxo..",
+	"oxxxxxxxo.",
+	"oxxxxxoooo",
+	"oxxoxxo...",
+	"oxo.oxxo..",
+	"oo..oxxo..",
+	".....oxxo.",
+	".....oxxo.",
+	"......oo..",
+]
+const HAND := [
+	".....oo.......",
+	"....oxxo......",
+	"....oxxo......",
+	"....oxxooo....",
+	"....oxxoxxooo.",
+	"....oxxoxxoxxo",
+	".oo.oxxoxxoxxo",
+	"oxxooxxxxxxxxo",
+	"oxxxoxxxxxxxxo",
+	".oxxxxxxxxxxxo",
+	".oxxxxxxxxxxxo",
+	"..oxxxxxxxxxo.",
+	"..oxxxxxxxxxo.",
+	"...ooooooooo..",
+]
+## Where each clicks, in canvas pixels on its art: the arrow's point, the
+## middle of the fingertip.
+const ARROW_TIP := Vector2i(0, 0)
+const HAND_TIP := Vector2i(11, 0)
+
+
+## The arrow, or the `hand`, as Input.set_custom_mouse_cursor takes it: at
+## most 32 pixels a side, which every browser shows. An Image, not a
+## texture: the display server keeps it past the renderer's shutdown, and a
+## texture there leaked at exit.
+static func cursor(hand := false) -> Image:
+	var key := "cursor_%s" % hand
+	if not _frames.has(key):
+		var rows: Array = HAND if hand else ARROW
+		var brass := func(x: int, y: int) -> bool:
+			return y >= 0 and y < rows.size() and x >= 0 and x < String(rows[y]).length() and rows[y][x] == "x"
+		var art := Image.create(String(rows[0]).length(), rows.size(), false, Image.FORMAT_RGBA8)
+		art.fill(Color(0, 0, 0, 0))
+		for y in rows.size():
+			for x in String(rows[y]).length():
+				if rows[y][x] == "o":
+					art.set_pixel(x, y, NIGHT)
+				elif rows[y][x] == "x":
+					var shaded: bool = not brass.call(x + 1, y) or not brass.call(x, y + 1)
+					art.set_pixel(x, y, BRASS_LIGHT if not brass.call(x - 1, y) else BRASS_DARK if shaded else BRASS)
+		art.resize(art.get_width() * UI_SCALE, art.get_height() * UI_SCALE, Image.INTERPOLATE_NEAREST)
+		_frames[key] = art
+	return _frames[key]
 
 
 static func _pixel_font(font: FontFile, pixels: int) -> FontFile:
@@ -271,6 +396,7 @@ static func button(text: String, action: Callable, key := "") -> Button:
 	var node := Button.new()
 	node.text = text
 	node.focus_mode = Control.FOCUS_NONE
+	node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	sized(node, TEXT)
 	node.add_theme_color_override("font_color", CREAM)
 	node.add_theme_color_override("font_hover_color", GOLD)

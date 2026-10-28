@@ -4609,6 +4609,10 @@ msgid "Pixelheim is an open-world game now: you live on the map, not in menus"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Pixelheim looks lived in, and more so with each age: woodpiles, kegs and window boxes at the Hamlet; awninged stalls, a flowering hedge, washing lines and kitchen gardens at the Village; benches, carts and lanterns at the Town; flowers at every window and bunting with little lanterns over the square at the City"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Pixelheim town doubled too: wide streets, a proper market square, and room to grow for what's coming"
 msgstr ""
 
@@ -6422,6 +6426,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Told True"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Tooltips and scrollbars now wear the game's parchment and brass, and the mouse is a little brass pointer that turns into a hand over buttons"
 msgstr ""
 
 #: assets/data/changelog.json

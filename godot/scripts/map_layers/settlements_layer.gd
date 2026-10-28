@@ -28,6 +28,9 @@ const FORGE_REACH := 52.0
 const VILLAGE_RUIN_SMOKE := 0.4
 ## Its lamps lit one to each this many cells about (PIX-311).
 const VILLAGE_LAMPS_APART := 2
+## The halo round each of the bunting's lanterns at night (PIX-382).
+const BUNTING_HALO := 5
+const BUNTING_HALO_PEAK := 0.45
 
 
 ## The settlement's dressing, then the routes' pieces.
@@ -132,10 +135,13 @@ static func _decor_hamlet(view: MapView) -> void:
 		var cell: Vector2i = piece["cell"]
 		match String(piece["kind"]):
 			"line":
-				var line := Sprite2D.new()
-				line.texture = HamletArt.washing(int(piece["line"]))
-				line.centered = false
-				stand_on(view, line, cell, Vector2.ZERO)
+				if piece.get("art", "") == "bunting":
+					_add_bunting(view, cell, int(piece["line"]), int(piece.get("high", 0)))
+				else:
+					var line := Sprite2D.new()
+					line.texture = HamletArt.washing(int(piece["line"]))
+					line.centered = false
+					stand_on(view, line, cell, Vector2.ZERO)
 			"glow":
 				_add_door_glow(view, cell)
 			"flat":
@@ -153,11 +159,14 @@ static func _decor_hamlet(view: MapView) -> void:
 				boat.play()
 				stand_on(view, boat, cell, Vector2(-HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
 			_:
-				var art: String = piece["art"]
+				var art: String = piece.get("art", "")
 				var still := Sprite2D.new()
-				still.texture = HamletArt.texture(art)
 				still.centered = false
-				var root := stand_on(view, still, cell, Vector2(0, TILE - HamletArt.size(art).y))
+				# One of the pack's own stands a tile high (PIX-382, the town's
+				# bushes, sacks and scarecrows); ours as tall as it's drawn.
+				still.texture = PunyProps.texture(piece["tile"]) if piece.has("tile") else HamletArt.texture(art)
+				var tall := TILE if piece.has("tile") else HamletArt.size(art).y
+				var root := stand_on(view, still, cell, Vector2(0, TILE - tall))
 				if piece["kind"] == "stand":
 					for taken: Vector2i in piece["cells"]:
 						block(view, taken)
@@ -167,7 +176,7 @@ static func _decor_hamlet(view: MapView) -> void:
 						# Its chimney's mouth, in its pixels (Gunnar's lodge, PIX-324).
 						_add_smoke_thread(view, Vector2(cell * TILE) + Vector2(piece["smoke"][0], TILE - HamletArt.size(art).y + int(piece["smoke"][1])))
 				elif art == "lantern":
-					_add_lantern_light(view, root, cell)
+					_add_lantern_light(view, root, cell, not piece.get("dim", false))
 				elif art == "forge_stack":
 					# The fire's glow in its mouth, untouched by the dark.
 					var fire := Sprite2D.new()
@@ -183,6 +192,30 @@ static func _decor_hamlet(view: MapView) -> void:
 						embers.position = mouth
 						embers.z_index = 6
 						view.props.add_child(embers)
+
+
+## The bunting over the City's square (PIX-382, Yards): from the lamp half
+## a cell before `cell` to the one half a cell past its last, `high` rows
+## up from its row and sorted on it; at night its lanterns lit (the dark
+## doesn't touch them), a small halo round each and no light of their own:
+## the square's lamps light it.
+static func _add_bunting(view: MapView, cell: Vector2i, cells: int, high: int) -> void:
+	var drawn := HamletArt.bunting(cells)
+	var at := Vector2(-TILE / 2.0, -TILE - high * TILE)
+	var day := Sprite2D.new()
+	day.texture = drawn["day"]
+	day.centered = false
+	var root := stand_on(view, day, cell, at)
+	var lit := Sprite2D.new()
+	lit.texture = drawn["lit"]
+	lit.centered = false
+	lit.material = Lights.unshaded()
+	lit.position = day.position
+	lit.visible = false
+	root.add_child(lit)
+	view.night_glows.append(lit)
+	for glass: Vector2 in drawn["lights"]:
+		view._add_halo(Vector2(cell * TILE) + at + glass, BUNTING_HALO, BUNTING_HALO_PEAK)
 
 
 ## What the Post's routes put up (PIX-322, Routes.plan), standing among the
@@ -280,8 +313,10 @@ static func _add_hut_window(view: MapView, root: Node2D) -> void:
 
 
 ## A miner's lantern by a door lit at night (PIX-313): its glass (the dark
-## doesn't touch it), a soft halo and its light on the ground below.
-static func _add_lantern_light(view: MapView, root: Node2D, cell: Vector2i) -> void:
+## doesn't touch it), a soft halo and its light on the ground below; one
+## among the City's lamps (PIX-382) keeps its halo alone, within the
+## lights' budget (test_night_light).
+static func _add_lantern_light(view: MapView, root: Node2D, cell: Vector2i, own_light := true) -> void:
 	var lit := Sprite2D.new()
 	lit.texture = HamletArt.texture("lantern_lit")
 	lit.centered = false
@@ -292,6 +327,8 @@ static func _add_lantern_light(view: MapView, root: Node2D, cell: Vector2i) -> v
 	view.night_glows.append(lit)
 	var at := Vector2(cell * TILE) + HamletArt.LANTERN_GLASS
 	var halo := view._add_halo(at, MapView.LAMP_HALO - 3, MapView.LAMP_HALO_PEAK)
+	if not own_light:
+		return
 	var light := Lights.make(at + Vector2(0, TILE * 0.75), LANTERN_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
 	view.props.add_child(light)
 	halo.set_meta("light", light)

@@ -285,6 +285,7 @@ func _draw_menu() -> void:
 		var button := Button.new()
 		button.text = options[index]["label"]
 		button.focus_mode = Control.FOCUS_NONE
+		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button.add_theme_font_override("font", UiStyle.logo_font())
 		button.add_theme_font_size_override("font_size", 16)
 		for state: String in ["normal", "hover", "pressed", "focus"]:

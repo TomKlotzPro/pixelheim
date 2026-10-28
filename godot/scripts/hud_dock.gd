@@ -178,6 +178,8 @@ func _skills() -> Control:
 		var slot := PanelContainer.new()
 		slot.custom_minimum_size = Vector2(SLOT, SLOT)
 		slot.mouse_filter = Control.MOUSE_FILTER_STOP
+		# Its tooltip is a window that samples as its owner does: crisp (PIX-384).
+		slot.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		slot.gui_input.connect(func(event: InputEvent) -> void:
 			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 				world.player.cast(index)

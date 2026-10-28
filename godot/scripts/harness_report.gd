@@ -418,12 +418,18 @@ func field_gate() -> String:
 func field_hamlet() -> String:
 	if world.view == null or String(world.view.hamlet.get("look", "")) == "":
 		return ""
+	return "%s:%s" % [world.view.hamlet["look"], _counted(world.view.hamlet["pieces"])]
+
+
+## A dressing's pieces counted by how each stands, in its name's order:
+## line1,moored2,stand4.
+static func _counted(pieces: Array) -> String:
 	var kinds := {}
-	for piece: Dictionary in world.view.hamlet["pieces"]:
+	for piece: Dictionary in pieces:
 		kinds[piece["kind"]] = int(kinds.get(piece["kind"], 0)) + 1
 	var names: Array = kinds.keys()
 	names.sort()
-	return "%s:%s" % [world.view.hamlet["look"], ",".join(names.map(func(kind: String) -> String: return "%s%d" % [kind, kinds[kind]]))]
+	return ",".join(names.map(func(kind: String) -> String: return "%s%d" % [kind, kinds[kind]]))
 
 
 func field_hero() -> String:
@@ -913,3 +919,9 @@ func field_works() -> String:
 					offered.append(String(row["project"]))
 			return ",".join(offered) if not offered.is_empty() else "none"
 	return ""
+
+
+func field_yards() -> String:
+	if world.map == null or world.map.id != "town" or world.view == null or world.view.hamlet["pieces"].is_empty():
+		return ""
+	return "%d:%s" % [GameState.town_tier(), _counted(world.view.hamlet["pieces"])]

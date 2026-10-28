@@ -47,6 +47,11 @@ streets-village | --map town --town-tier 2 --at 40,12 | map=town street=gravel |
 streets-town | --map town --town-tier 3 --at 40,12 | map=town street=cobbles | town
 streets-city | --map town --town-tier 4 --at 36,22 | map=town street=sandstone | town
 streets-fountain | --map town --town-tier 4 --at 39,24 | map=town street=bricks | town
+# Pixelheim's yards and square by its age (PIX-382): what each household
+# keeps by its house, the square's rims, the City's bunting lit at night;
+# with the paid pack (on Shade's CC0 art alone, none).
+yards-village | --map town --town-tier 2 --at 40,12 | map=town yards=(2:flat8,line3,stand31,wall8)? | town
+yards-city-night | --map town --town-tier 4 --at 40,28 night | map=town yards=(4:flat15,line7,stand61,wall31)? | town night
 # Out of the village through its gate and back in (PIX-248: one rampart,
 # the gate three wide between its towers): up the gate road, through the
 # middle of the gate and through its side, onto the road just past the gate
