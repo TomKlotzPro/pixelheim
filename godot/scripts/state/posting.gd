@@ -90,9 +90,8 @@ func deliver(npc_id: String) -> String:
 	var reply := Post.hand_over(owner.post, String(entry["id"]))
 	Post.stamp(owner.post, String(entry["id"]), place, today())
 	var paid: Array[String] = []
-	var tip := int(entry.get("tip", 0))
+	var tip := owner.pack.earn(int(entry.get("tip", 0)))
 	if tip > 0:
-		owner.pack.gold += tip
 		paid.append(Text.t("+%d gold") % tip)
 	var kept := Post.kept(entry)
 	if kept["gift"] != "":

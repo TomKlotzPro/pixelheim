@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.290.0",
+      "date": "2026-10-28",
+      "codename": "Worth the Gold",
+      "notes": [
+        "The City's showpieces earn their price: the Aegis of the Ash turns the first blow of every fight, the Everflask fills itself again while you sleep, and the King's Signet adds a tenth to the gold you earn",
+        "The north pays its way: Frostgate, the ice cave and Greyhold's foes now carry about twice the gold, and the Mirefen's mimics a little less"
+      ]
+    },
+    {
       "version": "0.289.0",
       "date": "2026-10-28",
       "codename": "Real Heroes",

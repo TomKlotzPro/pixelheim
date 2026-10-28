@@ -795,6 +795,8 @@ func _numbers(item_id: String, piece: Dictionary) -> String:
 		lines.append(Text.t("Scales with %s") % Text.t(Skills.ABBR.get(String(item.get("scaling", "strength")), "STR")))
 	if item.has("set"):
 		lines.append(Catalog.set_line(item["set"], int(GameState.pack.set_counts().get(item["set"], 0))))
+	if item.has("perk"):
+		lines.append(String(item["perk"]))
 	return "\n".join(lines)
 
 
@@ -944,6 +946,9 @@ static func _lines(item_id: String, instance := {}) -> Array[String]:
 	# A set piece says its set and what wearing more of it gives (PIX-166).
 	if item.has("set"):
 		lines.append(Catalog.set_line(item["set"], int(GameState.pack.set_counts().get(item["set"], 0))))
+	# A City showpiece's rule of its own (PIX-376).
+	if item.has("perk"):
+		lines.append(String(item["perk"]))
 	if item.has("restoreHp"):
 		lines.append(Text.t("Restores %d HP") % GameState.upkeep.hp_restore(item))
 	if item.has("restoreMp"):

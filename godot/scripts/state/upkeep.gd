@@ -4,7 +4,7 @@ extends RefCounted
 ## The hero's body and kit (PIX-261, out of game_state.gd): hits, heals and
 ## what comes back at rest, what the pack can carry, what is worn and how the
 ## hero is drawn in it, dropping and using items, and the inn's bed, paid for
-## or woken in after a fall. It holds nothing of its own: the hero and the
+## or woken in after a fall. It saves nothing of its own: the hero and the
 ## pack are GameState's, reached through `owner`.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
@@ -13,6 +13,12 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 ## their own (GameStateScript.new()), and a module reaching the autoload
 ## would change the real game's state from inside one. Signals are its too.
 var owner: GameStateScript
+## When the last blow came at the hero, warded or not (GameClock seconds):
+## the Aegis of the Ash's fight starts after a calm (PIX-376).
+var _last_blow_at := -INF
+
+## A blow after this long without one is a fight's first (PIX-376).
+const CALM_SECONDS := 10.0
 
 
 func _init(state: GameStateScript) -> void:
@@ -25,6 +31,14 @@ func hurt(amount: int) -> bool:
 	owner.mark_dirty()
 	owner.hp_changed.emit(owner.hero.hp, int(owner.hero.stats["maxHp"]))
 	return owner.hero.hp == 0
+
+
+## A blow comes at the hero at `now`: true when the Aegis of the Ash takes
+## it whole (PIX-376), the first of a fight, after CALM_SECONDS without one.
+func wards(now: float) -> bool:
+	var first := now - _last_blow_at >= CALM_SECONDS
+	_last_blow_at = now
+	return first and owner.pack.wears_rule("blocksFirstBlow")
 
 
 ## A heal that lands, up to the cap; returns how much took.
@@ -147,6 +161,9 @@ func use_item(item_id: String) -> Dictionary:
 	if owner.pack.items.get(item_id, 0) <= 0 or not (item.has("restoreHp") or item.has("restoreMp") or item.has("cures")):
 		return {"used": false, "text": "", "cures": ""}
 	owner.pack.remove_item(item_id)
+	# The Everflask stays in the pack, empty, till a night's sleep (PIX-376).
+	if item.has("emptiesTo"):
+		owner.pack.add_item(item["emptiesTo"])
 	var parts: Array[String] = []
 	# The Healers' Hall makes every potion stronger (PIX-180).
 	var potency := 1.0 + owner.holdings.commission_buff("potion") + owner.household.home_buff("potion")
@@ -208,8 +225,16 @@ func rest_on_bench() -> String:
 ## A night's sleep (PIX-246): the clock runs on to the next morning. The
 ## bed saves once the night has done all it does (`save_now(SLEPT)`: the
 ## quill with "Saved" under it, PIX-302 step 4).
+## An empty Everflask fills itself again overnight (PIX-376).
 func sleep_till_morning() -> void:
 	owner.world.steps = DayNight.next_morning(owner.world.steps)
+	for item_id: String in owner.pack.items.keys():
+		var full := String(Catalog.item(item_id).get("fillsTo", ""))
+		if full != "":
+			var count := int(owner.pack.items[item_id])
+			owner.pack.remove_item(item_id, count)
+			owner.pack.add_item(full, count)
+			owner.pack_changed()
 	owner.mark_dirty()
 
 
