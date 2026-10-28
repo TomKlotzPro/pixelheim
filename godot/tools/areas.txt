@@ -28,6 +28,7 @@ combat field dungeon gathering +vault*: assets/data/combat.json
 combat town title: assets/puny/characters/* assets/puny/beasts/* assets/puny/mini/*
 trade: assets/data/economy.json
 trade screen: assets/puny/icons.json assets/puny/icons/*
+none: tools/*.gd assets/puny/ui_kit.json
 story: assets/data/story.json
 story town night: shaders/fire_* assets/fire/*
 story quest rank: assets/data/progression.json

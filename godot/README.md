@@ -21,8 +21,9 @@ PIX-138). Their licences forbid redistributing the packs, so they are not in
 this repository: they live in the private `TomKlotzPro/pixelheim-assets` repo
 under `retro-rpg/shade/`. `scripts/fetch-private-art.sh`
 installs the atlas into `godot/assets/puny/medieval/` and every icon
-`icons.json` names into `godot/assets/puny/shade/` (both git-ignored) with your
-GitHub login; the deploy and the Godot CI run the same script on a checkout
+`icons.json` names into `godot/assets/puny/shade/`, and GegX's UI kit, prepared
+by `tools/ui_kit_prep.gd` and named in `assets/puny/ui_kit.json`, into
+`godot/assets/puny/gegx/` (all git-ignored) with your GitHub login; the deploy and the Godot CI run the same script on a checkout
 made with a read-only deploy key (secret `PIXELHEIM_ASSETS_KEY`). Without it
 the game runs on Shade's free art alone: the town's houses, props and paid
 icons are missing, and collision is the same.
