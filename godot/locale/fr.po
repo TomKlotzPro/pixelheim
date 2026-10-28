@@ -2633,6 +2633,10 @@ msgid "Clear Map"
 msgstr "Carte nette"
 
 #: assets/data/changelog.json
+msgid "Clear Screen"
+msgstr "Écran dégagé"
+
+#: assets/data/changelog.json
 msgid "Clear Signs"
 msgstr "Signes clairs"
 
@@ -2695,6 +2699,10 @@ msgstr "L'artisanat ! Un nouvel onglet Artisanat dans l'inventaire transforme 
 #: assets/data/changelog.json
 msgid "Crossing a threshold announces itself in the battle log: 'Beasts Slayer II'"
 msgstr "Franchir un palier s'annonce dans le journal de combat : « Tueur de Bêtes II »"
+
+#: assets/data/changelog.json
+msgid "Cutscenes now take the whole screen: signs, the dock and the rest of the HUD step aside while one plays and come back after, so nothing is cut in half by the black bars"
+msgstr "Les cinématiques prennent désormais tout l'écran : les panneaux, la barre du bas et le reste de l'interface s'effacent pendant la scène et reviennent ensuite, et plus rien n'est coupé en deux par les bandes noires"
 
 #: assets/data/changelog.json
 msgid "DAWN: the survivors gather on the square, Maren reads the Crown's answer aloud, and Pixelheim decides to rebuild - with you"
@@ -3739,6 +3747,10 @@ msgstr "Les lanternes prennent la couleur de leur région et un don : le verre
 #: assets/data/changelog.json
 msgid "Lantern Night"
 msgstr "La Nuit des Lanternes"
+
+#: assets/data/changelog.json
+msgid "Lantern Night keeps its promises: if it begins while you're in town, the stalls go up around you at once, and if an age is finished that same night, you get both the festival and Fafnyr's flight"
+msgstr "La Nuit des Lanternes tient ses promesses : si elle commence pendant que vous êtes au village, les étals se montent aussitôt autour de vous, et si une époque s'achève le même soir, vous avez à la fois la fête et le vol de Fafnyr"
 
 #: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"

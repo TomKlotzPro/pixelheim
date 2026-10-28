@@ -2633,6 +2633,10 @@ msgid "Clear Map"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Clear Screen"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Clear Signs"
 msgstr ""
 
@@ -2694,6 +2698,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Crossing a threshold announces itself in the battle log: 'Beasts Slayer II'"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Cutscenes now take the whole screen: signs, the dock and the rest of the HUD step aside while one plays and come back after, so nothing is cut in half by the black bars"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3738,6 +3746,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Lantern Night"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Lantern Night keeps its promises: if it begins while you're in town, the stalls go up around you at once, and if an age is finished that same night, you get both the festival and Fafnyr's flight"
 msgstr ""
 
 #: assets/data/changelog.json
