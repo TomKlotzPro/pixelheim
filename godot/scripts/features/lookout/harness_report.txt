@@ -1,0 +1,4 @@
+# The lookout's report field (PIX-363): `field | says`, as the core's
+# (scripts/harness_report.txt), which it joins after its head, by name; its
+# function is `field_lookout(report)` in feature.gd.
+lookout | while the view from the mountain road's lookout is open: the lamps it shows by road and kind (dark for none), then the healed cells drawn round them: saltmere:sea_glass/61 (PIX-363)

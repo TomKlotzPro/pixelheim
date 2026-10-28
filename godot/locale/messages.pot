@@ -15796,6 +15796,26 @@ msgstr ""
 msgid "blocked"
 msgstr ""
 
+#: scripts/features/lookout/lookout.gd
+msgid "By day the Reach is only ash and roads from up here. Come back after dark, when the lamps are lit."
+msgstr ""
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "%d lamps burn on the Reach."
+msgstr ""
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "No lamp burns on the Reach yet."
+msgstr ""
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "One lamp burns on the Reach."
+msgstr ""
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "The Reach by night"
+msgstr ""
+
 #: scripts/home_screen.gd
 msgid "%s: %s"
 msgstr ""

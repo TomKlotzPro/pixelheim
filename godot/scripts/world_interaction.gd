@@ -159,6 +159,9 @@ func interact() -> void:
 		Sound.play_ui("open")
 		world.messages.flash(GameState.upkeep.rest_on_bench())
 		return
+	# The lookout's spyglass on the mountain road (PIX-363, a feature: Lookout).
+	if Lookout.use(world, faced):
+		return
 	var signpost := Routes.signpost_at(world.map.id, faced, GameState.post)
 	if signpost != "":
 		world.messages.flash("%s. %s." % [Routes.fork_name(signpost, GameState.post), Routes.fork_about(signpost, GameState.post)])
@@ -678,7 +681,8 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 ## the hero wins, then a faced unopened chest, a station (PIX-234), the
 ## water from a fishing spot, a bed or the stairs down (PIX-256), a
 ## letter's answer on its table, a ledger on its desk (PIX-338), a
-## waystation's bench or post box (PIX-322); the prompt floats over them.
+## waystation's bench or post box (PIX-322), the lookout's spyglass on the
+## mountain road (PIX-363); the prompt floats over them.
 func update_prompt() -> void:
 	var beside: Dictionary = world.folk.beside()
 	if not beside.is_empty():
@@ -715,6 +719,8 @@ func _prompt_target(cell: Vector2i) -> Rect2:
 	var bench := Routes.station_with("bench", map.id, cell, GameState.settlement) != ""
 	var show: bool = (not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest)) \
 			or _fishing_here() or _station_at(cell) != "" or _bed_at(cell) or Ways.goes_down(map, cell) or map.notes.has(cell) or box or bench
+	if Lookout.at(map.id, cell):
+		return _pixels(Rect2i(cell, Vector2i.ONE)).grow_side(SIDE_TOP, Lookout.PIECE.size() - MapView.TILE)
 	if not show:
 		return Rect2()
 	var top := cell

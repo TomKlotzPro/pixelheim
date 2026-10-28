@@ -15796,6 +15796,26 @@ msgstr "Niv. %d"
 msgid "blocked"
 msgstr "paré"
 
+#: scripts/features/lookout/lookout.gd
+msgid "By day the Reach is only ash and roads from up here. Come back after dark, when the lamps are lit."
+msgstr "De jour, d'ici, la Marche n'est que cendre et chemins. Revenez à la nuit tombée, quand les lampes sont allumées."
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "%d lamps burn on the Reach."
+msgstr "%d lampes brûlent sur la Marche."
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "No lamp burns on the Reach yet."
+msgstr "Aucune lampe ne brûle encore sur la Marche."
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "One lamp burns on the Reach."
+msgstr "Une lampe brûle sur la Marche."
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "The Reach by night"
+msgstr "La Marche de nuit"
+
 #: scripts/home_screen.gd
 msgid "%s: %s"
 msgstr "%s : %s"

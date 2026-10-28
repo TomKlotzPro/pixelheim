@@ -33,6 +33,7 @@ Pixelheim is a Godot 4.7 game (`godot/`), live at the GitHub Pages root and as a
 - `tools/flows.d/<name>.txt`: its flows, as in flows.txt, read after it.
 - `test_registries` refuses a name the core or another feature already has; run `layout.py` for the new script.
 - A flag that is a step still needs its `step_<step>()` in `scripts/harness_steps/`; rules, save, wiring, strings and docs stay where they are (below).
+- No hook yet for a tick or for E: each takes one direct call in the core, `world.gd`'s once-a-second watch (PIX-362, `LanternPass.watch`) and `world_interaction.gd`'s `interact` and `_prompt_target` (PIX-363, `Lookout.use`/`Lookout.at`).
 
 A feature without a folder of its own touches, besides its own files:
 

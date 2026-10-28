@@ -1,0 +1,11 @@
+# The lookout's flows (PIX-361: a feature's flows, read after
+# tools/flows.txt as its own, scripts/features/lookout/), a line each as in
+# flows.txt.
+# The lookout on the mountain road (PIX-363): its spyglass stands by the
+# road's bend under the forge; by day E there only says to come back after
+# dark; at night it opens the Reach's page with every lit lamp in its kind's
+# colour and the ring it has healed (none lit: dark), and E or Esc closes it.
+lookout-day | --map mountain_road --routes saltmere:6,blackiron:6 --built waystation_saltmere,waystation_blackiron --lit saltmere:9,blackiron:9 --at 17,9 --walk l --keys e | map=mountain_road cell=\(17, 9\) open=none | travel night screen
+lookout-night | --map mountain_road --routes saltmere:6,blackiron:6 --built waystation_saltmere,waystation_blackiron --lit saltmere:9,blackiron:9 night --at 17,9 --walk l --keys e | map=mountain_road open=lookout_screen lookout=blackiron:ember,saltmere:sea_glass/[1-9][0-9]* | travel night screen
+lookout-dark | --map mountain_road night --at 17,9 --walk l --keys e | open=lookout_screen lookout=dark/0 | travel night screen
+lookout-close | --map mountain_road --routes saltmere:6,blackiron:6 --built waystation_saltmere,waystation_blackiron --lit saltmere:9,blackiron:9 night --at 17,9 --walk l --keys e,e | open=none | travel night screen
