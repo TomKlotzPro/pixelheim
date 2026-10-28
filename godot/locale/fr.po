@@ -5562,7 +5562,7 @@ msgstr "Le Cartographe"
 
 #: assets/data/changelog.json
 msgid "The City's showpieces earn their price: the Aegis of the Ash turns the first blow of every fight, the Everflask fills itself again while you sleep, and the King's Signet adds a tenth to the gold you earn"
-msgstr "Les trésors de la cité valent leur prix : l'Égide de la Cendre pare le premier coup de chaque combat, la Flasque éternelle se remplit pendant votre sommeil, et la Chevalière du roi ajoute un dixième à l'or que vous gagnez"
+msgstr "Les trésors de la cité valent leur prix : l'Égide des Cendres pare le premier coup de chaque combat, la Flasque éternelle se remplit pendant votre sommeil, et la Chevalière du roi ajoute un dixième à l'or que vous gagnez"
 
 #: assets/data/changelog.json
 msgid "The Deep Hunt"
