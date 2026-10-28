@@ -4717,6 +4717,10 @@ msgid "Ridges no longer look like straight planters: their crowns are ragged, wi
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Right Names"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
 msgstr ""
 
@@ -6314,6 +6318,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Told True"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Town tours clear the screen like cutscenes, so their keys no longer sit on the clock, and walking back and forth over a line no longer leaves the last place's name hanging"
 msgstr ""
 
 #: assets/data/changelog.json

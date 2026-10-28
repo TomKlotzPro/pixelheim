@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.287.0",
+      "date": "2026-10-28",
+      "codename": "Right Names",
+      "notes": [
+        "Town tours clear the screen like cutscenes, so their keys no longer sit on the clock, and walking back and forth over a line no longer leaves the last place's name hanging"
+      ]
+    },
+    {
       "version": "0.286.0",
       "date": "2026-10-28",
       "codename": "Plugged In",

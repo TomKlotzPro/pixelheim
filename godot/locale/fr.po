@@ -4717,6 +4717,10 @@ msgid "Ridges no longer look like straight planters: their crowns are ragged, wi
 msgstr "Les crêtes ne ressemblent plus à des jardinières bien droites : leurs sommets sont déchiquetés, avec des pins et des rochers qui débordent le long du bord"
 
 #: assets/data/changelog.json
+msgid "Right Names"
+msgstr "Les bons noms"
+
+#: assets/data/changelog.json
 msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
 msgstr "Les rivières, les étangs et le lac des Bois-Profonds ont désormais de la profondeur : plus sombres au milieu, plus clairs vers les berges, avec de l'écume au bord et des reflets qui filent au fil du courant"
 
@@ -6315,6 +6319,10 @@ msgstr "Pour emmener un héros sur une autre machine, utilisez Copier le mien ic
 #: assets/data/changelog.json
 msgid "Told True"
 msgstr "Au plus juste"
+
+#: assets/data/changelog.json
+msgid "Town tours clear the screen like cutscenes, so their keys no longer sit on the clock, and walking back and forth over a line no longer leaves the last place's name hanging"
+msgstr "Les visites du village dégagent l'écran comme les cinématiques, leurs touches ne cachent plus l'horloge, et un aller-retour par-dessus une frontière ne laisse plus traîner le nom du lieu d'avant"
 
 #: assets/data/changelog.json
 msgid "Townsfolk drawn from the same sheet now wear their own colours, so no two people on a map look alike"
