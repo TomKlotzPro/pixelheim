@@ -3481,6 +3481,10 @@ msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate'
 msgstr "La cour de Greyhold est dallée et ses allées pavées, et la route de la Porte-Givre est pavée jusqu'à une cour dallée devant l'observatoire"
 
 #: assets/data/changelog.json
+msgid "Greyhold's fort stands in solid grey stone now, with battlements along its walls, weathering and moss, instead of pale striped blocks"
+msgstr "Le fort de Greyhold se dresse désormais en solide pierre grise, avec des créneaux le long de ses murs, de l'usure et de la mousse, au lieu de blocs pâles et rayés"
+
+#: assets/data/changelog.json
 msgid "Greyhold's south gate reads as a gate at last: two towers with the gate open between them, the road running through it and on up the courtyard to the keep's door, and the lamps standing before the towers to light both sides at night (Tom's playtest)"
 msgstr "La porte sud de Greyhold ressemble enfin à une porte : deux tours avec la porte ouverte entre elles, la route qui la traverse et remonte la cour jusqu'à la porte du donjon, et les lanternes devant les tours pour éclairer les deux côtés la nuit (playtest de Tom)"
 
@@ -4151,6 +4155,10 @@ msgstr "Nouveaux visages"
 #: assets/data/changelog.json
 msgid "New Faces, True Steps"
 msgstr "Nouveaux visages, pas justes"
+
+#: assets/data/changelog.json
+msgid "New Frames"
+msgstr "Nouveaux cadres"
 
 #: assets/data/changelog.json
 msgid "New brews: Stamina Draughts for fighters, Hunter's Stew, and the scale-steeped Dragon Tonic"
@@ -5145,6 +5153,10 @@ msgid "Still not a single audio file - every note is synthesized live, like the 
 msgstr "Toujours pas un seul fichier audio - chaque note est synthétisée en direct, comme les sprites"
 
 #: assets/data/changelog.json
+msgid "Stone and Battlement"
+msgstr "Pierre et créneaux"
+
+#: assets/data/changelog.json
 msgid "Stone and Water"
 msgstr "Pierre et eau"
 
@@ -6087,6 +6099,10 @@ msgstr "La carte montre le monde tel qu'il est : chaque carte trouvée est une
 #: assets/data/changelog.json
 msgid "The menu is drawn over the Next line instead of under it"
 msgstr "Le menu s'affiche par-dessus la ligne À suivre au lieu de passer dessous"
+
+#: assets/data/changelog.json
+msgid "The menus wear new frames: parchment pages with brass corners, wooden buttons that really press, tabs, and slots that glow for rare and epic gear and for a ready skill; the boss's bar gets a frame of its own"
+msgstr "Les menus portent de nouveaux cadres : des pages de parchemin aux coins de laiton, des boutons de bois qui s'enfoncent vraiment, des onglets, et des emplacements qui brillent pour l'équipement rare ou épique et pour une compétence prête ; la barre du boss a désormais son propre cadre"
 
 #: assets/data/changelog.json
 msgid "The merchant opens shop: buy gear and potions, sell your loot"

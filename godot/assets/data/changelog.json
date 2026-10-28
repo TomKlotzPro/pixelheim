@@ -1,6 +1,22 @@
 {
   "releases": [
     {
+      "version": "0.298.0",
+      "date": "2026-10-28",
+      "codename": "New Frames",
+      "notes": [
+        "The menus wear new frames: parchment pages with brass corners, wooden buttons that really press, tabs, and slots that glow for rare and epic gear and for a ready skill; the boss's bar gets a frame of its own"
+      ]
+    },
+    {
+      "version": "0.297.0",
+      "date": "2026-10-28",
+      "codename": "Stone and Battlement",
+      "notes": [
+        "Greyhold's fort stands in solid grey stone now, with battlements along its walls, weathering and moss, instead of pale striped blocks"
+      ]
+    },
+    {
       "version": "0.296.0",
       "date": "2026-10-28",
       "codename": "Lived In",

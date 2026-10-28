@@ -44,14 +44,14 @@ static func plan(grid: Dictionary) -> Dictionary:
 	for start: Vector2i in grid:
 		if seen.has(start) or grid[start] != "wall":
 			continue
-		var walls := _joined(grid, start, ["wall"])
+		var walls := joined(grid, start, ["wall"])
 		for cell: Vector2i in walls:
 			seen[cell] = true
 		var floor_cells := {}
 		for cell: Vector2i in walls:
 			for step: Vector2i in STEPS:
 				if grid.get(cell + step, "") == "floor" and not floor_cells.has(cell + step):
-					floor_cells.merge(_joined(grid, cell + step, ["floor"]))
+					floor_cells.merge(joined(grid, cell + step, ["floor"]))
 		if floor_cells.is_empty():
 			continue
 		var look := look_of(grid, walls)
@@ -75,7 +75,7 @@ static func look_of(grid: Dictionary, walls: Dictionary) -> String:
 
 
 ## Every cell of `tiles` joined to `start` side by side, as a set.
-static func _joined(grid: Dictionary, start: Vector2i, tiles: Array) -> Dictionary:
+static func joined(grid: Dictionary, start: Vector2i, tiles: Array) -> Dictionary:
 	var out := {start: true}
 	var todo: Array[Vector2i] = [start]
 	while not todo.is_empty():
@@ -93,14 +93,14 @@ static func _joined(grid: Dictionary, start: Vector2i, tiles: Array) -> Dictiona
 static func _lay(grid: Dictionary, walls: Dictionary, floor_cells: Dictionary, look: int, out: Dictionary) -> void:
 	var standing := {}
 	for cell: Vector2i in walls:
-		if inner(grid, cell) or _dice(cell, "fall") % 100 >= FALLEN:
+		if inner(grid, cell) or cell_dice(cell, "fall") % 100 >= FALLEN:
 			standing[cell] = true
 	var foot := {}
 	for cell: Vector2i in walls:
 		if standing.has(cell):
 			out["walls"][cell] = RuinArt.wall(look, base_of(standing, cell), _variant(standing, cell))
 		else:
-			out["walls"][cell] = RuinArt.mound(look, _dice(cell, "mound") % RuinArt.MOUNDS)
+			out["walls"][cell] = RuinArt.mound(look, cell_dice(cell, "mound") % RuinArt.MOUNDS)
 		for y in range(-1, 2):
 			for x in range(-1, 2):
 				var next := cell + Vector2i(x, y)
@@ -111,7 +111,7 @@ static func _lay(grid: Dictionary, walls: Dictionary, floor_cells: Dictionary, l
 	for cell: Vector2i in foot:
 		var shadow := (1 if standing.has(cell + Vector2i.UP) else 0) + (2 if standing.has(cell + Vector2i.LEFT) else 0)
 		var litter := 0
-		var dice := _dice(cell, "litter")
+		var dice := cell_dice(cell, "litter")
 		# Nothing lies under what stands on the floor (the shrine's knight).
 		if grid[cell] in ["floor", "grass", "forest", "marsh", "snow", "ash", "sand", "path"]:
 			var by_wall := STEPS.any(func(step: Vector2i) -> bool: return walls.has(cell + step))
@@ -149,7 +149,7 @@ static func base_of(walls: Dictionary, cell: Vector2i) -> int:
 ## How weathered a wall cell is (RuinArt.PLAIN, GROWN or a CHIP_*): knocked
 ## about only on a side it has open, by its own dice.
 static func _variant(walls: Dictionary, cell: Vector2i) -> int:
-	var dice := _dice(cell, "wall")
+	var dice := cell_dice(cell, "wall")
 	var roll := dice % 100
 	if roll < GROWN:
 		return RuinArt.GROWN
@@ -163,5 +163,7 @@ static func _variant(walls: Dictionary, cell: Vector2i) -> int:
 	return RuinArt.PLAIN
 
 
-static func _dice(cell: Vector2i, what: String) -> int:
+## A cell's own throw for `what`: the same every time (StoneWalls throws
+## them too).
+static func cell_dice(cell: Vector2i, what: String) -> int:
 	return absi(hash([cell.x, cell.y, what]))
