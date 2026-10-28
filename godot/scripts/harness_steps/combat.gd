@@ -140,8 +140,9 @@ func step_fight() -> void:
 	var swings := (12 if flags.has("kill") else 1) * pack.size()
 	var kills_before: int = world.foes.kills
 	for i in swings:
-		# A pack's: at the nearest of it still standing.
-		var standing := pack.filter(func(member: Node) -> bool: return is_instance_valid(member) and not member.dying)
+		# A pack's: at the nearest of it still standing. A Variant, as a
+		# freed foe can't be passed as a Node to be checked (PIX-372).
+		var standing := pack.filter(func(member: Variant) -> bool: return is_instance_valid(member) and not member.dying)
 		if flags.has("pack") and not standing.is_empty():
 			var hero: Vector2 = world.player.global_position
 			standing.sort_custom(func(a: Node2D, b: Node2D) -> bool: return a.global_position.distance_to(hero) < b.global_position.distance_to(hero))

@@ -32,6 +32,9 @@ var _rises := {}
 
 func _open() -> void:
 	layer = 4
+	# The tour has the whole canvas, as a cutscene does: its "E next" stood
+	# on the HUD's clock and quill (PIX-370).
+	_put_hud_aside()
 	caption = _line(UiStyle.strong("", 24, UiStyle.CREAM), 8)
 	# Cream like the name (gold was lost on the town's sandy roads).
 	detail = _line(UiStyle.label("", 18, UiStyle.CREAM), 8)

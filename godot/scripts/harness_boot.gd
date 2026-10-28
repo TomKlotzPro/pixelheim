@@ -12,6 +12,18 @@ class_name HarnessBoot
 const BELLS_LEVEL := 13
 
 
+## Whether one of `scripts` failed to load (PIX-372): a stale import's
+## "Could not find type" left a harness run with nothing to drive it, idling
+## at full CPU forever. The run quits, failed, and says which.
+static func failed_to_load(tree: SceneTree, scripts: Array) -> bool:
+	for script: Script in scripts:
+		if not script.can_instantiate():
+			push_error("harness: %s failed to load (a stale import? godot --headless --import)" % script.resource_path)
+			tree.quit(1)
+			return true
+	return false
+
+
 ## A harness run's GameState.boot: `state` (GameState) plays a fresh
 ## throwaway hero, seeded, its settings read but never written, unless
 ## `--slot N` names a slot; once per session, as GameState.boot.

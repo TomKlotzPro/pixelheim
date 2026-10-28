@@ -100,7 +100,11 @@ func step_ready() -> void:
 
 func step_talk_to() -> void:
 	# A conversation with one villager by id, wherever they stand.
-	world.interaction.talk(Npcs.by_id(flags.value("--talk-to"), GameState.settlement.settlers))
+	var npc := Npcs.by_id(flags.value("--talk-to"), GameState.settlement.settlers)
+	if npc.is_empty():
+		push_error("--talk-to: no villager %s (assets/data/npcs.json)" % flags.value("--talk-to"))
+		return
+	world.interaction.talk(npc)
 	await h.get_tree().create_timer(0.3).timeout
 	await h._keys(flags)
 

@@ -48,6 +48,8 @@ var nameplate_over := 0.0
 var place_was := {}
 var place_shown := {}
 var place_card: PanelContainer
+## The name the card up shows (its title).
+var _place_named := ""
 var _place_map: MapData
 var _place_regions := false
 ## The boss slayer's edge while it lasts (PIX-232): a small plate at the top
@@ -361,9 +363,14 @@ func name_place(map: MapData, cell: Vector2i, quiet := false) -> void:
 	var here := PlaceTitle.at(map, cell, _place_regions)
 	var card := PlaceTitle.next(here, place_was, place_shown, GameClock.msec(), quiet)
 	if card.is_empty():
+		# A name shown lately stays quiet, but the card still up goes if it
+		# names where the hero no longer is (PIX-371: back over a line).
+		if _place_named not in [place_was.get("place", ""), place_was.get("region", "")]:
+			_drop_place_card()
 		return
 	_drop_place_card()
 	place_card = title_card(card[0], card[1])
+	_place_named = card[0]
 
 
 ## Forgets where the hero has been named and takes its card down at once

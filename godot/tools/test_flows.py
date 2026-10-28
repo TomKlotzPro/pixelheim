@@ -62,6 +62,10 @@ class MatchTest(unittest.TestCase):
         self.assertEqual(flows.mismatch("gold=91 fell=1", REPORT), r"gold=90, not /91/; no fell=")
         self.assertEqual(flows.mismatch("map=town", "the watchdog stopped it"), "no report")
 
+    def test_an_empty_pattern_expects_the_field_left_out(self):
+        self.assertEqual(flows.mismatch("gate=", REPORT), "", "no text, so not on the line")
+        self.assertNotEqual(flows.mismatch("card=", REPORT), "", "a card is up")
+
     def test_only_the_report_line_counts(self):
         output = "OVERFLOW gate=cliff\n" + REPORT + "\n"
         self.assertEqual(flows.mismatch("map=town", output), "")

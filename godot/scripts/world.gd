@@ -166,7 +166,7 @@ func _ready() -> void:
 		var page: Variant = JavaScriptBridge.get_interface("window")
 		if page.pixelheimShown:
 			page.pixelheimShown()
-	if harness:
+	if harness and not HarnessBoot.failed_to_load(get_tree(), [preload("res://scripts/harness.gd")]):
 		var driver := preload("res://scripts/harness.gd").new()
 		driver.world = self
 		driver.process_mode = Node.PROCESS_MODE_ALWAYS
