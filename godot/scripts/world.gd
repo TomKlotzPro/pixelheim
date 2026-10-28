@@ -231,6 +231,8 @@ func _process(delta: float) -> void:
 		view.show_post_box()
 		folk.keep_hours()
 		hud.hint_boards()
+		# Lantern Night's festival, and Fafnyr's pass over the Reach (PIX-362).
+		LanternPass.watch(self)
 	hud.update_objective()
 	hud.update_arrow()
 	hud.update_clock()

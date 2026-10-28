@@ -811,6 +811,46 @@
         "to": "black",
         "seconds": 0.4
       }
+    ],
+    "lantern_night": [
+      {
+        "kind": "stage",
+        "stage": "world"
+      },
+      {
+        "kind": "actor",
+        "name": "fafnyr",
+        "sheet": "mini/RedDragon.png",
+        "family": "mini",
+        "frame": 32,
+        "anim": "walk",
+        "dir": "right",
+        "scale": 1,
+        "cell": [
+          -15,
+          -3
+        ],
+        "to_cell": [
+          15,
+          -4
+        ],
+        "seconds": 7.0
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.4
+      },
+      {
+        "kind": "caption",
+        "text": "Lantern Night. A shadow crosses the stars, and down every road of the Reach the lamps catch, one after another.",
+        "hold": 4.2
+      },
+      {
+        "kind": "caption",
+        "text": "Fafnyr: \"From up here they look like a hoard. The good kind. No corners.\"",
+        "hold": 4.0
+      }
     ]
   },
   "moments": {

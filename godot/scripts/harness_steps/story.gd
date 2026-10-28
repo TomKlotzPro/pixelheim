@@ -187,6 +187,16 @@ func step_seen() -> void:
 		GameState.mark_seen(story_id)
 
 
+func step_lantern() -> void:
+	# `--lantern fly` (PIX-362): Fafnyr's pass, as the world's next second
+	# would play it on Lantern Night after dark; --keys esc skips it, --wait
+	# lets it play out. A second of the night first, so its light has
+	# settled before the world holds still for him, as in play.
+	await h.get_tree().create_timer(1.0).timeout
+	LanternPass.watch(world)
+	await h.get_tree().create_timer(0.3).timeout
+
+
 func step_choice() -> void:
 	# Morvax's choice (PIX-253 step 10; the old throne's, PIX-157):
 	# the courier's last word, asked outright.

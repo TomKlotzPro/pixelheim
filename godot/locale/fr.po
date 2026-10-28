@@ -3733,6 +3733,10 @@ msgid "Lamps take their region's colour and a gift: sea glass reaches further on
 msgstr "Les lanternes prennent la couleur de leur région et un don : le verre de mer porte plus loin sur la côte, le lys de givre guérit plus vite au col, et une nouvelle lanterne de mousse des tombes au passage des Marais dissipe le brouillard ; Aske élargit chaque cercle, et les lanternes guéries offrent certains matins une trouvaille et parfois un visiteur"
 
 #: assets/data/changelog.json
+msgid "Lantern Night"
+msgstr "La Nuit des Lanternes"
+
+#: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
 msgstr "Terrains de chasse de fin de partie : trolls et golems sous les arbres, fantômes et mimiques dans la tourbière - les élites y pullulent"
 
@@ -4303,6 +4307,10 @@ msgstr "Une fois qu'il a quitté son poste, l'escalier nord vous remonte jusqu'�
 #: assets/data/changelog.json
 msgid "Once the Seam Warden falls, the ore cage takes you back up to the pithead"
 msgstr "Une fois le Gardien du Filon tombé, la cage à minerai vous remonte jusqu'au carreau de la mine"
+
+#: assets/data/changelog.json
+msgid "Once the story is over, the last night of every Reach year is Lantern Night: the town keeps a festival, the lamps wait in the dark, and Fafnyr crosses the stars to light every one of them (Esc skips it; with Reduce motion they all light at once)"
+msgstr "Une fois l'histoire finie, la dernière nuit de chaque année de la Marche est la Nuit des Lanternes : le village fait la fête, les lampes attendent dans le noir, et Fafnyr traverse les étoiles pour les allumer une à une (Échap pour passer ; avec « Réduire les animations », elles s'allument toutes d'un coup)"
 
 #: assets/data/changelog.json
 msgid "Once your whole skill tree is learned, spare skill points buy ranks beyond it in Stats: more skill power, health back from every blow, and more health, each capped"
@@ -14601,6 +14609,10 @@ msgid "Fafnyr: \"A hundred years on a pile of gold. Do you know what gold is lik
 msgstr "Fafnyr : « Cent ans couché sur un tas d'or. Vous savez ce que c'est, dormir sur de l'or ? Des coins. Rien que des coins. »"
 
 #: assets/data/story.json
+msgid "Fafnyr: \"From up here they look like a hoard. The good kind. No corners.\""
+msgstr "Fafnyr : « Vu d'en haut, on dirait un trésor. Du bon. Pas un seul coin. »"
+
+#: assets/data/story.json
 msgid "Fifty years ago five of the village climbed up to keep it that way. Only one came home, and she never talked about it."
 msgstr "Il y a cinquante ans, cinq villageois sont montés pour que ça dure. Une seule est revenue, et elle n'en a jamais parlé."
 
@@ -14639,6 +14651,10 @@ msgstr "J'étais si fière de cette marque. Regardez-la. Toujours là."
 #: assets/data/story.json
 msgid "It wasn't a rockfall. Morvax wanted the kings' gold, to make Pixelheim a city fit for us. Fafnyr was half awake, so Morvax promised him his freedom for the hoard."
 msgstr "Ce n'était pas un éboulement. Morvax voulait l'or des rois, pour faire de Pixelheim une cité digne de nous. Fafnyr était à moitié réveillé, alors Morvax lui a promis sa liberté contre le trésor."
+
+#: assets/data/story.json
+msgid "Lantern Night. A shadow crosses the stars, and down every road of the Reach the lamps catch, one after another."
+msgstr "La Nuit des Lanternes. Une ombre passe devant les étoiles, et sur chaque route de la Marche les lampes s'allument, l'une après l'autre."
 
 #: assets/data/story.json
 msgid "Maren and Morvax open the collar together. Neither of them says a word. Neither of them needs to."

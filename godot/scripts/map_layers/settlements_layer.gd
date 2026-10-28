@@ -256,6 +256,8 @@ static func _add_ember_lamp(view: MapView, root: Node2D, cell: Vector2i, place: 
 	view.ember_lamps[place] = lit
 	var top := Vector2(cell * TILE) + Vector2(0, TILE - RouteArt.size("ember_lamp").y)
 	var halo := view._add_halo(top + RouteArt.HALO_AT, EMBER_HALO, EMBER_HALO_PEAK, RouteArt.light_of(kind) if RouteArt.KIND_LOOKS.has(kind) else MapView.HALO_TINT)
+	# Lit or held dark with its ember (LanternLayer, PIX-362).
+	lit.set_meta("halo", halo)
 	if not own_light:
 		return
 	var light := Lights.make(Vector2(cell * TILE) + EMBER_POOL, EMBER_REACH, RouteArt.light_of(kind), Lights.EMBER_ENERGY, true)

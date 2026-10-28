@@ -3733,6 +3733,10 @@ msgid "Lamps take their region's colour and a gift: sea glass reaches further on
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Lantern Night"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
 msgstr ""
 
@@ -4302,6 +4306,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Once the Seam Warden falls, the ore cage takes you back up to the pithead"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Once the story is over, the last night of every Reach year is Lantern Night: the town keeps a festival, the lamps wait in the dark, and Fafnyr crosses the stars to light every one of them (Esc skips it; with Reduce motion they all light at once)"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -14601,6 +14609,10 @@ msgid "Fafnyr: \"A hundred years on a pile of gold. Do you know what gold is lik
 msgstr ""
 
 #: assets/data/story.json
+msgid "Fafnyr: \"From up here they look like a hoard. The good kind. No corners.\""
+msgstr ""
+
+#: assets/data/story.json
 msgid "Fifty years ago five of the village climbed up to keep it that way. Only one came home, and she never talked about it."
 msgstr ""
 
@@ -14638,6 +14650,10 @@ msgstr ""
 
 #: assets/data/story.json
 msgid "It wasn't a rockfall. Morvax wanted the kings' gold, to make Pixelheim a city fit for us. Fafnyr was half awake, so Morvax promised him his freedom for the hoard."
+msgstr ""
+
+#: assets/data/story.json
+msgid "Lantern Night. A shadow crosses the stars, and down every road of the Reach the lamps catch, one after another."
 msgstr ""
 
 #: assets/data/story.json

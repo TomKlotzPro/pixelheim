@@ -1054,14 +1054,16 @@ func set_night(night: bool) -> void:
 	if int(night) == _night:
 		return
 	_night = int(night)
-	for layer: MapLayer in _layers.values():
-		layer.set_night(self, night)
 	for glow in night_glows:
 		if is_instance_valid(glow):
 			glow.visible = night
 	for pane in day_glows:
 		if is_instance_valid(pane):
 			pane.visible = not night
+	# After the glows, so a layer may keep one dark (PIX-362: Lantern
+	# Night's lamps waiting for Fafnyr).
+	for layer: MapLayer in _layers.values():
+		layer.set_night(self, night)
 
 
 ## Deals day `day`'s wild patches, unless they're dealt already; whether
