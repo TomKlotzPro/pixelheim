@@ -129,7 +129,7 @@ spoils | fight kill | floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* logged=0 | combat
 # one level tag, however many of it stand, and each kill's gold and XP rise
 # where it fell, on one line, while the rest still stand (PIX-343: v0.256
 # held them to the fight's end).
-pack-tags | fight kill pack --foe slime --wait 0.8 | tags=1 mobs=0 rising=[1-9] floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* | combat
+pack-tags | fight kill pack --foe goblin --wait 0.8 | tags=1 mobs=0 rising=[1-9] floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* | combat
 # A harness hero built as the game makes one (PIX-379): a level-10 mage's
 # growth, its points 2:1 on intelligence and endurance, its tree bought
 # and the band's staff in hand, healed whole.
@@ -376,11 +376,14 @@ homecoming | --map town --hunted tidecaller reveal | open=reveal_screen home=wen
 # once it has fallen, to a blow or to poison, or once the hero has fallen
 # mid-fight and woken at the inn (PIX-288); felled far from the tide door,
 # a way out opens right where it fell, and straight out by it to the beach
-# (PIX-292).
-tidecaller-bar | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.05 --wait 2.5 | map=seacave_grotto fell=1 bossbar=none shortcut=open wayout=\(30, 4\);\(25, 12\) | dungeon combat
+# (PIX-292). PIX-377: where a way out rises from where a boss fell, its
+# share leaves it the health it had before monster health grew (the
+# Tidecaller 11, the Seam Warden 18, Rimefang 31, the Captain 26 over his
+# yield), so it falls where it did.
+tidecaller-bar | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.007 --wait 2.5 | map=seacave_grotto fell=1 bossbar=none shortcut=open wayout=\(30, 4\);\(25, 12\) | dungeon combat
 tidecaller-tick | --map seacave_grotto --at 23,12 fight --foe tidecaller --foe-left 0.2 --foe-ail poison --wait 3 | map=seacave_grotto fell=1 bossbar=none | dungeon combat
 tidecaller-felled | --map seacave_grotto --at 23,12 fight hurt --foe tidecaller --foe-left 0.5 die --wait 0.5 | map=town_inn bossbar=none | dungeon combat
-tidecaller-out | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.05 --then-walk r,r --wait 0.4 | map=saltmere cell=\([89], 2[45]\) bossbar=none | dungeon travel combat
+tidecaller-out | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.007 --then-walk r,r --wait 0.4 | map=saltmere cell=\([89], 2[45]\) bossbar=none | dungeon travel combat
 # The way out where the Tidecaller fell rises out of the floor (PIX-339,
 # Tom: « ça fait bizarre de tuer un boss et qu'un escalier pop »): it waits
 # out his fall and his spoils, then the floor cracks and the stair forms
@@ -388,7 +391,7 @@ tidecaller-out | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --f
 # (with Reduce motion too); tidecaller-out walks out by it once open.
 tidecaller-stair-waits | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.05 --wait 0.6 | map=seacave_grotto stair=waiting wayout=\(30, 4\) | dungeon combat
 tidecaller-stair-rises | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.05 --wait 1.6 | map=seacave_grotto stair=sinking wayout=\(30, 4\) | dungeon combat
-tidecaller-stair-still | --map seacave_grotto --at 23,12 still fight kill --foe tidecaller --foe-left 0.05 --wait 2.5 | map=seacave_grotto stair=open wayout=\(30, 4\);\(2[45], 12\) | dungeon combat
+tidecaller-stair-still | --map seacave_grotto --at 23,12 still fight kill --foe tidecaller --foe-left 0.007 --wait 2.5 | map=seacave_grotto stair=open wayout=\(30, 4\);\(2[45], 12\) | dungeon combat
 # A new player whose first charge is L'Appelle-Marée's (PIX-341: the
 # dodge's card opened over his bar, his name and his first words): the
 # hint waits out his entrance, and shows once he has fallen and his
@@ -403,7 +406,7 @@ tidecaller-hint-after | --map seacave_grotto --at 23,12 hints fight kill --foe t
 # dungeon floor's name. At the play zoom, as a window has it.
 boss-fall-words | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.05 --wait 0.6 --zoom play | map=seacave_grotto fell=1 bossbar=none hudclash=none | dungeon combat
 warden-fall-words | --map shafts_blackseam --at 24,11 fight kill --foe seam_warden --foe-left 0.05 --wait 0.6 --zoom play | map=shafts_blackseam fell=1 bossbar=none hudclash=none | dungeon combat
-place-holds-hint | --map seacave_grotto --at 23,12 hints fight kill --foe tidecaller --foe-left 0.05 --then-walk r,r --wait 0.6 --zoom play | map=saltmere card=Saltmere hint=held:dodge hudclash=none | dungeon travel combat
+place-holds-hint | --map seacave_grotto --at 23,12 hints fight kill --foe tidecaller --foe-left 0.007 --then-walk r,r --wait 0.6 --zoom play | map=saltmere card=Saltmere hint=held:dodge hudclash=none | dungeon travel combat
 floor-name-arrow | --map saltmere --at 6,24 --walk u fades --wait 0.6 --zoom play | map=seacave toast=1 box, 1 line, fits hudclash=none | dungeon travel
 # The Hollow King's fall in French (PIX-378: « NIVEAU SUPÉRIEUR » rising,
 # the win, the Victory card and the level's plate all at once, the win on a
@@ -484,8 +487,8 @@ pell-home | --map town --hunted seam_warden reveal | open=reveal_screen home=pel
 # The Seam Warden's end: its bar gone once it falls (PIX-288), a way out
 # where it fell far from the ore cage, and straight up by it to the
 # pithead (PIX-292).
-seamwarden-bar | --map shafts_blackseam --at 24,11 fight kill --foe seam_warden --foe-left 0.05 --wait 2.5 | map=shafts_blackseam fell=1 bossbar=none shortcut=open wayout=\(31, 4\);\(25, 11\) | dungeon combat
-seamwarden-out | --map shafts_blackseam --at 24,11 fight kill --foe seam_warden --foe-left 0.05 --then-walk r --wait 0.4 | map=blackiron cell=\(2[78], [56]\) bossbar=none | dungeon travel combat
+seamwarden-bar | --map shafts_blackseam --at 24,11 fight kill --foe seam_warden --foe-left 0.008 --wait 2.5 | map=shafts_blackseam fell=1 bossbar=none shortcut=open wayout=\(31, 4\);\(25, 11\) | dungeon combat
+seamwarden-out | --map shafts_blackseam --at 24,11 fight kill --foe seam_warden --foe-left 0.008 --then-walk r --wait 0.4 | map=blackiron cell=\(2[78], [56]\) bossbar=none | dungeon travel combat
 # Each region's road back out, moved along its edge so the Reach and its
 # regions lie in one plane without overlapping (PIX-269).
 mines-out | --map blackiron --at 53,30 --walk r,r,r --wait 0.4 | map=overworld | travel
@@ -574,10 +577,10 @@ gatehome | --map town --hunted hollow_captain reveal | open=reveal_screen home=u
 # his bar is gone once he has had his say (PIX-288); far from the north
 # stair a way out opens where he lay down, by it the stair alone, and
 # straight up by either (PIX-292).
-captain-bar | --map cellars_hall --at 28,8 fight kill --foe hollow_captain --foe-left 0.35 --keys e,e,e,e --wait 3.5 | map=cellars_hall open=none stood=1 bossbar=none shortcut=open wayout=\(30, 3\);\(29, 8\) | dungeon combat story
+captain-bar | --map cellars_hall --at 28,8 fight kill --foe hollow_captain --foe-left 0.31 --keys e,e,e,e --wait 3.5 | map=cellars_hall open=none stood=1 bossbar=none shortcut=open wayout=\(30, 3\);\(29, 8\) | dungeon combat story
 captain-out | --map cellars_hall --at 28,8 fight kill --foe hollow_captain --foe-left 0.35 --keys e,e,e,e --then-walk r --wait 0.4 | map=cellars cell=\([45], 2[67]\) bossbar=none | dungeon travel combat
 captain-near | --map cellars_hall --at 30,6 fight kill --foe hollow_captain --foe-left 0.35 --keys e,e,e,e --wait 0.5 | map=cellars_hall stood=1 wayout=\(30, 3\) | dungeon combat
-captain-door | --map cellars_hall --at 30,6 fight kill --foe hollow_captain --foe-left 0.35 --keys e,e,e,e --then-walk u,u,u --wait 0.4 | map=cellars cell=\(4, 2[67]\) | dungeon travel combat
+captain-door | --map cellars_hall --at 30,6 fight kill --foe hollow_captain --foe-left 0.31 --keys e,e,e,e --then-walk u,u,u --wait 0.4 | map=cellars cell=\(4, 2[67]\) | dungeon travel combat
 # The Frostgate pass (PIX-169).
 pass | --map overworld --at 68,2 --walk u,u,u --wait 0.4 | map=frostgate | travel
 # The observatory's door into Liane's room, down her stair to the ice
@@ -606,8 +609,8 @@ aske-home | --map town --hunted rimefang reveal | open=reveal_screen home=aske |
 # Rimefang's end: its bar gone once it falls (PIX-288), a way out where it
 # fell far from the ice slide, and straight back by it to the foot of
 # Liane's stair (PIX-292).
-rimefang-bar | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.05 --wait 2.5 | map=icecave_glass fell=1 bossbar=none shortcut=open wayout=\(30, 3\);\(27, 12\) | dungeon combat
-rimefang-out | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.05 --then-walk r --wait 0.4 | map=icecave cell=\([4-6], 2[45]\) bossbar=none | dungeon travel combat
+rimefang-bar | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.0103 --wait 2.5 | map=icecave_glass fell=1 bossbar=none shortcut=open wayout=\(30, 3\);\(27, 12\) | dungeon combat
+rimefang-out | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.0103 --then-walk r --wait 0.4 | map=icecave cell=\([4-6], 2[45]\) bossbar=none | dungeon travel combat
 # The mountain's gate barred to a new hero (PIX-170).
 gate | --map overworld --at 48,8 --walk u,u --wait 0.3 | map=overworld cell=\(48, 7\) open=none | travel dungeon
 # The fifth letter (PIX-253 step 8, PIX-257): with the four keepsakes home

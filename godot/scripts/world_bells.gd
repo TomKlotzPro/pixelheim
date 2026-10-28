@@ -234,9 +234,14 @@ func _spawn_embers() -> void:
 	var wave := Bells.embers()
 	var kind := Bestiary.monster(wave["monsterId"])
 	var cells := Bells.ember_cells()
+	var lift := int(wave["level"]) - int(kind["level"])
 	for i in mini(embers_left, cells.size()):
-		var foe: Node = world.foes.spawn_enemy(wave["monsterId"], cells[i], "", "", false, false, cells[i], int(wave["level"]) - int(kind["level"]))
+		var foe: Node = world.foes.spawn_enemy(wave["monsterId"], cells[i], "", "", false, false, cells[i], lift)
 		foe.fighter["name"] = wave["name"]
+		# The night is tuned on its own, Fafnyr and his embers: they keep
+		# their rows' health, not Bestiary.health_scale's (PIX-377).
+		foe.fighter["maxHp"] = int(Bestiary.lifted(kind, lift)["maxHp"])
+		foe.fighter["hp"] = foe.fighter["maxHp"]
 		foe.set_meta("bells_wave", true)
 		world.fx.appear(foe)
 

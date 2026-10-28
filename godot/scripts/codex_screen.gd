@@ -122,7 +122,7 @@ func _bestiary() -> void:
 			var level := maxi(int(monster["level"]), met_at)
 			var seen: Dictionary = Bestiary.lifted(monster, level - int(monster["level"])) if level > int(monster["level"]) else monster
 			var numbers := UiStyle.label(
-				Text.t("Lv %d  HP %d  ATK %d  DEF %d  %d xp") % [level, seen["maxHp"], seen["attack"], seen["defense"], seen["xp"]],
+				Text.t("Lv %d  HP %d  ATK %d  DEF %d  %d xp") % [level, roundi(float(seen["maxHp"]) * Bestiary.health_scale(level)), seen["attack"], seen["defense"], seen["xp"]],
 				14, UiStyle.INK
 			)
 			numbers.custom_minimum_size = Vector2(360, 0)

@@ -8,7 +8,9 @@ extends CharacterBody2D
 
 const SPEED := 95.0
 const ATTACK_COOLDOWN := 0.45
-const INVULNERABLE_SECONDS := 0.8
+## How long a hit hero can't be hit again (PIX-377: 0.8 s let a pack take
+## turns at a hero who hardly felt the second bite).
+const INVULNERABLE_SECONDS := 0.5
 ## How far a skill reaches for its target, and how long a cast takes: one
 ## of the web's battle turns.
 const SKILL_RANGE := 88.0
@@ -302,9 +304,10 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	if not attacking and not gait.walking:
 		_play("hurt")
 	invulnerable = true
-	var tween := create_tween().set_loops(4)
-	tween.tween_property(sprite, "modulate:a", 0.3, 0.1)
-	tween.tween_property(sprite, "modulate:a", 1.0, 0.1)
+	# The blink lasts as long as the grace: three blinks.
+	var tween := create_tween().set_loops(3)
+	tween.tween_property(sprite, "modulate:a", 0.3, INVULNERABLE_SECONDS / 6.0)
+	tween.tween_property(sprite, "modulate:a", 1.0, INVULNERABLE_SECONDS / 6.0)
 	get_tree().create_timer(INVULNERABLE_SECONDS).timeout.connect(
 		func() -> void: invulnerable = false
 	)
