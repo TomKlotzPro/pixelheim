@@ -537,6 +537,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/map_layers/patches_layer.gd` — What lies on the ground to be picked, and the post boxes as they stand (PIX-143, PIX-250, PIX-286, PIX-320)
 - `scripts/map_layers/props_layer.gd` — Shade's props standing outdoors, the street lamps among them, and the furniture the hero placed in the house (PunyProps, LampArt, PIX-163, PIX-311)
 - `scripts/map_layers/rooms_layer.gd` — Inside, Shade's rooms with the paid pack or from his CC0 sheets (PunyInterior, PIX-133, PIX-163, PIX-318)
+- `scripts/map_layers/ruins_layer.gd` — The old stone ruins in the open (Ruins, RuinArt, PIX-381)
 - `scripts/map_layers/settlements_layer.gd` — Each settlement's set dressing, what the Post's routes put up, chimney smoke and the village seen far off (Hamlet, Routes, PIX-248, PIX-313, PIX-322)
 - `scripts/map_screen.gd` — The map screen (M/Tab): a map in a window, painted with the tiles' map colours where the hero has been and night where they haven't (mapColors.ts port), the hero, the waypoints and the lairs the bounty board has posted (PIX-156) marked
 - `scripts/map_view.gd` — One visit to a map, as drawn (PIX-136): Shade's ground, houses, rooms and dungeons, the props, field scatter, chests and door signs, the house's placed furniture, and the invisible boxes on what the hero can't walk into.
@@ -567,6 +568,8 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/road_wear.gd` — The wear of wheels and feet on the dirt roads (PIX-307).
 - `scripts/room_art.gd` — A keeper's room its own (PIX-315): Liane keeps the stars in her observatory, and nothing in Shade's packs is a telescope, a star chart or a globe of the sky.
 - `scripts/route_art.gd` — What the Post's routes put up beside the road (PIX-322)
+- `scripts/ruin_art.gd` — The ruins' pieces (Ruins, PIX-381), drawn once a session into one atlas
+- `scripts/ruins.gd` — The old stone ruins standing in the open (PIX-381, Tom: « can you revamp this, there are many across the full map, it's super ugly »)
 - `scripts/saves_screen.gd` — The saves screen (Esc, and Saves on the title): the heroes you have, in three slots, one column that gets the whole window (PIX-302).
 - `scripts/scatter.gd` — Puny World objects scattered on terrain (PIX-130), and which of them stand in the way (PIX-137).
 - `scripts/screen.gd` — What every screen shares (PIX-136): the menus, pages and conversations that open over the world.

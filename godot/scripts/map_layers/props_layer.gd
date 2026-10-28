@@ -55,11 +55,21 @@ static func _add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
 		still.position = Vector2(0, TILE - HamletArt.size(art).y) - Vector2(0, sort_y)
 		root.add_child(still)
 	else:
+		var lift := 0.0
+		if prop["kind"] == "shrine":
+			# The stone knight raised on his plinth (PIX-381); his foot, and
+			# what he blocks, as before.
+			var plinth := Sprite2D.new()
+			plinth.texture = RuinArt.plinth()
+			plinth.centered = false
+			plinth.position = Vector2(0, -sort_y)
+			root.add_child(plinth)
+			lift = RuinArt.PLINTH_RISE
 		for piece: Array in prop["tiles"]:
 			var still := Sprite2D.new()
 			still.texture = PunyDungeon.sheet().tile_texture(piece[1]) if prop["sheet"] == "dungeon" else PunyProps.texture(piece[1])
 			still.centered = false
-			still.position = Vector2(piece[0] * TILE) - Vector2(0, sort_y)
+			still.position = Vector2(piece[0] * TILE) - Vector2(0, sort_y + lift)
 			root.add_child(still)
 	if foot.has_area():
 		var body := StaticBody2D.new()

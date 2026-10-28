@@ -156,6 +156,11 @@
 {"shot": "deepwood_lake_night", "area": "regions", "map": "deepwood", "cell": [18, 9], "time": "night"}
 {"shot": "mire_pool", "area": "regions", "map": "mirefen", "cell": [21, 25], "time": "day"}
 {"shot": "mire_pool_night", "area": "regions", "map": "mirefen", "cell": [21, 25], "time": "night"}
+# The old stone ruins (PIX-381): the Mirefen's shrine, its knight on his
+# plinth, and the Deepwood's courtyard; low walls standing round the floor,
+# their outer course fallen into heaps.
+{"shot": "mire_ruin", "area": "regions", "map": "mirefen", "cell": [43, 15], "time": "day"}
+{"shot": "deepwood_ruin", "area": "regions", "map": "deepwood", "cell": [34, 38], "time": "day"}
 # The mountain road (PIX-253 step 8): its switchbacks up the ash to the
 # forge in the rock, and the lamp by its door.
 {"shot": "mountain_road", "area": "regions", "map": "mountain_road", "cell": [17, 8], "time": "day"}
