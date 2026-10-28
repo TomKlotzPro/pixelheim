@@ -4041,6 +4041,10 @@ msgid "Messages wait their turn instead of cutting each other off, and stay long
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Mind the Hens"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Mirror Mirror"
 msgstr ""
 
@@ -5974,6 +5978,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The fallen lie in one piece: a hero in a helmet from one set and armour from another no longer falls as two halves of two different heroes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The farm animals have bodies now: the hero bumps into them instead of walking through, they never wander into him, and one he stands facing steps out of his way, even asleep, so none can ever shut him in"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -9,7 +9,9 @@ extends Node
 ## edge comes within REST_MARGIN. Each animal throws dice of its own, seeded by its place in
 ## the plan, so the herd draws none of the world's (a kill's loot is the
 ## same with or without it). Standing among the actors, sorted by their
-## feet; nothing blocks.
+## feet, each with a body at its feet the hero bumps into (PIX-389): none
+## steps into him or a villager, and one he stands facing steps aside, awake
+## or asleep, so none ever shuts the way (a pig at the sty's gate by night).
 
 ## Each kind's pace, in pixels a second: a cell in two to three seconds.
 const SPEED := {"hen": 7.0, "chick": 6.0, "sheep": 6.0, "pig": 6.0, "cow": 5.0, "bull": 5.0}
@@ -24,8 +26,12 @@ const FOOT := Vector2(8, 13)
 ## How far past the screen's edge an animal still lives, as a foe
 ## (Enemy.REST_MARGIN).
 const REST_MARGIN := 6.0 * MapView.TILE
+## Each kind's body, in pixels: its feet, inside its cell with room
+## between two side by side.
+const BODY := {"hen": Vector2(8, 6), "chick": Vector2(6, 5), "sheep": Vector2(12, 6), "pig": Vector2(12, 6), "cow": Vector2(14, 6), "bull": Vector2(14, 6)}
 
-## {sprite, kind, cell, area, dice, wait, goal (while it walks), resting}.
+## {sprite, body, kind, cell, area, dice, wait, goal (while it walks),
+## shooed (walking off from the hero), resting}.
 var animals: Array[Dictionary] = []
 var asleep := false
 ## The cells stood on or walked to.
@@ -50,8 +56,20 @@ func _init(plan: Array[Dictionary], actors: Node2D) -> void:
 		var dice := RandomNumberGenerator.new()
 		dice.seed = hash([index, entry["cell"]])
 		sprite.flip_h = dice.randi() % 2 == 0
+		# Moved by hand, never pushed: it holds rather than walk into anyone.
+		var body := AnimatableBody2D.new()
+		body.sync_to_physics = false
+		var shape := CollisionShape2D.new()
+		var rect := RectangleShape2D.new()
+		rect.size = BODY[entry["kind"]]
+		shape.shape = rect
+		shape.position = Vector2(0, -rect.size.y / 2.0 + 1.0)
+		body.add_child(shape)
+		body.position = sprite.position
+		body.add_to_group("decor")
+		actors.add_child(body)
 		_taken[entry["cell"]] = true
-		animals.append({"sprite": sprite, "kind": entry["kind"], "cell": entry["cell"], "area": entry["area"], "dice": dice, "wait": dice.randf_range(0.0, STAND.y), "resting": false})
+		animals.append({"sprite": sprite, "body": body, "kind": entry["kind"], "cell": entry["cell"], "area": entry["area"], "dice": dice, "wait": dice.randf_range(0.0, STAND.y), "resting": false})
 
 
 ## A cell's spot for an animal's feet, in its map's pixels.
@@ -100,32 +118,69 @@ func _process(delta: float) -> void:
 				sprite.pause()
 			elif asleep or animal.has("goal"):
 				sprite.play()
-		if not resting and not asleep:
+		if not resting and (not asleep or animal.has("shooed")):
 			_live(animal, delta)
+
+
+## The hero on `hero` facing `cell`: an animal standing there, or bound
+## there, steps aside to a free cell of its patch (or ends its step), awake
+## or asleep, and lies down again there if it's night.
+func shoo(hero: Vector2i, cell: Vector2i) -> void:
+	for animal in animals:
+		if animal.has("goal"):
+			if animal["goal"] == cell or animal["cell"] == cell:
+				animal["shooed"] = true
+				(animal["sprite"] as AnimatedSprite2D).play("walk")
+			continue
+		if animal["cell"] != cell:
+			continue
+		var taken := _taken.duplicate()
+		taken[hero] = true
+		var next := FarmAnimals.step(animal["area"], cell, taken, animal["dice"])
+		if next != cell:
+			animal["shooed"] = true
+			_set_off(animal, next)
 
 
 ## A frame of one animal's day: walking on to its goal, or standing until
 ## it steps again.
 func _live(animal: Dictionary, delta: float) -> void:
 	var sprite: AnimatedSprite2D = animal["sprite"]
+	var body: AnimatableBody2D = animal["body"]
 	if animal.has("goal"):
 		var goal := foot(animal["goal"])
-		sprite.position = sprite.position.move_toward(goal, SPEED[animal["kind"]] * delta)
-		if sprite.position.is_equal_approx(goal):
+		var to := sprite.position.move_toward(goal, SPEED[animal["kind"]] * delta)
+		# Held while the hero or a villager stands in its way.
+		if body.test_move(body.global_transform, to - sprite.position):
+			return
+		sprite.position = to
+		body.position = to
+		if to.is_equal_approx(goal):
 			_taken.erase(animal["cell"])
 			animal["cell"] = animal["goal"]
 			animal.erase("goal")
+			animal.erase("shooed")
 			animal["wait"] = (animal["dice"] as RandomNumberGenerator).randf_range(STAND.x, STAND.y)
-			sprite.stop()
+			if asleep:
+				sprite.play("sleep")
+			else:
+				sprite.stop()
 		return
 	animal["wait"] -= delta
 	if animal["wait"] > 0.0:
 		return
 	var cell: Vector2i = animal["cell"]
 	var next := FarmAnimals.step(animal["area"], cell, _taken, animal["dice"])
-	if next == cell:
+	if next == cell or body.test_move(body.global_transform, Vector2(next - cell) * MapView.TILE):
 		animal["wait"] = STAND.x
 		return
+	_set_off(animal, next)
+
+
+## An animal setting off for `next`, beside its cell.
+func _set_off(animal: Dictionary, next: Vector2i) -> void:
+	var sprite: AnimatedSprite2D = animal["sprite"]
+	var cell: Vector2i = animal["cell"]
 	_taken[next] = true
 	animal["goal"] = next
 	# The pack draws them facing left.

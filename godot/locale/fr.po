@@ -4041,6 +4041,10 @@ msgid "Messages wait their turn instead of cutting each other off, and stay long
 msgstr "Les messages attendent leur tour au lieu de se couper la parole, et restent le temps d'être lus (plus longtemps avec le grand texte) ; une quête terminée fait retentir sa victoire"
 
 #: assets/data/changelog.json
+msgid "Mind the Hens"
+msgstr "Gare aux poules"
+
+#: assets/data/changelog.json
 msgid "Mirror Mirror"
 msgstr "Miroir, mon beau miroir"
 
@@ -5975,6 +5979,10 @@ msgstr "Le point d'exclamation au-dessus d'un monstre qui vous a vu se place au-
 #: assets/data/changelog.json
 msgid "The fallen lie in one piece: a hero in a helmet from one set and armour from another no longer falls as two halves of two different heroes"
 msgstr "Les vaincus gisent d'un seul tenant : un héros portant le casque d'un ensemble et l'armure d'un autre ne tombe plus en deux moitiés de deux héros différents"
+
+#: assets/data/changelog.json
+msgid "The farm animals have bodies now: the hero bumps into them instead of walking through, they never wander into him, and one he stands facing steps out of his way, even asleep, so none can ever shut him in"
+msgstr "Les animaux ont désormais un corps : le héros s'y heurte au lieu de passer au travers, ils ne viennent jamais se jeter dans ses jambes, et celui qu'il regarde en face s'écarte de son chemin, même endormi ; aucun ne peut donc l'enfermer"
 
 #: assets/data/changelog.json
 msgid "The first brew works at every stage: at Vex's stall while her house is ash, at her cauldron once it stands"
