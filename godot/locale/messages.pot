@@ -4157,6 +4157,10 @@ msgid "New Faces, True Steps"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "New Frames"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "New brews: Stamina Draughts for fighters, Hunter's Stew, and the scale-steeped Dragon Tonic"
 msgstr ""
 
@@ -6094,6 +6098,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The menu is drawn over the Next line instead of under it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The menus wear new frames: parchment pages with brass corners, wooden buttons that really press, tabs, and slots that glow for rare and epic gear and for a ready skill; the boss's bar gets a frame of its own"
 msgstr ""
 
 #: assets/data/changelog.json
