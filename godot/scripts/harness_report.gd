@@ -328,6 +328,20 @@ func field_detail() -> String:
 	return str(world.view.detail_layer.get_used_cells().size())
 
 
+func field_dockmenu() -> String:
+	var dock: Control = world.hud.dock
+	if not dock.menu.visible:
+		return ""
+	var lines: PackedStringArray = []
+	for at in dock.menu_lines.size():
+		var row: Dictionary = dock.menu_lines[at]
+		if (row["line"] as Control).visible:
+			lines.append("[%s]" % row["id"] if at == dock.menu_focus else String(row["id"]))
+	var menu: Rect2 = dock.menu.get_global_rect()
+	var fits: bool = Rect2(0, 0, 1280, 720).encloses(menu) and menu.end.y <= dock.top()
+	return "%s %s" % [",".join(lines), "fits" if fits else "off"]
+
+
 func field_dressed() -> String:
 	if world.view == null or String(world.view.dressing.get("look", "")) == "":
 		return ""

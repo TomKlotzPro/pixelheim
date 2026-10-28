@@ -54,6 +54,12 @@ static func ailment(kind: String) -> Texture2D:
 	return _texture(_data()["ailments"].get(kind, ""))
 
 
+## A screen's icon in the dock's menu (PIX-388: "inventory", "map"...), or
+## null (no paid art here).
+static func screen(screen_id: String) -> Texture2D:
+	return _texture(_data().get("screens", {}).get(screen_id, ""))
+
+
 ## A skill's icon by its name, or null (no icon, or no paid art).
 static func skill(skill_name: String) -> Texture2D:
 	var code: String = _data()["skills"].get(skill_name, _translated_skills().get(skill_name, ""))
@@ -132,7 +138,7 @@ static func effect(name: String, fps := 10.0, loop := true) -> SpriteFrames:
 ## the fetch script copies).
 static func private_files() -> Array[String]:
 	var files: Array[String] = []
-	for group: String in ["items", "ailments", "effects"]:
+	for group: String in ["items", "ailments", "effects", "screens"]:
 		for src: String in _data().get(group, {}).values():
 			if not src.begins_with("free/") and not src.begins_with("medieval@"):
 				var file := src.get_slice("@", 0)

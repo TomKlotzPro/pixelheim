@@ -16144,6 +16144,10 @@ msgstr ""
 msgid "Pack"
 msgstr ""
 
+#: scripts/hud_dock.gd
+msgid "XP %d/%d"
+msgstr ""
+
 #: scripts/inventory_screen.gd
 msgid " (two!)"
 msgstr ""

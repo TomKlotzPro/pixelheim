@@ -40,7 +40,7 @@ done < <(python3 - godot/assets/puny/icons.json <<'PY'
 import json, sys
 doc = json.load(open(sys.argv[1]))
 seen = []
-for group in ("items", "ailments", "effects"):
+for group in ("items", "ailments", "effects", "screens"):
     for src in doc.get(group, {}).values():
         if src.startswith(("free/", "medieval@")):
             continue

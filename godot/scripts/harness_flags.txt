@@ -130,7 +130,7 @@ kill |  | with fight: swing until it drops (five minutes of play at most, PIX-37
 pack |  | with fight: the foe's pack round it, Foes.PACK_SIZE of its kind all on the hunt; with kill, swings at the nearest until the whole pack is down (PIX-340)
 flee |  | run for the map's first way out mid-fight (PIX-232) | flee | 690
 chapter |  | chapter cards on (harness runs skip them otherwise): the card of the chapter the story is at, as the world shows it once free, waited for with its entrance; the report adds chapter= and rose= (PIX-253 step 2) | chapter | 700
---keys | <k,k> | real key presses, one at a time, at whatever the run opened (e, esc, space, enter, w, a, s, d...) | keys | 710
+--keys | <k,k> | real key presses, one at a time, at whatever the run opened (e, esc, space, enter, w, a, s, d...; a pad's back, pad_up, pad_down) | keys | 710
 --dawn-beat | <n> | the Night of Ash's dawn jumped to beat n (PIX-197) | dawn_beat | 730
 lookbook |  | the look book (PIX-220): every staged scene saved and on one sheet (tools/lookbook.sh) | lookbook | 740
 perf |  | what the frames cost (PerfProbe); with lookbook, each shot's | perf | 750
