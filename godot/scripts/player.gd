@@ -66,6 +66,8 @@ func _ready() -> void:
 	# Top-down: no floor, no walls by angle, just slide along what blocks.
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	hp = GameState.hero.hp
+	# Stuns can't be chained on the hero either (PIX-377, as on bosses: PIX-186).
+	ailments.stun_guard = float(Bestiary.stun_guard()["hero"])
 	art = GameState.upkeep.hero_art()
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = PunyArt.frames(art)

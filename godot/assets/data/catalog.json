@@ -2243,12 +2243,12 @@
       "description": "Holy support. Sturdy enough, and Mend keeps you in the fight.",
       "pitch": "Holds the line, heals it too",
       "baseStats": {
-        "maxHp": 38,
+        "maxHp": 42,
         "maxMp": 18,
         "strength": 6,
         "intelligence": 7,
         "dexterity": 4,
-        "defense": 4,
+        "defense": 6,
         "endurance": 4
       },
       "growth": {

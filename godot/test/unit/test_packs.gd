@@ -109,6 +109,31 @@ func test_no_home_is_near_where_a_hero_arrives() -> void:
 			assert_true(gap >= safe, "%s is %d tiles from an arrival at %s" % [spawn["id"], gap, arrival])
 
 
+## PIX-377: a pack closing in from one side spreads round the hero, the one
+## in the middle staying put; the ring's nearest close in, the rest wait
+## further out; foes already in their places stay there.
+func test_a_pack_spreads_round_the_hero() -> void:
+	var ring: Dictionary = Packs.rules()["ring"]
+	var near := float(ring["near"])
+	var far := float(ring["far"])
+	var hero := Vector2(200, 200)
+	var at: Array[Vector2] = [hero + Vector2(20, -6), hero + Vector2(18, 0), hero + Vector2(30, 7)]
+	var spots := Packs.ring(hero, at)
+	var angles: Array[float] = []
+	for spot in spots:
+		angles.append(rad_to_deg((spot - hero).angle()))
+	assert_almost_eq(angles[1], 0.0, 10.0, "the middle one keeps its side")
+	assert_almost_eq(absf(angle_difference(deg_to_rad(angles[0]), deg_to_rad(angles[2]))), deg_to_rad(120.0), 0.01, "a third of a turn apart")
+	# Nearest first: the middle one, the first, the third.
+	var press := int(ring["press"])
+	for rank in 3:
+		var who: int = [1, 0, 2][rank]
+		assert_almost_eq(spots[who].distance_to(hero), near if rank < press else far, 0.01, "the nearest close in, the rest wait their turn")
+	var again := Packs.ring(hero, spots)
+	for index in spots.size():
+		assert_almost_eq(again[index].distance_to(spots[index]), 0.0, 0.01, "in place, it stays")
+
+
 ## Every cell a hero can appear on, per map: its spawn, its doors, where
 ## other maps' doors and the waypoints set them down.
 func _arrivals(map_ids: Array) -> Dictionary:

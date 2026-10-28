@@ -813,7 +813,16 @@ func held_to_fight() -> bool:
 ## a flash tells the bite, which lands if the hero is still close when the
 ## tell is done.
 func _chase(to_player: Vector2, delta: float) -> void:
-	velocity = _heading(to_player, delta) * CHASE_SPEED * pace
+	var spot: Vector2 = world.foes.ring_spot(self)
+	if spot != Vector2.INF:
+		# Its place in the ring round the hero (PIX-377), slowing onto it,
+		# and once there facing them.
+		var to_spot := spot - global_position
+		velocity = to_spot.limit_length(CHASE_SPEED * pace * delta) / delta
+		if to_spot.length() < 1.0:
+			facing = Gait.steer(facing, to_player)
+	else:
+		velocity = _heading(to_player, delta) * CHASE_SPEED * pace
 	if tell_left >= 0:
 		velocity *= 0.3
 		tell_left -= delta
@@ -844,6 +853,13 @@ func _tell_bite(toward: Vector2) -> void:
 	Sound.play_ui("tell")
 	if GameState.settings.clear_warnings:
 		Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, BITE_REACH, 12.0), tell_left, Callable(), false)
+
+
+## Whether it takes a place in the ring round the hero (PIX-377,
+## Foes.ring_spot): hunting them, never a boss or a named monster, nor one
+## sent at a wagon.
+func in_ring() -> bool:
+	return hunting and not dying and mode in ["chase", "cast"] and not boss_like and not _hunts_wagon()
 
 
 ## Where the chase goes: the hero, or the wagon when it's the nearer.

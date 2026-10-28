@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.292.0",
+      "date": "2026-10-28",
+      "codename": "Every Class Through",
+      "notes": [
+        "Packs now spread round you and take their turns instead of bunching up for one sweep, so a pack of three is a real fight; a stun can no longer follow a stun within three seconds",
+        "Bosses hit a little softer and the fire-breathers mark their bolts on the ground, so dodging is the skill and potions the backup",
+        "On the Night of Bells, Sela brings a bowl of broth to whoever holds the square, so every class can see the dawn; the cleric starts sturdier, and the first fields ease in more gently"
+      ]
+    },
+    {
       "version": "0.291.0",
       "date": "2026-10-28",
       "codename": "A Real Fight",

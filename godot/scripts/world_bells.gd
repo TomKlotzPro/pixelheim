@@ -392,6 +392,8 @@ func _physics_process(delta: float) -> void:
 				_volley(entry)
 			"cheese":
 				_roll(entry)
+			"shelter":
+				_bowl(entry)
 	if hold_left <= 0.0:
 		dragon.stand_down()
 
@@ -450,6 +452,18 @@ func _roll(entry: Dictionary) -> void:
 	if not _said.has("cheese"):
 		world.messages.flash(String(entry["first"]))
 	_note("cheese", String(entry["log"]))
+
+
+## Sela's stew (PIX-377): a bowl passed hand to hand across the square to a
+## hurt hero holding it, the same mend for every hero, so a mage's few hit
+## points last the night as a warrior's many do (Fafnyr beat every caster).
+func _bowl(entry: Dictionary) -> void:
+	if not Bells.holding(world.player_cell) or GameState.hero.hp >= int(GameState.hero.stats["maxHp"]):
+		return
+	var restored := GameState.upkeep.heal_hero(int(entry["mend"]))
+	Sound.play("heal")
+	world.fx.float_number(restored, world.player.global_position + Vector2(0, -22), Color(0.5, 1, 0.6), false, world.player)
+	_note("shelter", String(entry["log"]))
 
 
 ## A job has acted: the log says so the first time.
