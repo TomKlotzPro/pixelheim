@@ -2389,6 +2389,10 @@ msgid "Behind the scenes: a new part of the game can now live in a single folder
 msgstr "En coulisses : une nouvelle partie du jeu peut désormais tenir dans un seul dossier qui se branche tout seul, au lieu de toucher sept fichiers partagés ; les lampes sont les premières à déménager"
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: a part of the game in its own folder can now keep time, answer E and run its own checks without touching the shared code; Lantern Night and the lookout have moved onto these hooks"
+msgstr "En coulisses : une partie du jeu rangée dans son propre dossier peut désormais suivre l'heure, répondre à E et lancer ses propres vérifications sans toucher au code partagé ; la Nuit des Lanternes et le belvédère y sont passés"
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: camps, fires, smoke and tents, and the hamlets with their chimneys, lanterns and lamps, are now drawn by layers of their own; the game's biggest file is down by a third, and every map looks exactly as before"
 msgstr "En coulisses : les camps, les feux, la fumée et les tentes, ainsi que les hameaux avec leurs cheminées, leurs lanternes et leurs lampes, sont désormais dessinés par des couches à part ; le plus gros fichier du jeu a perdu un tiers de sa taille, et chaque carte reste exactement la même"
 
@@ -4415,6 +4419,10 @@ msgstr "Menu Options : volume de la musique et des effets, lignes de balayage 
 #: assets/data/changelog.json
 msgid "Options on the title screen opens again: it was opening behind the title"
 msgstr "Les options de l'écran titre s'ouvrent de nouveau : elles s'ouvraient derrière le titre"
+
+#: assets/data/changelog.json
+msgid "Own Hooks"
+msgstr "Leurs propres crochets"
 
 #: assets/data/changelog.json
 msgid "Owned businesses pay RENT: +2g each after every victory, straight into your purse with a line in the battle log"
