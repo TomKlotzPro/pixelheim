@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.283.0",
+      "date": "2026-10-28",
+      "codename": "Lantern Night",
+      "notes": [
+        "Once the story is over, the last night of every Reach year is Lantern Night: the town keeps a festival, the lamps wait in the dark, and Fafnyr crosses the stars to light every one of them (Esc skips it; with Reduce motion they all light at once)"
+      ]
+    },
+    {
       "version": "0.282.0",
       "date": "2026-10-28",
       "codename": "One Folder Each",
