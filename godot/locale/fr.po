@@ -4157,6 +4157,10 @@ msgid "New Faces, True Steps"
 msgstr "Nouveaux visages, pas justes"
 
 #: assets/data/changelog.json
+msgid "New Frames"
+msgstr "Nouveaux cadres"
+
+#: assets/data/changelog.json
 msgid "New brews: Stamina Draughts for fighters, Hunter's Stew, and the scale-steeped Dragon Tonic"
 msgstr "Nouvelles préparations : Breuvages d'endurance pour les combattants, Ragoût du chasseur et le Tonique de dragon, infusé d'écailles"
 
@@ -6095,6 +6099,10 @@ msgstr "La carte montre le monde tel qu'il est : chaque carte trouvée est une
 #: assets/data/changelog.json
 msgid "The menu is drawn over the Next line instead of under it"
 msgstr "Le menu s'affiche par-dessus la ligne À suivre au lieu de passer dessous"
+
+#: assets/data/changelog.json
+msgid "The menus wear new frames: parchment pages with brass corners, wooden buttons that really press, tabs, and slots that glow for rare and epic gear and for a ready skill; the boss's bar gets a frame of its own"
+msgstr "Les menus portent de nouveaux cadres : des pages de parchemin aux coins de laiton, des boutons de bois qui s'enfoncent vraiment, des onglets, et des emplacements qui brillent pour l'équipement rare ou épique et pour une compétence prête ; la barre du boss a désormais son propre cadre"
 
 #: assets/data/changelog.json
 msgid "The merchant opens shop: buy gear and potions, sell your loot"

@@ -539,7 +539,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 
 func _refresh() -> void:
 	for index in tab_buttons.size():
-		UiStyle.focus(tab_buttons[index], index == tab)
+		UiStyle.tab_button(tab_buttons[index], index == tab)
 	UiStyle.purse_set(purse, GameState.pack.gold)
 	_place()
 	rows = _rows_for(tabs[tab])

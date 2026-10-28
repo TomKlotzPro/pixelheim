@@ -63,6 +63,16 @@ static var _logo_font: FontFile
 static var _body_font: FontFile
 static var _bold_font: FontFile
 
+## GegX's UI kit (PIX-385): its pieces by UiStyle's names, and where the
+## private art installs them (scripts/fetch-private-art.sh). Without them
+## every frame is drawn here, as before.
+const KIT := "res://assets/puny/ui_kit.json"
+const KIT_ART := "res://assets/puny/gegx/"
+## The kit held back though it's here (the harness's `cc0`, as PunyTown is):
+## the run draws what a build without the private art draws.
+static var withheld := false
+static var _kit_pieces := {}
+
 
 ## Once, before any screen is built: the body font (the project's default,
 ## gui/theme/custom_font) renders at its pixel size and scales whole, and a
@@ -269,7 +279,14 @@ static func bold_font() -> FontFile:
 ## - anything else is a card in its own fill and rim (a clear rim, no frame).
 static func box(fill: Color, rim: Color, padding := 8) -> StyleBoxTexture:
 	if rim == LAMP:
-		return _style(_card(fill, LAMP), 2, padding)
+		var style := _style(_card(fill, LAMP), 2, padding)
+		# A chosen window-card keeps its twin's room, so its words don't
+		# jump on the kit's thicker frame (the rank-up's paths).
+		if padding >= 12 and fill == CARD:
+			var twin := window(padding)
+			for side in 4:
+				style.set_content_margin(side, twin.get_content_margin(side))
+		return style
 	if padding >= 12 and fill == CARD:
 		return window(padding)
 	return _style(_card(fill, rim), 2, padding)
@@ -279,8 +296,13 @@ static func box(fill: Color, rim: Color, padding := 8) -> StyleBoxTexture:
 ## shaded bottom and right), a dark outline, an inked line inside it, brass
 ## studs at the corners and flecks of grain in the page, which tiles rather
 ## than stretches. A dark `fill` is a plate of wood instead of a page (the
-## dialogue's name tab).
+## dock). With GegX's kit (PIX-385) a page wears its window, a small one
+## (padding up to 12: the nameplate, the hint card, the dock's menu) its
+## panel; the dock's wood stays drawn.
 static func window(padding := 16, fill := WINDOW) -> StyleBoxTexture:
+	var kit := _kit("window" if padding == 0 or padding > 12 else "panel", padding) if fill == WINDOW else null
+	if kit != null:
+		return kit
 	var key := "window %s" % fill.to_html()
 	if not _frames.has(key):
 		var size := 28  # a 6-pixel frame around a 16-pixel tile of page
@@ -383,6 +405,73 @@ static func _style(texture: Texture2D, border: int, padding: int) -> StyleBoxTex
 	return style
 
 
+## GegX's `piece` (PIX-385, ui_kit.json) as a nine-slice at scale 1: the kit
+## is drawn for the canvas's own pixels, so it isn't doubled like the art
+## drawn here. Its content margins keep words off its frame (`padding`, when
+## roomier, wins). Null when the kit isn't installed or is withheld: the
+## caller draws its own frame, as before.
+static func _kit(piece: String, padding := 0) -> StyleBoxTexture:
+	if withheld:
+		return null
+	if _kit_pieces.is_empty():
+		_kit_pieces = JSON.parse_string(FileAccess.get_file_as_string(KIT))["pieces"]
+	var entry: Dictionary = _kit_pieces[piece]
+	var path := KIT_ART + String(entry["file"])
+	if not ResourceLoader.exists(path):
+		return null
+	var style := StyleBoxTexture.new()
+	style.texture = load(path)
+	for side in 4:
+		style.set_texture_margin(side, entry["margins"][side])
+		style.set_content_margin(side, maxf(entry["content"][side], padding))
+	var mode := StyleBoxTexture.AXIS_STRETCH_MODE_TILE if entry["axis"] == "tile" else StyleBoxTexture.AXIS_STRETCH_MODE_STRETCH
+	style.axis_stretch_horizontal = mode
+	style.axis_stretch_vertical = mode
+	return style
+
+
+## Whether GegX's kit dresses the menus (PIX-385): installed, not withheld.
+static func kit_shown() -> bool:
+	return _kit("window") != null
+
+
+## Words on a plank or a tab: cream, gold when lit, on the wood drawn here;
+## on the kit's, whose faces are the page, ink and rubric red (PIX-385).
+static func plank_ink(lit: bool) -> Color:
+	if kit_shown():
+		return LAMP if lit else INK
+	return GOLD if lit else CREAM
+
+
+## A tab (PIX-385: the journal's, the codex's, the dialogue's name): the
+## kit's, lit brass when `chosen`; without it, a plank lit as before.
+static func tab(chosen: bool, padding := 6) -> StyleBoxTexture:
+	var kit := _kit("tab_selected" if chosen else "tab", padding)
+	return kit if kit != null else plank(chosen, padding)
+
+
+## A button that is a tab (the pack's, the counter's): the kit's tab, lit
+## under the mouse; without the kit, the plank focus() lights, as before.
+static func tab_button(button: Button, chosen: bool) -> void:
+	focus(button, chosen)
+	button.add_theme_stylebox_override("normal", tab(chosen))
+	button.add_theme_stylebox_override("hover", tab(true))
+	button.add_theme_stylebox_override("pressed", tab(true))
+
+
+## A slot that holds an icon (PIX-385: the dock's skills, what's worn): the
+## kit's wooden slot in its `colourway` ("" plain, "ready", "spent",
+## "focus", "fine" or "epic"), or, without the kit, the card `drawn`.
+static func slot(colourway: String, drawn: StyleBoxTexture) -> StyleBoxTexture:
+	var kit := _kit("slot_" + colourway if colourway != "" else "slot")
+	return kit if kit != null else drawn
+
+
+## The boss bar's frame, the kit's (PIX-385); null without it.
+static func bar_frame() -> StyleBoxTexture:
+	return _kit("bar_frame")
+
+
 ## Clickable twins of key commands; keyboard focus stays with the screen.
 ## A command's words after its key, as the player's keyboard names it
 ## (PIX-201): keyed("{key:interact}", "Play") reads "E  Play".
@@ -398,14 +487,16 @@ static func button(text: String, action: Callable, key := "") -> Button:
 	node.focus_mode = Control.FOCUS_NONE
 	node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	sized(node, TEXT)
-	node.add_theme_color_override("font_color", CREAM)
-	node.add_theme_color_override("font_hover_color", GOLD)
-	node.add_theme_color_override("font_pressed_color", GOLD)
+	node.add_theme_color_override("font_color", plank_ink(false))
+	node.add_theme_color_override("font_hover_color", plank_ink(true))
+	node.add_theme_color_override("font_pressed_color", plank_ink(true))
 	node.add_theme_stylebox_override("normal", plank(false, 6))
 	node.add_theme_stylebox_override("hover", plank(true, 6))
-	node.add_theme_stylebox_override("pressed", plank(true, 6))
+	# The kit's button sinks when pressed (PIX-385); the drawn plank lights.
+	var down := _kit("button_pressed", 6)
+	node.add_theme_stylebox_override("pressed", down if down != null else plank(true, 6))
 	node.add_theme_stylebox_override("disabled", plank(false, 6, true))
-	node.add_theme_color_override("font_disabled_color", Color(DUSK, 0.7))
+	node.add_theme_color_override("font_disabled_color", Color(FADED if down != null else DUSK, 0.7))
 	node.pressed.connect(action)
 	if key != "":
 		button_keyed(node, key, text)
@@ -415,6 +506,9 @@ static func button(text: String, action: Callable, key := "") -> Button:
 ## A plank button's key on a keycap and its words beside it (PIX-213);
 ## called again, it changes them. Dimmed with the button when it's off.
 static func button_keyed(node: Button, key: String, text: String) -> void:
+	# The kit's frame is thick (PIX-385): the cap and words stand inside it.
+	var frame := _kit("button", 6)
+	var room := Vector2(24, 4) if frame == null else frame.get_minimum_size()
 	var row: HBoxContainer = node.get_node_or_null("keyed")
 	if row == null:
 		row = HBoxContainer.new()
@@ -423,33 +517,43 @@ static func button_keyed(node: Button, key: String, text: String) -> void:
 		row.alignment = BoxContainer.ALIGNMENT_CENTER
 		row.add_theme_constant_override("separation", 8)
 		row.add_child(keycap("", true))
-		row.add_child(label("", TEXT, CREAM))
+		row.add_child(label("", TEXT, plank_ink(false)))
 		node.add_child(row)
 		row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		if frame != null:
+			row.offset_left = frame.content_margin_left
+			row.offset_top = frame.content_margin_top
+			row.offset_right = -frame.content_margin_right
+			row.offset_bottom = -frame.content_margin_bottom
 		node.draw.connect(func() -> void: row.modulate.a = 0.6 if node.disabled else 1.0)
 		# The plank fits its cap and words once they're measured (in the tree).
-		row.minimum_size_changed.connect(func() -> void: node.custom_minimum_size = row.get_combined_minimum_size() + Vector2(24, 4))
+		row.minimum_size_changed.connect(func() -> void: node.custom_minimum_size = row.get_combined_minimum_size() + room)
 	node.text = ""
 	keycap_text(row.get_child(0), Controls.shown(key))
 	(row.get_child(1) as Label).text = text
-	node.custom_minimum_size = row.get_combined_minimum_size() + Vector2(24, 4)
+	node.custom_minimum_size = row.get_combined_minimum_size() + room
 
 
 ## A button with focus (the chosen tab or menu line): the plank lit brass, its
-## words in gold.
+## words in gold; the kit's chosen button, red, its words in rubric (PIX-385).
 static func focus(button: Button, on := true) -> void:
-	button.add_theme_stylebox_override("normal", plank(on, 6))
-	button.add_theme_color_override("font_color", GOLD if on else CREAM)
+	var chosen := _kit("button_chosen", 6) if on else null
+	button.add_theme_stylebox_override("normal", chosen if chosen != null else plank(on, 6))
+	button.add_theme_color_override("font_color", plank_ink(on))
 	# A keyed plank's words are a label of their own (PIX-213): they light too.
 	var row := button.get_node_or_null("keyed")
 	if row != null:
-		(row.get_child(1) as Label).add_theme_color_override("font_color", GOLD if on else CREAM)
+		(row.get_child(1) as Label).add_theme_color_override("font_color", plank_ink(on))
 
 
 ## A wooden plank (buttons, the menu): wood with a lit top edge and a dark
 ## outline; `lit` gives it a brass rim (hover, focus), `dim` darkens it (a
-## button that can't be pressed now).
+## button that can't be pressed now). With GegX's kit, its button in those
+## states (PIX-385).
 static func plank(lit: bool, padding := 6, dim := false) -> StyleBoxTexture:
+	var kit := _kit("button_disabled" if dim else "button_hover" if lit else "button", padding)
+	if kit != null:
+		return kit
 	var key := "plank %s %s" % [lit, dim]
 	if not _frames.has(key):
 		var art := Image.create(8, 8, false, Image.FORMAT_RGBA8)

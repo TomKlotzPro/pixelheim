@@ -213,8 +213,9 @@ func _fill_details() -> void:
 	var role_id := _role()
 	var role := Catalog.role(role_id)
 	var columns := HBoxContainer.new()
-	# 200 + 18 + 440 and the card's padding: the column's 694.
-	columns.add_theme_constant_override("separation", 18)
+	# 200 + 10 + 440 and the card's frame (22 a side in GegX's kit, PIX-385):
+	# the column's 694.
+	columns.add_theme_constant_override("separation", 10)
 	details.add_child(columns)
 	var portrait := VBoxContainer.new()
 	portrait.custom_minimum_size = Vector2(190, 0)

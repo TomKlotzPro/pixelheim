@@ -82,8 +82,11 @@ func test_begin_is_the_one_lit_plank_and_waits_for_a_name() -> void:
 	_open()
 	var words := screen.begin.get_node("keyed").get_child(1) as Label
 	assert_eq(words.text, "Begin the adventure")
-	assert_eq(words.get_theme_color("font_color"), UiStyle.GOLD, "its words lit")
-	assert_eq((screen.begin.get_theme_stylebox("normal") as StyleBoxTexture).texture, UiStyle.plank(true).texture, "its plank lit")
+	assert_eq(words.get_theme_color("font_color"), UiStyle.plank_ink(true), "its words lit")
+	# Lit as focus() lights a plank: drawn here, or GegX's chosen one (PIX-385).
+	var lit: Button = autofree(Button.new())
+	UiStyle.focus(lit)
+	assert_eq((screen.begin.get_theme_stylebox("normal") as StyleBoxTexture).texture, (lit.get_theme_stylebox("normal") as StyleBoxTexture).texture, "its plank lit")
 	assert_true(screen.begin.disabled, "no name, no hero")
 	screen.name_field.text = "Robin"
 	screen._refresh()

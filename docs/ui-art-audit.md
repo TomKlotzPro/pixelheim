@@ -275,7 +275,9 @@ Colours per piece: wood 16–23, stone 15–22, parchment 26–33. Each parchmen
   - then the **density**: Shade's Puny art is chunky and simple, and the wood window's 1-px scrollwork is busier than anything in the game.
 - This would be the game's first art that is neither Shade's nor drawn in his palette in code, and the first AI-generated art. Whether that's acceptable is Tom's call. If it goes in, keep it to the chrome, never the world.
 
-## How the GegX kit would plug in (option A, not built)
+## How the GegX kit would plug in (option A, built in PIX-385)
+
+Tom chose option A. Steps 1 to 3 are PIX-385 step 1 (PR #439); steps 4, 5 and 7 are step 2, which also gave the slots their colourways (the dock's skills by `ready`/`spent`, what's worn by its rarity, `focus` for a common piece) and put the journal's, the codex's and the dialogue's name tabs on the kit's tab. Step 6's layout retuning is step 3; step 2 retuned only what broke (the journal's text width, the hero card's columns, the pack's tab row).
 
 This follows the paid-art pattern:
 
