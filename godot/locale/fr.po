@@ -5698,7 +5698,7 @@ msgstr "La maison de la Poste"
 
 #: assets/data/changelog.json
 msgid "The Post now carries twelve stories across the whole Reach: Maren writing to Wenna after fifty years, Mirelle's gentle reminders about interest, Wren's horse that eats mittens, Fenwick in charge of Greyhold, and Morvax and Maren still arguing over forty lamps or forty-one"
-msgstr "La Poste porte maintenant douze histoires dans toute la Reach : Maren qui écrit à Wenna après cinquante ans, les doux rappels de Mirelle sur les intérêts, le cheval de Wren qui mange les moufles, Fenwick seul maître de Greyhold, et Morvax et Maren qui se disputent toujours : quarante lampes ou quarante et une"
+msgstr "La Poste porte maintenant douze histoires dans toute la Marche : Maren qui écrit à Wenna après cinquante ans, les doux rappels de Mirelle sur les intérêts, le cheval de Wren qui mange les moufles, Fenwick seul maître de Greyhold, et Morvax et Maren qui se disputent toujours : quarante lampes ou quarante et une"
 
 #: assets/data/changelog.json
 msgid "The Quill"
