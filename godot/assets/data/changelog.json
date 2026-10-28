@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.297.0",
+      "date": "2026-10-28",
+      "codename": "Stone and Battlement",
+      "notes": [
+        "Greyhold's fort stands in solid grey stone now, with battlements along its walls, weathering and moss, instead of pale striped blocks"
+      ]
+    },
+    {
       "version": "0.296.0",
       "date": "2026-10-28",
       "codename": "Lived In",

@@ -203,6 +203,9 @@ var rampart := {}
 ## The old stone ruins in the open (PIX-381, Ruins.plan): their walls' and
 ## the ground's pieces; empty on a map without any.
 var ruins := {}
+## The other walls standing in the open (PIX-386, StoneWalls.plan): Greyhold's
+## fort, a hut's; empty on a map without any.
+var stone_walls := {}
 ## What a building rising on the town's tour lifts out and puts back
 ## (PIX-264): the houses' layers and the flat flowers' ("pieces", "decor",
 ## "flowers"), and each outdoor prop's node by its cell.

@@ -254,15 +254,18 @@ static func _object_rows(view: MapView, i: int) -> void:
 	var outdoor := PunyTerrain.is_outdoor(view.data.grid)
 	var village: Rect2i = view.skyline.get("block", Rect2i())
 	var walled: Dictionary = view.rampart.get("pieces", {})
-	# A ruin's walls are its own (RuinsLayer, PIX-381).
+	# A ruin's walls are its own (RuinsLayer, PIX-381), as are the walls
+	# standing in the open (StoneWalls, PIX-386): a gate in a band of wall
+	# keeps Shade's archway.
 	var ruined: Dictionary = view.ruins.get("walls", {})
+	var standing: Dictionary = view.stone_walls.get("walls", {})
 	for y in range(i * MapView.BLOCK, mini((i + 1) * MapView.BLOCK, view.data.size.y)):
 		for x in view.data.size.x:
 			var cell := Vector2i(x, y)
 			if not drawn.has(cell):
 				continue
 			var object := PunyTerrain.object_at(drawn, cell)
-			if outdoor and object < 0 and not village.has_point(cell) and not walled.has(cell) and not ruined.has(cell):
+			if outdoor and object < 0 and not village.has_point(cell) and not walled.has(cell) and not ruined.has(cell) and not standing.has(cell):
 				object = PunyTerrain.wall_piece(view.data.grid, cell)
 			if object >= 0 and not view.gate_hides.has(cell):
 				PunyTerrain.place(view._objects_layer, cell, object)
