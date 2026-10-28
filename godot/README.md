@@ -538,7 +538,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/map_layers/patches_layer.gd` — What lies on the ground to be picked, and the post boxes as they stand (PIX-143, PIX-250, PIX-286, PIX-320)
 - `scripts/map_layers/props_layer.gd` — Shade's props standing outdoors, the street lamps among them, and the furniture the hero placed in the house (PunyProps, LampArt, PIX-163, PIX-311)
 - `scripts/map_layers/rooms_layer.gd` — Inside, Shade's rooms with the paid pack or from his CC0 sheets (PunyInterior, PIX-133, PIX-163, PIX-318)
-- `scripts/map_layers/ruins_layer.gd` — The old stone ruins in the open (Ruins, RuinArt, PIX-381)
+- `scripts/map_layers/ruins_layer.gd` — The old stone ruins in the open (Ruins, RuinArt, PIX-381) and the walls still standing there (StoneWalls, PIX-386)
 - `scripts/map_layers/settlements_layer.gd` — Each settlement's set dressing, what the Post's routes put up, chimney smoke and the village seen far off (Hamlet, Routes, PIX-248, PIX-313, PIX-322)
 - `scripts/map_screen.gd` — The map screen (M/Tab): a map in a window, painted with the tiles' map colours where the hero has been and night where they haven't (mapColors.ts port), the hero, the waypoints and the lairs the bounty board has posted (PIX-156) marked
 - `scripts/map_view.gd` — One visit to a map, as drawn (PIX-136): Shade's ground, houses, rooms and dungeons, the props, field scatter, chests and door signs, the house's placed furniture, and the invisible boxes on what the hero can't walk into.
@@ -634,6 +634,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/state/vault.gd` — The Kings' Vault (PIX-257, the main story's step 11): what comes after the story.
 - `scripts/state/world_state.gd` — Where the hero stands and what they have explored (web WorldState plus the top-level worldSteps).
 - `scripts/stats_screen.gd` — The stat sheet (WorldHud's sheet + statInfo): who the hero is, the pools and defenses, and the five stats with what each point would buy, spent here with E.
+- `scripts/stone_walls.gd` — The walls standing in the open that are neither a ruin nor Pixelheim's rampart (PIX-386, Tom on PIX-381's ruins: the other walls built from the same pale pieces)
 - `scripts/streets.gd` — Paving in the Medieval Age's stone (PIX-307).
 - `scripts/telegraph.gd` — A danger marked on the ground before it lands (PIX-150, shared by the bosses and, PIX-155, the elites)
 - `scripts/throne_screen.gd` — Morvax's choice (PIX-253 step 10; the old throne's choice, PIX-157, re-aimed): the courier's last word.

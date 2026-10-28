@@ -76,6 +76,8 @@ Most of the Deepwood's decor was not its 2142 tree sprites (about 10 ms) but wor
 
 The town's yards (PIX-382, `Yards`, 2026-10-28, `--town-tier 4`, with the paid pack): nodes 1366 -> 1733, BESIDE 27.2 -> 30.5 ms (plan 8.8 -> 10.2, decor 9.1 -> 10.9), "again" about 30 -> 33.5 ms. The data's villager spots are worked out once a session (`Yards.kept`); the rest is `Hamlet.plan` fitting about 60 standing pieces and a node or four each.
 
+Greyhold's walls in stone (PIX-386, `StoneWalls`, 2026-10-28, with the paid pack, three runs interleaved with main's): nodes 703 -> 704 (the ruins' tile layer), BESIDE 16.5 -> 16.9 ms (plan 3.9 -> 4.5), "again" 19.6 -> 20.5 ms; other maps' plan +0.1-0.2 ms (the scan for walls). The ruins' atlas holds 120 tiles more: about 3 ms more, once a session, on the first map with ruins or walls (the Mirefen's first visit 75 -> 79 ms).
+
 ## Saves (a hero who has seen every cell of 29 maps)
 
 `to_dict` 0.04 ms (4.6 ms the first time, every map packed); `SaveSlots.write` (temp, read back, decode, rename) 0.85 ms; `SaveSlots.read` 0.27 ms; `GameState.apply` 5.6 ms (the fog unpacked, once per load); a `PXH2` code 0.3 ms either way. The file is 8.8 KB, the code 1.3 KB. Nothing to do.

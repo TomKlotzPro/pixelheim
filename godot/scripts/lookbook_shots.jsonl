@@ -161,6 +161,9 @@
 # their outer course fallen into heaps.
 {"shot": "mire_ruin", "area": "regions", "map": "mirefen", "cell": [43, 15], "time": "day"}
 {"shot": "deepwood_ruin", "area": "regions", "map": "deepwood", "cell": [34, 38], "time": "day"}
+# Greyhold's fort walls standing in the ruins' stone (PIX-386): the south
+# face with its battlements, the corner, the east run and its gap.
+{"shot": "fort_walls", "area": "regions", "map": "greyhold", "cell": [49, 21], "time": "day"}
 # The mountain road (PIX-253 step 8): its switchbacks up the ash to the
 # forge in the rock, and the lamp by its door.
 {"shot": "mountain_road", "area": "regions", "map": "mountain_road", "cell": [17, 8], "time": "day"}

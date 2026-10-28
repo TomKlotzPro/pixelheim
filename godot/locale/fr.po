@@ -3481,6 +3481,10 @@ msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate'
 msgstr "La cour de Greyhold est dallée et ses allées pavées, et la route de la Porte-Givre est pavée jusqu'à une cour dallée devant l'observatoire"
 
 #: assets/data/changelog.json
+msgid "Greyhold's fort stands in solid grey stone now, with battlements along its walls, weathering and moss, instead of pale striped blocks"
+msgstr "Le fort de Greyhold se dresse désormais en solide pierre grise, avec des créneaux le long de ses murs, de l'usure et de la mousse, au lieu de blocs pâles et rayés"
+
+#: assets/data/changelog.json
 msgid "Greyhold's south gate reads as a gate at last: two towers with the gate open between them, the road running through it and on up the courtyard to the keep's door, and the lamps standing before the towers to light both sides at night (Tom's playtest)"
 msgstr "La porte sud de Greyhold ressemble enfin à une porte : deux tours avec la porte ouverte entre elles, la route qui la traverse et remonte la cour jusqu'à la porte du donjon, et les lanternes devant les tours pour éclairer les deux côtés la nuit (playtest de Tom)"
 
@@ -5143,6 +5147,10 @@ msgstr "Pas à pas"
 #: assets/data/changelog.json
 msgid "Still not a single audio file - every note is synthesized live, like the sprites"
 msgstr "Toujours pas un seul fichier audio - chaque note est synthétisée en direct, comme les sprites"
+
+#: assets/data/changelog.json
+msgid "Stone and Battlement"
+msgstr "Pierre et créneaux"
 
 #: assets/data/changelog.json
 msgid "Stone and Water"
