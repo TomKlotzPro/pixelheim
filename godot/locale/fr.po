@@ -1961,6 +1961,10 @@ msgid "A boss's health bar now goes away when it falls, however it falls"
 msgstr "La barre de vie d'un boss disparaît désormais quand il tombe, quelle que soit la façon dont il tombe"
 
 #: assets/data/changelog.json
+msgid "A brass spyglass stands by the bend on the mountain road: at night it shows the Reach below, every lit lamp glowing in its own colour with its healed land around it; by day there is only ash and roads to see"
+msgstr "Une longue-vue en laiton se dresse au tournant de la route de la montagne : la nuit, elle montre la Marche en contrebas, chaque lampe allumée brillant de sa couleur avec sa terre guérie autour ; de jour, on n'y voit que cendre et chemins"
+
+#: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr "La première nuit d'un clerc lui dit de frapper les braises et de se soigner entre deux coups, puisque Soin n'est pas une arme"
 
@@ -5611,6 +5615,10 @@ msgstr "Le Propriétaire"
 #: assets/data/changelog.json
 msgid "The Letters"
 msgstr "Les lettres"
+
+#: assets/data/changelog.json
+msgid "The Lookout"
+msgstr "Le Belvédère"
 
 #: assets/data/changelog.json
 msgid "The Maker's Mark"
@@ -15795,6 +15803,26 @@ msgstr "Niv. %d"
 #: scripts/enemy.gd
 msgid "blocked"
 msgstr "paré"
+
+#: scripts/features/lookout/lookout.gd
+msgid "By day the Reach is only ash and roads from up here. Come back after dark, when the lamps are lit."
+msgstr "De jour, d'ici, la Marche n'est que cendre et chemins. Revenez à la nuit tombée, quand les lampes sont allumées."
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "%d lamps burn on the Reach."
+msgstr "%d lampes brûlent sur la Marche."
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "No lamp burns on the Reach yet."
+msgstr "Aucune lampe ne brûle encore sur la Marche."
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "One lamp burns on the Reach."
+msgstr "Une lampe brûle sur la Marche."
+
+#: scripts/features/lookout/lookout_screen.gd
+msgid "The Reach by night"
+msgstr "La Marche de nuit"
 
 #: scripts/home_screen.gd
 msgid "%s: %s"

@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.284.0",
+      "date": "2026-10-28",
+      "codename": "The Lookout",
+      "notes": [
+        "A brass spyglass stands by the bend on the mountain road: at night it shows the Reach below, every lit lamp glowing in its own colour with its healed land around it; by day there is only ash and roads to see"
+      ]
+    },
+    {
       "version": "0.283.0",
       "date": "2026-10-28",
       "codename": "Lantern Night",
