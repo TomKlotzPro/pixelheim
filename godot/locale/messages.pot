@@ -1961,6 +1961,10 @@ msgid "A boss's health bar now goes away when it falls, however it falls"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A brass spyglass stands by the bend on the mountain road: at night it shows the Reach below, every lit lamp glowing in its own colour with its healed land around it; by day there is only ash and roads to see"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr ""
 
@@ -5610,6 +5614,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Letters"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Lookout"
 msgstr ""
 
 #: assets/data/changelog.json
