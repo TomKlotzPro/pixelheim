@@ -200,6 +200,9 @@ var skyline := {}
 ## Pixelheim's rampart and its gatehouse (PIX-248, Rampart.plan): the
 ## town's own, or the ring round the village far off; empty elsewhere.
 var rampart := {}
+## The old stone ruins in the open (PIX-381, Ruins.plan): their walls' and
+## the ground's pieces; empty on a map without any.
+var ruins := {}
 ## What a building rising on the town's tour lifts out and puts back
 ## (PIX-264): the houses' layers and the flat flowers' ("pieces", "decor",
 ## "flowers"), and each outdoor prop's node by its cell.
@@ -216,7 +219,7 @@ var took := {}
 var _layers: Dictionary[String, MapLayer] = {
 	"dungeon": DungeonLayer.new(), "rooms": RoomsLayer.new(), "ground": GroundLayer.new(),
 	"camps": CampsLayer.new(), "patches": PatchesLayer.new(), "props": PropsLayer.new(), "gates": GatesLayer.new(),
-	"settlements": SettlementsLayer.new(),
+	"settlements": SettlementsLayer.new(), "ruins": RuinsLayer.new(),
 }
 ## Every feature's layers (Features, PIX-361), in `_layers` too so the hour
 ## sets them: their units come after the core's, in the plan and in the
@@ -312,6 +315,7 @@ func planning(arrival_at: Vector2i, slices: Slicer) -> void:
 	slices.add("plan_props", func() -> void:
 		_plan_props()
 		CampsLayer.plan_in(self))
+	_layers["ruins"].plan(self, slices)
 	_layers["gates"].plan(self, slices)
 	slices.add("plan_hamlet", _plan_hamlet)
 	slices.add("plan_routes", _plan_routes)
@@ -498,6 +502,7 @@ func building(root: Node, slices: Slicer) -> void:
 	_layers["ground"].build(self, slices)
 	slices.add("blockers_setup", _blockers_setup)
 	slices.add_each("blockers_rows", ceili(data.size.y / float(BLOCK)), _blocker_rows)
+	_layers["ruins"].build(self, slices)
 	slices.add("signs", func() -> void:
 		props = _build_props(data)
 		under.add_child(props)
@@ -1202,7 +1207,10 @@ func _blocker_rows(i: int) -> void:
 			if ruins and (tile == "floor" or (prop and [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT].any(
 				func(step: Vector2i) -> bool: return data.grid.get(cell + step, "") == "floor"
 			))):
-				tile_layer.set_cell(cell, STONE_SOURCE, Vector2i.ZERO)
+				# Plain stone with the odd worn slab, as a dungeon's floor
+				# (PIX-381).
+				var slab := PunyDungeon.floor_tile(cell)
+				tile_layer.set_cell(cell, STONE_SOURCE, Vector2i(slab % PunyDungeon.COLUMNS, slab / PunyDungeon.COLUMNS) - STONE_BLOCK.position)
 				continue
 			if (not prop and not WorldTiles.is_walkable(tile)) or cell in towers:
 				tile_layer.set_cell(cell, BLOCKER_SOURCE, Vector2i.ZERO)
@@ -1215,6 +1223,9 @@ func _blocker_rows(i: int) -> void:
 static var _blocker_set: TileSet
 const STONE_SOURCE := 0
 const BLOCKER_SOURCE := 1
+## The block of Shade's dungeon sheet the ruins' floor slabs come from
+## (PunyDungeon.FLOORS), in tiles.
+const STONE_BLOCK := Rect2i(4, 0, 4, 4)
 
 
 static func _blockers() -> TileSet:
@@ -1227,9 +1238,12 @@ static func _blockers() -> TileSet:
 		Vector2(-8, -8), Vector2(8, -8), Vector2(8, 8), Vector2(-8, 8),
 	])
 	var stone := TileSetAtlasSource.new()
-	stone.texture = PunyDungeon.sheet().tile_texture(PunyDungeon.FLOOR)
+	var sheet: Image = (load(PunyDungeon.SHEET) as Texture2D).get_image()
+	stone.texture = ImageTexture.create_from_image(sheet.get_region(Rect2i(STONE_BLOCK.position * TILE, STONE_BLOCK.size * TILE)))
 	stone.texture_region_size = Vector2i(TILE, TILE)
-	stone.create_tile(Vector2i.ZERO)
+	for y in STONE_BLOCK.size.y:
+		for x in STONE_BLOCK.size.x:
+			stone.create_tile(Vector2i(x, y))
 	tileset.add_source(stone, STONE_SOURCE)
 	var blocker := TileSetAtlasSource.new()
 	blocker.texture = ImageTexture.create_from_image(Image.create(TILE, TILE, false, Image.FORMAT_RGBA8))

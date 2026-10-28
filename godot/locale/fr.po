@@ -4309,6 +4309,10 @@ msgid "Old Pell comes home with his canary and takes the room above Hilda's forg
 msgstr "Le vieux Pell rentre avec son canari et s'installe dans la chambre au-dessus de la forge de Hilda ; ses améliorations coûtent un peu moins cher"
 
 #: assets/data/changelog.json
+msgid "Old Stones"
+msgstr "Vieilles pierres"
+
+#: assets/data/changelog.json
 msgid "Old Wenna comes home with you: she moves into Sela's inn and puts Tam's stew back on the menu, so the inn's rest lasts ten fights longer"
 msgstr "La vieille Wenna rentre avec vous : elle s'installe à l'auberge de Sela et remet le ragoût de Tam à la carte, si bien que le repos de l'auberge dure dix combats de plus"
 
@@ -6111,6 +6115,10 @@ msgstr "Les classes de la nuit sortent de l'ombre : les robes du nécromancien
 #: assets/data/changelog.json
 msgid "The north pays its way: Frostgate, the ice cave and Greyhold's foes now carry about twice the gold, and the Mirefen's mimics a little less"
 msgstr "Le nord paie enfin : les monstres de la Porte-Givre, de la grotte de glace et de Greyhold portent environ deux fois plus d'or, et les mimiques des Marais de Fange un peu moins"
+
+#: assets/data/changelog.json
+msgid "The old shrine in the Mirefen and the courtyard in the Deepwood are real ruins now: low broken walls of grey stone with moss, cracks and fallen heaps, rubble at their feet and worn slabs inside, and the stone knight stands on his plinth again"
+msgstr "Le vieux sanctuaire des Marais de Fange et la cour des Bois-Profonds sont désormais de vraies ruines : des murets brisés de pierre grise, avec mousse, fissures et éboulis, des gravats à leur pied et des dalles usées au-dedans, et le chevalier de pierre se dresse de nouveau sur son socle"
 
 #: assets/data/changelog.json
 msgid "The old web version is gone for good: no more offer to bring a hero over from it, and its old pages are off the site"
