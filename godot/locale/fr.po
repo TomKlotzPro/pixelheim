@@ -3197,6 +3197,10 @@ msgid "Fafnyr warms his belly on Hilda's new forge, and Maren has a last word fo
 msgstr "Fafnyr se chauffe le ventre sur la nouvelle forge de Hilda, et Maren a un dernier mot pour vous"
 
 #: assets/data/changelog.json
+msgid "Fair Trade"
+msgstr "Commerce honnête"
+
+#: assets/data/changelog.json
 msgid "Fall in a dungeon you entered from the world? The inn takes you in"
 msgstr "Vaincu dans un donjon atteint depuis le monde ? L'auberge vous recueille"
 
@@ -4905,6 +4909,10 @@ msgid "Sell all your junk in one go, choose how many of a stack to sell, and buy
 msgstr "Vendez toute votre camelote d'un coup, choisissez combien d'une pile vendre, et rachetez ce que vous venez de vendre au prix obtenu, jusqu'à ce que vous quittiez le comptoir"
 
 #: assets/data/changelog.json
+msgid "Selling the junk only sells what is truly worse for you: never forged, set, quest or trophy gear, and never a staff judged against an axe; a stack's tag says how many go, and the counter's keys name the right verb on each tab"
+msgstr "Vendre la camelote ne vend plus que ce qui vous est vraiment inutile : jamais d'équipement forgé, de panoplie, de quête ou de trophée, et plus de bâton jugé contre une hache ; l'étiquette d'une pile dit combien partent, et les touches du comptoir nomment le bon verbe à chaque onglet"
+
+#: assets/data/changelog.json
 msgid "Settlers move in as the town rises: Mira the Weaver, Old Tomas, Serra and Fenn each arrive with their tier - and their own things to say about you"
 msgstr "De nouveaux habitants s'installent à mesure que la ville s'élève : Mira la tisserande, le vieux Tomas, Serra et Fenn arrivent chacun avec leur palier - et ont chacun leur mot à dire sur vous"
 
@@ -5833,6 +5841,10 @@ msgid "The corner buttons speak pixel now: a proper gold speaker and gear instea
 msgstr "Les boutons du coin parlent pixel désormais : un vrai haut-parleur et un vrai engrenage dorés au lieu d'emoji"
 
 #: assets/data/changelog.json
+msgid "The courier's book keeps the Mirefen's and the Deepwood's pages after Iva and Loras move to town"
+msgstr "Le carnet du coursier garde les pages des Marais de Fange et des Bois-Profonds une fois Iva et Loras installés au village"
+
+#: assets/data/changelog.json
 msgid "The courier's book: a postmark for every place your post reaches, with who got letters there and what you were given"
 msgstr "Le carnet du messager : un cachet pour chaque lieu où arrive votre courrier, avec qui a reçu des lettres et ce qu'on vous a offert"
 
@@ -5947,6 +5959,10 @@ msgstr "La campagne paraît habitée : un enclos à moutons, des prés fleuris
 #: assets/data/changelog.json
 msgid "The land heals round the lamps: each morning a lit waystation lamp's ring reaches one cell further into the ash, from bare earth at its edge to grass, flowers and saplings by the lamp, up to five cells; no night pack rises inside a ring, and the Ash's heat and embers fade over healed ground"
 msgstr "La terre guérit autour des lanternes : chaque matin, le cercle d'une lanterne de halte allumée gagne une case sur la cendre, de la terre nue au bord jusqu'à l'herbe, aux fleurs et aux jeunes arbres près de la lanterne, jusqu'à cinq cases ; aucune meute de nuit ne surgit dans un cercle, et la chaleur et les braises des Cendres s'effacent sur la terre guérie"
+
+#: assets/data/changelog.json
+msgid "The ledger keeps its text inside its frame and is named for the age: Village projects, Town works, City commissions"
+msgstr "Le registre garde son texte dans son cadre et porte le nom de l'époque : Chantiers du village, Travaux du bourg, Commandes de la cité"
 
 #: assets/data/changelog.json
 msgid "The line above the dock says where: the next step, the place it's in and how far along you are"
@@ -6547,6 +6563,10 @@ msgstr "Quand un boss tombe loin de sa porte, une sortie s'ouvre juste là où i
 #: assets/data/changelog.json
 msgid "When a boss falls, the Victory card stands clear of the loot and LEVEL UP, the boss bar fades at once, a place card holds a hint instead of pushing it over the hero, and the guide arrow keeps off the words at the bottom (Claude's playtest)"
 msgstr "Quand un boss tombe, la carte Victoire reste à l'écart du butin et de NIVEAU SUPÉRIEUR, la barre du boss s'efface aussitôt, une carte de lieu met un conseil en attente au lieu de le pousser sur le héros, et la flèche de guidage évite les textes du bas (playtest de Claude)"
+
+#: assets/data/changelog.json
+msgid "When a boss falls, the level-up rises once and its plate waits until the Victory card has gone, and a boss's bar never reads 0% while it still stands"
+msgstr "Quand un boss tombe, la montée de niveau s'élève une seule fois et son panneau attend que la carte de victoire soit partie, et la barre d'un boss n'affiche jamais 0 % tant qu'il tient debout"
 
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"

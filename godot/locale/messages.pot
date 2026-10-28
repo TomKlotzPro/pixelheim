@@ -3197,6 +3197,10 @@ msgid "Fafnyr warms his belly on Hilda's new forge, and Maren has a last word fo
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fair Trade"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fall in a dungeon you entered from the world? The inn takes you in"
 msgstr ""
 
@@ -4905,6 +4909,10 @@ msgid "Sell all your junk in one go, choose how many of a stack to sell, and buy
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Selling the junk only sells what is truly worse for you: never forged, set, quest or trophy gear, and never a staff judged against an axe; a stack's tag says how many go, and the counter's keys name the right verb on each tab"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Settlers move in as the town rises: Mira the Weaver, Old Tomas, Serra and Fenn each arrive with their tier - and their own things to say about you"
 msgstr ""
 
@@ -5833,6 +5841,10 @@ msgid "The corner buttons speak pixel now: a proper gold speaker and gear instea
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The courier's book keeps the Mirefen's and the Deepwood's pages after Iva and Loras move to town"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The courier's book: a postmark for every place your post reaches, with who got letters there and what you were given"
 msgstr ""
 
@@ -5946,6 +5958,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The land heals round the lamps: each morning a lit waystation lamp's ring reaches one cell further into the ash, from bare earth at its edge to grass, flowers and saplings by the lamp, up to five cells; no night pack rises inside a ring, and the Ash's heat and embers fade over healed ground"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The ledger keeps its text inside its frame and is named for the age: Village projects, Town works, City commissions"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6546,6 +6562,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "When a boss falls, the Victory card stands clear of the loot and LEVEL UP, the boss bar fades at once, a place card holds a hint instead of pushing it over the hero, and the guide arrow keeps off the words at the bottom (Claude's playtest)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "When a boss falls, the level-up rises once and its plate waits until the Victory card has gone, and a boss's bar never reads 0% while it still stands"
 msgstr ""
 
 #: assets/data/changelog.json

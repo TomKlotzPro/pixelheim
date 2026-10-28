@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.288.0",
+      "date": "2026-10-28",
+      "codename": "Fair Trade",
+      "notes": [
+        "The ledger keeps its text inside its frame and is named for the age: Village projects, Town works, City commissions",
+        "Selling the junk only sells what is truly worse for you: never forged, set, quest or trophy gear, and never a staff judged against an axe; a stack's tag says how many go, and the counter's keys name the right verb on each tab",
+        "The courier's book keeps the Mirefen's and the Deepwood's pages after Iva and Loras move to town",
+        "When a boss falls, the level-up rises once and its plate waits until the Victory card has gone, and a boss's bar never reads 0% while it still stands"
+      ]
+    },
+    {
       "version": "0.287.0",
       "date": "2026-10-28",
       "codename": "Right Names",
