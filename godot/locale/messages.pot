@@ -5561,6 +5561,10 @@ msgid "The Cartographer"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The City's showpieces earn their price: the Aegis of the Ash turns the first blow of every fight, the Everflask fills itself again while you sleep, and the King's Signet adds a tenth to the gold you earn"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Deep Hunt"
 msgstr ""
 
@@ -6058,6 +6062,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The night classes stepped into the light: the necromancer's robes and the rogue's leathers brightened so they read on every lawn"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The north pays its way: Frostgate, the ice cave and Greyhold's foes now carry about twice the gold, and the Mirefen's mimics a little less"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6686,6 +6694,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Worth Making"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Worth the Gold"
 msgstr ""
 
 #: assets/data/changelog.json
