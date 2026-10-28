@@ -1925,6 +1925,10 @@ msgid "A REAL VILLAGE: the dirt road from the north gate opens into a paved squa
 msgstr "UN VRAI VILLAGE : le chemin de terre venu de la porte nord débouche sur une place pavée gardée par le sanctuaire - recoins de marché, angles festonnés, le vieux puits près de son bord sud-ouest - avec la rue principale en haut et une ruelle au sud qui dessert chaque porte"
 
 #: assets/data/changelog.json
+msgid "A Real Fight"
+msgstr "Un vrai combat"
+
+#: assets/data/changelog.json
 msgid "A SAFER MIREFEN AND DEEPWOOD: the Mirefen's mimic pack is gone (its trapped chest waits in the far west, by Grandmother Gulp), and the Deepwood's trolls no longer stand at its gate"
 msgstr "MARAIS DE FANGE ET BOIS-PROFONDS PLUS SÛRS : la meute de mimiques des Marais de Fange a disparu (son coffre piégé attend tout à l'ouest, près de Grand-mère Glouglou), et les trolls des Bois-Profonds ne se tiennent plus à leur entrée"
 
@@ -3255,6 +3259,10 @@ msgstr "Alchimie de campagne"
 #: assets/data/changelog.json
 msgid "Fighters run on Endurance now: Warrior and Rogue skills cost EN, and it trickles back every combat round - rhythm over potion-chugging"
 msgstr "Les combattants carburent désormais à l'Endurance : les compétences du Guerrier et du Voleur coûtent de l'EN, qui revient goutte à goutte à chaque tour de combat - le rythme plutôt que les potions à la chaîne"
+
+#: assets/data/changelog.json
+msgid "Fights take a fight now: foes have far more health and keep their bite instead of being knocked out of reach, a boss lasts long enough to show its tricks, and dodging pays; the first fields stay gentle while you find your feet"
+msgstr "Les combats en sont enfin : les monstres ont bien plus de vie et gardent leur morsure au lieu d'être repoussés hors de portée, un boss tient assez longtemps pour montrer ses tours, et l'esquive paie ; les premiers champs restent doux le temps de prendre vos marques"
 
 #: assets/data/changelog.json
 msgid "Figures shed their 2D outline in 3D: brighter, chunkier heroes, villagers and monsters, grounded by a soft contact shadow"

@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.291.0",
+      "date": "2026-10-28",
+      "codename": "A Real Fight",
+      "notes": [
+        "Fights take a fight now: foes have far more health and keep their bite instead of being knocked out of reach, a boss lasts long enough to show its tricks, and dodging pays; the first fields stay gentle while you find your feet"
+      ]
+    },
+    {
       "version": "0.290.0",
       "date": "2026-10-28",
       "codename": "Worth the Gold",
