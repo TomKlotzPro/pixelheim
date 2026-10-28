@@ -226,7 +226,7 @@ func field_boss() -> String:
 	var out: PackedStringArray = []
 	for enemy in world.get_tree().get_nodes_in_group("mobs"):
 		if not enemy.dying and not enemy.is_queued_for_deletion() and Bestiary.fights_like_boss(enemy.fighter):
-			var share := roundi(100.0 * int(enemy.fighter["hp"]) / maxi(1, int(enemy.fighter["maxHp"])))
+			var share: int = world.hud.boss_bar.percent(float(enemy.fighter["hp"]) / maxi(1, int(enemy.fighter["maxHp"])))
 			out.append("%s:%s:%d%%" % [enemy.fighter.get("named", enemy.fighter["id"]), enemy.mode, share])
 	return ",".join(out)
 
@@ -466,7 +466,7 @@ func field_hudclash() -> String:
 	var hud: Hud = world.hud
 	var messages: Messages = world.messages
 	var shown: Array = []
-	if hud._card_up():
+	if hud.card_up():
 		shown.append(["card", hud._card.get_global_rect()])
 	if is_instance_valid(hud.hint_card) and hud.hint_card.visible and not hud.hint_card.is_queued_for_deletion():
 		shown.append(["hint", hud.hint_card.get_global_rect()])
@@ -616,6 +616,13 @@ func field_pauseline() -> String:
 		if node is Screen and node.get("saved_line") is Label and node.saved_line.visible:
 			return node.saved_line.text
 	return ""
+
+
+func field_plate() -> String:
+	var messages: Messages = world.messages
+	if messages.message_box.modulate.a <= 0.0:
+		return ""
+	return messages.message_tag.text if messages.message_tag.visible else messages.message_label.text
 
 
 func field_post() -> String:

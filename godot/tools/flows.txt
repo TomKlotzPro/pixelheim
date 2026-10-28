@@ -398,6 +398,15 @@ boss-fall-words | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --
 warden-fall-words | --map shafts_blackseam --at 24,11 fight kill --foe seam_warden --foe-left 0.05 --wait 0.6 --zoom play | map=shafts_blackseam fell=1 bossbar=none hudclash=none | dungeon combat
 place-holds-hint | --map seacave_grotto --at 23,12 hints fight kill --foe tidecaller --foe-left 0.05 --then-walk r,r --wait 0.6 --zoom play | map=saltmere card=Saltmere hint=held:dodge hudclash=none | dungeon travel combat
 floor-name-arrow | --map saltmere --at 6,24 --walk u fades --wait 0.6 --zoom play | map=seacave toast=1 box, 1 line, fits hudclash=none | dungeon travel
+# The Hollow King's fall in French (PIX-378: « NIVEAU SUPÉRIEUR » rising,
+# the win, the Victory card and the level's plate all at once, the win on a
+# blow's number): LEVEL UP alone says the level under the card (the plate
+# says it once the card has gone and the fight is over), the win clear of
+# the numbers.
+king-fall-words | --map vault_5 --at 44,9 --level 16 fight slay --foe hollow_king --wait 0.6 --zoom play --lang fr | map=vault_5 fell=1 bossbar=none plate= hudclash=none | dungeon combat lang
+# A boss a few points from its fall still reads on its bar (PIX-378: the
+# Bone Abbot standing read 0%).
+abbot-sliver | --map vault_3 --at 62,7 fight kill --foe bone_abbot --foe-left 0.05 --wait 2.5 --lang en | map=vault_3 boss=bone_abbot:[a-z]+:[1-9]\d*% bossbar=[1-9]\d*% | dungeon combat
 # A dungeon's boss alive, the hero walked off to the far end of the cave:
 # it follows round the rocks by its way and never loses them in its hall,
 # so the fight and its bar hold, the stairs barred (PIX-232, PIX-288).

@@ -59,3 +59,52 @@ func test_one_box_of_words_at_a_time() -> void:
 	messages.message_fade.custom_step(30.0)
 	assert_eq(chips.call(), ["A wolf howls."], "back once the plate has gone, in full")
 	assert_eq(messages.logged, 1, "counted once")
+
+
+## What the plate asks of the world: no fight on, and whether a title card
+## is up.
+class CalmFoes extends RefCounted:
+	func in_fight(_linger: float) -> bool:
+		return false
+
+
+class CardHud extends RefCounted:
+	var card := true
+
+	func card_up() -> bool:
+		return card
+
+
+class FellWorld extends Node:
+	var foes := CalmFoes.new()
+	var hud := CardHud.new()
+
+
+## PIX-378: the Hollow King's fall ended the fight, and the level's plate
+## came up under the Victory card, LEVEL UP rising over the hero and the
+## win beside it: four texts at once. What can wait waits out the card too,
+## then says the level; said as the boss fell, before its card came up (no
+## fight on: felled at a blow), it makes way for the card.
+func test_a_level_waits_out_a_victory_card() -> void:
+	var world: FellWorld = add_child_autofree(FellWorld.new())
+	var hud: CanvasLayer = add_child_autofree(CanvasLayer.new())
+	var messages: Messages = add_child_autofree(Messages.new())
+	messages.world = world
+	messages.build_log(hud)
+	messages.build_plate(hud)
+	var level := "Level up: you are now level 17. +3 stat points and +1 skill point to spend."
+	messages.log_lines([level], true)
+	assert_eq(messages._message_now, "", "not under the Victory card")
+	world.hud.card = false
+	messages.update()
+	assert_eq(messages._message_now, level, "said once it has gone")
+	messages.clear()
+	messages.log_lines([level], true)
+	assert_eq(messages._message_now, level, "no card yet: said at once")
+	world.hud.card = true
+	messages.make_way()
+	assert_eq(messages._message_now, "", "the card up: it makes way")
+	assert_eq(messages.message_box.modulate.a, 0.0, "its plate gone")
+	world.hud.card = false
+	messages.update()
+	assert_eq(messages._message_now, level, "said in full after the card")

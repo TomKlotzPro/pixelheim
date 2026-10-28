@@ -147,9 +147,13 @@ func _say(entry: Dictionary) -> void:
 
 
 ## Whether the words that can wait still do: a fight on, or only just over
-## (Foes.CALM_S). No world (a test's): never.
+## (Foes.CALM_S), or a title card up (PIX-378: a boss's fall ends the fight,
+## and the level's plate came up under its Victory card, LEVEL UP rising
+## over the hero already said it). No world (a test's): never.
 func _fighting() -> bool:
-	return world != null and world.get("foes") != null and world.foes.in_fight(Foes.CALM_S)
+	if world == null or world.get("foes") == null:
+		return false
+	return world.foes.in_fight(Foes.CALM_S) or (world.get("hud") != null and world.hud.card_up())
 
 
 ## The message's plate, shrunk round its words (a container only grows).
@@ -232,6 +236,20 @@ func update() -> void:
 	while not line.is_empty():
 		_say(line)
 		line = _log.next(fighting)
+
+
+## A boss's fall, its card up: what can wait and already shows on the plate
+## (the level its spoils brought, said as it fell, a fight or not) goes back
+## to wait its turn after the card, in full (PIX-378).
+func make_way() -> void:
+	if _shown.is_empty() or not _shown["later"]:
+		return
+	_plate.gone(_shown)
+	_plate.waiting.push_front(_shown)
+	_shown = {}
+	_message_now = ""
+	message_fade.kill()
+	message_box.modulate.a = 0.0
 
 
 ## The log's line showing goes back to the head of the queue, to show again

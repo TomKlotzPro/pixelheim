@@ -75,6 +75,19 @@ func test_a_word_rises_just_clear_of_a_tag() -> void:
 	assert_eq(TextBudget.rise([wall] as Array[Rect2], number, 1.0, 0.0, 36.0), 36.0, "no room: as high as it may, still shown")
 
 
+## PIX-378: a blow's number on a foe beside the Hollow King stepped up over
+## his win as it came, as far as it goes, and stayed there as the win rose
+## past it, on it. With no room over them all, it takes the lowest height
+## that is clear, back down if it must.
+func test_a_word_with_no_room_over_goes_back_down_where_its_clear() -> void:
+	var win := Rect2(0, 10, 30, 8)
+	var over := Rect2(0, -60, 30, 69)
+	var number := Rect2(5, 32, 10, 6)
+	assert_eq(TextBudget.rise([win, over] as Array[Rect2], number, 1.0, 36.0, 36.0), 0.0, "under the win risen past it")
+	var tag := Rect2(0, 30, 30, 10)
+	assert_eq(TextBudget.rise([tag, win, over] as Array[Rect2], number, 1.0, 36.0, 36.0), 9.0, "between its tag and the win")
+
+
 ## PIX-345: LEVEL UP rose into the boss bar and was cut. A word stays under
 ## the HUD's plates over it: up only so far, down under one it's already in.
 func test_a_word_stays_under_the_plates_over_it() -> void:
