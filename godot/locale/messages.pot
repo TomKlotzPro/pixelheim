@@ -12413,6 +12413,10 @@ msgid "Blackiron ore brought"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Bowls of Sela's stew come hand to hand across the square to whoever holds it."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Bram swears imps from the mountain's deep floors stole his best cheese knife."
 msgstr ""
 

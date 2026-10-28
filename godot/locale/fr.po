@@ -12413,6 +12413,10 @@ msgid "Blackiron ore brought"
 msgstr "Minerai de Fernoir apporté"
 
 #: assets/data/progression.json
+msgid "Bowls of Sela's stew come hand to hand across the square to whoever holds it."
+msgstr "Les bols du ragoût de Sela passent de main en main à travers la place, jusqu'à qui la tient."
+
+#: assets/data/progression.json
 msgid "Bram swears imps from the mountain's deep floors stole his best cheese knife."
 msgstr "Bram jure que des diablotins des étages profonds de la montagne lui ont volé son meilleur couteau à fromage."
 

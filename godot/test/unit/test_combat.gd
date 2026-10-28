@@ -49,8 +49,9 @@ func test_elites_match_the_web() -> void:
 	var orc := Bestiary.spawn("orc", true)
 	assert_eq(orc["name"], "Elite Orc Raider")
 	# PIX-186: an elite's health grows 2.25 times for real time (the web's 1.5 made it 63),
-	# and PIX-377's scale at its level on top (5.5 at level 5: 95 before).
-	assert_eq([orc["hp"], orc["attack"], orc["defense"], orc["xp"], orc["gold"]], [520, 21, 5, 45, 33])
+	# and PIX-377's scale at its level on top (about 5.08 at level 5 since
+	# step 2 eased the taper in, 5.5 before: 95 before either).
+	assert_eq([orc["hp"], orc["attack"], orc["defense"], orc["xp"], orc["gold"]], [480, 21, 5, 45, 33])
 
 
 func test_hero_damage_matches_the_web() -> void:

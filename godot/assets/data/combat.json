@@ -1398,6 +1398,13 @@
     "graceSeconds": 1.5,
     "windUpSeconds": 0.4,
     "biteTellSeconds": 0.4,
+    "ring": {
+      "about": "PIX-377: foes hunting the hero within `reachTiles` of them, bosses and named monsters aside, stand round them evenly spaced rather than on one spot (Packs.ring), so one sweep doesn't catch them all: the `press` nearest close in to `near` pixels and bite, the rest wait their turn at `far` (out of a sweep's reach but in front of it).",
+      "reachTiles": 4,
+      "press": 1,
+      "near": 11,
+      "far": 28
+    },
     "night": {
       "about": "PIX-252: a pack that comes out only after dark (its spawn's hours \"night\") is a little stronger than its kind by day and pays a little more: its health, attack, XP and gold grow by these multipliers (its level stays its kind's, so its tag and whether it runs from the hero read as by day), and its kills add `loot` to their drop chance (a common foe's 22% becomes 30%, an elite's 40% 48%). Packs out at every hour, and those asleep at home after dark (sleeps \"night\"), fight as by day.",
       "hp": 1.15,
@@ -4947,9 +4954,10 @@
   },
   "eliteHp": 2.25,
   "stunGuard": {
-    "about": "PIX-186: after a stun takes hold, a boss or an elite (named monsters too) halves the next for this many seconds - a one-turn stun is shrugged off - so Frost Nova can't hold them in place.",
+    "about": "PIX-186: after a stun takes hold, a boss or an elite (named monsters too) halves the next for this many seconds - a one-turn stun is shrugged off - so Frost Nova can't hold them in place. PIX-377: the hero has one too, `hero` seconds, so a boss's grasp and its packmates' bites can't chain a stun into the next.",
     "elite": 6.0,
-    "boss": 12.0
+    "boss": 12.0,
+    "hero": 3.0
   },
   "xpGap": {
     "falloff": 0.15,

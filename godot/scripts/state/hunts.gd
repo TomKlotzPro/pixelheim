@@ -147,7 +147,7 @@ static func fighter(named_id: String) -> Dictionary:
 		"elite": true,
 		"hp": hp,
 		"maxHp": hp,
-		"attack": int(entry["attack"]),
+		"attack": roundi(int(entry["attack"]) * Bestiary.BOSS_ATTACK_SCALE),
 		"defense": int(entry["defense"]),
 		"xp": int(entry["xp"]),
 		"gold": int(entry["gold"]),

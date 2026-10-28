@@ -98,6 +98,36 @@ static func strays(home: Vector2, at: Vector2, hero: Vector2) -> bool:
 	return at.distance_to(home) > tiles("bossLeashTiles") and not within_notice(at, hero)
 
 
+## Where foes hunting the hero stand round them (PIX-377: a pack converging
+## on one spot fell to one sweep after another): evenly spaced round `hero`
+## in the order they already stand, the ring turned as little as it can from
+## where they are; the ring's `press` nearest close in (its `near`) and the
+## rest wait at its `far`. A spot for each of `at`, in its order.
+static func ring(hero: Vector2, at: Array[Vector2]) -> Array[Vector2]:
+	var numbers: Dictionary = rules()["ring"]
+	var count := at.size()
+	var step := TAU / count
+	var angles: Array[float] = []
+	for point in at:
+		angles.append((point - hero).angle())
+	var round_order := range(count)
+	round_order.sort_custom(func(a: int, b: int) -> bool: return angles[a] < angles[b])
+	var nearest := range(count)
+	nearest.sort_custom(func(a: int, b: int) -> bool: return at[a].distance_squared_to(hero) < at[b].distance_squared_to(hero))
+	# The turn that moves them least: the mean of each one's angle less its
+	# place's (a circular mean, so it holds across the half turn).
+	var turn := Vector2.ZERO
+	for place in count:
+		turn += Vector2.from_angle(angles[round_order[place]] - place * step)
+	var spots: Array[Vector2] = []
+	spots.resize(count)
+	for place in count:
+		var who: int = round_order[place]
+		var reach := float(numbers["near"]) if nearest.find(who) < int(numbers["press"]) else float(numbers["far"])
+		spots[who] = hero + Vector2.from_angle(turn.angle() + place * step) * reach
+	return spots
+
+
 ## The cell a point of the world is in.
 static func cell_of(at: Vector2) -> Vector2i:
 	return Vector2i((at / TILE).floor())

@@ -164,10 +164,17 @@ const FULL_HEALTH_LEVEL := 6
 ## 15-25 s of a matched hero's swings and skills each.
 const BOSS_HEALTH_SCALE := 7.5
 const TOP_BOSS_HEALTH_SCALE := 2.2
+## A boss's or a named foe's blows over its row's (PIX-377 step 2): standing
+## still and trading blows cost two or three potions a boss, so the dodge is
+## the skill and a potion the backup.
+const BOSS_ATTACK_SCALE := 0.8
+## The taper from level 1 up eases in (PIX-377 step 2): a level-1 hero lost
+## 63% to a level-4 wolf.
+const HEALTH_TAPER := 1.5
 
 
 static func health_scale(level: int) -> float:
-	return lerpf(LOW_HEALTH_SCALE, HEALTH_SCALE, clampf((level - 1) / float(FULL_HEALTH_LEVEL - 1), 0.0, 1.0))
+	return lerpf(LOW_HEALTH_SCALE, HEALTH_SCALE, pow(clampf((level - 1) / float(FULL_HEALTH_LEVEL - 1), 0.0, 1.0), HEALTH_TAPER))
 
 
 static func boss_health_scale(level: int) -> float:
