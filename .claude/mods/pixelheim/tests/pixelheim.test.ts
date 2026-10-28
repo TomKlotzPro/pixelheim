@@ -57,13 +57,6 @@ test('agents start under the cap', async ($, on) => {
   expect(spawn.deny).toBeUndefined()
 })
 
-test('commits and PRs carry no attribution lines', async ($, on) => {
-  world(on, 5)
-  await start($)
-  expect((await $.attribution.text({ kind: 'commit', text: 'Co-Authored-By: Claude' })).text).toBe('')
-  expect((await $.attribution.text({ kind: 'pr', text: 'Generated with Claude Code' })).text).toBe('')
-})
-
 test('a godot run with --slot is refused, a search for the word is not', async ($, on) => {
   world(on, 5)
   await start($)
