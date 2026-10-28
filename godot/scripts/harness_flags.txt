@@ -70,7 +70,7 @@ walk-path |  | with rankup: walk the new rank's path
 --path | <ids> | a path already walked (juggernaut,bastion) | path | 280
 stats |  | the stats sheet, points to spend | stats | 290
 skills |  | the skills sheet, points to spend | skills | 300
-create |  | hero creation over the title, a role picked and a name typed | create | 310
+create |  | hero creation over the title, a role picked (--role, else the ranger) and a name typed | create | 310
 whatsnew |  | with title: What's new over it | whatsnew | 330
 options |  | the options: over the title with title, else from the pause menu | options | 350
 pause |  | the pause menu | pause | 340

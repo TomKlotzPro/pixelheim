@@ -4,20 +4,20 @@ extends GutTest
 
 
 func test_nothing_drawable_worn_keeps_the_look() -> void:
-	var plain := PunyArt.plain("warrior", 0)
+	var plain := PunyArt.plain("warrior")
 	# An iron sword is Shade's own blade: nothing to recolour.
-	var spec := PunyArt.dressed("warrior", 0, {"weapon": "iron_sword", "ring1": "band_of_grit"})
+	var spec := PunyArt.dressed("warrior", {"weapon": "iron_sword", "ring1": "band_of_grit"})
 	assert_eq(spec["sheet"], plain["sheet"])
 	assert_false(spec.has("head"))
 
 
 func test_the_weapon_in_hand_is_the_weapon_swung() -> void:
 	# PIX-172: the attack follows the weapon, not the role.
-	assert_eq(PunyArt.dressed("warrior", 0, {"weapon": "hunting_bow"})["attack"], "bow")
-	assert_eq(PunyArt.dressed("mage", 0, {"weapon": "war_hammer"})["attack"], "sword")
-	assert_eq(PunyArt.dressed("ranger", 0, {"weapon": "shadow_dagger"})["attack"], "sword", "a dagger slashes")
-	assert_eq(PunyArt.dressed("ranger", 0, {"weapon": "arch_staff"})["attack"], "staff")
-	assert_eq(PunyArt.dressed("cleric", 0, {})["attack"], "staff", "bare hands keep the role's own")
+	assert_eq(PunyArt.dressed("warrior", {"weapon": "hunting_bow"})["attack"], "bow")
+	assert_eq(PunyArt.dressed("mage", {"weapon": "war_hammer"})["attack"], "sword")
+	assert_eq(PunyArt.dressed("ranger", {"weapon": "shadow_dagger"})["attack"], "sword", "a dagger slashes")
+	assert_eq(PunyArt.dressed("ranger", {"weapon": "arch_staff"})["attack"], "staff")
+	assert_eq(PunyArt.dressed("cleric", {})["attack"], "staff", "bare hands keep the role's own")
 	for item_id: String in Catalog._data()["items"]:
 		var item: Dictionary = Catalog.item(item_id)
 		if item.get("slot", "") == "weapon":
@@ -25,8 +25,8 @@ func test_the_weapon_in_hand_is_the_weapon_swung() -> void:
 
 
 func test_a_coloured_weapon_recolours_the_blade_and_nothing_else() -> void:
-	var spec := PunyArt.dressed("warrior", 0, {"weapon": "dragonbane"})
-	assert_ne(spec["sheet"], PunyArt.plain("warrior", 0)["sheet"], "dragonbane has its own colour")
+	var spec := PunyArt.dressed("warrior", {"weapon": "dragonbane"})
+	assert_ne(spec["sheet"], PunyArt.plain("warrior")["sheet"], "dragonbane has its own colour")
 	var sheet := PunyArt.outfit_texture(spec["head"], spec["body"], spec["weapon_tint"]).get_image()
 	var plain: Image = (load(PunyArt.path(spec["body"])) as Texture2D).get_image()
 	var changed := 0
@@ -50,14 +50,14 @@ func test_casters_start_with_a_staff() -> void:
 
 
 func test_a_helmet_brings_its_head_and_keeps_the_body() -> void:
-	var spec := PunyArt.dressed("mage", 1, {"head": "iron_helm"})
+	var spec := PunyArt.dressed("mage", {"head": "iron_helm"})
 	assert_eq(spec["head"], PunyArt.HEADS["iron_helm"])
-	assert_eq(spec["body"], PunyArt.plain("mage", 1)["sheet"])
+	assert_eq(spec["body"], PunyArt.plain("mage")["sheet"])
 	assert_eq(spec["attack"], "staff", "a mage in a helm still casts")
 
 
 func test_armour_brings_its_body() -> void:
-	var spec := PunyArt.dressed("ranger", 0, {"body": "iron_armor", "head": "leather_cap"})
+	var spec := PunyArt.dressed("ranger", {"body": "iron_armor", "head": "leather_cap"})
 	assert_eq(spec["body"], PunyArt.BODIES["iron_armor"])
 	assert_eq(spec["head"], PunyArt.HEADS["leather_cap"])
 
@@ -121,8 +121,7 @@ func test_every_worn_and_hero_sheet_keeps_the_templates_poses() -> void:
 		for item_id: String in table:
 			sheets[table[item_id]] = true
 	for role_id: String in PunyArt.HEROES:
-		for sheet: String in PunyArt.HEROES[role_id][0]:
-			sheets[sheet] = true
+		sheets[PunyArt.HEROES[role_id][0]] = true
 	for sheet: String in sheets:
 		var image: Image = (load(PunyArt.path(sheet)) as Texture2D).get_image()
 		var total := 0.0
@@ -139,8 +138,7 @@ func test_every_piece_has_a_look_of_its_own() -> void:
 	# sheet (on which it would change nothing).
 	var own := {}
 	for role_id: String in PunyArt.HEROES:
-		for sheet: String in PunyArt.HEROES[role_id][0]:
-			own[sheet] = true
+		own[PunyArt.HEROES[role_id][0]] = true
 	for table: Dictionary in [PunyArt.HEADS, PunyArt.BODIES]:
 		var seen := {}
 		for item_id: String in table:
@@ -155,12 +153,11 @@ func test_every_piece_has_a_look_of_its_own() -> void:
 			assert_true(PunyArt.HEADS.has(item_id), "%s is drawn" % item_id)
 		elif slot == "body":
 			assert_true(PunyArt.BODIES.has(item_id), "%s is drawn" % item_id)
-	# Every hero, whatever their look, changes when armour goes on.
+	# Every hero changes when armour goes on.
 	for role_id: String in PunyArt.HEROES:
-		for look in PunyArt.looks(role_id):
-			var plain: String = PunyArt.plain(role_id, look)["sheet"]
-			for item_id: String in PunyArt.BODIES:
-				assert_ne(PunyArt.dressed(role_id, look, {"body": item_id})["sheet"], plain, "%s on %s %d" % [item_id, role_id, look])
+		var plain: String = PunyArt.plain(role_id)["sheet"]
+		for item_id: String in PunyArt.BODIES:
+			assert_ne(PunyArt.dressed(role_id, {"body": item_id})["sheet"], plain, "%s on %s" % [item_id, role_id])
 
 
 func test_gloves_boots_and_shields_show() -> void:
@@ -171,11 +168,11 @@ func test_gloves_boots_and_shields_show() -> void:
 		var slot: String = item.get("slot", "")
 		if slot in ["hands", "feet", "offhand"]:
 			assert_true(item.has("tint"), "%s has a colour" % item_id)
-			assert_ne(PunyArt.dressed("warrior", 0, {slot: item_id})["sheet"], PunyArt.plain("warrior", 0)["sheet"], "%s shows" % item_id)
+			assert_ne(PunyArt.dressed("warrior", {slot: item_id})["sheet"], PunyArt.plain("warrior")["sheet"], "%s shows" % item_id)
 		if slot == "offhand":
 			assert_true(PunyArt.SHIELDS.has(item.get("shape", "")), "%s has a shape" % item_id)
-	var plain: Image = (load(PunyArt.path(PunyArt.plain("warrior", 0)["sheet"])) as Texture2D).get_image()
-	var spec := PunyArt.dressed("warrior", 0, {"hands": "blackiron_gauntlets", "feet": "frost_boots", "offhand": "warden_kite"})
+	var plain: Image = (load(PunyArt.path(PunyArt.plain("warrior")["sheet"])) as Texture2D).get_image()
+	var spec := PunyArt.dressed("warrior", {"hands": "blackiron_gauntlets", "feet": "frost_boots", "offhand": "warden_kite"})
 	var worn := PunyArt.outfit_texture(spec["head"], spec["body"], spec["weapon_tint"], spec["gear"]).get_image()
 	# The first frame: the hands (rows 19-20) are no longer skin, the boots
 	# (the last two rows) no longer leather, and a shield hangs on the off hand.
@@ -195,7 +192,7 @@ func test_gloves_boots_and_shields_show() -> void:
 	assert_gt(changed, 20)
 	# A bow drawn puts the shield away: the bow columns match the plain sheet
 	# but for the gloves and boots.
-	var bow_spec := PunyArt.dressed("warrior", 0, {"offhand": "warden_kite"})
+	var bow_spec := PunyArt.dressed("warrior", {"offhand": "warden_kite"})
 	var bow_sheet := PunyArt.outfit_texture(bow_spec["head"], bow_spec["body"], bow_spec["weapon_tint"], bow_spec["gear"]).get_image()
 	for y in 32:
 		for x in range(8 * 32, 9 * 32):
@@ -218,10 +215,10 @@ func test_the_necromancers_violet_is_their_kits() -> void:
 	# The grave violet is the necromancer's kit (PIX-175), the picture hero
 	# creation shows; plain clothes (PIX-242) and borrowed armour keep their
 	# own colours.
-	assert_ne(PunyArt.hero("necromancer", 0)["tint"], Color.WHITE, "the kit is violet")
-	var bare := PunyArt.dressed("necromancer", 0, {})
+	assert_ne(PunyArt.hero("necromancer")["tint"], Color.WHITE, "the kit is violet")
+	var bare := PunyArt.dressed("necromancer", {})
 	assert_eq(bare["tint"], Color.WHITE, "plain clothes aren't")
-	var armoured := PunyArt.dressed("necromancer", 0, {"body": "iron_armor"})
+	var armoured := PunyArt.dressed("necromancer", {"body": "iron_armor"})
 	assert_eq(armoured["tint"], Color.WHITE, "no sprite-wide tint once dressed")
 	assert_eq(armoured["gear"]["head_tint"], Color.WHITE, "the plain head keeps its colour")
 	assert_eq(armoured["gear"]["body_tint"], Color.WHITE, "borrowed armour keeps its colour")
@@ -232,17 +229,15 @@ func test_the_necromancers_violet_is_their_kits() -> void:
 	var neck := base.get_region(Rect2i(0, 0, 32, 32)).get_used_rect().position.y + PunyArt.HEAD_ROWS
 	for x in range(8, 24):
 		assert_eq(outfit.get_pixel(x, neck + 3), bodies.get_pixel(x, neck + 3), "iron at x %d" % x)
-	assert_eq(PunyArt.dressed("warrior", 0, {"body": "iron_armor"})["gear"]["head_tint"], Color.WHITE)
+	assert_eq(PunyArt.dressed("warrior", {"body": "iron_armor"})["gear"]["head_tint"], Color.WHITE)
 
 
 func test_every_hero_starts_in_plain_clothes() -> void:
-	# A survivor, not a soldier (PIX-242): every role and look starts in the
-	# worker's clothes, the look picking their colour; the role's kit is what
-	# hero creation shows of what they become.
+	# A survivor, not a soldier (PIX-242): every role starts in the same
+	# worker's clothes (PIX-391: no colour to pick).
 	for role_id: String in PunyArt.HEROES:
-		for look in PunyArt.looks(role_id):
-			var spec := PunyArt.dressed(role_id, look, {})
-			assert_has(PunyArt.PLAIN, spec["sheet"], "%s %d starts plain" % [role_id, look])
-			assert_ne(spec["sheet"], PunyArt.hero(role_id, look)["sheet"], "not in the kit")
-	assert_eq(PunyArt.dressed("mage", 0, {})["attack"], "staff", "the role still casts")
-	assert_eq(PunyArt.dressed("necromancer", 0, {})["tint"], Color.WHITE, "no grave violet on plain clothes")
+		var spec := PunyArt.dressed(role_id, {})
+		assert_eq(spec["sheet"], PunyArt.PLAIN, "%s starts plain" % role_id)
+		assert_ne(spec["sheet"], PunyArt.hero(role_id)["sheet"], "not in the kit")
+	assert_eq(PunyArt.dressed("mage", {})["attack"], "staff", "the role still casts")
+	assert_eq(PunyArt.dressed("necromancer", {})["tint"], Color.WHITE, "no grave violet on plain clothes")

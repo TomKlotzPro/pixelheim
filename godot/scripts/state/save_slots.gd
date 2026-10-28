@@ -165,7 +165,7 @@ func read(slot: int) -> Dictionary:
 
 
 ## What a slot picker shows: `{kind}`, and for a HERO its card (name,
-## roleId, look, worn, level, mapId, chapter, playSeconds), its gold,
+## roleId, worn, level, mapId, chapter, playSeconds), its gold,
 ## savedAt, the version that wrote it and `backup`.
 func summary(slot: int) -> Dictionary:
 	return _summarized(look(slot))
@@ -212,7 +212,6 @@ static func _summarized(seen: Dictionary) -> Dictionary:
 		"kind": HERO,
 		"name": card["name"],
 		"roleId": card["role"],
-		"look": card.get("look", 0),
 		# What the hero wears, so the slot shows them as they left (PIX-175).
 		"worn": card.get("worn", {}),
 		"level": card["level"],

@@ -50,8 +50,8 @@ func test_the_hero_springs_back_with_feet_on_the_ground() -> void:
 	# PIX-243: the feet stand where the hero's frames draw them, below the
 	# middle of the cell, so a squash about them keeps them on the ground:
 	# standing, setting off (the walk's rise) and swinging.
-	var frames := PunyArt.frames(PunyArt.plain("warrior", 0))
-	var size := float(PunyArt.frame_size(PunyArt.plain("warrior", 0)))
+	var frames := PunyArt.frames(PunyArt.plain("warrior"))
+	var size := float(PunyArt.frame_size(PunyArt.plain("warrior")))
 	for anim in ["idle_down", "idle_right", "walk_down", "walk_right", "sword_down"]:
 		var used := frames.get_frame_texture(anim, 0).get_image().get_used_rect()
 		assert_eq(float(used.end.y) - size / 2.0, Juice.FEET, anim)

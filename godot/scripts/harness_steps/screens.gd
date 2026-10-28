@@ -51,11 +51,11 @@ func step_skills() -> void:
 
 
 func step_create() -> void:
-	# Hero creation over the title, a role picked and a name typed.
+	# Hero creation over the title, a role picked (`--role`, else the
+	# ranger) and a name typed.
 	var creation := preload("res://scripts/create_screen.gd").new()
 	creation.world = world
-	creation.role_index = 4
-	creation.look = 1
+	creation.role_index = maxi(0, creation.ROLES.find(flags.value("--role", "ranger")))
 	world.add_child(creation)
 	await h.get_tree().create_timer(0.1).timeout
 	creation.name_field.text = "Robin"

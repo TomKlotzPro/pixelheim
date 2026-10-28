@@ -1,5 +1,5 @@
 {
-  "about": "Item and ailment icons (PIX-138), all Shade's. 'free/<sheet>@c,r' is a cell of a CC0 sheet in godot/assets/puny/icons/; 'medieval@<tile>' a tile of the Medieval Age atlas; anything else a file under retro-rpg/shade/ in the private pixelheim-assets repo (a '@c,r' suffix picks a cell of a sheet), which scripts/fetch-private-art.sh copies into godot/assets/puny/shade/. Skills map a skill's name to '<theme>/<n>' in the Puny Skills pack (puny-skills/Icons/Transparent Background/<theme>/<Theme>-Icon-NNN.png; Buffs&Debuffs files are Buff-Icon-NNN.png).",
+  "about": "Item, ailment and stat icons (PIX-138, PIX-391: the stats' on hero creation), all Shade's. 'free/<sheet>@c,r' is a cell of a CC0 sheet in godot/assets/puny/icons/; 'medieval@<tile>' a tile of the Medieval Age atlas; anything else a file under retro-rpg/shade/ in the private pixelheim-assets repo (a '@c,r' suffix picks a cell of a sheet), which scripts/fetch-private-art.sh copies into godot/assets/puny/shade/. Skills map a skill's name to '<theme>/<n>' in the Puny Skills pack (puny-skills/Icons/Transparent Background/<theme>/<Theme>-Icon-NNN.png; Buffs&Debuffs files are Buff-Icon-NNN.png).",
   "items": {
     "rusty_sword": "survival-rpg-icons/Tools/Sword-01.png",
     "worn_dagger": "survival-rpg-icons/Tools/Knife-01.png",
@@ -274,5 +274,14 @@
     "flame": "puny-skills/Animation Spritesheets/Fire/Flame-Anim(Looped).png",
     "embers": "puny-skills/Animation Spritesheets/Fire/Status-Burned-Anim(Looped).png",
     "smoke": "puny-skills/Animation Spritesheets/Fire/Smokescreen-Anim.png"
+  },
+  "stats": {
+    "maxHp": "puny-skills/Icons/Transparent Background/Psychic/Psychic-Icon-002.png",
+    "mana": "puny-skills/Icons/Transparent Background/Water/Water-Icon-001.png",
+    "energy": "puny-skills/Icons/Transparent Background/Electric/Electric-Icon-001.png",
+    "strength": "puny-skills/Icons/Transparent Background/Martial-Arts/Martial-Arts-Icon-008.png",
+    "intelligence": "medieval@2778",
+    "dexterity": "survival-rpg-icons/Armour/Leather-Boots-03.png",
+    "defense": "survival-rpg-icons/Armour/Metal-Shield-07.png"
   }
 }

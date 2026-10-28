@@ -264,11 +264,11 @@ static func unread_note(target: int, kind: String) -> String:
 
 ## Writes a brand-new hero into a slot (replacing whatever was there) and plays it.
 ## `night`: begin with the Night of Ash (a returning player may skip it).
-func new_hero_in(target: int, name := "", role_id := DEFAULT_ROLE, look := 0, night := true) -> void:
+func new_hero_in(target: int, name := "", role_id := DEFAULT_ROLE, night := true) -> void:
 	save_now()
 	_use_slot(target)
 	slot_note = ""
-	new_game(name, role_id, look, night)
+	new_game(name, role_id, night)
 	save_now()
 	if settings.last_slot != target:
 		settings.last_slot = target
@@ -332,13 +332,19 @@ func _use_slot(target: int) -> void:
 		settings.save_file()
 
 
+## What a new hero of the role holds (hero creation shows them with it,
+## PIX-391).
+static func starter_weapon(role_id: String) -> String:
+	return STARTER_WEAPONS.get(role_id, "rusty_sword")
+
+
 ## A fresh level-1 hero waking in the village (CREATE_HERO).
 ## `prologue`: a hero made at the title begins with the Night of Ash
 ## (PIX-152); the stand-ins (no save yet, tests, harness runs) start in town.
-func new_game(name := "", role_id := DEFAULT_ROLE, look := 0, prologue := false) -> void:
+func new_game(name := "", role_id := DEFAULT_ROLE, prologue := false) -> void:
 	var state := SaveCodec.initial_state()
-	var weapon := InventoryState.create_gear(STARTER_WEAPONS.get(role_id, "rusty_sword"))
-	state["hero"] = HeroState.create(name if name != "" else Text.t(DEFAULT_HERO_NAME), role_id, look).to_dict()
+	var weapon := InventoryState.create_gear(starter_weapon(role_id))
+	state["hero"] = HeroState.create(name if name != "" else Text.t(DEFAULT_HERO_NAME), role_id).to_dict()
 	state["gold"] = STARTER_GOLD
 	state["inventory"] = STARTER_ITEMS.duplicate()
 	state["gear"] = [weapon]
