@@ -198,6 +198,14 @@ func test_each_stat_has_its_icon_pips_number_and_name() -> void:
 	assert_eq((cells[0].get_child(2) as Label).text, "42", "the number")
 	screen._pick_role(screen.ROLES.find("mage"))
 	assert_eq(_stat_cells()[1].tooltip_text, "Mana", "a mage's is mana")
+	# Each pool against its own kind's best: the most energy fills them all, though a mage has more mana.
+	var best := ""
+	for role: String in screen.ROLES:
+		if Catalog.role(role)["resource"] != "mana" and (best == "" or int(Catalog.role(role)["baseStats"]["maxMp"]) > int(Catalog.role(best)["baseStats"]["maxMp"])):
+			best = role
+	screen._pick_role(screen.ROLES.find(best))
+	var lit: Array = _stat_cells()[1].get_child(1).get_children().filter(func(pip: ColorRect) -> bool: return (pip.get_child(0) as ColorRect).color == UiStyle.BRASS)
+	assert_eq(lit.size(), screen.PIPS, "the most energy lights every pip")
 
 
 func test_pips_compare_with_the_rosters_best() -> void:

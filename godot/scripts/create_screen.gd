@@ -316,7 +316,9 @@ func _stat(role_id: String, stat: String) -> Control:
 	var value := int(role["baseStats"][stat])
 	var most := 0
 	for other: String in ROLES:
-		most = maxi(most, int(Catalog.role(other)["baseStats"][stat]))
+		# A pool against its own kind's best: energy against energy, not the mage's mana.
+		if stat != "maxMp" or Catalog.role(other)["resource"] == role["resource"]:
+			most = maxi(most, int(Catalog.role(other)["baseStats"][stat]))
 	var key := stat
 	if stat == "maxMp":
 		key = "mana" if role["resource"] == "mana" else "energy"
