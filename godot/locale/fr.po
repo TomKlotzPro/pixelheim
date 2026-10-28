@@ -16993,6 +16993,10 @@ msgid "  (worn)"
 msgstr "  (porté)"
 
 #: scripts/shop_screen.gd
+msgid "%d junk"
+msgstr "%d en camelote"
+
+#: scripts/shop_screen.gd
 msgid "%s\nA bigger house: its new rooms wait the next time you walk in."
 msgstr "%s\nUne maison plus grande : ses nouvelles pièces vous attendent à votre prochaine visite."
 
@@ -17233,6 +17237,14 @@ msgid "Your pack"
 msgstr "Votre sac"
 
 #: scripts/shop_screen.gd
+msgid "buy"
+msgstr "acheter"
+
+#: scripts/shop_screen.gd
+msgid "forge"
+msgstr "forger"
+
+#: scripts/shop_screen.gd
 msgid "junk"
 msgstr "camelote"
 
@@ -17245,8 +17257,28 @@ msgid "owned"
 msgstr "acquis"
 
 #: scripts/shop_screen.gd
+msgid "quench"
+msgstr "tremper"
+
+#: scripts/shop_screen.gd
+msgid "reforge"
+msgstr "reforger"
+
+#: scripts/shop_screen.gd
+msgid "salvage"
+msgstr "démonter"
+
+#: scripts/shop_screen.gd
+msgid "sell"
+msgstr "vendre"
+
+#: scripts/shop_screen.gd
 msgid "sold"
 msgstr "vendu"
+
+#: scripts/shop_screen.gd
+msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
+msgstr "{key:move_left}/{key:move_right}  onglet      {key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
 
 #: scripts/shop_screen.gd
 msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close"

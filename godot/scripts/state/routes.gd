@@ -109,12 +109,12 @@ static func writer(post: PostState, place: String) -> String:
 	return best
 
 
-## The routes a piece travels: the place each of its ends stands in now
+## The routes a piece travels: the page of each of its ends (Post.page_for)
 ## that has a route (the sender's, then the addressee's), each once.
 static func ends(entry: Dictionary, progression: ProgressionState, settlement: SettlementState) -> Array[String]:
 	var out: Array[String] = []
 	for npc_id: String in [Post.sender(entry), Post.addressee(entry)]:
-		var place := Post.place_for(npc_id, progression, settlement)
+		var place := Post.page_for(npc_id, progression, settlement)
 		if place != "" and place not in out and not route(place).is_empty():
 			out.append(place)
 	return out
