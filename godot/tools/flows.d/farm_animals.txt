@@ -1,0 +1,11 @@
+# The farm animals' flows (PIX-361: a feature's flows, read after
+# tools/flows.txt as its own, scripts/features/farm_animals/), a line each
+# as in flows.txt.
+# The town's farm animals by its age (PIX-387): a few hens in the Hamlet,
+# more of every kind in the Village, the whole farmyard in the City, asleep
+# where they stand at night; with ninth-jedi's pack (on Shade's CC0 art
+# alone, none), and none with the pack held back.
+animals-hamlet | --map town --town-tier 1 --at 21,5 | map=town animals=(1:hen3)? | town
+animals-village | --map town --town-tier 2 --at 57,28 | map=town animals=(2:chick3,cow1,hen5,pig2,sheep3)? | town
+animals-city-night | --map town --town-tier 4 --at 57,28 night | map=town animals=(4:bull1,chick6,cow2,hen7,pig3,sheep5:asleep)? | town night
+animals-cc0 | --map town --town-tier 4 cc0 | map=town animals= | town
