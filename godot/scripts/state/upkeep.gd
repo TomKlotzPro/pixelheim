@@ -97,10 +97,10 @@ func carry_capacity() -> int:
 	return 60 + strength * 3 + int(HeroRules.passives(owner.hero)["carryBonus"])
 
 
-## The hero as drawn: the role's look in whatever is worn (PunyArt.dressed),
+## The hero as drawn: plain clothes under whatever is worn (PunyArt.dressed),
 ## with `trying` (slot -> item id) on instead: the counter's card (PIX-336).
 func hero_art(trying := {}) -> Dictionary:
-	return PunyArt.dressed(owner.hero.role_id, owner.hero.look, owner.pack.worn_items().merged(trying, true))
+	return PunyArt.dressed(owner.hero.role_id, owner.pack.worn_items().merged(trying, true))
 
 
 ## Puts on a gear piece (EQUIP): into its slot, a ring onto the empty finger

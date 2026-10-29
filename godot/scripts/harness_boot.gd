@@ -271,7 +271,7 @@ static func _level_up(level: int) -> void:
 		hero.xp = hero.xp_to_next
 		HeroRules.apply_level_ups(hero)
 	# The role's own stat: its starting weapon's.
-	var stat: String = Catalog.item(GameState.STARTER_WEAPONS.get(hero.role_id, "rusty_sword"))["scaling"]
+	var stat: String = Catalog.item(GameState.starter_weapon(hero.role_id))["scaling"]
 	var band := 0
 	for at: int in KITS:
 		if level >= at:

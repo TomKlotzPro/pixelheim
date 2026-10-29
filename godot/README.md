@@ -52,10 +52,10 @@ map changes and loot, and when the window closes or loses focus.
 Slot files (`user://saves/slot_<n>.save`; IndexedDB on the web export) are
 Pixelheim's own save format, v5 (`save_codec.gd`): the format's version and
 the game's, when it was saved and the time played, a card the Saves screen
-reads alone (name, class, look, level, place, chapter, time played), then a
-section for each part of the game (hero, pack, home, town, story, quests,
-world, the Post, buffs), the fog of war a bitmap per map. A fully explored
-hero's save is 9 KB (298 KB in the first edition's format). Until the beta
+reads alone (name, class, what they wear, level, place, chapter, time
+played), then a section for each part of the game (hero, pack, home, town,
+story, quests, world, the Post, buffs), the fog of war a bitmap per map. A
+fully explored hero's save is 9 KB (298 KB in the first edition's format). Until the beta
 there is no backward compatibility: nothing reads what only an old save
 held (the old mountain's floors, the Deep Hunt, the old throne's endings),
 and a change old saves can't take bumps the version with no migration: a
@@ -471,7 +471,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/chapter_screen.gd` — A chapter card (PIX-253 step 2, v2 §5: "Main quests stand out")
 - `scripts/codex_screen.gd` — The codex (Codex.tsx): the trophy case.
 - `scripts/controls.gd` — The keys (src/app/settings.ts bindings, grown for real-time play)
-- `scripts/create_screen.gd` — Hero creation (CharacterCreation.tsx): seven roles with their pitch, the chosen one walking in their colours, the stats against the whole roster, the skills they start toward, a name, and how the game opens
+- `scripts/create_screen.gd` — Hero creation (CharacterCreation.tsx): seven roles with their pitch, the hero as they will start (every role in the same plain clothes, their first weapon in hand: PIX-391), their stats against the whole roster, the skills they start with, a name, and how the game opens
 - `scripts/cutscene.gd` — A story moment (PIX-31): a scene from assets/data/story.json played as ordered steps over a letterboxed stage, so writing one is editing data.
 - `scripts/dawn_screen.gd` — The dawn after the Night of Ash (PIX-197), played on the town itself rather than told over it.
 - `scripts/day_night.gd` — The day/night wheel, ported verbatim from src/render/dayNight.ts: one deterministic clock turned by steps walked, interpolating sky-tint stops.
@@ -523,7 +523,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/ink.gd` — Where the pixels are (PIX-268): the ink a word draws in a pixel font and the head a figure's frame draws, measured on the pixels themselves, so a mark over a head is centred on the one by the other.
 - `scripts/interactables.gd` — Treasure chests, door signs and waypoints (assets/maps/interactables.json, edited by hand).
 - `scripts/inventory_screen.gd` — The pack and the paperdoll (Inventory.tsx)
-- `scripts/item_icons.gd` — Every item's icon and the ailment marks, all Shade's (PIX-138), as mapped in assets/puny/icons.json
+- `scripts/item_icons.gd` — Every item's icon, the ailment marks and the stats', all Shade's (PIX-138), as mapped in assets/puny/icons.json
 - `scripts/journal_screen.gd` — The journal (Journal.tsx; PIX-171, redone for PIX-239 after Tom's playtest: « le journal c'est pas clair »).
 - `scripts/juice.gd` — How a fight feels (PIX-226): a pure-white flash when a blow lands, a death that dissolves pixel by pixel into embers, a squash and stretch on the hero, and a slash's arc trailing every swing in the weapon's colour.
 - `scripts/kept_ground.gd` — A map's ground as its first visit this session worked it out (One Reach, PIX-269, step 4)

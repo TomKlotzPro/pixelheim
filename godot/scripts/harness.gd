@@ -69,17 +69,19 @@ func _keys(flags: HarnessFlags) -> void:
 		"e": KEY_E, "esc": KEY_ESCAPE, "space": KEY_SPACE, "enter": KEY_ENTER, "s": KEY_S, "w": KEY_W,
 		"i": KEY_I, "q": KEY_Q, "k": KEY_K, "c": KEY_C, "m": KEY_M, "b": KEY_B, "shift": KEY_SHIFT,
 		"r": KEY_R, "a": KEY_A, "d": KEY_D, "z": KEY_Z, "x": KEY_X, "f": KEY_F, "tab": KEY_TAB,
-		"n": KEY_N,
+		"n": KEY_N, "pgup": KEY_PAGEUP, "pgdn": KEY_PAGEDOWN,
 	}
+	# A pad's buttons by name (PIX-388: Back opens the dock's menu, the D-pad steers it).
+	var pad := {"back": JOY_BUTTON_BACK, "pad_up": JOY_BUTTON_DPAD_UP, "pad_down": JOY_BUTTON_DPAD_DOWN}
 	for key: String in flags.list("--keys"):
-		await _tap(codes[key])
+		await _tap(KEY_NONE if pad.has(key) else codes[key], pad.get(key, JOY_BUTTON_INVALID))
 	await get_tree().create_timer(0.2).timeout
 
 
-## One key pressed and let go, as a hand would.
-func _tap(keycode: Key) -> void:
+## One key (or a pad's `button`) pressed and let go, as a hand would.
+func _tap(keycode: Key, button := JOY_BUTTON_INVALID) -> void:
 	for pressed: bool in [true, false]:
-		_press(keycode, pressed)
+		_press(keycode, pressed, button)
 		# Held through two physics ticks too: walking and facing are read
 		# there, and a run stepped faster than its ticks (`--fps`) draws
 		# frames between them.
@@ -104,11 +106,19 @@ func _villager(id: String) -> Node:
 ## actions (what polling reads) and the event itself, straight to the
 ## viewport, which needs no window focus (an unfocused window's keys are
 ## dropped by the display server).
-func _press(keycode: Key, pressed: bool) -> void:
-	var event := InputEventKey.new()
-	event.physical_keycode = keycode
-	event.keycode = keycode
-	event.pressed = pressed
+func _press(keycode: Key, pressed: bool, button := JOY_BUTTON_INVALID) -> void:
+	var event: InputEvent
+	if button != JOY_BUTTON_INVALID:
+		var held := InputEventJoypadButton.new()
+		held.button_index = button
+		held.pressed = pressed
+		event = held
+	else:
+		var key := InputEventKey.new()
+		key.physical_keycode = keycode
+		key.keycode = keycode
+		key.pressed = pressed
+		event = key
 	event.device = DEVICE
 	for action: StringName in InputMap.get_actions():
 		if InputMap.event_is_action(event, action, true):

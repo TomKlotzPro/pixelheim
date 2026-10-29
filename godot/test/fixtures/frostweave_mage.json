@@ -6,7 +6,6 @@
   "card": {
     "name": "Tom",
     "role": "mage",
-    "look": 0,
     "worn": {
       "feet": "frost_boots",
       "offhand": "cinderscale_shield",
@@ -25,7 +24,6 @@
   "hero": {
     "name": "Tom",
     "role": "mage",
-    "look": 0,
     "level": 15,
     "xp": 120,
     "xpToNext": 900,

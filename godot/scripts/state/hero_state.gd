@@ -30,7 +30,6 @@ var forgot: Array[String] = []
 ## job id -> {level, xp}
 var jobs := {}
 ## Additive web fields: null means absent, and absent stays absent on save.
-var look: Variant = null
 var spec: Variant = null
 var path: Variant = null
 var mastery: Variant = null
@@ -50,12 +49,11 @@ static func fresh_jobs() -> Dictionary:
 
 
 ## A level-1 hero of the role (createHero in character.ts).
-static func create(name: String, role: String, look_index := 0) -> HeroState:
+static func create(name: String, role: String) -> HeroState:
 	var base: Dictionary = Catalog.role(role)["baseStats"]
 	var hero := HeroState.new()
 	hero.hero_name = name
 	hero.role_id = role
-	hero.look = look_index
 	hero.xp_to_next = xp_to_next_for(1)
 	hero.hp = base["maxHp"]
 	hero.mp = base["maxMp"]
@@ -82,7 +80,6 @@ static func from_dict(data: Dictionary) -> HeroState:
 	hero.beyond = data.get("beyond", {}).duplicate()
 	hero.forgot.assign(data.get("forgot", []))
 	hero.jobs = data["jobs"].duplicate(true)
-	hero.look = data.get("look")
 	hero.spec = data.get("spec")
 	hero.path = data.get("path")
 	hero.mastery = data.get("mastery")
@@ -104,8 +101,6 @@ func to_dict() -> Dictionary:
 		"skillNodes": skill_nodes.duplicate(),
 		"jobs": jobs.duplicate(true),
 	}
-	if look != null:
-		out["look"] = look
 	if spec != null:
 		out["spec"] = spec
 	if path != null:

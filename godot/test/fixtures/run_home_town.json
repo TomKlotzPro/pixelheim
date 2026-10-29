@@ -6,7 +6,6 @@
   "card": {
     "name": "Tove",
     "role": "mage",
-    "look": 0,
     "worn": {
       "weapon": "apprentice_staff"
     },
@@ -18,7 +17,6 @@
   "hero": {
     "name": "Tove",
     "role": "mage",
-    "look": 0,
     "level": 13,
     "xp": 120,
     "xpToNext": 862,

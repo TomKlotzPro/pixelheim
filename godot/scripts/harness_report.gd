@@ -290,6 +290,13 @@ func field_cpu() -> String:
 	return noted("cpu")
 
 
+func field_creation() -> String:
+	for node in world.get_children():
+		if node.get_script() == preload("res://scripts/create_screen.gd"):
+			return "%s skill %d/%d" % [node._role(), node.skill_index + 1, node.skill_chips.size()]
+	return ""
+
+
 func field_credits() -> String:
 	for node in world.get_children():
 		if node is Cutscene and not node.finished and node.roll_end != "":
@@ -332,6 +339,20 @@ func field_detail() -> String:
 	if world.view == null or not PunyTerrain.is_outdoor(world.map.grid) or not world.view.has_ground_layers():
 		return ""
 	return str(world.view.detail_layer.get_used_cells().size())
+
+
+func field_dockmenu() -> String:
+	var dock: Control = world.hud.dock
+	if not dock.menu.visible:
+		return ""
+	var lines: PackedStringArray = []
+	for at in dock.menu_lines.size():
+		var row: Dictionary = dock.menu_lines[at]
+		if (row["line"] as Control).visible:
+			lines.append("[%s]" % row["id"] if at == dock.menu_focus else String(row["id"]))
+	var menu: Rect2 = dock.menu.get_global_rect()
+	var fits: bool = Rect2(0, 0, 1280, 720).encloses(menu) and menu.end.y <= dock.top()
+	return "%s %s" % [",".join(lines), "fits" if fits else "off"]
 
 
 func field_dressed() -> String:

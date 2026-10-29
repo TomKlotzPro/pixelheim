@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.301.0",
+      "date": "2026-10-29",
+      "codename": "Fresh Paint",
+      "notes": [
+        "The bar at the bottom is new: the portrait framed with its rank in gold, framed health and energy bars, the XP as a notched strip along its top, the skills in wooden slots with their keys on little tabs and a veil that draws back as they recharge; and Menu opens a real game menu, each screen with its icon, its name and its key",
+        "The town's south street no longer runs into the river: a grass bank lies between them now, with reeds in the water along it",
+        "Hero creation shows the hero as they will really start, without the colour looks nobody kept; the stats have icons, pips against the best of all the roles and their full names, and the starting skills are chips with their icons, a click or PgUp/PgDn reading each"
+      ]
+    },
+    {
       "version": "0.300.0",
       "date": "2026-10-28",
       "codename": "Mind the Hens",

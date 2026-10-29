@@ -788,6 +788,12 @@ fit-create | create overflow --lang fr | open=create_screen overflow=0 | screen 
 # Its English twin (PIX-228): the setting's card and Begin's row laid out
 # in the other words.
 fit-create-en | create overflow --lang en | open=create_screen overflow=0 | screen lang title
+# Hero creation without the looks (PIX-391): the paladin's longest skill
+# name in French, and the card with its frames drawn in code (no UI kit),
+# keep to the canvas; PgDn, past the name field, reads the next skill.
+fit-create-paladin | create --role paladin overflow --lang fr | open=create_screen overflow=0 creation=paladin skill 1/3 | screen lang title
+fit-create-cc0 | create cc0 overflow --lang fr | open=create_screen overflow=0 | screen lang title
+create-skill | create --role rogue --keys pgdn,pgdn | open=create_screen creation=rogue skill 3/3 | title
 fit-whatsnew | title whatsnew overflow --lang fr | overflow=0 | screen lang title
 # The town's tour has the canvas, the HUD put aside: its "E next / Esc skip"
 # stood on the clock and the quill (PIX-370).
@@ -910,6 +916,14 @@ fit-hall | --map town_hall talk --keys e,e,e overflow --lang fr | open=town_hall
 # The board with every waystation offered, in French (PIX-322).
 fit-hall-roads | --map town --routes all hall overflow --lang fr | open=town_hall_screen overflow=0 works=waystation_saltmere,waystation_blackiron,waystation_greyhold,waystation_frostgate | screen lang town
 fit-bounty | --map town --at 43,22 --hunted tidecaller,seam_warden --keys w,e overflow --lang fr | open=bounty_screen overflow=0 | screen lang quest
+# The dock's menu (PIX-388): every screen on a line of its own, an icon, a
+# name and a key each, on the canvas above the dock, with GegX's kit and
+# without it; a pad's Back opens it on its first line and the D-pad steers
+# it, up from the first round to the last line shown, past the skills' lines
+# a pad has nothing on yet.
+dock-menu | --map town --level 8 dockmenu --lang fr | dockmenu=inventory,map,stats,skills,codex,journal fits | screen lang
+dock-menu-cc0 | --map town --level 8 dockmenu cc0 --lang en | dockmenu=inventory,map,stats,skills,codex,journal fits | screen lang
+dock-menu-steer | --map town --level 8 --keys back,pad_up,pad_up | dockmenu=inventory,map,stats,skills,\[codex\],journal fits | screen
 # A full screen puts the HUD aside, so none of its words stands on the dock,
 # the clock or the quill (PIX-346: overflow counts them too): the screens
 # the playtest caught on them, in English too, and the bank. The dawn keeps

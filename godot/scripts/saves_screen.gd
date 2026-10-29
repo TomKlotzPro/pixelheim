@@ -526,7 +526,7 @@ static func _portrait(summary: Dictionary, alpha: float) -> TextureRect:
 	if summary.get("kind", "") != SaveSlots.HERO:
 		return portrait
 	var frame := AtlasTexture.new()
-	var spec := PunyArt.dressed(summary["roleId"], summary.get("look", 0), summary.get("worn", {}))
+	var spec := PunyArt.dressed(summary["roleId"], summary.get("worn", {}))
 	frame.atlas = PunyArt.sheet_texture(spec)
 	frame.region = PORTRAIT
 	portrait.texture = frame

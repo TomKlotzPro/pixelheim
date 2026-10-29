@@ -23,7 +23,7 @@ func after_each() -> void:
 
 func _hero() -> AnimatedSprite2D:
 	var sprite: AnimatedSprite2D = autofree(AnimatedSprite2D.new())
-	sprite.sprite_frames = PunyArt.frames(PunyArt.plain("warrior", 0))
+	sprite.sprite_frames = PunyArt.frames(PunyArt.plain("warrior"))
 	return sprite
 
 
@@ -36,7 +36,7 @@ func test_frames_follow_the_ground_covered() -> void:
 
 func test_a_walk_steps_by_the_ground_not_the_clock() -> void:
 	var sprite := _hero()
-	var gait := Gait.new(sprite, PunyArt.plain("warrior", 0))
+	var gait := Gait.new(sprite, PunyArt.plain("warrior"))
 	assert_eq(gait.stride, 6.0)
 	gait.walk("right", 0.0, 0.0)
 	assert_eq(sprite.animation, &"walk_right")
@@ -54,7 +54,7 @@ func test_a_held_clock_holds_the_walk() -> void:
 	# The motion check (PIX-135) freezes the hero's frame with speed_scale 0
 	# so only motion moves the shirt it measures.
 	var sprite := _hero()
-	var gait := Gait.new(sprite, PunyArt.plain("warrior", 0))
+	var gait := Gait.new(sprite, PunyArt.plain("warrior"))
 	sprite.speed_scale = 0.0
 	for tick in 30:
 		gait.walk("right", 95.0 * TICK, TICK)
@@ -93,7 +93,7 @@ func test_the_walk_carries_on_through_a_turn() -> void:
 ## stride carrying on through all three.
 func test_a_quarter_turn_passes_the_way_between() -> void:
 	var sprite := _hero()
-	var gait := Gait.new(sprite, PunyArt.plain("warrior", 0))
+	var gait := Gait.new(sprite, PunyArt.plain("warrior"))
 	assert_true(gait.eight_ways(), "Shade's Puny Characters draw eight ways")
 	gait.walk("down", 0.0, 0.0)
 	gait.walk("down", 9.0, 0.1)
@@ -110,7 +110,7 @@ func test_a_quarter_turn_passes_the_way_between() -> void:
 
 func test_a_diagonal_is_walked_facing_it() -> void:
 	var sprite := _hero()
-	var gait := Gait.new(sprite, PunyArt.plain("warrior", 0))
+	var gait := Gait.new(sprite, PunyArt.plain("warrior"))
 	gait.walk("up", 0.0, 0.0)
 	# Up, then left held too: an eighth of a turn, at once.
 	gait.walk(gait.drawn_way(Vector2(-1, -1), "up"), 1.5, TICK)
@@ -156,7 +156,7 @@ func test_what_a_turn_passes_through() -> void:
 
 func test_a_hand_turn_and_a_stop_settle_the_way() -> void:
 	var sprite := _hero()
-	var gait := Gait.new(sprite, PunyArt.plain("warrior", 0))
+	var gait := Gait.new(sprite, PunyArt.plain("warrior"))
 	gait.walk("down", 0.0, 0.0)
 	gait.walk("right", 1.5, TICK)
 	assert_eq(gait.shown, "down_right", "mid-turn")
@@ -169,7 +169,7 @@ func test_a_hand_turn_and_a_stop_settle_the_way() -> void:
 
 func test_turning_right_round_shows_the_side_first() -> void:
 	var sprite := _hero()
-	var gait := Gait.new(sprite, PunyArt.plain("warrior", 0))
+	var gait := Gait.new(sprite, PunyArt.plain("warrior"))
 	gait.walk("right", 0.0, 0.0)
 	gait.walk("left", 1.5, TICK)
 	assert_eq(sprite.animation, &"walk_down", "right to left faces down on the way")
@@ -191,7 +191,7 @@ func test_a_diagonal_holds_the_facing() -> void:
 
 func test_a_stop_holds_the_last_step_a_breath() -> void:
 	var sprite := _hero()
-	var gait := Gait.new(sprite, PunyArt.plain("warrior", 0))
+	var gait := Gait.new(sprite, PunyArt.plain("warrior"))
 	gait.walk("up", 0.0, 0.0)
 	assert_false(gait.rest(Gait.SETTLE_SECONDS / 2.0), "a hitch in the input isn't a stop")
 	assert_true(gait.walking)
@@ -205,13 +205,13 @@ func test_a_stop_holds_the_last_step_a_breath() -> void:
 
 func test_the_hero_rises_as_the_feet_pass() -> void:
 	# The four-beat walk: rise, step, rise, the other step, a pixel's bob.
-	var frames := PunyArt.frames(PunyArt.plain("warrior", 0))
+	var frames := PunyArt.frames(PunyArt.plain("warrior"))
 	assert_eq(PunyArt.rises(frames, "walk_right"), PackedInt32Array([1, 0, 1, 0]))
 
 
 func test_reduce_motion_walks_level() -> void:
 	var sprite := _hero()
-	var gait := Gait.new(sprite, PunyArt.plain("warrior", 0))
+	var gait := Gait.new(sprite, PunyArt.plain("warrior"))
 	gait.walk("right", 0.0, 0.0)
 	assert_eq(sprite.offset.y, 0.0, "the rise shows")
 	GameState.settings.reduce_motion = true

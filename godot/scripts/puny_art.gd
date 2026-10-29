@@ -106,23 +106,23 @@ const LAYOUTS := {
 }
 
 ## Hero sheets and attack by role: blades swing, casters strike with the
-## staff, rangers draw the bow. The web's looks (hero.look 0-3) pick among the
-## role's colourways, first one the classic.
+## staff, rangers draw the bow. One sheet a role: the colourways a hero once
+## picked went with PIX-391, every hero starting in the same clothes.
 const HEROES := {
-	"warrior": [["characters/Warrior-Red.png", "characters/Warrior-Blue.png"], "sword"],
-	"paladin": [["characters/Warrior-Blue.png", "characters/aligned/Human-Soldier-Cyan.png", "characters/aligned/Human-Soldier-Red.png"], "sword"],
-	"rogue": [["characters/Soldier-Red.png", "characters/Soldier-Blue.png", "characters/Soldier-Yellow.png"], "sword"],
-	"cleric": [["characters/Soldier-Yellow.png", "characters/Soldier-Blue.png"], "staff"],
-	"mage": [["characters/Mage-Red.png", "characters/Mage-Cyan.png"], "staff"],
-	"necromancer": [["characters/Mage-Red.png", "characters/Mage-Cyan.png"], "staff"],
-	"ranger": [["characters/Archer-Green.png", "characters/Archer-Purple.png"], "bow"],
+	"warrior": ["characters/Warrior-Red.png", "sword"],
+	"paladin": ["characters/Warrior-Blue.png", "sword"],
+	"rogue": ["characters/Soldier-Red.png", "sword"],
+	"cleric": ["characters/Soldier-Yellow.png", "staff"],
+	"mage": ["characters/Mage-Red.png", "staff"],
+	"necromancer": ["characters/Mage-Red.png", "staff"],
+	"ranger": ["characters/Archer-Green.png", "bow"],
 }
 ## Necromancers wear the mage's robe in grave colors.
 const HERO_TINTS := {"necromancer": Color(0.72, 0.6, 1.0)}
 ## Every hero starts a survivor of the Night of Ash, not a soldier (PIX-242):
-## a worker's plain clothes, in the look's colour; the role's kit is a
-## picture of what they become, on hero creation. Gear shows as it's worn.
-const PLAIN := ["characters/aligned/Human-Worker-Red.png", "characters/aligned/Human-Worker-Cyan.png"]
+## a worker's plain clothes, the same for every role (hero creation shows
+## them so, PIX-391). Gear shows as it's worn.
+const PLAIN := "characters/aligned/Human-Worker-Red.png"
 ## The attack a worn weapon swings (PIX-172), by its catalog sprite: blades,
 ## daggers and heads swing (Shade's throw columns draw no weapon, so a dagger
 ## slashes), bows draw, staves and wands cast. Bare hands keep the role's own.
@@ -288,18 +288,16 @@ static func path(sheet: String) -> String:
 	return "res://assets/puny/" + sheet
 
 
-static func hero(role_id: String, look: Variant = 0) -> Dictionary:
+static func hero(role_id: String) -> Dictionary:
 	var entry: Array = HEROES.get(role_id, HEROES["warrior"])
-	var sheets: Array = entry[0]
-	var index := int(look) % sheets.size() if look != null else 0
-	return {"sheet": sheets[index], "family": "puny", "attack": entry[1], "tint": HERO_TINTS.get(role_id, Color.WHITE)}
+	return {"sheet": entry[0], "family": "puny", "attack": entry[1], "tint": HERO_TINTS.get(role_id, Color.WHITE)}
 
 
-## The hero in plain clothes (PIX-242): the worker's in the look's colour,
-## the role's own swing still theirs, no role colour on what everyone wears.
-static func plain(role_id: String, look: Variant = 0) -> Dictionary:
-	var spec := hero(role_id, look)
-	spec["sheet"] = PLAIN[(int(look) if look != null else 0) % PLAIN.size()]
+## The hero in plain clothes (PIX-242): the worker's, the role's own swing
+## still theirs, no role colour on what everyone wears.
+static func plain(role_id: String) -> Dictionary:
+	var spec := hero(role_id)
+	spec["sheet"] = PLAIN
 	spec["tint"] = Color.WHITE
 	return spec
 
@@ -308,8 +306,8 @@ static func plain(role_id: String, look: Variant = 0) -> Dictionary:
 ## worn armour's body (`worn`: slot -> item id). Pieces without a drawing keep
 ## the plain clothes. A role's colour (the necromancer's grave violet) goes
 ## on its own kit only, never on borrowed armour (PIX-175).
-static func dressed(role_id: String, look: Variant, worn: Dictionary) -> Dictionary:
-	var spec := plain(role_id, look)
+static func dressed(role_id: String, worn: Dictionary) -> Dictionary:
+	var spec := plain(role_id)
 	var head: String = HEADS.get(worn.get("head", ""), spec["sheet"])
 	var body: String = BODIES.get(worn.get("body", ""), spec["sheet"])
 	var role_tint: Color = spec["tint"]
@@ -532,11 +530,6 @@ static var _figures: Array[Rect2i] = []
 static func _figure(index: int) -> Rect2i:
 	_neck_rows()
 	return _figures[index]
-
-
-## How many looks a role offers (its colourways).
-static func looks(role_id: String) -> int:
-	return (HEROES.get(role_id, HEROES["warrior"])[0] as Array).size()
 
 
 static func villager(sprite: String) -> Dictionary:
