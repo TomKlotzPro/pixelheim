@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.307.0",
+      "date": "2026-10-29",
+      "codename": "Turn It Up",
+      "notes": [
+        "The game plays at a normal loudness now, about 14 dB louder, the mix's balance kept and a limiter guarding against clipping; the steps are heard under the music, a blow dodged in a roll whooshes past, and hero creation, the codex, the map and the pause menu answer with their own small sounds",
+        "The menu's map has a clear rolled-parchment icon, and the keys on the wooden planks now sit neatly inside them instead of over their frames"
+      ]
+    },
+    {
       "version": "0.306.0",
       "date": "2026-10-29",
       "codename": "Quiet Planks",

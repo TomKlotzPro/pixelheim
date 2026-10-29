@@ -6061,6 +6061,10 @@ msgid "The game is live on the web, with auto-deploys on every change"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The game plays at a normal loudness now, about 14 dB louder, the mix's balance kept and a limiter guarding against clipping; the steps are heard under the music, a blow dodged in a roll whooshes past, and hero creation, the codex, the map and the pause menu answer with their own small sounds"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The gate opens the first depth of every five you've reached, so a long descent no longer starts from the top"
 msgstr ""
 
@@ -6154,6 +6158,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The menu is drawn over the Next line instead of under it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The menu's map has a clear rolled-parchment icon, and the keys on the wooden planks now sit neatly inside them instead of over their frames"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6554,6 +6562,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Try it: Options → Renderer → Voxel (WebGL stays the default; battles keep the classic stage for now)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Turn It Up"
 msgstr ""
 
 #: assets/data/changelog.json
