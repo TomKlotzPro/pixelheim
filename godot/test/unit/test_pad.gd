@@ -59,3 +59,39 @@ func test_keycaps_show_the_pad_once_it_is_in_hand() -> void:
 func test_a_skill_key_is_named_too() -> void:
 	assert_eq(Controls.say("{key:skill_1} for your skill"), "1 for your skill")
 	assert_false(Controls.say(String(Prologue.objective(Prologue.EMBERS, 0, false))).contains("{key:"), "the first night's line names its keys")
+
+
+## PIX-388: on a pad the dock's skills 1-3 read its LB, LT and RT and 4-6,
+## which it takes from the menu, no tag; the menu shows the pack's Y and no
+## cap on the screens Back opens. The keyboard's digits and keys come back
+## with it.
+func test_the_dock_shows_the_pads_buttons() -> void:
+	var kept := [GameState.hero, GameState.pack]
+	var lent: Node = autofree(preload("res://scripts/state/game_state.gd").new())
+	lent.new_game("Aldegonde", "necromancer")
+	GameState.hero = lent.hero
+	GameState.pack = lent.pack
+	var dock: Control = preload("res://scripts/hud_dock.gd").new()
+	add_child_autofree(dock)
+	# No world here: its frames (the skills' turn) would read the player.
+	dock.set_process(false)
+	var was := Controls.pad
+	for pad: bool in [true, false]:
+		Controls.pad = pad
+		dock.refresh()
+		var tags := []
+		for slot: Dictionary in dock.slots:
+			var key: Panel = slot["key"]
+			tags.append((key.get_node("words") as Label).text if key.visible else "-")
+		assert_eq(tags, ["LB", "LT", "RT", "-", "-", "-"] if pad else ["1", "2", "3", "4", "5", "6"])
+		var caps := {}
+		for screen: String in dock.menu_rows:
+			var cap: Keycap = dock.menu_rows[screen]["cap"]
+			caps[screen] = cap.label.text if cap.visible else "-"
+		if pad:
+			assert_eq(caps, {"inventory": "Y", "map": "-", "stats": "-", "skills": "-", "codex": "-", "journal": "-"})
+		else:
+			assert_false(caps.values().has("-"), "every screen's key on the keyboard: %s" % caps)
+	Controls.pad = was
+	GameState.hero = kept[0]
+	GameState.pack = kept[1]

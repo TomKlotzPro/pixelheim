@@ -612,10 +612,10 @@ const TITLE_AT := Vector2(80, 28)
 const FOOTER_Y := 672.0
 
 
-## A full screen's title, in its one place (PIX-213); `at` only for a
-## screen whose pages sit elsewhere (the map's wider margin).
-static func title(text: String, at := TITLE_AT) -> Label:
-	return heading(text, 20, CREAM, at)
+## A full screen's title, in its one place (PIX-213; the map's too since
+## PIX-388).
+static func title(text: String) -> Label:
+	return heading(text, 20, CREAM, TITLE_AT)
 
 
 ## A full screen's keys (PIX-213), centred along the bottom at FOOTER_Y in

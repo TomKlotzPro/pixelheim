@@ -103,9 +103,11 @@ func _open() -> void:
 
 	# The tabs on the page's top edge, their feet on its frame, clear of its
 	# corners; touching, never overlapping (PIX-388: eight in French ran
-	# onto each other and onto the page's corner).
+	# onto each other and onto the page's corner). The row starts the kit
+	# tab's clear left shoulder (4) early, so the first tab's frame stands
+	# INSET in and the eight in French keep clear of the right corner.
 	tab_row = HBoxContainer.new()
-	tab_row.position = Vector2(LIST_LEFT, PAGE.position.y - TAB_HEIGHT)
+	tab_row.position = Vector2(LIST_LEFT - 4, PAGE.position.y - TAB_HEIGHT)
 	tab_row.custom_minimum_size.y = TAB_HEIGHT
 	tab_row.add_theme_constant_override("separation", 0)
 	add_child(tab_row)

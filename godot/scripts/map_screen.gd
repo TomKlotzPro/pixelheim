@@ -27,10 +27,13 @@ extends Screen
 ## they have carried anything, and the waystations built are waypoints in
 ## the list, marked like the rest.
 
-const MAP_BOX := Vector2(760, 540)
-## The list's window inside the side panel: the panel ends with the map's
-## tallest frame.
-const LIST_BOX := Vector2(320, 500)
+## The map's room and the list's window inside the side panel, each in a
+## window INSET round it, a GAP apart, filling the title's margins (x 80 to
+## 1200, PIX-388; at 720 the Reach still draws 3 px a cell, the village 8).
+const MAP_BOX := Vector2(720, 540)
+const LIST_BOX := Vector2(288, 500)
+## The map's frame's top left corner, under the title; the list's beside it.
+const PAGE_AT := Vector2(UiStyle.TITLE_AT.x, 72)
 ## How far up or down reads the list while there's nothing to choose.
 const SCROLL_STEP := 60
 
@@ -70,14 +73,14 @@ var _village_for := ""
 
 ## How wide a waypoint card's words run before they wrap: the list's width
 ## less the card's margins.
-const CARD_TEXT := 300.0
+const CARD_TEXT := LIST_BOX.x - 20
 
 func _open() -> void:
 	closing_actions = [&"map"]
 	layer = 5
 	dim()
 	var heading := HBoxContainer.new()
-	heading.position = Vector2(64, UiStyle.TITLE_AT.y)
+	heading.position = UiStyle.TITLE_AT
 	heading.add_theme_constant_override("separation", 20)
 	add_child(heading)
 	title = UiStyle.title(Catalog.place_name(world.map.id))
@@ -97,12 +100,12 @@ func _open() -> void:
 	# the screen's easing in when a page turned in its first fifth of a
 	# second (PIX-266).
 	page_column = VBoxContainer.new()
-	page_column.position = Vector2(56, 72)
+	page_column.position = PAGE_AT
 	page_column.add_theme_constant_override("separation", 10)
 	add_child(page_column)
 	frame = PanelContainer.new()
 	frame.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	frame.add_theme_stylebox_override("panel", UiStyle.window(14))
+	frame.add_theme_stylebox_override("panel", UiStyle.window(UiStyle.INSET))
 	page_column.add_child(frame)
 	painting = Painting.new()
 	painting.world = world
@@ -112,9 +115,9 @@ func _open() -> void:
 	frame.add_child(painting)
 
 	var side := PanelContainer.new()
-	side.position = Vector2(872, 72)
-	side.custom_minimum_size = Vector2(352, 0)
-	side.add_theme_stylebox_override("panel", UiStyle.window(16))
+	side.position = PAGE_AT + Vector2(MAP_BOX.x + 2 * UiStyle.INSET + UiStyle.GAP, 0)
+	side.custom_minimum_size = Vector2(LIST_BOX.x + 2 * UiStyle.INSET, 0)
+	side.add_theme_stylebox_override("panel", UiStyle.window(UiStyle.INSET))
 	add_child(side)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 8)

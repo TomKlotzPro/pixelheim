@@ -43,10 +43,11 @@ const BOOK_LINES := 6
 const OLD_TABS := {"main": "quests", "side": "quests", "bounties": "quests", "story": "letters", "pages": "letters", "deeds": "feats"}
 ## Which thread the top is about, said plainly.
 const KINDS := {"main": "Main story", "quest": "Quest you follow", "bounty": "Bounty you follow"}
-## The pages' frame: from under the title to over the keys, as far above
-## them as every screen's pages (PIX-388).
-const AT := Vector2(80, 72)
-const SIZE := Vector2(1120, 576)
+## The pages' frame: from under the title and the tabs on its top edge (as
+## the pack's) to over the keys, as far above them as every screen's pages
+## (PIX-388).
+const AT := Vector2(80, 96)
+const SIZE := Vector2(1120, 552)
 ## A window's margin inside its frame, the screens' inset (PIX-388); how
 ## wide words run inside it, and in a row, its own margin and mark off too.
 const PAD := UiStyle.INSET
@@ -91,8 +92,9 @@ func _open() -> void:
 	dim()
 	add_child(UiStyle.title("Journal"))
 	tabs_row = HBoxContainer.new()
-	# On the pages' top edge, as every screen's tabs (PIX-388).
-	tabs_row.position = Vector2(300, AT.y - 36)
+	# On the pages' top edge, INSET in from its corner, as every screen's
+	# tabs (PIX-388).
+	tabs_row.position = Vector2(AT.x + UiStyle.INSET, AT.y - 36)
 	tabs_row.custom_minimum_size.y = 36
 	tabs_row.add_theme_constant_override("separation", 4)
 	add_child(tabs_row)
