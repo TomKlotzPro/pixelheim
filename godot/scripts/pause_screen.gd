@@ -79,10 +79,12 @@ func _command(event: InputEvent) -> Callable:
 	if event.is_action_pressed("move_up") or event.is_action_pressed("ui_up"):
 		command = func() -> void:
 			selected = wrapi(selected - 1, 0, options.size())
+			Sound.play_ui("tick")
 			_draw()
 	elif event.is_action_pressed("move_down") or event.is_action_pressed("ui_down"):
 		command = func() -> void:
 			selected = wrapi(selected + 1, 0, options.size())
+			Sound.play_ui("tick")
 			_draw()
 	elif event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		command = _take.bind(selected)

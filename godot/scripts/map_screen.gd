@@ -228,6 +228,7 @@ func _choose(index: int) -> void:
 		return
 	selected = index
 	page = Atlas.page_of(usable[index]["mapId"])
+	Sound.play_ui("tick")
 	_show()
 
 
@@ -238,6 +239,7 @@ func _turn(delta: int) -> void:
 		return
 	page = Atlas.turn(pages, page, delta)
 	selected = Waypoints.first_on_page(usable, page)
+	Sound.play_ui("page")
 	_show()
 
 
