@@ -510,11 +510,14 @@ func _begin() -> void:
 	var name := name_field.text.strip_edges()
 	if name == "":
 		status.text = "A hero needs a name."
+		Sound.play_ui("deny")
 		return
 	var target := GameState.free_slot()
 	if target == 0:
 		status.text = "Every slot holds a hero. Delete one in Saves first."
+		Sound.play_ui("deny")
 		return
+	Sound.play_ui("confirm")
 	GameState.new_hero_in(target, name, _role(), play_night)
 	GameState.title_seen = true
 	get_tree().paused = false

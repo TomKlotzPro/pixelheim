@@ -21,6 +21,8 @@ const SHORT := {"Escape": "Esc", "PageUp": "PgUp", "PageDown": "PgDn", "Return":
 var keys: Array[String] = []
 var label: Label
 var small := false
+## Inside the kit's plank (UiStyle.keycap_style, PIX-395).
+var slim := false
 ## On the world's pixel grid (UiStyle.world_keycap): its frame is drawn at 1x.
 var world := false
 var _dipped := 0.0
@@ -50,7 +52,7 @@ func _input(event: InputEvent) -> void:
 
 ## Down for a moment, then up.
 func dip() -> void:
-	add_theme_stylebox_override("panel", UiStyle.keycap_style(true, small, 1 if world else UiStyle.UI_SCALE))
+	add_theme_stylebox_override("panel", UiStyle.keycap_style(true, small, 1 if world else UiStyle.UI_SCALE, slim))
 	_dipped = DIP_SECONDS
 	set_process(true)
 
@@ -58,7 +60,7 @@ func dip() -> void:
 func _process(delta: float) -> void:
 	_dipped -= delta
 	if _dipped <= 0:
-		add_theme_stylebox_override("panel", UiStyle.keycap_style(false, small, 1 if world else UiStyle.UI_SCALE))
+		add_theme_stylebox_override("panel", UiStyle.keycap_style(false, small, 1 if world else UiStyle.UI_SCALE, slim))
 		set_process(false)
 
 

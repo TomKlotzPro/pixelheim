@@ -534,8 +534,8 @@ static func button(text: String, action: Callable, key := "") -> Button:
 
 ## A plank button's key on a keycap and its words beside it (PIX-213);
 ## called again, it changes them. Dimmed with the button when it's off.
-## PLANK tall like every plank (PIX-388), the cap standing on the frame's
-## edges rather than growing the plank round it.
+## PLANK tall like every plank (PIX-388), the cap inside its face rather
+## than growing the plank round it (with the kit a slim one, PIX-395).
 static func button_keyed(node: Button, key: String, text: String) -> void:
 	# The kit's frame is thick (PIX-385): the cap and words stand inside it.
 	var frame := _kit("button", 6)
@@ -547,7 +547,8 @@ static func button_keyed(node: Button, key: String, text: String) -> void:
 		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		row.alignment = BoxContainer.ALIGNMENT_CENTER
 		row.add_theme_constant_override("separation", 8)
-		var cap := keycap("", true)
+		# The kit's face is 22 px between its trims (PIX-395): a slim cap.
+		var cap := keycap("", true, frame != null)
 		cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(cap)
 		var words := label("", TEXT, plank_ink(false))
@@ -688,18 +689,20 @@ static func plate_tag(text: String) -> Label:
 
 
 ## The key a command answers to, as a keycap (PIX-193): "E", "Esc", "↑".
-## `small` caps sit tighter (the dock's menu, footers).
-static func keycap(key: String, small := false) -> PanelContainer:
+## `small` caps sit tighter (the dock's menu, footers); `slim` ones fit
+## inside the kit's plank (PIX-395, keycap_style).
+static func keycap(key: String, small := false, slim := false) -> PanelContainer:
 	var cap := Keycap.new()
 	cap.small = small
+	cap.slim = slim
 	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	cap.add_theme_stylebox_override("panel", keycap_style(false, small))
+	cap.add_theme_stylebox_override("panel", keycap_style(false, small, UI_SCALE, slim))
 	cap.label = strong(key, TEXT, INK)
 	cap.label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cap.label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	cap.add_child(cap.label)
 	# A one-letter key stands square; a word grows wider.
-	cap.custom_minimum_size = Vector2(30 if small else 34, 0)
+	cap.custom_minimum_size = Vector2(24 if slim else 30 if small else 34, 0)
 	cap.show_key(key)
 	return cap
 
@@ -734,15 +737,21 @@ static func keycap_text(cap: PanelContainer, key: String) -> void:
 ## the world, on its pixel grid): the face, lit along its top and left
 ## edges, a darker lip below it, a dark outline with stepped corners.
 ## Pressed, the face drops a pixel onto a thinner lip, so its label dips.
-static func keycap_style(pressed: bool, small := false, scale := UI_SCALE) -> StyleBoxTexture:
-	var key := "keycap %s %d" % [pressed, scale]
+## `slim` (PIX-395): a keyed plank's cap with the kit, whose face is 22 px
+## between its trims, too low for a cap at 2x round 2x letters: drawn on the
+## kit's own grid (1x, as its lines are), a one-row lip, 20 tall, a pixel
+## clear of the face.
+static func keycap_style(pressed: bool, small := false, scale := UI_SCALE, slim := false) -> StyleBoxTexture:
+	if slim:
+		scale = 1
+	var key := "keycap %s %d %s" % [pressed, scale, slim]
 	if not _frames.has(key):
 		var w := 8
-		var h := 12
+		var h := 8 if slim else 12
 		var art := Image.create(w, h, false, Image.FORMAT_RGBA8)
 		art.fill(Color(0, 0, 0, 0))
 		var top := 1 if pressed else 0
-		var lip := h - (3 if pressed else 5)
+		var lip := h - ((1 if pressed else 2) if slim else (3 if pressed else 5))
 		for y in range(top, h):
 			for x in w:
 				var color := CREAM
@@ -768,12 +777,23 @@ static func keycap_style(pressed: bool, small := false, scale := UI_SCALE) -> St
 	var style := StyleBoxTexture.new()
 	style.texture = _frames[key]
 	var top_rows := 3 if pressed else 2
-	var bottom_rows := 3 if pressed else 5
+	var bottom_rows := (1 if pressed else 2) if slim else (3 if pressed else 5)
 	style.texture_margin_left = 2 * scale
 	style.texture_margin_right = 2 * scale
 	style.texture_margin_top = top_rows * scale
 	style.texture_margin_bottom = bottom_rows * scale
-	if scale == 1:
+	if slim:
+		# The label's line (22) is taller than its letters (14, 4 under its
+		# top): the cap holds the line and a pixel either side for the dip
+		# (24, even, so it centres on the plank's whole pixels), its frame
+		# drawn 2 inside that, 3 over the letters and 3 under them.
+		style.content_margin_left = 6
+		style.content_margin_right = 6
+		style.content_margin_top = 2 if pressed else 1
+		style.content_margin_bottom = 0 if pressed else 1
+		style.expand_margin_top = -2
+		style.expand_margin_bottom = -2
+	elif scale == 1:
 		style.content_margin_left = 3
 		style.content_margin_right = 3
 		style.content_margin_top = 1 + (1 if pressed else 0)

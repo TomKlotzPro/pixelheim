@@ -6061,6 +6061,10 @@ msgid "The game is live on the web, with auto-deploys on every change"
 msgstr "Le jeu est en ligne, avec un déploiement automatique à chaque changement"
 
 #: assets/data/changelog.json
+msgid "The game plays at a normal loudness now, about 14 dB louder, the mix's balance kept and a limiter guarding against clipping; the steps are heard under the music, a blow dodged in a roll whooshes past, and hero creation, the codex, the map and the pause menu answer with their own small sounds"
+msgstr "Le jeu joue désormais à un volume normal, environ 14 dB plus fort, l'équilibre du mixage conservé et un limiteur contre la saturation ; on entend les pas sous la musique, un coup esquivé en roulade passe en sifflant, et la création du héros, le codex, la carte et le menu de pause répondent par leurs propres petits sons"
+
+#: assets/data/changelog.json
 msgid "The gate opens the first depth of every five you've reached, so a long descent no longer starts from the top"
 msgstr "La porte ouvre la première profondeur de chaque tranche de cinq atteinte, et une longue descente ne repart plus d'en haut"
 
@@ -6155,6 +6159,10 @@ msgstr "La carte montre le monde tel qu'il est : chaque carte trouvée est une
 #: assets/data/changelog.json
 msgid "The menu is drawn over the Next line instead of under it"
 msgstr "Le menu s'affiche par-dessus la ligne À suivre au lieu de passer dessous"
+
+#: assets/data/changelog.json
+msgid "The menu's map has a clear rolled-parchment icon, and the keys on the wooden planks now sit neatly inside them instead of over their frames"
+msgstr "La carte du menu a une icône de parchemin roulé bien lisible, et les touches des planches de bois tiennent désormais à l'intérieur au lieu de déborder sur leur cadre"
 
 #: assets/data/changelog.json
 msgid "The menus wear new frames: parchment pages with brass corners, wooden buttons that really press, tabs, and slots that glow for rare and epic gear and for a ready skill; the boss's bar gets a frame of its own"
@@ -6555,6 +6563,10 @@ msgstr "Les vraies touches"
 #: assets/data/changelog.json
 msgid "Try it: Options → Renderer → Voxel (WebGL stays the default; battles keep the classic stage for now)"
 msgstr "À essayer : Options → Rendu → Voxel (WebGL reste le rendu par défaut ; les combats gardent la scène classique pour l'instant)"
+
+#: assets/data/changelog.json
+msgid "Turn It Up"
+msgstr "Plus fort"
 
 #: assets/data/changelog.json
 msgid "Turn-based combat, Skyrim-style inventory, carry weight, cheese wheels"

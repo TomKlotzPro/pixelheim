@@ -284,6 +284,8 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	if invulnerable or dead:
 		return
 	if _dodge_iframes:
+		# The blow swishing past (PIX-383: it was silent).
+		Sound.play_ui("swing")
 		world.fx.float_text(Text.t("dodged"), global_position + Vector2(0, -22), Color(0.75, 0.9, 1.0))
 		return
 	# The Aegis of the Ash takes a fight's first blow whole (PIX-376).

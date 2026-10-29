@@ -11,20 +11,33 @@ extends Node
 ## chances every tick like ambience.ts, the extras the world asks for with
 ## it, over a looping bed (wind). Volumes are the player's (GameSettings),
 ## on Music, SFX and Ambience buses, each sound at its own level first
-## (audio.json's "levels", `level_of`).
+## (audio.json's "levels", `level_of`), every bus LOUDNESS_DB over its slider
+## and a limiter on Master (PIX-383).
 ## Autoload `Sound`.
 
 const FADE_S := 0.35
 const SFX_VOICES := 8
 ## A stinger is never quite the same twice (PIX-212): its pitch a few
 ## percent either way, its level a decibel and a half. The same one twice
-## within SAME_GAP_MS sounds once (an area skill's hits). Steps are quieter
-## and alternate two pitches, left foot and right.
+## within SAME_GAP_MS sounds once (an area skill's hits). Steps alternate
+## two pitches, left foot and right, and sit 10 LU under the music (PIX-383:
+## at -8 dB they were 20 under it, and nobody heard a step).
 const VARY_PITCH := 0.06
 const VARY_DB := 1.5
 const SAME_GAP_MS := 40
-const STEP_DB := -8.0
+const STEP_DB := 2.0
 const STEP_PITCHES := [1.0, 0.9]
+## The whole game this much over its renders, on every bus so the balance
+## holds (PIX-383). Through the mixer at the default volumes the music came
+## out at -37.6 LUFS (the mono renders play on both channels: 3 LU over the
+## audio pass's -40.6, which measured them as one), where a PC game sits
+## near -23. +14 dB puts it at -23.6 and a busy fight at about -19.5, where
+## the limiter barely works (0.3 LU) and the web, which has none, all but
+## never passes 0 dBFS; at +17 a fight came to -16.3, the limiter took 0.8
+## LU off it and the web clipped.
+const LOUDNESS_DB := 14.0
+## Master's limiter's ceiling: sounds stacked at once never clip past it.
+const CEILING_DB := -1.0
 ## Sounds that take the oldest voice when all eight are busy, rather than
 ## going unheard.
 const PRIORITY := ["hurt", "levelUp", "victory", "defeat", "roar", "bounty", "chest", "learn", "evolve", "heal"]
@@ -70,6 +83,12 @@ func _ready() -> void:
 			AudioServer.add_bus()
 			AudioServer.set_bus_name(AudioServer.bus_count - 1, bus)
 			AudioServer.set_bus_send(AudioServer.bus_count - 1, "Master")
+	# Once: a harness batch makes Sound again on the same buses. The web's
+	# sample playback runs no bus effects, so there the buses' levels alone.
+	if AudioServer.get_bus_effect_count(0) == 0:
+		var limiter := AudioEffectHardLimiter.new()
+		limiter.ceiling_db = CEILING_DB
+		AudioServer.add_bus_effect(0, limiter)
 	_music = _player("Music")
 	_fading = _player("Music")
 	for i in SFX_VOICES:
@@ -111,10 +130,16 @@ func _player(bus: String) -> AudioStreamPlayer:
 ## The player's levels on the buses (and the mute on the master).
 func apply_volumes() -> void:
 	var settings: GameSettings = GameState.settings
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), linear_to_db(maxf(settings.music_volume, 0.0001)))
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), linear_to_db(maxf(settings.sfx_volume, 0.0001)))
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Ambience"), linear_to_db(maxf(settings.sfx_volume * 0.55, 0.0001)))
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), bus_db(settings.music_volume))
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), bus_db(settings.sfx_volume))
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Ambience"), bus_db(settings.sfx_volume * 0.55))
 	AudioServer.set_bus_mute(0, settings.muted)
+
+
+## A slider's 0..1 as its bus's dB, LOUDNESS_DB over the renders; nought
+## stays as silent as it was (-80 dB).
+static func bus_db(volume: float) -> float:
+	return linear_to_db(maxf(volume * db_to_linear(LOUDNESS_DB), 0.0001))
 
 
 ## A sound's own level in dB, by its file under assets/audio/ without a
@@ -215,14 +240,22 @@ static func _synth(blips: Array) -> AudioStreamWAV:
 	return stream
 
 
-## While a screen holds the game (the tree is paused), moving the choice ticks.
+## While a screen holds the game (the tree is paused), moving the choice
+## ticks, unless what the move did made a sound of its own (PIX-383: a page
+## turned, a refusal): the screen takes the key after this, so the tick
+## waits to the frame's end to hear.
 func _input(event: InputEvent) -> void:
 	if not get_tree().paused or not event.is_pressed() or event.is_echo():
 		return
 	for action: String in ["move_up", "move_down", "move_left", "move_right"]:
 		if event.is_action_pressed(action):
-			play_ui("tick")
+			_tick_unless_heard.call_deferred(asked)
 			return
+
+
+func _tick_unless_heard(asked_then: int) -> void:
+	if asked == asked_then:
+		play_ui("tick")
 
 
 ## A stinger by the web's name (SFX.hit, SFX.coin...), a little different

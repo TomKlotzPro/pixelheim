@@ -156,11 +156,13 @@ func _command(event: InputEvent) -> Callable:
 	if event.is_action_pressed("move_left") or event.is_action_pressed("move_right"):
 		command = func() -> void:
 			tab = 1 - tab
+			Sound.play_ui("page")
 			_show()
 	elif tab == 1 and (event.is_action_pressed("move_up") or event.is_action_pressed("move_down")):
 		var step := -1 if event.is_action_pressed("move_up") else 1
 		if page + step >= 0 and page + step < pages():
 			command = func() -> void:
 				page += step
+				Sound.play_ui("page")
 				_show()
 	return command

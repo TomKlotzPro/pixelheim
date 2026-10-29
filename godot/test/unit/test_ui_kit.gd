@@ -126,5 +126,25 @@ func test_the_boss_bar_fills_inside_its_frame() -> void:
 		assert_true(inside.encloses(Rect2(notch.position, notch.size)), "a notch inside")
 
 
+## PIX-395: a keyed plank's cap stands inside the kit's face (22 px between
+## its trims, the content box's top row being trim), a pixel clear of it,
+## not over its frame; the plank stays PLANK tall.
+func test_a_keyed_planks_cap_fits_inside_the_kits_face() -> void:
+	if not _installed():
+		pass_test("GegX's kit isn't installed here (scripts/fetch-private-art.sh)")
+		return
+	UiStyle.withheld = false
+	var button: Button = add_child_autofree(UiStyle.button("Continue", func() -> void: pass, "Esc"))
+	await wait_process_frames(1)
+	assert_eq(button.size.y, float(UiStyle.PLANK))
+	var frame := button.get_theme_stylebox("normal") as StyleBoxTexture
+	var face := Rect2(frame.content_margin_left, frame.content_margin_top + 2, button.size.x - frame.content_margin_left - frame.content_margin_right, UiStyle.PLANK - frame.content_margin_top - frame.content_margin_bottom - 2)
+	var cap: Keycap = button.get_node("keyed").get_child(0)
+	for pressed: bool in [false, true]:
+		var style := UiStyle.keycap_style(pressed, true, UiStyle.UI_SCALE, cap.slim)
+		var drawn := Rect2(cap.get_parent().position + cap.position, cap.size).grow_individual(style.expand_margin_left, style.expand_margin_top, style.expand_margin_right, style.expand_margin_bottom)
+		assert_true(face.encloses(drawn), "pressed %s: the cap %s inside the face %s" % [pressed, drawn, face])
+
+
 func _is_kit(texture: Texture2D) -> bool:
 	return texture != null and texture.resource_path.begins_with(UiStyle.KIT_ART)
