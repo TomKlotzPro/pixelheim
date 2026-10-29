@@ -6345,7 +6345,7 @@ msgid "The title screen lives: stars, embers, bobbing monsters, a breathing drag
 msgstr ""
 
 #: assets/data/changelog.json
-msgid "The title's village is richer and deeper: moonlight shafts, drifting ash, a tree and a lantern banner framing the view, market stalls, bunting, the lit fountain and hens asleep by the barrel; and the menu stands on wooden planks, the chosen one lifted between two flames"
+msgid "The title's village is richer and deeper: moonlight shafts, drifting ash, a tree and a lantern banner framing the view, market stalls, bunting, the lit fountain and hens asleep by the barrel; and the menu stands on wooden planks right under the name, with no line between them now, the chosen one lifted between two flames"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -18506,10 +18506,6 @@ msgstr ""
 
 #: scripts/title_screen.gd
 msgid "New Game"
-msgstr ""
-
-#: scripts/title_screen.gd
-msgid "The village burned. You stayed."
 msgstr ""
 
 #: scripts/title_screen.gd

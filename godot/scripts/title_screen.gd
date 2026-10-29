@@ -23,11 +23,11 @@ const SPLASH := "res://assets/splash.png"
 const NOTE_GAP := 20.0
 const NOTE_WIDTH := 1000.0
 ## The menu's planks (PIX-392): where the first hangs (close under the
-## tagline, so with five planks the note under them still ends over the
+## name, so with five planks the note under them still ends over the
 ## dark, above the bunting and the far bank's windows), the gap between
 ## them, the narrowest they are, how far the chosen one lifts (px) and how
 ## quickly it and the flames follow the choice (a share a second).
-const MENU_Y := 222.0
+const MENU_Y := 206.0
 const MENU_GAP := 4.0
 const PLANK_WIDTH := 340.0
 const LIFT := 3.0
@@ -78,7 +78,6 @@ var logo: Control
 ## glow round its letters (PIX-392).
 var heat: Label
 var ember: Label
-var tagline: Label
 ## The game's version: the newest release in What's new.
 var version := ""
 
@@ -186,10 +185,6 @@ func _logo() -> void:
 	heat.add_theme_constant_override("outline_size", 6)
 	heat.modulate.a = 0.0
 	logo.add_child(heat)
-	tagline = UiStyle.label("The village burned. You stayed.", 18, UiStyle.CREAM, Vector2(0, LOGO_Y + 92))
-	tagline.custom_minimum_size = Vector2(VIEW.x, 0)
-	tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	add_child(_shadowed(tagline))
 
 
 ## Words over the scene keep a night shadow, so they read wherever the
@@ -285,7 +280,6 @@ func _veil(launch: bool, under_name: bool) -> Control:
 		add_child(picture)
 		if under_name:
 			move_child(picture, logo.get_index())
-			move_child(tagline, picture.get_index())
 		return picture
 	var night := ColorRect.new()
 	night.color = TitleScene.SKY[1]

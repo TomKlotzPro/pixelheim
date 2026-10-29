@@ -380,7 +380,6 @@ func _assert_settled(title: CanvasLayer) -> void:
 	assert_true(title.logo.visible, "the name forged")
 	assert_false(title.logo.clip_contents, "whole")
 	assert_eq(title.heat.modulate.a, 0.0, "cooled to gold")
-	assert_eq(title.tagline.modulate.a, 1.0)
 	for plank: Button in title.planks:
 		assert_eq(plank.modulate.a, 1.0, "the menu up")
 	assert_eq(title.planks[title.selected].position.y, title.homes[title.selected].y - TitleScreen.LIFT, "the chosen plank lifted")

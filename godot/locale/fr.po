@@ -6345,8 +6345,8 @@ msgid "The title screen lives: stars, embers, bobbing monsters, a breathing drag
 msgstr "L'écran titre s'anime : étoiles, braises, monstres qui se dandinent, un dragon qui respire"
 
 #: assets/data/changelog.json
-msgid "The title's village is richer and deeper: moonlight shafts, drifting ash, a tree and a lantern banner framing the view, market stalls, bunting, the lit fountain and hens asleep by the barrel; and the menu stands on wooden planks, the chosen one lifted between two flames"
-msgstr "Le village de l'écran titre est plus riche et plus profond : des rayons de lune, de la cendre qui tombe, un arbre et une bannière à lanterne qui encadrent la vue, des étals, des fanions, la fontaine éclairée et des poules endormies près du tonneau ; et le menu repose sur des planches de bois, celle choisie soulevée entre deux flammes"
+msgid "The title's village is richer and deeper: moonlight shafts, drifting ash, a tree and a lantern banner framing the view, market stalls, bunting, the lit fountain and hens asleep by the barrel; and the menu stands on wooden planks right under the name, with no line between them now, the chosen one lifted between two flames"
+msgstr "Le village de l'écran titre est plus riche et plus profond : des rayons de lune, de la cendre qui tombe, un arbre et une bannière à lanterne qui encadrent la vue, des étals, des fanions, la fontaine éclairée et des poules endormies près du tonneau ; et le menu repose sur des planches de bois juste sous le nom, sans plus aucune phrase entre les deux, celle choisie soulevée entre deux flammes"
 
 #: assets/data/changelog.json
 msgid "The tour now looks at the inn itself and at the flower beds, and its dust drifts instead of hanging in the air"
@@ -18507,10 +18507,6 @@ msgstr "NOUVEAU"
 #: scripts/title_screen.gd
 msgid "New Game"
 msgstr "Nouvelle partie"
-
-#: scripts/title_screen.gd
-msgid "The village burned. You stayed."
-msgstr "Le village a brûlé. Vous restez."
 
 #: scripts/title_screen.gd
 msgid "This browser window won't keep your saves (a private window?). Your hero lasts only while it's open."

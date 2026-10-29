@@ -19,7 +19,7 @@ extends Node
 ## picture lifts as the camera, among the stars, comes down (DESCENT); the
 ## dragon passes (DRAGON); the mountain wakes (ERUPT_S) and burns down over
 ## FLARE_S; the flame writes the name (FORGE), struck at its end and cooling
-## (COOL); then the line under it, the planks one by one (MENU), the version.
+## (COOL); then the planks one by one (MENU), the version.
 const VEIL_S := 0.8
 ## A frame never moves it on further than this (s): the scene's build or a
 ## shader's first compile on the web would skip part of a beat.
@@ -31,7 +31,6 @@ const FLARE_S := 2.4
 const FORGE := Vector2(4.6, 5.5)
 const STRIKE_S := 5.5
 const COOL := Vector2(5.5, 6.7)
-const TAGLINE := Vector2(5.9, 6.5)
 const MENU := Vector2(6.1, 7.2)
 const END_S := 7.6
 ## The beats by name, as the report says them: the last one begun.
@@ -212,7 +211,6 @@ func pose(time: float) -> void:
 	var jolt := (Vector2(sin(t * 91.0), cos(t * 73.0)) * shake).round()
 	scene.position = jolt
 	logo.position = _logo_home + jolt
-	(screen.tagline as CanvasItem).modulate.a = span(TAGLINE, t)
 	var planks: Array = screen.planks
 	for i in planks.size():
 		var start := MENU.x + i * (MENU.y - MENU.x - PLANK_S) / maxf(1.0, planks.size() - 1.0)
