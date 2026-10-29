@@ -64,8 +64,16 @@ func step_create() -> void:
 
 
 ## `title --keys s,s,s`: walk the title's menu (with `talk`, the keys are
-## the conversation's).
+## the conversation's). `--title-at 3`: the launch's entrance held 3 s in
+## (PIX-392), before any keys.
 func step_title() -> void:
+	if flags.has("--title-at"):
+		var title: Node = world.get_children().filter(func(node: Node) -> bool: return node.has_method("_whats_new"))[0]
+		var at := float(flags.value("--title-at"))
+		while title.entrance != null and title.entrance.t < at:
+			await h.get_tree().process_frame
+		if title.entrance != null:
+			title.entrance.hold(at)
 	if not flags.has("talk"):
 		await h._keys(flags)
 

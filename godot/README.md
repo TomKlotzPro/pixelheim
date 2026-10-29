@@ -643,6 +643,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/streets.gd` — Paving in the Medieval Age's stone (PIX-307).
 - `scripts/telegraph.gd` — A danger marked on the ground before it lands (PIX-150, shared by the bosses and, PIX-155, the elites)
 - `scripts/throne_screen.gd` — Morvax's choice (PIX-253 step 10; the old throne's choice, PIX-157, re-aimed): the courier's last word.
+- `scripts/title_entrance.gd` — The title's entrance on a launch (PIX-392): down from the stars, the dragon's pass, the name forged in fire, the menu last.
 - `scripts/title_scene.gd` — The title's backdrop (PIX-139): Pixelheim's street at night under the Ashen Mountain, in Shade's art, drawn in art pixels at 2x.
 - `scripts/title_screen.gd` — The title (PIX-139): Pixelheim's street at night under the Ashen Mountain (TitleScene, alive under a drifting camera since PIX-249), PIXELHEIM cut in gold above it, and the menu
 - `scripts/touch.gd` — The phone version (PIX-162): whether to play by touch, and how the game's 1280x720 canvas sits on a screen of another shape.

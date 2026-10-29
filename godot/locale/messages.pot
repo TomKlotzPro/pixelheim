@@ -2189,6 +2189,10 @@ msgid "A third dream under Sela's roof, the first night after Aske comes home"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A title worth arriving at: the first launch comes down from the stars past the moon, Fafnyr sweeps by breathing fire, the mountain wakes and lights the valley, and a flame writes PIXELHEIM before it is struck and cools to gold; any key skips it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
 msgstr ""
 
@@ -3370,6 +3374,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Forged in Fire"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6334,6 +6342,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The title screen lives: stars, embers, bobbing monsters, a breathing dragon"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The title's village is richer and deeper: moonlight shafts, drifting ash, a tree and a lantern banner framing the view, market stalls, bunting, the lit fountain and hens asleep by the barrel; and the menu stands on wooden planks right under the name, with no line between them now, the chosen one lifted between two flames"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -18494,10 +18506,6 @@ msgstr ""
 
 #: scripts/title_screen.gd
 msgid "New Game"
-msgstr ""
-
-#: scripts/title_screen.gd
-msgid "The village burned. You stayed."
 msgstr ""
 
 #: scripts/title_screen.gd
