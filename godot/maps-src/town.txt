@@ -13,6 +13,9 @@
 # The farmyard across it is a sty (PIX-387): fenced against the wall, the
 # east field a row shorter for it, its gate on the road and its barrel and
 # crate beside it by the wall.
+# A grassy bank runs between the south street and the river (PIX-390: the
+# street's kerb lay on the water, « ça fait bizarre le mix rivière et
+# rue »), round the street's end to the bend; no street touches the water.
 # One rampart round it all, a wall drawn once (PIX-248: the double rampart
 # looked strange from inside): the top two rows and the columns beyond the
 # west and east walls are the fields outside, the road running on north out
@@ -91,8 +94,8 @@ map
 .#....................FF***FF..*..w....===...*....................~~~~~~..........#.
 .#....................FFF*FFF...*......===.....*..................~~~~~FFFFFFFFFFF#.
 .#....========================================================..~~~~~~~FFFFFFFFFFF#.
-.#....========================================================~~~~~~~~~FFFFFFFFFFF#.
-.#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
+.#....========================================================..~~~~~~~FFFFFFFFFFF#.
+.#..............................................................~~~~~~~FFFFFFFFFFF#.
 .#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
 .#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
 .#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.

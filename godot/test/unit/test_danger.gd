@@ -72,6 +72,16 @@ func test_low_health_is_below_a_quarter() -> void:
 	assert_false(HudDockScript.low_hp(0, 100), "the dead hear no heartbeat")
 
 
+## PIX-388: after a cast the veil covers the icons, then draws back up in
+## whole art pixels as the skills' shared turn runs out.
+func test_the_turns_veil_draws_back_in_art_pixels() -> void:
+	assert_eq(HudDockScript.veil_height(36, 0.0, 1.0), 36.0, "all of it at once")
+	assert_eq(HudDockScript.veil_height(36, 1.0, 1.0), 0.0, "none once the turn has run")
+	assert_eq(HudDockScript.veil_height(36, 2.0, 1.0), 0.0, "never below none")
+	assert_eq(HudDockScript.veil_height(36, 0.5, 1.0), 18.0)
+	assert_eq(fmod(HudDockScript.veil_height(36, 0.3, 1.0), 2.0), 0.0, "whole art pixels")
+
+
 func test_danger_has_its_sounds() -> void:
 	for name: String in ["tell", "mark", "slam", "heart"]:
 		assert_true(SoundScript.UI_SOUNDS.has(name), name)

@@ -58,7 +58,7 @@ func test_a_pickup_lies_half_a_cell() -> void:
 	var corner: Vector2 = root.position + item.position - size / 2.0
 	assert_eq(corner, corner.round(), "on the art's grid")
 	# The hero's head: the figure's top seven rows (PunyArt.HEADS' cut).
-	var figure := PunyArt.frames(PunyArt.plain("warrior", 0)).get_frame_texture("idle_down", 0).get_image()
+	var figure := PunyArt.frames(PunyArt.plain("warrior")).get_frame_texture("idle_down", 0).get_image()
 	var used := figure.get_used_rect()
 	var head := figure.get_region(Rect2i(used.position, Vector2i(used.size.x, 7))).get_used_rect()
 	assert_lt(size.x, float(head.size.x), "narrower than the hero's head")

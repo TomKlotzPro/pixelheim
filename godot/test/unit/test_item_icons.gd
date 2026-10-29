@@ -41,6 +41,12 @@ func test_the_fetched_paid_icons_are_all_there() -> void:
 		assert_true(ResourceLoader.exists(ItemIcons.PRIVATE + file), file)
 
 
+## PIX-388: every screen the dock's menu lists has its icon there.
+func test_every_dock_screen_has_an_icon() -> void:
+	for screen: Array in preload("res://scripts/hud_dock.gd").SCREENS:
+		assert_ne(String(ItemIcons._data().get("screens", {}).get(screen[0], "")), "", "%s needs an icon in icons.json's screens" % screen[0])
+
+
 ## Every skill a hero can cast (each role's actives, every path's signature)
 ## has an icon for the dock.
 func test_every_skill_has_an_icon() -> void:

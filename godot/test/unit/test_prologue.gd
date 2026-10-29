@@ -10,7 +10,7 @@ var state: Node
 
 func before_each() -> void:
 	state = autofree(GameStateScript.new())
-	state.new_game("Robin", "warrior", 0, true)
+	state.new_game("Robin", "warrior", true)
 
 
 func test_a_new_hero_arrives_on_the_road_at_night_with_the_letter() -> void:

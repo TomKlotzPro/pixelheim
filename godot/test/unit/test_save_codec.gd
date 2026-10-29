@@ -141,7 +141,7 @@ func test_what_a_hero_never_had_stays_out_of_the_file() -> void:
 
 func test_the_card_is_what_the_saves_screen_shows() -> void:
 	var game := _game()
-	game.new_game("Bryn", "ranger", 2)
+	game.new_game("Bryn", "ranger")
 	var armour := InventoryState.create_gear("iron_armor")
 	game.pack.gear.append(armour)
 	game.pack.equipped["body"] = armour["uid"]
@@ -149,7 +149,6 @@ func test_the_card_is_what_the_saves_screen_shows() -> void:
 	var card := SaveCodec.card(game.to_dict())
 	assert_eq(card["name"], "Bryn")
 	assert_eq(card["role"], "ranger")
-	assert_eq(card["look"], 2)
 	assert_eq(card["worn"]["body"], "iron_armor", "the portrait dressed as they left")
 	assert_eq(card["level"], 1)
 	assert_eq(card["place"], "town")
@@ -160,7 +159,7 @@ func test_the_card_is_what_the_saves_screen_shows() -> void:
 
 func test_the_cards_chapter_runs_from_the_night_of_ash_to_after_the_story() -> void:
 	var game := _game()
-	game.new_game("Bryn", "ranger", 0, true)
+	game.new_game("Bryn", "ranger", true)
 	assert_eq(SaveCodec.card(game.to_dict())["chapter"], 0, "the Night of Ash")
 	var told := _game()
 	told.mark_seen(Story.ending_scene(Homecoming.HOME))
