@@ -109,7 +109,6 @@ static func to_file(state: Dictionary, saved_at := 0) -> Dictionary:
 		return {}
 	var hero: Dictionary = state["hero"]
 	var hero_out := {"name": hero["name"], "role": hero["roleId"]}
-	_put(hero_out, "look", hero.get("look"))
 	for key: String in HERO_NUMBERS:
 		hero_out[key] = hero[key]
 	var skills := {"nodes": hero["skillNodes"]}
@@ -188,16 +187,15 @@ static func to_file(state: Dictionary, saved_at := 0) -> Dictionary:
 
 ## What the Saves screen shows of a hero, rewritten with every save so it
 ## reads three small headers rather than three whole games: name, class,
-## look and what they wear (the portrait as they left, PIX-175), level,
-## where, the chapter and the time played. `chapter` is the one the main
-## quest's next step is in: 0 on the Night of Ash, past the last (the
-## chapters' count + 1) once the story is told.
+## what they wear (the portrait as they left, PIX-175), level, where, the
+## chapter and the time played. `chapter` is the one the main quest's next
+## step is in: 0 on the Night of Ash, past the last (the chapters' count +
+## 1) once the story is told.
 static func card(state: Dictionary) -> Dictionary:
 	var hero: Dictionary = state["hero"]
 	return {
 		"name": hero["name"],
 		"role": hero["roleId"],
-		"look": hero.get("look", 0),
 		"worn": InventoryState.from_dict(state).worn_items(),
 		"level": hero["level"],
 		"place": state["world"]["position"]["mapId"],
@@ -223,7 +221,6 @@ static func from_file(raw: Variant) -> Dictionary:
 	var hero_in := _section(doc, "hero")
 	var skills := _section(hero_in, "skills")
 	var hero := {"name": hero_in.get("name"), "roleId": hero_in.get("role")}
-	_put(hero, "look", hero_in.get("look"))
 	for key: String in HERO_NUMBERS:
 		_put(hero, key, hero_in.get(key))
 	hero["skillNodes"] = skills.get("nodes", [])

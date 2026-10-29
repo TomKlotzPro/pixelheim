@@ -6,7 +6,6 @@
   "card": {
     "name": "Bryn",
     "role": "ranger",
-    "look": 0,
     "worn": {
       "weapon": "hunting_bow"
     },
@@ -18,7 +17,6 @@
   "hero": {
     "name": "Bryn",
     "role": "ranger",
-    "look": 0,
     "level": 13,
     "xp": 120,
     "xpToNext": 862,

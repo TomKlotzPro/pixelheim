@@ -171,13 +171,12 @@ func test_a_first_visit_lasts_until_a_hero_is_made() -> void:
 	for slot in range(1, SaveSlots.SLOT_COUNT + 1):
 		assert_false(FileAccess.file_exists(slots.path_for(slot)), "slot %d stays empty" % slot)
 	assert_eq(second.free_slot(), second.slot, "the new hero takes the slot in hand")
-	second.new_hero_in(second.free_slot(), "Robin", "ranger", 1)
+	second.new_hero_in(second.free_slot(), "Robin", "ranger")
 	var third := _fresh_state()
 	third.boot()
 	assert_false(third.standing_in)
 	assert_eq(third.hero.hero_name, "Robin")
 	assert_eq(third.hero.role_id, "ranger")
-	assert_eq(third.hero.look, 1)
 	assert_eq(third.free_slot(), 2, "the next hero would take the first empty slot")
 
 
@@ -256,7 +255,7 @@ func test_summary_says_what_the_hero_wears() -> void:
 	state.pack.equipped["body"] = armor["uid"]
 	slots.write(1, state.to_dict())
 	assert_eq(slots.summary(1)["worn"].get("body"), "iron_armor")
-	var spec := PunyArt.dressed(slots.summary(1)["roleId"], 0, slots.summary(1)["worn"])
+	var spec := PunyArt.dressed(slots.summary(1)["roleId"], slots.summary(1)["worn"])
 	assert_true(spec.has("body"), "drawn in the armour")
 	assert_not_null(PunyArt.sheet_texture(spec), "the portrait's sheet")
 	assert_typeof(spec["tint"], TYPE_COLOR)

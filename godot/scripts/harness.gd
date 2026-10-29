@@ -69,7 +69,7 @@ func _keys(flags: HarnessFlags) -> void:
 		"e": KEY_E, "esc": KEY_ESCAPE, "space": KEY_SPACE, "enter": KEY_ENTER, "s": KEY_S, "w": KEY_W,
 		"i": KEY_I, "q": KEY_Q, "k": KEY_K, "c": KEY_C, "m": KEY_M, "b": KEY_B, "shift": KEY_SHIFT,
 		"r": KEY_R, "a": KEY_A, "d": KEY_D, "z": KEY_Z, "x": KEY_X, "f": KEY_F, "tab": KEY_TAB,
-		"n": KEY_N,
+		"n": KEY_N, "pgup": KEY_PAGEUP, "pgdn": KEY_PAGEDOWN,
 	}
 	# A pad's buttons by name (PIX-388: Back opens the dock's menu, the D-pad steers it).
 	var pad := {"back": JOY_BUTTON_BACK, "pad_up": JOY_BUTTON_DPAD_UP, "pad_down": JOY_BUTTON_DPAD_DOWN}

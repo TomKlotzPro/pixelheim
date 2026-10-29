@@ -290,6 +290,13 @@ func field_cpu() -> String:
 	return noted("cpu")
 
 
+func field_creation() -> String:
+	for node in world.get_children():
+		if node.get_script() == preload("res://scripts/create_screen.gd"):
+			return "%s skill %d/%d" % [node._role(), node.skill_index + 1, node.skill_chips.size()]
+	return ""
+
+
 func field_credits() -> String:
 	for node in world.get_children():
 		if node is Cutscene and not node.finished and node.roll_end != "":

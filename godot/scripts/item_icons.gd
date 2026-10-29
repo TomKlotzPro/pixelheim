@@ -1,7 +1,7 @@
 class_name ItemIcons
-## areas: trade screen
-## Every item's icon and the ailment marks, all Shade's (PIX-138), as mapped
-## in assets/puny/icons.json:
+## areas: trade screen title
+## Every item's icon, the ailment marks and the stats', all Shade's
+## (PIX-138), as mapped in assets/puny/icons.json:
 ## - "free/<sheet>@c,r": a cell of his CC0 icon sheets in assets/puny/icons/;
 ## - "medieval@<tile>": a tile of the Medieval Age atlas (food, furniture);
 ## - anything else: a file of his paid icon packs, which scripts/
@@ -58,6 +58,12 @@ static func ailment(kind: String) -> Texture2D:
 ## null (no paid art here).
 static func screen(screen_id: String) -> Texture2D:
 	return _texture(_data().get("screens", {}).get(screen_id, ""))
+
+
+## A stat's icon on hero creation (PIX-391: maxHp, mana, energy, strength,
+## intelligence, dexterity, defense), or null without the paid art.
+static func stat(name: String) -> Texture2D:
+	return _texture(_data()["stats"].get(name, ""))
 
 
 ## A skill's icon by its name, or null (no icon, or no paid art).
@@ -138,7 +144,7 @@ static func effect(name: String, fps := 10.0, loop := true) -> SpriteFrames:
 ## the fetch script copies).
 static func private_files() -> Array[String]:
 	var files: Array[String] = []
-	for group: String in ["items", "ailments", "effects", "screens"]:
+	for group: String in ["items", "ailments", "effects", "screens", "stats"]:
 		for src: String in _data().get(group, {}).values():
 			if not src.begins_with("free/") and not src.begins_with("medieval@"):
 				var file := src.get_slice("@", 0)

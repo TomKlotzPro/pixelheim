@@ -15897,7 +15897,19 @@ msgid "Create your hero"
 msgstr ""
 
 #: scripts/create_screen.gd
+msgid "Defense"
+msgstr ""
+
+#: scripts/create_screen.gd
+msgid "Dexterity"
+msgstr ""
+
+#: scripts/create_screen.gd
 msgid "Dragonsbane..."
+msgstr ""
+
+#: scripts/create_screen.gd
+msgid "Energy"
 msgstr ""
 
 #: scripts/create_screen.gd
@@ -15909,6 +15921,18 @@ msgid "Every slot holds a hero. Delete one in Saves first."
 msgstr ""
 
 #: scripts/create_screen.gd
+msgid "Health"
+msgstr ""
+
+#: scripts/create_screen.gd
+msgid "Intelligence"
+msgstr ""
+
+#: scripts/create_screen.gd
+msgid "Mana"
+msgstr ""
+
+#: scripts/create_screen.gd
 msgid "Name"
 msgstr ""
 
@@ -15917,11 +15941,11 @@ msgid "Play"
 msgstr ""
 
 #: scripts/create_screen.gd
-msgid "Skills: %s"
+msgid "Skip"
 msgstr ""
 
 #: scripts/create_screen.gd
-msgid "Skip"
+msgid "Strength"
 msgstr ""
 
 #: scripts/create_screen.gd
@@ -15945,11 +15969,11 @@ msgid "first night"
 msgstr ""
 
 #: scripts/create_screen.gd
-msgid "look"
+msgid "role"
 msgstr ""
 
 #: scripts/create_screen.gd
-msgid "role"
+msgid "skill"
 msgstr ""
 
 #: scripts/cutscene.gd
