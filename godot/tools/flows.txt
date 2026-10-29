@@ -784,6 +784,15 @@ fit-title | title overflow --lang fr | open=title_screen overflow=0 | screen lan
 title-options | title --keys s,s,e | top=options_screen | screen title
 title-saves | title --keys s,e | top=saves_screen | screen title
 title-whatsnew | title --keys s,s,s,e | top=changelog_screen | screen title
+# PIX-392: a launch's entrance (down from the stars, the dragon's pass, the
+# name forged, the menu last) settles into the menu; a key while it plays
+# skips it and does nothing else (the first S doesn't move the choice, so
+# S, E open the saves); Reduce motion has none; the title fits the canvas
+# while its planks rise in.
+title-entrance | title --title-at 9 | open=title_screen titlebeat=settled | title
+title-entrance-skip | title --title-at 2 --keys s,s,e | top=saves_screen titlebeat=settled | screen title
+title-entrance-still | title still --title-at 1 | open=title_screen titlebeat=settled | title
+fit-title-entrance | title --title-at 6.8 overflow --lang fr | open=title_screen overflow=0 titlebeat=menu | screen lang title
 fit-create | create overflow --lang fr | open=create_screen overflow=0 | screen lang title
 # Its English twin (PIX-228): the setting's card and Begin's row laid out
 # in the other words.

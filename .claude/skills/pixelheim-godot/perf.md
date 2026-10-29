@@ -82,6 +82,8 @@ The town's farm animals (PIX-387, 2026-10-28, `--town-tier 4`, with the packs, t
 
 The houses the ages raise and the fountain lit at night (PIX-382 step 3, 2026-10-29, with the packs): the City's town nodes 1852 -> 1763 (the woods and the orchard's trees under the new roofs went), BESIDE 32.5-33.8 -> 34.5-34.6 ms (plan 11.3-11.6 -> 12.2-12.6: the yards fit eight pieces more), "again" 34.7-35.3 -> 35.5-36.0 ms, three runs before and two after. The report's `decor=` by age, Ashes to City: 688, 675, 673 -> 652, 672 -> 639, 671 -> 564; lit windows at night (`panes`) 20, 22 -> 24, 25 -> 29, 25 -> 33 from the Hamlet, each with its light, plus the fountain's, within `test_night_light`. `cpu=` on the town at every age by day and at night, two rounds each, headless and alone: 0.20-0.28 / 0.42-0.77 ms before, 0.21-0.30 / 0.40-0.75 after (noise); `cpu-town` holds the City at night under 1.00.
 
+The title's entrance and its richer night (PIX-392, 2026-10-29, with the packs, headless and alone, three runs each): `title cpu --wait 3` (the settled title) 0.03/0.03-0.04 -> 0.04/0.05 ms; the entrance played through (`title --title-at 8 cpu`) 0.06/0.08-0.16 ms. Building the scene (`TitleScene`'s `_ready`, once a title opens) 26 -> 28-35 ms (the near tree's picture, the shafts, the ash, the market). Windowed, the settled title draws about 105 times a frame.
+
 ## Saves (a hero who has seen every cell of 29 maps)
 
 `to_dict` 0.04 ms (4.6 ms the first time, every map packed); `SaveSlots.write` (temp, read back, decode, rename) 0.85 ms; `SaveSlots.read` 0.27 ms; `GameState.apply` 5.6 ms (the fog unpacked, once per load); a `PXH2` code 0.3 ms either way. The file is 8.8 KB, the code 1.3 KB. Nothing to do.

@@ -31,6 +31,7 @@ hints |  | the first-time hints on and none seen yet, as a new player has them (
 --day | <n> | the world's clock on the morning of day n: that day's patches (PIX-250) and weather; the report adds day= and patches=
 --map | <id> | boot at that map's spawn, not where the save stands
 title |  | the title over the world, as a launch shows it (with --keys, its menu walked) | title | 320
+--title-at | <s> | with title: the launch's entrance played (harness runs skip it) and held s seconds in, for the shot (PIX-392): down from the stars, the dragon's pass, the name forged, the menu; past its end it has settled, and a key skips it; the report adds titlebeat=
 --look | <name> | the desktop renderer in another of the app's looks (DesktopLook.LOOKS, PIX-227)
 fades |  | doors dissolve and the screen fades through the dark (harness runs cut at once); the report adds change= (dissolve, dark or cut: PIX-269) and dark= (PIX-238)
 --dissolve-at | <s> | with fades: a door's dissolve held s seconds in (of its 0.25), for the shot (PIX-269)

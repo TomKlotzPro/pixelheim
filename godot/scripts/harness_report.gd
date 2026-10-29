@@ -833,6 +833,15 @@ func field_tally() -> String:
 	return "fresh:%d" % marks.fresh if marks != null and is_instance_valid(marks) else ""
 
 
+func field_titlebeat() -> String:
+	if not flags.has("--title-at"):
+		return ""
+	for child in world.get_children():
+		if child.get_script() != null and String(child.get_script().resource_path).ends_with("title_screen.gd"):
+			return child.beat()
+	return ""
+
+
 func field_titleline() -> String:
 	for child in world.get_children():
 		if child.get_script() != null and String(child.get_script().resource_path).ends_with("title_screen.gd"):

@@ -172,3 +172,107 @@ func test_the_world_rests_under_the_title() -> void:
 	await wait_physics_frames(2)
 	assert_true(world.visible, "the world draws again as the title goes")
 	assert_true(glow_layer.visible, "and its passes with it")
+
+
+## The entrance's beats (PIX-392): in order, short, the mountain waking and
+## burning down, the dragon in and out of the view.
+func test_the_entrance_keeps_its_beats() -> void:
+	var last := -1.0
+	for beat: Array in TitleEntrance.BEATS:
+		assert_gt(float(beat[0]), last, "%s after the beat before it" % beat[1])
+		last = beat[0]
+	assert_eq(TitleEntrance.beat_at(0.0), "descent")
+	assert_eq(TitleEntrance.beat_at(TitleEntrance.END_S), "settled")
+	assert_between(TitleEntrance.END_S, 6.0, 10.0, "cinematic and short")
+	assert_eq(TitleEntrance.STRIKE_S, TitleEntrance.FORGE.y, "struck as the flame finishes the name")
+	assert_gt(TitleEntrance.MENU.x, TitleEntrance.STRIKE_S, "the menu last")
+	assert_eq(TitleEntrance.flare(0.0), 0.0, "the mountain smoulders")
+	assert_gt(TitleEntrance.flare(TitleEntrance.ERUPT_S), 0.95, "and wakes")
+	assert_almost_eq(TitleEntrance.flare(TitleEntrance.END_S), 0.0, 0.01, "burning down before the title settles")
+	assert_gt(TitleScene.wyrm_at(0.0).x, TitleScene.ART.x + 40.0, "the dragon flies in from off the view")
+	assert_lt(TitleScene.wyrm_at(1.0).x, -40.0, "and out of it")
+
+
+## Looking up at the stars, the near layers stand furthest below.
+func test_the_descent_lifts_the_near_layers_most() -> void:
+	var scene := _scene(false)
+	scene.descent = 1.0
+	scene.place()
+	var drop := {}
+	for layer: Array in scene.layers:
+		drop[float(layer[2])] = (layer[0] as Node2D).position.y - (layer[1] as Vector2).y
+	assert_eq(scene.sky.position.y, 0.0, "the sky's darkest top in view")
+	assert_gte(float(drop[TitleScene.DEPTH["stars"]]), TitleScene.TILT, "everything below the view's frame")
+	assert_gt(float(drop[TitleScene.DEPTH["village"]]), TitleScene.ART.y - TitleScene.STREET + TitleScene.TILT / 2.0, "the street out of sight")
+	assert_gt(float(drop[TitleScene.DEPTH["near"]]), float(drop[TitleScene.DEPTH["village"]]))
+	assert_gt(float(drop[TitleScene.DEPTH["village"]]), float(drop[TitleScene.DEPTH["ashen"]]))
+	scene.descent = 0.0
+	scene.place()
+	assert_eq(scene.sky.position.y, -TitleScene.TILT, "back on the title's frame")
+
+
+func _launch(still: bool) -> CanvasLayer:
+	GameState.settings.reduce_motion = still
+	TitleScreen._risen = false
+	var title: CanvasLayer = TitleScreen.new()
+	add_child_autofree(title)
+	return title
+
+
+## A launch starts among the stars, the name unforged and the menu to come;
+## a key goes straight to the settled title and does nothing else.
+func test_a_key_skips_the_entrance_and_only_that() -> void:
+	var title := _launch(false)
+	var entrance: TitleEntrance = title.entrance
+	assert_not_null(entrance, "a launch plays its entrance")
+	assert_eq(title.beat(), "descent")
+	assert_almost_eq(title.scene.descent, 1.0, 0.001, "among the stars")
+	assert_false(title.logo.visible, "the name not forged yet")
+	for plank: Button in title.planks:
+		assert_eq(plank.modulate.a, 0.0, "the menu comes last")
+	entrance.hold(TitleEntrance.FORGE.x + 0.4)
+	assert_eq(title.beat(), "forge")
+	assert_true(title.logo.visible and title.logo.clip_contents, "the flame writing the name")
+	assert_between(title.logo.size.x, TitleEntrance.NAME.x + 1.0, TitleEntrance.NAME.y - 1.0, "part of it")
+	var key := InputEventKey.new()
+	key.keycode = KEY_E
+	key.pressed = true
+	var command: Callable = title._command(key)
+	assert_true(command.is_valid(), "the key is the entrance's")
+	command.call()
+	assert_null(title.entrance, "settled at once")
+	assert_eq(title.beat(), "settled")
+	assert_eq(title.get_children().filter(func(node: Node) -> bool: return node is Cutscene).size(), 0, "E did not start a new game")
+	_assert_settled(title)
+
+
+func test_the_entrance_plays_out_into_the_menu() -> void:
+	var title := _launch(false)
+	var entrance: TitleEntrance = title.entrance
+	for i in ceili(TitleEntrance.END_S * 60.0) + 1:
+		if title.entrance != null:
+			entrance._process(1.0 / 60.0)
+	assert_null(title.entrance, "settled once it's over")
+	_assert_settled(title)
+
+
+func test_no_entrance_with_reduced_motion_nor_back_from_the_saves() -> void:
+	var still := _launch(true)
+	assert_null(still.entrance, "Reduce motion: straight to the title")
+	_assert_settled(still)
+	GameState.settings.reduce_motion = false
+	var again: CanvasLayer = TitleScreen.new()
+	add_child_autofree(again)
+	assert_null(again.entrance, "once a launch")
+
+
+func _assert_settled(title: CanvasLayer) -> void:
+	assert_eq(title.scene.descent, 0.0, "on the title's frame")
+	assert_false(title.scene.wyrm.visible, "the dragon gone")
+	assert_true(title.logo.visible, "the name forged")
+	assert_false(title.logo.clip_contents, "whole")
+	assert_eq(title.heat.modulate.a, 0.0, "cooled to gold")
+	assert_eq(title.tagline.modulate.a, 1.0)
+	for plank: Button in title.planks:
+		assert_eq(plank.modulate.a, 1.0, "the menu up")
+	assert_eq(title.planks[title.selected].position.y, title.homes[title.selected].y - TitleScreen.LIFT, "the chosen plank lifted")

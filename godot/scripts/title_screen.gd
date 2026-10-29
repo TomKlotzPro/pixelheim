@@ -5,6 +5,10 @@ extends Screen
 ## in gold above it, and the menu: Continue, New Game (hero creation), the
 ## saves, options, or What's new. W/S choose, E or Enter takes it. The world
 ## waits paused behind, resting from drawing while the backdrop covers it.
+## A launch arrives through its entrance (PIX-392, TitleEntrance): down from
+## the stars, the dragon's pass, the name forged in fire, the menu last. The
+## menu hangs on wooden planks (GegX's kit; the game's own planks without
+## it), the chosen one lifted, lit and burning between two flames.
 
 const VIEW := Vector2(1280, 720)
 const LOGO_Y := 84.0
@@ -18,6 +22,20 @@ const SPLASH := "res://assets/splash.png"
 ## the night's dark sky rather than the lit street, two lines at most.
 const NOTE_GAP := 20.0
 const NOTE_WIDTH := 1000.0
+## The menu's planks (PIX-392): where the first hangs, the gap between
+## them, the narrowest they are, how far the chosen one lifts (px) and how
+## quickly it and the flames follow the choice (a share a second).
+const MENU_Y := 262.0
+const MENU_GAP := 10.0
+const PLANK_WIDTH := 340.0
+const LIFT := 3.0
+const FOLLOW := 16.0
+## The flames either side of the chosen plank: FireArt's tongue at this
+## many canvas pixels an art pixel, this far off the plank's sides.
+const FLAME_SCALE := 2.0
+const FLAME_GAP := 10.0
+## NEW stands this far past its plank's right end, clear of the flame.
+const BADGE_GAP := 44.0
 
 ## Whether this session's first title has risen: later ones (back from the
 ## saves) rise out of the night's colour.
@@ -27,9 +45,21 @@ var world: Node
 var scene: TitleScene
 var options: Array[Dictionary] = []
 var selected := 0
-var menu: VBoxContainer
-## Per line: [button, left marker, right marker].
-var lines: Array = []
+## The planks hang on it (it rises as a whole back from the saves).
+var menu: Control
+## Per line: its plank, where it hangs, how far the choice lifts it and how
+## far below the entrance still holds it.
+var planks: Array[Button] = []
+var homes: Array[Vector2] = []
+var lifts: Array[float] = []
+var rises: Array[float] = []
+## The chosen plank's flames and the warm light behind it, gliding with
+## the choice.
+var chosen_fire: Node2D
+var flames: Array[AnimatedSprite2D] = []
+var warmth: Sprite2D
+## The launch's entrance while it plays (TitleEntrance), else null.
+var entrance: TitleEntrance
 var footer: Label
 var shine: ColorRect
 ## The line under the menu (PIX-303, PIX-316), and what it last said: slot
@@ -38,6 +68,10 @@ var shine: ColorRect
 var note: Label
 var said := ""
 var logo: Control
+## The name white hot over its gold as the forge leaves it, and the fire's
+## glow round its letters (PIX-392).
+var heat: Label
+var ember: Label
 var tagline: Label
 ## The game's version: the newest release in What's new.
 var version := ""
@@ -118,6 +152,12 @@ func _logo() -> void:
 			back.add_theme_color_override("font_outline_color", Color("140a03"))
 			back.add_theme_constant_override("outline_size", 14)
 		logo.add_child(back)
+	ember = _logo_word(font, Color(1.0, 0.5, 0.15, 0.0))
+	ember.add_theme_color_override("font_outline_color", Color(1.0, 0.42, 0.1, 0.55))
+	ember.add_theme_constant_override("outline_size", 26)
+	ember.material = TitleScene.additive()
+	ember.modulate.a = 0.0
+	logo.add_child(ember)
 	var face := _logo_word(font, UiStyle.GOLD)
 	face.clip_children = CanvasItem.CLIP_CHILDREN_AND_DRAW
 	logo.add_child(face)
@@ -135,6 +175,11 @@ func _logo() -> void:
 	# It sweeps in from off the screen on purpose: not a layout to fit.
 	shine.set_meta(Layout.DECOR, true)
 	face.add_child(shine)
+	heat = _logo_word(font, Color("fff4d8"))
+	heat.add_theme_color_override("font_outline_color", Color("ff8a2a"))
+	heat.add_theme_constant_override("outline_size", 6)
+	heat.modulate.a = 0.0
+	logo.add_child(heat)
 	tagline = UiStyle.label("The village burned. You stayed.", 18, UiStyle.CREAM, Vector2(0, LOGO_Y + 92))
 	tagline.custom_minimum_size = Vector2(VIEW.x, 0)
 	tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -162,43 +207,67 @@ func _logo_word(font: Font, color: Color) -> Label:
 	return word
 
 
-## The one entrance: the scene rises out of what loading showed, the menu
-## rises in line by line, then the shine crosses the name. A launch rises
-## out of the loading screen's picture (PIX-296: the boot splash, the web
-## page's), laid under the name, which the picture draws in the same place,
-## so the name holds still while the night comes alive round it; a title
-## after that (back from the saves) out of the night's colour.
+## How the title arrives. A launch plays its entrance (PIX-392,
+## TitleEntrance), rising out of the loading screen's picture (PIX-296: the
+## boot splash, the web page's) as the camera starts among the stars; harness
+## runs skip it (their keys walk the menu) unless `--title-at` asks for it.
+## Back from the saves, the scene rises out of the night's colour and the
+## menu rises in line by line. Then the shine crosses the name now and then.
 func _arrive() -> void:
 	var launch := not _risen
 	_risen = true
 	if GameState.settings.reduce_motion:
 		return
-	var veil := _veil(launch)
+	if launch and (world == null or not world.harness or HarnessFlags.given().has("--title-at")):
+		enter(_veil(true, false))
+		return
+	var veil := _veil(launch, true)
 	var lift := veil.create_tween()
 	lift.tween_property(veil, "modulate:a", 0.0, 0.6).set_trans(Tween.TRANS_SINE)
 	lift.tween_callback(veil.queue_free)
-	# The menu's container rises (the menu itself is placed by it), line by line.
-	var middle: Control = menu.get_parent()
-	create_tween().tween_property(middle, "position:y", middle.position.y, 0.5).from(middle.position.y + 12).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
-	for i in menu.get_child_count():
-		var line: Control = menu.get_child(i)
-		line.modulate.a = 0.0
-		var show := create_tween()
-		show.tween_interval(0.08 * i)
-		show.tween_property(line, "modulate:a", 1.0, 0.3)
+	menu.create_tween().tween_property(menu, "position:y", 0.0, 0.5).from(12.0).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+	for i in planks.size():
+		planks[i].modulate.a = 0.0
+		planks[i].create_tween().tween_property(planks[i], "modulate:a", 1.0, 0.3).set_delay(0.08 * i)
 	footer.modulate.a = 0.0
-	create_tween().tween_property(footer, "modulate:a", 1.0, 0.6).set_delay(0.4)
-	var sweep := create_tween().set_loops()
+	footer.create_tween().tween_property(footer, "modulate:a", 1.0, 0.6).set_delay(0.4)
+	_shine()
+
+
+## The launch's entrance, out of `veil`, until it settles.
+func enter(veil: Control) -> void:
+	entrance = TitleEntrance.new()
+	entrance.screen = self
+	entrance.scene = scene
+	entrance.veil = veil
+	entrance.on_done = _settled
+	add_child(entrance)
+
+
+func _settled() -> void:
+	entrance = null
+	_shine()
+
+
+## The shine crossing the name, now and then.
+func _shine() -> void:
+	var sweep := shine.create_tween().set_loops()
 	sweep.tween_interval(SHINE_FIRST_S)
 	sweep.tween_property(shine, "position:x", VIEW.x + 200, 1.1).from(-200.0).set_trans(Tween.TRANS_SINE)
 	sweep.tween_interval(SHINE_EVERY_S - SHINE_FIRST_S)
 
 
+## Where the entrance is, for the report: its beat, settled once it's over.
+func beat() -> String:
+	return TitleEntrance.beat_at(entrance.t) if entrance != null else "settled"
+
+
 ## What the title rises out of: on a launch the loading screen's picture,
 ## at the canvas's size in whole pixels like the boot splash, under the name
-## (and over the line below it, which rises with the scene); else, or on a
-## phone's wider canvas, the night's colour over everything.
-func _veil(launch: bool) -> Control:
+## when it holds still there (and over the line below it, which rises with
+## the scene), else over everything; not on a launch, or on a phone's wider
+## canvas, the night's colour over everything.
+func _veil(launch: bool, under_name: bool) -> Control:
 	if launch and Touch.view_size(self) == Touch.DESIGN and ResourceLoader.exists(SPLASH):
 		var picture := TextureRect.new()
 		picture.texture = load(SPLASH)
@@ -208,8 +277,9 @@ func _veil(launch: bool) -> Control:
 		picture.size = VIEW
 		picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(picture)
-		move_child(picture, logo.get_index())
-		move_child(tagline, picture.get_index())
+		if under_name:
+			move_child(picture, logo.get_index())
+			move_child(tagline, picture.get_index())
 		return picture
 	var night := ColorRect.new()
 	night.color = TitleScene.SKY[1]
@@ -220,15 +290,9 @@ func _veil(launch: bool) -> Control:
 
 
 func _card() -> void:
-	# The menu is centred by a full-width container, so a long first line
-	# ("Continue - name, Lv N") widens it both ways instead of to the right.
-	var middle := CenterContainer.new()
-	middle.position = Vector2(0, 268)
-	middle.custom_minimum_size = Vector2(VIEW.x, 0)
-	add_child(middle)
-	menu = VBoxContainer.new()
-	menu.add_theme_constant_override("separation", 14)
-	middle.add_child(menu)
+	menu = Control.new()
+	menu.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(menu)
 	version = load("res://scripts/changelog_screen.gd").releases()[0]["version"]
 	if not GameState.standing_in:
 		options.append({"label": Text.t("Continue  %s, Lv %d") % [GameState.hero.hero_name, GameState.hero.level], "action": _continue})
@@ -239,7 +303,7 @@ func _card() -> void:
 	_draw_menu()
 	# The line under the menu, for a word the title has to say.
 	note = _shadowed(Layout.wrapped(UiStyle.label("", 13, UiStyle.CREAM), NOTE_WIDTH))
-	note.position = Vector2((VIEW.x - NOTE_WIDTH) / 2.0, middle.position.y + menu.get_combined_minimum_size().y + NOTE_GAP)
+	note.position = Vector2((VIEW.x - NOTE_WIDTH) / 2.0, homes[-1].y + UiStyle.PLANK + NOTE_GAP)
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	# Placed, so kept to its lines once they know their width.
 	add_child(Layout.hugging(note))
@@ -270,72 +334,89 @@ func _card() -> void:
 	add_child(_shadowed(footer))
 
 
-## The menu as words over the scene, in the name's pixel type: cream, the
-## chosen line gold between two gold markers. The mouse chooses by pointing.
+## The menu on wooden planks hung one under another (PIX-392), the words
+## in the name's pixel type: GegX's planks with the kit (ink on the page,
+## the chosen one red), the game's own without it. Every plank as wide as
+## the widest, so a long first line ("Continue  name, Lv N") widens them all
+## about the middle. The mouse chooses by pointing.
 func _draw_menu() -> void:
 	Layout.clear(menu)
-	lines.clear()
+	planks.clear()
+	homes.clear()
+	lifts.clear()
+	rises.clear()
+	flames.clear()
+	chosen_fire = Node2D.new()
+	menu.add_child(chosen_fire)
+	warmth = Sprite2D.new()
+	warmth.texture = TitleScene.glow_texture(32, Color("ff9a40"), 0.3, 5)
+	warmth.material = TitleScene.additive()
+	chosen_fire.add_child(warmth)
+	var width := PLANK_WIDTH
 	for index in options.size():
-		var line := HBoxContainer.new()
-		line.alignment = BoxContainer.ALIGNMENT_CENTER
-		line.custom_minimum_size.y = 26
-		line.add_theme_constant_override("separation", 16)
-		var left := _marker(false)
-		line.add_child(left)
-		var button := Button.new()
-		button.text = options[index]["label"]
-		button.focus_mode = Control.FOCUS_NONE
-		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		button.add_theme_font_override("font", UiStyle.logo_font())
-		button.add_theme_font_size_override("font_size", 16)
-		for state: String in ["normal", "hover", "pressed", "focus"]:
-			button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
-		button.add_theme_color_override("font_outline_color", Color("120a06"))
-		button.add_theme_constant_override("outline_size", 8)
-		button.mouse_entered.connect(_point.bind(index))
-		button.pressed.connect(_take.bind(index))
-		line.add_child(button)
-		var right := _marker(true)
-		line.add_child(right)
-		# NEW floats past the line's right marker: it takes no part in the
-		# line's layout, so these words centre exactly as every other line's.
+		var plank := UiStyle.button(options[index]["label"], _take.bind(index))
+		plank.add_theme_font_override("font", UiStyle.logo_font())
+		plank.add_theme_font_size_override("font_size", 16)
+		plank.mouse_entered.connect(_point.bind(index))
+		menu.add_child(plank)
+		planks.append(plank)
+		width = maxf(width, plank.get_combined_minimum_size().x + 32.0)
+	for index in planks.size():
+		homes.append(Vector2(roundf((VIEW.x - width) / 2.0), MENU_Y + index * (UiStyle.PLANK + MENU_GAP)))
+		lifts.append(LIFT if index == selected else 0.0)
+		rises.append(0.0)
+		planks[index].size = Vector2(width, UiStyle.PLANK)
+		planks[index].position = homes[index]
+		# NEW past its plank: notes not yet read.
 		if options[index]["action"] == _whats_new and GameState.settings.seen_version != version:
-			right.add_child(_new_badge())
-		menu.add_child(line)
-		lines.append([button, left, right])
+			planks[index].add_child(_new_badge())
+	warmth.position.x = VIEW.x / 2.0
+	warmth.scale = Vector2((width + 120.0) / 64.0, 1.4)
+	for side in 2:
+		var flame := AnimatedSprite2D.new()
+		flame.sprite_frames = FireArt.frames("tongue", side)
+		flame.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		flame.centered = false
+		flame.scale = Vector2.ONE * FLAME_SCALE
+		var size: Vector2i = FireArt.KINDS["tongue"]
+		flame.offset = -Vector2(size.x / 2, size.y / 2 + 2)
+		flame.position.x = homes[0].x - FLAME_GAP - FLAME_SCALE * size.x / 2.0 if side == 0 else homes[0].x + width + FLAME_GAP + FLAME_SCALE * size.x / 2.0
+		flame.play()
+		flame.frame = side * 5
+		if GameState.settings.reduce_motion:
+			flame.stop()
+		chosen_fire.add_child(flame)
+		flames.append(flame)
 	_show_choice()
+	_follow(1.0)
 
 
-## The chosen line in gold between its markers; the rest cream. Lines are
-## recoloured, not rebuilt, so a pointer resting on the menu never takes the
+## The chosen plank lit: the kit's red one (brass without it), its words in
+## rubric, and it stays lit under the mouse; the rest plain. Planks are
+## restyled, not rebuilt, so a pointer resting on the menu never takes the
 ## choice back from the keys.
 func _show_choice() -> void:
-	for index in lines.size():
-		var chosen := index == selected
-		var button: Button = lines[index][0]
-		for key: String in ["font_color", "font_hover_color", "font_pressed_color"]:
-			button.add_theme_color_override(key, UiStyle.GOLD if chosen else UiStyle.CREAM)
-		# self_modulate: a marker's NEW badge stays visible when it hides.
-		for marker: TextureRect in [lines[index][1], lines[index][2]]:
-			marker.self_modulate.a = 1.0 if chosen else 0.0
+	for index in planks.size():
+		var plank := planks[index]
+		UiStyle.focus(plank, index == selected)
+		plank.add_theme_stylebox_override("hover", plank.get_theme_stylebox("normal") if index == selected else UiStyle.plank(true, 6))
 
 
-## A gold marker beside the chosen line, pointing in at it (hidden, but
-## holding its place, on the others).
-func _marker(right: bool) -> TextureRect:
-	var art := Image.create(4, 7, false, Image.FORMAT_RGBA8)
-	for y in 7:
-		for x in mini(y, 6 - y) + 1:
-			var edge := x == mini(y, 6 - y)
-			art.set_pixel(3 - x if right else x, y, UiStyle.BRASS_DARK if edge else UiStyle.GOLD)
-	var marker := TextureRect.new()
-	marker.texture = ImageTexture.create_from_image(art)
-	marker.custom_minimum_size = Vector2(8, 14)
-	marker.stretch_mode = TextureRect.STRETCH_SCALE
-	marker.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	marker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return marker
+func _process(delta: float) -> void:
+	_follow(1.0 - exp(-FOLLOW * delta))
+
+
+## Each frame, `share` of the way: the chosen plank lifts and the rest
+## settle, the flames and the warm light behind glide to it, each plank
+## kept as far below as the entrance holds it, on whole pixels.
+func _follow(share: float) -> void:
+	if planks.is_empty():
+		return
+	for index in planks.size():
+		lifts[index] = lerpf(lifts[index], LIFT if index == selected else 0.0, share)
+		planks[index].position.y = roundf(homes[index].y - lifts[index] + rises[index])
+	var middle := homes[selected].y + UiStyle.PLANK / 2.0 - LIFT + rises[selected]
+	chosen_fire.position.y = roundf(lerpf(chosen_fire.position.y, middle, share))
 
 
 func _point(index: int) -> void:
@@ -343,20 +424,27 @@ func _point(index: int) -> void:
 	if world != null and world.harness:
 		return
 	if index != selected:
-		selected = index
-		_show_choice()
+		_choose(index)
 
 
-## NEW, in rubric red past its line: notes not yet read.
+## The choice moved to `index`, heard as the pages' pen tick.
+func _choose(index: int) -> void:
+	selected = index
+	Sound.play_ui("tick")
+	_show_choice()
+
+
+## NEW, in rubric red past its plank: notes not yet read.
 func _new_badge() -> Control:
 	var badge := PanelContainer.new()
 	badge.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.LAMP, UiStyle.NIGHT, 3))
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge.add_child(UiStyle.strong(Text.t("NEW"), 12, UiStyle.CREAM))
-	# Beside the marker it hangs from, middles level, growing rightward.
-	badge.set_anchors_preset(Control.PRESET_CENTER_LEFT)
-	badge.offset_left = 20
-	badge.offset_right = 20
+	# Past the plank's right end and the flame there, middles level, growing
+	# rightward: it takes no part in the plank's width.
+	badge.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+	badge.offset_left = BADGE_GAP
+	badge.offset_right = BADGE_GAP
 	badge.grow_horizontal = Control.GROW_DIRECTION_END
 	badge.grow_vertical = Control.GROW_DIRECTION_BOTH
 	return badge
@@ -364,14 +452,15 @@ func _new_badge() -> Control:
 
 func _command(event: InputEvent) -> Callable:
 	var command := Callable()
+	# While the entrance plays, any key or button goes straight to the
+	# settled title, and does only that.
+	if entrance != null:
+		var press := (event is InputEventKey or event is InputEventJoypadButton) and event.is_pressed() and not event.is_echo()
+		return entrance.skip if press else command
 	if event.is_action_pressed("move_up") or event.is_action_pressed("ui_up"):
-		command = func() -> void:
-			selected = wrapi(selected - 1, 0, options.size())
-			_show_choice()
+		command = func() -> void: _choose(wrapi(selected - 1, 0, options.size()))
 	elif event.is_action_pressed("move_down") or event.is_action_pressed("ui_down"):
-		command = func() -> void:
-			selected = wrapi(selected + 1, 0, options.size())
-			_show_choice()
+		command = func() -> void: _choose(wrapi(selected + 1, 0, options.size()))
 	elif event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		command = _take.bind(selected)
 	return command

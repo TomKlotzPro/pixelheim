@@ -2,8 +2,9 @@ extends GutTest
 ## The loading screen (PIX-296): the title's night drawn in code
 ## (tools/splash.py, assets/splash.png), the desktop app's boot splash and
 ## the web page's picture, with the page's life in web/shell.html; no words
-## but the logo, and the logo where the title draws it, so a launch's title
-## rises out of the same picture with the name holding still.
+## but the logo, and the logo where the title draws it; a launch's title
+## rises out of the same picture into its entrance (PIX-392), and the name
+## is forged back where the picture showed it.
 
 const TitleScreen := preload("res://scripts/title_screen.gd")
 const SHELL := "res://web/shell.html"
@@ -101,11 +102,15 @@ func test_a_launch_rises_out_of_the_picture() -> void:
 	for child in title.get_children():
 		if child is TextureRect and (child as TextureRect).texture != null and (child as TextureRect).texture.resource_path == TitleScreen.SPLASH:
 			veil = child
+	# The launch's entrance (PIX-392) begins under it, among the stars.
+	assert_not_null(title.entrance, "a launch plays its entrance")
 	if Touch.view_size(title) == Touch.DESIGN:
 		assert_not_null(veil, "the loading picture over the scene")
-		assert_lt(veil.get_index(), title.logo.get_index(), "under the name, which holds still")
-		assert_lt(title.tagline.get_index(), veil.get_index(), "over the line under the name, which rises with the scene")
+		assert_gt(veil.get_index(), title.logo.get_index(), "over everything, the name too: it is forged later")
 		assert_eq(veil.size, TitleScreen.VIEW, "the canvas, as the boot splash fills it")
+		assert_eq(veil.modulate.a, 1.0, "the picture at first")
+		title.entrance.hold(TitleEntrance.VEIL_S)
+		assert_almost_eq(veil.modulate.a, 0.0, 0.001, "lifted as the camera comes down")
 	else:
 		assert_null(veil, "a phone's wider canvas rises out of the night")
 	title.close()
@@ -113,6 +118,7 @@ func test_a_launch_rises_out_of_the_picture() -> void:
 	# Back from the saves: the night's colour, not the loading screen again.
 	var again := TitleScreen.new()
 	add_child(again)
+	assert_null(again.entrance, "the entrance plays once a launch")
 	var night := again.get_children().filter(func(child: Node) -> bool: return child is ColorRect and (child as ColorRect).color == TitleScene.SKY[1])
 	assert_eq(night.size(), 1, "the night's colour")
 	assert_true(again.get_children().all(func(child: Node) -> bool: return not (child is TextureRect and (child as TextureRect).texture != null and (child as TextureRect).texture.resource_path == TitleScreen.SPLASH)), "no picture")

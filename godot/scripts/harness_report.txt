@@ -103,6 +103,7 @@ street | the street under the hero: the paving its age lays (gravel, cobbles, sa
 tab | with station: the tab the counter opened on (PIX-234)
 tags | after a fight on this visit: the most foes' level tags shown at once while it was on (PIX-340: one a pack)
 tally | on Morvax's forge: the red strokes after his wall's newest row, one for each of the courier's ember lamps: fresh:4 (PIX-325)
+titlebeat | with --title-at: the beat the title's entrance is held at (descent, dragon, eruption, forge, menu), or settled once it is over or skipped (PIX-392)
 titleline | the title's line under its menu, by what it's about: slot (the slot in hand: unreadable, or its hero the save before, PIX-303) or full (New Game with no slot free, PIX-316)
 toast | the battle log's line on the screen (PIX-343): its boxes, their lines, and fits, or what's wrong: off (the screen), tracker (on the objective's line), dock, plate (the message plate up too), arrow (the quest arrow drawn over it): 1 box, 1 line, fits
 tone | on a map in the open air: how the region's tone takes the hero's cell: whole (tone), the mire's with its murk and puddles (mire), its dirt only beside the ash (fringe), or none (PIX-305)
