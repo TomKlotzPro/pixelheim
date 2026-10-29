@@ -20,6 +20,15 @@ class_name Yards
 ##   between its lamps, its lanterns lit at night.
 ## The houses the ages raise (Town.age_houses, PIX-382 step 3) keep theirs
 ## from the age they stand: firewood, hay and kegs.
+## The market, the streets and their green by the age (PIX-382 step 4, the
+## sets): the stalls sell what the pack draws, laid on their bare counters
+## (`on`: blocking nothing more), from one bare stall in the Hamlet to
+## produce and bread in the Village, the draper's stall and a basket out
+## front in the Town, and pots and a cart of the coast's catch in the City;
+## the trades' signs by their doors (the forge's anvil and grindstone, the
+## brewery's cask); potted trees along Upper Street and at the square's
+## corners from the Town, potted flowers between them and on the avenue in
+## the City (`pot`).
 ## Laid as a settlement's dressing is (Hamlet.plan's `grown`): what stands
 ## blocks only open ground off the paths and never closes a way, and keeps
 ## clear of every villager's place and pacing, the square's boards, stalls
@@ -41,6 +50,22 @@ const SACKS := 1900
 const BASKET := 1235
 const SCARECROW := 3005
 const HAY := 2787
+## The market's wares (PIX-382 step 4), the pack's: produce, bread and
+## cheese, a draper's folded cloth, a potter's jug, flour sacks; the trades'
+## signs (a cask on its cradle, the anvil, a grindstone); and the small trees
+## that grow in the planters.
+const REDS := 1456
+const YELLOWS := 1675
+const LOAF := 1019
+const SMALL_LOAF := 1020
+const CHEESE := 801
+const CLOTH := [2777, 2778, 2779]
+const JUG := 2115
+const FLOUR := 2999
+const CASK := 2123
+const ANVIL := 2124
+const GRINDSTONE := 2127
+const TREES := [16, 1338, 1342]
 
 ## The houses' doors: a piece by one stands once its house does.
 const MAREN := Vector2i(21, 10)
@@ -96,8 +121,6 @@ const PIECES := [
 	{"art": "woodpile", "cell": Vector2i(4, 31), "by": THATCH, "age": 2},
 	{"art": "garden", "cell": Vector2i(6, 28), "flat": true, "by": THATCH, "age": 2},
 	{"art": "garden", "cell": Vector2i(7, 28), "flat": true, "by": THATCH, "age": 2},
-	{"art": "market_stall", "cell": Vector2i(50, 23), "age": 2},
-	{"art": "market_stall_blue", "cell": Vector2i(50, 26), "age": 2},
 	{"art": "garden", "cell": Vector2i(58, 30), "flat": true, "age": 2},
 	{"art": "garden", "cell": Vector2i(59, 30), "flat": true, "age": 2},
 	{"art": "garden", "cell": Vector2i(60, 30), "flat": true, "age": 2},
@@ -153,6 +176,53 @@ const HEDGES := [[Vector2i(26, 3), Vector2i(36, 3), 2], [Vector2i(18, 3), Vector
 const HEDGE := [BUSH, ROSES, BOX_BUSH, BUSH, LAVENDER, BOX_BUSH, BLUEBELLS, BUSH, BERRIES]
 ## A house's window boxes, all one colour, picked by its door.
 const WINDOW_BOXES := ["window_box", "window_box_gold", "window_box_white", "window_box_blue"]
+## The market (PIX-382 step 4): Mabel's stalls with their counters bare
+## (HamletArt.STALLS), each trade's wares laid on its counter (`on`: where
+## the ware's top left lies from the cell's), what stands out front, and a
+## cart come up from the coast. A stall comes before its wares.
+const MARKET := [
+	{"art": "stall_red", "cell": Vector2i(50, 23), "age": 1},
+	{"tile": BASKET, "cell": Vector2i(50, 23), "on": Vector2i(1, -9), "age": 2},
+	{"tile": REDS, "cell": Vector2i(50, 23), "on": Vector2i(15, -9), "age": 2},
+	{"art": "stall_blue", "cell": Vector2i(50, 26), "age": 2},
+	{"tile": LOAF, "cell": Vector2i(50, 26), "on": Vector2i(1, -9), "age": 2},
+	{"tile": SMALL_LOAF, "cell": Vector2i(50, 26), "on": Vector2i(16, -9), "age": 2},
+	{"tile": CHEESE, "cell": Vector2i(50, 26), "on": Vector2i(8, -10), "age": 3},
+	{"tile": YELLOWS, "cell": Vector2i(49, 23), "age": 3},
+	{"art": "stall_green", "cell": Vector2i(30, 24), "age": 3},
+	{"tile": CLOTH[0], "cell": Vector2i(30, 24), "on": Vector2i(3, -10), "age": 3},
+	{"tile": CLOTH[1], "cell": Vector2i(30, 24), "on": Vector2i(10, -10), "age": 3},
+	{"tile": CLOTH[2], "cell": Vector2i(30, 24), "on": Vector2i(17, -10), "age": 3},
+	{"tile": JUG, "cell": Vector2i(49, 27), "age": 4},
+	{"art": "handcart", "cell": Vector2i(42, 30), "age": 4},
+	{"tile": FLOUR, "cell": Vector2i(42, 30), "on": Vector2i(2, -6), "age": 4},
+	{"art": "fish_crate", "cell": Vector2i(42, 30), "on": Vector2i(11, -5), "age": 4},
+]
+## The trades' signs by their doors (PIX-382 step 4): the brewery's cask on
+## its cradle, the forge's anvil and its grindstone.
+const STREET := [
+	{"tile": CASK, "cell": Vector2i(29, 19), "by": VEX, "age": 3},
+	{"tile": ANVIL, "cell": Vector2i(62, 15), "by": FORGE, "age": 3},
+	{"tile": GRINDSTONE, "cell": Vector2i(64, 15), "by": FORGE, "age": 4},
+]
+## Planters (PIX-382 step 4, `pot`): a small tree in the pack's tub along
+## Upper Street's south side and at the square's top corners from the Town;
+## flowers between the trees and a tree either side of the avenue in the City.
+const GREEN := [
+	{"tile": TREES[0], "cell": Vector2i(23, 13), "pot": true, "age": 3},
+	{"tile": TREES[1], "cell": Vector2i(41, 13), "pot": true, "age": 3},
+	{"tile": TREES[2], "cell": Vector2i(61, 13), "pot": true, "age": 3},
+	{"tile": TREES[0], "cell": Vector2i(31, 21), "pot": true, "age": 3},
+	{"tile": TREES[0], "cell": Vector2i(49, 21), "pot": true, "age": 3},
+	{"tile": ROSES, "cell": Vector2i(20, 13), "pot": true, "age": 4},
+	{"tile": LAVENDER, "cell": Vector2i(26, 13), "pot": true, "age": 4},
+	{"tile": MARIGOLDS, "cell": Vector2i(35, 13), "pot": true, "age": 4},
+	{"tile": ROSES, "cell": Vector2i(46, 13), "pot": true, "age": 4},
+	{"tile": TREES[1], "cell": Vector2i(38, 7), "pot": true, "age": 4},
+	{"tile": TREES[1], "cell": Vector2i(42, 7), "pot": true, "age": 4},
+]
+## The sets by name, as the report counts them (`lived=`).
+const SETS := {"market": MARKET, "street": STREET, "green": GREEN}
 
 
 ## The town's dressing at `age` (GameState.town_tier) on `map`, its houses
@@ -162,10 +232,20 @@ static func plan(map: MapData, pieces: Dictionary, age: int, paid: bool) -> Arra
 	var out: Array[Dictionary] = []
 	if not paid:
 		return out
-	for entry: Dictionary in PIECES + hedges():
+	for entry: Dictionary in PIECES + hedges() + sets():
 		if int(entry["age"]) <= age and (not entry.has("by") or map.tile_at(entry["by"]).begins_with("door")):
 			out.append(entry)
 	out.append_array(window_boxes(pieces, age))
+	return out
+
+
+## The market's, the streets' and the planters' pieces, each marked with
+## its set (`set`).
+static func sets() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for name: String in SETS:
+		for entry: Dictionary in SETS[name]:
+			out.append(entry.merged({"set": name}))
 	return out
 
 

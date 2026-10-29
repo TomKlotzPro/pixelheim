@@ -85,6 +85,61 @@ func test_a_piece_by_a_house_waits_for_the_house() -> void:
 		assert_eq(entry.get("by", Yards.HALL), Yards.HALL, "%s waits for its house" % entry["cell"])
 
 
+## The market by the age (PIX-382 step 4): one bare stall in the Hamlet,
+## then each age more stalls and more wares, every ware laid on a stall or
+## the cart standing under it, no two neighbouring stalls selling alike,
+## and by the City produce, bread, cloth, pots and fish.
+func test_the_market_fills_with_each_age() -> void:
+	var stalls := 0
+	var before := 0
+	for age in range(1, Town.MAX_TIER + 1):
+		var pieces: Array = _town(age)["planned"]["pieces"].filter(func(piece: Dictionary) -> bool: return piece.get("set", "") == "market")
+		var stood := {}
+		var sold := {}
+		for piece: Dictionary in pieces:
+			if piece["kind"] == "stand":
+				stood[piece["cell"]] = piece.get("art", "")
+		var laid := 0
+		for piece: Dictionary in pieces:
+			if piece["kind"] == "on":
+				laid += 1
+				assert_true(stood.has(piece["cell"]), "age %d: %s lies on what stands there" % [age, piece["cell"]])
+				var ware: Variant = piece.get("tile", piece.get("art"))
+				assert_false(sold.has(ware) and sold[ware] != piece["cell"], "age %d: %s sold on one stall" % [age, ware])
+				sold[ware] = piece["cell"]
+		var counted := stood.values().filter(func(art: String) -> bool: return art.begins_with("stall_")).size()
+		assert_gte(counted, stalls, "age %d keeps its stalls" % age)
+		assert_gt(pieces.size(), before, "age %d's market is fuller" % age)
+		if age == 1:
+			assert_eq([counted, laid], [1, 0], "the Hamlet's one stall stands bare")
+		stalls = counted
+		before = pieces.size()
+	var city: Array = Yards.MARKET.map(func(entry: Dictionary) -> Variant: return entry.get("tile", entry.get("art")))
+	for trade: Variant in [Yards.BASKET, Yards.LOAF, Yards.CLOTH[0], Yards.JUG, "fish_crate"]:
+		assert_has(city, trade, "the City sells %s" % trade)
+
+
+## The trades' signs stand by their doors and the planters along Upper
+## Street and at the square, from the Town; the City has more of each.
+func test_signs_and_planters_from_the_town() -> void:
+	var counts := []
+	for age in Town.MAX_TIER + 1:
+		var sets := {"street": 0, "green": 0}
+		for piece: Dictionary in _town(age)["planned"]["pieces"]:
+			if sets.has(piece.get("set", "")):
+				sets[piece["set"]] += 1
+				assert_eq(piece["kind"], "stand", "%s stands and blocks" % piece["cell"])
+		counts.append(sets)
+	for age in 3:
+		assert_eq(counts[age], {"street": 0, "green": 0}, "nothing before the Town at age %d" % age)
+	assert_gt(counts[3]["green"], 0, "planters in the Town")
+	assert_gt(counts[3]["street"], 0, "and the trades' signs")
+	assert_gt(counts[4]["green"], counts[3]["green"], "more planters in the City")
+	assert_gt(counts[4]["street"], counts[3]["street"], "and signs")
+	for entry: Dictionary in Yards.GREEN:
+		assert_true(entry.get("pot", false), "%s: in a tub" % entry["cell"])
+
+
 func test_nothing_without_the_pack() -> void:
 	var city := _town(Town.MAX_TIER)
 	assert_eq(Yards.plan(city["map"], city["built"]["pieces"], Town.MAX_TIER, false).size(), 0)

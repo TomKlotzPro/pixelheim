@@ -92,6 +92,36 @@ func test_grass_creeps_in_only_where_a_road_meets_grass() -> void:
 	assert_false(worn["wear"].has(Vector2i(4, 5)), "a paved cell wears nothing")
 
 
+## Where the town's traffic runs over its paving (PIX-382 step 4), the stone
+## wears: the same lane's ruts in the paving's own look, over the stone; a
+## paved cell no traffic wears stays as laid, and grass never creeps in.
+func test_the_traffic_wears_the_paving_it_runs_over() -> void:
+	var grid := _meadow(_road_down(4, 2))
+	var paved := {}
+	for cell: Vector2i in _road_down(4, 2):
+		paved[cell] = "cobbles"
+	var traffic := {Vector2i(4, 5): true, Vector2i(5, 5): true}
+	var worn := RoadWear.rows(grid, _grass, Vector2i(12, 12), 0, 12, paved, Vector2i.ZERO, RoadWear.TOWN, traffic)
+	assert_eq(worn["wear"].keys().size(), 2, "only the cells the traffic wears")
+	var variant: int = worn["wear"][Vector2i(4, 5)] % RoadWear.VARIANTS
+	assert_eq(worn["wear"][Vector2i(4, 5)], RoadWear.lane_tile(RoadWear.PAVED, RoadWear.DOWN, 2, 0, variant), "the street's first lane, worn into the stone")
+	assert_eq(worn["wear"][Vector2i(5, 5)], RoadWear.lane_tile(RoadWear.PAVED, RoadWear.DOWN, 2, 1, variant), "and its second")
+	for cell: Vector2i in worn["verge"]:
+		assert_false(paved.has(cell), "%s: no grass on the paving" % cell)
+	# Drawn over any stone: shade and polish, never a colour the ground's
+	# tint takes for water.
+	var atlas := RoadWear.atlas()
+	var drawn := atlas.get_region(Rect2i(RoadWear.coords(worn["wear"][Vector2i(4, 5)]) * RoadWear.TILE, Vector2i(RoadWear.TILE, RoadWear.TILE)))
+	var see_through := 0
+	for y in RoadWear.TILE:
+		for x in RoadWear.TILE:
+			var ink := drawn.get_pixel(x, y)
+			if ink.a > 0.0 and ink.a < 1.0:
+				see_through += 1
+				assert_true(ink.g >= ink.b, "a groove isn't water's blue")
+	assert_gt(see_through, 0, "the stone shows through its wear")
+
+
 func test_a_gravelled_street_sets_stones_where_it_ends() -> void:
 	var street := {Vector2i(4, 4): "gravel", Vector2i(5, 4): "gravel"}
 	var grid := _meadow([Vector2i(3, 4), Vector2i(4, 4), Vector2i(5, 4)])
@@ -112,7 +142,7 @@ func test_the_atlas_is_drawn_the_same_every_time() -> void:
 	var source := RoadWear.tileset().get_source(0) as TileSetAtlasSource
 	assert_eq(source.get_tiles_count(), RoadWear.COUNT, "every tile made up front")
 	# Every lane a rut runs through: one wide, both of two, the middle of three.
-	for style in 2:
+	for style in RoadWear.STYLES:
 		for axis in 2:
 			for variant in RoadWear.VARIANTS:
 				for lane: Array in [[1, 0], [2, 0], [2, 1], [3, 1]]:

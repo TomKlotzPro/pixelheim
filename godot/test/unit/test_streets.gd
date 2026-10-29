@@ -44,6 +44,32 @@ func test_each_age_paves_its_own_streets() -> void:
 			assert_false(ages[tier].has(cell), "%s stays a dirt road at age %d" % [cell, tier])
 
 
+## The town's traffic wears its busiest paving more with each age (PIX-382
+## step 4): Upper Street from the Village, the gate road and the ways down
+## to the square from the Town, the square itself in the City; only road
+## that is paved, never a side lane, never past the wall.
+func test_the_traffic_wears_the_busiest_streets_by_age() -> void:
+	var grid := _town()
+	var worn := []
+	for tier in range(Town.MAX_TIER + 1):
+		var paved := Streets.plan("town", grid, tier)
+		var cells := Streets.worn("town", grid, paved, tier)
+		for cell: Vector2i in cells:
+			assert_true(paved.has(cell) and grid[cell] == "path", "age %d: %s is a paved road" % [tier, cell])
+		worn.append(cells)
+	assert_true(worn[0].is_empty() and worn[1].is_empty(), "dirt wears as a road does")
+	assert_true(worn[2].has(UPPER_STREET), "the Village wears Upper Street's gravel")
+	assert_false(worn[2].has(GATE_ROAD) or worn[2].has(SQUARE), "only that")
+	assert_true(worn[3].has(GATE_ROAD) and worn[3].has(Vector2i(32, 16)) and worn[3].has(Vector2i(48, 16)), "the Town the gate road and the ways down to the square")
+	assert_true(worn[4].has(SQUARE), "the City its square")
+	assert_false(worn[4].has(HEARTH_LANE), "a side lane keeps its stone")
+	for tier in range(3, Town.MAX_TIER + 1):
+		assert_gt(worn[tier].size(), worn[tier - 1].size(), "age %d wears more than the one before" % tier)
+		for cell: Vector2i in worn[tier - 1]:
+			assert_true(worn[tier].has(cell), "age %d keeps %s worn" % [tier, cell])
+	assert_true(Streets.worn("greyhold", MapData.load_by_id("greyhold").grid, Streets.plan("greyhold", MapData.load_by_id("greyhold").grid, 4), 4).is_empty(), "Greyhold's flags lie as laid")
+
+
 ## The fountain stands on its paving, centred (PIX-364). The grid marks one
 ## cell "well" and the basin is 2x2 from it, so a Village paving round that
 ## one cell kerbed a one-cell square under the basin's top-left quarter.

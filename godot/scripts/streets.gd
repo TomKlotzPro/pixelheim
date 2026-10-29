@@ -100,6 +100,24 @@ static func plan(map_id: String, grid: Dictionary, tier: int) -> Dictionary:
 	return out
 
 
+## The paved road cells of `map_id` its traffic has worn by the town's age
+## `tier` (PIX-382 step 4: the City's streets lay as new as the Village's):
+## each area's that has reached its `worn` age (Upper Street from the
+## Village, the gate road and the ways down to the square from the Town,
+## the square in the City), of what `paved` paves now. RoadWear draws the
+## ruts and scuffs over the stone.
+static func worn(map_id: String, grid: Dictionary, paved: Dictionary, tier: int) -> Dictionary:
+	var out := {}
+	for area: Dictionary in areas(map_id):
+		if int(area.get("worn", Town.MAX_TIER + 1)) > tier:
+			continue
+		var rect := _rect(area)
+		for cell: Vector2i in paved:
+			if grid.get(cell, "") == RoadWear.ROAD and (rect.size == Vector2i.ZERO or rect.has_point(cell)):
+				out[cell] = true
+	return out
+
+
 ## An area's look at the town's age `tier`: its look from the newest age it
 ## lists that the town has reached ("" for none yet).
 static func look_at(area: Dictionary, tier: int) -> String:

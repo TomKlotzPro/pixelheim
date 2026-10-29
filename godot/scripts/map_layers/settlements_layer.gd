@@ -129,11 +129,23 @@ static func _add_smoke_thread(view: MapView, at: Vector2, forge := false) -> voi
 ## the actors on its foot with a box on each cell it blocks, what lies flat
 ## on the ground, boats afloat on the swell, lanterns on the walls lit at
 ## night, a washing line between two walls, Morvax's forge stack smoking and
-## his fire's light under the door.
+## his fire's light under the door; and Pixelheim's planters, and the wares
+## on its stalls and its cart (PIX-382 step 4).
 static func _decor_hamlet(view: MapView) -> void:
+	# What stands on each cell, so a ware laid on it is drawn over it.
+	var stood := {}
 	for piece: Dictionary in view.hamlet["pieces"]:
 		var cell: Vector2i = piece["cell"]
 		match String(piece["kind"]):
+			"on":
+				var ware := Sprite2D.new()
+				ware.centered = false
+				ware.texture = PunyProps.texture(piece["tile"]) if piece.has("tile") else HamletArt.texture(piece["art"])
+				if stood.has(cell):
+					ware.position = Vector2(piece["on"]) - Vector2(0, TILE)
+					(stood[cell] as Node2D).add_child(ware)
+				else:
+					stand_on(view, ware, cell, Vector2(piece["on"]))
 			"line":
 				if piece.get("art", "") == "bunting":
 					_add_bunting(view, cell, int(piece["line"]), int(piece.get("high", 0)))
@@ -164,9 +176,18 @@ static func _decor_hamlet(view: MapView) -> void:
 				still.centered = false
 				# One of the pack's own stands a tile high (PIX-382, the town's
 				# bushes, sacks and scarecrows); ours as tall as it's drawn.
-				still.texture = PunyProps.texture(piece["tile"]) if piece.has("tile") else HamletArt.texture(art)
+				# A planter is the pack's tub, its plant growing out of it.
+				var potted: bool = piece.get("pot", false)
+				still.texture = PunyProps.texture(PunyProps.TUB if potted else piece["tile"]) if piece.has("tile") else HamletArt.texture(art)
 				var tall := TILE if piece.has("tile") else HamletArt.size(art).y
 				var root := stand_on(view, still, cell, Vector2(0, TILE - tall))
+				stood[cell] = root
+				if potted:
+					var plant := Sprite2D.new()
+					plant.centered = false
+					plant.texture = PunyProps.texture(piece["tile"])
+					plant.position = still.position - Vector2(0, PunyProps.POT_RISE)
+					root.add_child(plant)
 				if piece["kind"] == "stand":
 					for taken: Vector2i in piece["cells"]:
 						block(view, taken)

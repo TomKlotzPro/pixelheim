@@ -59,6 +59,8 @@ const STORES := {
 ## - `roof`: standing on a roof (Morvax's forge stack, smoking);
 ## - `line`: a washing line strung that many cells across, between walls;
 ## - `glow`: the fire's light under a door;
+## - `on`: laid on what already stands on its cell (a stall's counter, a
+##   cart: PIX-382 step 4), that many pixels from the cell's top left;
 ## - `store`: what a barrel's or a crate's cell is drawn as here.
 const DRESSING := {
 	"saltmere": [
@@ -127,7 +129,7 @@ static func store(map_id: String, kind: String, cell: Vector2i) -> String:
 
 ## The dressing `map` takes: {"look", "pieces": [piece], "blocks": [cells]}.
 ## Each piece is DRESSING's, with its "cells" and "kind" ("stand", "flat",
-## "moored", "wall", "roof", "line", "glow"); a standing piece that doesn't
+## "moored", "wall", "roof", "line", "glow", "on"); a standing piece that doesn't
 ## fit (`fits`) is left out. `kept`: cells a piece must leave open (where
 ## a villager stands, the hero arrives, a chest...). `grown`: what the
 ## place's hub has grown since (PIX-324, Hubs.dressing), laid after it.
@@ -145,7 +147,7 @@ static func plan(map: MapData, kept: Dictionary, grown: Array[Dictionary] = []) 
 			if not fits(map, piece["cells"], kept, blocks):
 				continue
 			blocks.append_array(piece["cells"])
-		elif not sits(map, piece):
+		elif not sits(map, piece, blocks):
 			continue
 		pieces.append(piece)
 	return out
@@ -153,7 +155,7 @@ static func plan(map: MapData, kept: Dictionary, grown: Array[Dictionary] = []) 
 
 ## How a dressing entry stands (DRESSING's keys).
 static func kind_of(entry: Dictionary) -> String:
-	for kind: String in ["flat", "moored", "wall", "roof", "line", "glow"]:
+	for kind: String in ["flat", "moored", "wall", "roof", "line", "glow", "on"]:
 		if entry.has(kind):
 			return kind
 	return "stand"
@@ -173,11 +175,15 @@ static func cells_of(entry: Dictionary) -> Array[Vector2i]:
 
 
 ## Whether a piece that blocks nothing sits where it says: afloat on water,
-## on a wall or a roof, over open ground.
-static func sits(map: MapData, piece: Dictionary) -> bool:
+## on a wall or a roof, on what a piece laid before it (`blocks`) or a prop
+## already stands, over open ground.
+static func sits(map: MapData, piece: Dictionary, blocks: Array[Vector2i] = []) -> bool:
 	for cell: Vector2i in piece["cells"]:
 		var tile := map.tile_at(cell)
 		match String(piece["kind"]):
+			"on":
+				if not (cell in blocks or map.covered.has(cell)):
+					return false
 			"moored":
 				if tile not in AFLOAT:
 					return false

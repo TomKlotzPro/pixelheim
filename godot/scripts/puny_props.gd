@@ -37,6 +37,11 @@ const STATUE := 491
 const FLOWERS := [2656, 2657, 2658, 2659]
 const CHEST := 355
 const CHEST_OPEN := 356
+## A planter on Pixelheim's streets (PIX-382 step 4, Yards' `pot`): the
+## pack's tub, the plant in it drawn this many pixels up so its foot sits in
+## the earth.
+const TUB := 575
+const POT_RISE := 7
 ## Ground treasure: a dropped pouch on the road, wild herbs in the grass.
 const POUCH := 2120
 const HERB := 1689
