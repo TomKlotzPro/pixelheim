@@ -4653,6 +4653,10 @@ msgid "Pixelheim village, marshland, forest, ash fields, and a river bridge"
 msgstr "Le village de Pixelheim, des marais, une forêt, des champs de cendres et un pont sur la rivière"
 
 #: assets/data/changelog.json
+msgid "Pixelheim's market fills with the ages: bare boards at the Hamlet, greens and bread at the Village, a draper's stall and cheese at the Town, and at the City a butcher, a bookseller and a handcart of flour and fish among the stalls; from the Town, planters and small trees line Upper Street and the square, the brewery and the forge show their trade, and the busiest streets and the square's trodden ways wear with use"
+msgstr "Le marché de Pixelheim se remplit au fil des époques : des étals nus au Hameau, des légumes et du pain au Village, un drapier et du fromage au Bourg, et à la Cité un boucher, un libraire et une charrette de farine et de poisson entre les étals ; dès le Bourg, jardinières et petits arbres bordent la Grand-Rue et la place, la brasserie et la forge affichent leur métier, et les rues les plus passantes comme les chemins battus de la place s'usent à l'usage"
+
+#: assets/data/changelog.json
 msgid "Pixelheim's streets grow with the town: rutted dirt, then gravel with edge stones, then cobbles on Upper Street, and in the City a flagged square with brick round the fountain"
 msgstr "Les rues de Pixelheim grandissent avec le village : terre creusée d'ornières, puis gravier bordé de pierres, puis pavés dans la Grand-Rue, et à l'âge de la Cité une place dallée avec des briques autour de la fontaine"
 
