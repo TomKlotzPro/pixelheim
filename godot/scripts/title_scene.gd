@@ -25,8 +25,8 @@ extends Node2D
 ##
 ## And it is deeper (PIX-392): moonlight falls in shafts, ash drifts down
 ## from the mountain, a dark tree and a banner with its lantern stand nearer
-## than the street and frame it, and with Shade's pack a row of taller
-## houses stands on the far bank behind the lake and the street keeps
+## than the street and frame it, and with Shade's pack cottages with a lit
+## window stand at the hills' foot across the lake and the street keeps
 ## market: two stalls, bunting with its lanterns between the torches, hens
 ## asleep by the barrel. A launch's entrance (TitleEntrance) poses it: the
 ## camera comes down from the stars (`descent`), the dragon makes its pass
@@ -95,7 +95,7 @@ const BREATH := Vector2(0.4, 0.62)
 const MOUTH := Vector2(-60, 0)
 ## Moonlight falling from the moon down the valley: [the angle off straight
 ## down toward the west, width at its foot, length, strength], art pixels.
-const SHAFTS := [[0.55, 60.0, 340.0, 0.045], [0.8, 90.0, 380.0, 0.035], [1.05, 44.0, 300.0, 0.04]]
+const SHAFTS := [[0.55, 60.0, 340.0, 0.11], [0.8, 90.0, 380.0, 0.09], [1.05, 44.0, 300.0, 0.1]]
 ## What stands nearest (PIX-392), framing the view: the dark tree at the left
 ## (its foot below the view) and the banner's pole at the right. The tree's
 ## picture starts NEAR_TREE_PAD further left, past where the near layer's
@@ -105,49 +105,6 @@ const NEAR_TREE := Vector2(-20 - NEAR_TREE_PAD, 384)
 const NEAR_POLE := Vector2(612, 372)
 const NEAR_DARK := Color("05060d")
 const NEAR_RIM := Color("262f5c")
-## The street keeps market (PIX-392): two stalls under their awnings, the
-## bunting with its lanterns glowing strung across the street, and hens
-## asleep by the barrel (ninth-jedi's, where they're installed).
-func _market(street: Node2D) -> void:
-	for spec: Array in STALLS:
-		var stall := Sprite2D.new()
-		stall.texture = HamletArt.texture(spec[0])
-		stall.centered = false
-		stall.offset = -Vector2(HamletArt.size(spec[0]).x / 2, HamletArt.size(spec[0]).y)
-		stall.position = spec[1]
-		street.add_child(stall)
-	var bunting := HamletArt.bunting(BUNTING_CELLS)
-	var line := Sprite2D.new()
-	line.texture = bunting["day"]
-	line.centered = false
-	line.position = BUNTING
-	village.add_child(line)
-	var lit := Sprite2D.new()
-	lit.texture = bunting["lit"]
-	lit.centered = false
-	lit.position = BUNTING
-	lights.add_child(lit)
-	for at: Vector2 in bunting["lights"]:
-		var halo := Sprite2D.new()
-		halo.texture = glow_texture(5, Color("ffc070"), 0.5, 2)
-		halo.material = additive()
-		halo.position = BUNTING + at
-		lights.add_child(halo)
-		flames.append([halo, at.x])
-	if not FarmAnimals.available():
-		return
-	for spec: Array in HENS:
-		var hen := AnimatedSprite2D.new()
-		hen.sprite_frames = FarmAnimals.frames(spec[0])
-		hen.play("sleep")
-		hen.frame = int(spec[1].x) % 4
-		hen.offset = Vector2(0, -6)
-		hen.position = spec[1]
-		if still:
-			hen.stop()
-		street.add_child(hen)
-
-
 ## The lake behind the street: water from row 17, at the forest's foot, to
 ## the bank on row 19 the fences and torches stand on, under every house.
 const LAKE_ROWS := Vector2i(17, 19)
@@ -158,13 +115,16 @@ const TORCH_LIGHT := [72.0, Lights.FIRE, 0.9]
 const WINDOW_LIGHT := [32.0, Lights.WINDOW, 0.55]
 const LANTERN_LIGHT := [44.0, Lights.LANTERN, 0.65]
 const FOUNTAIN_LIGHT := [40.0, Lights.ICE, 0.5]
-## The far bank's row behind the lake (PIX-392): [the first of its gable's
-## nine columns, its roof], walls on FAR_BOTTOM; their roofs rise over the
-## street's and a lit end of each shows either side of the view across the
-## water, a little bluer for the distance.
-const FAR_HOUSES := [[6, "roof_slate"], [23, "roof_moss"]]
+## The far bank across the lake (PIX-392): small cottages at the hills'
+## foot among their pines, [the first of their FAR_WIDE columns, the roof],
+## walls on row FAR_BOTTOM of the hills' layer, so they drift as far off as
+## the hills; dark with the distance, a window lit in each. Either side of
+## the menu, each peeking out past a house of the street.
+const FAR_HOUSES := [[10, "roof_slate"], [24, "roof_moss"]]
+const FAR_WIDE := 4
 const FAR_BOTTOM := 16
-const FAR_SHADE := Color(0.8, 0.85, 1.0)
+const FAR_SINK := 8.0
+const FAR_SHADE := Color(0.21, 0.24, 0.42)
 ## The street's market (PIX-392): [piece, its foot], art pixels; the bunting
 ## strung from the west house's eave to the east's (its rope tied there); the
 ## hens asleep by the barrel: [sheet, foot].
@@ -957,6 +917,48 @@ func _hills() -> void:
 			ground.fill = Color("0d1222")
 			ground.rim = Color("1a2240")
 			hills.add_child(ground)
+			_far_bank(hills)
+
+
+## The far bank's cottages (FAR_HOUSES) on the hills' ground, behind their
+## front row of pines: Shade's low wing, a window between two walls, shaded
+## dark, the window's panes and glow alone kept warm (no light of their own:
+## the village's lights reach the village alone). Only with Shade's pack.
+func _far_bank(hills: Node2D) -> void:
+	if not PunyTown.available():
+		return
+	var grid := {}
+	for spec: Array in FAR_HOUSES:
+		for x in range(spec[0], spec[0] + FAR_WIDE):
+			for y in range(FAR_BOTTOM - 2, FAR_BOTTOM + 1):
+				grid[Vector2i(x, y)] = spec[1]
+	var plan := PunyTown.plan(grid)
+	var houses := TileMapLayer.new()
+	houses.tile_set = PunyTown.tileset()
+	houses.modulate = FAR_SHADE
+	# Sunk half a tile behind the bank, the front pines before their walls.
+	houses.position.y = FAR_SINK
+	hills.add_child(houses)
+	for cell: Vector2i in plan["pieces"]:
+		PunyTown.place(houses, cell, plan["pieces"][cell])
+		if plan["pieces"][cell] == PunyTown.WINDOW:
+			var panes := Sprite2D.new()
+			panes.texture = _panes_texture()
+			panes.centered = false
+			panes.position = Vector2(cell * 16) + Vector2(0, FAR_SINK)
+			panes.modulate = Color(1, 1, 1, 0.8)
+			hills.add_child(panes)
+			var glow := Sprite2D.new()
+			glow.texture = glow_texture(10, Color("ffb050"), 0.25, 3)
+			glow.material = additive()
+			glow.position = panes.position + Vector2(8, 6)
+			hills.add_child(glow)
+	# A chimney on each ridge, smoking, as the street's low houses have.
+	for spec: Array in FAR_HOUSES:
+		var chimney := Vector2i(spec[0] + FAR_WIDE - 2, FAR_BOTTOM - 3)
+		PunyTown.place(houses, chimney, PunyTown.CHIMNEY[0])
+		PunyTown.place(houses, chimney + Vector2i.DOWN, PunyTown.CHIMNEY[1])
+		hills.add_child(_particles(Vector2(chimney * 16) + Vector2(8, 12 + FAR_SINK), 6, 6.0, Color(0.4, 0.4, 0.55, 0.3), Vector2(-1.0, 0), 4.0, 1.0, 2.0))
 
 
 func _world_tile(tile: int) -> AtlasTexture:
@@ -967,9 +969,8 @@ func _world_tile(tile: int) -> AtlasTexture:
 
 
 ## The street: three cottages from the Medieval Age pack around the square's
-## fountain on the lakeside, two taller houses across the water behind them,
-## torches and fences between, trees along the bank, the hero and the
-## watchman out.
+## fountain on the lakeside, torches and fences between, trees along the
+## bank, the hero and the watchman out.
 func _village() -> void:
 	var near := _layer(DEPTH["village"])
 	village = Node2D.new()
@@ -996,20 +997,12 @@ func _village() -> void:
 	_house(grid, 27, 35, 27, 35, 31, "roof")
 	_house(grid, 37, 43, 99, 0, 40, "roof_moss")
 	var plan := PunyTown.plan(grid)
-	var far := {}
-	for spec: Array in FAR_HOUSES:
-		_house(far, spec[0], spec[0] + 8, spec[0], spec[0] + 8, spec[0] + 4, spec[1], FAR_BOTTOM)
-	var far_plan := PunyTown.plan(far)
 	# Low houses carry no chimney in the town's grammar; these get one each.
 	for x in [6, 33, 41]:
 		var top := STREET / 16 - (5 if x != 41 else 4)
 		plan["decor"][Vector2i(x, top)] = PunyTown.CHIMNEY[0]
 		plan["decor"][Vector2i(x, top + 1)] = PunyTown.CHIMNEY[1]
-	for spec: Array in FAR_HOUSES:
-		far_plan["decor"][Vector2i(spec[0] + 6, FAR_BOTTOM - 4)] = PunyTown.CHIMNEY[0]
-		far_plan["decor"][Vector2i(spec[0] + 6, FAR_BOTTOM - 3)] = PunyTown.CHIMNEY[1]
-	_houses(far_plan, plan["pieces"]).modulate = FAR_SHADE
-	_houses(plan, {})
+	_houses(plan)
 	var street := Node2D.new()
 	street.y_sort_enabled = true
 	village.add_child(street)
@@ -1066,6 +1059,49 @@ func _village() -> void:
 		for figure: AnimatedSprite2D in [guard, hero, fountain, jet]:
 			figure.stop()
 	_fireflies()
+
+
+## The street keeps market (PIX-392): two stalls under their awnings, the
+## bunting with its lanterns glowing strung across the street, and hens
+## asleep by the barrel (ninth-jedi's, where they're installed).
+func _market(street: Node2D) -> void:
+	for spec: Array in STALLS:
+		var stall := Sprite2D.new()
+		stall.texture = HamletArt.texture(spec[0])
+		stall.centered = false
+		stall.offset = -Vector2(HamletArt.size(spec[0]).x / 2, HamletArt.size(spec[0]).y)
+		stall.position = spec[1]
+		street.add_child(stall)
+	var bunting := HamletArt.bunting(BUNTING_CELLS)
+	var line := Sprite2D.new()
+	line.texture = bunting["day"]
+	line.centered = false
+	line.position = BUNTING
+	village.add_child(line)
+	var lit := Sprite2D.new()
+	lit.texture = bunting["lit"]
+	lit.centered = false
+	lit.position = BUNTING
+	lights.add_child(lit)
+	for at: Vector2 in bunting["lights"]:
+		var halo := Sprite2D.new()
+		halo.texture = glow_texture(5, Color("ffc070"), 0.5, 2)
+		halo.material = additive()
+		halo.position = BUNTING + at
+		lights.add_child(halo)
+		flames.append([halo, at.x])
+	if not FarmAnimals.available():
+		return
+	for spec: Array in HENS:
+		var hen := AnimatedSprite2D.new()
+		hen.sprite_frames = FarmAnimals.frames(spec[0])
+		hen.play("sleep")
+		hen.frame = int(spec[1].x) % 4
+		hen.offset = Vector2(0, -6)
+		hen.position = spec[1]
+		if still:
+			hen.stop()
+		street.add_child(hen)
 
 
 ## The lake behind the street: Shade's river water on the dual grid (the
@@ -1190,23 +1226,21 @@ func _show_glow() -> void:
 	_bloom_copy.visible = bloom.visible
 
 
-## A row of houses (`plan`) on a layer of their own over what's drawn so far,
-## their windows lit but where a nearer house's `hidden` cells stand over them
-## (the lights shine over everything in the village), smoke off each chimney.
-func _houses(plan: Dictionary, hidden: Dictionary) -> TileMapLayer:
+## The street's houses (`plan`) over what's drawn so far, their windows lit,
+## smoke off each chimney.
+func _houses(plan: Dictionary) -> void:
 	var houses := TileMapLayer.new()
 	houses.tile_set = PunyTown.tileset()
 	village.add_child(houses)
 	for cell: Vector2i in plan["pieces"]:
 		PunyTown.place(houses, cell, plan["pieces"][cell])
-		if plan["pieces"][cell] == PunyTown.WINDOW and not hidden.has(cell):
+		if plan["pieces"][cell] == PunyTown.WINDOW:
 			_lit_window(Vector2(cell * 16))
 	for cell: Vector2i in plan["decor"]:
 		PunyTown.place(houses, cell, plan["decor"][cell])
 		if plan["decor"][cell] == PunyTown.CHIMNEY[0]:
 			var smoke := _particles(Vector2(cell * 16) + Vector2(8, 4), 10, 7.0, Color(0.55, 0.55, 0.7, 0.35), Vector2(-1.2, 0), 5.0, 1.5, 3.0)
 			village.add_child(smoke)
-	return houses
 
 
 ## A house over columns a..b standing on row `bottom` (the street's), four

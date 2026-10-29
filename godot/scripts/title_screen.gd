@@ -71,6 +71,8 @@ var shine: ColorRect
 ## harness's report.
 var note: Label
 var said := ""
+## A browser that won't keep saves says so (PIX-200), else null.
+var warning: Label
 var logo: Control
 ## The name white hot over its gold as the forge leaves it, and the fire's
 ## glow round its letters (PIX-392).
@@ -319,7 +321,7 @@ func _card() -> void:
 		GameState.slot_note = ""
 	# A browser that won't keep saves says so before anyone plays (PIX-200).
 	if not GameState.saves_kept():
-		var warning := UiStyle.label("This browser window won't keep your saves (a private window?). Your hero lasts only while it's open.", 13, UiStyle.LAMP, Vector2(0, 664))
+		warning = UiStyle.label("This browser window won't keep your saves (a private window?). Your hero lasts only while it's open.", 13, UiStyle.LAMP, Vector2(0, 664))
 		warning.custom_minimum_size = Vector2(VIEW.x, 0)
 		warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		add_child(_shadowed(warning))
@@ -396,18 +398,21 @@ func _draw_menu() -> void:
 
 
 ## The chosen plank lit: the kit's red one (brass without it), its words in
-## rubric, and it stays lit under the mouse; the rest plain. Planks are
-## restyled, not rebuilt, so a pointer resting on the menu never takes the
-## choice back from the keys.
+## rubric; the rest plain, under the mouse too, so a plank the pointer rests
+## on goes plain as the keys move the choice away. Planks are restyled, not
+## rebuilt, so a pointer resting on the menu never takes the choice back
+## from the keys.
 func _show_choice() -> void:
 	for index in planks.size():
 		var plank := planks[index]
 		UiStyle.focus(plank, index == selected)
-		plank.add_theme_stylebox_override("hover", plank.get_theme_stylebox("normal") if index == selected else UiStyle.plank(true, 6))
+		plank.add_theme_stylebox_override("hover", plank.get_theme_stylebox("normal"))
+		plank.add_theme_color_override("font_hover_color", UiStyle.plank_ink(index == selected))
 
 
 func _process(delta: float) -> void:
-	_follow(1.0 - exp(-FOLLOW * delta))
+	# Reduce motion: the choice moves at once, nothing glides.
+	_follow(1.0 if GameState.settings.reduce_motion else 1.0 - exp(-FOLLOW * delta))
 
 
 ## Each frame, `share` of the way: the chosen plank lifts and the rest

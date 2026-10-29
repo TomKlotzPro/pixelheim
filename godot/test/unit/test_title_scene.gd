@@ -304,6 +304,51 @@ func test_the_entrance_plays_out_into_the_menu() -> void:
 	_assert_settled(title)
 
 
+## A word about the slot in hand (PIX-303) waits under the menu with the
+## version: never alone over the stars before the name and the planks.
+func test_the_line_under_the_menu_rises_in_last() -> void:
+	GameState.slot_note = "The save before."
+	var title := _launch(false)
+	var entrance: TitleEntrance = title.entrance
+	assert_eq(title.said, "slot", "a launch with something to say")
+	assert_eq(title.note.modulate.a, 0.0, "not among the stars")
+	entrance.hold(TitleEntrance.MENU.x)
+	assert_eq(title.note.modulate.a, 0.0, "nor before the planks")
+	entrance.skip()
+	assert_eq(title.note.modulate.a, 1.0, "under the menu once it settles")
+
+
+## A long first frame (the scene's build, a shader's first compile) moves
+## the entrance on a step at most: no beat skipped.
+func test_a_long_frame_skips_no_beat() -> void:
+	var title := _launch(false)
+	var entrance: TitleEntrance = title.entrance
+	entrance._process(0.5)
+	assert_eq(entrance.t, TitleEntrance.STEP_S)
+	assert_eq(title.beat(), "descent")
+
+
+## Reduce motion: the chosen plank lifts and its flames move at once.
+func test_the_choice_snaps_with_reduced_motion() -> void:
+	var title := _launch(true)
+	title._choose(1)
+	title._process(1.0 / 60.0)
+	assert_eq(title.planks[1].position.y, title.homes[1].y - TitleScreen.LIFT, "lifted at once")
+	assert_eq(title.planks[0].position.y, title.homes[0].y, "the last choice down at once")
+
+
+## A plank the mouse rests on goes plain once the keys choose another: one
+## plank lit, the chosen one.
+func test_only_the_chosen_plank_is_lit_under_the_mouse() -> void:
+	var title := _launch(true)
+	title._choose(1)
+	var resting: Button = title.planks[0]
+	assert_eq(resting.get_theme_stylebox("hover"), resting.get_theme_stylebox("normal"), "plain under the mouse")
+	assert_eq(resting.get_theme_color("font_hover_color"), UiStyle.plank_ink(false))
+	var chosen: Button = title.planks[1]
+	assert_eq(chosen.get_theme_color("font_hover_color"), UiStyle.plank_ink(true), "the choice lit")
+
+
 func test_no_entrance_with_reduced_motion_nor_back_from_the_saves() -> void:
 	var still := _launch(true)
 	assert_null(still.entrance, "Reduce motion: straight to the title")

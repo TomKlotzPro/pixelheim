@@ -109,6 +109,9 @@ func test_a_launch_rises_out_of_the_picture() -> void:
 		assert_gt(veil.get_index(), title.logo.get_index(), "over everything, the name too: it is forged later")
 		assert_eq(veil.size, TitleScreen.VIEW, "the canvas, as the boot splash fills it")
 		assert_eq(veil.modulate.a, 1.0, "the picture at first")
+		title.entrance.hold(TitleEntrance.VEIL_S / 2.0)
+		assert_eq(veil.modulate.a, 1.0, "still over the scene")
+		assert_lt(veil.modulate.v, 0.15, "gone dark as the night first: its moon and village never over the scene's")
 		title.entrance.hold(TitleEntrance.VEIL_S)
 		assert_almost_eq(veil.modulate.a, 0.0, 0.001, "lifted as the camera comes down")
 	else:

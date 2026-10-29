@@ -21,6 +21,9 @@ extends Node
 ## FLARE_S; the flame writes the name (FORGE), struck at its end and cooling
 ## (COOL); then the line under it, the planks one by one (MENU), the version.
 const VEIL_S := 0.8
+## A frame never moves it on further than this (s): the scene's build or a
+## shader's first compile on the web would skip part of a beat.
+const STEP_S := 0.05
 const DESCENT := Vector2(0.0, 4.8)
 const DRAGON := Vector2(1.6, 4.6)
 const ERUPT_S := 3.3
@@ -152,7 +155,7 @@ func _process(delta: float) -> void:
 	if held or done:
 		return
 	var from := t
-	t = minf(t + delta, END_S)
+	t = minf(t + minf(delta, STEP_S), END_S)
 	_cross(from, t)
 	pose(t)
 	if t >= END_S:
@@ -181,7 +184,11 @@ static func _passes(from: float, to: float, at: float) -> bool:
 func pose(time: float) -> void:
 	t = time
 	if is_instance_valid(veil):
-		veil.modulate.a = 1.0 - span(Vector2(0.0, VEIL_S), t)
+		# Into the night's colour, then gone: the picture's moon and village
+		# never show over the scene's, whose camera is still among the stars.
+		var gone := span(Vector2(0.0, VEIL_S), t) * 2.0
+		veil.modulate = Color.WHITE.lerp(TitleScene.SKY[0], minf(gone, 1.0))
+		veil.modulate.a = clampf(2.0 - gone, 0.0, 1.0)
 	scene.descent = 1.0 - ease(span(DESCENT, t), -2.2)
 	scene.flare = flare(t)
 	scene.fly_wyrm(span(DRAGON, t) if t > DRAGON.x and t < DRAGON.y else -1.0)
@@ -213,9 +220,12 @@ func pose(time: float) -> void:
 		(planks[i] as CanvasItem).modulate.a = shown
 		screen.rises[i] = RISE * (1.0 - ease(shown, 0.4))
 	screen._follow(0.0)
+	# Last, what stands under the menu: the line about the slot in hand, the
+	# browser's warning and the version.
 	var after := span(Vector2(MENU.y - 0.3, END_S), t)
-	(screen.footer as CanvasItem).modulate.a = after
-	(screen.chosen_fire as CanvasItem).modulate.a = after
+	for node: CanvasItem in [screen.footer, screen.chosen_fire, screen.note, screen.warning]:
+		if node != null:
+			node.modulate.a = after
 
 
 ## How far through `beat` (from, to) `time` is: 0 before, 1 after.
