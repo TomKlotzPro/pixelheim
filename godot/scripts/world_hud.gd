@@ -455,7 +455,8 @@ func update_objective() -> void:
 	if text != objective_label.text:
 		objective_label.text = text
 		objective_box.reset_size()
-	objective_box.position.y = (dock.top() if dock != null and dock.top() > 0 else 690.0) - 38
+	# Where the dock says, so its menu opens clear of it (PIX-388).
+	objective_box.position.y = dock.words_top() if dock != null and dock.top() > 0 else 690.0 - 38
 	# A message stands where the objective line does and grows upward, so a
 	# long one (a barred gate, a quest's words) never runs under the dock.
 	if messages.message_box.modulate.a > 0.0:

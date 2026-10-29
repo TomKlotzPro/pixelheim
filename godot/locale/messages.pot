@@ -16941,7 +16941,7 @@ msgid "Signature: %s"
 msgstr ""
 
 #: scripts/rankup_screen.gd
-msgid "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
+msgid "The path forks      {key:move_left}/{key:move_right}  choose      {key:interact}  walk this path      Esc  choose later, in Skills"
 msgstr ""
 
 #: scripts/ring_toss_screen.gd
@@ -18442,6 +18442,10 @@ msgstr ""
 
 #: scripts/stats_screen.gd
 msgid "Your tree is whole: %d skill point%s to spend beyond it, below."
+msgstr ""
+
+#: scripts/stats_screen.gd
+msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      {key:stats} / Esc  close"
 msgstr ""
 
 #: scripts/throne_screen.gd

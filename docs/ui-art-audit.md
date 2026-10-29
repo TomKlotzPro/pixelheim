@@ -277,7 +277,7 @@ Colours per piece: wood 16–23, stone 15–22, parchment 26–33. Each parchmen
 
 ## How the GegX kit would plug in (option A, built in PIX-385)
 
-Tom chose option A. Steps 1 to 3 are PIX-385 step 1 (PR #439); steps 4, 5 and 7 are step 2, which also gave the slots their colourways (the dock's skills by `ready`/`spent`, what's worn by its rarity, `focus` for a common piece) and put the journal's, the codex's and the dialogue's name tabs on the kit's tab. Step 6's layout retuning is step 3; step 2 retuned only what broke (the journal's text width, the hero card's columns, the pack's tab row).
+Tom chose option A. Steps 1 to 3 are PIX-385 step 1 (PR #439); steps 4, 5 and 7 are step 2, which also gave the slots their colourways (the dock's skills by `ready`/`spent`, what's worn by its rarity, `focus` for a common piece) and put the journal's, the codex's and the dialogue's name tabs on the kit's tab. Step 6's layout retuning is step 3; step 2 retuned only what broke (the journal's text width, the hero card's columns, the pack's tab row). Step 3 shipped as PIX-388 step B: one inset (`UiStyle.INSET`, 24) and gap (`UiStyle.GAP`, 16) for every screen's pages, tabs on their page's top edge, planks 44 tall, the dialogue's portrait in the kit's slot (see ui.md).
 
 This follows the paid-art pattern:
 

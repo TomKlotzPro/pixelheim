@@ -6,8 +6,11 @@ extends Screen
 ## rest secret. A/D switch tabs, B or Esc closes. The world holds still.
 
 const TABS := ["Masteries", "Bestiary"]
+## The card, laid out as the counter's pages are (PIX-388): under the
+## title's line, the tabs on its top edge.
+const CARD := Rect2(80, 136, 1120, 500)
 ## The bestiary a page at a time (PIX-213: 32 kinds ran off the screen).
-const PAGE_ROWS := 14
+const PAGE_ROWS := 12
 
 var tab := 0
 var page := 0
@@ -20,19 +23,20 @@ func _open() -> void:
 	layer = 5
 	dim()
 	add_child(UiStyle.title("Codex"))
+	add_child(UiStyle.label("Every kill teaches. Families over faces.", 13, UiStyle.DUSK, Vector2(80, 66)))
 	tabs_row = HBoxContainer.new()
-	tabs_row.position = Vector2(80, 64)
-	tabs_row.add_theme_constant_override("separation", 10)
+	tabs_row.position = Vector2(CARD.position.x + UiStyle.INSET, CARD.position.y - 36)
+	tabs_row.custom_minimum_size.y = 36
+	tabs_row.add_theme_constant_override("separation", 4)
 	add_child(tabs_row)
 	var card := PanelContainer.new()
-	card.position = Vector2(80, 104)
-	card.custom_minimum_size = Vector2(1120, 540)
-	card.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 14))
+	card.position = CARD.position
+	card.custom_minimum_size = CARD.size
+	card.add_theme_stylebox_override("panel", UiStyle.window(UiStyle.INSET))
 	add_child(card)
 	body = VBoxContainer.new()
-	body.add_theme_constant_override("separation", 6)
+	body.add_theme_constant_override("separation", 4)
 	card.add_child(body)
-	add_child(UiStyle.label("Every kill teaches. Families over faces.", 13, UiStyle.DUSK, Vector2(80, 648)))
 	add_child(UiStyle.screen_footer("{key:move_left}/{key:move_right}  tabs      {key:move_up}/{key:move_down}  page      {key:codex} / Esc  close"))
 	_show()
 
@@ -71,11 +75,11 @@ func _masteries() -> void:
 		body.add_child(line)
 		var track := ColorRect.new()
 		track.color = UiStyle.RIM
-		track.custom_minimum_size = Vector2(1090, 5)
+		track.custom_minimum_size = Vector2(CARD.size.x - 2 * UiStyle.INSET, 5)
 		var fill := ColorRect.new()
 		fill.color = UiStyle.LAMP
 		var share := 1.0 if next.is_empty() else minf(1.0, float(kills) / int(next["kills"]))
-		fill.size = Vector2(1090.0 * share, 5)
+		fill.size = Vector2((CARD.size.x - 2 * UiStyle.INSET) * share, 5)
 		track.add_child(fill)
 		body.add_child(track)
 		var note := ""

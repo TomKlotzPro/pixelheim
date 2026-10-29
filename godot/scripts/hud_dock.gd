@@ -13,11 +13,15 @@ const MARGIN := 8  # canvas pixels between the dock and the screen's bottom
 ## frame's content rect.
 const BAR := Vector2(144, 20)
 const XP_HEIGHT := 10
-const SLOT := 48
-## A skill's key tab: a digit on dark, an art pixel of it above and below,
-## standing TAG_RISE above the slot's outer edge.
-const TAG := Vector2(20, 18)
+## A skill's icon room in its slot (PIX-388): the slot is this and its
+## frame, the kit's (60 round) or the card drawn without it (48).
+const FACE := 36
+## A skill's key on a dark tag (UiStyle.tag), standing TAG_RISE above the
+## slot's outer edge.
 const TAG_RISE := 10
+## Where the HUD's "Next" line stands over the dock (Hud.update_objective):
+## the menu opens over it, clear of it (PIX-388: it hid the line's end).
+const NEXT_RISE := 38
 const PORTRAIT := 40
 const BARS := {
 	"hp": [Color("d8433f"), Color("ff8a80")],
@@ -35,6 +39,9 @@ const SCREENS := [
 ]
 ## What the menu's icons stand in (32, Shade's 16 at 2x).
 const ICON := 32
+## The skills a pad has buttons for (LB and the triggers); 4-6 it takes
+## from the menu.
+const PAD_SKILLS := 3
 
 var world: Node
 var plate: PanelContainer
@@ -96,15 +103,21 @@ func _ready() -> void:
 	_place.call_deferred()
 
 
-## Centred on the bottom edge; the menu opens above its right end.
+## Centred on the bottom edge; the menu opens above its right end, over
+## the "Next" line.
 func _place() -> void:
 	plate.position = Vector2(roundf((1280 - plate.size.x) / 2.0), 720 - MARGIN - plate.size.y)
-	menu.position = Vector2(plate.position.x + plate.size.x - menu.size.x, plate.position.y - menu.size.y - 4)
+	menu.position = Vector2(plate.position.x + plate.size.x - menu.size.x, words_top() - menu.size.y - 4)
 
 
 ## Where the dock begins, for what floats above it (the battle log, messages).
 func top() -> float:
 	return plate.position.y
+
+
+## Where the HUD's words over the dock begin: the "Next" line's top.
+func words_top() -> float:
+	return plate.position.y - NEXT_RISE
 
 
 ## Experience: a strip across the dock under the frame's top edge (PIX-388):
@@ -243,7 +256,6 @@ func _skills() -> Control:
 	var inset := UiStyle.slot("", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 4)).content_margin_left
 	for index in Controls.SKILL_KEYS.size():
 		var slot := PanelContainer.new()
-		slot.custom_minimum_size = Vector2(SLOT, SLOT)
 		slot.mouse_filter = Control.MOUSE_FILTER_STOP
 		# Its tooltip is a window that samples as its owner does: crisp (PIX-384).
 		slot.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -253,8 +265,8 @@ func _skills() -> Control:
 		)
 		var face := Control.new()
 		face.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		# The icon's room: the slot grows round it in the kit's thicker frame (PIX-385).
-		face.custom_minimum_size = Vector2(SLOT - 12, SLOT - 12)
+		# The icon's room: the slot grows round it in its frame (PIX-385).
+		face.custom_minimum_size = Vector2(FACE, FACE)
 		slot.add_child(face)
 		var mark := UiStyle.strong("", 16, UiStyle.INK)
 		mark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -272,32 +284,37 @@ func _skills() -> Control:
 		face.add_child(art)
 		var veil := ColorRect.new()
 		veil.color = Color(UiStyle.NIGHT, 0.6)
-		veil.size = Vector2(SLOT - 12, 0)
+		veil.size = Vector2(FACE, 0)
 		veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		face.add_child(veil)
-		# The key on a dark tab over the middle of the slot's top edge, as the
+		# The key on a dark tag over the middle of the slot's top edge, as the
 		# pack's tabs count theirs: a fixed rise from the slot's outer edge,
-		# so it sits on the frame, clear of the icon, in either look.
-		var key := Panel.new()
-		key.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.NIGHT, UiStyle.NIGHT, 2))
-		key.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		# so it sits on the frame, clear of the icon, in either look; a
+		# pad's button once a pad plays (refresh).
+		var key := UiStyle.tag(str(index + 1))
 		key.anchor_left = 0.5
 		key.anchor_right = 0.5
-		key.offset_left = -TAG.x / 2.0
-		key.offset_right = TAG.x / 2.0
 		key.offset_top = -inset - TAG_RISE
-		key.offset_bottom = key.offset_top + TAG.y
-		var number := UiStyle.strong(str(index + 1), 12, UiStyle.CREAM)
-		number.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		number.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		number.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		# The font's line is taller than its digits: it overhangs the tab evenly.
-		number.grow_vertical = Control.GROW_DIRECTION_BOTH
-		key.add_child(number)
+		key.offset_bottom = key.offset_top + key.custom_minimum_size.y
 		face.add_child(key)
 		row.add_child(slot)
-		slots.append({"slot": slot, "mark": mark, "art": art, "veil": veil})
+		slots.append({"slot": slot, "mark": mark, "art": art, "veil": veil, "key": key})
+		_key_tag(index)
 	return row
+
+
+## A slot's key on its tag, centred over the slot: the number row's digit,
+## or while a pad plays its button for skills 1-3 (Controls.PAD_NAMES) and
+## none for 4-6, which the pad takes from the menu (PIX-388).
+func _key_tag(index: int) -> void:
+	var key: Panel = slots[index]["key"]
+	var shown := str(index + 1)
+	if Controls.pad:
+		shown = String(Controls.PAD_NAMES["skill_%d" % (index + 1)]) if index < PAD_SKILLS else ""
+	key.visible = shown != ""
+	UiStyle.tag_text(key, shown)
+	key.offset_left = -key.custom_minimum_size.x / 2.0
+	key.offset_right = key.custom_minimum_size.x / 2.0
 
 
 ## Gold, and the menu of screens with its key.
@@ -330,7 +347,7 @@ func _build_menu() -> void:
 	menu = PanelContainer.new()
 	menu.add_theme_stylebox_override("panel", UiStyle.window(12))
 	menu.visible = false
-	# Over the "Next" line, which floats where the menu's foot opens.
+	# Over the battle log and a message, which rise from the "Next" line.
 	menu.z_index = 5
 	add_child(menu)
 	var lines := VBoxContainer.new()
@@ -485,7 +502,7 @@ func _sweep(skills: Array) -> void:
 		_turn_from = -1.0
 	elif _turn_from < 0.0:
 		_turn_from = GameClock.seconds()
-	var high := veil_height(SLOT - 12, GameClock.seconds() - _turn_from, world.player.SKILL_TURN) if _turn_from >= 0.0 else 0.0
+	var high := veil_height(FACE, GameClock.seconds() - _turn_from, world.player.SKILL_TURN) if _turn_from >= 0.0 else 0.0
 	for index in slots.size():
 		var veil: ColorRect = slots[index]["veil"]
 		var has: bool = index < skills.size() and not (skills[index] as Dictionary).is_empty()
@@ -562,7 +579,9 @@ func refresh() -> void:
 	var waiting_any := false
 	for screen: String in menu_rows:
 		var line: Dictionary = menu_rows[screen]
-		UiStyle.keycap_text(line["cap"], Controls.key_label(Controls.key_for(screen, keys)))
+		var key := _screen_key(screen, keys)
+		UiStyle.keycap_text(line["cap"], key)
+		line["cap"].visible = key != ""
 		# A whole tree's spare points are spent in Stats (PIX-217).
 		var waiting := hero.stat_points + (hero.skill_points if Skills.beyond_open(hero) else 0) if screen == "stats" else (hero.skill_points if screen == "skills" and Skills.tree_open(hero) else 0)
 		waiting_any = waiting_any or waiting > 0
@@ -579,16 +598,30 @@ func refresh() -> void:
 		var has: bool = index < docked.size() and not (docked[index] as Dictionary).is_empty()
 		row["line"].visible = menu_skill_shown(Controls.pad, docked, index)
 		UiStyle.keycap_text(row["cap"], str(index + 1))
+		# A pad chooses them here: the number row's cap is no key of its.
+		row["cap"].visible = not Controls.pad
 		row["word"].text = String(docked[index].get("name", "")) if has else ""
 		row["art"].texture = ItemIcons.skill(docked[index]["name"]) if has else null
 	_show_focus()
 	_pad_shown = Controls.pad
+	for index in slots.size():
+		_key_tag(index)
 	# Its room stays kept, so the dock's width (and every slot) holds when the hands change.
 	menu_key.modulate.a = 1.0 if _pad_shown else 0.0
 	# Points to spend light the menu, so they're never missed.
 	UiStyle.focus(menu_button, waiting_any)
 	# Back to the size its words need now (a shorter rank, less gold).
 	plate.reset_size()
+
+
+## A screen's key on its menu line: the keyboard's, or a pad's button when
+## the screen has one of its own (the pack's Y). The rest a pad opens from
+## this menu: their lines carry no cap (PIX-388: they read I, C, K...).
+func _screen_key(screen: String, keys: Dictionary) -> String:
+	if not Controls.pad:
+		return Controls.key_label(Controls.key_for(screen, keys))
+	var button := String(Controls.PAD_NAMES.get(screen, ""))
+	return "" if button == Controls.PAD_NAMES["dock_menu"] else button
 
 
 func _set_bar(key: String, tag: String, value: int, most: int, colors: Array) -> void:
