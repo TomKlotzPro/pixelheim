@@ -2189,6 +2189,10 @@ msgid "A third dream under Sela's roof, the first night after Aske comes home"
 msgstr "Un troisième rêve sous le toit de Sela, la première nuit après le retour d'Aske"
 
 #: assets/data/changelog.json
+msgid "A title worth arriving at: the first launch comes down from the stars past the moon, Fafnyr sweeps by breathing fire, the mountain wakes and lights the valley, and a flame writes PIXELHEIM before it is struck and cools to gold; any key skips it"
+msgstr "Un écran titre digne d'une arrivée : au premier lancement, la caméra descend des étoiles en passant la lune, Fafnyr passe en crachant le feu, la montagne s'éveille et embrase la vallée, et une flamme écrit PIXELHEIM avant qu'il soit frappé et refroidisse en or ; n'importe quelle touche la passe"
+
+#: assets/data/changelog.json
 msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
 msgstr "Le nouvel âge d'une ville s'annonce par une fanfare et de la poussière sur la place, et chaque nouvelle carte sort de l'obscurité au lieu d'apparaître d'un coup (sauf avec les animations réduites)"
 
@@ -3371,6 +3375,10 @@ msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la
 #: assets/data/changelog.json
 msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
 msgstr "Les ennemis côte à côte n'empilent plus leurs niveaux : le plus proche affiche le sien, et une étiquette qui le chevaucherait attend son tour"
+
+#: assets/data/changelog.json
+msgid "Forged in Fire"
+msgstr "Forgé dans le feu"
 
 #: assets/data/changelog.json
 msgid "Fortune and Steel"
@@ -6335,6 +6343,10 @@ msgstr "L'écran titre est un diorama vivant : trois rangées de crêtes en pr
 #: assets/data/changelog.json
 msgid "The title screen lives: stars, embers, bobbing monsters, a breathing dragon"
 msgstr "L'écran titre s'anime : étoiles, braises, monstres qui se dandinent, un dragon qui respire"
+
+#: assets/data/changelog.json
+msgid "The title's village is richer and deeper: moonlight shafts, drifting ash, a tree and a lantern banner framing the view, market stalls, bunting, the lit fountain and hens asleep by the barrel; and the menu stands on wooden planks, the chosen one lifted between two flames"
+msgstr "Le village de l'écran titre est plus riche et plus profond : des rayons de lune, de la cendre qui tombe, un arbre et une bannière à lanterne qui encadrent la vue, des étals, des fanions, la fontaine éclairée et des poules endormies près du tonneau ; et le menu repose sur des planches de bois, celle choisie soulevée entre deux flammes"
 
 #: assets/data/changelog.json
 msgid "The tour now looks at the inn itself and at the flower beds, and its dust drifts instead of hanging in the air"
