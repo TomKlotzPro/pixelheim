@@ -246,6 +246,54 @@ func test_a_key_skips_the_entrance_and_only_that() -> void:
 	_assert_settled(title)
 
 
+## A click anywhere skips it too, through the catcher over the planks, and
+## takes none of them.
+func test_a_click_skips_the_entrance_and_only_that() -> void:
+	var title := _launch(false)
+	var entrance: TitleEntrance = title.entrance
+	entrance.hold(TitleEntrance.MENU.x + 0.5)
+	var screens := title.get_children().filter(func(node: Node) -> bool: return node is CanvasLayer).size()
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	click.position = title.planks[0].position + Vector2(20, 20)
+	entrance.catcher.gui_input.emit(click)
+	assert_null(title.entrance, "settled at once")
+	assert_eq(title.get_children().filter(func(node: Node) -> bool: return node is CanvasLayer).size(), screens, "no plank taken: no screen opened over the title")
+	_assert_settled(title)
+
+
+## The strike shakes the scene and the name, never the canvas, and both come
+## back home.
+func test_the_strike_shakes_the_scene_not_the_canvas() -> void:
+	var title := _launch(false)
+	var entrance: TitleEntrance = title.entrance
+	var home: Vector2 = title.logo.position
+	var canvas: Vector2 = title.offset
+	entrance.hold(TitleEntrance.STRIKE_S + 0.05)
+	assert_eq(title.offset, canvas, "the canvas holds still")
+	assert_ne(title.scene.position, Vector2.ZERO, "the scene shakes")
+	assert_eq(title.logo.position - home, title.scene.position, "the name with it")
+	assert_lte(absf(title.scene.position.x), TitleScene.BLEED * TitleScene.PIXEL, "never past the sky's bleed")
+	entrance.skip()
+	assert_eq(title.scene.position, Vector2.ZERO)
+	assert_eq(title.logo.position, home)
+
+
+## The near tree's picture has room on its left: the drift never brings its
+## first column into view, and no clump of its crown reaches it.
+func test_the_near_tree_is_never_cut_straight() -> void:
+	assert_lt(TitleScene.NEAR_TREE.x + TitleScene.DRIFT.x * float(TitleScene.DEPTH["near"]), 0.0, "its first column off the view")
+	assert_gt(TitleScene._near_tree().get_image().get_used_rect().position.x, 0, "nothing drawn on it")
+
+
+## The watchman stands clear of the west stall, held still above all.
+func test_the_watchman_stands_clear_of_the_stall() -> void:
+	var stall: Array = TitleScene.STALLS[0]
+	var half := HamletArt.size(stall[0]).x / 2.0
+	assert_gt(absf(float(stall[1].x) - TitleScene.WATCH_FROM), half + 12.0)
+
+
 func test_the_entrance_plays_out_into_the_menu() -> void:
 	var title := _launch(false)
 	var entrance: TitleEntrance = title.entrance

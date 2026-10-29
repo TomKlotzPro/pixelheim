@@ -25,7 +25,8 @@ extends Node2D
 ##
 ## And it is deeper (PIX-392): moonlight falls in shafts, ash drifts down
 ## from the mountain, a dark tree and a banner with its lantern stand nearer
-## than the street and frame it, and with Shade's pack the street keeps
+## than the street and frame it, and with Shade's pack a row of taller
+## houses stands on the far bank behind the lake and the street keeps
 ## market: two stalls, bunting with its lanterns between the torches, hens
 ## asleep by the barrel. A launch's entrance (TitleEntrance) poses it: the
 ## camera comes down from the stars (`descent`), the dragon makes its pass
@@ -56,6 +57,9 @@ const WATCHMAN := "characters/aligned/Human-Soldier-Cyan.png"
 ## The watchman's pace on his round (art px a second); his steps keep to it
 ## (PIX-243).
 const WATCH_PACE := 12.0
+## Where his round starts, and where Reduce motion holds him: clear of the
+## west stall (STALLS).
+const WATCH_FROM := 60.0
 ## The dragon comes this soon, then this often (s).
 const DRAGON_FIRST_S := 4.0
 const DRAGON_EVERY_S := 45.0
@@ -78,6 +82,12 @@ const DEPTH := {
 ## the village and, last, what stands nearest.
 const TILT := 200.0
 const CRANE := 160.0
+## The sky reaches this far past the view's sides (art pixels), so the
+## strike's shake (TitleEntrance) never shows the canvas's edge.
+const BLEED := 4.0
+## How much the mountain's fire lights its flanks while it smoulders (its
+## glow's strength; awake, 1).
+const SMOULDER := 0.08
 ## The dragon's pass close by (PIX-392): its wings beat so many times over
 ## the pass, and it breathes fire from its mouth over this share of it.
 const WINGBEATS := 7.0
@@ -87,8 +97,11 @@ const MOUTH := Vector2(-60, 0)
 ## down toward the west, width at its foot, length, strength], art pixels.
 const SHAFTS := [[0.55, 60.0, 340.0, 0.045], [0.8, 90.0, 380.0, 0.035], [1.05, 44.0, 300.0, 0.04]]
 ## What stands nearest (PIX-392), framing the view: the dark tree at the left
-## (its foot below the view) and the banner's pole at the right.
-const NEAR_TREE := Vector2(-20, 384)
+## (its foot below the view) and the banner's pole at the right. The tree's
+## picture starts NEAR_TREE_PAD further left, past where the near layer's
+## drift (DRIFT.x times its depth) ever brings into view.
+const NEAR_TREE_PAD := 40
+const NEAR_TREE := Vector2(-20 - NEAR_TREE_PAD, 384)
 const NEAR_POLE := Vector2(612, 372)
 const NEAR_DARK := Color("05060d")
 const NEAR_RIM := Color("262f5c")
@@ -145,6 +158,13 @@ const TORCH_LIGHT := [72.0, Lights.FIRE, 0.9]
 const WINDOW_LIGHT := [32.0, Lights.WINDOW, 0.55]
 const LANTERN_LIGHT := [44.0, Lights.LANTERN, 0.65]
 const FOUNTAIN_LIGHT := [40.0, Lights.ICE, 0.5]
+## The far bank's row behind the lake (PIX-392): [the first of its gable's
+## nine columns, its roof], walls on FAR_BOTTOM; their roofs rise over the
+## street's and a lit end of each shows either side of the view across the
+## water, a little bluer for the distance.
+const FAR_HOUSES := [[6, "roof_slate"], [23, "roof_moss"]]
+const FAR_BOTTOM := 16
+const FAR_SHADE := Color(0.8, 0.85, 1.0)
 ## The street's market (PIX-392): [piece, its foot], art pixels; the bunting
 ## strung from the west house's eave to the east's (its rope tied there); the
 ## hens asleep by the barrel: [sheet, foot].
@@ -285,10 +305,10 @@ func _sky() -> void:
 	sky = TextureRect.new()
 	sky.texture = ImageTexture.create_from_image(image)
 	sky.stretch_mode = TextureRect.STRETCH_TILE
-	sky.size = ART + Vector2(0, TILT)
-	sky.position.y = -TILT
+	sky.size = ART + Vector2(BLEED * 2.0, TILT)
+	sky.position = Vector2(-BLEED, -TILT)
 	sky.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Taller than the view on purpose, for the entrance: not a layout to fit.
+	# Bigger than the view on purpose, for the entrance: not a layout to fit.
 	sky.set_meta(Layout.DECOR, true)
 	add_child(sky)
 
@@ -478,7 +498,7 @@ class Ridge:
 ## mountain, so its shoulders stand dark against it); the glow breathes.
 func _glow_behind() -> void:
 	summit_glow = Sprite2D.new()
-	summit_glow.texture = glow_texture(34, Color("ff5a20"), 0.5, 6)
+	summit_glow.texture = glow_texture(34, Color("ff5a20"), 0.5, 12, true)
 	summit_glow.material = additive()
 	summit_glow.position = SUMMIT + Vector2(0, 6)
 	add_child(summit_glow)
@@ -500,13 +520,13 @@ func _fire() -> void:
 	embers.spread = 50.0
 	embers.material = additive()
 	mountain.add_child(embers)
-	# Awake (PIX-392): its fire lights the mountain's flanks and the valley
-	# under it, and throws up a fountain of embers (`erupt`).
+	# Awake (PIX-392): its fire lights the mountain from its crater down its
+	# flanks, and throws up a fountain of embers (`erupt`).
 	valley_glow = Sprite2D.new()
-	valley_glow.texture = glow_texture(48, Color("ff5a20"), 0.26, 8)
+	valley_glow.texture = glow_texture(48, Color("ff5a20"), 0.26, 16, true)
 	valley_glow.material = additive()
-	valley_glow.position = SUMMIT + Vector2(10, 64)
-	valley_glow.scale = Vector2(3.0, 2.0)
+	valley_glow.position = SUMMIT + Vector2(0, 24)
+	valley_glow.scale = Vector2(3.0, 2.2)
 	valley_glow.modulate.a = 0.0
 	mountain.add_child(valley_glow)
 	eruption = _particles(at, 48, 2.8, Color("ffc060"), Vector2(-4, 30), 58.0, 1.0, 0.5)
@@ -743,17 +763,19 @@ static var _banner: ImageTexture
 static func _near_tree() -> ImageTexture:
 	if _tree != null:
 		return _tree
-	var image := Image.create(110, 290, false, Image.FORMAT_RGBA8)
+	# NEAR_TREE_PAD of empty columns on its left: the crown's westmost clumps
+	# whole when the drift brings that side into view, never cut straight.
+	var image := Image.create(NEAR_TREE_PAD + 110, 290, false, Image.FORMAT_RGBA8)
 	for y in range(90, 290):
-		var x := 22 + int((290 - y) * 0.05)
+		var x := NEAR_TREE_PAD + 22 + int((290 - y) * 0.05)
 		image.fill_rect(Rect2i(x, y, 8 if y > 210 else 6, 1), NEAR_DARK)
 	for i in 30:
-		image.fill_rect(Rect2i(28 + i, 150 - i, 3, 3), NEAR_DARK)
+		image.fill_rect(Rect2i(NEAR_TREE_PAD + 28 + i, 150 - i, 3, 3), NEAR_DARK)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 392
 	for heart: Vector2 in [Vector2(34, 46), Vector2(70, 92), Vector2(18, 100)]:
 		for i in 16:
-			var at := heart + Vector2(rng.randf_range(-30, 30), rng.randf_range(-24, 24))
+			var at := heart + Vector2(NEAR_TREE_PAD + rng.randf_range(-30, 30), rng.randf_range(-24, 24))
 			var r := rng.randf_range(6.0, 12.0)
 			for y in range(int(at.y - r), int(at.y + r) + 1):
 				for x in range(int(at.x - r), int(at.x + r) + 1):
@@ -761,7 +783,7 @@ static func _near_tree() -> ImageTexture:
 					if x >= 0 and x < image.get_width() and y >= 0 and d < 1.0 - 0.35 * rng.randf():
 						image.set_pixel(x, y, NEAR_DARK)
 	for y in range(1, 290):
-		for x in range(0, 109):
+		for x in range(0, image.get_width() - 1):
 			if image.get_pixel(x, y).a > 0.0 and image.get_pixel(x + 1, y - 1).a == 0.0:
 				image.set_pixel(x, y, NEAR_RIM)
 	_tree = ImageTexture.create_from_image(image)
@@ -868,8 +890,10 @@ static func _puff_texture() -> ImageTexture:
 	return _puff
 
 
-## A light in stepped rings, the way pixel games draw glow.
-static func glow_texture(radius: int, color: Color, peak: float, steps: int) -> ImageTexture:
+## A light in stepped rings, the way pixel games draw glow; `dithered`, each
+## ring dithers into the next as the sky's bands do, so a wide one shows no
+## hard edges.
+static func glow_texture(radius: int, color: Color, peak: float, steps: int, dithered := false) -> ImageTexture:
 	var size := radius * 2
 	var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
 	for y in size:
@@ -878,6 +902,10 @@ static func glow_texture(radius: int, color: Color, peak: float, steps: int) -> 
 			if d >= 1.0:
 				continue
 			var level := ceilf((1.0 - d) * steps) / steps
+			if dithered:
+				var ring := (1.0 - d) * steps
+				var threshold: float = (BAYER[(y % 4) * 4 + x % 4] + 0.5) / 16.0
+				level = (floorf(ring) + (1.0 if ring - floorf(ring) > threshold else 0.0)) / steps
 			image.set_pixel(x, y, Color(color, peak * level * level))
 	return ImageTexture.create_from_image(image)
 
@@ -939,8 +967,9 @@ func _world_tile(tile: int) -> AtlasTexture:
 
 
 ## The street: three cottages from the Medieval Age pack around the square's
-## fountain on the lakeside, torches and fences between, trees along the
-## bank, the hero and the watchman out.
+## fountain on the lakeside, two taller houses across the water behind them,
+## torches and fences between, trees along the bank, the hero and the
+## watchman out.
 func _village() -> void:
 	var near := _layer(DEPTH["village"])
 	village = Node2D.new()
@@ -967,23 +996,20 @@ func _village() -> void:
 	_house(grid, 27, 35, 27, 35, 31, "roof")
 	_house(grid, 37, 43, 99, 0, 40, "roof_moss")
 	var plan := PunyTown.plan(grid)
+	var far := {}
+	for spec: Array in FAR_HOUSES:
+		_house(far, spec[0], spec[0] + 8, spec[0], spec[0] + 8, spec[0] + 4, spec[1], FAR_BOTTOM)
+	var far_plan := PunyTown.plan(far)
 	# Low houses carry no chimney in the town's grammar; these get one each.
 	for x in [6, 33, 41]:
 		var top := STREET / 16 - (5 if x != 41 else 4)
 		plan["decor"][Vector2i(x, top)] = PunyTown.CHIMNEY[0]
 		plan["decor"][Vector2i(x, top + 1)] = PunyTown.CHIMNEY[1]
-	var houses := TileMapLayer.new()
-	houses.tile_set = PunyTown.tileset()
-	village.add_child(houses)
-	for cell: Vector2i in plan["pieces"]:
-		PunyTown.place(houses, cell, plan["pieces"][cell])
-		if plan["pieces"][cell] == PunyTown.WINDOW:
-			_lit_window(Vector2(cell * 16))
-	for cell: Vector2i in plan["decor"]:
-		PunyTown.place(houses, cell, plan["decor"][cell])
-		if plan["decor"][cell] == PunyTown.CHIMNEY[0]:
-			var smoke := _particles(Vector2(cell * 16) + Vector2(8, 4), 10, 7.0, Color(0.55, 0.55, 0.7, 0.35), Vector2(-1.2, 0), 5.0, 1.5, 3.0)
-			village.add_child(smoke)
+	for spec: Array in FAR_HOUSES:
+		far_plan["decor"][Vector2i(spec[0] + 6, FAR_BOTTOM - 4)] = PunyTown.CHIMNEY[0]
+		far_plan["decor"][Vector2i(spec[0] + 6, FAR_BOTTOM - 3)] = PunyTown.CHIMNEY[1]
+	_houses(far_plan, plan["pieces"]).modulate = FAR_SHADE
+	_houses(plan, {})
 	var street := Node2D.new()
 	street.y_sort_enabled = true
 	village.add_child(street)
@@ -1019,7 +1045,7 @@ func _village() -> void:
 	hero.position = Vector2(350, 334 + PunyArt.lift(hero_spec))
 	street.add_child(hero)
 	watchman = Node2D.new()
-	watchman.position = Vector2(90, 344)
+	watchman.position = Vector2(WATCH_FROM, 344)
 	street.add_child(watchman)
 	var guard_spec := {"sheet": WATCHMAN, "family": "puny"}
 	var guard := AnimatedSprite2D.new()
@@ -1164,10 +1190,29 @@ func _show_glow() -> void:
 	_bloom_copy.visible = bloom.visible
 
 
-## A house over columns a..b standing on the street, four rows high; its
-## gable (the 9 columns g0..g9, a door at `door`) rises a row higher.
-func _house(grid: Dictionary, a: int, b: int, g0: int, g9: int, door: int, roof: String) -> void:
-	var bottom := STREET / 16 - 1
+## A row of houses (`plan`) on a layer of their own over what's drawn so far,
+## their windows lit but where a nearer house's `hidden` cells stand over them
+## (the lights shine over everything in the village), smoke off each chimney.
+func _houses(plan: Dictionary, hidden: Dictionary) -> TileMapLayer:
+	var houses := TileMapLayer.new()
+	houses.tile_set = PunyTown.tileset()
+	village.add_child(houses)
+	for cell: Vector2i in plan["pieces"]:
+		PunyTown.place(houses, cell, plan["pieces"][cell])
+		if plan["pieces"][cell] == PunyTown.WINDOW and not hidden.has(cell):
+			_lit_window(Vector2(cell * 16))
+	for cell: Vector2i in plan["decor"]:
+		PunyTown.place(houses, cell, plan["decor"][cell])
+		if plan["decor"][cell] == PunyTown.CHIMNEY[0]:
+			var smoke := _particles(Vector2(cell * 16) + Vector2(8, 4), 10, 7.0, Color(0.55, 0.55, 0.7, 0.35), Vector2(-1.2, 0), 5.0, 1.5, 3.0)
+			village.add_child(smoke)
+	return houses
+
+
+## A house over columns a..b standing on row `bottom` (the street's), four
+## rows high; its gable (the 9 columns g0..g9, a door at `door`) rises a row
+## higher.
+func _house(grid: Dictionary, a: int, b: int, g0: int, g9: int, door: int, roof: String, bottom := STREET / 16 - 1) -> void:
 	for x in range(a, b + 1):
 		var top := bottom - 4 if x >= g0 and x <= g9 else bottom - 3
 		for y in range(top, bottom + 1):
@@ -1266,8 +1311,8 @@ func _process(delta: float) -> void:
 	# The fire breathes, and roars up when the mountain wakes (`flare`).
 	summit_glow.modulate.a = minf(1.0, 0.75 + 0.25 * sin(clock * 1.3) + flare)
 	summit_glow.scale = Vector2.ONE * (1.0 + 1.4 * flare)
-	# Awake or not, its fire warms the valley a little, breathing slowly.
-	valley_glow.modulate.a = maxf(flare, 0.16 + 0.08 * sin(clock * 0.9))
+	# Awake or not, its fire warms the mountain a little, breathing slowly.
+	valley_glow.modulate.a = maxf(flare, SMOULDER + 0.03 * sin(clock * 0.9))
 	for shaft: Array in shafts:
 		(shaft[0] as CanvasItem).modulate.a = 0.75 + 0.25 * sin(clock * 0.4 + float(shaft[2]))
 	banner.skew = 0.05 * sin(clock * 1.1) + 0.02 * sin(clock * 2.9)

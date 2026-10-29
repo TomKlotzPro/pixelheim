@@ -36,13 +36,16 @@ const BEATS := [[0.0, "descent"], [DRAGON.x, "dragon"], [ERUPT_S, "eruption"], [
 ## Where the flame writes, on the canvas: from just before PIXELHEIM's first
 ## letter to just past its last (its face spans 336..944).
 const NAME := Vector2(320, 960)
-## The strike: the screen shaken this many px at first, for SHAKE_S; the
-## flash at FLASH_PEAK, gone over FLASH_S.
+## The strike: the scene and the name shaken this many px at first, for
+## SHAKE_S (the sky reaches past the view's sides, TitleScene.BLEED); a
+## white-hot burst of light on the name at FLASH_PEAK, gone over FLASH_S,
+## FLASH_SIZE across.
 const SHAKE := 3.0
 const SHAKE_S := 0.35
-const FLASH := Color(1.0, 0.8, 0.5)
-const FLASH_PEAK := 0.2
-const FLASH_S := 0.25
+const FLASH := Color(1.0, 0.94, 0.78)
+const FLASH_PEAK := 0.9
+const FLASH_S := 0.16
+const FLASH_SIZE := Vector2(820, 260)
 ## A plank rises in from this far below over PLANK_S.
 const RISE := 18.0
 const PLANK_S := 0.45
@@ -66,17 +69,18 @@ var on_done := Callable()
 var front: AnimatedSprite2D
 var sparks: CPUParticles2D
 var burst: CPUParticles2D
-var flash: ColorRect
+var flash: Sprite2D
 ## Over everything while it plays: a click skips it, and never takes a plank.
 var catcher: Control
-var _offset := Vector2.ZERO
+## Where the name hangs, for the shake to come back to.
+var _logo_home := Vector2.ZERO
 
 
 func _ready() -> void:
-	_offset = screen.offset
 	# The scene's own dragon comes round long after this pass.
 	scene.dragon_at = TitleScene.DRAGON_EVERY_S
 	var logo: Control = screen.logo
+	_logo_home = logo.position
 	front = AnimatedSprite2D.new()
 	front.sprite_frames = FireArt.frames("post", 0)
 	front.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -99,15 +103,16 @@ func _ready() -> void:
 	burst.initial_velocity_max = 420.0
 	burst.position = Vector2(640, logo.position.y + 36)
 	screen.add_child(burst)
-	flash = ColorRect.new()
-	flash.color = Color(FLASH, 0.0)
-	flash.size = TitleScene.ART * TitleScene.PIXEL
-	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	flash = Sprite2D.new()
+	flash.texture = TitleScene.glow_texture(64, FLASH, 1.0, 12, true)
+	flash.scale = FLASH_SIZE / 128.0
+	flash.position = burst.position
+	flash.modulate.a = 0.0
 	# A flash of light: it brightens what's there rather than paling it.
 	flash.material = TitleScene.additive()
 	screen.add_child(flash)
 	catcher = Control.new()
-	catcher.size = flash.size
+	catcher.size = TitleScene.ART * TitleScene.PIXEL
 	catcher.mouse_filter = Control.MOUSE_FILTER_STOP
 	catcher.gui_input.connect(func(event: InputEvent) -> void:
 		if (event is InputEventMouseButton or event is InputEventScreenTouch) and event.is_pressed():
@@ -187,16 +192,19 @@ func pose(time: float) -> void:
 	logo.clip_contents = true
 	logo.size = Vector2(lerpf(NAME.x, NAME.y, span(FORGE, t)), 160)
 	front.visible = t >= FORGE.x and t < FORGE.y
-	front.position = Vector2(roundf(logo.size.x), logo.position.y + 72)
+	front.position = Vector2(roundf(logo.size.x), _logo_home.y + 72)
 	sparks.emitting = front.visible
 	sparks.position = front.position - Vector2(0, 40)
 	var heat := 1.0 - span(COOL, t)
 	(screen.heat as CanvasItem).modulate.a = heat
 	(screen.ember as CanvasItem).modulate.a = heat
 	var since := t - STRIKE_S
-	flash.color.a = FLASH_PEAK * (1.0 - since / FLASH_S) if since >= 0.0 and since < FLASH_S else 0.0
+	flash.modulate.a = FLASH_PEAK * pow(1.0 - since / FLASH_S, 2.0) if since >= 0.0 and since < FLASH_S else 0.0
 	var shake := SHAKE * (1.0 - since / SHAKE_S) if since >= 0.0 and since < SHAKE_S else 0.0
-	screen.offset = _offset + (Vector2(sin(t * 91.0), cos(t * 73.0)) * shake).round()
+	# The scene and the name, not the canvas: its edge never shows.
+	var jolt := (Vector2(sin(t * 91.0), cos(t * 73.0)) * shake).round()
+	scene.position = jolt
+	logo.position = _logo_home + jolt
 	(screen.tagline as CanvasItem).modulate.a = span(TAGLINE, t)
 	var planks: Array = screen.planks
 	for i in planks.size():
@@ -251,7 +259,8 @@ func _finish() -> void:
 	scene.flare = 0.0
 	scene.fly_wyrm(-1.0)
 	scene.place()
-	screen.offset = _offset
+	scene.position = Vector2.ZERO
+	(screen.logo as Control).position = _logo_home
 	(screen.logo as Control).clip_contents = false
 	for node: Node in [front, sparks, burst, flash, catcher, veil]:
 		if is_instance_valid(node):

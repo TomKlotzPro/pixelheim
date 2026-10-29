@@ -22,11 +22,13 @@ const SPLASH := "res://assets/splash.png"
 ## the night's dark sky rather than the lit street, two lines at most.
 const NOTE_GAP := 20.0
 const NOTE_WIDTH := 1000.0
-## The menu's planks (PIX-392): where the first hangs, the gap between
+## The menu's planks (PIX-392): where the first hangs (close under the
+## tagline, so with five planks the note under them still ends over the
+## dark, above the bunting and the far bank's windows), the gap between
 ## them, the narrowest they are, how far the chosen one lifts (px) and how
 ## quickly it and the flames follow the choice (a share a second).
-const MENU_Y := 262.0
-const MENU_GAP := 10.0
+const MENU_Y := 222.0
+const MENU_GAP := 4.0
 const PLANK_WIDTH := 340.0
 const LIFT := 3.0
 const FOLLOW := 16.0
@@ -56,6 +58,8 @@ var rises: Array[float] = []
 ## The chosen plank's flames and the warm light behind it, gliding with
 ## the choice.
 var chosen_fire: Node2D
+## Where the flames glide, unrounded (they stand on the whole pixel).
+var fire_y := 0.0
 var flames: Array[AnimatedSprite2D] = []
 var warmth: Sprite2D
 ## The launch's entrance while it plays (TitleEntrance), else null.
@@ -416,7 +420,8 @@ func _follow(share: float) -> void:
 		lifts[index] = lerpf(lifts[index], LIFT if index == selected else 0.0, share)
 		planks[index].position.y = roundf(homes[index].y - lifts[index] + rises[index])
 	var middle := homes[selected].y + UiStyle.PLANK / 2.0 - LIFT + rises[selected]
-	chosen_fire.position.y = roundf(lerpf(chosen_fire.position.y, middle, share))
+	fire_y = lerpf(fire_y, middle, share)
+	chosen_fire.position.y = roundf(fire_y)
 
 
 func _point(index: int) -> void:
