@@ -9,7 +9,9 @@ class_name HamletArt
 ## under his door, and the Kings' Vault's black iron door in its carved
 ## surround, shut and open; and Pixelheim's post box (PIX-320), empty or
 ## with the day's post in it, and the post house behind it (PIX-325). Pixelheim's
-## yards take its window boxes and the City's bunting (PIX-382, Yards). Drawn here in code in Shade's palette (his
+## yards take its window boxes and the City's bunting (PIX-382, Yards), and
+## its market Mabel's stalls cleared for the pack's wares, a handcart and a
+## crate of fish (PIX-382 step 4). Drawn here in code in Shade's palette (his
 ## outline, his woods, irons and greys), at 1x on his 16 px grid, so they
 ## sit beside his art as his. Our own, so CC0 like the rest of the
 ## repository: they draw the same with or without the paid pack. Pictures
@@ -382,6 +384,49 @@ const PIECES := {
 		"...2..2.2..2....",
 		"................",
 	],
+	## A handcart come up to Pixelheim's market (PIX-382 step 4): its bed of
+	## planks on one wheel, its shafts resting on the ground; empty, the
+	## pack's wares laid on it (Yards' `on`). 32x16, foot on the bottom row.
+	"handcart": [
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"..oooooooooooooooooooo..........",
+		"..o3333333333333333332o.........",
+		"..o2222222222222222222o.........",
+		"..oooooooooooooooooooooo........",
+		"..o6666o66666666o666665oooooooo.",
+		"..o4444o4oooo444o444443o5555556o",
+		"..o3333oo2552oo3o33333oooooooooo",
+		"..ooooo2o2oo2o2ooooooo.......o..",
+		"......o5o2552o5o.............o..",
+		"......oo2o22o2oo.............o..",
+		".......ooo22ooo.................",
+	],
+	## A crate of the coast's catch (PIX-382 step 4), the one ware the pack
+	## doesn't draw: two silver fish laid head to tail, heaped over a wooden
+	## crate's rim, bright enough to read as fish at the play zoom (the review
+	## found the first crate a grey box): a fin, a forked tail, a dark eye.
+	"fish_crate": [
+		"......oooo......",
+		"oo..ooUUUUooo...",
+		"oUooUUUUUUUUUo..",
+		".oUSSSSSSSSSkyo.",
+		"oUoossssssssso..",
+		"oo..ooooooooo...",
+		"...oooUUUUoo..oo",
+		"..oUUUUUUUUUooUo",
+		".oykSSSSSSSSSUo.",
+		"..osssssssssooUo",
+		".o666666666665o.",
+		".o544444444443o.",
+		".o533333333332o.",
+		".oooooooooooooo.",
+		".o3o........o3o.",
+		".ooo........ooo.",
+	],
 	## The Kings' Vault's door (PIX-312): two leaves of black iron studded and
 	## banded, a ring on each, in a doorway cut in the rock, a carved step.
 	"vault_door": [
@@ -663,9 +708,39 @@ const LANTERN_EVERY := 5
 const BUNTING_SAG := 7
 
 
+## Pixelheim's market stalls (PIX-382 step 4): Mabel's (HubArt) with their
+## counters cleared of her small heaps, so the pack's wares lie on them
+## (Yards' `on`), and others with their awnings in green, gold and teal:
+## [whose, inks swapped].
+const STALLS := {
+	"stall_red": ["market_stall", {}],
+	"stall_blue": ["market_stall_blue", {}],
+	"stall_green": ["market_stall", {"R": "F", "e": "f"}],
+	"stall_gold": ["market_stall", {"R": "a", "e": "4"}],
+	"stall_teal": ["market_stall", {"R": "m", "e": "T"}],
+}
+## Where on Mabel's stall her heaps lie: between the poles, over the counter.
+const STALL_HEAPS := Rect2i(6, 14, 20, 4)
+## Her awning's rows, down to its valance's points: drawn again over the
+## wares on the counter, so they sit under it (a basket is taller than the
+## room between them).
+const AWNING := 9
+
+
 ## Piece `name`'s rows: ours, what the hubs grow (HubArt, PIX-324), or
 ## what the Post's roads put up (RouteArt: the town's benches, PIX-382).
 static func rows_of(name: String) -> Array:
+	if STALLS.has(name):
+		var swap: Dictionary = STALLS[name][1]
+		var rows := rows_of(STALLS[name][0])
+		var out := []
+		for y in rows.size():
+			var row := ""
+			for x in String(rows[y]).length():
+				var ink := String(rows[y])[x]
+				row += "." if STALL_HEAPS.has_point(Vector2i(x, y)) else String(swap.get(ink, ink))
+			out.append(row)
+		return out
 	if WINDOW_TINTS.has(name):
 		var swap: Dictionary = WINDOW_TINTS[name]
 		return PIECES["window_box"].map(func(row: String) -> String:

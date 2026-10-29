@@ -1,9 +1,12 @@
 {
   "town": [
     {"name": "the streets inside the wall", "rect": [2, 3, 64, 32], "ground": ["path"], "from": {"2": "gravel", "4": "cobbles"}},
-    {"name": "Upper Street", "rect": [5, 11, 61, 2], "ground": ["path"], "from": {"3": "cobbles"}},
-    {"name": "the gate road", "rect": [39, 3, 3, 8], "ground": ["path"], "from": {"3": "cobbles", "4": "sandstone"}},
-    {"name": "the square", "rect": [32, 20, 17, 9], "ground": ["path", "well", "counter", "crate", "barrel"], "from": {"4": "sandstone"}},
+    {"name": "Upper Street", "rect": [5, 11, 61, 2], "ground": ["path"], "from": {"3": "cobbles"}, "worn": 2},
+    {"name": "the gate road", "rect": [39, 3, 3, 8], "ground": ["path"], "from": {"3": "cobbles", "4": "sandstone"}, "worn": 3},
+    {"name": "the ways down to the square", "rect": [31, 13, 19, 7], "ground": ["path"], "from": {}, "worn": 3},
+    {"name": "the square", "rect": [32, 20, 17, 9], "ground": ["path", "well", "counter", "crate", "barrel"], "from": {"4": "sandstone"}, "worn": 4,
+     "trodden": [[32, 20, 2, 2], [34, 21, 2, 1], [35, 22, 3, 1], [37, 23, 2, 1], [47, 20, 2, 2], [45, 21, 2, 1], [43, 22, 3, 1], [42, 23, 2, 1],
+                 [40, 20, 2, 3], [39, 23, 4, 4], [40, 27, 2, 2], [32, 26, 3, 2], [35, 26, 4, 1], [32, 22, 1, 4], [33, 24, 2, 1], [45, 24, 2, 1], [48, 22, 1, 6]]},
     {"name": "round the fountain", "rect": [39, 23, 4, 4], "ground": ["path", "well"], "from": {"2": "gravel", "4": "bricks"}}
   ],
   "greyhold": [

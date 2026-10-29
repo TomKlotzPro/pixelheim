@@ -67,6 +67,7 @@ jumps | with turning: the hero's drawn way changing more than an eighth of a tur
 lamplight | on a map with lamps or lit windows, and in every room: its street lamps lit of all, its windows' lit glass, a room's candles burning and the day through its windows: posts 6/6 panes 12 flames 0 beams 0 (PIX-311)
 letters | Maren's letters in the pack, once any is out (PIX-253)
 lit | on the Night of Bells: the lanterns on the square lit (PIX-253 step 9)
+lived | on the town (with the paid pack): its age, the market's stalls, wares and cart, the trades' signs and the planters laid (Yards' sets), and its paved cells its traffic has worn: 4:market23,street3,green11,worn258 (PIX-382 step 4)
 logged | with floats: the lines the battle log showed (PIX-245)
 mapped | the Post's roads drawn in gold on the map's page while the map is open, by place: saltmere,blackiron (PIX-322)
 maps | the maps drawn on the map's page, while the map is open: 7 on the Reach's with every region found (PIX-269)

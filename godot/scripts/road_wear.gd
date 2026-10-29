@@ -7,7 +7,10 @@ class_name RoadWear
 ## a pixel; on a country road grass grows on the crown between them and
 ## creeps in at the edges where the road meets a meadow, and pebbles lie
 ## about. In town the streets are trodden bare: ruts and stones, no grass on
-## the crown.
+## the crown. Where the town's traffic runs over its paving (Streets.worn,
+## PIX-382 step 4), the stone wears too: the same ruts and scuffs in shade
+## and polish over whatever the paving is, and here and there a chipped
+## stone with the dirt showing.
 ## Drawn in code from Shade's CC0 dirt, grass and rock colours (it needs no
 ## paid art), as tiles on two layers over the ground: the wear (by where in
 ## the road's width a cell lies and which way the road runs) and the verges
@@ -27,9 +30,12 @@ const HALF_GAUGE := {1: 4, 2: 7, 3: 6}
 ## Which way a road runs: its ruts along x, or along y.
 const ACROSS := 0
 const DOWN := 1
-## The two looks: a country road (grass on the crown) and a town street.
+## The looks: a country road (grass on the crown), a town street, and paving
+## worn by the town's traffic (PIX-382 step 4).
 const COUNTRY := 0
 const TOWN := 1
+const PAVED := 2
+const STYLES := 3
 ## A road's lanes, one per cell across it: one wide, two (first, second),
 ## three (first, middle, last).
 const LANES := 6
@@ -40,8 +46,8 @@ const VERGE_VARIANTS := 3
 ## then the kerbs the same way: a row of edge stones along a gravelled
 ## street's sides (Streets.KERBED).
 const COLUMNS := 16
-const PATCHES := 2 * 2 * LANES * VARIANTS
-const VERGES := PATCHES + 2 * VARIANTS
+const PATCHES := STYLES * 2 * LANES * VARIANTS
+const VERGES := PATCHES + STYLES * VARIANTS
 const KERBS := VERGES + 15 * VERGE_VARIANTS
 const COUNT := KERBS + 15 * VERGE_VARIANTS
 ## What a road is, and what grass grows in from beside it.
@@ -62,6 +68,13 @@ const GRASS_MID := Color("96b146")
 const STONE_LIGHT := Color("b2ba82")
 const STONE := Color("99a16c")
 const STONE_SHADOW := Color("9a873a")
+## Worn paving (PIX-382 step 4) is drawn over any stone, so in shade and
+## polish, not colours of its own: the ruts' groove and wall darker, their
+## lip and a scuff polished lighter, a chipped stone's dirt. Warm, so the
+## ground's tint never takes a groove for water.
+const PAVED_INKS := [Color(0.16, 0.12, 0.07, 0.6), Color(0.16, 0.12, 0.07, 0.35), Color(1.0, 0.96, 0.85, 0.4)]
+const CHIP := Color("8c7a4a")
+const CHIP_SHADOW := Color(0.2, 0.15, 0.09, 0.45)
 ## Tufts of grass, upright, by rows from the top: l light, d dark, m mid, g
 ## the grass under them (Shade's tuft from his meadow tile).
 const TUFTS := [
@@ -79,16 +92,21 @@ static var _tileset: TileSet
 ## The tiles the road cells of `grid`'s rows [from, to) wear: {"wear":
 ## {cell: tile}, "verge": {cell: tile}}. `beyond(cell)` is the ground past
 ## the map's edges (so a road out runs on), `paved` the cells paving covers
-## (Streets: worn no more), `origin` where cell (0, 0) lies in the plane (a
-## road's wear runs on unbroken into the map beside), `style` COUNTRY or
-## TOWN.
-static func rows(grid: Dictionary, beyond: Callable, size: Vector2i, from: int, to: int, paved: Dictionary, origin: Vector2i, style: int) -> Dictionary:
+## (Streets: worn no more, but where the traffic wears the stone: `worn`,
+## Streets.worn, a square's cells in scuffs and never a lane's ruts),
+## `origin` where cell (0, 0) lies in the plane (a road's wear runs on
+## unbroken into the map beside), `style` COUNTRY or TOWN.
+static func rows(grid: Dictionary, beyond: Callable, size: Vector2i, from: int, to: int, paved: Dictionary, origin: Vector2i, style: int, worn := {}) -> Dictionary:
 	var wear := {}
 	var verge := {}
 	for y in range(from, mini(to, size.y)):
 		for x in size.x:
 			var cell := Vector2i(x, y)
-			if grid.get(cell, "") != ROAD or paved.has(cell):
+			if grid.get(cell, "") != ROAD:
+				continue
+			if paved.has(cell):
+				if worn.has(cell):
+					wear[cell] = wear_tile(grid, beyond, cell, origin, PAVED, worn[cell])
 				continue
 			wear[cell] = wear_tile(grid, beyond, cell, origin, style)
 			var sides := 0
@@ -136,9 +154,9 @@ static func lane_of(grid: Dictionary, beyond: Callable, cell: Vector2i) -> Array
 ## The wear tile of road cell `cell`: its lane's ruts in one of their
 ## variants, the same for every lane across the road at that point (so a
 ## crown's tuft or a pebble split between two lanes meets itself), or a worn
-## patch.
-static func wear_tile(grid: Dictionary, beyond: Callable, cell: Vector2i, origin: Vector2i, style: int) -> int:
-	var lane := lane_of(grid, beyond, cell)
+## patch: always on a `square` (a strip of it beside a crate is no street).
+static func wear_tile(grid: Dictionary, beyond: Callable, cell: Vector2i, origin: Vector2i, style: int, square := false) -> int:
+	var lane := [] if square else lane_of(grid, beyond, cell)
 	var at := origin + cell
 	if lane.is_empty():
 		return PATCHES + style * VARIANTS + absi(hash(at)) % VARIANTS
@@ -198,7 +216,7 @@ static func atlas() -> Image:
 	if _atlas != null:
 		return _atlas
 	_atlas = Image.create(COLUMNS * TILE, ceili(COUNT / float(COLUMNS)) * TILE, false, Image.FORMAT_RGBA8)
-	for style in 2:
+	for style in STYLES:
 		for axis in 2:
 			for width in range(1, MAX_WIDTH + 1):
 				for variant in VARIANTS:
@@ -234,22 +252,28 @@ static func _band(style: int, axis: int, width: int, variant: int) -> Image:
 			if dice.randf() < 0.7:
 				_tuft(band, axis, along, middle + dice.randi_range(-1, 0), dice.randi() % TUFTS.size())
 			along += dice.randi_range(5, 8)
+	var inks: Array = PAVED_INKS if style == PAVED else [RUT, RUT_WALL, RUT_LIP]
 	for side in [-1, 1]:
-		_rut(band, axis, middle + side * half, dice)
+		_rut(band, axis, middle + side * half, dice, inks)
 	var stones := 1 if style == COUNTRY else 2
 	for i in stones:
 		if dice.randf() < 0.75:
 			var across := dice.randi_range(1, width * TILE - 3)
 			if absi(absi(across - middle) - half) > 1:
-				_pebble(band, axis, dice.randi_range(1, TILE - 3), across, dice.randf() < 0.5)
+				var at := dice.randi_range(1, TILE - 3)
+				if style == PAVED:
+					_chip(band, Vector2i(at, across) if axis == ACROSS else Vector2i(across, at))
+				else:
+					_pebble(band, axis, at, across, dice.randf() < 0.5)
 	return band
 
 
 ## One rut `across` pixels into the band: its groove the whole cell long but
 ## for a gap or two, the wall before it in shade and its far lip lit; it
 ## wanders a pixel off its line in the middle of the cell and meets it again
-## at both ends, so the next cell's rut carries it on.
-static func _rut(band: Image, axis: int, across: int, dice: RandomNumberGenerator) -> void:
+## at both ends, so the next cell's rut carries it on. `inks`: the groove,
+## its wall and its lip.
+static func _rut(band: Image, axis: int, across: int, dice: RandomNumberGenerator, inks: Array) -> void:
 	var gaps := {}
 	for i in dice.randi_range(1, 3):
 		var start := dice.randi_range(1, TILE - 4)
@@ -262,14 +286,14 @@ static func _rut(band: Image, axis: int, across: int, dice: RandomNumberGenerato
 		if gaps.has(along):
 			# A gap is the rut worn shallow, not gone: its wall goes on, faint.
 			if dice.randf() < 0.4:
-				_put(band, axis, along, across, RUT_WALL)
+				_put(band, axis, along, across, inks[1])
 			continue
 		var at := across + (bend if along >= bend_from and along <= bend_to else 0)
-		_put(band, axis, along, at, RUT)
+		_put(band, axis, along, at, inks[0])
 		if dice.randf() < 0.7:
-			_put(band, axis, along, at - 1, RUT_WALL)
+			_put(band, axis, along, at - 1, inks[1])
 		if dice.randf() < 0.4:
-			_put(band, axis, along, at + 1, RUT_LIP)
+			_put(band, axis, along, at + 1, inks[2])
 
 
 ## A tuft of grass standing on (`along`, `across`) of the band, upright.
@@ -291,6 +315,15 @@ static func _pebble(band: Image, axis: int, along: int, across: int, big: bool) 
 		_dot(band, at + Vector2i(1, 1), STONE_SHADOW)
 
 
+## A stone of the paving chipped (PIX-382 step 4): two pixels of the dirt
+## under it showing, its broken edge in shade.
+static func _chip(image: Image, at: Vector2i) -> void:
+	_dot(image, at, CHIP)
+	_dot(image, at + Vector2i.RIGHT, CHIP)
+	_dot(image, at + Vector2i.UP, CHIP_SHADOW)
+	_dot(image, at + Vector2i(1, -1), CHIP_SHADOW)
+
+
 ## A crossing or a square, worn but not rutted: trodden specks and pebbles.
 static func _patch(style: int, variant: int) -> Image:
 	var tile := Image.create(TILE, TILE, false, Image.FORMAT_RGBA8)
@@ -298,6 +331,19 @@ static func _patch(style: int, variant: int) -> Image:
 	dice.seed = hash([style, variant, "patch"])
 	# One variant in four lies bare, so the specks don't fall in a pattern.
 	if variant == 0:
+		return tile
+	if style == PAVED:
+		# Flagstones scuffed by feet: streaks polished (two, so the square's
+		# trodden ways read as ways), a speck of shade, now and then a chipped
+		# stone.
+		for streak in 2:
+			var at := Vector2i(dice.randi_range(1, TILE - 5), dice.randi_range(1, TILE - 2))
+			for step in dice.randi_range(2, 4):
+				_dot(tile, at + Vector2i(step, 0), PAVED_INKS[2])
+		if dice.randf() < 0.6:
+			_dot(tile, Vector2i(dice.randi_range(0, TILE - 1), dice.randi_range(0, TILE - 1)), PAVED_INKS[1])
+		if dice.randf() < 0.35:
+			_chip(tile, Vector2i(dice.randi_range(1, TILE - 3), dice.randi_range(1, TILE - 3)))
 		return tile
 	for i in dice.randi_range(0, 2):
 		_dot(tile, Vector2i(dice.randi_range(0, TILE - 1), dice.randi_range(0, TILE - 1)), SPECK)

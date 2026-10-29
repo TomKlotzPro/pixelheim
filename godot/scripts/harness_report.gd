@@ -588,6 +588,16 @@ func field_lit() -> String:
 	return str(world.night.lit.size()) if GameState.progression.bells != Bells.NONE else ""
 
 
+func field_lived() -> String:
+	if world.map == null or world.map.id != "town" or world.view == null or not PunyTown.available():
+		return ""
+	var sets := {"market": 0, "street": 0, "green": 0}
+	for piece: Dictionary in world.view.hamlet["pieces"]:
+		if piece.has("set"):
+			sets[piece["set"]] += 1
+	return "%d:market%d,street%d,green%d,worn%d" % [GameState.town_tier(), sets["market"], sets["street"], sets["green"], world.view.worn_paving.size()]
+
+
 func field_logged() -> String:
 	return str(world.messages.logged) if not Gains.is_empty(world.fx.floated) else ""
 

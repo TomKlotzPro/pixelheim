@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.303.0",
+      "date": "2026-10-29",
+      "codename": "Market Day",
+      "notes": [
+        "Pixelheim's market fills with the ages: bare boards at the Hamlet, greens and bread at the Village, a draper's stall and cheese at the Town, and at the City a butcher, a bookseller and a handcart of flour and fish among the stalls; from the Town, planters and small trees line Upper Street and the square, the brewery and the forge show their trade, and the busiest streets and the square's trodden ways wear with use"
+      ]
+    },
+    {
       "version": "0.302.0",
       "date": "2026-10-29",
       "codename": "Room to Grow",
