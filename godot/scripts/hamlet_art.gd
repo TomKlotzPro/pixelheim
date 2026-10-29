@@ -406,24 +406,26 @@ const PIECES := {
 		".......ooo22ooo.................",
 	],
 	## A crate of the coast's catch (PIX-382 step 4), the one ware the pack
-	## doesn't draw: silver fish laid head to tail in a wooden crate.
+	## doesn't draw: two silver fish laid head to tail, heaped over a wooden
+	## crate's rim, bright enough to read as fish at the play zoom (the review
+	## found the first crate a grey box): a fin, a forked tail, a dark eye.
 	"fish_crate": [
-		"................",
-		"................",
-		"................",
-		"..oooooooooooo..",
+		"......oooo......",
+		"oo..ooUUUUooo...",
+		"oUooUUUUUUUUUo..",
+		".oUSSSSSSSSSkyo.",
+		"oUoossssssssso..",
+		"oo..ooooooooo...",
+		"...oooUUUUoo..oo",
+		"..oUUUUUUUUUooUo",
+		".oykSSSSSSSSSUo.",
+		"..osssssssssooUo",
 		".o666666666665o.",
-		".o5oooooooooo4o.",
-		".o5o2jjjjh2l24o.",
-		".o5ojkWjjhll24o.",
-		".o5o2hhhhl2l24o.",
-		".o5o2l2hjjjj24o.",
-		".o5o2llhjjWkj4o.",
-		".o5o2l2lhhhh24o.",
-		".o5oooooooooo4o.",
-		".o444444444443o.",
-		".o3o.......o3o..",
-		".ooo.......ooo..",
+		".o544444444443o.",
+		".o533333333332o.",
+		".oooooooooooooo.",
+		".o3o........o3o.",
+		".ooo........ooo.",
 	],
 	## The Kings' Vault's door (PIX-312): two leaves of black iron studded and
 	## banded, a ring on each, in a doorway cut in the rock, a carved step.
@@ -708,14 +710,21 @@ const BUNTING_SAG := 7
 
 ## Pixelheim's market stalls (PIX-382 step 4): Mabel's (HubArt) with their
 ## counters cleared of her small heaps, so the pack's wares lie on them
-## (Yards' `on`), and one with its awning in green: [whose, inks swapped].
+## (Yards' `on`), and others with their awnings in green, gold and teal:
+## [whose, inks swapped].
 const STALLS := {
 	"stall_red": ["market_stall", {}],
 	"stall_blue": ["market_stall_blue", {}],
 	"stall_green": ["market_stall", {"R": "F", "e": "f"}],
+	"stall_gold": ["market_stall", {"R": "a", "e": "4"}],
+	"stall_teal": ["market_stall", {"R": "m", "e": "T"}],
 }
 ## Where on Mabel's stall her heaps lie: between the poles, over the counter.
 const STALL_HEAPS := Rect2i(6, 14, 20, 4)
+## Her awning's rows, down to its valance's points: drawn again over the
+## wares on the counter, so they sit under it (a basket is taller than the
+## room between them).
+const AWNING := 9
 
 
 ## Piece `name`'s rows: ours, what the hubs grow (HubArt, PIX-324), or

@@ -6,11 +6,13 @@ class_name Yards
 ## the lamps to tell the Village from the City. Each age adds to the last:
 ## - the Hamlet: firewood by the homes, a keg, a crate or coal by each
 ##   keeper's door, a scarecrow over the field across the river, a window
-##   box here and there;
-## - the Village: market stalls under awnings on the square's east rim,
-##   a flowering hedge along the wall by the gate, washing strung between
-##   the houses, kitchen gardens (Maren's, the cottage's, the east lawn's),
-##   sacks by Odo's, the inn's crates, half the windows in flower;
+##   box here and there, the market's first stall, bare, on the square's
+##   east rim;
+## - the Village: a second stall under its awning beside it, produce and
+##   bread on their counters, a flowering hedge along the wall by the gate,
+##   washing strung between the houses, kitchen gardens (Maren's, the
+##   cottage's, the east lawn's), sacks by Odo's, the inn's crates, half the
+##   windows in flower;
 ## - the Town: benches on the square's west rim, the hedge longer, the east
 ##   lawn's garden grown with its scarecrow, hay by the slate hall and the
 ##   east field, a cart by the forge, lanterns by the keepers' doors, most
@@ -22,9 +24,11 @@ class_name Yards
 ## from the age they stand: firewood, hay and kegs.
 ## The market, the streets and their green by the age (PIX-382 step 4, the
 ## sets): the stalls sell what the pack draws, laid on their bare counters
-## (`on`: blocking nothing more), from one bare stall in the Hamlet to
-## produce and bread in the Village, the draper's stall and a basket out
-## front in the Town, and pots and a cart of the coast's catch in the City;
+## under their awnings (`on`: blocking nothing more), from one bare stall in
+## the Hamlet to produce and bread in the Village, the draper's stall and a
+## basket out front in the Town, and in the City the butcher's and the
+## bookseller's stalls either side of the avenue south, pots, and a cart of
+## the coast's catch between the east rim's stalls;
 ## the trades' signs by their doors (the forge's anvil and grindstone, the
 ## brewery's cask); potted trees along Upper Street and at the square's
 ## corners from the Town, potted flowers between them and on the avenue in
@@ -51,9 +55,9 @@ const BASKET := 1235
 const SCARECROW := 3005
 const HAY := 2787
 ## The market's wares (PIX-382 step 4), the pack's: produce, bread and
-## cheese, a draper's folded cloth, a potter's jug, flour sacks; the trades'
-## signs (a cask on its cradle, the anvil, a grindstone); and the small trees
-## that grow in the planters.
+## cheese, a draper's folded cloth, a potter's jug, flour sacks, a ham and a
+## roast, books and an open one; the trades' signs (a cask on its cradle, the
+## anvil, a grindstone); and the small trees that grow in the planters.
 const REDS := 1456
 const YELLOWS := 1675
 const LOAF := 1019
@@ -62,6 +66,10 @@ const CHEESE := 801
 const CLOTH := [2777, 2778, 2779]
 const JUG := 2115
 const FLOUR := 2999
+const HAM := 1018
+const ROAST := 803
+const BOOKS := [2775, 2776]
+const OPEN_BOOK := 2780
 const CASK := 2123
 const ANVIL := 2124
 const GRINDSTONE := 2127
@@ -178,25 +186,34 @@ const HEDGE := [BUSH, ROSES, BOX_BUSH, BUSH, LAVENDER, BOX_BUSH, BLUEBELLS, BUSH
 const WINDOW_BOXES := ["window_box", "window_box_gold", "window_box_white", "window_box_blue"]
 ## The market (PIX-382 step 4): Mabel's stalls with their counters bare
 ## (HamletArt.STALLS), each trade's wares laid on its counter (`on`: where
-## the ware's top left lies from the cell's), what stands out front, and a
-## cart come up from the coast. A stall comes before its wares.
+## the ware's top left lies from the cell's: its foot on the counter, 6 px
+## down the stall's cell, one at the back of it 1-2 px higher), what stands
+## out front, and a cart come up from the coast. A stall comes before its
+## wares, and a ware at the back before those in front of it.
 const MARKET := [
 	{"art": "stall_red", "cell": Vector2i(50, 23), "age": 1},
 	{"tile": BASKET, "cell": Vector2i(50, 23), "on": Vector2i(1, -9), "age": 2},
 	{"tile": REDS, "cell": Vector2i(50, 23), "on": Vector2i(15, -9), "age": 2},
 	{"art": "stall_blue", "cell": Vector2i(50, 26), "age": 2},
-	{"tile": LOAF, "cell": Vector2i(50, 26), "on": Vector2i(1, -9), "age": 2},
-	{"tile": SMALL_LOAF, "cell": Vector2i(50, 26), "on": Vector2i(16, -9), "age": 2},
-	{"tile": CHEESE, "cell": Vector2i(50, 26), "on": Vector2i(8, -10), "age": 3},
+	{"tile": CHEESE, "cell": Vector2i(50, 26), "on": Vector2i(8, -7), "age": 3},
+	{"tile": LOAF, "cell": Vector2i(50, 26), "on": Vector2i(1, -4), "age": 2},
+	{"tile": SMALL_LOAF, "cell": Vector2i(50, 26), "on": Vector2i(16, -3), "age": 2},
 	{"tile": YELLOWS, "cell": Vector2i(49, 23), "age": 3},
 	{"art": "stall_green", "cell": Vector2i(30, 24), "age": 3},
-	{"tile": CLOTH[0], "cell": Vector2i(30, 24), "on": Vector2i(3, -10), "age": 3},
-	{"tile": CLOTH[1], "cell": Vector2i(30, 24), "on": Vector2i(10, -10), "age": 3},
-	{"tile": CLOTH[2], "cell": Vector2i(30, 24), "on": Vector2i(17, -10), "age": 3},
+	{"tile": CLOTH[0], "cell": Vector2i(30, 24), "on": Vector2i(3, -6), "age": 3},
+	{"tile": CLOTH[1], "cell": Vector2i(30, 24), "on": Vector2i(10, -7), "age": 3},
+	{"tile": CLOTH[2], "cell": Vector2i(30, 24), "on": Vector2i(17, -9), "age": 3},
 	{"tile": JUG, "cell": Vector2i(49, 27), "age": 4},
-	{"art": "handcart", "cell": Vector2i(42, 30), "age": 4},
-	{"tile": FLOUR, "cell": Vector2i(42, 30), "on": Vector2i(2, -6), "age": 4},
-	{"art": "fish_crate", "cell": Vector2i(42, 30), "on": Vector2i(11, -5), "age": 4},
+	{"art": "handcart", "cell": Vector2i(50, 24), "age": 4},
+	{"tile": FLOUR, "cell": Vector2i(50, 24), "on": Vector2i(2, -6), "age": 4},
+	{"art": "fish_crate", "cell": Vector2i(50, 24), "on": Vector2i(11, -5), "age": 4},
+	{"art": "stall_gold", "cell": Vector2i(37, 30), "age": 4},
+	{"tile": HAM, "cell": Vector2i(37, 30), "on": Vector2i(0, -4), "age": 4},
+	{"tile": ROAST, "cell": Vector2i(37, 30), "on": Vector2i(16, -5), "age": 4},
+	{"art": "stall_teal", "cell": Vector2i(42, 30), "age": 4},
+	{"tile": BOOKS[1], "cell": Vector2i(42, 30), "on": Vector2i(4, -8), "age": 4},
+	{"tile": BOOKS[0], "cell": Vector2i(42, 30), "on": Vector2i(0, -6), "age": 4},
+	{"tile": OPEN_BOOK, "cell": Vector2i(42, 30), "on": Vector2i(16, -3), "age": 4},
 ]
 ## The trades' signs by their doors (PIX-382 step 4): the brewery's cask on
 ## its cradle, the forge's anvil and its grindstone.

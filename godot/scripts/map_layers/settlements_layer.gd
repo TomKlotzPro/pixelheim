@@ -132,8 +132,10 @@ static func _add_smoke_thread(view: MapView, at: Vector2, forge := false) -> voi
 ## his fire's light under the door; and Pixelheim's planters, and the wares
 ## on its stalls and its cart (PIX-382 step 4).
 static func _decor_hamlet(view: MapView) -> void:
-	# What stands on each cell, so a ware laid on it is drawn over it.
+	# What stands on each cell, so a ware laid on it is drawn over it, and a
+	# stall's awning drawn again over its wares, so they sit under it.
 	var stood := {}
+	var awnings := {}
 	for piece: Dictionary in view.hamlet["pieces"]:
 		var cell: Vector2i = piece["cell"]
 		match String(piece["kind"]):
@@ -144,6 +146,8 @@ static func _decor_hamlet(view: MapView) -> void:
 				if stood.has(cell):
 					ware.position = Vector2(piece["on"]) - Vector2(0, TILE)
 					(stood[cell] as Node2D).add_child(ware)
+					if awnings.has(cell):
+						(stood[cell] as Node2D).move_child(awnings[cell], -1)
 				else:
 					stand_on(view, ware, cell, Vector2(piece["on"]))
 			"line":
@@ -182,6 +186,15 @@ static func _decor_hamlet(view: MapView) -> void:
 				var tall := TILE if piece.has("tile") else HamletArt.size(art).y
 				var root := stand_on(view, still, cell, Vector2(0, TILE - tall))
 				stood[cell] = root
+				if HamletArt.STALLS.has(art):
+					var awning := Sprite2D.new()
+					awning.centered = false
+					awning.texture = still.texture
+					awning.region_enabled = true
+					awning.region_rect = Rect2(0, 0, HamletArt.size(art).x, HamletArt.AWNING)
+					awning.position = still.position
+					root.add_child(awning)
+					awnings[cell] = awning
 				if potted:
 					var plant := Sprite2D.new()
 					plant.centered = false

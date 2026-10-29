@@ -87,8 +87,10 @@ func test_a_piece_by_a_house_waits_for_the_house() -> void:
 
 ## The market by the age (PIX-382 step 4): one bare stall in the Hamlet,
 ## then each age more stalls and more wares, every ware laid on a stall or
-## the cart standing under it, no two neighbouring stalls selling alike,
-## and by the City produce, bread, cloth, pots and fish.
+## the cart standing under it, no two stalls selling alike, and by the City
+## five stalls selling produce, bread, cloth, meat and books, pots out front
+## and the cart of fish beside the stalls (the review found it south of the
+## square, out of their sight).
 func test_the_market_fills_with_each_age() -> void:
 	var stalls := 0
 	var before := 0
@@ -114,9 +116,12 @@ func test_the_market_fills_with_each_age() -> void:
 			assert_eq([counted, laid], [1, 0], "the Hamlet's one stall stands bare")
 		stalls = counted
 		before = pieces.size()
+	assert_eq(stalls, 5, "the City's five stalls")
 	var city: Array = Yards.MARKET.map(func(entry: Dictionary) -> Variant: return entry.get("tile", entry.get("art")))
-	for trade: Variant in [Yards.BASKET, Yards.LOAF, Yards.CLOTH[0], Yards.JUG, "fish_crate"]:
+	for trade: Variant in [Yards.BASKET, Yards.LOAF, Yards.CLOTH[0], Yards.HAM, Yards.OPEN_BOOK, Yards.JUG, "fish_crate"]:
 		assert_has(city, trade, "the City sells %s" % trade)
+	var cart: Vector2i = Yards.MARKET.filter(func(entry: Dictionary) -> bool: return entry.get("art", "") == "handcart")[0]["cell"]
+	assert_true(Yards.MARKET.any(func(entry: Dictionary) -> bool: return String(entry.get("art", "")).begins_with("stall_") and (entry["cell"] - cart).length() <= 1.0), "the cart stands by the stalls")
 
 
 ## The trades' signs stand by their doors and the planters along Upper

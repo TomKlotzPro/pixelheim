@@ -57,16 +57,17 @@ bank-city-night | --map town --town-tier 4 --at 40,35 night | map=town cell=\(40
 # keeps by its house, the square's rims, the City's bunting lit at night;
 # with the paid pack (on Shade's CC0 art alone, none).
 yards-village | --map town --town-tier 2 --at 40,12 | map=town yards=(2:flat8,line3,on4,stand32,wall10)? | town
-yards-city-night | --map town --town-tier 4 --at 40,28 night | map=town yards=(4:flat15,line7,on10,stand87,wall39)? | town night
+yards-city-night | --map town --town-tier 4 --at 40,28 night | map=town yards=(4:flat15,line7,on15,stand89,wall39)? | town night
 # The market, the streets and their green by the age (PIX-382 step 4): one
 # bare stall in the Hamlet, the market's wares and the paving its traffic
 # wears growing with each age, the trades' signs and the planters from the
-# Town, the cart from the coast in the City; with the paid pack (on Shade's
-# CC0 art alone, none).
+# Town; in the City the butcher's and the bookseller's stalls, the cart from
+# the coast by the stalls and the square worn only where its folk walk; with
+# the paid pack (on Shade's CC0 art alone, none).
 lived-hamlet | --map town --town-tier 1 --at 49,25 | map=town lived=(1:market1,street0,green0,worn0)? | town
 lived-village | --map town --town-tier 2 --at 49,25 | map=town lived=(2:market6,street0,green0,worn122)? | town
 lived-town | --map town --town-tier 3 --at 49,25 | map=town lived=(3:market12,street2,green5,worn188)? | town
-lived-city-night | --map town --town-tier 4 --at 49,25 night | map=town lived=(4:market16,street3,green11,worn336)? | town night
+lived-city-night | --map town --town-tier 4 --at 49,25 night | map=town lived=(4:market23,street3,green11,worn258)? | town night
 # Pixelheim grows with each age (PIX-382 step 3): every age stands more
 # houses than the one before, the same with or without the paid art (the
 # Town and the City stood the same 13 before): the Ashes' hall alone, the

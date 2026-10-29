@@ -104,17 +104,28 @@ static func plan(map_id: String, grid: Dictionary, tier: int) -> Dictionary:
 ## `tier` (PIX-382 step 4: the City's streets lay as new as the Village's):
 ## each area's that has reached its `worn` age (Upper Street from the
 ## Village, the gate road and the ways down to the square from the Town,
-## the square in the City), of what `paved` paves now. RoadWear draws the
-## ruts and scuffs over the stone.
+## the square in the City), of what `paved` paves now: cell -> whether it
+## lies on a square. RoadWear draws a street's ruts over the stone, and a
+## square's scuffs: a square wears only where its folk walk (its `trodden`
+## rects: from the ways in to the fountain, round it, along the stalls), and
+## never in ruts (the review found its flags sprinkled all over, and stubs of
+## rut wherever a crate narrowed it to a street's width).
 static func worn(map_id: String, grid: Dictionary, paved: Dictionary, tier: int) -> Dictionary:
 	var out := {}
 	for area: Dictionary in areas(map_id):
 		if int(area.get("worn", Town.MAX_TIER + 1)) > tier:
 			continue
-		var rect := _rect(area)
+		var square := area.has("trodden")
+		var rects: Array[Rect2i] = [_rect(area)]
+		if square:
+			rects.assign(area["trodden"].map(func(r: Array) -> Rect2i: return Rect2i(int(r[0]), int(r[1]), int(r[2]), int(r[3]))))
 		for cell: Vector2i in paved:
-			if grid.get(cell, "") == RoadWear.ROAD and (rect.size == Vector2i.ZERO or rect.has_point(cell)):
-				out[cell] = true
+			if grid.get(cell, "") != RoadWear.ROAD:
+				continue
+			for rect: Rect2i in rects:
+				if rect.size == Vector2i.ZERO or rect.has_point(cell):
+					out[cell] = square
+					break
 	return out
 
 

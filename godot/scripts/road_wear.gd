@@ -93,8 +93,9 @@ static var _tileset: TileSet
 ## {cell: tile}, "verge": {cell: tile}}. `beyond(cell)` is the ground past
 ## the map's edges (so a road out runs on), `paved` the cells paving covers
 ## (Streets: worn no more, but where the traffic wears the stone: `worn`,
-## Streets.worn), `origin` where cell (0, 0) lies in the plane (a road's
-## wear runs on unbroken into the map beside), `style` COUNTRY or TOWN.
+## Streets.worn, a square's cells in scuffs and never a lane's ruts),
+## `origin` where cell (0, 0) lies in the plane (a road's wear runs on
+## unbroken into the map beside), `style` COUNTRY or TOWN.
 static func rows(grid: Dictionary, beyond: Callable, size: Vector2i, from: int, to: int, paved: Dictionary, origin: Vector2i, style: int, worn := {}) -> Dictionary:
 	var wear := {}
 	var verge := {}
@@ -105,7 +106,7 @@ static func rows(grid: Dictionary, beyond: Callable, size: Vector2i, from: int, 
 				continue
 			if paved.has(cell):
 				if worn.has(cell):
-					wear[cell] = wear_tile(grid, beyond, cell, origin, PAVED)
+					wear[cell] = wear_tile(grid, beyond, cell, origin, PAVED, worn[cell])
 				continue
 			wear[cell] = wear_tile(grid, beyond, cell, origin, style)
 			var sides := 0
@@ -153,9 +154,9 @@ static func lane_of(grid: Dictionary, beyond: Callable, cell: Vector2i) -> Array
 ## The wear tile of road cell `cell`: its lane's ruts in one of their
 ## variants, the same for every lane across the road at that point (so a
 ## crown's tuft or a pebble split between two lanes meets itself), or a worn
-## patch.
-static func wear_tile(grid: Dictionary, beyond: Callable, cell: Vector2i, origin: Vector2i, style: int) -> int:
-	var lane := lane_of(grid, beyond, cell)
+## patch: always on a `square` (a strip of it beside a crate is no street).
+static func wear_tile(grid: Dictionary, beyond: Callable, cell: Vector2i, origin: Vector2i, style: int, square := false) -> int:
+	var lane := [] if square else lane_of(grid, beyond, cell)
 	var at := origin + cell
 	if lane.is_empty():
 		return PATCHES + style * VARIANTS + absi(hash(at)) % VARIANTS
@@ -332,12 +333,14 @@ static func _patch(style: int, variant: int) -> Image:
 	if variant == 0:
 		return tile
 	if style == PAVED:
-		# Flagstones scuffed by feet: a streak polished, a speck of shade,
-		# now and then a chipped stone.
-		var at := Vector2i(dice.randi_range(1, TILE - 5), dice.randi_range(1, TILE - 2))
-		for step in dice.randi_range(2, 4):
-			_dot(tile, at + Vector2i(step, 0), PAVED_INKS[2])
-		if dice.randf() < 0.4:
+		# Flagstones scuffed by feet: streaks polished (two, so the square's
+		# trodden ways read as ways), a speck of shade, now and then a chipped
+		# stone.
+		for streak in 2:
+			var at := Vector2i(dice.randi_range(1, TILE - 5), dice.randi_range(1, TILE - 2))
+			for step in dice.randi_range(2, 4):
+				_dot(tile, at + Vector2i(step, 0), PAVED_INKS[2])
+		if dice.randf() < 0.6:
 			_dot(tile, Vector2i(dice.randi_range(0, TILE - 1), dice.randi_range(0, TILE - 1)), PAVED_INKS[1])
 		if dice.randf() < 0.35:
 			_chip(tile, Vector2i(dice.randi_range(1, TILE - 3), dice.randi_range(1, TILE - 3)))
