@@ -17,19 +17,23 @@ extends Screen
 
 ## Where things stand on the 1280x720 canvas (PIX-336). Buy and Sell: the
 ## goods, the card, the pack. The other tabs: their list across the left
-## two, the card at the right.
-const GOODS := Rect2(64, 136, 384, 500)
-const CARD := Rect2(460, 136, 360, 500)
-const PACK := Rect2(832, 136, 384, 500)
-const WIDE := Rect2(64, 136, 756, 500)
-const SIDE := Rect2(832, 136, 384, 500)
-## A page's margin round its list, the heading's room over it, and the room
-## a list leaves its scrollbar.
-const INSET := 16.0
-const HEADED := 44.0
+## two, the card at the right. Between the title's margins, a gap apart
+## (PIX-388: the screens' pages alike).
+const GOODS := Rect2(80, 136, 368, 500)
+const CARD := Rect2(464, 136, 352, 500)
+const PACK := Rect2(832, 136, 368, 500)
+const WIDE := Rect2(80, 136, 736, 500)
+const SIDE := Rect2(832, 136, 368, 500)
+## A page's margin round its list (the screens' inset, clear of the kit's
+## frame: PIX-388), the heading's room over it, and the room a list leaves
+## its scrollbar.
+const INSET := UiStyle.INSET
+const HEADED := INSET + 28
 const BAR := 16.0
 ## The card's padding inside its frame.
-const PADDING := 14
+const PADDING := UiStyle.INSET
+## A tab, standing on the pages' top edge.
+const TAB_HEIGHT := 36.0
 ## The most of a wide row a tag or a price takes before it wraps, so the
 ## name beside it keeps room.
 const NOTE_SHARE := 0.4
@@ -110,8 +114,10 @@ func _open() -> void:
 	add_child(purse)
 
 	var tab_row := HBoxContainer.new()
-	tab_row.position = Vector2(80, 94)
-	tab_row.add_theme_constant_override("separation", 10)
+	# Clear of the page's corners, as the pack's (PIX-388).
+	tab_row.position = Vector2(GOODS.position.x + INSET, GOODS.position.y - TAB_HEIGHT)
+	tab_row.custom_minimum_size.y = TAB_HEIGHT
+	tab_row.add_theme_constant_override("separation", 4)
 	for index in tabs.size():
 		var button := UiStyle.button(tabs[index], _switch.bind(index))
 		tab_buttons.append(button)
@@ -570,7 +576,7 @@ func _place() -> void:
 		var rect: Rect2 = rects[side]
 		pages[side].position = rect.position
 		pages[side].size = rect.size
-		headings[side].position = rect.position + Vector2(INSET, 12)
+		headings[side].position = rect.position + Vector2(INSET, INSET - 6)
 		var top := HEADED if paired else INSET
 		var room := Vector2(rect.size.x - 2 * INSET, rect.size.y - top - INSET)
 		scrolls[side].position = rect.position + Vector2(INSET, top)

@@ -9,9 +9,14 @@ extends Screen
 ## still meanwhile.
 
 const TIER_BADGES := ["I", "II", "III", "IV", "V", "VI"]
-const COLUMN_X := [80, 470, 860]
-const PATH_CARD := Vector2(340, 56)
-const NODE_CARD := Vector2(340, 40)
+## The page, between the title's margins and clear of the lines over it
+## (PIX-388: its edges ran tight on the kit's frame); the tree stands its
+## inset in, three columns a gap apart.
+const PAGE := Rect2(80, 92, 1120, 556)
+const TOP := PAGE.position.y + UiStyle.INSET
+const COLUMN_X := [104, 472, 840]
+const PATH_CARD := Vector2(336, 56)
+const NODE_CARD := Vector2(336, 40)
 
 ## Grid cell -> {kind: "path"|"node", entry}; cells (col, row): the path
 ## graph on rows 0-1 (branch a, b), the tree's tiers on rows 2-7.
@@ -27,7 +32,7 @@ func _open() -> void:
 	layer = 5
 	dim()
 	# The paths are written on one page; the details read below it.
-	add_child(UiStyle.page(Rect2(60, 60, 1160, 562)))
+	add_child(UiStyle.page(PAGE))
 	# The tree is drawn on the 1280x720 canvas the screen is laid out on
 	# (PIX-230): anchored to the whole view instead, it ran past a phone's
 	# view by the offset that centres the screen in it.
@@ -37,8 +42,8 @@ func _open() -> void:
 	add_child(view)
 	# The selected card in full, on the page under the tree (one line a node
 	# leaves the room).
-	details = UiStyle.label("", 13, UiStyle.INK, Vector2(80, 562))
-	details.custom_minimum_size = Vector2(1120, 0)
+	details = UiStyle.label("", 13, UiStyle.INK, Vector2(COLUMN_X[0], 576))
+	details.custom_minimum_size = Vector2(PAGE.size.x - 2 * UiStyle.INSET, 0)
 	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(details)
 	# Clear of the title's end in French (« Compétences »).
@@ -46,7 +51,7 @@ func _open() -> void:
 	status.custom_minimum_size = Vector2(650, 0)
 	add_child(status)
 	add_child(UiStyle.screen_footer("Arrows  choose      {key:interact}  learn / walk      1-6  put on a key      F  forget      {key:skills} / Esc  close"))
-	var rule := UiStyle.label("A point each level, one more each rank.", 13, UiStyle.DUSK, Vector2(800, 6))
+	var rule := UiStyle.label("A point each level, one more each rank.", 13, UiStyle.DUSK, Vector2(PAGE.end.x - 416, 6))
 	rule.custom_minimum_size = Vector2(416, 0)
 	rule.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	add_child(rule)
@@ -70,21 +75,28 @@ func _layout() -> void:
 	var hero := GameState.hero
 	view.add_child(UiStyle.title("Skills"))
 	var points := hero.skill_points
-	view.add_child(UiStyle.label(
+	var count := UiStyle.label(
 		Text.t("%d skill point%s") % [points, "" if points == 1 else "s"], 18, UiStyle.GOLD if points > 0 else UiStyle.DUSK,
-		Vector2(1000, 30)
-	))
+		Vector2(PAGE.end.x - 400, 30)
+	)
+	count.custom_minimum_size = Vector2(400, 0)
+	count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	view.add_child(count)
 	# A whole tree's points go beyond it, in Stats (PIX-217); a point with
-	# nothing to buy yet says when the next skills open (PIX-233).
+	# nothing to buy yet says when the next skills open (PIX-233). Right
+	# under the count, over the page.
 	var waiting := Skills.next_skills_note(hero)
 	if Skills.beyond_open(hero):
-		view.add_child(UiStyle.label(Text.t("The tree is whole: spend them beyond it, in Stats."), 14, UiStyle.DUSK, Vector2(620, 56)))
-	elif waiting != "":
-		view.add_child(UiStyle.label(waiting, 14, UiStyle.DUSK, Vector2(620, 56)))
-	var top := 80
+		waiting = Text.t("The tree is whole: spend them beyond it, in Stats.")
+	if waiting != "":
+		var note := UiStyle.label(waiting, 14, UiStyle.DUSK, Vector2(PAGE.end.x - 640, 56))
+		note.custom_minimum_size = Vector2(640, 0)
+		note.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		view.add_child(note)
+	var top := TOP
 	if HeroRules.rank_index(hero.level) >= 1:
 		_path_graph(hero)
-		top = 244
+		top = TOP + 160
 	var tree := Skills.tree(hero.role_id)
 	for branch in 3:
 		var nodes := tree.filter(func(entry: Dictionary) -> bool: return int(entry["branch"]) == branch)
@@ -109,16 +121,16 @@ func _path_graph(hero: HeroState) -> void:
 		func(node: Dictionary) -> bool: return node["roleId"] == hero.role_id
 	)
 	view.add_child(UiStyle.label(
-		"Your ascension demands a path" if pending > 0 else "The Path Graph", 16, UiStyle.LAMP, Vector2(80, 70)
+		"Your ascension demands a path" if pending > 0 else "The Path Graph", 16, UiStyle.LAMP, Vector2(COLUMN_X[0], TOP)
 	))
 	if not walked.is_empty():
 		var identity := HeroRules.path_node(walked[-1])
-		var walking := UiStyle.label("%s - %s" % [identity["name"], identity["blurb"]], 13, UiStyle.FADED, Vector2(COLUMN_X[1], 72))
+		var walking := UiStyle.label("%s - %s" % [identity["name"], identity["blurb"]], 13, UiStyle.FADED, Vector2(COLUMN_X[1], TOP + 2))
 		walking.custom_minimum_size = Vector2(COLUMN_X[2] + PATH_CARD.x - COLUMN_X[1], 0)
 		walking.clip_text = true
 		view.add_child(walking)
 	var at := func(node: Dictionary) -> Vector2:
-		return Vector2(COLUMN_X[int(node["tier"]) - 1], 100 + (0 if node["branch"] == "a" else PATH_CARD.y + 18))
+		return Vector2(COLUMN_X[int(node["tier"]) - 1], TOP + 24 + (0 if node["branch"] == "a" else PATH_CARD.y + 12))
 	for node: Dictionary in nodes:
 		for from_id: String in node["from"]:
 			var from := HeroRules.path_node(from_id)

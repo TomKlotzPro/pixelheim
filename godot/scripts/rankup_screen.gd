@@ -34,6 +34,8 @@ const HOLD_AFTER := 2.8
 ## After a walk is taken at the fork with nothing further to choose.
 const HOLD_WALKED := 2.0
 const BAR := 92.0
+## How much higher the chosen walk's card stands than the other (PIX-388).
+const LIFT := 12
 ## The stage: where the hero's feet stand on the screen and its size (one
 ## unit of the stage is one of the art's pixels).
 const STAGE_AT := Vector2(640, 236)
@@ -102,7 +104,7 @@ var sparks: CPUParticles2D
 var name_card: VBoxContainer
 var unlocks: VBoxContainer
 var cards: HBoxContainer
-var note: Label
+var note: Control
 var _bars: Array[ColorRect] = []
 var _timeline: Tween
 var _offered := false
@@ -186,7 +188,7 @@ func _open() -> void:
 		unlocks.add_child(_line(entry[0], entry[1]))
 
 	cards = HBoxContainer.new()
-	cards.position = Vector2(0, 446)
+	cards.position = Vector2(0, 436)
 	cards.custom_minimum_size = Vector2(view.x, 0)
 	cards.alignment = BoxContainer.ALIGNMENT_CENTER
 	cards.add_theme_constant_override("separation", 18)
@@ -201,10 +203,6 @@ func _open() -> void:
 		add_child(bar)
 		_bars.append(bar)
 	# The fork's keys ride in the lower bar.
-	note = UiStyle.label("", 14, UiStyle.DUSK, Vector2(0, view.y - BAR / 2 - 10))
-	note.custom_minimum_size = Vector2(view.x, 0)
-	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	add_child(note)
 	_play()
 
 
@@ -544,18 +542,31 @@ func _offer() -> void:
 	if not _offered:
 		return
 	Layout.clear(cards)
+	if note != null:
+		note.queue_free()
+		note = null
 	if choices.is_empty():
-		note.text = ""
 		return
 	for index in choices.size():
 		cards.add_child(_card(choices[index], index == selected))
-	note.text = "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
+	# The fork's keys on caps, the player's own, as every screen's (PIX-388).
+	note = UiStyle.footer(Text.t("The path forks      {key:move_left}/{key:move_right}  choose      {key:interact}  walk this path      Esc  choose later, in Skills"), Vector2(0, 720 - BAR / 2 - 16), true)
+	add_child(note)
 
 
+## A walk on offer (PIX-388): both on the page, the chosen one standing a
+## little higher and lit, its name in rubric, the other dimmed, so which is
+## chosen reads at a glance (a rubric rim on a plain card beside the kit's
+## window read the other way round).
 func _card(node: Dictionary, chosen: bool) -> Control:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(330, 150)
-	panel.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.LAMP if chosen else UiStyle.RIM, 14))
+	panel.add_theme_stylebox_override("panel", UiStyle.window(14))
+	panel.modulate = Color.WHITE if chosen else Color(0.6, 0.56, 0.52)
+	var lift := MarginContainer.new()
+	lift.add_theme_constant_override("margin_top", 0 if chosen else LIFT)
+	lift.add_theme_constant_override("margin_bottom", LIFT if chosen else 0)
+	lift.add_child(panel)
 	var lines := VBoxContainer.new()
 	lines.add_theme_constant_override("separation", 6)
 	panel.add_child(lines)
@@ -565,7 +576,7 @@ func _card(node: Dictionary, chosen: bool) -> Control:
 	blurb.custom_minimum_size = Vector2(300, 0)
 	lines.add_child(blurb)
 	lines.add_child(UiStyle.label(Text.t("Signature: %s") % node["signature"]["name"], 13, UiStyle.FADED))
-	return panel
+	return lift
 
 
 func _command(event: InputEvent) -> Callable:

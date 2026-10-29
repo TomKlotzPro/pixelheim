@@ -277,3 +277,26 @@ static func fountain_sprite_frames() -> SpriteFrames:
 		for frame: ImageTexture in fountain_frames():
 			_fountain.add_frame("default", frame)
 	return _fountain
+
+
+static var _fountain_lit: SpriteFrames
+## The fountain's water and jet: what of its frames shines at night.
+const FOUNTAIN_WATER := ["0b7f96", "04a0b4", "23c0bf", "e8fbff", "8fe3ec", "1dcccb"]
+
+
+## The fountain's water and jet alone, frame by frame (PIX-382 step 3: the
+## square's fountain lit at night): its frames with the stone taken out,
+## drawn over the dark at night so the water shines and the basin keeps
+## to the night.
+static func fountain_lit_frames() -> SpriteFrames:
+	if _fountain_lit == null:
+		_fountain_lit = SpriteFrames.new()
+		_fountain_lit.set_animation_speed("default", fountain_sprite_frames().get_animation_speed("default"))
+		for frame: ImageTexture in fountain_frames():
+			var image := frame.get_image()
+			for y in image.get_height():
+				for x in image.get_width():
+					if image.get_pixel(x, y).to_html(false) not in FOUNTAIN_WATER:
+						image.set_pixel(x, y, Color(0, 0, 0, 0))
+			_fountain_lit.add_frame("default", ImageTexture.create_from_image(image))
+	return _fountain_lit

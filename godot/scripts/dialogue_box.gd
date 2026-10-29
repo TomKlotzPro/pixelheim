@@ -6,8 +6,11 @@ extends Screen
 ## the web game's modal dialogue; closing tells GameState so settlers and
 ## quests can answer (PIX-124/125 hook dialogue_closed).
 
-const AT := Vector2(150, 516)
-const SIZE := Vector2(980, 188)
+## Where the window stands and its size, against the kit's frame (PIX-388):
+## three lines of a speech and the keys under them fit inside it without it
+## growing, its foot where it always stood.
+const AT := Vector2(150, 512)
+const SIZE := Vector2(980, 192)
 const PORTRAIT := 112
 
 var npc: Dictionary
@@ -84,10 +87,13 @@ func _portrait(sprite: String, tint := Color.WHITE) -> Control:
 	var slot := PanelContainer.new()
 	slot.custom_minimum_size = Vector2(PORTRAIT, PORTRAIT)
 	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	slot.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 4))
+	# The kit's wooden slot, as the dock's portrait (PIX-388); the card drawn without it.
+	var frame := UiStyle.slot("", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 4))
+	slot.add_theme_stylebox_override("panel", frame)
+	var inner := PORTRAIT - frame.get_minimum_size().x
 	var stage := Control.new()
 	stage.clip_contents = true
-	stage.custom_minimum_size = Vector2(PORTRAIT - 12, PORTRAIT - 12)
+	stage.custom_minimum_size = Vector2(inner, inner)
 	slot.add_child(stage)
 	var art := PunyArt.villager(sprite)
 	var figure := AnimatedSprite2D.new()
@@ -98,7 +104,7 @@ func _portrait(sprite: String, tint := Color.WHITE) -> Control:
 	# stands in the lower half of its cell, so it sits a little higher).
 	var zoom := 6 if PunyArt.frame_size(art) <= 16 else 4
 	figure.scale = Vector2(zoom, zoom)
-	figure.position = Vector2((PORTRAIT - 12) / 2.0, (PORTRAIT - 12) / 2.0 + PunyArt.lift(art) * zoom * 0.5)
+	figure.position = Vector2(inner / 2.0, inner / 2.0 + PunyArt.lift(art) * zoom * 0.5)
 	stage.add_child(figure)
 	return slot
 

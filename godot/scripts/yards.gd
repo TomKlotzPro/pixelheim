@@ -18,6 +18,8 @@ class_name Yards
 ## - the City: every window in flower, roses and box round the hall and
 ##   lanterns either side of its door, and bunting strung across the square
 ##   between its lamps, its lanterns lit at night.
+## The houses the ages raise (Town.age_houses, PIX-382 step 3) keep theirs
+## from the age they stand: firewood, hay and kegs.
 ## Laid as a settlement's dressing is (Hamlet.plan's `grown`): what stands
 ## blocks only open ground off the paths and never closes a way, and keeps
 ## clear of every villager's place and pacing, the square's boards, stalls
@@ -54,6 +56,13 @@ const HOME := Vector2i(15, 25)
 const LANE_EAST := Vector2i(24, 25)
 const THATCH := Vector2i(7, 32)
 const MOSS := Vector2i(16, 32)
+## The houses the ages raise (Town.age_houses): the farmhouse in the
+## orchard, the house on the east lawn, the house by the west woods and the
+## farmstead in the south-east woods.
+const FARM := Vector2i(76, 9)
+const LAWN := Vector2i(57, 25)
+const WEST := Vector2i(6, 18)
+const STEAD := Vector2i(76, 36)
 
 ## Each piece placed by hand, as Hamlet.DRESSING's (`art` ours or `tile`
 ## the pack's), with the age it comes at; a lantern `dim` keeps its halo
@@ -92,6 +101,7 @@ const PIECES := [
 	{"art": "garden", "cell": Vector2i(58, 30), "flat": true, "age": 2},
 	{"art": "garden", "cell": Vector2i(59, 30), "flat": true, "age": 2},
 	{"art": "garden", "cell": Vector2i(60, 30), "flat": true, "age": 2},
+	{"art": "woodpile", "cell": Vector2i(79, 9), "by": FARM, "age": 2},
 	# The Town: the square's rims kept, the lawns worked, the doors lit.
 	{"line": 2, "cell": Vector2i(20, 23), "by": HOME, "age": 3},
 	{"line": 3, "cell": Vector2i(11, 30), "by": MOSS, "age": 3},
@@ -115,6 +125,8 @@ const PIECES := [
 	{"art": "lantern", "cell": Vector2i(51, 10), "wall": true, "by": INN, "age": 3},
 	{"art": "lantern", "cell": Vector2i(24, 19), "wall": true, "by": VEX, "age": 3},
 	{"art": "lantern", "cell": Vector2i(56, 18), "wall": true, "by": FORGE, "age": 3},
+	{"tile": HAY, "cell": Vector2i(73, 10), "by": FARM, "age": 3},
+	{"art": "woodpile", "cell": Vector2i(62, 22), "by": LAWN, "age": 3},
 	# The City: dressed for the whole Reach to see.
 	{"art": "lantern", "cell": Vector2i(39, 19), "wall": true, "by": HALL, "age": 4},
 	{"art": "lantern", "cell": Vector2i(41, 19), "wall": true, "by": HALL, "age": 4},
@@ -125,6 +137,11 @@ const PIECES := [
 	{"tile": ROSES, "cell": Vector2i(34, 18), "by": HALL, "age": 4},
 	{"tile": BOX_BUSH, "cell": Vector2i(46, 17), "by": HALL, "age": 4},
 	{"tile": ROSES, "cell": Vector2i(46, 18), "by": HALL, "age": 4},
+	{"art": "keg", "cell": Vector2i(62, 25), "by": LAWN, "age": 4},
+	{"art": "woodpile", "cell": Vector2i(10, 15), "by": WEST, "age": 4},
+	{"art": "box", "cell": Vector2i(10, 17), "by": WEST, "age": 4},
+	{"tile": HAY, "cell": Vector2i(73, 37), "by": STEAD, "age": 4},
+	{"art": "woodpile", "cell": Vector2i(79, 37), "by": STEAD, "age": 4},
 	# Strung between the square's lamps: (31,29)-(49,29), and (34,19)-(46,19)
 	# along the hall's front, drawn from the row before it, a cell higher.
 	{"art": "bunting", "line": 17, "cell": Vector2i(32, 29), "age": 4},

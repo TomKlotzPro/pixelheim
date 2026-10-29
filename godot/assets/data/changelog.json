@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.302.0",
+      "date": "2026-10-29",
+      "codename": "Room to Grow",
+      "notes": [
+        "Pixelheim grows with each age now: a farmhouse in the orchard at the Village, a gabled house on the east lawn at the Town, and at the City a slate house under the mountain and a farmstead by the south-east woods, each with its yard and window boxes; and from the Town on, the fountain glows at night",
+        "The screens the menu opens share one frame now: the same margins, tabs that stand clear on the page's edge, a dimmed look for the tabs you can't open, a clearer chosen card at rank-up, 44 px planks on the pause and saves screens, a wider dialogue box with its portrait framed, and the map in line with the rest; the menu no longer hides your next objective, and on a pad the bar and the menu show the pad's buttons"
+      ]
+    },
+    {
       "version": "0.301.0",
       "date": "2026-10-29",
       "codename": "Fresh Paint",

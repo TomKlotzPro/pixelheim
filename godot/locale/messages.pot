@@ -4625,6 +4625,10 @@ msgid "Pixelheim doubled east: new houses, a market corner, an orchard - and sho
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Pixelheim grows with each age now: a farmhouse in the orchard at the Village, a gabled house on the east lawn at the Town, and at the City a slate house under the mountain and a farmstead by the south-east woods, each with its yard and window boxes; and from the Town on, the fountain glows at night"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Pixelheim has one rampart now, not two stacked one over the other"
 msgstr ""
 
@@ -4826,6 +4830,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Room to Grow"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6250,6 +6258,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The save screen fits again with every slot full: long names and places wrap inside their cards, so the right-hand column is never cut off"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The screens the menu opens share one frame now: the same margins, tabs that stand clear on the page's edge, a dimmed look for the tabs you can't open, a clearer chosen card at rank-up, 44 px planks on the pause and saves screens, a wider dialogue box with its portrait framed, and the map in line with the rest; the menu no longer hides your next objective, and on a pad the bar and the menu show the pad's buttons"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -16941,7 +16953,7 @@ msgid "Signature: %s"
 msgstr ""
 
 #: scripts/rankup_screen.gd
-msgid "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
+msgid "The path forks      {key:move_left}/{key:move_right}  choose      {key:interact}  walk this path      Esc  choose later, in Skills"
 msgstr ""
 
 #: scripts/ring_toss_screen.gd
@@ -18442,6 +18454,10 @@ msgstr ""
 
 #: scripts/stats_screen.gd
 msgid "Your tree is whole: %d skill point%s to spend beyond it, below."
+msgstr ""
+
+#: scripts/stats_screen.gd
+msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      {key:stats} / Esc  close"
 msgstr ""
 
 #: scripts/throne_screen.gd

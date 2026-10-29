@@ -5,10 +5,15 @@ extends Screen
 ## row clickable too. Subclasses fill `_title`, `_intro` and `_rows`. Pauses
 ## the world while open.
 
-## The list's window on the page: what runs past its foot scrolls (PIX-298:
-## the workbench's every recipe stood 2250 px tall, off the canvas), and a
-## row is never wider than it, its name giving way to an ellipsis.
-const LIST := Rect2(640, 110, 560, 438)
+## The info card and the page of choices beside it (PIX-388): level, a gap
+## apart, between the title's margins.
+const CARD := Rect2(80, 104, 520, 456)
+const PAGE := Rect2(616, 104, 584, 456)
+## The list's window on the page, its inset in (PIX-388: it sat flush on
+## the kit's frame): what runs past its foot scrolls (PIX-298: the
+## workbench's every recipe stood 2250 px tall, off the canvas), and a row
+## is never wider than it, its name giving way to an ellipsis.
+const LIST := Rect2(PAGE.position + Vector2.ONE * UiStyle.INSET, PAGE.size - Vector2.ONE * 2 * UiStyle.INSET)
 ## The most of a row its note takes before it wraps, so the name keeps room.
 const NOTE_SHARE := 0.45
 
@@ -27,7 +32,7 @@ func _open() -> void:
 	layer = 5
 	dim()
 	# The choices are written on a page beside the card.
-	page = UiStyle.page(Rect2(624, 94, 592, 470))
+	page = UiStyle.page(PAGE)
 	add_child(page)
 	add_child(UiStyle.title(_title()))
 	add_child(UiStyle.label(_intro(), 14, UiStyle.DUSK, Vector2(80, 66)))
@@ -37,14 +42,14 @@ func _open() -> void:
 
 	var card := PanelContainer.new()
 	info_card = card
-	card.position = Vector2(80, 110)
-	card.custom_minimum_size = Vector2(520, 440)
-	card.add_theme_stylebox_override("panel", UiStyle.window(18))
+	card.position = CARD.position
+	card.custom_minimum_size = CARD.size
+	card.add_theme_stylebox_override("panel", UiStyle.window(UiStyle.INSET))
 	add_child(card)
 	# Large text reaches the page's words too (PIX-214).
 	info = UiStyle.label("", UiStyle.reading(14), UiStyle.INK)
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	info.custom_minimum_size = Vector2(480, 0)
+	info.custom_minimum_size = Vector2(CARD.size.x - 2 * UiStyle.INSET, 0)
 	info.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	card.add_child(info)
 
@@ -59,7 +64,7 @@ func _open() -> void:
 	list.add_theme_constant_override("separation", 6)
 	scroll.add_child(list)
 
-	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(80, 604))
+	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(80, CARD.end.y + 20))
 	status.custom_minimum_size = Vector2(1120, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)

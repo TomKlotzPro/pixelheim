@@ -42,6 +42,7 @@ static func _add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
 		jet.position = Vector2(0, -TILE / 2.0 - sort_y)
 		jet.play()
 		root.add_child(jet)
+		_light_fountain(view, root, jet, prop["cell"])
 	elif prop["kind"] == "lamp":
 		_add_lamp_post(view, root, prop["cell"], sort_y)
 	elif prop["kind"] in ["barrel", "crate"]:
@@ -83,6 +84,32 @@ static func _add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
 	view.actors.add_child(root)
 	view.prop_nodes[prop["cell"]] = root
 	return root
+
+
+## The square's fountain lit at night (PIX-382 step 3: the plaza was the
+## darkest place in the City): its water and its jet drawn again over the
+## dark (PunyProps.fountain_lit_frames), the stone left to the night, and
+## the water's cold light on the paving round the basin.
+static func _light_fountain(view: MapView, root: Node2D, jet: AnimatedSprite2D, cell: Vector2i) -> void:
+	var lit := AnimatedSprite2D.new()
+	lit.sprite_frames = PunyProps.fountain_lit_frames()
+	lit.material = Lights.unshaded()
+	lit.centered = false
+	lit.position = jet.position
+	lit.visible = false
+	lit.play()
+	root.add_child(lit)
+	view.night_glows.append(lit)
+	var light := Lights.make(Vector2(cell * TILE) + FOUNTAIN_POOL, FOUNTAIN_REACH, Lights.ICE, FOUNTAIN_ENERGY)
+	view.props.add_child(light)
+	lit.tree_exiting.connect(light.queue_free)
+
+
+## Where the fountain's light pools, from its cell's corner (the basin's
+## middle), how far and how bright: about a lamp's, a little dimmer.
+const FOUNTAIN_POOL := Vector2(16, 18)
+const FOUNTAIN_REACH := 64.0
+const FOUNTAIN_ENERGY := 0.34
 
 
 ## A street lamp (PIX-311: a cold torch read as a bug on the road by day):

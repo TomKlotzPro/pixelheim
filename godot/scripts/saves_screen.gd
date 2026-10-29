@@ -31,9 +31,10 @@ const TOP := 28.0
 const CARD_PAD := 10
 ## A card's words: the window less its margins, the card's, the portrait and
 ## the gap after it.
-const CARD_TEXT := WINDOW.x - 44.0 - CARD_PAD * 2 - PORTRAIT.size.x * 3 - 16.0
-## The line under the planks: the window less its margins.
-const LINE_TEXT := WINDOW.x - 44.0
+const CARD_TEXT := WINDOW.x - 2.0 * UiStyle.INSET - CARD_PAD * 2 - PORTRAIT.size.x * 3 - 16.0
+## The line under the planks: the window less its margins (the screens'
+## inset, PIX-388).
+const LINE_TEXT := WINDOW.x - 2.0 * UiStyle.INSET
 ## A browser hands its clipboard over a moment after it's asked (Godot's web
 ## clipboard answers with what it last heard, and asks again): Paste waits
 ## this long (s) for it.
@@ -83,7 +84,7 @@ func _open() -> void:
 	stack.add_child(title)
 	window = PanelContainer.new()
 	window.custom_minimum_size = Vector2(WINDOW.x, 0)
-	window.add_theme_stylebox_override("panel", UiStyle.window(22))
+	window.add_theme_stylebox_override("panel", UiStyle.window(UiStyle.INSET))
 	stack.add_child(window)
 	var body := VBoxContainer.new()
 	body.add_theme_constant_override("separation", 10)

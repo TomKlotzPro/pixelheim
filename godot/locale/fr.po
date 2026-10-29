@@ -4625,6 +4625,10 @@ msgid "Pixelheim doubled east: new houses, a market corner, an orchard - and sho
 msgstr "Pixelheim a doublé vers l'est : de nouvelles maisons, un coin de marché, un verger - et les boutiques sont des pièces où l'on entre et où l'on commerce en parlant"
 
 #: assets/data/changelog.json
+msgid "Pixelheim grows with each age now: a farmhouse in the orchard at the Village, a gabled house on the east lawn at the Town, and at the City a slate house under the mountain and a farmstead by the south-east woods, each with its yard and window boxes; and from the Town on, the fountain glows at night"
+msgstr "Pixelheim grandit désormais à chaque époque : une ferme dans le verger au Village, une maison à pignon sur la pelouse est au Bourg, et à la Cité une maison d'ardoise sous la montagne et un corps de ferme près des bois du sud-est, chacune avec sa cour et ses jardinières ; et dès le Bourg, la fontaine s'illumine la nuit"
+
+#: assets/data/changelog.json
 msgid "Pixelheim has one rampart now, not two stacked one over the other"
 msgstr "Pixelheim n'a plus qu'un seul rempart, et non deux empilés l'un sur l'autre"
 
@@ -4827,6 +4831,10 @@ msgstr "Les rivières, les étangs et le lac des Bois-Profonds ont désormais de
 #: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr "Les routes et la ville restent dégagées parce qu'elles SONT sûres"
+
+#: assets/data/changelog.json
+msgid "Room to Grow"
+msgstr "De la place pour grandir"
 
 #: assets/data/changelog.json
 msgid "Room to Spare"
@@ -6251,6 +6259,10 @@ msgstr "La même porte depuis la Marche des Cendres, où la route s'élargit jus
 #: assets/data/changelog.json
 msgid "The save screen fits again with every slot full: long names and places wrap inside their cards, so the right-hand column is never cut off"
 msgstr "L'écran des sauvegardes tient de nouveau avec tous les emplacements remplis : les noms et les lieux longs passent à la ligne dans leur carte, et la colonne de droite n'est plus jamais coupée"
+
+#: assets/data/changelog.json
+msgid "The screens the menu opens share one frame now: the same margins, tabs that stand clear on the page's edge, a dimmed look for the tabs you can't open, a clearer chosen card at rank-up, 44 px planks on the pause and saves screens, a wider dialogue box with its portrait framed, and the map in line with the rest; the menu no longer hides your next objective, and on a pad the bar and the menu show the pad's buttons"
+msgstr "Les écrans ouverts par le menu partagent désormais un même cadre : les mêmes marges, des onglets bien posés sur le bord de la page, un aspect estompé pour ceux qu'on ne peut pas ouvrir, une carte choisie plus nette à la montée de rang, des planches de 44 px aux écrans de pause et de sauvegarde, une boîte de dialogue plus large au portrait encadré, et la carte alignée sur le reste ; le menu ne cache plus votre prochain objectif, et à la manette la barre et le menu montrent les boutons de la manette"
 
 #: assets/data/changelog.json
 msgid "The six regions now lie around the Ashenreach the way their roads run: the roads into the Blackiron valley, the Mirefen, the Deepwood and Saltmere moved, and every pass is three wide"
@@ -16941,8 +16953,8 @@ msgid "Signature: %s"
 msgstr "Signature : %s"
 
 #: scripts/rankup_screen.gd
-msgid "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
-msgstr "La voie bifurque      A/D  choisir      E  suivre cette voie      Esc  choisir plus tard, dans Compétences"
+msgid "The path forks      {key:move_left}/{key:move_right}  choose      {key:interact}  walk this path      Esc  choose later, in Skills"
+msgstr "La voie bifurque      {key:move_left}/{key:move_right}  choisir      {key:interact}  suivre cette voie      Esc  choisir plus tard, dans Compétences"
 
 #: scripts/ring_toss_screen.gd
 msgid " {key:interact} to throw again."
@@ -18443,6 +18455,10 @@ msgstr "Avec un point : %s"
 #: scripts/stats_screen.gd
 msgid "Your tree is whole: %d skill point%s to spend beyond it, below."
 msgstr "Votre arbre est complet : %d point%s de compétence à dépenser au-delà, ci-dessous."
+
+#: scripts/stats_screen.gd
+msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      {key:stats} / Esc  close"
+msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      {key:stats} / Esc  fermer"
 
 #: scripts/throne_screen.gd
 msgid "answer"

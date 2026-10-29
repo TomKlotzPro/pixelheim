@@ -17,6 +17,8 @@ const InventoryScreen := preload("res://scripts/inventory_screen.gd")
 const ShopScreen := preload("res://scripts/shop_screen.gd")
 const TownHallScreen := preload("res://scripts/town_hall_screen.gd")
 const HomeScreen := preload("res://scripts/home_screen.gd")
+const JournalScreen := preload("res://scripts/journal_screen.gd")
+const CodexScreen := preload("res://scripts/codex_screen.gd")
 ## Three heroes with the longest lines a slot card shows (`--slots` in the
 ## harness reads them too).
 const FULL_SLOTS := "res://test/fixtures/slots"
@@ -244,3 +246,53 @@ func test_the_reachs_page_fits_every_view() -> void:
 	var out := await _fits(["map, the Reach"] as Array[String])
 	GameState.world.discovered = discovered
 	assert_eq(out.size(), 0, "\n".join(out))
+
+
+## PIX-388: a screen's tabs stand on its page's top edge, side by side and
+## never on each other, clear of its corners: the last ends INSET in from
+## the right one (the pack's « Artisanat » ran onto it), the first no
+## nearer the left one than INSET less the kit tab's clear shoulder (4), in
+## either language, with the kit and drawn without it. The counter's
+## tabs over its goods, the smithy's over its wide page.
+func test_tabs_stand_apart_on_their_pages_edge() -> void:
+	var screens: Array[Array] = [
+		["pack", InventoryScreen.PAGE, func() -> Screen: return InventoryScreen.new()],
+		["store", ShopScreen.GOODS, func() -> Screen:
+			GameState.trade.stall_shop = Economy.shop_at("town_shop")
+			return ShopScreen.new()],
+		["smithy", ShopScreen.WIDE, func() -> Screen:
+			GameState.trade.stall_shop = Economy.shop_at("town_smith")
+			var counter: Screen = ShopScreen.new()
+			counter.start_tab = "Forge"
+			return counter],
+		["journal", Rect2(JournalScreen.AT, JournalScreen.SIZE), func() -> Screen: return JournalScreen.new()],
+		["codex", CodexScreen.CARD, func() -> Screen: return CodexScreen.new()],
+	]
+	var withheld := UiStyle.withheld
+	for drawn in [false, true]:
+		UiStyle.withheld = drawn
+		for language in LANGUAGES:
+			Text.apply(language)
+			for entry: Array in screens:
+				var view := SubViewport.new()
+				view.size = VIEWS[0]
+				view.disable_3d = true
+				add_child(view)
+				var screen: Screen = entry[2].call()
+				view.add_child(screen)
+				await wait_process_frames(3)
+				var page: Rect2 = entry[1]
+				var row: Array = screen.tab_buttons if screen is ShopScreen else (screen.tab_row if screen is InventoryScreen else screen.tabs_row).get_children()
+				var said := "%s %s%s" % [entry[0], language, " drawn" if drawn else ""]
+				assert_gt(row.size(), 1, said)
+				for index in row.size():
+					var tab := (row[index] as Control).get_global_rect()
+					assert_eq(tab.end.y, page.position.y, "%s: tab %d on the page's top edge" % [said, index])
+					if index + 1 < row.size():
+						assert_true(tab.end.x <= (row[index + 1] as Control).get_global_rect().position.x, "%s: tab %d clear of the next" % [said, index])
+				assert_true((row[0] as Control).get_global_rect().position.x >= page.position.x + UiStyle.INSET - 4, "%s: clear of the left corner" % said)
+				assert_true((row[-1] as Control).get_global_rect().end.x <= page.end.x - UiStyle.INSET, "%s: clear of the right corner, %s" % [said, (row[-1] as Control).get_global_rect()])
+				screen.close()
+				view.queue_free()
+				await get_tree().process_frame
+	UiStyle.withheld = withheld

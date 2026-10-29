@@ -440,7 +440,8 @@ static func brings(project_id: String) -> Array[String]:
 
 
 ## The town map's cells a set of finished projects changes: cell -> tile,
-## the ruins of what isn't rebuilt yet and the sites of what's planned included.
+## the ruins of what isn't rebuilt yet, the sites of what's planned and the
+## houses each finished age raises included.
 static func town_patches(done: Array) -> Dictionary:
 	var out := {}
 	for ruin: Dictionary in ruins(done):
@@ -453,6 +454,33 @@ static func town_patches(done: Array) -> Dictionary:
 			if candidate["id"] in done:
 				for cell: Array in candidate["tiles"]:
 					out[Vector2i(int(cell[0]), int(cell[1]))] = cell[2]
+	out.merge(age_houses(done), true)
+	return out
+
+
+## The houses each finished age raises (PIX-382 step 3: the Village looked
+## no bigger than the Hamlet, the City no bigger than the Town): new
+## households on the lots the town grows into, where it meets the fields,
+## as town.json's ages have them: every cell of a `rect` its `roof`, its
+## `door` shut, no room behind it, and its `yard` (if any) cleared to grass,
+## so the trees of the woods it stands in don't hide its front. cell ->
+## tile, for each age every one of whose projects is `done`.
+static func age_houses(done: Array) -> Dictionary:
+	var out := {}
+	for entry: Dictionary in ages():
+		if not (entry["projects"] as Array).all(func(candidate: Dictionary) -> bool: return candidate["id"] in done):
+			continue
+		for house: Dictionary in entry.get("houses", []):
+			if house.has("yard"):
+				var yard := _rect(house["yard"])
+				for y in range(yard.position.y, yard.end.y):
+					for x in range(yard.position.x, yard.end.x):
+						out[Vector2i(x, y)] = "grass"
+			var rect := _rect(house["rect"])
+			for y in range(rect.position.y, rect.end.y):
+				for x in range(rect.position.x, rect.end.x):
+					out[Vector2i(x, y)] = house["roof"]
+			out[Vector2i(int(house["door"][0]), int(house["door"][1]))] = "door_shut"
 	return out
 
 

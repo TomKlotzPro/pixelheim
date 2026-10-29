@@ -56,8 +56,19 @@ bank-city-night | --map town --town-tier 4 --at 40,35 night | map=town cell=\(40
 # Pixelheim's yards and square by its age (PIX-382): what each household
 # keeps by its house, the square's rims, the City's bunting lit at night;
 # with the paid pack (on Shade's CC0 art alone, none).
-yards-village | --map town --town-tier 2 --at 40,12 | map=town yards=(2:flat8,line3,stand31,wall8)? | town
-yards-city-night | --map town --town-tier 4 --at 40,28 night | map=town yards=(4:flat15,line7,stand61,wall31)? | town night
+yards-village | --map town --town-tier 2 --at 40,12 | map=town yards=(2:flat8,line3,stand32,wall10)? | town
+yards-city-night | --map town --town-tier 4 --at 40,28 night | map=town yards=(4:flat15,line7,stand69,wall39)? | town night
+# Pixelheim grows with each age (PIX-382 step 3): every age stands more
+# houses than the one before, the same with or without the paid art (the
+# Town and the City stood the same 13 before): the Ashes' hall alone, the
+# Hamlet rebuilt, the Village's farmhouse in the orchard (the hero on its
+# lane), the Town's house on the east lawn (at its door), the City's house
+# by the west woods and its farmstead in the south-east woods (in its yard).
+houses-ashes | --map town --town-tier 0 | map=town houses=0:1 | town
+houses-hamlet | --map town --town-tier 1 | map=town houses=1:10 | town
+houses-village | --map town --town-tier 2 --at 76,10 | map=town cell=\(76, 10\) houses=2:12 | town
+houses-town | --map town --town-tier 3 --at 57,26 | map=town cell=\(57, 26\) houses=3:15 | town
+houses-city | --map town --town-tier 4 --at 76,37 | map=town cell=\(76, 37\) houses=4:17 | town
 # Out of the village through its gate and back in (PIX-248: one rampart,
 # the gate three wide between its towers): up the gate road, through the
 # middle of the gate and through its side, onto the road just past the gate
@@ -555,6 +566,10 @@ line-motion | --map overworld --at 94,33 seamless motion --fps 144 | map=deepwoo
 cpu-night | --map overworld night cpu --wait 2 | map=overworld cpu=(?!1\.[5-9])[01]\.\d\d/\d+\.\d\d | field night
 cpu-wood | --map deepwood cpu --wait 2 | map=deepwood cpu=0\.\d\d/\d+\.\d\d | field
 cpu-line | --map overworld --at 93,33 seamless --walk r,r,r cpu --wait 1 | map=deepwood cpu=0\.\d\d/\d+\.\d\d | field travel
+# What a frame of the town costs at its biggest (PIX-382 step 3): the City
+# at night, every house the ages raised standing, their windows lit, the
+# herd asleep; 0.24-0.27 ms on the laptop, held under 1.00 as the Deepwood.
+cpu-town | --map town --town-tier 4 night cpu --wait 2 | map=town cpu=0\.\d\d/\d+\.\d\d houses=4:17 | town night
 # Out of Blackiron along the north lane of its road, where a rock stood in
 # the way and only the road's middle went through (PIX-332): the hero walks
 # on over the line into the Ash Fields.

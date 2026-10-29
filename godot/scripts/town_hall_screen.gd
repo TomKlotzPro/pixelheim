@@ -72,7 +72,7 @@ func _refresh() -> void:
 	for perk: String in perks:
 		var line := UiStyle.label("- " + perk, 14, UiStyle.INK)
 		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		line.custom_minimum_size = Vector2(540, 0)
+		line.custom_minimum_size = Vector2(LIST.size.x - 20, 0)
 		list.add_child(line)
 
 
@@ -92,7 +92,7 @@ func _holdings() -> void:
 			Town.deeds()[map_id]["name"], entry["earned"], entry["gold"], Town.daily_rent(map_id, expanded, GameState.town_tier()),
 		], 14, UiStyle.INK)
 		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		line.custom_minimum_size = Vector2(540, 0)
+		line.custom_minimum_size = Vector2(LIST.size.x - 20, 0)
 		list.add_child(line)
 
 
