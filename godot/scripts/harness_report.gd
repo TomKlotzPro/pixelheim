@@ -470,6 +470,12 @@ func field_hour() -> String:
 	return "%s %s" % [hud._clock_text.text, "moon" if hud._clock_dial.night else "sun"]
 
 
+func field_houses() -> String:
+	if world.map == null or world.map.id != "town":
+		return ""
+	return "%d:%d" % [GameState.town_tier(), PunyTown.houses(world.map.grid).size()]
+
+
 func field_hub() -> String:
 	if world.map == null or world.view == null or Hubs.steps(world.map.id).is_empty():
 		return ""

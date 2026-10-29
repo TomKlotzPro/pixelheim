@@ -36,7 +36,8 @@ func test_every_project_has_the_ground_it_changes() -> void:
 ## houses, its props and flowers) is all inside its footprint, so the tour
 ## shows the old ground there and lifts all of the new: nothing pops in
 ## elsewhere. The keepers' crates on the square go with them, not with the
-## building, and the plots the next age stakes out come with the age.
+## building, and the plots the next age stakes out and the houses the age
+## raises (PIX-382 step 3) come with the age.
 func test_all_a_project_changes_is_lifted_at_its_stop() -> void:
 	for project_id in _projects():
 		var done := Town.projects_through(Town.age_of(project_id))
@@ -50,6 +51,9 @@ func test_all_a_project_changes_is_lifted_at_its_stop() -> void:
 			if site["project"] != project_id:
 				for cell in _cells(site["rect"]):
 					elsewhere[cell] = true
+		for cell: Vector2i in Town.age_houses(done):
+			if not Town.age_houses(before_done).has(cell):
+				elsewhere[cell] = true
 		for cell: Vector2i in after.grid:
 			if after.grid[cell] != before.grid.get(cell) and not elsewhere.has(cell):
 				assert_true(_inside(footprint, cell), "%s changes %s inside its footprint" % [project_id, cell])
@@ -61,7 +65,8 @@ func test_all_a_project_changes_is_lifted_at_its_stop() -> void:
 				if houses_after[part][cell] != houses_before[part].get(cell, -1):
 					changed[cell] = true
 			for cell: Vector2i in changed:
-				assert_true(_inside(footprint, cell), "%s's house %s at %s is lifted" % [project_id, part, cell])
+				if not elsewhere.has(cell):
+					assert_true(_inside(footprint, cell), "%s's house %s at %s is lifted" % [project_id, part, cell])
 		var props_after := _props(PunyProps.plan(after.grid))
 		var props_before := _props(PunyProps.plan(before.grid))
 		for cell: Vector2i in props_after:

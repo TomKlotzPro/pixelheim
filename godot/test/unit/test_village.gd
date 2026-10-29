@@ -3,8 +3,10 @@ extends GutTest
 ## mountain. These keep the plan honest: the gate road looks straight down to
 ## the hall, which faces the square; every door, villager, stall and corner
 ## worth finding can be walked to from the gate at every age; the square's
-## boards and lanterns stand on it; and the river is crossed only where the
-## bridge does (the fishing dock that ran part way over it went, PIX-287).
+## boards and lanterns stand on it; the river is crossed only where the
+## bridge does (the fishing dock that ran part way over it went, PIX-287);
+## and each age stands more houses than the last, on ground nobody needs
+## (PIX-382 step 3).
 
 const AGES := [0, 1, 2, 3, 4]
 
@@ -99,3 +101,84 @@ func test_every_building_faces_south() -> void:
 			continue
 		assert_true(map.tile_at(cell + Vector2i.UP).begins_with("roof"), "%s has its house above it" % cell)
 		assert_false(map.tile_at(cell + Vector2i.DOWN).begins_with("roof"), "%s opens onto open ground" % cell)
+
+
+## Pixelheim grows with each age (PIX-382 step 3: the Town and the City
+## stood the same thirteen houses): every age stands more houses than the
+## one before and keeps every one of them.
+func test_each_age_stands_more_houses_and_keeps_the_last() -> void:
+	var before: Array = []
+	for tier: int in AGES:
+		var map := MapData.load_tiered("town", Town.projects_through(tier), 1)
+		var rects := PunyTown.houses(map.grid).map(func(house: Dictionary) -> Rect2i: return house["rect"])
+		assert_gt(rects.size(), before.size(), "age %d stands more houses than the one before" % tier)
+		for rect: Rect2i in before:
+			assert_has(rects, rect, "age %d keeps the house at %s" % [tier, rect])
+		before = rects
+
+
+## The houses an age raises stand once the whole age is built, never
+## before, and on ground nobody needs: open ground off the roads, no
+## door, portal or step, nothing a project builds or stakes, no house's
+## neighbour (each its own), no villager's place or pacing nor a spot the
+## story stands someone on (Yards.kept, Hamlet.kept_on), no animal's patch
+## nor the yards' pieces; their doors shut, each onto open ground.
+func test_the_houses_the_ages_raise_stand_clear_of_everything_in_use() -> void:
+	var base := MapData.load_by_id("town")
+	var built := {}
+	for project_id: String in Town.projects_through(Town.MAX_TIER):
+		for rect: Rect2i in Town.footprint(project_id):
+			for cell in _cells(rect):
+				built[cell] = project_id
+	var pens := {}
+	for entry: Dictionary in FarmAnimals.HERD:
+		for cell in _cells(entry["pen"]):
+			pens[cell] = true
+	var laid := {}
+	for entry: Dictionary in Yards.PIECES + Yards.hedges():
+		for cell: Vector2i in Hamlet.cells_of(entry):
+			laid[cell] = true
+	var raised := 0
+	for entry: Dictionary in Town.ages():
+		var tier := int(entry["tier"])
+		var done := Town.projects_through(tier)
+		var map := MapData.load_tiered("town", done, 1)
+		var kept := Hamlet.kept_on(map)
+		kept.merge(Yards.kept(map))
+		for house: Dictionary in entry.get("houses", []):
+			raised += 1
+			var corners: Array = house["rect"]
+			var rect := Rect2i(int(corners[0]), int(corners[1]), int(corners[2]) - int(corners[0]) + 1, int(corners[3]) - int(corners[1]) + 1)
+			var door := Vector2i(int(house["door"][0]), int(house["door"][1]))
+			assert_eq(map.tile_at(door), "door_shut", "age %d: the house at %s stands once the age is built" % [tier, rect])
+			assert_false(Town.age_houses(done.slice(0, done.size() - 1)).has(door), "age %d: %s waits for the age's last project" % [tier, rect])
+			assert_eq(door.y, rect.end.y - 1, "age %d: %s's door on its bottom row, facing south" % [tier, rect])
+			assert_false(map.portals.has(door), "age %d: %s's door leads nowhere" % [tier, rect])
+			assert_true(map.is_walkable(door + Vector2i.DOWN), "age %d: %s's door opens onto open ground" % [tier, rect])
+			for cell in _cells(rect.grow(1)):
+				var tile := map.tile_at(cell)
+				if not rect.has_point(cell):
+					assert_false(tile.begins_with("roof") or tile.begins_with("door") or tile.begins_with("sign_"), "age %d: %s stands apart, not at %s" % [tier, rect, cell])
+					continue
+				assert_false(WorldTiles.is_walkable(tile), "age %d: %s blocks at %s" % [tier, rect, cell])
+				var ground := base.tile_at(cell)
+				assert_true(WorldTiles.is_walkable(ground) and ground not in Hamlet.WAYS, "age %d: %s on open ground, not %s at %s" % [tier, rect, ground, cell])
+				assert_false(base.tile_at(cell + Vector2i.UP).begins_with("door") or base.portals.has(cell), "age %d: %s on no door nor its step (%s)" % [tier, rect, cell])
+				assert_false(built.has(cell), "age %d: %s off %s (%s)" % [tier, rect, built.get(cell, ""), cell])
+				assert_false(kept.has(cell), "age %d: %s keeps clear of the folk and the story's spots (%s)" % [tier, rect, cell])
+				assert_false(pens.has(cell), "age %d: %s off the animals' patches (%s)" % [tier, rect, cell])
+				assert_false(laid.has(cell), "age %d: %s off the yards' pieces (%s)" % [tier, rect, cell])
+			# Its yard only clears the woods and the lawn in front of it.
+			var yard: Array = house.get("yard", [0, 0, -1, -1])
+			for cell in _cells(Rect2i(int(yard[0]), int(yard[1]), int(yard[2]) - int(yard[0]) + 1, int(yard[3]) - int(yard[1]) + 1)):
+				assert_has(["grass", "forest", "flowers"], base.tile_at(cell), "age %d: %s's yard at %s" % [tier, rect, cell])
+				assert_false(built.has(cell), "age %d: %s's yard off %s (%s)" % [tier, rect, built.get(cell, ""), cell])
+	assert_gt(raised, 0, "the ages raise houses")
+
+
+static func _cells(rect: Rect2i) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	for y in range(rect.position.y, rect.end.y):
+		for x in range(rect.position.x, rect.end.x):
+			out.append(Vector2i(x, y))
+	return out

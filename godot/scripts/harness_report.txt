@@ -57,6 +57,7 @@ hero | with --role or --level: the hero as built, role:level, health/mana, stren
 hint | the first-time hint on the screen, by the id it's seen by, or held:<id> while one waits its turn (PIX-341: never over a boss's entrance)
 home | who the story brought home to live in town, by first name: wenna (PIX-255)
 hour | at the Night of Ash's dawn: the HUD's clock as it reads, its dial a sun or a moon: 04:48 sun (PIX-346)
+houses | on the town: its age and the houses standing on it, ruins not counted (the same with or without the paid art): 4:17 (PIX-382 step 3)
 hub | on a hub's map: its place, the step it has grown to and what of it stands, drawn: saltmere:3:lighthouse (PIX-324)
 hudclash | while a title card, a hint, the battle log, the arrow or anything rising over the world shows: the words on the screen that overlap, as pairs (card, hint, float, log, arrow, bar, next, plate, and the hero under a plate), or none (PIX-345: the Victory card on a boss's win, a hint pushed over the hero, the arrow on a floor's name): none
 jobs | on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)
