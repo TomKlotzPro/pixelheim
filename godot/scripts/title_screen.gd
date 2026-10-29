@@ -8,7 +8,7 @@ extends Screen
 ## A launch arrives through its entrance (PIX-392, TitleEntrance): down from
 ## the stars, the dragon's pass, the name forged in fire, the menu last. The
 ## menu hangs on wooden planks (GegX's kit; the game's own planks without
-## it), the chosen one lifted, lit and burning between two flames.
+## it), the chosen one lifted and lit, a warm glow behind it.
 
 const VIEW := Vector2(1280, 720)
 const LOGO_Y := 84.0
@@ -26,18 +26,15 @@ const NOTE_WIDTH := 1000.0
 ## name, so with five planks the note under them still ends over the
 ## dark, above the bunting and the far bank's windows), the gap between
 ## them, the narrowest they are, how far the chosen one lifts (px) and how
-## quickly it and the flames follow the choice (a share a second).
+## quickly it and its glow follow the choice (a share a second).
 const MENU_Y := 206.0
 const MENU_GAP := 4.0
 const PLANK_WIDTH := 340.0
 const LIFT := 3.0
 const FOLLOW := 16.0
-## The flames either side of the chosen plank: FireArt's tongue at this
-## many canvas pixels an art pixel, this far off the plank's sides.
-const FLAME_SCALE := 2.0
-const FLAME_GAP := 10.0
-## NEW stands this far past its plank's right end, clear of the flame.
-const BADGE_GAP := 44.0
+## The unread notes' seal sits this far in from its plank's right end,
+## inside the plank (PIX-394: past it, it stood apart like a stray stamp).
+const BADGE_INSET := 14.0
 
 ## Whether this session's first title has risen: later ones (back from the
 ## saves) rise out of the night's colour.
@@ -55,12 +52,11 @@ var planks: Array[Button] = []
 var homes: Array[Vector2] = []
 var lifts: Array[float] = []
 var rises: Array[float] = []
-## The chosen plank's flames and the warm light behind it, gliding with
-## the choice.
+## The warm light behind the chosen plank, gliding with the choice (its
+## flames went in PIX-394: Tom found them odd).
 var chosen_fire: Node2D
-## Where the flames glide, unrounded (they stand on the whole pixel).
+## Where the glow glides, unrounded (it stands on the whole pixel).
 var fire_y := 0.0
-var flames: Array[AnimatedSprite2D] = []
 var warmth: Sprite2D
 ## The launch's entrance while it plays (TitleEntrance), else null.
 var entrance: TitleEntrance
@@ -345,7 +341,6 @@ func _draw_menu() -> void:
 	homes.clear()
 	lifts.clear()
 	rises.clear()
-	flames.clear()
 	chosen_fire = Node2D.new()
 	menu.add_child(chosen_fire)
 	warmth = Sprite2D.new()
@@ -367,26 +362,11 @@ func _draw_menu() -> void:
 		rises.append(0.0)
 		planks[index].size = Vector2(width, UiStyle.PLANK)
 		planks[index].position = homes[index]
-		# NEW past its plank: notes not yet read.
+		# The seal on its plank: notes not yet read.
 		if options[index]["action"] == _whats_new and GameState.settings.seen_version != version:
 			planks[index].add_child(_new_badge())
 	warmth.position.x = VIEW.x / 2.0
 	warmth.scale = Vector2((width + 120.0) / 64.0, 1.4)
-	for side in 2:
-		var flame := AnimatedSprite2D.new()
-		flame.sprite_frames = FireArt.frames("tongue", side)
-		flame.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		flame.centered = false
-		flame.scale = Vector2.ONE * FLAME_SCALE
-		var size: Vector2i = FireArt.KINDS["tongue"]
-		flame.offset = -Vector2(size.x / 2, size.y / 2 + 2)
-		flame.position.x = homes[0].x - FLAME_GAP - FLAME_SCALE * size.x / 2.0 if side == 0 else homes[0].x + width + FLAME_GAP + FLAME_SCALE * size.x / 2.0
-		flame.play()
-		flame.frame = side * 5
-		if GameState.settings.reduce_motion:
-			flame.stop()
-		chosen_fire.add_child(flame)
-		flames.append(flame)
 	_show_choice()
 	_follow(1.0)
 
@@ -410,7 +390,7 @@ func _process(delta: float) -> void:
 
 
 ## Each frame, `share` of the way: the chosen plank lifts and the rest
-## settle, the flames and the warm light behind glide to it, each plank
+## settle, the warm light behind glides to it, each plank
 ## kept as far below as the entrance holds it, on whole pixels.
 func _follow(share: float) -> void:
 	if planks.is_empty():
@@ -438,18 +418,24 @@ func _choose(index: int) -> void:
 	_show_choice()
 
 
-## NEW, in rubric red past its plank: notes not yet read.
+## Notes not yet read: a small night seal with a gold "!" at its plank's
+## right end, as the game marks what waits for the hero (a word NEW there
+## ran into the plank's own). Night and gold read on the plain plank and on
+## the chosen red one.
 func _new_badge() -> Control:
 	var badge := PanelContainer.new()
-	badge.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.LAMP, UiStyle.NIGHT, 3))
+	badge.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.NIGHT, UiStyle.BRASS, 2))
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	badge.add_child(UiStyle.strong(Text.t("NEW"), 12, UiStyle.CREAM))
-	# Past the plank's right end and the flame there, middles level, growing
-	# rightward: it takes no part in the plank's width.
+	var mark := UiStyle.strong("!", 14, UiStyle.GOLD)
+	mark.custom_minimum_size = Vector2(14, 0)
+	mark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	badge.add_child(mark)
+	# Inside the plank's right end, middles level, growing leftward: it takes
+	# no part in the plank's width.
 	badge.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
-	badge.offset_left = BADGE_GAP
-	badge.offset_right = BADGE_GAP
-	badge.grow_horizontal = Control.GROW_DIRECTION_END
+	badge.offset_left = -BADGE_INSET
+	badge.offset_right = -BADGE_INSET
+	badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	badge.grow_vertical = Control.GROW_DIRECTION_BOTH
 	return badge
 

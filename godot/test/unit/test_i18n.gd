@@ -112,7 +112,7 @@ func test_tags_and_compact_gold_speak_french() -> void:
 	assert_string_contains(InventoryScreen.stat_line(Catalog.item("iron_sword"), 0, 120), "FOR")
 	# The journal's tags (PIX-239: FOLLOWING and READY, where its chapters said DONE and NEXT;
 	# the floor select's CLEARED left with the old floors, PIX-257).
-	for tag: String in ["EQUIPPED", "SLAIN", "FOLLOWING", "READY", "NEW", "BUILT", "COMMISSIONED", "SKILL", "UPGRADE", "PASSIVE", "locked"]:
+	for tag: String in ["EQUIPPED", "SLAIN", "FOLLOWING", "READY", "BUILT", "COMMISSIONED", "SKILL", "UPGRADE", "PASSIVE", "locked"]:
 		assert_ne(Text.t(tag), tag, "%s is translated" % tag)
 	assert_eq(Text.listed(["la place", "les loyers"]), "la place\u202f; les loyers", "a narrow space before French's semicolon")
 	Text.apply("en")

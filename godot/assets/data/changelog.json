@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.306.0",
+      "date": "2026-10-29",
+      "codename": "Quiet Planks",
+      "notes": [
+        "The title's menu is calmer: no flames by the chosen plank, only its lift and warm glow, and unread notes show as a small gold seal on « What's new » rather than a red box beside it; the strike no longer bares the screen's edge as it shakes"
+      ]
+    },
+    {
       "version": "0.305.0",
       "date": "2026-10-29",
       "codename": "Forged in Fire",
