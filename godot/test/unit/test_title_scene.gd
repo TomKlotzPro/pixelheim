@@ -246,6 +246,21 @@ func test_a_key_skips_the_entrance_and_only_that() -> void:
 	_assert_settled(title)
 
 
+## A pad's button skips it as a key does, and starts nothing.
+func test_a_pad_button_skips_the_entrance_and_only_that() -> void:
+	var title := _launch(false)
+	title.entrance.hold(TitleEntrance.FORGE.x + 0.4)
+	var button := InputEventJoypadButton.new()
+	button.button_index = JOY_BUTTON_A
+	button.pressed = true
+	var command: Callable = title._command(button)
+	assert_true(command.is_valid(), "the button is the entrance's")
+	command.call()
+	assert_null(title.entrance, "settled at once")
+	assert_eq(title.get_children().filter(func(node: Node) -> bool: return node is Cutscene).size(), 0, "A did not start a new game")
+	_assert_settled(title)
+
+
 ## A click anywhere skips it too, through the catcher over the planks, and
 ## takes none of them.
 func test_a_click_skips_the_entrance_and_only_that() -> void:

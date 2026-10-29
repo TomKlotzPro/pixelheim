@@ -131,7 +131,9 @@ const FAR_SHADE := Color(0.21, 0.24, 0.42)
 const STALLS := [["market_stall", Vector2(112, 352)], ["market_stall_blue", Vector2(488, 354)]]
 const BUNTING := Vector2(176, 266)
 const BUNTING_CELLS := 15
-const HENS := [["chicken1", Vector2(170, 333)], ["chick", Vector2(158, 334)], ["chicken2", Vector2(186, 335)]]
+## Their feet a row behind the watchman's round (y 344), so he passes in
+## front of them rather than over them.
+const HENS := [["chicken1", Vector2(170, 326)], ["chick", Vector2(158, 327)], ["chicken2", Vector2(186, 328)]]
 ## The one light-mask bit the village's art answers to: its lights reach
 ## nothing else on the canvas (the sky, the title's words, a story's captions).
 const LIT_MASK := 1 << 9
@@ -487,7 +489,8 @@ func _fire() -> void:
 	valley_glow.material = additive()
 	valley_glow.position = SUMMIT + Vector2(0, 24)
 	valley_glow.scale = Vector2(3.0, 2.2)
-	valley_glow.modulate.a = 0.0
+	# At its smoulder from the start: a still title (Reduce motion) keeps this.
+	valley_glow.modulate.a = SMOULDER
 	mountain.add_child(valley_glow)
 	eruption = _particles(at, 48, 2.8, Color("ffc060"), Vector2(-4, 30), 58.0, 1.0, 0.5)
 	eruption.spread = 34.0
@@ -552,6 +555,8 @@ func _shafts() -> void:
 		var none := Color(light, 0.0)
 		beam.vertex_colors = PackedColorArray([none, light, none, none, Color(light, float(spec[3]) * 0.3), none])
 		beam.material = additive()
+		# Their breathing's mean: a still title keeps this.
+		beam.modulate.a = 0.75
 		sky.add_child(beam)
 		shafts.append([beam, spec[3], i * 2.1])
 
