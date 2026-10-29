@@ -452,7 +452,7 @@
         "family": "beast",
         "anim": "walk",
         "dir": "left",
-        "scale": 0.7,
+        "scale": 0.6666666666666666,
         "cell": [
           46,
           29

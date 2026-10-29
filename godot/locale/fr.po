@@ -3465,6 +3465,10 @@ msgid "Gold at Work"
 msgstr "L'or au travail"
 
 #: assets/data/changelog.json
+msgid "Good Dog"
+msgstr "Bon chien"
+
+#: assets/data/changelog.json
 msgid "Grass, roofs and stone rise out of the ground pixel by pixel - brighter pixels stand taller, so the terrain reads like a hand-carved model"
 msgstr "L'herbe, les toits et la pierre sortent du sol pixel par pixel - les pixels les plus clairs se dressent plus haut, si bien que le terrain ressemble à une maquette sculptée à la main"
 
@@ -6343,6 +6347,10 @@ msgstr "La ville signale ses portes : BAZAR, FORGE, POTIONS, AUBERGE - plus be
 #: assets/data/changelog.json
 msgid "The town tour's captions now always sit above the dock, however long they run"
 msgstr "Les légendes de la visite de la ville restent désormais toujours au-dessus de la barre, quelle que soit leur longueur"
+
+#: assets/data/changelog.json
+msgid "The town's dog and cat now share the farm animals' look: a dark outline, flatter colours and the same pixel size, so they no longer stand apart from the hens and sheep"
+msgstr "Le chien et le chat du village ont désormais le même style que les animaux de la ferme : un contour sombre, des couleurs plus franches et la même taille de pixel, si bien qu'ils ne détonnent plus à côté des poules et des moutons"
 
 #: assets/data/changelog.json
 msgid "The town's south street no longer runs into the river: a grass bank lies between them now, with reeds in the water along it"
