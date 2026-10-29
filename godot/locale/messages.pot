@@ -3397,6 +3397,10 @@ msgid "Fresh Ground"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fresh Paint"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fresh Plaster"
 msgstr ""
 
@@ -3578,6 +3582,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Hero creation reads clearly: the first night is a setting of its own (The first night (tutorial): Play / Skip, with a line on what each means), and Begin the adventure is the start, alone at the bottom; Tab, a click or the pad's Y flips the night, and a pad can now reach every control"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Hero creation shows the hero as they will really start, without the colour looks nobody kept; the stats have icons, pips against the best of all the roles and their full names, and the starting skills are chips with their icons, a click or PgUp/PgDn reading each"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5909,6 +5917,10 @@ msgid "The balance sim now walks every legal path chain through the whole game, 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The bar at the bottom is new: the portrait framed with its rank in gold, framed health and energy bars, the XP as a notched strip along its top, the skills in wooden slots with their keys on little tabs and a veil that draws back as they recharge; and Menu opens a real game menu, each screen with its icon, its name and its key"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The breeze is back in 3D: grass, flowers, forest and marsh sway, water shimmers - the same two-frame breath as the classic renderer"
 msgstr ""
 
@@ -6314,6 +6326,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The town tour's captions now always sit above the dock, however long they run"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The town's south street no longer runs into the river: a grass bank lies between them now, with reeds in the water along it"
 msgstr ""
 
 #: assets/data/changelog.json

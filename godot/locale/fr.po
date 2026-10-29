@@ -3397,6 +3397,10 @@ msgid "Fresh Ground"
 msgstr "Terre nouvelle"
 
 #: assets/data/changelog.json
+msgid "Fresh Paint"
+msgstr "Coup de neuf"
+
+#: assets/data/changelog.json
 msgid "Fresh Plaster"
 msgstr "Plâtre frais"
 
@@ -3579,6 +3583,10 @@ msgstr "Fiches de héros"
 #: assets/data/changelog.json
 msgid "Hero creation reads clearly: the first night is a setting of its own (The first night (tutorial): Play / Skip, with a line on what each means), and Begin the adventure is the start, alone at the bottom; Tab, a click or the pad's Y flips the night, and a pad can now reach every control"
 msgstr "La création du héros se lit clairement : la première nuit est un réglage à part (La première nuit (tutoriel) : Jouer / Passer, avec une ligne sur ce que chacun veut dire), et Commencer l'aventure est le départ, seul en bas ; Tab, un clic ou le Y de la manette change la nuit, et une manette atteint désormais chaque commande"
+
+#: assets/data/changelog.json
+msgid "Hero creation shows the hero as they will really start, without the colour looks nobody kept; the stats have icons, pips against the best of all the roles and their full names, and the starting skills are chips with their icons, a click or PgUp/PgDn reading each"
+msgstr "La création du héros le montre tel qu'il commencera vraiment, sans les couleurs que personne ne gardait ; les stats ont leurs icônes, des crans face au meilleur de tous les rôles et leur nom complet, et les compétences de départ sont des pastilles avec leur icône, un clic ou PgUp/PgDn pour lire chacune"
 
 #: assets/data/changelog.json
 msgid "Heroes saved before this update don't load any more (the game isn't in beta yet); their slot says so and can be cleared"
@@ -5909,6 +5917,10 @@ msgid "The balance sim now walks every legal path chain through the whole game, 
 msgstr "La simulation d'équilibrage parcourt désormais chaque enchaînement de voies valide sur tout le jeu, pour qu'aucune identité ne soit un piège"
 
 #: assets/data/changelog.json
+msgid "The bar at the bottom is new: the portrait framed with its rank in gold, framed health and energy bars, the XP as a notched strip along its top, the skills in wooden slots with their keys on little tabs and a veil that draws back as they recharge; and Menu opens a real game menu, each screen with its icon, its name and its key"
+msgstr "La barre du bas fait peau neuve : le portrait encadré avec son rang en or, des barres de vie et d'énergie encadrées, l'XP en bande crantée sur le dessus, les compétences dans des cases en bois avec leur touche sur un petit onglet et un voile qui se retire pendant la recharge ; et Menu ouvre un vrai menu de jeu, chaque écran avec son icône, son nom et sa touche"
+
+#: assets/data/changelog.json
 msgid "The breeze is back in 3D: grass, flowers, forest and marsh sway, water shimmers - the same two-frame breath as the classic renderer"
 msgstr "La brise revient en 3D : herbe, fleurs, forêt et marais ondulent, l'eau miroite - le même souffle en deux images que le rendu classique"
 
@@ -6315,6 +6327,10 @@ msgstr "La ville signale ses portes : BAZAR, FORGE, POTIONS, AUBERGE - plus be
 #: assets/data/changelog.json
 msgid "The town tour's captions now always sit above the dock, however long they run"
 msgstr "Les légendes de la visite de la ville restent désormais toujours au-dessus de la barre, quelle que soit leur longueur"
+
+#: assets/data/changelog.json
+msgid "The town's south street no longer runs into the river: a grass bank lies between them now, with reeds in the water along it"
+msgstr "La rue sud de la ville ne plonge plus dans la rivière : une berge herbeuse les sépare désormais, avec des roseaux dans l'eau tout du long"
 
 #: assets/data/changelog.json
 msgid "The viewport grew from 15x11 to 21x13 tiles: you see MORE world at once, and the finer scale reads as sharper, denser pixel art"
