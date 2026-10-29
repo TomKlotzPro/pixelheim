@@ -19,11 +19,19 @@ const STATIONS := {"smithing": "Hilda's forge", "alchemy": "Vex's cauldron"}
 ## Slots down the doll's left, then its right.
 const DOLL_LEFT := [["head", "Head"], ["neck", "Neck"], ["body", "Body"], ["hands", "Hands"], ["feet", "Feet"]]
 const DOLL_RIGHT := [["weapon", "Weapon"], ["offhand", "Off-hand"], ["ring1", "Ring"], ["ring2", "Ring"]]
-## The list's window: a row a little short of seven and a half, leaving the
+## The paperdoll's card and the pack's page beside it (PIX-388): a gap
+## apart, each the screen's page, the tabs standing on the page's top edge.
+const DOLL := Rect2(80, 96, 320, 536)
+const PAGE := Rect2(416, 96, 784, 536)
+## The list's window, the page's inset in: six rows and a half, leaving the
 ## strip under it room for a whole name, three lines about it and the news.
-const LIST := Vector2(710, 394)
-const LIST_TOP := 114.0
-const ROW_HEIGHT := 50
+const LIST := Vector2(PAGE.size.x - 2 * UiStyle.INSET, 390)
+const LIST_TOP := PAGE.position.y + UiStyle.INSET
+## A row: two lines of type in its frame (the list scrolls by it).
+const ROW_HEIGHT := 56
+const LIST_LEFT := PAGE.position.x + UiStyle.INSET
+## A tab, the kit's or the plank drawn without it.
+const TAB_HEIGHT := 36.0
 ## Between a row's icon, its words and the right-hand column.
 const ROW_GAP := 10
 ## What an empty slot shows, faintly: the kind of thing that goes there.
@@ -61,10 +69,10 @@ func _open() -> void:
 	layer = 5
 	dim()
 	# The pack's ledger: a page under the tabs and the list.
-	add_child(UiStyle.page(Rect2(474, 58, 742, 572)))
+	add_child(UiStyle.page(PAGE))
 	add_child(UiStyle.title("Inventory"))
 	var weight := HBoxContainer.new()
-	weight.position = Vector2(490, 22)
+	weight.position = Vector2(LIST_LEFT, 22)
 	weight.add_theme_constant_override("separation", 10)
 	add_child(weight)
 	header = UiStyle.label("", 16, UiStyle.CREAM)
@@ -86,23 +94,23 @@ func _open() -> void:
 	purse.position = Vector2(1060, 20)
 	add_child(purse)
 
-	var doll_card := PanelContainer.new()
-	doll_card.position = Vector2(80, 70)
-	doll_card.custom_minimum_size = Vector2(380, 560)
-	doll_card.add_theme_stylebox_override("panel", UiStyle.window(10))
-	add_child(doll_card)
+	# The doll on a page like the pack's (PIX-388: it wore the kit's small panel).
+	add_child(UiStyle.page(DOLL))
 	doll = Control.new()
-	doll.position = Vector2(80, 70)
-	doll.size = Vector2(380, 560)
+	doll.position = DOLL.position
+	doll.size = DOLL.size
 	add_child(doll)
 
+	# The tabs on the page's top edge, their feet on its frame, clear of its
+	# corners; touching, never overlapping (PIX-388: eight in French ran
+	# onto each other and onto the page's corner).
 	tab_row = HBoxContainer.new()
-	tab_row.position = Vector2(490, 72)
-	# GegX's tabs (PIX-385) share their clear shoulders, so eight fit the page.
-	tab_row.add_theme_constant_override("separation", -6 if UiStyle.kit_shown() else 6)
+	tab_row.position = Vector2(LIST_LEFT, PAGE.position.y - TAB_HEIGHT)
+	tab_row.custom_minimum_size.y = TAB_HEIGHT
+	tab_row.add_theme_constant_override("separation", 0)
 	add_child(tab_row)
 	scroll = ScrollContainer.new()
-	scroll.position = Vector2(490, LIST_TOP)
+	scroll.position = Vector2(LIST_LEFT, LIST_TOP)
 	scroll.custom_minimum_size = LIST
 	scroll.size = LIST
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -113,13 +121,13 @@ func _open() -> void:
 	scroll.add_child(list)
 	var rule := ColorRect.new()
 	rule.color = UiStyle.RIM
-	rule.position = Vector2(490, LIST_TOP + LIST.y + 4)
+	rule.position = Vector2(LIST_LEFT, LIST_TOP + LIST.y + 4)
 	rule.size = Vector2(LIST.x, 2)
 	add_child(rule)
 	# Under the list, one after the other: the chosen row's whole name when
 	# its row had to shorten it, what it is, then what just happened.
 	var notes := Layout.hugging(VBoxContainer.new())
-	notes.position = Vector2(490, LIST_TOP + LIST.y + 10)
+	notes.position = Vector2(LIST_LEFT, LIST_TOP + LIST.y + 10)
 	notes.add_theme_constant_override("separation", 0)
 	add_child(notes)
 	about_name = Layout.wrapped(UiStyle.strong("", 14, UiStyle.INK), LIST.x)
@@ -365,21 +373,15 @@ func _tab_count(category: String) -> int:
 	return GameState.pack.listing(category).size()
 
 
-## A tab's count in a little dark tag above its top right corner, outside
-## the tab's own layout.
+## A tab's count on a dark tag astride its top edge at its right end, clear
+## of its name, outside the tab's own layout: the dock's keys' tag (PIX-388).
 func _count_badge(count: int) -> Control:
-	var badge := PanelContainer.new()
-	badge.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.NIGHT, UiStyle.NIGHT, 2))
-	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	badge.add_child(UiStyle.label(str(count), 12, UiStyle.CREAM))
-	# Standing on the tab's top edge at its right end, clear of its name.
+	var badge := UiStyle.tag(str(count))
 	badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	badge.offset_left = 4
-	badge.offset_right = 4
-	badge.offset_top = 4
-	badge.offset_bottom = 4
-	badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	badge.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	badge.offset_right = -4
+	badge.offset_left = badge.offset_right - badge.custom_minimum_size.x
+	badge.offset_top = -badge.custom_minimum_size.y / 2.0
+	badge.offset_bottom = badge.custom_minimum_size.y / 2.0
 	return badge
 
 
@@ -520,11 +522,12 @@ func _build_doll() -> void:
 	figure.sprite_frames = PunyArt.frames(art)
 	figure.self_modulate = art["tint"]
 	figure.scale = Vector2(5, 5)
-	figure.position = Vector2(190, 170)
+	figure.position = Vector2(DOLL.size.x / 2.0, 170)
 	figure.play(PunyArt.pick(figure.sprite_frames, "idle", "down"))
 	doll.add_child(figure)
-	for column in [[DOLL_LEFT, 24.0], [DOLL_RIGHT, 304.0]]:
-		var y := 24.0
+	# The slots the page's inset in, the kit's slot at its widest (56).
+	for column in [[DOLL_LEFT, UiStyle.INSET], [DOLL_RIGHT, DOLL.size.x - UiStyle.INSET - 56]]:
+		var y := float(UiStyle.INSET)
 		for slot: Array in column[0]:
 			var box := _slot(slot[0], slot[1])
 			box.position = Vector2(column[1], y)
@@ -539,7 +542,7 @@ func _build_doll() -> void:
 		var granted := pack.granted_stat(stat)
 		lines.append("%s %d%s" % [Text.t(Skills.ABBR[stat]), hero.stats[stat], "  +%d" % granted if granted > 0 else ""])
 	lines.append(Text.t("Carry %d/%d") % [pack.carried_weight(), Skills.carry_capacity(hero, pack)])
-	var numbers := UiStyle.label("\n".join(lines), 15, UiStyle.INK, Vector2(24, 340))
+	var numbers := UiStyle.label("\n".join(lines), 15, UiStyle.INK, Vector2(UiStyle.INSET, 350))
 	doll.add_child(numbers)
 
 

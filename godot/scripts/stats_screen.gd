@@ -46,6 +46,11 @@ func _info() -> String:
 	return "\n".join(lines)
 
 
+## Its own key closes it too, and says so (PIX-388), as the pack's does.
+func _footer() -> String:
+	return Text.t("{key:move_up}/{key:move_down}  choose      {key:interact}  %s      {key:stats} / Esc  close") % _verb()
+
+
 func _rows() -> Array[Dictionary]:
 	var hero := GameState.hero
 	var rows_out: Array[Dictionary] = []

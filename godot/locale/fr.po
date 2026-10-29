@@ -16941,8 +16941,8 @@ msgid "Signature: %s"
 msgstr "Signature : %s"
 
 #: scripts/rankup_screen.gd
-msgid "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
-msgstr "La voie bifurque      A/D  choisir      E  suivre cette voie      Esc  choisir plus tard, dans Compétences"
+msgid "The path forks      {key:move_left}/{key:move_right}  choose      {key:interact}  walk this path      Esc  choose later, in Skills"
+msgstr "La voie bifurque      {key:move_left}/{key:move_right}  choisir      {key:interact}  suivre cette voie      Esc  choisir plus tard, dans Compétences"
 
 #: scripts/ring_toss_screen.gd
 msgid " {key:interact} to throw again."
@@ -18443,6 +18443,10 @@ msgstr "Avec un point : %s"
 #: scripts/stats_screen.gd
 msgid "Your tree is whole: %d skill point%s to spend beyond it, below."
 msgstr "Votre arbre est complet : %d point%s de compétence à dépenser au-delà, ci-dessous."
+
+#: scripts/stats_screen.gd
+msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      {key:stats} / Esc  close"
+msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      {key:stats} / Esc  fermer"
 
 #: scripts/throne_screen.gd
 msgid "answer"

@@ -12,6 +12,8 @@ var menu: VBoxContainer
 ## "Saved 12 s ago", kept to the second while the menu is open (the
 ## autosave runs under it).
 var saved_line: Label
+## Its keys, put aside while the options over it show theirs in their place.
+var keys: Control
 
 
 func _open() -> void:
@@ -22,7 +24,7 @@ func _open() -> void:
 	card.custom_minimum_size = Vector2(340, 340)
 	# Centred whatever its words (PIX-213: French ran it off-centre).
 	card.resized.connect(func() -> void: card.position = ((Vector2(1280, 720) - card.size) / 2.0).round())
-	card.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 22))
+	card.add_theme_stylebox_override("panel", UiStyle.window(UiStyle.INSET))
 	add_child(card)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 12)
@@ -42,6 +44,9 @@ func _open() -> void:
 	footer.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	footer.custom_minimum_size = Vector2(296, 0)
 	column.add_child(footer)
+	# Its keys along the bottom, as every screen's (PIX-388).
+	keys = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  do it      Esc  close")
+	add_child(keys)
 	options = [
 		{"label": "Resume", "action": _resume},
 		{"label": "Saves", "action": _saves},
@@ -55,8 +60,7 @@ func _draw() -> void:
 	Layout.clear(menu)
 	for index in options.size():
 		var button := UiStyle.button(options[index]["label"], _take.bind(index))
-		button.custom_minimum_size = Vector2(296, 40)
-		button.add_theme_font_size_override("font_size", 17)
+		button.custom_minimum_size = Vector2(296, UiStyle.PLANK)
 		UiStyle.focus(button, index == selected)
 		menu.add_child(button)
 
@@ -103,6 +107,11 @@ func _saves() -> void:
 func _options() -> void:
 	var screen := preload("res://scripts/options_screen.gd").new()
 	screen.world = world
+	keys.visible = false
+	screen.tree_exited.connect(func() -> void:
+		if is_instance_valid(keys):
+			keys.visible = true
+	)
 	add_child(screen)
 
 

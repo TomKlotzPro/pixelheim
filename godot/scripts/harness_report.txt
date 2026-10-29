@@ -40,7 +40,7 @@ decor | on a map in the open air: how many pieces of field decor its drawing gre
 delivered | Maren's letters delivered, once any is out (PIX-253)
 dest | the waypoint the map's list has chosen, while the map is open (PIX-241)
 detail | on a map in the open air: how many small things its open ground grew, tufts, clover, flowers, pebbles, twigs, reeds and sedge (PIX-305)
-dockmenu | the dock's menu while it's open (PIX-388): its lines shown, in order (a screen by its name, skill4-6 for a pad), the one chosen in brackets, then fits (on the canvas, above the dock) or off: inventory,map,[stats],skills,codex,journal fits
+dockmenu | the dock's menu while it's open (PIX-388): its lines shown, in order (a screen by its name, skill4-6 for a pad), the one chosen in brackets, then fits (on the canvas, above the dock and its "Next" line) or off: inventory,map,[stats],skills,codex,journal fits
 dressed | on a dungeon floor: its look and what it is dressed in, counted by kind: mine:ore3,props6,rail68 (PIX-310)
 ending | the ending this hero chose for Morvax once it has played: home or stay (PIX-253 step 10)
 entrance | the ways in drawn as entrances in their setting on this map, by look: mine, sea_cave, mountain_gate, vault_door, ice_stair (PIX-290)

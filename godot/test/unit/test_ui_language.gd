@@ -5,7 +5,9 @@ extends GutTest
 ## way, and the codex fits its page.
 
 ## Sequences, not screens: their keys stand top right while a story runs.
-const SEQUENCES := ["dawn_screen.gd", "reveal_screen.gd"]
+## Scenes that play out with keys of their own: the rank-up's fork rides in
+## its letterbox (PIX-388).
+const SEQUENCES := ["dawn_screen.gd", "reveal_screen.gd", "rankup_screen.gd"]
 const FULL_SCREENS := [
 	"codex_screen.gd", "create_screen.gd", "inventory_screen.gd", "journal_screen.gd",
 	"ledger_screen.gd", "map_screen.gd", "options_screen.gd", "skills_screen.gd", "shop_screen.gd",
@@ -86,5 +88,6 @@ func test_the_codex_bestiary_fits_its_page() -> void:
 	var script := preload("res://scripts/codex_screen.gd")
 	var kinds: int = Bestiary._data()["monsters"].size()
 	assert_gte(script.pages() * script.PAGE_ROWS, kinds, "every kind on some page")
-	# A row is 28 px and 6 apart; the page line on top; the card's inside is 512.
-	assert_lte(script.PAGE_ROWS * 34 + 24, 512, "a page fits the card")
+	# A row is 28 px and 6 apart; the page line on top; the card's inside is
+	# its inset in (PIX-388).
+	assert_lte(script.PAGE_ROWS * 34 + 24, script.CARD.size.y - 2 * UiStyle.INSET, "a page fits the card")

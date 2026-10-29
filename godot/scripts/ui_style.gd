@@ -57,6 +57,13 @@ const EPIC := Color("6e2d8c")
 const GAIN := Color("2f6b22")
 ## Grain flecks in the parchment.
 const GRAIN := Color("e0c995")
+## Every screen's pages alike (PIX-388): words and lists stand INSET inside
+## a page's edge, clear of the kit's frame (its wood and rim run 14 px, its
+## corners 24) and of the one drawn here; pages side by side stand GAP
+## apart; a plank, keyed or not, is PLANK tall (the kit's button's own).
+const INSET := 24
+const GAP := 16
+const PLANK := 44
 
 static var _frames := {}
 static var _logo_font: FontFile
@@ -279,14 +286,7 @@ static func bold_font() -> FontFile:
 ## - anything else is a card in its own fill and rim (a clear rim, no frame).
 static func box(fill: Color, rim: Color, padding := 8) -> StyleBoxTexture:
 	if rim == LAMP:
-		var style := _style(_card(fill, LAMP), 2, padding)
-		# A chosen window-card keeps its twin's room, so its words don't
-		# jump on the kit's thicker frame (the rank-up's paths).
-		if padding >= 12 and fill == CARD:
-			var twin := window(padding)
-			for side in 4:
-				style.set_content_margin(side, twin.get_content_margin(side))
-		return style
+		return _style(_card(fill, LAMP), 2, padding)
 	if padding >= 12 and fill == CARD:
 		return window(padding)
 	return _style(_card(fill, rim), 2, padding)
@@ -451,12 +451,41 @@ static func tab(chosen: bool, padding := 6) -> StyleBoxTexture:
 
 
 ## A button that is a tab (the pack's, the counter's): the kit's tab, lit
-## under the mouse; without the kit, the plank focus() lights, as before.
+## under the mouse, dimmed when it can't be chosen (PIX-388: it fell back
+## to the button's dark plank); without the kit, the plank focus() lights.
 static func tab_button(button: Button, chosen: bool) -> void:
 	focus(button, chosen)
 	button.add_theme_stylebox_override("normal", tab(chosen))
 	button.add_theme_stylebox_override("hover", tab(true))
 	button.add_theme_stylebox_override("pressed", tab(true))
+	var dimmed := tab(false)
+	dimmed.modulate_color = Color(1, 1, 1, 0.55)
+	button.add_theme_stylebox_override("disabled", dimmed)
+
+
+## A small dark tag on a frame's edge (PIX-388): a tab's count, a skill
+## slot's key. 18 tall whatever it says, so it sits on the edge; its words,
+## whose line is taller than their letters, overhang it evenly.
+static func tag(text: String) -> Panel:
+	var node := Panel.new()
+	node.add_theme_stylebox_override("panel", box(NIGHT, NIGHT, 2))
+	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var words := strong("", 12, CREAM)
+	words.name = "words"
+	words.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	words.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	words.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	words.grow_vertical = Control.GROW_DIRECTION_BOTH
+	node.add_child(words)
+	tag_text(node, text)
+	return node
+
+
+## A tag's words, changed: it widens to them (a pad's "LB" over a "1").
+static func tag_text(node: Panel, text: String) -> void:
+	var words := node.get_node("words") as Label
+	words.text = text
+	node.custom_minimum_size = Vector2(maxf(20.0, words.get_minimum_size().x + 8.0), 18.0)
 
 
 ## A slot that holds an icon (PIX-385: the dock's skills, what's worn): the
@@ -505,10 +534,12 @@ static func button(text: String, action: Callable, key := "") -> Button:
 
 ## A plank button's key on a keycap and its words beside it (PIX-213);
 ## called again, it changes them. Dimmed with the button when it's off.
+## PLANK tall like every plank (PIX-388), the cap standing on the frame's
+## edges rather than growing the plank round it.
 static func button_keyed(node: Button, key: String, text: String) -> void:
 	# The kit's frame is thick (PIX-385): the cap and words stand inside it.
 	var frame := _kit("button", 6)
-	var room := Vector2(24, 4) if frame == null else frame.get_minimum_size()
+	var sides := 24.0 if frame == null else frame.content_margin_left + frame.content_margin_right
 	var row: HBoxContainer = node.get_node_or_null("keyed")
 	if row == null:
 		row = HBoxContainer.new()
@@ -516,22 +547,24 @@ static func button_keyed(node: Button, key: String, text: String) -> void:
 		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		row.alignment = BoxContainer.ALIGNMENT_CENTER
 		row.add_theme_constant_override("separation", 8)
-		row.add_child(keycap("", true))
-		row.add_child(label("", TEXT, plank_ink(false)))
+		var cap := keycap("", true)
+		cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(cap)
+		var words := label("", TEXT, plank_ink(false))
+		words.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(words)
 		node.add_child(row)
 		row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		if frame != null:
 			row.offset_left = frame.content_margin_left
-			row.offset_top = frame.content_margin_top
 			row.offset_right = -frame.content_margin_right
-			row.offset_bottom = -frame.content_margin_bottom
 		node.draw.connect(func() -> void: row.modulate.a = 0.6 if node.disabled else 1.0)
 		# The plank fits its cap and words once they're measured (in the tree).
-		row.minimum_size_changed.connect(func() -> void: node.custom_minimum_size = row.get_combined_minimum_size() + room)
+		row.minimum_size_changed.connect(func() -> void: node.custom_minimum_size = Vector2(row.get_combined_minimum_size().x + sides, PLANK))
 	node.text = ""
 	keycap_text(row.get_child(0), Controls.shown(key))
 	(row.get_child(1) as Label).text = text
-	node.custom_minimum_size = row.get_combined_minimum_size() + room
+	node.custom_minimum_size = Vector2(row.get_combined_minimum_size().x + sides, PLANK)
 
 
 ## A button with focus (the chosen tab or menu line): the plank lit brass, its
@@ -866,7 +899,10 @@ static func footer(line: String, at: Vector2, centered := false) -> HBoxContaine
 	row.position = at
 	# A longer language (PIX-195) mustn't run off the screen: once laid
 	# out, a footer too wide closes up its gaps, then slides left.
-	row.ready.connect(_fit_footer.bind(row, centered), CONNECT_ONE_SHOT | CONNECT_DEFERRED)
+	# By its id: a footer replaced at once (a counter opened on another tab)
+	# is freed before the deferred fit, and a freed row bound to the call
+	# failed it.
+	row.ready.connect(_fit_footer.bind(row.get_instance_id(), centered), CONNECT_ONE_SHOT | CONNECT_DEFERRED)
 	if centered:
 		row.position.x = 0
 		row.custom_minimum_size = Vector2(1280, 0)
@@ -874,8 +910,9 @@ static func footer(line: String, at: Vector2, centered := false) -> HBoxContaine
 	return row
 
 
-static func _fit_footer(row: HBoxContainer, centered: bool) -> void:
-	if not is_instance_valid(row):
+static func _fit_footer(id: int, centered: bool) -> void:
+	var row := instance_from_id(id) as HBoxContainer
+	if row == null:
 		return
 	var room := 1280.0 - 32.0 - (0.0 if centered else row.position.x)
 	if row.get_combined_minimum_size().x <= room:

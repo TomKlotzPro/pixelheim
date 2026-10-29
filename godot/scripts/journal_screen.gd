@@ -43,15 +43,15 @@ const BOOK_LINES := 6
 const OLD_TABS := {"main": "quests", "side": "quests", "bounties": "quests", "story": "letters", "pages": "letters", "deeds": "feats"}
 ## Which thread the top is about, said plainly.
 const KINDS := {"main": "Main story", "quest": "Quest you follow", "bounty": "Bounty you follow"}
-## The pages' frame: from under the title to over the keys.
+## The pages' frame: from under the title to over the keys, as far above
+## them as every screen's pages (PIX-388).
 const AT := Vector2(80, 72)
-const SIZE := Vector2(1120, 588)
-## A window's margin inside its frame; how wide words run inside it, and in
-## a row, its own margin and mark off too: inside GegX's thicker frame too
-## (22 a side, PIX-385).
-const PAD := 18
-const TEXT_WIDTH := 1076.0
-const ROW_TEXT := 1030.0
+const SIZE := Vector2(1120, 576)
+## A window's margin inside its frame, the screens' inset (PIX-388); how
+## wide words run inside it, and in a row, its own margin and mark off too.
+const PAD := UiStyle.INSET
+const TEXT_WIDTH := SIZE.x - 2 * PAD
+const ROW_TEXT := TEXT_WIDTH - 46
 
 var tab := "quests"
 var tabs_row: HBoxContainer
@@ -91,8 +91,10 @@ func _open() -> void:
 	dim()
 	add_child(UiStyle.title("Journal"))
 	tabs_row = HBoxContainer.new()
-	tabs_row.position = Vector2(300, 26)
-	tabs_row.add_theme_constant_override("separation", 10)
+	# On the pages' top edge, as every screen's tabs (PIX-388).
+	tabs_row.position = Vector2(300, AT.y - 36)
+	tabs_row.custom_minimum_size.y = 36
+	tabs_row.add_theme_constant_override("separation", 4)
 	add_child(tabs_row)
 	content = VBoxContainer.new()
 	content.position = AT

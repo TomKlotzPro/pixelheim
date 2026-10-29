@@ -351,7 +351,8 @@ func field_dockmenu() -> String:
 		if (row["line"] as Control).visible:
 			lines.append("[%s]" % row["id"] if at == dock.menu_focus else String(row["id"]))
 	var menu: Rect2 = dock.menu.get_global_rect()
-	var fits: bool = Rect2(0, 0, 1280, 720).encloses(menu) and menu.end.y <= dock.top()
+	# Clear of the "Next" line too (PIX-388: it hid the line's end).
+	var fits: bool = Rect2(0, 0, 1280, 720).encloses(menu) and menu.end.y <= dock.words_top()
 	return "%s %s" % [",".join(lines), "fits" if fits else "off"]
 
 
