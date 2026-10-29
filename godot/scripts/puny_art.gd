@@ -206,10 +206,11 @@ const VILLAGERS := {
 	"elder": {"sheet": "mini/Okomo.png", "family": "mini"},
 	"villager": {"sheet": "mini/FarmerRed.png", "family": "mini"},
 	"villager_woman": {"sheet": "mini/FarmerPurple.png", "family": "mini"},
-	# A living village (PIX-149): Shade's cat and dog, and the farmers drawn
-	# small as children.
-	"cat": {"sheet": "beasts/Orange-Cat-32x32.png", "family": "beast", "scale": 0.7},
-	"dog": {"sheet": "beasts/Blonde-Dog-32x32.png", "family": "beast", "scale": 0.75},
+	# A living village (PIX-149): Shade's cat and dog, retouched (RESTYLED)
+	# and drawn at the farm animals' size, an art pixel two screen pixels
+	# at the play zoom (Herd.SCALE), and the farmers drawn small as children.
+	"cat": {"sheet": "beasts/Orange-Cat-32x32.png", "family": "beast", "scale": 2.0 / 3.0},
+	"dog": {"sheet": "beasts/Blonde-Dog-32x32.png", "family": "beast", "scale": 2.0 / 3.0},
 	"child": {"sheet": "mini/FarmerRed.png", "family": "mini", "scale": 0.75},
 	"child_alt": {"sheet": "mini/FarmerPurple.png", "family": "mini", "scale": 0.75},
 	# The builders at the village's construction sites (PIX-147).
@@ -232,6 +233,21 @@ const VILLAGERS := {
 	# Old Hessa, the shrine's keeper, in a silk-grey robe (PIX-331).
 	"keeper": {"sheet": "characters/Mage-Silk.png", "family": "puny"},
 }
+
+## Sheets retouched as they load (PIX-393: Tom found the dog didn't match
+## ninth-jedi's farm animals, chunky, flat and outlined in black beside
+## Shade's finer, softly shaded fur): the tones each merges, its own hex to
+## another of its own, and an OUTLINE round every frame (restyle). Wherever
+## the sheet is drawn: the town, a cutscene, a portrait.
+const RESTYLED := {
+	# Its coat's mid into its light, a clean blonde; its two browns as one shade.
+	"beasts/Blonde-Dog-32x32.png": {"dd993a": "f7bd4a", "5b411f": "976523"},
+	# Its yellow and its brown into its orange; its darkest brown the shade.
+	"beasts/Orange-Cat-32x32.png": {"dca93b": "bd7a2a", "8e5b2a": "bd7a2a"},
+}
+## The farm animals' outline, sampled once from ninth-jedi's frames (the
+## paid art is never read for it: the dog looks the same without the pack).
+const OUTLINE := Color.BLACK
 
 ## The bestiary by monster id: the closest creature Shade drew, tinted where
 ## one sheet stands in for a kin (bone knights, ghosts, shades). Every kind
@@ -544,11 +560,46 @@ static func frame_size(spec: Dictionary) -> int:
 	return int(spec.get("frame", FAMILIES[spec["family"]]["frame"]))
 
 
-## A spec's whole sheet: the dressed outfit's, or the drawn one's.
+## A spec's whole sheet: the dressed outfit's, the drawn one's, or that
+## retouched (RESTYLED).
 static func sheet_texture(spec: Dictionary) -> Texture2D:
 	if spec.has("head"):
 		return outfit_texture(spec["head"], spec["body"], spec.get("weapon_tint", Color.WHITE), spec.get("gear", {}))
-	return load(path(spec["sheet"]))
+	var drawn: Texture2D = load(path(spec["sheet"]))
+	if RESTYLED.has(spec["sheet"]):
+		return ImageTexture.create_from_image(restyle(drawn.get_image(), frame_size(spec), RESTYLED[spec["sheet"]]))
+	return drawn
+
+
+## `image`, a sheet of `size` px frames, retouched (RESTYLED): each opaque
+## tone `merge` names (hex to hex) drawn as the one it maps to, then OUTLINE
+## on every clear pixel beside an opaque one in its own frame, so an outline
+## never spills into the next frame. The sheet keeps its size: its figures
+## must leave their frames' edges clear (test_puny_art). Only each figure
+## and the pixel round it are looked at: once a session, a sheet ~10 ms.
+static func restyle(image: Image, size: int, merge: Dictionary) -> Image:
+	var out := image.duplicate() as Image
+	out.convert(Image.FORMAT_RGBA8)
+	for top in range(0, image.get_height(), size):
+		for left in range(0, image.get_width(), size):
+			var frame := Rect2i(left, top, size, size)
+			var used := image.get_region(frame).get_used_rect()
+			if not used.has_area():
+				continue
+			var near := Rect2i(used.position + frame.position, used.size).grow(1).intersection(frame)
+			for y in range(near.position.y, near.end.y):
+				for x in range(near.position.x, near.end.x):
+					var colour := image.get_pixel(x, y)
+					if colour.a > 0.0:
+						var hex := colour.to_html(false)
+						if merge.has(hex):
+							out.set_pixel(x, y, Color(merge[hex]))
+						continue
+					for side: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+						if frame.has_point(Vector2i(x, y) + side) and image.get_pixelv(Vector2i(x, y) + side).a > 0.0:
+							out.set_pixel(x, y, OUTLINE)
+							break
+	return out
 
 
 ## SpriteFrames with "<anim>_<dir>" animations (or "<anim>" for strips) for a

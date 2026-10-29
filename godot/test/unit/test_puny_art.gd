@@ -215,3 +215,65 @@ func test_odd_sheets_walk_their_own_way() -> void:
 	side.flip_x()
 	assert_lt(_unlike(mammoth.get_frame_texture("walk_left", 0).get_image(), side), 40, "side on both ways")
 	assert_gt(_unlike(mammoth.get_frame_texture("walk_down", 0).get_image(), side), 60, "and its front walking down")
+
+
+## PIX-393: the retouch on two 4 px frames side by side, a light, a mid and
+## a shade in the first, the shade on its right edge; the second clear.
+func test_restyle_outlines_clear_pixels_and_merges_tones() -> void:
+	var image := Image.create(8, 4, false, Image.FORMAT_RGBA8)
+	image.set_pixel(1, 1, Color("f7bd4a"))
+	image.set_pixel(2, 1, Color("dd993a"))
+	image.set_pixel(3, 1, Color("976523"))
+	var out := PunyArt.restyle(image, 4, {"dd993a": "f7bd4a"})
+	assert_eq(out.get_size(), image.get_size(), "the frames keep their size")
+	assert_eq(_tones(image), 3, "three tones drawn")
+	assert_eq(_tones(out), 2, "the mid merged into the light")
+	assert_eq(out.get_pixel(2, 1), Color("f7bd4a"), "drawn as the light")
+	var frame := Rect2i(0, 0, 4, 4)
+	for y in 4:
+		for x in 8:
+			var opaque := image.get_pixel(x, y).a > 0.0
+			var beside := false
+			for side: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+				var by := Vector2i(x, y) + side
+				beside = beside or (frame.has_point(Vector2i(x, y)) and frame.has_point(by) and image.get_pixelv(by).a > 0.0)
+			var outlined := out.get_pixel(x, y) == PunyArt.OUTLINE
+			assert_eq(outlined, not opaque and beside, "(%d, %d): outlined only clear beside the figure" % [x, y])
+	assert_eq(out.get_pixel(4, 1).a, 0.0, "never spilling into the next frame")
+
+
+## The town's dog and cat beside the farm animals (PIX-393): drawn at the
+## herd's size, outlined, flatter than Shade drew them, each figure clear of
+## its frame's edges so the outline fits in 32 px.
+func test_the_dog_and_cat_match_the_farm_animals() -> void:
+	for id: String in ["dog", "cat"]:
+		var art := PunyArt.villager(id)
+		assert_eq(float(art["scale"]), Herd.SCALE, "%s: an art pixel two screen pixels, as the herd's" % id)
+		var drawn: Image = load(PunyArt.path(art["sheet"])).get_image()
+		for y in range(0, drawn.get_height(), 32):
+			for x in range(0, drawn.get_width(), 32):
+				var used := drawn.get_region(Rect2i(x, y, 32, 32)).get_used_rect()
+				assert_true(not used.has_area() or Rect2i(0, 0, 32, 32).encloses(used.grow(1)), "%s's frame at (%d, %d): room for its outline" % [id, x, y])
+		var frame := PunyArt.frames(art).get_frame_texture("walk_right", 0) as AtlasTexture
+		assert_eq(frame.region.size, Vector2(32, 32), "%s: its frames' size" % id)
+		assert_lt(_tones(frame.atlas.get_image()), _tones(drawn), "%s: fewer tones" % id)
+		assert_gt(_count(frame.get_image(), PunyArt.OUTLINE), 20, "%s: outlined" % id)
+
+
+## How many opaque colours `image` draws, its outline aside.
+func _tones(image: Image) -> int:
+	var seen := {}
+	for y in image.get_height():
+		for x in image.get_width():
+			var colour := image.get_pixel(x, y)
+			if colour.a > 0.0 and colour != PunyArt.OUTLINE:
+				seen[colour] = true
+	return seen.size()
+
+
+func _count(image: Image, colour: Color) -> int:
+	var count := 0
+	for y in image.get_height():
+		for x in image.get_width():
+			count += int(image.get_pixel(x, y) == colour)
+	return count

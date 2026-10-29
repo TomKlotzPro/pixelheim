@@ -3465,6 +3465,10 @@ msgid "Gold at Work"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Good Dog"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Grass, roofs and stone rise out of the ground pixel by pixel - brighter pixels stand taller, so the terrain reads like a hand-carved model"
 msgstr ""
 
@@ -6342,6 +6346,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The town tour's captions now always sit above the dock, however long they run"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The town's dog and cat now share the farm animals' look: a dark outline, flatter colours and the same pixel size, so they no longer stand apart from the hens and sheep"
 msgstr ""
 
 #: assets/data/changelog.json
