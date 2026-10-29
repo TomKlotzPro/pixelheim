@@ -4737,6 +4737,10 @@ msgid "Quiet Fights"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Quiet Planks"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Quit in the middle of the Night of Bells and you come back at the same beat, with the lanterns you lit and the roofs you doused"
 msgstr ""
 
@@ -6342,6 +6346,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The title screen lives: stars, embers, bobbing monsters, a breathing dragon"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The title's menu is calmer: no flames by the chosen plank, only its lift and warm glow, and unread notes show as a small gold seal on « What's new » rather than a red box beside it; the strike no longer bares the screen's edge as it shakes"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -18498,10 +18506,6 @@ msgstr ""
 
 #: scripts/title_screen.gd
 msgid "Every slot holds a save. Delete one in Saves to start a new hero."
-msgstr ""
-
-#: scripts/title_screen.gd
-msgid "NEW"
 msgstr ""
 
 #: scripts/title_screen.gd

@@ -38,7 +38,7 @@ const BEATS := [[0.0, "descent"], [DRAGON.x, "dragon"], [ERUPT_S, "eruption"], [
 ## Where the flame writes, on the canvas: from just before PIXELHEIM's first
 ## letter to just past its last (its face spans 336..944).
 const NAME := Vector2(320, 960)
-## The strike: the scene and the name shaken this many px at first, for
+## The strike: the name shaken this many px at first and the scene sideways, for
 ## SHAKE_S (the sky reaches past the view's sides, TitleScene.BLEED); a
 ## white-hot burst of light on the name at FLASH_PEAK, gone over FLASH_S,
 ## FLASH_SIZE across.
@@ -207,9 +207,10 @@ func pose(time: float) -> void:
 	var since := t - STRIKE_S
 	flash.modulate.a = FLASH_PEAK * pow(1.0 - since / FLASH_S, 2.0) if since >= 0.0 and since < FLASH_S else 0.0
 	var shake := SHAKE * (1.0 - since / SHAKE_S) if since >= 0.0 and since < SHAKE_S else 0.0
-	# The scene and the name, not the canvas: its edge never shows.
+	# The scene and the name, not the canvas. The scene only sideways, where
+	# its sky bleeds past the view: up or down bared a black sliver (PIX-394).
 	var jolt := (Vector2(sin(t * 91.0), cos(t * 73.0)) * shake).round()
-	scene.position = jolt
+	scene.position = Vector2(jolt.x, 0.0)
 	logo.position = _logo_home + jolt
 	var planks: Array = screen.planks
 	for i in planks.size():

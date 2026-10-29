@@ -4737,6 +4737,10 @@ msgid "Quiet Fights"
 msgstr "Combats posés"
 
 #: assets/data/changelog.json
+msgid "Quiet Planks"
+msgstr "Planches tranquilles"
+
+#: assets/data/changelog.json
 msgid "Quit in the middle of the Night of Bells and you come back at the same beat, with the lanterns you lit and the roofs you doused"
 msgstr "Quittez au milieu de la Nuit des Cloches et vous revenez au même moment, avec les lanternes allumées et les toits éteints"
 
@@ -6343,6 +6347,10 @@ msgstr "L'écran titre est un diorama vivant : trois rangées de crêtes en pr
 #: assets/data/changelog.json
 msgid "The title screen lives: stars, embers, bobbing monsters, a breathing dragon"
 msgstr "L'écran titre s'anime : étoiles, braises, monstres qui se dandinent, un dragon qui respire"
+
+#: assets/data/changelog.json
+msgid "The title's menu is calmer: no flames by the chosen plank, only its lift and warm glow, and unread notes show as a small gold seal on « What's new » rather than a red box beside it; the strike no longer bares the screen's edge as it shakes"
+msgstr "Le menu de l'écran titre est plus sobre : plus de flammes autour de la planche choisie, seulement son relief et sa lueur chaude, et les nouveautés non lues sont signalées par un petit sceau doré sur « Quoi de neuf » plutôt que par une case rouge à côté ; le choc du nom ne découvre plus le bord de l'écran en tremblant"
 
 #: assets/data/changelog.json
 msgid "The title's village is richer and deeper: moonlight shafts, drifting ash, a tree and a lantern banner framing the view, market stalls, bunting, the lit fountain and hens asleep by the barrel; and the menu stands on wooden planks right under the name, with no line between them now, the chosen one lifted between two flames"
@@ -18499,10 +18507,6 @@ msgstr "Continuer  %s, Niv. %d"
 #: scripts/title_screen.gd
 msgid "Every slot holds a save. Delete one in Saves to start a new hero."
 msgstr "Chaque emplacement contient une sauvegarde. Supprimez-en un dans Sauvegardes pour créer un nouveau héros."
-
-#: scripts/title_screen.gd
-msgid "NEW"
-msgstr "NOUVEAU"
 
 #: scripts/title_screen.gd
 msgid "New Game"
