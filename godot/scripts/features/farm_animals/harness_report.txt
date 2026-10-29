@@ -1,0 +1,4 @@
+# The farm animals' report field (PIX-387): `field | says`, as the core's
+# (scripts/harness_report.txt), which it joins after its head, by name; its
+# function is `field_animals(report)` in feature.gd.
+animals | in the town with ninth-jedi's Farm Animals: the town's age, how many of each kind live there, and asleep while they sleep: 4:bull1,chick6,cow2,hen7,pig3,sheep5:asleep (PIX-387)

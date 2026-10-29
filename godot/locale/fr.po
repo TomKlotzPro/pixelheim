@@ -2289,6 +2289,10 @@ msgid "An empty lot sits between the lower houses. For sale? Soon."
 msgstr "Un terrain vide attend entre les maisons du bas. À vendre ? Bientôt."
 
 #: assets/data/changelog.json
+msgid "Animals live round Pixelheim now, more with each age: hens and chicks pecking in the yards, sheep on the east meadow, pigs in their sty by the field, and cows and a bull along the river; they amble about by day and sleep where they stand at night"
+msgstr "Des animaux vivent désormais autour de Pixelheim, plus nombreux à chaque époque : poules et poussins qui picorent dans les cours, moutons sur le pré de l'est, cochons dans leur enclos près du champ, vaches et taureau le long de la rivière ; ils flânent le jour et dorment là où ils se trouvent la nuit"
+
+#: assets/data/changelog.json
 msgid "Answer \"Come home.\" for the festival ending or \"Stay with them.\" for the lanterns ending, each with its own tour of the village and new credits"
 msgstr "Répondez « Rentrez à la maison. » pour la fin de la fête, ou « Restez avec eux. » pour celle des lanternes, chacune avec sa visite du village et un nouveau générique"
 
@@ -4037,6 +4041,10 @@ msgid "Messages wait their turn instead of cutting each other off, and stay long
 msgstr "Les messages attendent leur tour au lieu de se couper la parole, et restent le temps d'être lus (plus longtemps avec le grand texte) ; une quête terminée fait retentir sa victoire"
 
 #: assets/data/changelog.json
+msgid "Mind the Hens"
+msgstr "Gare aux poules"
+
+#: assets/data/changelog.json
 msgid "Mirror Mirror"
 msgstr "Miroir, mon beau miroir"
 
@@ -5677,6 +5685,10 @@ msgid "The Ember Seal"
 msgstr "Le Sceau de braise"
 
 #: assets/data/changelog.json
+msgid "The Farmyard"
+msgstr "La basse-cour"
+
+#: assets/data/changelog.json
 msgid "The First Fields"
 msgstr "Les premiers champs"
 
@@ -5967,6 +5979,10 @@ msgstr "Le point d'exclamation au-dessus d'un monstre qui vous a vu se place au-
 #: assets/data/changelog.json
 msgid "The fallen lie in one piece: a hero in a helmet from one set and armour from another no longer falls as two halves of two different heroes"
 msgstr "Les vaincus gisent d'un seul tenant : un héros portant le casque d'un ensemble et l'armure d'un autre ne tombe plus en deux moitiés de deux héros différents"
+
+#: assets/data/changelog.json
+msgid "The farm animals have bodies now: the hero bumps into them instead of walking through, they never wander into him, and one he stands facing steps out of his way, even asleep, so none can ever shut him in"
+msgstr "Les animaux ont désormais un corps : le héros s'y heurte au lieu de passer au travers, ils ne viennent jamais se jeter dans ses jambes, et celui qu'il regarde en face s'écarte de son chemin, même endormi ; aucun ne peut donc l'enfermer"
 
 #: assets/data/changelog.json
 msgid "The first brew works at every stage: at Vex's stall while her house is ash, at her cauldron once it stands"
@@ -14787,6 +14803,10 @@ msgstr "Fafnyr : « Cent ans couché sur un tas d'or. Vous savez ce que c'es
 #: assets/data/story.json
 msgid "Fafnyr: \"From up here they look like a hoard. The good kind. No corners.\""
 msgstr "Fafnyr : « Vu d'en haut, on dirait un trésor. Du bon. Pas un seul coin. »"
+
+#: assets/data/story.json
+msgid "Farm Animals by ninth-jedi"
+msgstr "« Farm Animals » de ninth-jedi"
 
 #: assets/data/story.json
 msgid "Fifty years ago five of the village climbed up to keep it that way. Only one came home, and she never talked about it."

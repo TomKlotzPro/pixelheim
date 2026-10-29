@@ -4,8 +4,10 @@
 # into godot/assets/puny/medieval/ (PIX-133), and every icon
 # godot/assets/puny/icons.json names into godot/assets/puny/shade/ (PIX-138),
 # and GegX's UI kit as UiStyle's pieces (retro-rpg/gegx/pixel-ui-kit/pixelheim/,
-# made by godot/tools/ui_kit_prep.gd) into godot/assets/puny/gegx/ (PIX-385).
-# All three folders are git-ignored: the packs may not be redistributed, even
+# made by godot/tools/ui_kit_prep.gd) into godot/assets/puny/gegx/ (PIX-385),
+# and ninth-jedi's Farm Animals (retro-rpg/ninth-jedi/farm-animals/) into
+# godot/assets/puny/animals/ (PIX-387).
+# All four folders are git-ignored: the packs may not be redistributed, even
 # modified, so they never enter this repo.
 #
 #   scripts/fetch-private-art.sh            clones the repo (your GitHub login)
@@ -64,3 +66,17 @@ kit="$src/retro-rpg/gegx/pixel-ui-kit/pixelheim"
 mkdir -p godot/assets/puny/gegx
 cp "$kit"/*.png godot/assets/puny/gegx/
 echo "Installed $(ls "$kit"/*.png | wc -l | tr -d ' ') UI kit pieces into godot/assets/puny/gegx/"
+
+# ninth-jedi's Farm Animals (PIX-387): each animal's walk and sleep frames,
+# named simply: "Chicken 1 (16x16)/Walk/walk1.png" is chicken1_walk1.png.
+farm="$src/retro-rpg/ninth-jedi/farm-animals"
+mkdir -p godot/assets/puny/animals
+count=0
+for dir in "$farm"/*/; do
+  name="$(basename "$dir" | sed 's/ (.*//; s/ //g' | tr '[:upper:]' '[:lower:]')"
+  for frame in "$dir"Walk/walk*.png "$dir"Sleep/sleep*.png; do
+    cp "$frame" "godot/assets/puny/animals/${name}_$(basename "$frame")"
+    count=$((count + 1))
+  done
+done
+echo "Installed $count farm animal frames into godot/assets/puny/animals/"

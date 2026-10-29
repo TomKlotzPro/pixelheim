@@ -2289,6 +2289,10 @@ msgid "An empty lot sits between the lower houses. For sale? Soon."
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Animals live round Pixelheim now, more with each age: hens and chicks pecking in the yards, sheep on the east meadow, pigs in their sty by the field, and cows and a bull along the river; they amble about by day and sleep where they stand at night"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Answer \"Come home.\" for the festival ending or \"Stay with them.\" for the lanterns ending, each with its own tour of the village and new credits"
 msgstr ""
 
@@ -4037,6 +4041,10 @@ msgid "Messages wait their turn instead of cutting each other off, and stay long
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Mind the Hens"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Mirror Mirror"
 msgstr ""
 
@@ -5677,6 +5685,10 @@ msgid "The Ember Seal"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Farmyard"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The First Fields"
 msgstr ""
 
@@ -5966,6 +5978,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The fallen lie in one piece: a hero in a helmet from one set and armour from another no longer falls as two halves of two different heroes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The farm animals have bodies now: the hero bumps into them instead of walking through, they never wander into him, and one he stands facing steps out of his way, even asleep, so none can ever shut him in"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -14786,6 +14802,10 @@ msgstr ""
 
 #: assets/data/story.json
 msgid "Fafnyr: \"From up here they look like a hoard. The good kind. No corners.\""
+msgstr ""
+
+#: assets/data/story.json
+msgid "Farm Animals by ninth-jedi"
 msgstr ""
 
 #: assets/data/story.json
