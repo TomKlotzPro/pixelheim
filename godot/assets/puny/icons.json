@@ -277,7 +277,7 @@
   },
   "screens": {
     "inventory": "survival-rpg-icons/Tools/Backpack-05.png",
-    "map": "medieval@2999",
+    "map": "survival-rpg-icons/Wood/Paper-01.png",
     "stats": "survival-rpg-icons/Armour/Metal-Helm-01.png",
     "skills": "puny-skills/Icons/Transparent Background/Buffs&Debuffs/Buff-Icon-006.png",
     "codex": "medieval@2778",
