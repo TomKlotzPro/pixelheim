@@ -106,8 +106,8 @@ func test_small_things_grow_by_region_where_no_decor_does() -> void:
 		var share := grown * 100.0 / open
 		assert_almost_eq(share, float(Scatter.DETAIL[tile][0]), 1.5, "%s grows small things in about %d%% of its open cells" % [tile, Scatter.DETAIL[tile][0]])
 		# The meadow and the grove round a lamp (PIX-323) are a few cells
-		# each, in flower on purpose.
-		if tile not in ["meadow", "grove"]:
+		# each, in flower on purpose; the reeds a line along a bank (PIX-390).
+		if tile not in ["meadow", "grove", "bank"]:
 			assert_between(share, 6.0, 14.0, "denser than the field's old 3%%, never a carpet")
 	assert_eq(Scatter.detail({Vector2i.ZERO: "path"}, Vector2i.ZERO), "", "nothing on a road")
 	assert_eq(Scatter.detail({Vector2i.ZERO: "forest"}, Vector2i.ZERO), "", "nor under the trees")
@@ -264,3 +264,31 @@ func test_rooms_and_dungeons_grow_no_small_things() -> void:
 		# Without the paid pack a room is drawn on Shade's ground (no
 		# PunyInterior), with nothing for small things to grow on.
 		assert_true(view.detail_layer == null or view.detail_layer.get_used_cells().is_empty(), "%s grows none" % map_id)
+
+
+## Reeds at the foot of a grassy bank (PIX-390): the river's shallows by
+## grass grow them in about Scatter's share, the same every time; water
+## with no grass at a side, none (by a road, in the sea).
+func test_the_river_grows_reeds_at_the_foot_of_its_banks() -> void:
+	var grid := {}
+	for x in 400:
+		grid[Vector2i(x, 0)] = "grass"
+		grid[Vector2i(x, 1)] = "water"
+		grid[Vector2i(x, 2)] = "water"
+		grid[Vector2i(x, 3)] = "path"
+		grid[Vector2i(x, 4)] = "sea"
+		grid[Vector2i(x, 5)] = "grass"
+	var reeds := 0
+	for x in 400:
+		var kind := Scatter.detail(grid, Vector2i(x, 1))
+		assert_true(kind in ["", "reeds"], "reeds or nothing in the shallows")
+		assert_eq(Scatter.detail(grid, Vector2i(x, 1)), kind, "the same every time")
+		reeds += 1 if kind == "reeds" else 0
+		for y: int in [2, 4]:
+			assert_eq(Scatter.detail(grid, Vector2i(x, y)), "", "none by a road, nor in the sea")
+	assert_almost_eq(reeds / 4.0, float(Scatter.DETAIL["bank"][0]), 6.0, "about %d%% of the bank's shallows" % Scatter.DETAIL["bank"][0])
+	var town := MapData.load_by_id("town")
+	var along := 0
+	for x in range(2, 64):
+		along += 1 if Scatter.detail(town.grid, Vector2i(x, 36)) == "reeds" else 0
+	assert_between(along, 15, 45, "reeds along the town's bank below the south street")

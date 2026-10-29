@@ -196,6 +196,12 @@ func field_backsteps() -> String:
 	return noted("backsteps")
 
 
+func field_bank() -> String:
+	if world.view == null or Streets.areas(world.map.id).is_empty():
+		return ""
+	return str(Streets.on_water(world.map.grid, world.view.streets).size())
+
+
 func field_barred() -> String:
 	return world.barred_said
 

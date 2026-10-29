@@ -17,6 +17,7 @@ night | the Night of Ash's step
 mobs | monsters standing (not dying)
 ascension | with rankup: the ascension's beat, closed once it's gone (PIX-244)
 backsteps | with motion: frames the hero stepped back on screen while walking forward, lost if found in too few to judge (PIX-135, PIX-275)
+bank | on a map with streets: its street cells with water at a side and no bank between, 0 where every one has its bank (PIX-390)
 barred | the way the story keeps shut that stopped the hero on this run: mountain or vault (PIX-257)
 bells | the Night of Bells' beat while it runs (lanterns, embers, hold, dawn), done once Fafnyr is freed (PIX-253 step 9)
 beside | with seamless: the maps drawn beside the hero's, by id, or none (PIX-269)
