@@ -460,7 +460,7 @@
     {
       "tier": 3,
       "houses": [
-        {"rect": [53, 22, 61, 25], "roof": "roof", "door": [57, 25], "yard": [53, 26, 61, 26], "about": "a gabled house on the east lawn, a verge between its back and Forge Lane (where the forge sends the hero out, facing south)"}
+        {"rect": [53, 22, 61, 25], "roof": "roof", "door": [57, 25], "yard": [53, 22, 62, 26], "about": "a gabled house on the east lawn, a verge between its back and Forge Lane (where the forge sends the hero out, facing south); its yard clears the two trees east of it that hid its woodpile and its roof's corner"}
       ],
       "requires": [
         {
