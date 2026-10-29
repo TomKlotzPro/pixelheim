@@ -101,6 +101,26 @@ func test_a_standing_piece_never_closes_a_corridor() -> void:
 	assert_false(Hamlet.fits(map, [Vector2i(2, 2)] as Array[Vector2i], {}, none), "never on a path")
 
 
+## A ware laid `on` what stands (PIX-382 step 4: a stall's counter, a
+## cart): on open ground there is nothing to lay it on, so it isn't laid;
+## after a standing piece on its cell it is, and blocks nothing more.
+func test_a_ware_lies_only_on_what_stands() -> void:
+	var map := MapData.new()
+	map.id = "test"
+	for y in 5:
+		for x in 5:
+			map.grid[Vector2i(x, y)] = "grass"
+	var ware := {"tile": Yards.LOAF, "cell": Vector2i(2, 2), "on": Vector2i(1, -4)}
+	var bare: Array[Dictionary] = [ware]
+	assert_eq(Hamlet.plan(map, {}, bare)["pieces"].size(), 0, "nothing to lay it on")
+	var laid: Array[Dictionary] = [{"art": "keg", "cell": Vector2i(2, 2)}, ware]
+	var planned := Hamlet.plan(map, {}, laid)
+	assert_eq(planned["pieces"].size(), 2, "laid on the keg")
+	assert_eq(planned["pieces"][1]["kind"], "on")
+	assert_eq(planned["blocks"].size(), 1, "the keg's cell alone blocks")
+	assert_has(planned["blocks"], Vector2i(2, 2))
+
+
 func test_each_settlement_builds_in_its_own_grammar() -> void:
 	for map_id: String in MAPS:
 		var map := MapData.load_by_id(map_id)

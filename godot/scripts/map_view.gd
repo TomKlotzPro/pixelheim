@@ -74,6 +74,8 @@ var worked := {}
 var streets := {}
 var street_tiles := {}
 var _paved := {}
+## The paved cells the town's traffic has worn (Streets.worn, PIX-382 step 4).
+var worn_paving := {}
 var _street_bands: Array[Dictionary] = []
 var paving_layer: TileMapLayer
 var wear_layer: TileMapLayer

@@ -293,11 +293,13 @@ static func _detail_rows(view: MapView, i: int) -> void:
 
 
 ## The streets this visit paves (PIX-307): each cell's look at the town's
-## age (Streets), and with the pack the tile for it; without it the streets
-## stay bare dirt, worn as a road is.
+## age (Streets), and with the pack the tile for it and where its traffic
+## has worn it (PIX-382 step 4); without it the streets stay bare dirt, worn
+## as a road is.
 static func _plan_streets(view: MapView) -> void:
 	view.streets = Streets.plan(view.data.id, view.data.grid, GameState.town_tier())
 	view._paved = view.streets if view.paving_layer != null else {}
+	view.worn_paving = Streets.worn(view.data.id, view.data.grid, view._paved, GameState.town_tier())
 	view.street_tiles = Streets.tiles(view._paved)
 	# By band of rows, for _street_rows: the paving's tiles, and the cells of
 	# a look that sets kerbs.
@@ -329,7 +331,7 @@ static func _street_rows(view: MapView, i: int) -> void:
 			return ReachPlane.tile(origin + cell)
 		return view.data.grid.get(Vector2i(clampi(cell.x, 0, view.data.size.x - 1), clampi(cell.y, 0, view.data.size.y - 1)), "")
 	var style := RoadWear.TOWN if view.data.id in Rampart.MAPS else RoadWear.COUNTRY
-	var worn := RoadWear.rows(view.data.grid, beyond, view.data.size, from, to, view._paved, origin, style)
+	var worn := RoadWear.rows(view.data.grid, beyond, view.data.size, from, to, view._paved, origin, style, view.worn_paving)
 	for cell: Vector2i in worn["wear"]:
 		RoadWear.place(view.wear_layer, cell, worn["wear"][cell])
 	for cell: Vector2i in worn["verge"]:
