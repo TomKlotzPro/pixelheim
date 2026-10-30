@@ -32,9 +32,6 @@ const MENU_GAP := 4.0
 const PLANK_WIDTH := 340.0
 const LIFT := 3.0
 const FOLLOW := 16.0
-## The unread notes' seal sits this far in from its plank's right end,
-## inside the plank (PIX-394: past it, it stood apart like a stray stamp).
-const BADGE_INSET := 14.0
 
 ## Whether this session's first title has risen: later ones (back from the
 ## saves) rise out of the night's colour.
@@ -362,9 +359,6 @@ func _draw_menu() -> void:
 		rises.append(0.0)
 		planks[index].size = Vector2(width, UiStyle.PLANK)
 		planks[index].position = homes[index]
-		# The seal on its plank: notes not yet read.
-		if options[index]["action"] == _whats_new and GameState.settings.seen_version != version:
-			planks[index].add_child(_new_badge())
 	warmth.position.x = VIEW.x / 2.0
 	warmth.scale = Vector2((width + 120.0) / 64.0, 1.4)
 	_show_choice()
@@ -416,28 +410,6 @@ func _choose(index: int) -> void:
 	selected = index
 	Sound.play_ui("tick")
 	_show_choice()
-
-
-## Notes not yet read: a small night seal with a gold "!" at its plank's
-## right end, as the game marks what waits for the hero (a word NEW there
-## ran into the plank's own). Night and gold read on the plain plank and on
-## the chosen red one.
-func _new_badge() -> Control:
-	var badge := PanelContainer.new()
-	badge.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.NIGHT, UiStyle.BRASS, 2))
-	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var mark := UiStyle.strong("!", 14, UiStyle.GOLD)
-	mark.custom_minimum_size = Vector2(14, 0)
-	mark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	badge.add_child(mark)
-	# Inside the plank's right end, middles level, growing leftward: it takes
-	# no part in the plank's width.
-	badge.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
-	badge.offset_left = -BADGE_INSET
-	badge.offset_right = -BADGE_INSET
-	badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	badge.grow_vertical = Control.GROW_DIRECTION_BOTH
-	return badge
 
 
 func _command(event: InputEvent) -> Callable:
@@ -508,11 +480,10 @@ func _saves() -> void:
 ## Every release's notes, over the title (Esc hands back).
 func _whats_new() -> void:
 	add_child(preload("res://scripts/changelog_screen.gd").new())
-	# Read: the badge goes, until the next version.
+	# Read, kept with the settings (the menu marks it no more: PIX-406).
 	if GameState.settings.seen_version != version:
 		GameState.settings.seen_version = version
 		GameState.settings.save_file()
-		_draw_menu()
 
 
 ## Options over the title, so sound and keys can be set before a hero
