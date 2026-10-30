@@ -30,6 +30,12 @@ shader_type canvas_item;
 // changes there. Beside another map the masks are laid out a few cells past
 // this map's edges with the other's (`mask_origin`, the map pixel at their
 // first texel), so a region's tone and the shore's foam cross the line too.
+//
+// The ice in the open air (PIX-398: the Frostgate's lake) is the ice cave's
+// (frozen.gdshaderinc), drawn over the ground layer (`ice_life`) from a mask
+// of the map's own (`ice_map`, `ice_pixels`, read from `map_origin` alone:
+// no map beside it has ice), its shore rounded and bent off the grid, the
+// snow under it a ghost and its frost over the snow by the shore.
 
 #include "res://shaders/wind.gdshaderinc"
 #include "res://shaders/linear.gdshaderinc"
@@ -55,6 +61,11 @@ uniform bool planks = false;
 // this goes 0 to 1 its 2px blocks drop out in the Bayer order, the same
 // pixels in every layer drawn with it, so it goes as one picture.
 uniform float dissolve = 0.0;
+uniform bool ice_life = false;
+uniform sampler2D ice_map : filter_linear, repeat_disable;
+uniform vec2 ice_pixels = vec2(1.0);
+// The open air's ice a colder blue than the cave's, to read on the snow.
+const vec3 OPEN_ICE = vec3(0.82, 0.88, 0.95);
 
 // Where the pixel lies in the plane (see above).
 varying vec2 world_pos;
@@ -121,6 +132,7 @@ float value_noise(vec2 p) {
 }
 
 #include "res://shaders/open_ground.gdshaderinc"
+#include "res://shaders/frozen.gdshaderinc"
 
 // The tone over the art pixel at `at`: the mask's texel (hue, and the kind
 // in its alpha) of the one cell it's read from, where a slow noise bends the
@@ -185,6 +197,14 @@ void fragment() {
 		base.rgb = ground_after(base.rgb, floor(world_pos), level, snow, kind == KIND_MIRE);
 	} else if (ashen) {
 		base.rgb = scorched_ground(base.rgb, floor(world_pos));
+	}
+	// The ice over the ground; the water in a hole in it left as it is.
+	if (ice_life && !water) {
+		vec2 px = floor(world_pos) + 0.5;
+		vec4 ice = ice_over(base.rgb, px, texture(ice_map, (ice_shore_at(px) - map_origin) / ice_pixels).r, threshold, OPEN_ICE);
+		if (ice.a > 0.0) {
+			base.rgb = ice.rgb;
+		}
 	}
 	if (water_life && inland == INLAND_NONE && is_water(base.rgb)) {
 		vec2 px = floor(world_pos);

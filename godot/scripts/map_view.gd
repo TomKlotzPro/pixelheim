@@ -167,6 +167,11 @@ var flames: Array[Node2D] = []
 var beams: Array[PointLight2D] = []
 ## The sun's shafts into the Deepwood's glades by day (PIX-309).
 var shafts: Array[PointLight2D] = []
+## The material that draws the map's ice frozen (frozen.gdshaderinc: the
+## floor's in a cave, PIX-255; the ground's in the open air, PIX-398), null
+## on a map with none; and the cold lights the ice gives back.
+var frozen: ShaderMaterial
+var ice_lights: Array[PointLight2D] = []
 ## The ruins burning on the Night of Ash (PIX-197): [{rect, nodes}], in
 ## Town.ruins' order, so the dawn can put them out one by one.
 var fires: Array[Dictionary] = []

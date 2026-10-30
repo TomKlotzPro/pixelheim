@@ -21,9 +21,12 @@ const GROUND := {
 	"water": "river", "bridge": "river", "mountain": "cliff",
 	"path": "dirt", "ash": "dirt", "sand": "sand",
 	# PIX-164: Shade's sea in three depths (it meets sand, then itself);
-	# snow is his grass whitened, ice his sand frosted, stone his dirt greyed.
+	# snow is his grass whitened, stone his dirt greyed. Ice lies on the snow,
+	# toned as its region's ground, and is drawn frozen over it as the ice
+	# cave's (PIX-398, frozen.gdshaderinc): his sand frosted gave a lake
+	# stepped cell by cell, its edges his beach's.
 	"shore": "seawater-light", "dock": "seawater-light", "sea": "seawater-medium", "deep_sea": "seawater-deep",
-	"snow": "grass", "ice": "sand", "stone": "dirt",
+	"snow": "grass", "ice": "grass", "stone": "dirt",
 	# A cave mouth is the rock's own (PIX-269): the cliff runs on unbroken
 	# over it, its dark mouth at the cliff's foot, not a notch of grass cut
 	# in the ridge with a mound standing in it.
@@ -43,7 +46,6 @@ const TINTS := {
 	"ash": Color(0.47, 0.45, 0.43),
 	"marsh": Color(0.30, 0.42, 0.34),
 	"snow": Color(0.8, 0.84, 0.9),
-	"ice": Color(0.5, 0.66, 0.78),
 	"stone": Color(0.56, 0.56, 0.58),
 	# The mountain road's trodden way through the ash (REGION_PATHS).
 	"trodden": Color(0.62, 0.52, 0.4),
@@ -334,8 +336,8 @@ const TONE_BIT := 16
 const SPAN_BIT := 8
 ## On the land by a bank the code's low bits say which ground it is, so
 ## where the bank bends back the shader draws Shade's own tile of it there:
-## grass (the mire's and the snow's too, toned), dirt (a road, the ash, the
-## rock's foot), sand (the beach, the ice).
+## grass (the mire's, the snow's and the ice's too, toned), dirt (a road,
+## the ash, the rock's foot), sand (the beach).
 const BANK_GROUNDS := {"grass": 0, "dirt": 1, "cliff": 1, "sand": 2}
 
 static var _wet := {}

@@ -33,7 +33,7 @@ story: assets/data/story.json
 story town night: shaders/fire_* assets/fire/*
 story quest rank: assets/data/progression.json
 town story quest save: assets/data/post.json
-dungeon +icecave*: shaders/frozen.*
+dungeon field +icecave* +frostgate*: shaders/frozen.*
 dungeon +seacave* +shafts* +cellars* +icecave* +vault*: shaders/dungeon.* shaders/torch_motes.*
 rooms +observatory*: shaders/stair_frost.*
 town field title: shaders/*

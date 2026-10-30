@@ -114,14 +114,11 @@ static func _build_dungeon(view: MapView, data: MapData) -> Node2D:
 	root.add_child(layer)
 	_keep(root, laid)
 	root.add_child(_dressed(view.dressing["flats"]))
-	var ice := _frozen(data, floors)
+	var ice := _frozen(view, floors)
 	if ice != null:
 		ice.light_mask |= Lights.FLOOR
 		root.add_child(ice)
-		# The ice gives the dark back a little cold light, here and there.
-		for cell: Vector2i in data.grid:
-			if data.grid[cell] == "ice" and posmod(cell.x, ICE_LIGHT_EVERY.x) == 2 and posmod(cell.y, ICE_LIGHT_EVERY.y) == 2:
-				root.add_child(Lights.make(MapView.center(cell), 72.0, Lights.ICE, Lights.ICE_ENERGY))
+		light_ice(view, root)
 	root.add_child(_dressed(view.dressing["faces"]))
 	root.add_child(view.dungeon_objects)
 	_keep(root, standing)
@@ -216,19 +213,15 @@ static func _torch_glow(cell: Vector2i) -> Sprite2D:
 
 ## Ice over a dungeon's stone (PIX-255: the ice cave's frozen lake, and its
 ## glass hall's floor): the floor of its `ice` cells and of the stone round
-## them laid again, frozen by shaders/frozen.gdshader from a mask a texel a
-## cell (the shore runs between cells, bent off the grid, frost creeping out
-## over the stone). Between the floor and what stands on it; null for a map
-## with no ice. The stone under it is the floor as laid (`floors`: the
-## look's Medieval Age floor, PIX-310), Shade's elsewhere.
-static func _frozen(data: MapData, floors: Dictionary) -> Node2D:
-	var mask := Image.create(maxi(data.size.x, 1), maxi(data.size.y, 1), false, Image.FORMAT_L8)
-	var frozen := false
-	for cell: Vector2i in data.grid:
-		if data.grid[cell] == "ice":
-			mask.set_pixelv(cell, Color.WHITE)
-			frozen = true
-	if not frozen:
+## them laid again, frozen by shaders/frozen.gdshader from its ice_mask
+## (the shore runs between cells, bent off the grid, frost creeping out over
+## the stone). Between the floor and what stands on it; null for a map with
+## no ice. The stone under it is the floor as laid (`floors`: the look's
+## Medieval Age floor, PIX-310), Shade's elsewhere.
+static func _frozen(view: MapView, floors: Dictionary) -> Node2D:
+	var data := view.data
+	var mask := ice_mask(data)
+	if mask == null:
 		return null
 	var dungeon := PunyDungeon.sheet()
 	var layer := MapView.tile_layer_of(dungeon.tileset)
@@ -241,14 +234,39 @@ static func _frozen(data: MapData, floors: Dictionary) -> Node2D:
 				dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
 	var frost := ShaderMaterial.new()
 	frost.shader = preload("res://shaders/frozen.gdshader")
-	frost.set_shader_parameter("ice_map", ImageTexture.create_from_image(mask))
+	frost.set_shader_parameter("ice_map", mask)
 	frost.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
+	view.frozen = frost
 	var root := Node2D.new()
 	for each: TileMapLayer in [layer, laid]:
 		if each != null:
 			each.material = frost
 			_keep(root, each)
 	return root
+
+
+## Where a map's ice lies, for frozen.gdshaderinc (PIX-255; the open air's
+## too, PIX-398: GroundLayer): a texel a cell, white on its `ice` cells;
+## null for a map with none.
+static func ice_mask(data: MapData) -> ImageTexture:
+	var mask := Image.create(maxi(data.size.x, 1), maxi(data.size.y, 1), false, Image.FORMAT_L8)
+	var frozen := false
+	for cell: Vector2i in data.grid:
+		if data.grid[cell] == "ice":
+			mask.set_pixelv(cell, Color.WHITE)
+			frozen = true
+	return ImageTexture.create_from_image(mask) if frozen else null
+
+
+## The ice gives the dark back a little cold light, here and there (PIX-255;
+## the Frostgate's lake at night, PIX-398): one over its cells in every
+## ICE_LIGHT_EVERY, under `root`, kept in the view's `ice_lights`.
+static func light_ice(view: MapView, root: Node2D) -> void:
+	for cell: Vector2i in view.data.grid:
+		if view.data.grid[cell] == "ice" and posmod(cell.x, ICE_LIGHT_EVERY.x) == 2 and posmod(cell.y, ICE_LIGHT_EVERY.y) == 2:
+			var light := Lights.make(MapView.center(cell), 72.0, Lights.ICE, Lights.ICE_ENERGY)
+			root.add_child(light)
+			view.ice_lights.append(light)
 
 
 ## Whether `cell` is ice or touches it, corners too: where the frost may

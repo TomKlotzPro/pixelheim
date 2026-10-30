@@ -122,6 +122,15 @@ static func _ground_layers(view: MapView) -> Node2D:
 	# The floor answers to a boss's glow too (Lights.FLOOR, PIX-314).
 	view.ground_layer.light_mask |= Lights.FLOOR
 	root.add_child(view.ground_layer)
+	# Its ice frozen as the ice cave's is, over the snow it lies on, and
+	# giving back a little cold light at night (PIX-398).
+	var ice := DungeonLayer.ice_mask(view.data)
+	if ice != null:
+		water.set_shader_parameter("ice_life", true)
+		water.set_shader_parameter("ice_map", ice)
+		water.set_shader_parameter("ice_pixels", Vector2(view.data.size * TILE))
+		view.frozen = water
+		DungeonLayer.light_ice(view, root)
 	# The open ground's patches of the Medieval Age's greens and snow, in
 	# their own colours (the region's tone would whiten its snow's blue tufts
 	# away) with the ground's own patches over the greens (PIX-305); the
