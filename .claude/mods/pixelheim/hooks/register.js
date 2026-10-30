@@ -5,6 +5,11 @@ const CAP = 12
 const LIVE = ['pending', 'running', 'waiting']
 // The harness's --slot writes real saves; only a godot run is refused, not a grep for the word.
 const SLOT_RUN = /(^|[\s;&|(])godot\s[^;&|]*--slot\b/
+// A windowed run comes up on top of Tom's screen (PIX-407): a godot started as
+// a command without --headless, or the windowed flows and the look book.
+// Pictures go through godot/tools/shot.sh, which opens in the background.
+const WINDOWED_RUN = /(^|[;&|(\n]\s*)godot\s(?![^;&|\n]*--headless)[^;&|\n]*--path\b/
+const WINDOWED_TOOL = /(^|[;&|(\n]\s*)(\S*\/)?(flows\.sh(?![^;&|\n]*--(quiet|list|boot)\b)|lookbook\.sh)/
 const PANE = 'pixelheim'
 
 // The game's HUD colours (ui_style.gd), lifted a little for a dark terminal.
@@ -251,6 +256,9 @@ export function register(on) {
 
   on('tool.call', { tool: 'Bash' }, async ($, e, next) => {
     if (SLOT_RUN.test(e.command)) return { deny: 'Never pass --slot to the game: it writes real saves. Use the harness without it.' }
+    if (WINDOWED_RUN.test(e.command) || WINDOWED_TOOL.test(e.command)) {
+      return { deny: "A windowed game run comes up on top of Tom's screen. Take pictures with godot/tools/shot.sh (in the background, never in front), run flows with --quiet, and leave the windowed flows and the look book to CI." }
+    }
     return next(e)
   }).catch(($, e, next) => next(e))
 

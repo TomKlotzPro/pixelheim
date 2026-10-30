@@ -66,6 +66,31 @@ test('a godot run with --slot is refused, a search for the word is not', async (
   expect(grep.deny).toBeUndefined()
 })
 
+test('a windowed game run is refused, a background shot or a quiet run is not', async ($, on) => {
+  world(on, 5)
+  await start($)
+  for (const command of [
+    'godot --audio-driver Dummy --path godot -- --screenshot --map town --shot /tmp/a.png',
+    'cd godot && godot --path . -- --screenshot title',
+    'godot/tools/flows.sh fight die',
+    'godot/tools/lookbook.sh',
+  ]) {
+    const run = await $.tool.call({ tool: 'Bash', command })
+    expect(run.deny).toContain('shot.sh')
+  }
+  for (const command of [
+    'godot --headless --audio-driver Dummy --path godot -- --screenshot --map town',
+    'godot/tools/shot.sh --lang fr --map town --shot /tmp/a.png',
+    'godot/tools/flows.sh --quiet fight die',
+    'godot/tools/flows.sh --list',
+    'sed -n 1,20p godot/tools/flows.sh',
+    'grep -n "godot --path" godot/tools/verify.md',
+  ]) {
+    const run = await $.tool.call({ tool: 'Bash', command })
+    expect(run.deny).toBeUndefined()
+  }
+})
+
 test('Claude can read the usage', async ($, on) => {
   world(on, 13)
   await start($)
