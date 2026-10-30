@@ -4673,6 +4673,10 @@ msgid "Pixelheim's streets grow with the town: rutted dirt, then gravel with edg
 msgstr "Les rues de Pixelheim grandissent avec le village : terre creusée d'ornières, puis gravier bordé de pierres, puis pavés dans la Grand-Rue, et à l'âge de la Cité une place dallée avec des briques autour de la fontaine"
 
 #: assets/data/changelog.json
+msgid "Plain Planks"
+msgstr "Planches nues"
+
+#: assets/data/changelog.json
 msgid "Plain Sight"
 msgstr "Sans artifice"
 
@@ -6355,6 +6359,10 @@ msgstr "L'écran titre est un diorama vivant : trois rangées de crêtes en pr
 #: assets/data/changelog.json
 msgid "The title screen lives: stars, embers, bobbing monsters, a breathing dragon"
 msgstr "L'écran titre s'anime : étoiles, braises, monstres qui se dandinent, un dragon qui respire"
+
+#: assets/data/changelog.json
+msgid "The title's menu carries no mark on « What's new » any more: its four planks stand plain, and the version line under them still opens the notes"
+msgstr "Le menu de l'écran titre ne porte plus aucune marque sur « Quoi de neuf » : ses quatre planches restent nues, et la ligne de version en dessous ouvre toujours les nouveautés"
 
 #: assets/data/changelog.json
 msgid "The title's menu is calmer: no flames by the chosen plank, only its lift and warm glow, and unread notes show as a small gold seal on « What's new » rather than a red box beside it; the strike no longer bares the screen's edge as it shakes"

@@ -4673,6 +4673,10 @@ msgid "Pixelheim's streets grow with the town: rutted dirt, then gravel with edg
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Plain Planks"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Plain Sight"
 msgstr ""
 
@@ -6354,6 +6358,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The title screen lives: stars, embers, bobbing monsters, a breathing dragon"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The title's menu carries no mark on « What's new » any more: its four planks stand plain, and the version line under them still opens the notes"
 msgstr ""
 
 #: assets/data/changelog.json
