@@ -14,6 +14,7 @@ const RULES = [
   'Tom is the sole author: no Co-Authored-By trailer and no "Generated with" footer in commits or PR bodies.',
   'Never commit paid art (godot/assets/puny/shade, medieval, gegx, animals) or any picture made from it; copy it in from /Users/klotztom/playground/pixelheim/godot/assets/puny/ when you need it and delete it after.',
   'Quiet runs (--audio-driver Dummy); never --slot. Do not cut a release, merge or watch CI: the main session does.',
+  'Take every picture with godot/tools/shot.sh (it runs in the background, never over Tom\'s screen); never run godot windowed, flows.sh without --quiet, or lookbook.sh.',
   'Do not touch repo settings or secrets; do not delete branches.',
 ].join('\n- ')
 

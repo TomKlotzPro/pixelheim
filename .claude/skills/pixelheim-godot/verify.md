@@ -9,7 +9,7 @@ Read before running anything, adding a flow, a report field, a harness flag or a
 - `check.sh quick --plan` prints each changed file's areas and what would run, and runs nothing; `CHECK_FILES="godot/scripts/x.gd ..." check.sh quick --plan` previews any change. `check.sh full` runs everything CI runs, side by side, for the rare time the laptop must (CI down, a change to CI itself).
 - `quick` warns when the main checkout's skill (the one agents load) isn't origin/main's (PIX-349): then read this worktree's own `.claude/skills/pixelheim-godot/`.
 - **Tags**: each flow in `godot/tools/flows.txt` ends on its tags (`name | args | expected fields | town quest screen`), from the areas town, rooms, travel, field, combat, dungeon, trade, story, quest, screen, lang, save, gathering, title, rank, night (and `motion`). A script names the areas it touches on an `## areas: travel field +overworld*` line right under its `class_name`/`extends` (PIX-353; `all`, `none`, `+boot` names): **a new script gets that line**, which `test_areas.py` checks (every word a tag some flow carries). Every other file's areas are in `godot/tools/areas.txt` (`areas: globs`, first line naming the file wins, merged by union: add a line, never a glob twice). A file neither names, or whose areas no flow covers, runs every flow, and `quick` says so. A changed map also runs the flows that name it (and boots it), a changed `scripts/<x>.gd` the flows whose report shows `open=<x>`, a changed `flows.txt` (or `flows.d/<feature>.txt`) the flows it adds or changes. A flow with no known tag runs every time.
-- **The windowed motion flows never run in `check.sh`**: when the diff touches `player.gd`, `gait.gd`, `juice.gd`, `puny_art.gd`, `world_camera.gd` or `world_neighbours.gd` it says so. CI's windowed jobs walk `motion` and `line-motion` (over a line between two maps) on every pull request; `godot/tools/flows.sh motion line-motion` on the Mac is the fallback (it measures pixels, so it needs a window).
+- **The windowed motion flows never run in `check.sh`**: when the diff touches `player.gd`, `gait.gd`, `juice.gd`, `puny_art.gd`, `world_camera.gd` or `world_neighbours.gd` it says so. CI's windowed jobs walk `motion` and `line-motion` (over a line between two maps) on every pull request, and on the laptop they are CI's alone (a windowed `flows.sh` comes up over Tom's screen, PIX-407).
 - **Integrating (the main session)**: when a rebased tree is identical to the one CI checked (`git rev-parse HEAD^{tree}` equals the tree of the commit whose CI run passed), rely on CI and run nothing locally. When a rebase had conflicts, run `check.sh quick` on the result and let CI run the rest on the pushed branch.
 
 ## CI (`.github/workflows/godot.yml`, every pull request)
@@ -29,6 +29,7 @@ godot --headless --audio-driver Dummy --path godot --import    # after new asset
 godot --headless --audio-driver Dummy --path godot -s res://addons/gut/gut_cmdln.gd   # GUT; ALSO grep the output for "Parse Error"
 godot --headless --audio-driver Dummy --path godot -- --help   # every harness flag, its argument and what it does
 godot --headless --audio-driver Dummy --path godot -- --screenshot --map town fight kill   # a harness run (report line; no picture headless)
+godot/tools/shot.sh --lang fr --map town night --shot /tmp/town.png   # a picture: windowed in the background, never in front (PIX-407)
 godot/tools/flows.sh --quiet [-j N] [--shard K/N] [name...]    # the flows headless, N at a time (cores-2), stepped
 godot/tools/flows.sh --boot      # every map in the data booted headless, by day and at night (catches world.gd errors GUT can't)
 godot/tools/flows.sh [--boot] --list   # the flows (or boots) with their tags, a line each
@@ -38,7 +39,7 @@ python3 godot/tools/layout.py [--check]   # README's Layout from the scripts' fi
 python3 godot/tools/i18n.py [--check]     # the catalogue
 ```
 
-Windowed runs (`flows.sh` without `--quiet`, `lookbook.sh`, a harness run without `--headless`) open a window: keep them rare on the laptop, muted (`--audio-driver Dummy`), and leave visual review to CI's pictures unless the paid art's look is the question.
+**Pictures go through `godot/tools/shot.sh`** (PIX-407): `godot/tools/shot.sh [--res WxH] <harness args> --shot <file>` makes one windowed `--screenshot` run, muted, that on macOS opens in the background (`open -g`) so it never takes Tom's focus or comes in front of his work, and prints the report line. Tom asked for this: windows popping up over his work disturbed him. Never start a windowed run any other way on the laptop: a `godot … --path …` without `--headless`, `flows.sh` without `--quiet` and `lookbook.sh` all come up on top, and the Pixelheim mod refuses them. The windowed flows and the look book are CI's.
 
 ## The harness
 
