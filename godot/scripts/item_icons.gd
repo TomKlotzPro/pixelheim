@@ -68,22 +68,46 @@ static func stat(name: String) -> Texture2D:
 
 ## A skill's icon by its name, or null (no icon, or no paid art).
 static func skill(skill_name: String) -> Texture2D:
-	var code: String = _data()["skills"].get(skill_name, _translated_skills().get(skill_name, ""))
+	var code: String = _data()["skills"].get(english_skill(skill_name), "")
 	return _texture(skill_file(code)) if code != "" else null
 
 
-## The skills' icons by the name the player reads (PIX-196): the map is
-## keyed by the English names, the dock shows them translated.
+## What a skill plays (PIX-396, SkillFx), by the name the player reads: its
+## icon's theme's strips in skill_fx, its own entry over them - "fly" (a bolt
+## from the hero to the foe), "hit" (what lands on the foe), "self" (what
+## rises round the hero for a heal), each an effect's name or "".
+static func skill_look(skill_name: String) -> Dictionary:
+	var english := english_skill(skill_name)
+	var theme := String(_data()["skills"].get(english, "")).get_slice("/", 0)
+	var look := {"fly": "", "hit": "", "self": ""}
+	look.merge(skill_fx().get("themes", {}).get(theme, {}), true)
+	look.merge(skill_fx().get("skills", {}).get(english, {}), true)
+	return look
+
+
+## icons.json's skill_fx (PIX-396): the themes' and skills' strips, the
+## weapons' own, the impact and which strips glow.
+static func skill_fx() -> Dictionary:
+	return _data().get("skill_fx", {})
+
+
+## A skill's English name, which the map is keyed by, from the name the
+## player reads (PIX-196: the dock shows them translated); "" if unknown.
+static func english_skill(skill_name: String) -> String:
+	return skill_name if _data()["skills"].has(skill_name) else String(_translated_skills().get(skill_name, ""))
+
+
 static var _skill_names := {}
 static var _skill_generation := -1
 
 
+## The skills' English names by their translated ones.
 static func _translated_skills() -> Dictionary:
 	if _skill_generation != Text.generation:
 		_skill_generation = Text.generation
 		_skill_names = {}
 		for english: String in _data()["skills"]:
-			_skill_names[Text.t(english)] = _data()["skills"][english]
+			_skill_names[Text.t(english)] = english
 	return _skill_names
 
 

@@ -32,9 +32,9 @@ const AREAS := ["town", "rooms", "reach", "regions", "ways", "dungeon", "combat"
 ## number, which every branch adding a shot took the same next one of): its
 ## area; a map and where on it (Upper Street, a pack's home, a cell, or the
 ## map's arrival); the hour, or the first shower by day
-## (`rain`); and a foe to face, for the fight, struck on a beat while it's
-## filmed (`strike`), the third blow felling it, or caught as it notices the
-## hero (`notice`, PIX-289). A `letter` of Maren's is carried for that shot
+## (`rain`); and a foe to face, for the fight, struck for its picture and on
+## a beat while it's filmed (`strike`), the third blow felling it, or caught
+## as it notices the hero (`notice`, PIX-289). A `letter` of Maren's is carried for that shot
 ## alone (its recipient's mark), and the town stands at age `tier` for it
 ## alone (PIX-307; every age built otherwise), the Night of Ash burns for
 ## it alone with `ash` (PIX-327), and `post` opens the
@@ -123,6 +123,9 @@ const BOSS_ROW := 9
 ## last one felling it), and what each blow takes.
 const STRIKES := [2, 8, 14]
 const STAGED_BLOW := 12
+## A strike's still (PIX-396): the picture this long after a blow, its
+## impact and swing on screen.
+const STRIKE_HOLD := 0.1
 ## The looks to shoot each scene in (`--looks`); none: the look worn.
 var looks: PackedStringArray = []
 
@@ -171,6 +174,10 @@ func run() -> void:
 		if shot.get("notice", false) and is_instance_valid(_foe):
 			_foe.notice()
 			await get_tree().create_timer(NOTICE_HOLD).timeout
+		# A strike's still is a blow landing (PIX-396: it showed nothing).
+		if shot.get("strike", false) and is_instance_valid(_foe):
+			_blow(false)
+			await get_tree().create_timer(STRIKE_HOLD).timeout
 		await drawn()
 		for look: String in folders:
 			if look != "":
@@ -516,16 +523,21 @@ func _film(shot_name: String, strike := false) -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(folder))
 	for frame in MOTION_FRAMES:
 		if strike and frame in STRIKES and is_instance_valid(_foe):
-			world.player.face(_foe.global_position - world.player.global_position)
 			if frame == STRIKES[-1]:
 				_foe.fighter["hp"] = 1
-			world.player.attack_ready = true
-			world.player.attack()
-			# Staged: the blow lands on the beat, wherever the foe has stepped.
-			_foe.take_hit(STAGED_BLOW, world.player.global_position, null, frame == STRIKES[1])
+			_blow(frame == STRIKES[1])
 		await get_tree().create_timer(MOTION_STEP).timeout
 		await drawn()
 		(await DesktopLook.snapshot(self)).save_png("%s/%02d.png" % [folder, frame])
+
+
+## The hero swings at the shot's foe, and the blow lands on the beat,
+## staged, wherever the foe has stepped.
+func _blow(crit: bool) -> void:
+	world.player.face(_foe.global_position - world.player.global_position)
+	world.player.attack_ready = true
+	world.player.attack()
+	_foe.take_hit(STAGED_BLOW, world.player.global_position, null, crit)
 
 
 ## The hero's walk (PIX-243), slowed to WALK_SLOW: standing, setting off to

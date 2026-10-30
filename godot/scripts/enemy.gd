@@ -1183,6 +1183,8 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	# A clean white flash (PIX-226), longer on the killing blow (PIX-209: a
 	# longer stop, a thud).
 	Juice.flash(sprite, Juice.KILL_FLASH_SECONDS if fell else Juice.FLASH_SECONDS)
+	# A small impact where it lands (PIX-396).
+	world.fx.skills.impact(self)
 	if fell:
 		Sound.play_ui("kill")
 	# A named monster falls as a boss does (PIX-232), not just a boss.

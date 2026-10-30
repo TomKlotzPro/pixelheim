@@ -162,6 +162,17 @@ spoils | fight kill | floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* logged=0 | combat
 # where it fell, on one line, while the rest still stand (PIX-343: v0.256
 # held them to the fight's end).
 pack-tags | fight kill pack --foe goblin --wait 0.8 | tags=1 mobs=0 rising=[1-9] floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* | combat
+# Each skill plays its own strips, the bow its arrow (PIX-396): a mage's
+# Fireball flies a fireball that bursts on the foe, a cleric's Mend rises
+# round her, a necromancer's Grave Chill an ice arrow and crystals, and a
+# ranger's swing looses an arrow and its blow lands an impact. skillfx= is
+# what was asked; drawn counts the sprites (0 without the paid pack, the
+# soft glow in their place, and with Reduce motion).
+skillfx-fireball | --role mage cast | skillfx=fireball,fire_burst drawn \d+ | combat
+skillfx-mend | --role cleric cast | skillfx=vitality_heal drawn \d+ | combat
+skillfx-chill | --role necromancer --level 10 cast --skill 3 | skillfx=ice_arrow,ice_crystals drawn \d+ | combat
+skillfx-arrow | --role ranger fight --wait 0.12 | skillfx=arrow,impact drawn \d+ | combat
+skillfx-still | --role ranger fight --wait 0.12 still | skillfx=arrow,impact drawn 0 | combat
 # A harness hero built as the game makes one (PIX-379): a level-10 mage's
 # growth, its points 2:1 on intelligence and endurance, its tree bought
 # and the band's staff in hand, healed whole.
@@ -580,6 +591,11 @@ cpu-line | --map overworld --at 93,33 seamless --walk r,r,r cpu --wait 1 | map=d
 # at night, every house the ages raised standing, their windows lit, the
 # herd asleep; 0.24-0.27 ms on the laptop, held under 1.00 as the Deepwood.
 cpu-town | --map town --town-tier 4 night cpu --wait 2 | map=town cpu=0\.\d\d/\d+\.\d\d houses=4:17 | town night
+# A busy fight's frames with the skills' and weapons' strips (PIX-396): a
+# level-10 ranger shooting a pack of goblins down in the village, every
+# arrow and impact from the pool; 0.27-0.29 ms on the laptop (0.40 with
+# Reduce motion, none drawn), held under 1.00.
+cpu-fight | --role ranger --level 10 cpu fight kill pack --foe goblin | cpu=0\.\d\d/\d+\.\d\d skillfx=arrow,impact drawn \d+ | combat
 # Out of Blackiron along the north lane of its road, where a rock stood in
 # the way and only the road's middle went through (PIX-332): the hero walks
 # on over the line into the Ash Fields.

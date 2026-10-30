@@ -8,6 +8,15 @@ extends Node2D
 ## Node2D at the world's origin, so what it adds stands where it always did.
 
 var world: Node2D
+## The skills' and weapons' strips (PIX-396).
+var skills: SkillFx
+
+
+func _ready() -> void:
+	skills = SkillFx.new()
+	# Internal: not one of the words and wins its children are.
+	add_child(skills, false, Node.INTERNAL_MODE_FRONT)
+
 
 ## A win's colours over the world (PIX-245): XP in a sea-glass green no
 ## other number uses (a blow is warm white, a heal mint, a fine piece blue),

@@ -66,7 +66,8 @@ func step_cast() -> void:
 	world.foes.spawn_enemy("orc", world.player_cell + Vector2i(2, 0), world.map.region_at(world.player_cell + Vector2i(2, 0)))
 	world.player.face(Vector2.RIGHT)
 	await h.get_tree().create_timer(0.2).timeout
-	world.player.cast(0)
+	# `--skill N` (PIX-396): the dock's Nth skill.
+	world.player.cast(int(flags.value("--skill", "1")) - 1)
 	await h.get_tree().create_timer(0.15).timeout
 
 

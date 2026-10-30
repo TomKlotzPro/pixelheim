@@ -95,6 +95,7 @@ scene | the story scene playing over the world, by id: bells_dawn (PIX-253 step 
 scorch | on a map with burnt land: its burnt rock's cells, the dead trees on it, the cinders glowing, and a mining country's rails, spoil and pieces standing at its workings: burnt120,snags40,cinders30,rails50,spoil9,standing14 (PIX-308)
 shortcut | on a dungeon floor with a shortcut out to its way in: open or shut (PIX-255)
 signposts | the signposts standing at the forks of the Post's roads on this map, by fork: gate,saltmere_fork (PIX-322)
+skillfx | the skills' and weapons' strips asked for on this visit, each once, in order, then how many sprites were drawn (none without the paid pack or with motion reduced, the soft glow in their place): fireball,fire_burst drawn 2 (PIX-396)
 speaker | who the open conversation is with, by id: innkeeper (PIX-283)
 stair | on a dungeon's bottom floor, the way out where its boss fell: waiting (for its fall and its spoils), cracking, sinking, then open (PIX-339)
 stamps | once the courier's book has a page stamped: its places stamped, in the book's order: town,saltmere (PIX-321)

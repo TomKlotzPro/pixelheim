@@ -273,7 +273,253 @@
   "effects": {
     "flame": "puny-skills/Animation Spritesheets/Fire/Flame-Anim(Looped).png",
     "embers": "puny-skills/Animation Spritesheets/Fire/Status-Burned-Anim(Looped).png",
-    "smoke": "puny-skills/Animation Spritesheets/Fire/Smokescreen-Anim.png"
+    "smoke": "puny-skills/Animation Spritesheets/Fire/Smokescreen-Anim.png",
+    "arrow": "puny-skills/Animation Spritesheets/Ranged/Arrow-Projectile-Anim(Looped).png",
+    "fireball": "puny-skills/Animation Spritesheets/Fire/Fireball-Anim(Projectile).png",
+    "fire_arrow": "puny-skills/Animation Spritesheets/Fire/Fire-Arrow-Anim(Projectile).png",
+    "ice_arrow": "puny-skills/Animation Spritesheets/Ice/Ice-Arrow-Anim(Projectile).png",
+    "spark": "puny-skills/Animation Spritesheets/Electric/Lightning-Orb-Anim.png",
+    "light_ring": "puny-skills/Animation Spritesheets/Light/Ring-Of-Light-Anim.png",
+    "dark_ring": "puny-skills/Animation Spritesheets/Dark/Ring-of-Darkness-Anim-Small.png",
+    "blood_ring": "puny-skills/Animation Spritesheets/Blood/Blood-Revolve-Small-Anim.png",
+    "impact": "puny-skills/Animation Spritesheets/Melee/Physical-Damage-Anim.png",
+    "slash": "puny-skills/Animation Spritesheets/Melee/Slash-Anim.png",
+    "cleave": "puny-skills/Animation Spritesheets/Melee/Horizontal-Slash-Anim.png",
+    "crude_slash": "puny-skills/Animation Spritesheets/Melee/Crude-Slash-Anim.png",
+    "quad_slash": "puny-skills/Animation Spritesheets/Melee/Quadruple-Slash-Anim.png",
+    "punch": "puny-skills/Animation Spritesheets/Martial Arts/Martial-Arts-Punch-Anim.png",
+    "fire_burst": "puny-skills/Animation Spritesheets/Fire/Fire-Explosion-Anim.png",
+    "ice_crystals": "puny-skills/Animation Spritesheets/Ice/Ice-Crystals-Anim.png",
+    "thunder": "puny-skills/Animation Spritesheets/Electric/Thunder-Bolt-Anim.png",
+    "sun_burst": "puny-skills/Animation Spritesheets/Light/Sun-Damge-Anim.png",
+    "divine_sword": "puny-skills/Animation Spritesheets/Light/Divine-Sword-Anim.png",
+    "divine_fire": "puny-skills/Animation Spritesheets/Light/Divine-Fire-Anim.png",
+    "backstab": "puny-skills/Animation Spritesheets/Rogue/Backstab-Anim.png",
+    "smoke_vanish": "puny-skills/Animation Spritesheets/Rogue/Smoke-Vanish-Anim.png",
+    "dark_spike": "puny-skills/Animation Spritesheets/Dark/Dark-Spike-Anim.png",
+    "dark_claws": "puny-skills/Animation Spritesheets/Dark/Dark-Claws-Anim.png",
+    "poison_skull": "puny-skills/Animation Spritesheets/Poison/Green-Poison-Skull-Anim.png",
+    "poison_gas": "puny-skills/Animation Spritesheets/Poison/Poison-Gas-Anim.png",
+    "poison_slash": "puny-skills/Animation Spritesheets/Poison/Poison-Slash-Anim.png",
+    "claw": "puny-skills/Animation Spritesheets/Monster/Claw-Attack-Anim.png",
+    "bite": "puny-skills/Animation Spritesheets/Monster/Green-Bite-Anim.png",
+    "stomp": "puny-skills/Animation Spritesheets/Monster/Stomp-Anim.png",
+    "fear": "puny-skills/Animation Spritesheets/Monster/Fear-Anim.png",
+    "rock_spike": "puny-skills/Animation Spritesheets/Rock/Rock-Spike-Anim.png",
+    "rock_shards": "puny-skills/Animation Spritesheets/Rock/Rock-Shards-Anim.png",
+    "vampiric_bite": "puny-skills/Animation Spritesheets/Blood/Vampiric-Bite-Anim.png",
+    "debuff": "puny-skills/Animation Spritesheets/Buffs and Debuffs/Red-Arrow-Debuff-Anim.png",
+    "rose_burst": "puny-skills/Animation Spritesheets/Flora/Rose-Explosion-Anim.png",
+    "divine_heal": "puny-skills/Animation Spritesheets/Light/Divine-Healing-Anim.png",
+    "vitality_heal": "puny-skills/Animation Spritesheets/Restoration/Vitality-Heal-Anim.png",
+    "light_barrier": "puny-skills/Animation Spritesheets/Light/Divine-Barrier-Anim.png",
+    "muscle_up": "puny-skills/Animation Spritesheets/Martial Arts/Muscle-Up-Anim.png",
+    "haste": "puny-skills/Animation Spritesheets/Time/Haste-Anim.png"
+  },
+  "skill_fx": {
+    "about": "PIX-396: what each skill plays, from the Puny Skills pack's animated strips (the effects above, by name): 'fly' a bolt from the hero to the foe, 'hit' what lands on the foe, 'self' what rises round the hero for a heal. A skill takes its icon's theme's, its own entry over it ('' for none). 'swings' are the weapons' own (the bow's arrow, the staff's bolt), 'impact' every landed blow's, and 'glow' the strips added onto the world as light (the others are drawn as Shade drew them, their dark afterimages too).",
+    "themes": {
+      "Melee": {
+        "hit": "slash"
+      },
+      "Martial-Arts": {
+        "hit": "punch",
+        "self": "muscle_up"
+      },
+      "Fire": {
+        "fly": "fireball",
+        "hit": "fire_burst"
+      },
+      "Ice": {
+        "hit": "ice_crystals"
+      },
+      "Electric": {
+        "hit": "thunder"
+      },
+      "Light": {
+        "hit": "sun_burst",
+        "self": "divine_heal"
+      },
+      "Restoration": {
+        "self": "vitality_heal"
+      },
+      "Time": {
+        "self": "haste"
+      },
+      "Ranged": {
+        "fly": "arrow",
+        "hit": "impact"
+      },
+      "Rogue": {
+        "hit": "backstab"
+      },
+      "Dark": {
+        "fly": "dark_ring",
+        "hit": "dark_spike"
+      },
+      "Poison": {
+        "hit": "poison_skull"
+      },
+      "Vampiric": {
+        "fly": "blood_ring",
+        "hit": "vampiric_bite"
+      },
+      "Monster": {
+        "hit": "claw"
+      },
+      "Rock": {
+        "hit": "rock_spike"
+      },
+      "Buffs&Debuffs": {
+        "hit": "debuff"
+      },
+      "Flora": {
+        "hit": "rose_burst"
+      }
+    },
+    "skills": {
+      "Shield Slam": {
+        "hit": "impact"
+      },
+      "Skullsplitter": {
+        "hit": "crude_slash"
+      },
+      "Cleave": {
+        "hit": "cleave"
+      },
+      "Deathblow": {
+        "hit": "crude_slash"
+      },
+      "Killing Blow": {
+        "hit": "crude_slash"
+      },
+      "Hundred Wars": {
+        "hit": "quad_slash"
+      },
+      "Immovable": {
+        "hit": "impact"
+      },
+      "Aegis Strike": {
+        "hit": "impact"
+      },
+      "Last Bastion": {
+        "hit": "impact"
+      },
+      "Arcane Lance": {
+        "fly": "spark",
+        "hit": "impact"
+      },
+      "Grave Chill": {
+        "fly": "ice_arrow"
+      },
+      "Fan of Knives": {
+        "hit": "quad_slash"
+      },
+      "Shadowstep": {
+        "hit": "smoke_vanish"
+      },
+      "Smoke Bomb": {
+        "hit": "smoke_vanish"
+      },
+      "Mirror Feint": {
+        "hit": "smoke_vanish"
+      },
+      "Vanishing Act": {
+        "hit": "smoke_vanish"
+      },
+      "Garrote": {
+        "fly": "",
+        "hit": "dark_claws"
+      },
+      "Throatseeker": {
+        "fly": "",
+        "hit": "dark_claws"
+      },
+      "Thousand Cuts": {
+        "fly": "",
+        "hit": "dark_claws"
+      },
+      "Poison Blade": {
+        "hit": "poison_slash"
+      },
+      "Death Cloud": {
+        "hit": "poison_gas"
+      },
+      "Pestilence": {
+        "hit": "poison_gas"
+      },
+      "Smite": {
+        "fly": "light_ring"
+      },
+      "Dawnbreaker": {
+        "fly": "light_ring"
+      },
+      "Radiant Hammer": {
+        "fly": "light_ring",
+        "hit": "divine_sword"
+      },
+      "Judgement": {
+        "hit": "divine_sword"
+      },
+      "Final Verdict": {
+        "hit": "divine_sword"
+      },
+      "Sentence": {
+        "hit": "divine_sword"
+      },
+      "Wrath of Heaven": {
+        "hit": "divine_sword"
+      },
+      "Final Dawn": {
+        "hit": "divine_sword"
+      },
+      "Consecrate": {
+        "hit": "divine_fire"
+      },
+      "Sunfire": {
+        "hit": "divine_fire"
+      },
+      "Sanctuary": {
+        "self": "light_barrier"
+      },
+      "Volley": {
+        "fly": "fire_arrow"
+      },
+      "Wolf Companion": {
+        "hit": "bite"
+      },
+      "Alpha's Call": {
+        "hit": "bite"
+      },
+      "Stampede": {
+        "hit": "stomp"
+      },
+      "Rallying Roar": {
+        "hit": "fear"
+      },
+      "Worldsplitter": {
+        "hit": "rock_shards"
+      }
+    },
+    "swings": {
+      "bow": "arrow",
+      "staff": "spark"
+    },
+    "impact": "impact",
+    "glow": [
+      "fireball",
+      "fire_arrow",
+      "spark",
+      "light_ring",
+      "impact",
+      "thunder",
+      "sun_burst",
+      "divine_fire",
+      "claw",
+      "divine_heal",
+      "vitality_heal",
+      "light_barrier"
+    ]
   },
   "screens": {
     "inventory": "survival-rpg-icons/Tools/Backpack-05.png",
