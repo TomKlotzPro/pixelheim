@@ -3561,6 +3561,10 @@ msgid "Hard Earned"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Hard Frost"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Hard Hats"
 msgstr ""
 
@@ -5746,6 +5750,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Frostgate"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Frostgate's lake is frozen for real now: cracked plates, polish and glints like the ice cave's, a rounded shore instead of square steps, a faint cold light over it at night, and the bushes in the snow are snowy too"
 msgstr ""
 
 #: assets/data/changelog.json
