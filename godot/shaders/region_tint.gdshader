@@ -199,14 +199,17 @@ void fragment() {
 		base.rgb = scorched_ground(base.rgb, floor(world_pos));
 	}
 	// The ice over the ground; the water in a hole in it left as it is.
+	bool iced = false;
 	if (ice_life && !water) {
 		vec2 px = floor(world_pos) + 0.5;
 		vec4 ice = ice_over(base.rgb, px, texture(ice_map, (ice_shore_at(px) - map_origin) / ice_pixels).r, threshold, OPEN_ICE);
 		if (ice.a > 0.0) {
 			base.rgb = ice.rgb;
+			iced = true;
 		}
 	}
-	if (water_life && inland == INLAND_NONE && is_water(base.rgb)) {
+	// Ice never swells, foams or glints as water: its blue lip passed for water.
+	if (water_life && !iced && inland == INLAND_NONE && is_water(base.rgb)) {
 		vec2 px = floor(world_pos);
 		// A slow swell of light rolling over the water.
 		float swell = 0.6 * sin(world_time * 1.1 + px.x * 0.09 + px.y * 0.17)

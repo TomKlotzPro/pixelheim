@@ -34,8 +34,13 @@ const float ICE_CRACKED = 0.36;
 const float ICE_PATCH = 26.0;
 const float ICE_REFLECTED = 0.82;
 
+// Sin-free (a fract-of-multiply hash): a sin hash lost precision on the GPU
+// over the open lake's large coordinates and laid its cracks in long straight
+// crosses (PIX-398's review).
 vec2 ice_hash2(vec2 p) {
-	return vec2(hash(p), hash(p + 41.7));
+	vec3 p3 = fract(vec3(p.xyx) * vec3(0.1031, 0.1030, 0.0973));
+	p3 += dot(p3, p3.yzx + 33.33);
+	return fract((p3.xx + p3.yz) * p3.zy);
 }
 
 // How far `p` lies from the nearest edge between the plates (a Voronoi of
