@@ -337,6 +337,12 @@ ground-fringe | --map overworld --at 69,9 | map=overworld cell=\(69, 9\) tone=fr
 ground-mire | --map mirefen --at 30,20 | map=mirefen detail=2[0-9]{2} tone=mire | field
 ground-snow | --map frostgate --at 14,40 | map=frostgate detail=1[0-9]{2} tone=tone | field
 ground-line | --map overworld --at 93,33 seamless --walk r,r,r fades | map=deepwood change=seamless detail=[4-9][0-9] | field travel
+# Ice drawn frozen wherever it lies (PIX-398, frozen=): the Frostgate's lake
+# by the ground's own shader over the snow, every cell of it, with its few
+# cold lights for the night, the hero walking out onto it from the shore;
+# the ice cave's lake still over its stone.
+frozen-lake | --map frostgate --at 30,22 --walk r,r,r --wait 0.3 | map=frostgate cell=\(34, 22\) frozen=ground 145 lights 6 | field
+frozen-cave | --map icecave_lake --at 30,14 | map=icecave_lake frozen=floor 265 lights [1-9][0-9]* | dungeon
 # Burnt land (PIX-308, scorch=): the Ash's outcrops and the ridge along it
 # burnt rock with dead trees on it and cinders in the ash, the mountain
 # road's grey ridges left their own and its flats scorched, and Blackiron

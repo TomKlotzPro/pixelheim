@@ -3561,6 +3561,10 @@ msgid "Hard Earned"
 msgstr "Durement gagné"
 
 #: assets/data/changelog.json
+msgid "Hard Frost"
+msgstr "Gel dur"
+
+#: assets/data/changelog.json
 msgid "Hard Hats"
 msgstr "Casques de chantier"
 
@@ -5747,6 +5751,10 @@ msgstr "La Croisée des voies"
 #: assets/data/changelog.json
 msgid "The Frostgate"
 msgstr "La Porte-Givre"
+
+#: assets/data/changelog.json
+msgid "The Frostgate's lake is frozen for real now: cracked plates, polish and glints like the ice cave's, a rounded shore instead of square steps, a faint cold light over it at night, and the bushes in the snow are snowy too"
+msgstr "Le lac de la Porte-Givre est vraiment gelé désormais : des plaques fendues, du poli et des reflets comme dans la grotte de glace, une rive arrondie au lieu de marches carrées, une faible lueur froide la nuit, et les buissons dans la neige sont enneigés eux aussi"
 
 #: assets/data/changelog.json
 msgid "The Gate"

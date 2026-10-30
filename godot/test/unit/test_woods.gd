@@ -58,6 +58,17 @@ func test_each_region_grows_its_own_trees() -> void:
 			if (piece["rect"] as Rect2).position.y >= 9 * 16 and (piece["rect"] as Rect2).position.y < 12 * 16:
 				snowy += 1
 	assert_gt(snowy, 30, "snowy trees in the Frostgate")
+	# Nothing green stands bare in the snow (PIX-398): no big round tree, no
+	# bush; snowy trees and their stumps (the atlas's rows 9 to 11), here and
+	# on the Reach's pines toward the Frostgate.
+	var reached := MapData.load_by_id("overworld")
+	for map: MapData in [frost, reached]:
+		for cell: Vector2i in _forest(map):
+			if Woods.look_at(map, cell) != Woods.SNOWY:
+				continue
+			for piece: Dictionary in Woods.pieces("forest", cell, Scatter.choice(map.grid, cell), Woods.SNOWY, true):
+				var top := (piece["rect"] as Rect2).position.y
+				assert_true(top >= 9 * 16 and top < 12 * 16, "%s %s: under snow, not %s" % [map.id, cell, piece["rect"]])
 	var deep := MapData.load_by_id("deepwood")
 	assert_eq(Woods.look_at(deep, Vector2i(10, 3)), "deep")
 	var reach := MapData.load_by_id("overworld")

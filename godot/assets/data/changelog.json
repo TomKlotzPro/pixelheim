@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.309.0",
+      "date": "2026-10-30",
+      "codename": "Hard Frost",
+      "notes": [
+        "The Frostgate's lake is frozen for real now: cracked plates, polish and glints like the ice cave's, a rounded shore instead of square steps, a faint cold light over it at night, and the bushes in the snow are snowy too"
+      ]
+    },
+    {
       "version": "0.308.0",
       "date": "2026-10-30",
       "codename": "Plain Planks",

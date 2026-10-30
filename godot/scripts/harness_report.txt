@@ -53,6 +53,7 @@ floats | what floated up from where it was won, merged, when anything did (PIX-2
 floor | on a floor of a region's dungeon: which of how many, 2/3 (PIX-255)
 frames | with crossing: the walk's frames, the most work and the 99th percentile in ms: 240 max 3.1 p99 2.4 (PIX-269)
 free | with launch: the slot New Game makes its hero in, 0 when none is free (PIX-303: never one holding a save the game can't read)
+frozen | on a map with ice: what draws it frozen (frozen.gdshaderinc) - the ground in the open air, the floor in a cave - its cells and the cold lights over them: ground 145 lights 6 (PIX-255, PIX-398)
 gate | the gate the story keeps shut that said its line on this run (PIX-254)
 hamlet | on a settlement beyond Pixelheim: its look and its dressing counted by how each piece stands: fishing:line1,moored2,stand4,wall3 (PIX-313)
 hero | with --role or --level: the hero as built, role:level, health/mana, strength, intelligence, dexterity, endurance, skills learned and the weapon in hand: mage:10:91/140:3,28,4,12:skills12:arch_staff (PIX-379)

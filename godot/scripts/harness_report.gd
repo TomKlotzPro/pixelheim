@@ -439,6 +439,20 @@ func field_free() -> String:
 	return str(GameState.free_slot()) if flags.has("launch") else ""
 
 
+func field_frozen() -> String:
+	var view: MapView = world.view
+	if view == null or view.frozen == null:
+		return ""
+	var on := "ground" if view.ground_layer != null and view.ground_layer.material == view.frozen and view.frozen.get_shader_parameter("ice_life") else "floor"
+	var mask := (view.frozen.get_shader_parameter("ice_map") as Texture2D).get_image()
+	var cells := 0
+	for y in mask.get_height():
+		for x in mask.get_width():
+			if mask.get_pixel(x, y).r > 0.5:
+				cells += 1
+	return "%s %d lights %d" % [on, cells, view.ice_lights.size()]
+
+
 func field_gate() -> String:
 	return world.interaction.gate_said
 

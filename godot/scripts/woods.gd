@@ -40,6 +40,12 @@ const UNDERGROWTH := [
 	Vector2i(20, 12), Vector2i(21, 12), Vector2i(23, 12), Vector2i(22, 12),
 	Vector2i(19, 3), Vector2i(19, 5), Vector2i(17, 2), Vector2i(21, 2), Vector2i(17, 0),
 ]
+## Shade drew no big tree under snow and no bush in it (PIX-398: green
+## bushes and big round trees stood bare among the Frostgate's snowy
+## pines): the snowy woods grow a snowy tree for a big one, and small snowy
+## pines and stumps for undergrowth.
+const SNOWY := "snowy"
+const SNOWY_UNDERGROWTH := [Vector2i(16, 9), Vector2i(18, 9), Vector2i(20, 9), Vector2i(17, 9), Vector2i(19, 9)]
 ## And with the free pack alone, Shade's Puny World: a log, a twig, a stump.
 const UNDERGROWTH_FREE := [703, 838, 730]
 ## Each region's woods: its trees' looks, weighted by repeats, and the share
@@ -138,7 +144,7 @@ static func pieces(tile: String, cell: Vector2i, choice: int, look: String, paid
 	var foot := FOOT + Vector2((h % (2 * STRAY.x + 1)) - STRAY.x, ((h >> 5) % (2 * STRAY.y + 1)) - STRAY.y)
 	var medieval := paid and look != ""
 	if choice in UNDERGROWTH_FREE:
-		out.append(_undergrowth(cell, foot, medieval))
+		out.append(_undergrowth(cell, foot, medieval, look))
 		return out
 	if choice == 702:
 		# A rock stays a rock.
@@ -154,7 +160,7 @@ static func pieces(tile: String, cell: Vector2i, choice: int, look: String, paid
 	out.append(_tree(cell, 4, foot, look, medieval, choice, thick and (h >> 11) % BIG_ONES == 0, glade))
 	if tile == FOREST and not glade and (h >> 13) % 100 < UNDER_TREES:
 		var front := foot + Vector2(-4 if (h >> 9) % 2 == 0 else 4, 3)
-		out.append(_undergrowth(cell, front, medieval))
+		out.append(_undergrowth(cell, front, medieval, look))
 	return out
 
 
@@ -168,7 +174,7 @@ static func _tree(cell: Vector2i, salt: int, foot: Vector2, look: String, mediev
 	var kind: String = kinds[h % kinds.size()]
 	if (h >> 4) % 100 < int(LOOKS[look][1]):
 		kind = "autumn"
-	if big:
+	if big and look != SNOWY:
 		var at: Vector2i = BIG[(h >> 8) % BIG.size()]
 		return {"sheet": SHEET, "rect": Rect2(at * 16, Vector2(32, 32)), "foot": foot, "own": true}
 	var short := small or (h >> 12) % 100 < 22
@@ -189,11 +195,12 @@ static func _free(tile_id: int, foot: Vector2) -> Dictionary:
 	return {"sheet": PUNY, "rect": PunyTerrain.region(tile_id), "foot": foot + Vector2(0, 2), "own": false}
 
 
-static func _undergrowth(cell: Vector2i, foot: Vector2, medieval: bool) -> Dictionary:
+static func _undergrowth(cell: Vector2i, foot: Vector2, medieval: bool, look: String) -> Dictionary:
 	var h := _hash(cell, 6)
 	if not medieval:
 		return _free(UNDERGROWTH_FREE[h % UNDERGROWTH_FREE.size()], foot)
-	var at: Vector2i = UNDERGROWTH[h % UNDERGROWTH.size()]
+	var growth: Array = SNOWY_UNDERGROWTH if look == SNOWY else UNDERGROWTH
+	var at: Vector2i = growth[h % growth.size()]
 	return {"sheet": SHEET, "rect": Rect2(at * 16, Vector2(16, 16)), "foot": foot + Vector2(0, 2), "own": true}
 
 
