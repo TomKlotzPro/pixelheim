@@ -787,6 +787,11 @@ func field_signposts() -> String:
 	return ",".join(forks)
 
 
+func field_skillfx() -> String:
+	var fx: SkillFx = world.fx.skills
+	return "%s drawn %d" % [",".join(fx.asked), fx.drawn] if not fx.asked.is_empty() else ""
+
+
 func field_speaker() -> String:
 	for node in world.get_children():
 		if node.has_method("_advance"):

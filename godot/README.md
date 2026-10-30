@@ -582,6 +582,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/seam.gd` — The lines between the Reach's maps (One Reach, PIX-269, steps 5 and 6).
 - `scripts/shop_screen.gd` — A keeper's counter (talk to anyone in a shop): Buy, Sell, the Forge at the smithy, and Craft at the forge and the cauldron.
 - `scripts/shop_sign.gd` — The town's shop signs (PIX-134): a wooden board with a carved rim hanging by two chains from an iron bar over each door, painted with its trade in Shade's own icons (cheese for the general store, a tankard for the inn, the anvil, the brewing pot, the hall's ledger, a key for the house).
+- `scripts/skill_fx.gd` — Each skill's own look and the weapons' (PIX-396), from Shade's Puny Skills strips as icons.json's skill_fx maps them
 - `scripts/skills_screen.gd` — The skill tree (SkillTree.tsx): once the hero has ranked, the Path Graph on top (six identities, walked edges lit, a pending step to claim), then the role's three branches of six tiers (PIX-190 added the last two, open at 11 and 14 since PIX-233), one line a node, the selected one in full below.
 - `scripts/skyline.gd` — The village seen from outside (PIX-248).
 - `scripts/slicer.gd` — Work cut into slices a frame (One Reach, PIX-269, step 5)
