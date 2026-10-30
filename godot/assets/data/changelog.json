@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.308.0",
+      "date": "2026-10-30",
+      "codename": "Plain Planks",
+      "notes": [
+        "The title's menu carries no mark on « What's new » any more: its four planks stand plain, and the version line under them still opens the notes"
+      ]
+    },
+    {
       "version": "0.307.0",
       "date": "2026-10-29",
       "codename": "Turn It Up",
