@@ -2677,6 +2677,10 @@ msgid "Clear Map"
 msgstr "Carte nette"
 
 #: assets/data/changelog.json
+msgid "Clear Rooms"
+msgstr "Pièces dégagées"
+
+#: assets/data/changelog.json
 msgid "Clear Screen"
 msgstr "Écran dégagé"
 
@@ -6339,6 +6343,10 @@ msgstr "La fiche de caractéristiques prend une identité : votre portrait, vo
 #: assets/data/changelog.json
 msgid "The story says what really happened: five of the village climbed to mend the seal and only one came home, the dream counts three torches, and Fafnyr is awake on his hoard"
 msgstr "L'histoire dit ce qui s'est vraiment passé : cinq villageois sont montés réparer le sceau et une seule est revenue, le rêve compte trois torches, et Fafnyr est éveillé sur son trésor"
+
+#: assets/data/changelog.json
+msgid "The stray stubs of plaster wall standing in the town's rooms are gone: the smithy's furnaces and the shop's shelves stand side by side, and the split counters are joined into one"
+msgstr "Les bouts de mur en plâtre qui traînaient dans les pièces du village ont disparu : les fourneaux de la forge et les étagères de la boutique sont côte à côte, et les comptoirs coupés en deux n'en font plus qu'un"
 
 #: assets/data/changelog.json
 msgid "The tap bar carries what only a key did: drop, drop all and sort in the pack, put a skill on a key and forget in Skills, and it shrinks to fit the screen"

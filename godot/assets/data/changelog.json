@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.310.0",
+      "date": "2026-11-01",
+      "codename": "Clear Rooms",
+      "notes": [
+        "The stray stubs of plaster wall standing in the town's rooms are gone: the smithy's furnaces and the shop's shelves stand side by side, and the split counters are joined into one"
+      ]
+    },
+    {
       "version": "0.309.0",
       "date": "2026-10-30",
       "codename": "Hard Frost",
