@@ -2677,6 +2677,10 @@ msgid "Clear Map"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Clear Rooms"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Clear Screen"
 msgstr ""
 
@@ -6338,6 +6342,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The story says what really happened: five of the village climbed to mend the seal and only one came home, the dream counts three torches, and Fafnyr is awake on his hoard"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The stray stubs of plaster wall standing in the town's rooms are gone: the smithy's furnaces and the shop's shelves stand side by side, and the split counters are joined into one"
 msgstr ""
 
 #: assets/data/changelog.json
