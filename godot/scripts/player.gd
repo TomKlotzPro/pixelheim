@@ -234,6 +234,10 @@ func attack() -> void:
 	hitbox.position = facing * 16
 	_spring_from(Juice.SWING)
 	_play(art["attack"])
+	_loosed = false
+	# A staff bites on its second frame: its bolt leaves now (PIX-396).
+	if STRIKE_FRAMES.get(art["attack"], [1, 2])[0] == 1:
+		_loose()
 	Sound.play_ui("swing")
 	get_tree().create_timer(ATTACK_COOLDOWN).timeout.connect(
 		func() -> void: attack_ready = true
@@ -297,6 +301,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	GameState.upkeep.hurt(damage)
 	hp = GameState.hero.hp
 	Juice.flash(sprite)
+	world.fx.skills.impact(self)
 	world.fx.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35), false, self)
 	world.camera_rig.shake(3.0, 0.2)
 	world.camera_rig.hit_stop(0.05)
@@ -379,17 +384,25 @@ func cast(index: int) -> void:
 			ailments.clear()
 			_show_ailment()
 			world.messages.log_line("All ailments are purged!")
-		world.fx.skill_flash(global_position, Color(0.5, 1.0, 0.6))
+		# Its own strips round the hero (PIX-396), the soft glow without them.
+		if not world.fx.skills.cast(skill, self, []):
+			world.fx.skill_flash(global_position, Color(0.5, 1.0, 0.6))
 		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6), false, self)
 		return
 	# An area skill (PIX-190) strikes every foe in reach, not just the nearest.
 	var targets: Array = _foes_in_reach() if skill.get("area", false) else [target]
+	# Its own strips on each (PIX-396), the soft glow without them; they are
+	# its impact, so a blow's small one stays off.
+	var glow: bool = not world.fx.skills.cast(skill, self, targets)
+	world.fx.skills.impacts_held = true
 	var dealt := 0
 	for foe: Node in targets:
 		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * GameState.spoils.damage_scale())
-		world.fx.skill_flash(foe.global_position, color)
+		if glow:
+			world.fx.skill_flash(foe.global_position, color)
 		foe.take_hit(damage, global_position, skill.get("inflicts"))
 		dealt += damage
+	world.fx.skills.impacts_held = false
 	# What it dealt (or a heal restored) is the numbers over the heads: the
 	# log doesn't say it again (PIX-334).
 	# A draining skill gives back a share of what it took (Drain Life).
@@ -524,8 +537,36 @@ func _on_frame_changed() -> void:
 	if attacking and not casting:
 		var strike: Array = STRIKE_FRAMES.get(art["attack"], [1, 2])
 		hitbox.monitoring = sprite.frame >= strike[0] and sprite.frame <= strike[1]
-		if sprite.frame == strike[0] and art["attack"] != "bow":
+		if sprite.frame == strike[0] - 1 and sprite.frame > 0:
+			_loose()
+		if sprite.frame == strike[0] and art["attack"] != "bow" and not _loosed:
 			_slash()
+
+
+## This swing's arrow or bolt was drawn (PIX-396).
+var _loosed := false
+
+
+## The bow's arrow, the staff's bolt (PIX-396): loosed a frame before the
+## weapon bites and flying that frame, so it lands as the blow does, at the
+## foe the swing will reach (the nearest in its box, give or take a body) or
+## to the box's far edge, a miss. The blow is still the hitbox's; a staff
+## with no bolt to draw keeps its crescent.
+func _loose() -> void:
+	# A blade looses nothing.
+	if not ItemIcons.skill_fx().get("swings", {}).has(art["attack"]):
+		return
+	var frame_seconds := 1.0 / (sprite.sprite_frames.get_animation_speed(sprite.animation) * maxf(absf(sprite.get_playing_speed()), 0.01))
+	var box := ((hitbox.get_child(0) as CollisionShape2D).shape as RectangleShape2D).get_rect()
+	var at := global_position + hitbox.position
+	var reach := Rect2(box.position + at, box.size).grow(8.0)
+	var foe: Node2D = null
+	for enemy in get_tree().get_nodes_in_group("mobs"):
+		if not enemy.dying and reach.has_point(enemy.global_position) and (foe == null or enemy.global_position.distance_to(global_position) < foe.global_position.distance_to(global_position)):
+			foe = enemy
+	var miss := at + facing * box.size.x / 2.0
+	var tint := Juice.ARCANE if art["attack"] == "staff" else Color.WHITE
+	_loosed = world.fx.skills.swing(art["attack"], global_position, foe, miss if foe == null else foe.global_position, frame_seconds, tint)
 
 
 ## The swing's arc, a breath long, in the weapon's colour.

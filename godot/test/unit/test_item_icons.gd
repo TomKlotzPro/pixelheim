@@ -69,6 +69,8 @@ func test_a_translated_skill_keeps_its_icon() -> void:
 	Text.forget()
 	var name: String = Skills.hero_skills(HeroState.create("T", "warrior"))[0]["name"]
 	assert_ne(name, "Power Strike", "the name is French")
-	var icons: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/puny/icons.json"))["skills"]
-	assert_eq(ItemIcons._translated_skills().get(name, ""), icons["Power Strike"])
+	assert_eq(ItemIcons.english_skill(name), "Power Strike")
+	# Its strips too (PIX-396).
+	assert_eq(ItemIcons.skill_look(name), ItemIcons.skill_look("Power Strike"))
+	assert_ne(String(ItemIcons.skill_look(name)["hit"]), "")
 	Text.apply("en")

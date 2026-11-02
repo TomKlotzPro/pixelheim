@@ -117,6 +117,7 @@ mimic |  | with --map mirefen: its mimic chest opened (--wait for the ambush) | 
 portal |  | walk into the map's nearest doorway, as a player would | portal | 640
 die |  | a blow no hero survives: the fall, then waking at the inn (with fight, after it: felled mid-fight, PIX-288) | die | 650
 cast |  | a foe two steps off, then the first skill: the strike, the flash, the log | cast | 660
+--skill | <n> | with cast: the dock's nth skill (1 to 6) rather than the first (PIX-396)
 fight |  | a foe two steps off and one swing, caught mid-swing | fight | 670
 --foe | <species> | with fight: the foe (default orc; a named monster's id brings it out of its lair)
 --foe-distance | <n> | with fight: the foe n cells off (an elite's opener from range)
