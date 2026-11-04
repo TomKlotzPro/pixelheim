@@ -762,10 +762,11 @@ func _decor_lights() -> void:
 			beams.append(beam)
 		elif tile == PunyTown.WINDOW:
 			_add_lit_window(cell, not skyline.is_empty())
-		elif tile in PunyInterior.FIRE_TILES:
+		elif PunyInterior.FIRE_TILES.has(tile):
 			# A hearth or a forge warms the room it's in, and embers rise off
 			# it (PIX-225).
-			_add_hearth(center(cell) + Vector2(TILE / 2.0, 4), center(cell) + Vector2(TILE / 2.0, 6))
+			var fire: Vector2 = Vector2(cell * TILE) + PunyInterior.FIRE_TILES[tile]
+			_add_hearth(fire, fire + Vector2(0, 2))
 		elif tile == PunyTown.DOOR and skyline.is_empty():
 			SettlementsLayer._add_chimney_smoke(self, cell)
 	# A room's candles and sconces burn at night, each warming the floor
@@ -807,13 +808,25 @@ func _free_room_lights() -> void:
 
 
 ## A hearth's or a forge's fire (PIX-225): its warmth on the room, its
-## light from `at`, and embers rising off it at `embers_at`.
+## light from `at`, embers rising off it at `embers_at`, and since PIX-402
+## a fire seen burning there (FireArt's lick, its foot on the embers).
 func _add_hearth(at: Vector2, embers_at: Vector2) -> void:
 	props.add_child(Lights.make(at, 96.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
 	var embers := _still(Motes.make_embers())
 	embers.position = embers_at
 	embers.z_index = 6
 	props.add_child(embers)
+	var size: Vector2i = FireArt.KINDS["lick"]
+	var flame := AnimatedSprite2D.new()
+	flame.sprite_frames = FireArt.frames("lick", 0)
+	flame.centered = false
+	flame.position = embers_at.floor()
+	flame.offset = Vector2(-(size.x / 2), -size.y)
+	flame.speed_scale = FireArt.pace({"cell": Vector2i(embers_at), "frame": 0}, GameState.settings.reduce_motion)
+	flame.material = Lights.unshaded()
+	flame.z_index = 5
+	props.add_child(flame)
+	flame.play()
 
 
 ## A candle's or a sconce's flame at `at` (PIX-311): lit at night, a halo

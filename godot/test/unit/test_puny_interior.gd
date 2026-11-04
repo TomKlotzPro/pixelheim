@@ -15,9 +15,15 @@ func _room(name: String) -> MapData:
 	return data
 
 
+## A room's own wall tiles (PIX-402: plaster, the keep's stone, Morvax's
+## rock), without the window.
+func _plain_walls(map_id: String) -> Array:
+	return PunyInterior.WALLS.values().map(func(tile: int) -> int: return tile + int(PunyInterior.WALL_SETS.get(map_id, 0)))
+
+
 ## Shade's wall tiles and the window: what a wall cell may be drawn as.
-func _wall_tiles() -> Array:
-	return PunyInterior.WALLS.values() + [PunyInterior.WINDOW]
+func _wall_tiles(map_id: String) -> Array:
+	return _plain_walls(map_id) + [PunyInterior.WINDOW]
 
 
 func test_every_room_keeps_its_door_floor_and_walls() -> void:
@@ -33,7 +39,7 @@ func test_every_room_keeps_its_door_floor_and_walls() -> void:
 				# dark beyond the room, or it is the ground furniture stands
 				# on where it reaches into the wall line (PIX-237): never the
 				# backdrop through a piece's open pixels.
-				var drawn: bool = plan["walls"].get(cell, -1) in _wall_tiles()
+				var drawn: bool = plan["walls"].get(cell, -1) in _wall_tiles(data.id)
 				var under: bool = plan["floor"].has(cell) and plan["pieces"].has(cell)
 				assert_true(drawn or under or plan["void"].has(cell), "%s wall at %s drawn or dark" % [name, cell])
 			else:
@@ -63,7 +69,7 @@ func test_furniture_in_the_wall_line_stands_on_wall_or_floor() -> void:
 				if data.grid.get(at, "") != "wall":
 					continue
 				if part[0].y < 0:
-					assert_true(walls.get(at, -1) in PunyInterior.WALLS.values(), "%s: a plain wall behind the %s's top at %s" % [name, tile, at])
+					assert_true(walls.get(at, -1) in _plain_walls(data.id), "%s: a plain wall behind the %s's top at %s" % [name, tile, at])
 				else:
 					assert_true(plan["floor"].has(at) and not walls.has(at), "%s: floor under the %s at %s" % [name, tile, at])
 
@@ -119,6 +125,36 @@ func test_furniture_never_shuts_the_way_out() -> void:
 				seen[next] = true
 				queue.append(next)
 		assert_true(door_reached, "%s door reachable from the entrance" % name)
+
+
+## Every room shaped by its keeper (PIX-402): straight walls, no stub or
+## notch standing into the room (what's inside the walls fills the box round
+## it), no counter or shelf standing alone, and each room's features.
+func test_rooms_have_straight_walls_and_no_lone_counter() -> void:
+	for name: String in ROOMS:
+		var data := _room(name)
+		var box := Rect2i()
+		var inside: Array[Vector2i] = []
+		for cell: Vector2i in data.grid:
+			var tile: String = data.grid[cell]
+			if tile == "wall" or tile.begins_with("door"):
+				continue
+			inside.append(cell)
+			box = Rect2i(cell, Vector2i.ONE) if box.size == Vector2i.ZERO else box.expand(cell).expand(cell + Vector2i.ONE)
+			if PunyInterior.RUNS.has(tile):
+				var joined: bool = data.grid.get(cell + Vector2i.LEFT, "") == tile or data.grid.get(cell + Vector2i.RIGHT, "") == tile
+				assert_true(joined, "%s: the %s at %s stands alone" % [name, tile, cell])
+		assert_eq(inside.size(), box.get_area(), "%s: a wall stub or notch inside its walls" % name)
+	var inn := _room("town_inn")
+	assert_true("hearth" in inn.grid.values(), "the inn's hearth")
+	assert_gte(inn.grid.values().count("counter"), 6, "the inn's bar")
+	assert_true("coals" in _room("town_smith").grid.values(), "the smithy's forge")
+	var area := func(name: String) -> int: return _room(name).size.x * _room(name).size.y
+	assert_gt(area.call("town_hall"), area.call("town_inn"), "the hall is the grandest")
+	assert_gt(area.call("town_inn"), area.call("town_shop"), "the inn wider than a shop")
+	assert_lt(area.call("town_house"), area.call("town_shop"), "the house is small")
+	assert_eq(PunyInterior.plan("keep", _room("keep").grid)["walls"][Vector2i(1, 1)], PunyInterior.WALLS[6] + PunyInterior.WALL_SETS["keep"], "the keep is stone")
+	assert_false(PunyInterior.WINDOW in PunyInterior.plan("morvax_forge", _room("morvax_forge").grid)["walls"].values(), "no window in the rock")
 
 
 func test_walls_follow_their_neighbours() -> void:

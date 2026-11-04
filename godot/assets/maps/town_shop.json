@@ -21,8 +21,8 @@
   "tiles": [
     ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
     ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
-    ["wall", "wall", "shelf", "floor", "shelf", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "counter", "floor", "counter", "wall", "wall", "wall"],
-    ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall", "wall"],
+    ["wall", "wall", "shelf", "shelf", "shelf", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "shelf", "shelf", "shelf", "floor", "wall", "wall"],
+    ["wall", "wall", "floor", "floor", "floor", "counter", "counter", "counter", "floor", "counter", "counter", "counter", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
     ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
     ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
     ["wall", "wall", "counter", "counter", "counter", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],

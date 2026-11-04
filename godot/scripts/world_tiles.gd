@@ -17,6 +17,8 @@ const TILE_INFO := {
 	"lamp": false, "anvil": false, "forge": false, "shelf": false, "cauldron": false,
 	"counter": false, "bed": false, "hearth": false, "door": true, "door_shut": false,
 	"cave": true, "shrine": true,
+	# The smithy's forge, a bed of coals in a stone kerb (PIX-402).
+	"coals": false,
 	# The bigger Reach (PIX-164): the coast's shallows and sea, its docks;
 	# snow and walkable ice on the pass; cobbled stone in the mines and the
 	# castle.
@@ -56,7 +58,7 @@ const TILE_COLORS := {
 	"snow": "e8eef2", "ice": "a8d0e0", "stone": "8a8680",
 	"stairwell": "16181e",
 	"wreck": "6a4a2e", "rock": "6b6f7a", "sealed": "8a6238", "winch": "6b6f7a",
-	"statue": "8a8f9a", "grille": "3a3d44",
+	"statue": "8a8f9a", "grille": "3a3d44", "coals": "c8502a",
 }
 const ROOF_COLOR := "8a5638"
 const FALLBACK_COLOR := "4a4e58"
