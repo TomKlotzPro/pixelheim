@@ -270,7 +270,7 @@ func _tagline(line: String) -> void:
 
 ## On Fafnyr's name: a roar, the ground shaking, his shadow across the town.
 func _fafnyr() -> void:
-	Sound.play("roar")
+	Sound.play("dragon_roar")
 	if GameState.settings.reduce_motion:
 		return
 	_shake_left = 0.8

@@ -58,7 +58,7 @@ func _check_phase() -> void:
 	# Night of Bells' Fafnyr, over the square rather than his cave).
 	world.messages.log_line(enemy.fighter.get("roars", pattern["roars"])[phase - 1])
 	# A new phase is roared (PIX-210), not bumped.
-	Sound.play("roar")
+	Sound.play("boss_phase")
 	world.camera_rig.shake(6.0, 0.5)
 
 

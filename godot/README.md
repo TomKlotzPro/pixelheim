@@ -25,10 +25,23 @@ installs the atlas into `godot/assets/puny/medieval/` and every icon
 by `tools/ui_kit_prep.gd` and named in `assets/puny/ui_kit.json`, into
 `godot/assets/puny/gegx/`, and ninth-jedi's paid Farm Animals (the town's
 hens, sheep, pigs and cattle, `retro-rpg/ninth-jedi/farm-animals/`, PIX-387)
-into `godot/assets/puny/animals/` (all git-ignored) with your GitHub login; the deploy and the Godot CI run the same script on a checkout
+into `godot/assets/puny/animals/`, and Leohpaz's paid sound packs as the
+game plays them (`retro-rpg/leohpaz/pixelheim/`, PIX-411) into
+`godot/assets/audio/paid/` (all git-ignored) with your GitHub login; the deploy and the Godot CI run the same script on a checkout
 made with a read-only deploy key (secret `PIXELHEIM_ASSETS_KEY`). Without it
 the game runs on Shade's free art alone: the town's houses, props and paid
-icons are missing, and collision is the same.
+icons are missing, collision is the same, and every sound is the game's own.
+
+Every sound is a moment's event in `assets/data/audio.json` ("events": its
+family and its own takes, a rendered stinger or a blip `sound.gd` makes).
+`assets/audio/paid.json` names, for an event, takes inside Leohpaz's zips;
+`tools/sound_prep.py` reads them out, trims them and brings each to its
+family's loudness, and writes them to the private repo, where they stand in
+for the event's own takes once installed:
+
+```sh
+python3 -I godot/tools/sound_prep.py ~/playground/leohpaz-sfx <pixelheim-assets>/retro-rpg/leohpaz/pixelheim
+```
 
 Combat runs on the game's numbers since its first edition: the hero's real HP
 and stats, each species' stats per region, elites, ailments (a turn of the
@@ -562,7 +575,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/npc.gd` — A villager: their Puny sheet (PunyArt, PIX-130), a body the hero bumps into, and — for wanderers — an amble around the pacing loop, walking the way they step.
 - `scripts/npcs.gd` — Villagers (assets/data/npcs.json): the fixed townsfolk, tier-gated settlers included, and the recruits who wait in the wilds until they move to town.
 - `scripts/open_ground.gd` — The Medieval Age's greens and snow laid as patches over Shade's grass (PIX-305), so a meadow's hollows and the snow's drifts have edges of their own, tufted the way the pack's sample maps lay them
-- `scripts/options_screen.gd` — Options (Options.tsx): sound, the CRT scanlines, fullscreen, reduced motion, and the keys.
+- `scripts/options_screen.gd` — Options (Options.tsx): sound (music, effects and ambience, PIX-411), the CRT scanlines, fullscreen, reduced motion, and the keys.
 - `scripts/pause_screen.gd` — The Escape menu (PauseMenu.tsx): resume, the saves (slots and codes), options, or back to the title.
 - `scripts/perf_probe.gd` — The perf guard (PIX-220): how long each stage of a frame takes, from the engine's own signals
 - `scripts/place_title.gd` — The card that names where the hero has come to (PIX-269, after Tom's "I still don't like the door between maps").

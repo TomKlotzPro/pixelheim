@@ -3165,6 +3165,10 @@ msgid "Every speaker has a look of their own: no more faceless farmers, no keepe
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every step now sounds of the ground under it, grass, dirt, sand, stone, wood, snow, ice or shallow water, from Leohpaz's retro RPG sounds, and blows land with their own impact by weapon; each moment of the game has its own sound to fill, never the same take twice running"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every tenth depth a warden guards the stair down, a boss with its own attacks: the Deep Warden, then the Hollow King"
 msgstr ""
 
@@ -3390,6 +3394,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Footfalls"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4134,6 +4142,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Most depths now have a twist, shown at the gate: swift foes, warded skills, venomous bites or proud elites, with richer drops and a richer hoard"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Music and ambience dip under jingles and roars and come back, a place's music picks up where it left off, and the options gain a slider for ambience"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -16905,6 +16917,10 @@ msgid "%s is now %s."
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "Ambience volume"
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "CRT scanlines"
 msgstr ""
 
@@ -17798,6 +17814,10 @@ msgstr ""
 
 #: scripts/sound.gd
 msgid "Ambience"
+msgstr ""
+
+#: scripts/sound.gd
+msgid "Jingle"
 msgstr ""
 
 #: scripts/sound.gd

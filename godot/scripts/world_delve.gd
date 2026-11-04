@@ -45,14 +45,14 @@ func open_shortcut(fell := Depths.NOWHERE, boss: Node = null) -> void:
 		return
 	world.view.reopen(door["cell"])
 	_opened(door["cell"])
-	Sound.play("door")
+	Sound.play("shortcut_open")
 	world.messages.log_lines([String(door["opened"])])
 	if Depths.way_out_cell(map, fell, world.player_cell) != Depths.NOWHERE:
 		_rise(fell, door, boss)
 	var visit: MapView = world.view
 	get_tree().create_timer(WAY_OUT_CHIME_S).timeout.connect(func() -> void:
 		if world.view == visit:
-			Sound.play_ui("wayout")
+			Sound.play("way_out")
 	)
 
 
@@ -88,7 +88,7 @@ func _rise(fell: Vector2i, door: Dictionary, boss: Node) -> void:
 	# Under the actors, over the floor and what stands on it.
 	world.view.dungeon_objects.add_child(rise)
 	# A rumble, stone giving, then a gust of air down the stair: timed to it.
-	Sound.play("stairRise", false)
+	Sound.play("stair_rise", false)
 
 
 ## Where the way out rising where a boss fell stands (PIX-339): "waiting"

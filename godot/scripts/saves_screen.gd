@@ -415,9 +415,9 @@ func _say(kind: String, text: String) -> void:
 	said = kind
 	status.text = text
 	if kind in ["copied", "deleted", "back", "code", "pasted", "cleared"]:
-		Sound.play_ui("confirm")
+		Sound.play("ui_confirm")
 	elif text != "":
-		Sound.play_ui("deny")
+		Sound.play("ui_deny")
 
 
 ## Every slot read again, then drawn.

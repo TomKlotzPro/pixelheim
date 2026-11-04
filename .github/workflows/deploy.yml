@@ -88,4 +88,5 @@ jobs:
             godot/.godot
             godot/assets/puny/shade/**/*.import
             godot/assets/puny/medieval/*.import
+            godot/assets/audio/paid/*.import
           key: godot-import-4.7.1-art-success-${{ github.sha }}

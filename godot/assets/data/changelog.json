@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.314.0",
+      "date": "2026-11-04",
+      "codename": "Footfalls",
+      "notes": [
+        "Every step now sounds of the ground under it, grass, dirt, sand, stone, wood, snow, ice or shallow water, from Leohpaz's retro RPG sounds, and blows land with their own impact by weapon; each moment of the game has its own sound to fill, never the same take twice running",
+        "Music and ambience dip under jingles and roars and come back, a place's music picks up where it left off, and the options gain a slider for ambience"
+      ]
+    },
+    {
       "version": "0.313.0",
       "date": "2026-11-04",
       "codename": "Sound Restored",

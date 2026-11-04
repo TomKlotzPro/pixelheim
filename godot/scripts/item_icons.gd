@@ -79,11 +79,17 @@ static func skill(skill_name: String) -> Texture2D:
 ## "light", the colour the ground is lit where they land (a hex code, or "").
 static func skill_look(skill_name: String) -> Dictionary:
 	var english := english_skill(skill_name)
-	var theme := String(_data()["skills"].get(english, "")).get_slice("/", 0)
+	var theme := skill_theme(skill_name)
 	var look := {"fly": "", "hit": "", "self": "", "light": ""}
 	look.merge(skill_fx().get("themes", {}).get(theme, {}), true)
 	look.merge(skill_fx().get("skills", {}).get(english, {}), true)
 	return look
+
+
+## A skill's theme in the skills pack ("Fire", "Light", "Melee"...), by the
+## name the player reads; "" without one. Its sound goes by it too (PIX-411).
+static func skill_theme(skill_name: String) -> String:
+	return String(_data()["skills"].get(english_skill(skill_name), "")).get_slice("/", 0)
 
 
 ## icons.json's skill_fx (PIX-396): the themes' and skills' strips, the

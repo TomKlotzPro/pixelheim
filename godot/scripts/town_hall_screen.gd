@@ -133,7 +133,7 @@ func _works() -> Array[Dictionary]:
 			"action": func() -> String:
 				var line := GameState.holdings.fund_work(work_id)
 				if line != "":
-					Sound.play("coin")
+					Sound.play("fund")
 				return line,
 		})
 	return out
@@ -154,7 +154,7 @@ func _age_rows() -> Array[Dictionary]:
 				"action": func() -> String:
 					var line := GameState.holdings.fund_commission(commission_id)
 					if line != "":
-						Sound.play("coin")
+						Sound.play("fund")
 					return line,
 			})
 		return works
@@ -179,7 +179,7 @@ func _age_rows() -> Array[Dictionary]:
 					return ask
 				var line := GameState.holdings.fund_project(project_id)
 				if line != "":
-					Sound.play("coin")
+					Sound.play("fund")
 				return line,
 		})
 	return out

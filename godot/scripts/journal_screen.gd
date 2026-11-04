@@ -392,7 +392,7 @@ func _follow(index: int) -> void:
 	# A longer step at the top moves the list down: the row stays in view.
 	_reveal(false)
 	_tell_hud()
-	Sound.play_ui("open")
+	Sound.play("ui_open")
 
 
 ## The followed row wears the diamond and FOLLOWING.

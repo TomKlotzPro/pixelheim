@@ -408,7 +408,7 @@ func _point(index: int) -> void:
 ## The choice moved to `index`, heard as the pages' pen tick.
 func _choose(index: int) -> void:
 	selected = index
-	Sound.play_ui("tick")
+	Sound.play("ui_tick")
 	_show_choice()
 
 
@@ -453,7 +453,7 @@ func _continue() -> void:
 ## with every slot holding a save, it says so and starts nothing.
 func _new_game() -> void:
 	if not GameState.room_for_hero():
-		Sound.play_ui("deny")
+		Sound.play("ui_deny")
 		_say("full", "Every slot holds a save. Delete one in Saves to start a new hero.")
 		return
 	var opening := Cutscene.new()

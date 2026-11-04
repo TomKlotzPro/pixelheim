@@ -164,15 +164,15 @@ func _process(delta: float) -> void:
 ## What happens once, as the time passes it.
 func _cross(from: float, to: float) -> void:
 	if _passes(from, to, DRAGON.x + 0.5):
-		Sound.play("roar")
+		Sound.play("dragon_roar")
 	if _passes(from, to, ERUPT_S):
 		scene.erupt()
 	if _passes(from, to, FORGE.x):
-		Sound.play_ui("cast")
+		Sound.play("forge_glow")
 	if _passes(from, to, STRIKE_S):
 		burst.restart()
-		Sound.play_ui("slam")
-		Sound.play("bell")
+		Sound.play("forge_strike")
+		Sound.play("forge_ring")
 
 
 static func _passes(from: float, to: float, at: float) -> bool:

@@ -50,7 +50,7 @@ func _open() -> void:
 	_title = _line(UiStyle.heading(title, 54, UiStyle.CREAM))
 	_title.add_theme_font_override("font", UiStyle.logo_font())
 	_title.add_theme_font_size_override("font_size", UiStyle.LOGO_PX * title_scale(title))
-	Sound.play("learn")
+	Sound.play("chapter")
 	_come_in.call_deferred()
 
 

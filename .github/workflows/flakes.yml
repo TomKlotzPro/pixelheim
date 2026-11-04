@@ -126,6 +126,7 @@ jobs:
             godot/.godot
             godot/assets/puny/shade/**/*.import
             godot/assets/puny/medieval/*.import
+            godot/assets/audio/paid/*.import
           key: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-${{ hashFiles('godot/project.godot', 'godot/*.import', 'godot/assets/**', 'godot/addons/**', 'godot/locale/**', 'godot/scenes/**', 'godot/scripts/**', 'godot/shaders/**', 'godot/test/**') }}
           restore-keys: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-
 
@@ -194,7 +195,7 @@ jobs:
 
       - name: Import assets (Shade's CC0 art only)
         run: |
-          if [ -e godot/assets/puny/medieval ] || [ -e godot/assets/puny/shade ] || [ -e godot/assets/puny/gegx ] || [ -e godot/assets/puny/animals ]; then
+          if [ -e godot/assets/puny/medieval ] || [ -e godot/assets/puny/shade ] || [ -e godot/assets/puny/gegx ] || [ -e godot/assets/puny/animals ] || [ -e godot/assets/audio/paid ]; then
             echo "::error::the paid art is here, and this run's artifacts are public"
             exit 1
           fi
