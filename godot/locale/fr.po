@@ -3149,6 +3149,10 @@ msgid "Every skill branch grew a tier-3 capstone: 12 nodes per role, from Skulls
 msgstr "Chaque branche de compétences a gagné un aboutissement de palier 3 : 12 nœuds par rôle, de Fend-crâne à Parole divine"
 
 #: assets/data/changelog.json
+msgid "Every skill has its own look now, from Shade's Puny Skills: fireballs fly and burst, frost novas bloom, lightning strikes, heals rise and every landed hit sparks; bows shoot arrows and a staff throws an arcane orb; and spells still light the ground where they land at night"
+msgstr "Chaque compétence a désormais son propre effet, tiré des Puny Skills de Shade : les boules de feu volent et explosent, les novas de givre éclosent, la foudre frappe, les soins s'élèvent et chaque coup porté fait jaillir des étincelles ; les arcs tirent des flèches et le bâton lance un orbe arcanique ; et la nuit, les sorts éclairent toujours le sol où ils tombent"
+
+#: assets/data/changelog.json
 msgid "Every spawn belongs to its terrain: ash beasts in the ash, bog things in the Mirefen - the beast you see is the beast you fight"
 msgstr "Chaque apparition appartient à son terrain : bêtes de cendre dans la cendre, créatures des tourbières dans les Marais de Fange - la bête que vous voyez est celle que vous combattez"
 
@@ -5159,6 +5163,10 @@ msgstr "Space ne fait plus frapper votre épée quand vous fermez une conversati
 #: assets/data/changelog.json
 msgid "Specializations! At your first ascension, every class faces a choice of two paths - Juggernaut or Warlord, Pyromancer or Stormcaller, Plaguelord or Bonelord... fourteen identities across the roster"
 msgstr "Des spécialisations ! À votre première ascension, chaque classe doit choisir entre deux voies - Mastodonte ou Seigneur de guerre, Pyromancien ou Mande-Orage, Seigneur de la peste ou Seigneur des os... quatorze identités en tout"
+
+#: assets/data/changelog.json
+msgid "Spellfire"
+msgstr "Feu des sorts"
 
 #: assets/data/changelog.json
 msgid "Spent points are permanent. Choose like it matters."

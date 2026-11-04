@@ -75,11 +75,12 @@ static func skill(skill_name: String) -> Texture2D:
 ## What a skill plays (PIX-396, SkillFx), by the name the player reads: its
 ## icon's theme's strips in skill_fx, its own entry over them - "fly" (a bolt
 ## from the hero to the foe), "hit" (what lands on the foe), "self" (what
-## rises round the hero for a heal), each an effect's name or "".
+## rises round the hero for a heal), each an effect's name or "", and
+## "light", the colour the ground is lit where they land (a hex code, or "").
 static func skill_look(skill_name: String) -> Dictionary:
 	var english := english_skill(skill_name)
 	var theme := String(_data()["skills"].get(english, "")).get_slice("/", 0)
-	var look := {"fly": "", "hit": "", "self": ""}
+	var look := {"fly": "", "hit": "", "self": "", "light": ""}
 	look.merge(skill_fx().get("themes", {}).get(theme, {}), true)
 	look.merge(skill_fx().get("skills", {}).get(english, {}), true)
 	return look
