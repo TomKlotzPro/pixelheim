@@ -24,27 +24,38 @@ const VARIANTS := 4
 ## The untoned grounds' brightness and saturation on the page.
 const GRADE := Vector2(0.8, 0.8)
 
-## "tile:px:variant" -> its cell's Image, made once a session.
+## "tile:px:variant:dim" -> its cell's Image, made once a session.
 static var _swatches := {}
+## The overworld sheet, decoded while swatches are cut and let go after the
+## paint (as PunySheet lets go of its own, PIX-269): the swatches are kept.
 static var _sheet: Image
 
 
 ## The page `cells` big at `px` pixels a cell: `ground` (page cell -> tile
-## id) painted, the night everywhere else.
-static func paint(cells: Vector2i, px: int, ground: Dictionary) -> Image:
+## id) painted, the night everywhere else; each cell `dim` of the way to the
+## night (the lookout's panorama), in plain colour values as its flat
+## colours were: a see-through night over the page reads far lighter on the
+## desktop's linear canvas.
+static func paint(cells: Vector2i, px: int, ground: Dictionary, dim := 0.0) -> Image:
 	var image := Image.create_empty(maxi(1, cells.x * px), maxi(1, cells.y * px), false, Image.FORMAT_RGBA8)
 	image.fill(UiStyle.NIGHT)
 	var whole := Rect2i(0, 0, px, px)
+	# tile -> its VARIANTS swatches, so a cell costs no key of its own.
+	var cut := {}
 	for cell: Vector2i in ground:
-		image.blit_rect(swatch(ground[cell], px, absi(hash(cell)) % VARIANTS), whole, cell * px)
+		var tile: String = ground[cell]
+		if not cut.has(tile):
+			cut[tile] = range(VARIANTS).map(func(variant: int) -> Image: return swatch(tile, px, variant, dim))
+		image.blit_rect(cut[tile][absi(hash(cell)) % VARIANTS], whole, cell * px)
+	_sheet = null
 	return image
 
 
 ## One cell of `tile`, `px` pixels square: its ground's tile `variant`
 ## (forests its pines' crowns over the grass) shrunk to it, or its flat
-## colour grained.
-static func swatch(tile: String, px: int, variant: int) -> Image:
-	var key := "%s:%d:%d" % [tile, px, variant]
+## colour grained; `dim` of the way to the night.
+static func swatch(tile: String, px: int, variant: int, dim := 0.0) -> Image:
+	var key := "%s:%d:%d:%s" % [tile, px, variant, dim]
 	if _swatches.has(key):
 		return _swatches[key]
 	var cut: Image
@@ -65,6 +76,11 @@ static func swatch(tile: String, px: int, variant: int) -> Image:
 			for x in px:
 				cut.set_pixel(x, y, flat.darkened(0.06) if (x + y + variant) % 3 == 0 else flat)
 	cut.convert(Image.FORMAT_RGBA8)
+	if dim > 0.0:
+		for y in px:
+			for x in px:
+				var pixel := cut.get_pixel(x, y)
+				cut.set_pixel(x, y, Color(pixel.lerp(UiStyle.NIGHT, dim), pixel.a))
 	_swatches[key] = cut
 	return cut
 

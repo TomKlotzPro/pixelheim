@@ -496,6 +496,11 @@ class Painting extends Control:
 	## way past the letters), so they read on any ground.
 	const OUTLINE := 4
 	const PLATE := Vector2(4, 1)
+	## The plate's shade on most ground, and on light ground (mean luminance
+	## of its cells' colours past LIGHT_GROUND: snow, ice, sand).
+	const PLATE_DARK := 0.6
+	const PLATE_LIGHT := 0.85
+	const LIGHT_GROUND := 0.5
 	var world: Node2D
 	## The page shown, by the map it's named for: the hero's map, or another
 	## the hero has found (the Ashenreach for the Reach's page).
@@ -519,10 +524,13 @@ class Painting extends Control:
 	## What's drawn of the page: page cell -> the tile it's painted as (seen
 	## ground, the ridge seen between maps, the village).
 	var _ground := {}
-	## The page painted from its ground (MapGround, PIX-403), and what it
-	## was painted from: a choice in the list redraws the marks, not this.
+	## How far each seen cell is darkened to the night (the lookout's).
+	var dim := 0.0
+	## The page painted from its ground (MapGround, PIX-403), and each page's
+	## by its id with what it was painted from: a choice in the list, or a
+	## turn back to a page, paints it again only when its ground changed.
 	var _paper: ImageTexture
-	var _paper_for := []
+	var _papers := {}
 	## What the page names, placed: [{text, at (px), size, way}].
 	var _labels: Array[Dictionary] = []
 	## The page's px to the screen's when it was last drawn (PIX-267): the
@@ -566,9 +574,12 @@ class Painting extends Control:
 					_ground[cell + at] = grid[cell]
 		for cell: Vector2i in village:
 			_ground[cell] = village[cell]
-		if _paper_for != [cells, tile_px, _ground]:
-			_paper = ImageTexture.create_from_image(MapGround.paint(cells, tile_px, _ground))
-			_paper_for = [cells, tile_px, _ground]
+		var made := [cells, tile_px, dim, _ground]
+		var kept: Array = _papers.get(map.id, [])
+		if kept.is_empty() or kept[0] != made:
+			kept = [made, ImageTexture.create_from_image(MapGround.paint(cells, tile_px, _ground, dim))]
+			_papers[map.id] = kept
+		_paper = kept[1]
 		_gates = _shut_gates()
 		_name_destination()
 		_place_labels()
@@ -701,13 +712,49 @@ class Painting extends Control:
 		for gate: Dictionary in _gates:
 			named.append({"text": Gates.mark(gate["gate"]), "at": Vector2(gate["cell"]) + Vector2(0.5, 0.5), "way": true})
 		for label: Dictionary in named + Atlas.page_labels(_on_page(), GameState.world.discovered):
-			var size := Vector2(font.get_string_size(label["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT).x, font.get_height(UiStyle.TEXT))
-			var plate := size + PLATE * 2.0
-			var at := Atlas.label_at(label["at"] * tile_px, plate, bounds, label["way"], _mark(), taken, _sheet_box(Vector2i(label["at"].floor())))
-			if at == Atlas.NOWHERE:
-				continue
-			taken.append(Rect2(at, plate))
-			_labels.append({"text": label["text"], "at": at + PLATE, "size": size, "way": label["way"]})
+			var within := _sheet_box(Vector2i(label["at"].floor()))
+			# One line where it fits its map, else (or where one line finds no
+			# place clear of the rest) two.
+			for room: float in [within.size.x - PLATE.x * 2.0, 1.0]:
+				var lines := _lines(label["text"], font, room)
+				var size := Vector2(0, font.get_height(UiStyle.TEXT) * lines.size())
+				for line: String in lines:
+					size.x = maxf(size.x, font.get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT).x)
+				var plate := size + PLATE * 2.0
+				var at := Atlas.label_at(label["at"] * tile_px, plate, bounds, label["way"], _mark(), taken, within)
+				if at != Atlas.NOWHERE:
+					taken.append(Rect2(at, plate))
+					_labels.append({"text": label["text"], "lines": lines, "at": at + PLATE, "size": size, "way": label["way"], "shade": _shade(Rect2(at, plate))})
+					break
+				if lines.size() > 1:
+					break
+
+	## `text` on one line, or on two split at the space nearest its middle
+	## when it's wider than `room` px (a long name on a narrow region: the
+	## Greyhold Cellars on Greyhold's strip of the Reach, PIX-403).
+	static func _lines(text: String, font: Font, room: float) -> PackedStringArray:
+		if room <= 0.0 or font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT).x <= room or not " " in text:
+			return PackedStringArray([text])
+		var split := -1
+		var half := text.length() / 2.0
+		for i in text.length():
+			if text[i] == " " and (split < 0 or absf(i - half) < absf(split - half)):
+				split = i
+		return PackedStringArray([text.left(split), text.substr(split + 1)])
+
+	## How dark a name's plate is over `box` (px): near solid on light ground
+	## (the Frostgate's snow, where the see-through shade let the lake and
+	## the pines through the letters), see-through on the rest.
+	func _shade(box: Rect2) -> float:
+		var light := 0.0
+		var count := 0
+		for y in range(floori(box.position.y / tile_px), ceili(box.end.y / tile_px)):
+			for x in range(floori(box.position.x / tile_px), ceili(box.end.x / tile_px)):
+				count += 1
+				var tile: String = _ground.get(Vector2i(x, y), "")
+				if tile != "":
+					light += Atlas.color(tile).get_luminance()
+		return PLATE_LIGHT if count > 0 and light / count > LIGHT_GROUND else PLATE_DARK
 
 	## The box (px) of the map drawn at page cell `cell`, none off them.
 	func _sheet_box(cell: Vector2i) -> Rect2:
@@ -845,10 +892,13 @@ class Painting extends Control:
 		var font := UiStyle.body_font()
 		var ascent := font.get_ascent(UiStyle.TEXT)
 		for label: Dictionary in _labels:
-			draw_rect(Rect2(label["at"], label["size"]).grow_individual(PLATE.x, PLATE.y, PLATE.x, PLATE.y), Color(UiStyle.NIGHT, 0.6))
-			var base: Vector2 = label["at"] + Vector2(0, ascent)
-			draw_string_outline(font, base, label["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT, OUTLINE, UiStyle.NIGHT)
-			draw_string(font, base, label["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT, UiStyle.CREAM)
+			draw_rect(Rect2(label["at"], label["size"]).grow_individual(PLATE.x, PLATE.y, PLATE.x, PLATE.y), Color(UiStyle.NIGHT, label["shade"]))
+			var lines: PackedStringArray = label["lines"]
+			for i in lines.size():
+				var width := font.get_string_size(lines[i], HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT).x
+				var base: Vector2 = label["at"] + Vector2(floorf((label["size"].x - width) / 2.0), ascent + i * font.get_height(UiStyle.TEXT))
+				draw_string_outline(font, base, lines[i], HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT, OUTLINE, UiStyle.NIGHT)
+				draw_string(font, base, lines[i], HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT, UiStyle.CREAM)
 
 	## Where the hero is headed on this page (PIX-240): the person the bearing
 	## is about where they stand now, its spot when it's on this map, or the

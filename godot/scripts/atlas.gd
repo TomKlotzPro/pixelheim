@@ -362,14 +362,18 @@ static func label_at(spot: Vector2, size: Vector2, bounds: Vector2, way: bool, m
 			Vector2(middle, down), Vector2(middle, up), Vector2(right, level), Vector2(left, level),
 			Vector2(right, down), Vector2(left, down), Vector2(right, up), Vector2(left, up),
 		])
-	var area := within if within.has_area() else Rect2(Vector2.ZERO, bounds)
-	# Wholly inside its map first; then, for a long name on a narrow region,
-	# over its map still, never off on the night or the next map alone.
+	var page := Rect2(Vector2.ZERO, bounds)
+	var area := within if within.has_area() else page
+	# Wholly inside its map first, each try slid in from its edges (a name
+	# nearly as wide as its region fits only between the spot's sides); then,
+	# for a long name on a narrow region, over its map still, never off on
+	# the night or the next map alone.
 	for whole: bool in [true, false]:
+		var room := area if whole else page
 		for at: Vector2 in tries:
 			var kept := Vector2(
-				clampf(at.x, GAP, maxf(GAP, bounds.x - size.x - GAP)),
-				clampf(at.y, GAP, maxf(GAP, bounds.y - size.y - GAP)),
+				clampf(at.x, room.position.x + GAP, maxf(room.position.x + GAP, room.end.x - size.x - GAP)),
+				clampf(at.y, room.position.y + GAP, maxf(room.position.y + GAP, room.end.y - size.y - GAP)),
 			).round()
 			var rect := Rect2(kept, size)
 			if not (area.encloses(rect) if whole else area.intersects(rect)):

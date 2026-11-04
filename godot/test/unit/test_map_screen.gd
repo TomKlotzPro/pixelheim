@@ -353,6 +353,47 @@ func test_the_reach_is_painted_from_its_ground_and_its_names_are_clear() -> void
 	Text.apply("en")
 
 
+## The region names the Reach's page may still leave off where the hero
+## stands (PIX-403): at 3 px a cell (MAP_BOX) the Ashenreach's three long
+## names, its ways, the hero's mark and the chosen one's tag don't all fit
+## in its 288 px; the Blackiron's with the hero and the tag over its strip.
+const CROWDED := [
+	"The Whispering Forest", "La Forêt murmurante", "Les Champs de Cendres",
+	"The Blackiron Valley", "La vallée de Fernoir",
+]
+
+
+## PIX-403: every region's name on the Reach's page is placed wherever on
+## it the hero stands (the middle of each of its maps), in English and in
+## French: a long name on a narrow region goes on two lines inside it.
+func test_every_region_is_named_wherever_the_hero_stands() -> void:
+	Atlas.walk_all(GameState.world.discovered)
+	var ids: Array = Atlas.sheets("overworld", GameState.world.discovered, "overworld").map(func(sheet: Dictionary) -> String: return sheet["id"])
+	assert_gt(ids.size(), 4, "the Reach's maps")
+	for lang: String in ["en", "fr"]:
+		Text.apply(lang)
+		for id: String in ids:
+			var world := StandIn.new()
+			world.map = MapData.load_by_id(id)
+			world.player_cell = world.map.size / 2
+			add_child(world)
+			_worlds.append(world)
+			var screen: Node = MapScreen.new()
+			screen.world = world
+			world.add_child(screen)
+			var painting: Control = screen.painting
+			var placed: Array = painting._labels.map(func(label: Dictionary) -> String: return label["text"])
+			# The chosen waypoint's tag names the region it sets you down in.
+			if painting.tag != null:
+				placed.append(Waypoints.region_name(painting.destination, MapData.load_by_id(painting.destination["mapId"])))
+			for named: Dictionary in Atlas.page_labels(painting._on_page(), GameState.world.discovered):
+				if not named["way"] and not named["text"] in CROWDED:
+					assert_has(placed, named["text"], "%s, the hero in %s: %s named" % [lang, id, named["text"]])
+			screen.close()
+			await wait_process_frames(1)
+	Text.apply("en")
+
+
 ## The mean colour of page cell `cell` on the painted page.
 func _mean(paper: Image, cell: Vector2i, px: int) -> Color:
 	var sum := Color(0, 0, 0, 0)
