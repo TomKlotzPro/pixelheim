@@ -850,7 +850,7 @@ func _tell_bite(toward: Vector2) -> void:
 	# The spring: forward again, fast.
 	tell.tween_property(sprite, "position", at, tell_left * 0.4).set_ease(Tween.EASE_IN)
 	tell.tween_property(sprite, "skew", 0.0, tell_left * 0.4)
-	Sound.play_ui("tell")
+	Sound.play("tell")
 	if GameState.settings.clear_warnings:
 		Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, BITE_REACH, 12.0), tell_left, Callable(), false)
 
@@ -881,6 +881,7 @@ func _bite(to_player: Vector2) -> void:
 	if to_player.length() > BITE_REACH:
 		return
 	can_bite = false
+	Sound.play("foe_bite")
 	_play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
 	# At the wagon the bite lands on it (the escort counts it).
 	if _at_quarry:
@@ -1161,8 +1162,8 @@ func _shove(delta: float) -> Vector2:
 
 ## A landed swing: `damage` is already Bestiary.hero_attack's verdict, and
 ## `crit` whether it was one; `infliction` is the hero's afflicting passive,
-## if any.
-func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := false) -> void:
+## if any; `blow` what it sounds like (PIX-411: the weapon's, a spell's).
+func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := false, blow := "hit_blade") -> void:
 	if dying:
 		return
 	# Struck in its sleep (PIX-252): up, and its pack with it, even if the
@@ -1171,7 +1172,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	if guarding:
 		damage = maxi(1, roundi(damage * float(Bestiary.elite_moves("undead")["block"])))
 		world.fx.float_text(Text.t("blocked"), global_position + Vector2(0, -26), Color(0.7, 0.85, 1.0))
-	Sound.play("hit")
+	Sound.play("hit_blocked" if guarding else "hit_crit" if crit else blow)
 	# Steel on armour throws sparks where the blow lands (PIX-225).
 	if Motes.sparks_off(String(fighter["id"])) and world.get("atmosphere") != null:
 		world.atmosphere.sparks(global_position + (from - global_position).normalized() * 6.0 + SPARK_LIFT)
@@ -1186,7 +1187,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	# A small impact where it lands (PIX-396).
 	world.fx.skills.impact(self)
 	if fell:
-		Sound.play_ui("kill")
+		Sound.play(Sound.kill_for(String(fighter["id"])))
 	# A named monster falls as a boss does (PIX-232), not just a boss.
 	if fell and Bestiary.fights_like_boss(fighter):
 		world.foes.boss_fell(self)
@@ -1213,7 +1214,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 			hunting = true
 			world.foes.on_enemy_noticed(self)
 	if not dying and ailments.inflict(infliction, GameState.roll):
-		Sound.play_ui("ail")
+		Sound.play("foe_afflicted")
 		world.messages.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])])
 
 
@@ -1221,10 +1222,10 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 ## walls, Bram's cheese): the health it takes and its number, and the
 ## share a foe yields at, but none of the hero's hit - no flash, no shove,
 ## no stop. It never turns a foe on anyone.
-func chip(damage: int, color: Color) -> void:
+func chip(damage: int, color: Color, blow := "hit_blunt") -> void:
 	if dying:
 		return
-	Sound.play("hit")
+	Sound.play(blow)
 	_lose(damage, color)
 
 

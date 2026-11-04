@@ -129,10 +129,10 @@ func _act() -> void:
 	var asked := Sound.asked
 	status.text = row["action"].call() if row["enabled"] else String(row.get("why", "Not possible right now."))
 	if not row["enabled"]:
-		Sound.play_ui("deny")
+		Sound.play("ui_deny")
 	elif Sound.asked == asked and status.text != "":
 		# Done, and it made no sound of its own (the bank, the home's shelves).
-		Sound.play_ui("confirm")
+		Sound.play("ui_confirm")
 	_refresh()
 
 

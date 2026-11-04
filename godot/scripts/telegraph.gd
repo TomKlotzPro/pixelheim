@@ -44,7 +44,7 @@ static func mark(world: Node, shape: PackedVector2Array, tell: float, strike: Ca
 	world.add_child(shown)
 	world.move_child(shown, 3)
 	if heard:
-		Sound.play_ui("mark")
+		Sound.play("mark")
 	var pulse := shown.create_tween()
 	pulse.tween_property(shown, "color:a", 0.6, tell * 0.5)
 	pulse.tween_property(shown, "color:a", 0.35, tell * 0.5)
@@ -52,7 +52,7 @@ static func mark(world: Node, shape: PackedVector2Array, tell: float, strike: Ca
 		if strike.is_valid():
 			strike.call(shown.polygon)
 		if heard:
-			Sound.play_ui("slam")
+			Sound.play("strike")
 		var flash := shown.create_tween()
 		flash.tween_property(shown, "color", Color(1, 1, 1, 0.95) if clear else Color(1.0, 0.75, 0.3, 0.7), 0.06)
 		flash.tween_property(shown, "color:a", 0.0, 0.25)

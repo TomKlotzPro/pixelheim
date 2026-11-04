@@ -47,7 +47,7 @@ func hush(seconds: float) -> void:
 ## Gold that grows rings (SFX.coin); health heard rising or falling.
 func hear_gold(gold: int) -> void:
 	if gold > heard_gold:
-		Sound.play("coin")
+		Sound.play("coin_gain")
 	heard_gold = gold
 
 

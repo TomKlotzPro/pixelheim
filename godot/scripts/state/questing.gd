@@ -467,7 +467,7 @@ func note_deeds() -> void:
 		lines.append(Text.t("Feat: %s") % Text.t(deed["name"]))
 	if not lines.is_empty():
 		owner.mark_dirty()
-		Sound.play("learn")
+		Sound.play("feat")
 		owner.noted.emit(lines)
 
 

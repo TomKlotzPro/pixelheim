@@ -103,7 +103,7 @@ func _throw() -> void:
 	marks[throws].color = Color("5cbf4a") if landed else Color("d8433f")
 	throws += 1
 	hits += 1 if landed else 0
-	Sound.play("coin" if landed else "bump")
+	Sound.play("ring_hit" if landed else "ring_miss")
 	# Each throw the ring slides quicker and the peg moves.
 	speed += 0.25
 	peg_at = randf_range(0.1, 0.9)
@@ -116,7 +116,7 @@ func _finish() -> void:
 	done = true
 	if hits >= int(Town.festival("hitsToWin")):
 		var prize := GameState.holdings.win_ring_toss()
-		Sound.play("levelUp" if prize != "" else "coin")
+		Sound.play("ring_prize" if prize != "" else "ring_done")
 		status.text = prize if prize != "" else Controls.say(Text.t("On the peg again! The prize is already yours this festival. {key:interact} to throw again."))
 		if prize != "":
 			status.text += Controls.say(Text.t(" {key:interact} to throw again."))

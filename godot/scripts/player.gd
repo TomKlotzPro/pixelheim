@@ -155,7 +155,7 @@ func _physics_process(delta: float) -> void:
 				)
 				# A slain boss's edge (PIX-232) sharpens every blow a while.
 				var dealt := roundi(swing["damage"] * GameState.spoils.damage_scale())
-				body.take_hit(dealt, global_position, HeroRules.passives(GameState.hero)["attackInflict"], swing["crit"])
+				body.take_hit(dealt, global_position, HeroRules.passives(GameState.hero)["attackInflict"], swing["crit"], Sound.blow_for(GameState.pack.worn_items().get("weapon", "")))
 				_steal_life(dealt)
 		return
 	var input := scripted_dir
@@ -238,7 +238,7 @@ func attack() -> void:
 	# A staff bites on its second frame: its bolt leaves now (PIX-396).
 	if STRIKE_FRAMES.get(art["attack"], [1, 2])[0] == 1:
 		_loose()
-	Sound.play_ui("swing")
+	Sound.play("swing")
 	get_tree().create_timer(ATTACK_COOLDOWN).timeout.connect(
 		func() -> void: attack_ready = true
 	)
@@ -289,13 +289,13 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 		return
 	if _dodge_iframes:
 		# The blow swishing past (PIX-383: it was silent).
-		Sound.play_ui("swing")
+		Sound.play("whiff")
 		world.fx.float_text(Text.t("dodged"), global_position + Vector2(0, -22), Color(0.75, 0.9, 1.0))
 		return
 	# The Aegis of the Ash takes a fight's first blow whole (PIX-376).
 	if GameState.upkeep.wards(GameClock.seconds()):
 		# Steel taking the blow: the equip's two clinks.
-		Sound.play("equip")
+		Sound.play("ward")
 		world.fx.float_text(Text.t("warded"), global_position + Vector2(0, -22), Color(1.0, 0.72, 0.45))
 		return
 	GameState.upkeep.hurt(damage)
@@ -306,7 +306,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	world.camera_rig.shake(3.0, 0.2)
 	world.camera_rig.hit_stop(0.05)
 	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
-		Sound.play_ui("ail")
+		Sound.play("afflicted")
 		# Its icon over the hero says it; the log doesn't again (PIX-334).
 		_show_ailment()
 	velocity = (global_position - from).normalized() * 180
@@ -353,20 +353,20 @@ func cast(index: int) -> void:
 	var skills := Skills.docked(GameState.hero)
 	if index >= skills.size() or skills[index].is_empty():
 		world.messages.flash("No skill on that key yet. Learn more, or set the keys, in Skills.")
-		Sound.play_ui("deny")
+		Sound.play("skill_refused")
 		return
 	var skill: Dictionary = skills[index]
 	var block := Skills.cast_block(GameState.hero, skill)
 	if block != "":
 		world.messages.flash(block)
-		Sound.play_ui("deny")
+		Sound.play("skill_refused")
 		return
 	var target: Node = null
 	if skill["kind"] == "damage":
 		target = _nearest_foe()
 		if target == null:
 			world.messages.flash(Text.t("No foe in reach for %s.") % skill["name"])
-			Sound.play_ui("deny")
+			Sound.play("skill_refused")
 			return
 		face(target.global_position - global_position)
 	GameState.training.pay_for_skill(skill)
@@ -376,7 +376,7 @@ func cast(index: int) -> void:
 	casting = true
 	velocity = Vector2.ZERO
 	_play(art["attack"])
-	Sound.play_ui("cast")
+	Sound.play(Sound.cast_for(String(skill["name"])))
 	var color: Color = SKILL_COLORS.get(skill["stat"], Color.WHITE)
 	# Its own strips light the ground in their colour (PIX-396); the soft
 	# glow without them, in the stat's.
@@ -405,7 +405,7 @@ func cast(index: int) -> void:
 	for foe: Node in targets:
 		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * GameState.spoils.damage_scale())
 		world.fx.skill_flash(foe.global_position, color, glow)
-		foe.take_hit(damage, global_position, skill.get("inflicts"))
+		foe.take_hit(damage, global_position, skill.get("inflicts"), false, "hit_spell")
 		dealt += damage
 	world.fx.skills.impacts_held = false
 	# What it dealt (or a heal restored) is the numbers over the heads: the

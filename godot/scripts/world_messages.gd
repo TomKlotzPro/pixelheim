@@ -282,9 +282,9 @@ func _show_message(text: String) -> void:
 		world.hud.hint("journal")
 	# A quest done is a victory, heard (PIX-211); one taken, a yes (PIX-212).
 	if tag == Text.t("Quest complete"):
-		Sound.play("victory")
+		Sound.play("quest_done")
 	elif tag == Text.t("Quest accepted"):
-		Sound.play_ui("confirm")
+		Sound.play("quest_taken")
 	message_label.text = text
 	# Wraps at a reading width, never wider than it needs.
 	var wide := 0.0

@@ -81,7 +81,7 @@ func watch_continued() -> void:
 ## breath he says what it means (`lines`, his).
 func mountain_shakes(npc: Dictionary, lines: Array) -> void:
 	world.camera_rig.shake(8.0, 1.4)
-	Sound.play("roar")
+	Sound.play("distant_roar")
 	await get_tree().create_timer(1.0).timeout
 	if not is_inside_tree():
 		return
@@ -110,7 +110,7 @@ func play_story(scene_id: String, then := Callable()) -> void:
 
 ## The ascension scene: a new title, and at a fork the path cards.
 func ascend(title: String) -> void:
-	Sound.play("evolve")
+	Sound.play("ascension")
 	var scene := preload("res://scripts/rankup_screen.gd").new()
 	scene.title = title
 	world.add_child(scene)
@@ -399,7 +399,7 @@ func play_reveals() -> void:
 					"at": MapView.center(Town.square()),
 					"line": Text.t("Pixelheim is a %s now.") % String(Town.tier(int(key))["name"]).to_lower(),
 					"detail": Text.t("New in town: %s.") % ", ".join(newcomers) if not newcomers.is_empty() else "",
-					"sound": "evolve", "dust": true,
+					"sound": "town_grows", "dust": true,
 				})
 				if GameState.holdings.festival_on():
 					stops.append({

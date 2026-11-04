@@ -118,11 +118,13 @@ func interact() -> void:
 	# A fishing spot facing the water: cast (PIX-165). The catch rises out of
 	# the water faced (PIX-245).
 	if _fishing_here():
-		Sound.play("drop")
+		Sound.play("fish_cast")
 		var cast := GameState.spoils.fish(Gathering.fishing_spot_at(world.map.id, world.player_cell)["id"])
 		world.messages.flash(cast["message"])
 		world.messages.log_lines(cast["lines"])
 		world.fx.show_gains(cast["gains"], MapView.center(faced) + WorldFx.OVER_THING)
+		if not Gains.is_empty(cast["gains"]):
+			Sound.play("fish_catch")
 		return
 	# The projects board on the square opens the village's ledger (PIX-145);
 	# what it built, the town shows off as it closes (PIX-147).
@@ -156,7 +158,7 @@ func interact() -> void:
 		take_post()
 		return
 	if Routes.station_with("bench", world.map.id, faced, GameState.settlement) != "":
-		Sound.play_ui("open")
+		Sound.play("bench_rest")
 		world.messages.flash(GameState.upkeep.rest_on_bench())
 		return
 	var signpost := Routes.signpost_at(world.map.id, faced, GameState.post)
@@ -212,7 +214,7 @@ func take_post() -> void:
 	var said := GameState.posting.take_bag()
 	if said == "":
 		return
-	Sound.play_ui("open")
+	Sound.play("post_taken")
 	world.messages.flash(said)
 	world.view.show_post_box()
 
@@ -300,7 +302,7 @@ func read(reading: Dictionary) -> void:
 	var box := preload("res://scripts/dialogue_box.gd").new()
 	box.npc = {"id": scene_id, "name": String(reading["name"]), "lines": lines}
 	world.add_child(box)
-	Sound.play_ui("page")
+	Sound.play("letter_read")
 
 
 ## The stairs down from a room to the cellar under it (PIX-256: a house
@@ -550,7 +552,7 @@ func _forget(skills: bool) -> String:
 		return Text.t("Forgetting that costs %s. You have %s.") % [Text.coins(cost), Text.coins(GameState.pack.gold)]
 	if not (GameState.training.forget_skills() if skills else GameState.training.forget_training()):
 		return ""
-	Sound.play("learn")
+	Sound.play("forget")
 	if skills:
 		return Text.t("Forgotten: %d skill point%s to spend again.") % [points, "" if points == 1 else "s"]
 	return Text.t("Forgotten: %d stat point%s to spend again.") % [points, "" if points == 1 else "s"]
@@ -570,7 +572,7 @@ func _open_chest(chest: Dictionary) -> void:
 		world.foes.mimic_wakes(sprite, chest)
 		return
 	sprite.texture = MapView.treasure_texture(chest, true)
-	Sound.play("chest")
+	Sound.play("chest_open")
 	# What it held rises out of it (PIX-245).
 	world.fx.show_gains(result["gains"], MapView.center(Vector2i(int(chest["x"]), int(chest["y"]))) + WorldFx.OVER_THING)
 
@@ -581,7 +583,7 @@ func _carry_water(faced: Vector2i) -> bool:
 	var fires: Dictionary = Prologue.data()["fires"]
 	if world.map.tile_at(faced) == "well":
 		prologue_bucket = true
-		Sound.play("drop")
+		Sound.play("bucket_fill")
 		world.messages.flash(String(fires["well"]))
 		return true
 	var ruins := Town.ruins(Town.done_projects(GameState.settlement))
@@ -594,7 +596,7 @@ func _carry_water(faced: Vector2i) -> bool:
 			return true
 		prologue_bucket = false
 		world.view.douse_ruin(i)
-		Sound.play("heal")
+		Sound.play("douse")
 		world.messages.flash(GameState.questing.prologue_douse(i))
 		if GameState.progression.prologue == Prologue.EMBERS:
 			world.stage.prologue_wave.call_deferred()
@@ -659,7 +661,7 @@ func _gather_at(cell: Vector2i) -> void:
 	var picked := GameState.spoils.gather(patch["id"], patch["item"])
 	if Gains.is_empty(picked["gains"]):
 		return
-	Sound.play("drop")
+	Sound.play("gather")
 	world.messages.log_lines(picked["lines"])
 	world.fx.show_gains(picked["gains"], MapView.center(cell) + WorldFx.OVER_HERO)
 	world.view.refresh_patches()
@@ -675,7 +677,7 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 	world.messages.flash(result["message"])
 	if result["opened"]:
 		# Picked up as a gathered find is.
-		Sound.play("drop")
+		Sound.play("pickup")
 		# The CC0 art has no pouch or herb, so it may lie undrawn (PIX-380).
 		if world.view.chest_sprites.has(chest["id"]):
 			world.view.chest_sprites[chest["id"]].queue_free()

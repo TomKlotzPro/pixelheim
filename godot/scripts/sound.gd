@@ -5,28 +5,34 @@ extends Node
 ## classic edition's synth (assets/data/audio.json lists them); the newer
 ## ones (PIX-158: the dodge, a roar, a bounty, the story themes, birds,
 ## crickets, chatter, fire and the floors' wind) are rendered by
-## tools/synth.py. Music crossfades between themes (out, then in, as the
-## web's playTrack does) and keeps playing under the menus; a story theme
-## plays once, then what it names or the place's music. Ambience rolls its
-## chances every tick like ambience.ts, the extras the world asks for with
-## it, over a looping bed (wind). Volumes are the player's (GameSettings),
-## on Music, SFX and Ambience buses, each sound at its own level first
+## tools/synth.py. Music crossfades between themes (the old and the new
+## together, PIX-411) and keeps playing under the menus, a place's track
+## taken up where it was left; a story theme plays once, then what it names
+## or the place's music. Ambience rolls its chances every tick like
+## ambience.ts, the extras the world asks for with it, over a looping bed
+## (wind). Volumes are the player's (GameSettings), on Music, SFX, UI,
+## Jingle and Ambience buses, each sound at its own level first
 ## (audio.json's "levels", `level_of`), every bus LOUDNESS_DB over its slider
 ## and a limiter on Master (PIX-383).
+## Every sound the game makes is a moment's event (PIX-411): audio.json's
+## "events" give each its family and its takes (a rendered stinger "sfx/x"
+## or a made blip "blip/x"), and the paid packs' prepared takes stand in for
+## them where they're installed (assets/audio/paid/, tools/sound_prep.py).
+## A family ("families") has its bus, its own voices, its level and the
+## loudness the prep brings a pack's take to; a jingle or a stinger ducks
+## the music and the weather under it.
 ## Autoload `Sound`.
 
 const FADE_S := 0.35
-const SFX_VOICES := 8
+## The music's crossfade, the old track and the new one together (PIX-411).
+const CROSSFADE_S := 0.8
 ## A stinger is never quite the same twice (PIX-212): its pitch a few
-## percent either way, its level a decibel and a half. The same one twice
-## within SAME_GAP_MS sounds once (an area skill's hits). Steps alternate
-## two pitches, left foot and right, and sit 10 LU under the music (PIX-383:
-## at -8 dB they were 20 under it, and nobody heard a step).
+## percent either way, its level a decibel and a half. The same sound twice
+## within SAME_GAP_MS sounds once (an area skill's hits, a sale's coin and
+## the purse's).
 const VARY_PITCH := 0.06
 const VARY_DB := 1.5
 const SAME_GAP_MS := 40
-const STEP_DB := 2.0
-const STEP_PITCHES := [1.0, 0.9]
 ## The whole game this much over its renders, on every bus so the balance
 ## holds (PIX-383). Through the mixer at the default volumes the music came
 ## out at -37.6 LUFS (the mono renders play on both channels: 3 LU over the
@@ -34,21 +40,35 @@ const STEP_PITCHES := [1.0, 0.9]
 ## near -23. +14 dB puts it at -23.6 and a busy fight at about -19.5, where
 ## the limiter barely works (0.3 LU) and the web, which has none, all but
 ## never passes 0 dBFS; at +17 a fight came to -16.3, the limiter took 0.8
-## LU off it and the web clipped.
+## LU off it and the web clipped. The packs' takes are brought down to their
+## family's loudness by the prep (PIX-411), so this holds for them too.
 const LOUDNESS_DB := 14.0
 ## Master's limiter's ceiling: sounds stacked at once never clip past it.
 const CEILING_DB := -1.0
-## Sounds that take the oldest voice when all eight are busy, rather than
-## going unheard.
-const PRIORITY := ["hurt", "levelUp", "victory", "defeat", "roar", "bounty", "chest", "learn", "evolve", "heal"]
+## Under a jingle or a stinger the music and the weather step back
+## (PIX-411): this far, in a blink, and back gently once it's done.
+const DUCK_DB := -7.0
+const DUCK_DOWN_S := 0.05
+const DUCK_UP_S := 0.4
+## Every bus Sound plays on, each in default_bus_layout.tres (PIX-412; UI
+## and Jingle, PIX-411).
+const BUSES: Array[String] = ["Music", "SFX", "Ambience", "UI", "Jingle"]
+## The ambience's slider at this share of the bus, as it sat under the
+## effects' before it had its own (PIX-411).
+const AMBIENCE_SHARE := 0.55
 ## How long the fight's music lingers after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
+## Where the packs' prepared takes are installed (scripts/fetch-private-art.sh),
+## with the list tools/sound_prep.py wrote of them.
+const PAID := "res://assets/audio/paid/takes.json"
 
 var _doc := {}
 var _streams := {}
 var _music: AudioStreamPlayer
 var _fading: AudioStreamPlayer
-var _voices: Array[AudioStreamPlayer] = []
+## Each family's own voices (its "voices"), so footsteps, the pages' ticks
+## and a fight's blows never take one another's (PIX-411).
+var _pools := {}
 var _ambient_voices: Array[AudioStreamPlayer] = []
 var track := ""
 var ambience := ""
@@ -62,12 +82,26 @@ var _bed: AudioStreamPlayer
 var _bed_fade: Tween
 ## What a story theme hands over to when it ends ("" - the place's music).
 var _after_theme := ""
-## When each made sound last played (msec).
+## When each sound last played (msec), by its own take.
 var _played_at := {}
-## When each stinger last played, and when each voice began (msec).
-var _sfx_at := {}
+## When each voice began (msec).
 var _began := {}
 var _foot := 0
+## The packs' takes installed, by event ("paid/<name>"); {} without them.
+var _paid := {}
+## The packs' takes held back though they're here (the harness's `cc0`, as
+## the paid art is): the run hears what a build without them hears.
+var withheld := false
+## The take each event played last, never played twice running.
+var _last := {}
+## Which take plays is Sound's own throw, so the game's dice stay as they
+## were, seeded so a run hears the same takes every time (verify.md).
+var _dice := RandomNumberGenerator.new()
+## Where each place's track was left (seconds), to take it up there again.
+var _resume_at := {}
+## The dB the music and the weather are stepped back by now (a duck).
+var ducked := 0.0
+var _duck: Tween
 ## How many sounds have been asked for, so a screen can tell whether what
 ## it just did made one of its own.
 var asked := 0
@@ -80,12 +114,13 @@ var buses_added := 0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	_doc = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/audio.json"))
+	_dice.seed = 411
+	_doc =SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/audio.json"))
 	# The buses come from default_bus_layout.tres (PIX-412): made here at run
 	# time, the web's sample playback wired Master's output into a loop of
 	# them and nothing reached the speakers. Only a layout that lacks one
 	# (an older project) still gets it here.
-	for bus: String in ["Music", "SFX", "Ambience"]:
+	for bus: String in BUSES:
 		if AudioServer.get_bus_index(bus) < 0:
 			buses_added += 1
 			AudioServer.add_bus()
@@ -99,13 +134,17 @@ func _ready() -> void:
 		AudioServer.add_bus_effect(0, limiter)
 	_music = _player("Music")
 	_fading = _player("Music")
-	for i in SFX_VOICES:
-		_voices.append(_player("SFX"))
+	for family: String in _doc["families"]:
+		var pool: Array[AudioStreamPlayer] = []
+		for i in int(_doc["families"][family]["voices"]):
+			pool.append(_player(_doc["families"][family]["bus"]))
+		_pools[family] = pool
 	for i in 3:
 		_ambient_voices.append(_player("Ambience"))
 	_bed = _player("Ambience")
 	for player in [_music, _fading]:
 		player.finished.connect(_theme_over.bind(player))
+	_paid = paid_takes(PAID)
 	apply_volumes()
 
 
@@ -118,11 +157,10 @@ func _exit_tree() -> void:
 ## engine's end, and a harness run's (PIX-379).
 func release() -> void:
 	released = true
-	if _fade != null:
-		_fade.kill()
-	if _bed_fade != null:
-		_bed_fade.kill()
-	for player in [_music, _fading, _bed] + _voices + _ambient_voices:
+	for tween: Tween in [_fade, _bed_fade, _duck]:
+		if tween != null:
+			tween.kill()
+	for player in [_music, _fading, _bed] + _voices() + _ambient_voices:
 		player.stop()
 		player.stream = null
 	_streams.clear()
@@ -135,13 +173,27 @@ func _player(bus: String) -> AudioStreamPlayer:
 	return player
 
 
-## The player's levels on the buses (and the mute on the master).
+## Every family's voices.
+func _voices() -> Array[AudioStreamPlayer]:
+	var out: Array[AudioStreamPlayer] = []
+	for pool: Array[AudioStreamPlayer] in _pools.values():
+		out.append_array(pool)
+	return out
+
+
+## The player's levels on the buses (and the mute on the master), the music
+## and the weather stepped back while a duck lasts.
 func apply_volumes() -> void:
 	var settings: GameSettings = GameState.settings
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), bus_db(settings.music_volume))
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), bus_db(settings.sfx_volume))
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Ambience"), bus_db(settings.sfx_volume * 0.55))
+	_bus_db("Music", bus_db(settings.music_volume) + ducked)
+	_bus_db("Ambience", bus_db(settings.ambience_volume * AMBIENCE_SHARE) + ducked)
+	for bus: String in ["SFX", "UI", "Jingle"]:
+		_bus_db(bus, bus_db(settings.sfx_volume))
 	AudioServer.set_bus_mute(0, settings.muted)
+
+
+static func _bus_db(bus: String, db: float) -> void:
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(bus), db)
 
 
 ## A slider's 0..1 as its bus's dB, LOUDNESS_DB over the renders; nought
@@ -154,7 +206,8 @@ static func bus_db(volume: float) -> float:
 ## variant's number ("sfx/hurt", "music/theme_dawn", "ambience/greenwood_1",
 ## "ambience/birds"): the renders came out at whatever loudness their synth
 ## gave, so the audio pass measured each and evened them out here, the
-## music to one loudness and each family of effects to itself.
+## music to one loudness and each family of effects to itself. A blip and a
+## pack's take have none: the prep brought the take to its family's.
 func level_of(key: String) -> float:
 	return float(_doc["levels"].get(key, 0.0))
 
@@ -170,7 +223,8 @@ func _stream(path: String) -> AudioStreamWAV:
 ## rendered sounds' chiptune voice:
 ## [seconds, wave, from Hz, to Hz, volume] per blip, played in turn.
 ## The fight has three of its own (PIX-209): a swing's swish, a skill's
-## rising shimmer and the thud of a killing blow.
+## rising shimmer and the thud of a killing blow. An event's take "blip/tick"
+## is one of these.
 const UI_SOUNDS := {
 	# The open at the close's level (the audio pass): it came 4 dB over every
 	# other page sound and most stingers, on the game's most common moment.
@@ -204,21 +258,6 @@ const UI_SOUNDS := {
 	"loose": [[0.03, "noise", 0.0, 0.0, 0.05], [0.06, "triangle", 900.0, 520.0, 0.04]],
 }
 const UI_RATE := 22050
-
-
-## One of the made sounds (the pages' open, tick and close; the fight's).
-## The same one twice at once (three marks drawn together) sounds once.
-func play_ui(name: String) -> void:
-	if not UI_SOUNDS.has(name):
-		return
-	var now := GameClock.msec()
-	if now - int(_played_at.get(name, -1000)) < 40:
-		return
-	_played_at[name] = now
-	var key := "ui:" + name
-	if not _streams.has(key):
-		_streams[key] = _synth(UI_SOUNDS[name])
-	_voice_for(_streams[key], 1.0, 0.0, false)
 
 
 ## Blips to 16-bit mono PCM, each fading out as it ends.
@@ -263,46 +302,135 @@ func _input(event: InputEvent) -> void:
 
 func _tick_unless_heard(asked_then: int) -> void:
 	if asked == asked_then:
-		play_ui("tick")
+		play("ui_tick")
 
 
-## A stinger by the web's name (SFX.hit, SFX.coin...), a little different
-## each time unless `vary` is false.
-func play(sfx: String, vary := true) -> void:
-	if not _doc["stingers"].has(sfx):
+## A moment's sound by its event (audio.json's "events": "hit_blade",
+## "coin_gain", "ui_tick"...): one of its takes, never the one it played
+## last, at its family's level on its family's voices; a rendered stinger a
+## little different each time unless `vary` is false, a family with "feet"
+## left foot then right. An event with no take here is silent.
+func play(event: String, vary := true) -> void:
+	var entry: Dictionary = _doc["events"].get(event, {})
+	if entry.is_empty():
 		return
+	var own: Array = entry["takes"]
+	# The same sound within a breath sounds once, whichever moment asked:
+	# known by the take the game made it with.
+	var heard: String = own[0] if not own.is_empty() else event
 	var now := GameClock.msec()
-	if now - int(_sfx_at.get(sfx, -1000)) < SAME_GAP_MS:
+	if now - int(_played_at.get(heard, -1000)) < SAME_GAP_MS:
 		return
-	_sfx_at[sfx] = now
+	var takes := takes_of(event)
+	if takes.is_empty():
+		return
+	_played_at[heard] = now
+	var family: Dictionary = _doc["families"][entry["family"]]
 	var pitch := 1.0
-	var level := 0.0
-	if sfx == "step":
+	var level := float(family.get("db", 0.0))
+	if family.has("feet"):
 		_foot = 1 - _foot
-		pitch = STEP_PITCHES[_foot]
-		level = STEP_DB
-	elif vary:
+		pitch = float(family["feet"][_foot])
+	elif vary and heard.begins_with("sfx/"):
+		# On the game's dice, as the stingers always threw them (PIX-212), and
+		# only where they did: the dice the game throws next stay the same
+		# with the packs or without.
 		pitch = randf_range(1.0 - VARY_PITCH, 1.0 + VARY_PITCH)
-		level = randf_range(-VARY_DB, VARY_DB)
-	_voice_for(_stream("res://assets/audio/sfx/%s.wav" % sfx), pitch, level + level_of("sfx/" + sfx), sfx in PRIORITY)
+		level += randf_range(-VARY_DB, VARY_DB)
+	var index := pick(takes.size(), int(_last.get(event, -1)), _dice)
+	_last[event] = index
+	var stream := _take(takes[index])
+	_voice_for(stream, pitch, level + level_of(takes[index]), entry["family"])
+	if family.get("duck", false):
+		duck(stream.get_length() / pitch)
 
 
-## Plays `stream` on a free voice at `pitch` and `level` dB; with all busy,
-## a priority sound takes the voice that began longest ago.
-func _voice_for(stream: AudioStream, pitch: float, level: float, priority: bool) -> void:
+## An event's takes: the packs' where they're installed and not held back,
+## else its own (none for a moment the game has no sound for yet).
+func takes_of(event: String) -> Array:
+	if not withheld and _paid.has(event):
+		return _paid[event]
+	return _doc["events"].get(event, {}).get("takes", [])
+
+
+## Which of `count` takes plays, never `last` again while there's another.
+static func pick(count: int, last: int, dice: RandomNumberGenerator) -> int:
+	if count < 2:
+		return 0
+	if last < 0 or last >= count:
+		return dice.randi() % count
+	return (last + 1 + dice.randi() % (count - 1)) % count
+
+
+## A take's sound: a blip made here, else its file under assets/audio/.
+func _take(take: String) -> AudioStreamWAV:
+	if take.begins_with("blip/"):
+		if not _streams.has(take):
+			_streams[take] = _synth(UI_SOUNDS[take.trim_prefix("blip/")])
+		return _streams[take]
+	return _stream("res://assets/audio/%s.wav" % take)
+
+
+## The packs' takes a prepared list names (tools/sound_prep.py's
+## takes.json, {"events": {event: [name, ...]}}), as "paid/<name>" by event:
+## only those whose file is here, {} without the list.
+static func paid_takes(list: String) -> Dictionary:
+	if not FileAccess.file_exists(list):
+		return {}
+	var out := {}
+	var events: Dictionary = SaveCodec.parse_json(FileAccess.get_file_as_string(list)).get("events", {})
+	for event: String in events:
+		var here: Array = []
+		for name: String in events[event]:
+			if ResourceLoader.exists("res://assets/audio/paid/%s.wav" % name):
+				here.append("paid/" + name)
+		if not here.is_empty():
+			out[event] = here
+	return out
+
+
+## The blow a weapon lands (audio.json's "blows" by its drawing): a blade's
+## for a sword, an axe, a dagger or none.
+func blow_for(weapon_id: String) -> String:
+	var sprite := String(Catalog.item(weapon_id).get("sprite", "")) if weapon_id != "" else ""
+	return String(_doc["blows"].get(sprite, "hit_blade"))
+
+
+## A skill's sound by its theme in the skills pack ("casts": Fire, Light...).
+func cast_for(skill_name: String) -> String:
+	return String(_doc["casts"].get(ItemIcons.skill_theme(skill_name), "cast"))
+
+
+## A foe's fall by its family ("kill_undead"), the plain one without.
+func kill_for(monster_id: String) -> String:
+	var event := "kill_" + Bestiary.family_of(monster_id)
+	return event if _doc["events"].has(event) else "kill"
+
+
+## A step by the ground under it ("steps": grass, dirt, sand, stone, wood,
+## snow, ice or shallow water), and by what's laid over that ground (`over`:
+## a street's paving, or the map's style): "over:tile" first, so a cave's
+## "floor" is rock where a house's is boards, and a cobbled path is stone.
+func step_for(tile: String, over := "") -> String:
+	var steps: Dictionary = _doc["steps"]
+	return String(steps.get("%s:%s" % [over, tile], steps.get(tile, "step_dirt")))
+
+
+## Plays `stream` on a free voice of `family`'s at `pitch` and `level` dB;
+## with all of them busy, it takes the one that began longest ago.
+func _voice_for(stream: AudioStream, pitch: float, level: float, family: String) -> void:
 	asked += 1
 	if released:
 		return
+	var pool: Array[AudioStreamPlayer] = _pools[family]
 	var chosen: AudioStreamPlayer = null
-	for voice in _voices:
+	for voice in pool:
 		if not voice.playing:
 			chosen = voice
 			break
 	if chosen == null:
-		if not priority:
-			return
-		chosen = _voices[0]
-		for voice in _voices:
+		chosen = pool[0]
+		for voice in pool:
 			if int(_began.get(voice, 0)) < int(_began.get(chosen, 0)):
 				chosen = voice
 	chosen.stream = stream
@@ -312,7 +440,24 @@ func _voice_for(stream: AudioStream, pitch: float, level: float, priority: bool)
 	_began[chosen] = GameClock.msec()
 
 
-## Crossfades to a theme: the old one fades out, the new one in.
+## Steps the music and the weather back DUCK_DB for `hold` seconds (a
+## jingle or a stinger playing over them), then lets them back.
+func duck(hold: float) -> void:
+	if released:
+		return
+	if _duck != null:
+		_duck.kill()
+	_duck = create_tween()
+	_duck.tween_method(_set_ducked, ducked, DUCK_DB, DUCK_DOWN_S)
+	_duck.tween_interval(maxf(hold - DUCK_DOWN_S, 0.0))
+	_duck.tween_method(_set_ducked, DUCK_DB, 0.0, DUCK_UP_S)
+
+
+func _set_ducked(db: float) -> void:
+	ducked = db
+	apply_volumes()
+
+
 ## A track loaded ahead, not yet played (One Reach, PIX-269: the theme of a
 ## map the hero may walk into over a line, so the walk doesn't load it in
 ## the frame the line is crossed in).
@@ -321,16 +466,26 @@ func ready_track(name: String) -> void:
 		_stream("res://assets/audio/music/%s.wav" % name)
 
 
+## Crossfades to a place's or a fight's theme, a place's taken up where it
+## was left ("resume"), round and round from its "loopBegin" (after an
+## intro) to its end.
 func play_track(name: String) -> void:
 	if name == track or not _doc["tracks"].has(name):
 		return
+	_keep_place()
 	track = name
+	var info: Dictionary = _doc["tracks"][name]
 	var stream := _stream("res://assets/audio/music/%s.wav" % name)
-	# One seamless loop, as rendered: the whole file, round and round.
 	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
-	stream.loop_begin = 0
-	stream.loop_end = roundi(float(_doc["tracks"][name]["seconds"]) * stream.mix_rate)
-	_crossfade(stream, level_of("music/" + name))
+	stream.loop_begin = roundi(float(info.get("loopBegin", 0.0)) * stream.mix_rate)
+	stream.loop_end = roundi(float(info["seconds"]) * stream.mix_rate)
+	_crossfade(stream, level_of("music/" + name), float(_resume_at.get(name, 0.0)))
+
+
+## Notes where a place's track is, before it gives way.
+func _keep_place() -> void:
+	if _music.playing and _doc["tracks"].get(track, {}).get("resume", false):
+		_resume_at[track] = _music.get_playback_position()
 
 
 ## A story theme (PIX-158: a boss's intro, the dawn, an ending), once
@@ -338,6 +493,7 @@ func play_track(name: String) -> void:
 func play_theme(name: String, then := "") -> void:
 	if not _doc["themes"].has(name):
 		return
+	_keep_place()
 	track = "theme:" + name
 	_after_theme = then
 	var stream := _stream("res://assets/audio/music/theme_%s.wav" % name)
@@ -354,23 +510,31 @@ func _theme_over(player: AudioStreamPlayer) -> void:
 	_after_theme = ""
 
 
-func _crossfade(stream: AudioStreamWAV, level: float) -> void:
+## The new theme comes in from `from` seconds as the old one goes, together,
+## each on an equal-power curve: faded in dB, the two sat near -20 dB
+## halfway, a dip of some 17 dB in every change of place.
+func _crossfade(stream: AudioStreamWAV, level: float, from := 0.0) -> void:
 	if _fade != null:
 		_fade.kill()
 	var outgoing := _music
-	_music = _fading
+	var incoming := _fading
+	_music = incoming
 	_fading = outgoing
+	var leaving := db_to_linear(outgoing.volume_db) if outgoing.playing else 0.0
+	var coming := db_to_linear(level)
+	var mix := func(t: float) -> void:
+		outgoing.volume_db = linear_to_db(maxf(leaving * cos(t * PI / 2.0), 0.0001))
+		incoming.volume_db = linear_to_db(maxf(coming * sin(t * PI / 2.0), 0.0001))
+	mix.call(0.0)
+	incoming.stream = stream
+	incoming.play(from)
 	_fade = create_tween()
-	if outgoing.playing:
-		_fade.tween_property(outgoing, "volume_db", -40.0, FADE_S)
-		_fade.tween_callback(outgoing.stop)
-	_music.stream = stream
-	_music.volume_db = -40.0
-	_fade.tween_callback(_music.play)
-	_fade.tween_property(_music, "volume_db", level, FADE_S)
+	_fade.tween_method(mix, 0.0, 1.0, CROSSFADE_S)
+	_fade.tween_callback(outgoing.stop)
 
 
 func stop_music() -> void:
+	_keep_place()
 	track = ""
 	_music.stop()
 	_fading.stop()
@@ -382,7 +546,7 @@ func stop_all() -> void:
 	ambience = ""
 	extras.clear()
 	set_bed("")
-	for voice in _voices + _ambient_voices:
+	for voice in _voices() + _ambient_voices:
 		voice.stop()
 
 

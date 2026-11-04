@@ -91,6 +91,7 @@ func test_settings_persist_and_clamp() -> void:
 	var settings := GameSettings.new(DIR + "/settings.cfg")
 	DirAccess.make_dir_recursive_absolute(DIR)
 	settings.music_volume = 0.25
+	settings.ambience_volume = 0.4
 	settings.reduce_motion = true
 	settings.last_slot = 3
 	settings.save_file()
@@ -98,6 +99,7 @@ func test_settings_persist_and_clamp() -> void:
 	reread.load_file()
 	assert_eq(reread.music_volume, 0.25)
 	assert_eq(reread.sfx_volume, 0.7)
+	assert_eq(reread.ambience_volume, 0.4, "the ambience's own slider (PIX-411)")
 	assert_true(reread.reduce_motion)
 	assert_eq(reread.last_slot, 3)
 

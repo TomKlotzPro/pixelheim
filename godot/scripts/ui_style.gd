@@ -830,8 +830,8 @@ static func keys(spec: String, on_dark := false) -> HBoxContainer:
 static func enter(layer: CanvasLayer) -> void:
 	if not is_instance_valid(layer):
 		return
-	Sound.play_ui("open")
-	layer.tree_exiting.connect(Sound.play_ui.bind("close"), CONNECT_ONE_SHOT)
+	Sound.play("ui_open")
+	layer.tree_exiting.connect(Sound.play.bind("ui_close"), CONNECT_ONE_SHOT)
 	var items := layer.get_children().filter(func(child: Node) -> bool: return child is CanvasItem)
 	if GameState.settings.reduce_motion or items.is_empty():
 		return

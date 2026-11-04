@@ -12,6 +12,8 @@ var path := "user://settings.cfg"
 var music_volume := 0.7
 ## 0..1
 var sfx_volume := 0.7
+## 0..1: the weather, birds and fire, on a slider of its own (PIX-411).
+var ambience_volume := 0.7
 var reduce_motion := false
 var muted := false
 var scanlines := false
@@ -54,6 +56,7 @@ func load_file() -> void:
 		return
 	music_volume = clampf(config.get_value(SECTION, "music_volume", music_volume), 0.0, 1.0)
 	sfx_volume = clampf(config.get_value(SECTION, "sfx_volume", sfx_volume), 0.0, 1.0)
+	ambience_volume = clampf(config.get_value(SECTION, "ambience_volume", ambience_volume), 0.0, 1.0)
 	reduce_motion = config.get_value(SECTION, "reduce_motion", reduce_motion)
 	last_slot = config.get_value(SECTION, "last_slot", last_slot)
 	scanlines = config.get_value(SECTION, "scanlines", scanlines)
@@ -82,6 +85,7 @@ func save_file() -> void:
 	var config := ConfigFile.new()
 	config.set_value(SECTION, "music_volume", music_volume)
 	config.set_value(SECTION, "sfx_volume", sfx_volume)
+	config.set_value(SECTION, "ambience_volume", ambience_volume)
 	config.set_value(SECTION, "reduce_motion", reduce_motion)
 	config.set_value(SECTION, "last_slot", last_slot)
 	config.set_value(SECTION, "scanlines", scanlines)

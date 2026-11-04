@@ -61,7 +61,7 @@ static func play(world: Node, day: int) -> void:
 				step[key] = [at.x + int(step[key][0]), at.y + int(step[key][1])]
 		if step.has("to_cell"):
 			crossing = step
-	Sound.play("roar")
+	Sound.play("dragon_roar")
 	if GameState.settings.reduce_motion:
 		while moment.lit < moment.places.size():
 			moment.step(false)
@@ -89,7 +89,7 @@ func step(chime := true) -> void:
 		LanternLayer.light(view, places[lit], true)
 	lit += 1
 	if chime:
-		Sound.play("learn")
+		Sound.play("lamp_lit")
 
 
 ## The pass over, played out or skipped: every lamp lit, the night's pass

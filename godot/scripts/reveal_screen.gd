@@ -105,7 +105,7 @@ func _next() -> void:
 			_detail_in.tween_property(detail, "modulate:a", 1.0, 0.3).set_delay(DETAIL_DELAY)
 		# A new age is bigger news than a building (PIX-211): it evolves,
 		# raising dust on the square.
-		Sound.play(stop.get("sound", "coin"))
+		Sound.play(stop.get("sound", "reveal_built"))
 		if stop.get("dust", false):
 			for spot: Vector2 in [Vector2(-20, 6), Vector2(18, -4), Vector2(0, 14), Vector2(-6, -12)]:
 				world.fx.dust(stop["at"] + spot, true)

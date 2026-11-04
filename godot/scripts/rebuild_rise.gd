@@ -126,7 +126,7 @@ func play() -> void:
 	if GameState.settings.reduce_motion:
 		timeline.tween_interval(STILL_BEAT)
 		timeline.tween_callback(func() -> void:
-			Sound.play("craft")
+			Sound.play("rebuild")
 			finish())
 		return
 	for building: Dictionary in _buildings:
@@ -334,7 +334,7 @@ func _hide(node: CanvasItem) -> void:
 ## The ruin gives way: a cloud of dust off it, its rubble sinking, the town
 ## as it stood dissolving into the town as it stands.
 func _give_way() -> void:
-	Sound.play("craft")
+	Sound.play("rebuild")
 	var dissolve := func(at: float) -> void:
 		for material in _past_materials:
 			material.set_shader_parameter("dissolve", at)
