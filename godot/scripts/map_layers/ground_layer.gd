@@ -110,9 +110,18 @@ static func _ground_layers(view: MapView) -> Node2D:
 	# water's light read, so they run on unbroken into a map beside it.
 	var origin := ReachPlane.origin(view.data.id) if ReachPlane.holds(view.data.id) else Vector2i.ZERO
 	view.ground_tint.set_shader_parameter("map_origin", Vector2(origin * TILE))
+	# A country road's shape at its ends and turns (PIX-404): the tone of
+	# everything toned as the ground follows it, and the ground's own dirt
+	# and grass are drawn to it (below).
+	if view.kept.road_map != null:
+		view.ground_tint.set_shader_parameter("road_life", true)
+		view.ground_tint.set_shader_parameter("road_map", view.kept.road_map)
+		view.ground_tint.set_shader_parameter("road_origin", Vector2.ONE * -RoadShape.RING * TILE)
+		view.ground_tint.set_shader_parameter("road_texels", Vector2(view.kept.road_image.get_size()))
 	view._toned.append(view.ground_tint)
 	# The water swells, glints and foams at the shore (PIX-223).
 	var water := _toning(view)
+	water.set_shader_parameter("road_ground", view.kept.road_map != null)
 	water.set_shader_parameter("water_life", true)
 	# And the open ground has its patches, drifts, murk and puddles (PIX-305).
 	water.set_shader_parameter("ground_life", true)

@@ -117,7 +117,7 @@ static func rows(grid: Dictionary, beyond: Callable, size: Vector2i, from: int, 
 			wear[cell] = wear_tile(grid, beyond, cell, origin, style)
 			var sides := 0
 			for bit: int in SIDES:
-				if _tile(grid, beyond, cell + SIDES[bit]) in GRASSY:
+				if ground_at(grid, beyond, cell + SIDES[bit]) in GRASSY:
 					sides |= bit
 			if sides != 0:
 				verge[cell] = VERGES + (sides - 1) * VERGE_VARIANTS + absi(hash(origin + cell)) % VERGE_VARIANTS
@@ -187,7 +187,7 @@ static func _ends(grid: Dictionary, beyond: Callable, cell: Vector2i, lane: Arra
 	var across := Vector2i(along.y, along.x)
 	for k in range(-lane[2], lane[1] - lane[2]):
 		var at: Vector2i = cell + across * k
-		if _tile(grid, beyond, at + along) not in RUNS_ON or _tile(grid, beyond, at - along) not in RUNS_ON:
+		if ground_at(grid, beyond, at + along) not in RUNS_ON or ground_at(grid, beyond, at - along) not in RUNS_ON:
 			return true
 	return false
 
@@ -200,13 +200,13 @@ static func lane_tile(style: int, axis: int, width: int, index: int, variant: in
 ## Road cells from `cell` toward `step`, up to MAX_WIDTH + 1.
 static func _run(grid: Dictionary, beyond: Callable, cell: Vector2i, step: Vector2i) -> int:
 	var count := 0
-	while count <= MAX_WIDTH and _tile(grid, beyond, cell + step * (count + 1)) == ROAD:
+	while count <= MAX_WIDTH and ground_at(grid, beyond, cell + step * (count + 1)) == ROAD:
 		count += 1
 	return count
 
 
 ## The ground at `cell`: the map's, or past its edges what lies there.
-static func _tile(grid: Dictionary, beyond: Callable, cell: Vector2i) -> String:
+static func ground_at(grid: Dictionary, beyond: Callable, cell: Vector2i) -> String:
 	return grid[cell] if grid.has(cell) else beyond.call(cell)
 
 
