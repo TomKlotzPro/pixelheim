@@ -73,13 +73,21 @@ var _foot := 0
 var asked := 0
 ## Let go for good (`release`): nothing plays again.
 var released := false
+## Buses this Sound had to make at run time, which break the web's sound
+## (PIX-412): none while default_bus_layout.tres holds them all.
+var buses_added := 0
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_doc = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/audio.json"))
+	# The buses come from default_bus_layout.tres (PIX-412): made here at run
+	# time, the web's sample playback wired Master's output into a loop of
+	# them and nothing reached the speakers. Only a layout that lacks one
+	# (an older project) still gets it here.
 	for bus: String in ["Music", "SFX", "Ambience"]:
 		if AudioServer.get_bus_index(bus) < 0:
+			buses_added += 1
 			AudioServer.add_bus()
 			AudioServer.set_bus_name(AudioServer.bus_count - 1, bus)
 			AudioServer.set_bus_send(AudioServer.bus_count - 1, "Master")
