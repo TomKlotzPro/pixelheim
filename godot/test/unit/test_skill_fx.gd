@@ -41,6 +41,7 @@ func test_every_skill_plays_strips_the_pack_has() -> void:
 		var look := ItemIcons.skill_look(skill["name"])
 		var own: String = look["self"] if skill["kind"] == "heal" else look["hit"]
 		assert_ne(own, "", "%s plays something of its own" % skill["name"])
+		assert_true(Color.html_is_valid(look["light"]), "%s lights the ground in its strips' colour" % skill["name"])
 		if skill["kind"] == "heal":
 			_assert_strip(look["self"], false, skill["name"])
 			continue
@@ -98,6 +99,23 @@ func test_a_bolt_lands_in_the_blows_time() -> void:
 	flight.custom_step(SkillFx.FLIGHT / 2.0 + 0.001)
 	assert_eq(sprite.position, (foe.position + SkillFx.ON_BODY).round(), "on the foe where it stepped to")
 	assert_false(sprite.visible, "landed, back in the pool")
+
+
+## Under a skill's own strips the ground is still lit where it lands
+## (PIX-221): only the soft burst gives way to them.
+func test_the_ground_is_lit_under_the_strips() -> void:
+	var fx: WorldFx = add_child_autofree(WorldFx.new())
+	var stub := GDScript.new()
+	stub.source_code = "extends Node2D\nvar lights = null\n"
+	stub.reload()
+	fx.world = autofree(Node2D.new())
+	fx.world.set_script(stub)
+	for glow: bool in [false, true]:
+		var before := fx.get_child_count()
+		fx.skill_flash(Vector2.ZERO, Color.ORANGE, glow)
+		var added := fx.get_children().slice(before)
+		assert_eq(added.filter(func(node: Node) -> bool: return node is PointLight2D).size(), 1, "the ground lit, glow %s" % glow)
+		assert_eq(added.filter(func(node: Node) -> bool: return node is Sprite2D).size(), 1 if glow else 0, "the burst only without strips")
 
 
 ## A skill's strips are its impact; with motion reduced nothing is drawn
