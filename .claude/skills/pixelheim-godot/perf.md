@@ -23,7 +23,7 @@ Read before a change that adds work per frame, nodes to a map, lights, or time t
 | overworld | 30 | 312 | 0.90-0.92 |
 | overworld, night | 45 | 312 | 1.03-1.10 |
 | deepwood | 12 | 1427 | 0.49-0.55 |
-| mirefen | 12 | 294 | 0.49-0.52 |
+| mirefen | 12 | 287 + 181 (PIX-401's dead trees and reed beds) | 0.49-0.52 |
 | seacave (dungeon) | 12 | – | 0.44-0.52 |
 | town (day / night) | 0 | 675 | 0.25-0.38 / 0.22 |
 | town_inn | 0 | – | 0.20 |
@@ -85,6 +85,8 @@ The houses the ages raise and the fountain lit at night (PIX-382 step 3, 2026-10
 The title's entrance and its richer night (PIX-392, 2026-10-29, with the packs, headless and alone, three runs each): `title cpu --wait 3` (the settled title) 0.03/0.03-0.04 -> 0.04/0.05 ms; the entrance played through (`title --title-at 8 cpu`) 0.06/0.08-0.16 ms. Building the scene (`TitleScene`'s `_ready`, once a title opens) 26 -> 28-35 ms (the near tree's picture, the shafts, the ash, the market). Windowed, the settled title draws about 110 times a frame.
 
 The market, the trades' signs, the planters and the worn paving (PIX-382 step 4, 2026-10-29, with the packs, two runs each, headless and alone): the City's town nodes 1760 -> 1856, BESIDE 33.5-33.6 -> 36.8 ms (plan 12.2-12.5 -> 12.9-13.4, ground 7.4-7.5 -> 8.8-9.0: the worn paving's lanes, decor 11.5-11.8 -> 12.4-13.0), "again" 35.1-35.6 -> 38.0-39.5 ms. `decor=` by age, Ashes to City: 688, 675, 652 the same, the Town's 637 -> 636 and the City's 562 -> 561 (a planter's cell each); lit windows and lamps the same (no light added). `cpu=` on the town at every age by day and at night: 0.21-0.29 / 0.42-0.82 ms before, 0.21-0.29 / 0.41-0.68 after (noise). The review's round (the square worn only where its folk walk, the butcher's and the bookseller's stalls, each stall's awning drawn again over its wares; on a slower day, two runs each): nodes 1856 -> 1878, BESIDE 38.7-41.7 -> 40.4-41.9 ms (decor 13.2-14.6 -> 14.6-15.5), "again" 40.6-42.3 -> 41.6-43.3 ms; `decor=` and the night's lights the same at every age; `cpu=` 0.21-0.32 / 0.46-0.87 ms before, 0.22-0.32 / 0.46-0.92 after (noise).
+
+The Mirefen alive (PIX-401, `MireDressing`, 2026-11-04, with the packs): PR #466's review measured nodes 477 -> 1061, BESIDE 14.5 -> 21.6 ms (plan 3.6 -> 9.5, decor 5.0 -> 6.0) and "again" about 17.5 -> 24 ms against main, almost all of it the one `plan_mire` unit (about 6 ms, twice streaming's 3 ms a frame). `lay` now rolls a cell's dice before it looks round it, so the field decor's and the water's lookups (25 cells each) are left to the third of the fen's cells the dice could grow on, and walks the grid column by column instead of sorting its keys: the same fen, cell for cell. Eight interleaved runs each, headless under heavy load (best of them): the unit 6.2-6.4 -> 3.0-3.1 ms, BESIDE's plan 10.4-11.0 -> 7.1-7.4 ms, BESIDE 24.4 -> 20.8 ms, nodes 1061 the same; "again" 27-30 -> 25-30 ms (noise). About 1 ms of what is left is `Hamlet.fits`' ring round each of the 88 trees the dice offer (no way closed). The field's own decor (`decor=`) 294 -> 287, the walks lifting it off their cells.
 
 ## Saves (a hero who has seen every cell of 29 maps)
 

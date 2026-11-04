@@ -4,25 +4,26 @@ extends MapLayer
 ## The Mirefen alive (PIX-401, the v0.307 world audit: « a uniform fen of
 ## puddles and a few shrubs, one ruin and two camps »): dead trees standing
 ## in the mud, reed beds thick by the water and here and there in the fen,
-## boardwalks over the wet ground from the bridges' and the ruin's ends to
-## the paths, and the road west of the middle bridge going on as one to a
-## stilt hut, another hut by the south bridge, and will-o'-wisps drifting
-## over the fen at night, each a soft light. The walks and huts are placed
-## by hand (WALKS, HUTS), the trees and reeds by the cell's own dice
-## (`lay`, pure). What stands blocks only open ground off the paths, never
-## a pack's home, a chest, a lair, today's patches nor a walk (no patch
-## grows under it after), and never so as to close a way (Hamlet.fits); a walk lies flat and blocks
-## nothing; reeds are walked through, as the woods are. The map itself is
-## untouched. All drawn in code (MireArt), so the same without the paid
-## pack.
+## boardwalks from the bridges' ends out over the wet ground and from the
+## ruin's door down to the road, and the road west of the middle bridge
+## going on as one to a stilt hut, another hut by the south bridge, and
+## will-o'-wisps drifting over the fen at night, each a soft light. The
+## walks and huts are placed by hand (WALKS, HUTS), the trees and reeds by
+## the cell's own dice (`lay`, pure). What stands blocks only open ground
+## off the paths, never a pack's home, a chest, a lair, today's patches nor
+## a walk (no patch grows under it after), and never so as to close a way
+## (Hamlet.fits); a walk lies flat and blocks nothing; reeds are walked
+## through, as the woods are. The map itself is untouched. All drawn in
+## code (MireArt), so the same without the paid pack.
 
 const MAP := "mirefen"
 ## The boardwalks: each a strip two cells thick along its length, drawn down
 ## its middle (the line between its two rows or columns) so it runs on from
 ## a road or a bridge two cells wide: the middle road's west end to the
-## west hut; the south bridge's two ends to the paths beside it, past the
-## south hut; the north bridge's west end to its path; the ruin's doorway
-## down to the road.
+## west hut; from the south bridge's ends out over the fen, west to
+## Grandmother Gulp's lair and east past the south hut to the grass; from
+## the north bridge's west end out to the grass; the ruin's doorway down to
+## the road.
 const WALKS: Array[Rect2i] = [
 	Rect2i(4, 24, 8, 2), Rect2i(8, 34, 10, 2), Rect2i(26, 34, 6, 2), Rect2i(14, 14, 4, 2), Rect2i(44, 18, 2, 6),
 ]
@@ -79,21 +80,29 @@ static func lay(map: MapData, kept: Dictionary, opened := {}) -> Dictionary:
 			blocks.append_array(foot)
 			for cell in _cells(Rect2i(hut - Vector2i.ONE, Vector2i(4, 3))):
 				clear[cell] = true
-	var cells: Array = map.grid.keys()
-	cells.sort()
-	for cell: Vector2i in cells:
-		if map.grid[cell] != "marsh" or clear.has(cell) or Scatter.choice(map.grid, cell) >= 0 or not map.is_walkable(cell):
-			continue
-		var h := absi(hash(Vector3i(cell.x, cell.y, 401)))
-		if h % 1000 < TREES:
-			var one: Array[Vector2i] = [cell]
-			if Hamlet.fits(map, one, kept, blocks):
-				out["trees"][cell] = (h >> 10) % AshArt.SNAGS.size()
-				blocks.append(cell)
-			continue
-		var share := REEDS_BY_WATER if _by_water(map, cell) else REEDS_OUT
-		if (h >> 4) % 1000 < share:
-			out["reeds"][cell] = (h >> 14) % MireArt.REED_BEDS
+	# Column by column, the order the cells sort in, without sorting them.
+	for x in map.size.x:
+		for y in map.size.y:
+			var cell := Vector2i(x, y)
+			if map.grid.get(cell, "") != "marsh":
+				continue
+			# The dice first: most cells grow nothing whatever stands round
+			# them, so they skip the decor's and the water's lookups (PR #466's
+			# review: those were most of the plan, over streaming's 3 ms).
+			var h := absi(hash(Vector3i(cell.x, cell.y, 401)))
+			var tree := h % 1000 < TREES
+			var roll := (h >> 4) % 1000
+			if not tree and roll >= maxi(REEDS_BY_WATER, REEDS_OUT):
+				continue
+			if clear.has(cell) or Scatter.choice(map.grid, cell) >= 0 or not map.is_walkable(cell):
+				continue
+			if tree:
+				var one: Array[Vector2i] = [cell]
+				if Hamlet.fits(map, one, kept, blocks):
+					out["trees"][cell] = (h >> 10) % AshArt.SNAGS.size()
+					blocks.append(cell)
+			elif roll < REEDS_OUT or (roll < REEDS_BY_WATER and _by_water(map, cell)):
+				out["reeds"][cell] = (h >> 14) % MireArt.REED_BEDS
 	return out
 
 

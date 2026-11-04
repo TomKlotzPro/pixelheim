@@ -92,8 +92,11 @@ static func reeds(n: int) -> Image:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 401 + n * 7919
 	var foot := REED_SIZE.y - 1
-	for stem in 7 + n % 3:
-		var x := rng.randi_range(2, REED_SIZE.x - 3)
+	var stems := 7 + n % 3
+	for stem in stems:
+		# Spread across the bed, a pixel off either way: drawn anywhere,
+		# one bed's stems piled up as one stake (PR #466's review).
+		var x := clampi(2 + stem * (REED_SIZE.x - 5) / stems + rng.randi_range(-1, 1), 2, REED_SIZE.x - 3)
 		var tall := rng.randi_range(7, REED_SIZE.y - 3)
 		var lean := rng.randi_range(-1, 1)
 		var green: Color = REED_GREENS[rng.randi_range(0, 2)]

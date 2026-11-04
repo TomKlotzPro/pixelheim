@@ -139,6 +139,17 @@ func test_the_pictures() -> void:
 			for x in snag.get_width():
 				assert_false(snag.get_pixel(x, y).is_equal_approx(AshArt.INKS["Q"]), "no ash at a fen tree's foot")
 	assert_eq(MireArt.draw("reeds_0").get_size(), MireArt.REED_SIZE)
+	# Every bed a clump, its stems spread across it, never one stake: read
+	# just over the tuft, where each stem stands at its own foot before it
+	# leans.
+	for n in MireArt.REED_BEDS:
+		var bed := MireArt.draw("reeds_%d" % n)
+		var columns := 0
+		for x in bed.get_width():
+			var at := bed.get_pixel(x, MireArt.REED_SIZE.y - 2)
+			if MireArt.REED_GREENS.any(func(green: Color) -> bool: return at.is_equal_approx(green)):
+				columns += 1
+		assert_gte(columns, 5, "reed bed %d's stems stand in %d columns" % [n, columns])
 	assert_eq(MireArt.draw("walk_1").get_size(), MireArt.WALK_SIZE)
 	assert_eq(MireArt.draw("walk_1_down").get_size(), Vector2i(MireArt.WALK_SIZE.y, MireArt.WALK_SIZE.x), "a walk down a column")
 	assert_eq(MireArt.draw("hut").get_size(), MireArt.HUT_SIZE)
