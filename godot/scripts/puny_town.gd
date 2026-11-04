@@ -225,18 +225,19 @@ static func _building(blob: Array, grid: Dictionary, pieces: Dictionary, decor: 
 		_wing(a, b, top, low, -1, attached, shift, pieces)
 	# A settlement's chimney on every roof (PIX-313), where Shade's gable
 	# put none: on the main house's ridge, a column in from its east end.
-	if chimney and not _chimneyed(decor, main_left, main_right, bottom):
-		var roof_top := _top(top_of, main_left, main_right)
+	var roof_top := _top(top_of, main_left, main_right)
+	if chimney and not _chimneyed(decor, main_left, main_right, roof_top, bottom):
 		if bottom - roof_top + 1 >= 2:
 			var ridge := roof_top + (1 if bottom - roof_top + 1 >= 4 else 0)
 			decor[Vector2i(maxi(main_left, main_right - 1), ridge)] = CHIMNEY[1]
 
 
-## Whether a chimney already stands on the house over columns a..b whose
-## wall is row `bottom`.
-static func _chimneyed(decor: Dictionary, a: int, b: int, bottom: int) -> bool:
+## Whether a chimney already stands on the house over columns a..b, rows
+## `top` to its wall's `bottom` (PIX-399: not a house further up the same
+## columns, Greyhold's keep over its smithy).
+static func _chimneyed(decor: Dictionary, a: int, b: int, top: int, bottom: int) -> bool:
 	for cell: Vector2i in decor:
-		if decor[cell] == CHIMNEY[1] and cell.x >= a and cell.x <= b and cell.y < bottom:
+		if decor[cell] == CHIMNEY[1] and cell.x >= a and cell.x <= b and cell.y >= top and cell.y < bottom:
 			return true
 	return false
 

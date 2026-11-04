@@ -97,7 +97,7 @@ saves |  | the saves screen | saves | 480
 --slots | <dir> | the slots read from that folder, for saves (res://test/fixtures/slots: three heroes, the longest lines a card shows, PIX-230; slots_unread: saves the game can't read, PIX-303; slots_backup: a hero from the save before; slots_older: a save from before v5 beside a hero, PIX-302), nothing written or erased
 launch |  | with --slots: the run opens the folder's slot 1 as a plain launch opens the last slot played, nothing written (PIX-303: one it can't read stands in, and New Game goes to a free slot)
 --ready | <quest> | a quest accepted and its goal met (PIX-192) | ready | 490
---delivered | <quest> | one of Maren's letters already handed over and answered (PIX-255: Hale's order book open to read)
+--delivered | <quest> | a quest already handed in: one of Maren's letters handed over and answered (PIX-255: Hale's order book open to read), or any other (PIX-399: ulla_turncoats, Greyhold's fort the garrison's)
 --talk-to | <villager> | a conversation with that villager, wherever they stand, then --keys | talk_to | 500
 talk |  | below the map's first villager, facing them, E pressed, then --keys | talk | 510
 near |  | below the map's first villager, facing them (the prompt) | near | 520

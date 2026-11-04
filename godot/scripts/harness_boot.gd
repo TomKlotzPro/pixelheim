@@ -203,7 +203,8 @@ static func before_first_map(flags: HarnessFlags) -> void:
 			GameState.progression.hunted.append(named_id)
 	# `--delivered letter_hale`: one of Maren's letters handed over and
 	# answered (PIX-255), before the first map is drawn, so Hale's order
-	# book lies open on his table (PIX-348).
+	# book lies open on his table (PIX-348); or any quest handed in
+	# (PIX-399: `--delivered ulla_turncoats`, Greyhold's fort the garrison's).
 	if flags.has("--delivered"):
 		GameState.progression.quests[flags.value("--delivered")] = {"progress": 1, "done": true}
 	# `--post` (PIX-320): the Pixelheim Post open before the first map is

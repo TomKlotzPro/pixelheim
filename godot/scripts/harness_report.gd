@@ -431,6 +431,27 @@ func field_floor() -> String:
 	return "%d/%d" % [int(entry["number"]), Depths.count(entry["dungeon"])]
 
 
+## On a held place (Hamlet.HELD): who holds it, its houses, the banners
+## hung in its holder's colour, its pieces two tiles tall standing whole
+## (Hamlet.TOPS) and its paved cells worn:
+## turncoats:houses5,red2,tops4,worn35 (PIX-399).
+func field_fort() -> String:
+	if world.map == null or world.view == null:
+		return ""
+	var by := Hamlet.holder(world.map.id, GameState.progression.quests)
+	if by == "":
+		return ""
+	var banners := {}
+	var tops := 0
+	for piece: Dictionary in world.view.hamlet["pieces"]:
+		if piece.has("banner"):
+			banners[piece["banner"]] = int(banners.get(piece["banner"], 0)) + 1
+		if piece.has("top"):
+			tops += 1
+	var hung: Array = banners.keys().map(func(colour: String) -> String: return "%s%d" % [colour, banners[colour] / 2])
+	return "%s:houses%d,%stops%d,worn%d" % [by, PunyTown.houses(world.map.grid).size(), "".join(hung.map(func(each: String) -> String: return each + ",")), tops, world.view.worn_paving.size()]
+
+
 func field_frames() -> String:
 	return noted("frames")
 
