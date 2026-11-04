@@ -1,5 +1,5 @@
 {
-  "about": "Leohpaz's sounds the game plays (PIX-411, PIX-413): for each event in assets/data/audio.json, its takes as [the bundle's zip, the file's path inside it, how to cut it], or the name of the event whose takes it shares. tools/sound_prep.py reads them out of the zips, cuts each (\"keep\": seconds after its start, the tail faded; \"loop\": a bed's seconds, its end crossfaded into its start; \"pitch\", \"lowpass\" Hz, \"db\" after levelling), levels it to its family and writes <event>_<n>.wav and takes.json into the private pixelheim-assets repo (retro-rpg/leohpaz/pixelheim/); scripts/fetch-private-art.sh installs them, git-ignored, into assets/audio/paid/, where they stand in for the event's own takes. The packs may not be redistributed, so no take enters this repo. Picked by name and measured from ~/playground/leohpaz-sfx/mapping, never heard: the PR's listening list says which to hear first. No take that may hold words (the game speaks English and French).",
+  "about": "Leohpaz's sounds the game plays (PIX-411, PIX-413): for each event in assets/data/audio.json, its takes as [the bundle's zip, the file's path inside it, how to cut it], or the name of the event whose takes it shares. tools/sound_prep.py reads them out of the zips, cuts each (\"keep\": the source's seconds after its start, the tail faded; \"loop\": a bed's seconds, its end crossfaded into its start; \"pitch\", \"lowpass\" Hz, \"db\" after levelling), levels it to its family and writes <event>_<n>.wav and takes.json into the private pixelheim-assets repo (retro-rpg/leohpaz/pixelheim/); scripts/fetch-private-art.sh installs them, git-ignored, into assets/audio/paid/, where they stand in for the event's own takes. The packs may not be redistributed, so no take enters this repo. Picked by name and measured from ~/playground/leohpaz-sfx/mapping, never heard: the PR's listening list says which to hear first. No take that may hold words (the game speaks English and French).",
   "events": {
     "swing": [
       ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Slash_Attacks/Slash_Attack_Sword_1.wav", {"keep": 0.165}],
@@ -838,6 +838,11 @@
       ["Leohpaz_MedievalCarnival_SFX_Pack.zip", "Leohpaz_MedievalCarnival_SFX_Pack/Ambience/Pop_1.wav", {"keep": 0.13}],
       ["Leohpaz_MedievalCarnival_SFX_Pack.zip", "Leohpaz_MedievalCarnival_SFX_Pack/Ambience/Pop_2.wav", {"keep": 0.13}]
     ],
+    "bench_rest": [
+      ["22_book_parchment_ui_SFX.zip", "01_book_open_1_fast.wav", {"keep": 0.32}],
+      ["22_book_parchment_ui_SFX.zip", "01_book_open_2_slow.wav", {"keep": 0.415}],
+      ["100_rpg_ui_sfx.zip", "091_Pause_03.wav", {"keep": 0.23}]
+    ],
     "cutscene_card": [
       ["Jingles_Fanfares_SFX_Pack.zip", "Jingles_Fanfares_SFX_Pack/Jingles_and_Fanfares/Drums/Drums_2.wav", {"keep": 1.25}]
     ],
@@ -877,7 +882,6 @@
     "boss_phase": "dragon_roar",
     "skill_refused": "ui_deny",
     "letter_read": "ui_page",
-    "bench_rest": "ui_open",
     "ui_volume": "coin_gain",
     "reveal_built": "coin_gain",
     "ring_done": "coin_gain",

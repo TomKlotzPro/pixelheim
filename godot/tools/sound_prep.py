@@ -87,7 +87,8 @@ def cut(options):
     if "lowpass" in options:
         out.append("lowpass=f=%d" % options["lowpass"])
     if "keep" in options:
-        keep = float(options["keep"])
+        # The source's seconds: a pitch down plays them longer.
+        keep = float(options["keep"]) / float(options.get("pitch", 1))
         fade = min(FADE_S, keep * FADE_SHARE)
         out.append("atrim=end=%.3f,afade=t=out:st=%.3f:d=%.3f" % (keep, keep - fade, fade))
     return out

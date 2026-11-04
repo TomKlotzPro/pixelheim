@@ -79,6 +79,8 @@ class SoundPrepTest(unittest.TestCase):
         kept = sound_prep.cut({"keep": 0.4})
         self.assertEqual(kept, ["atrim=end=0.400,afade=t=out:st=0.280:d=0.120"])
         self.assertIn("asetrate=35280", sound_prep.cut({"pitch": 0.8})[0])
+        # Kept by the source's seconds: a bull's moo as long as the cow's, slower.
+        self.assertEqual(sound_prep.cut({"keep": 0.4, "pitch": 0.8})[1], "atrim=end=0.500,afade=t=out:st=0.350:d=0.150")
         self.assertEqual(sound_prep.cut({}), [])
         self.assertIn("concat", sound_prep.loop_graph(12.0))
         for event, sources in self.manifest["events"].items():
@@ -86,10 +88,13 @@ class SoundPrepTest(unittest.TestCase):
                 continue
             for source in sources:
                 options = source[2] if len(source) > 2 else {}
+                # Every one cut: a take with no "keep" would play its whole length.
                 if event.startswith("cast_") or event.startswith("impact_"):
-                    self.assertLessEqual(options.get("keep", 0), 0.6, "%s: long magic cut" % event)
+                    self.assertIn("keep", options, event)
+                    self.assertLessEqual(options["keep"], 0.6, "%s: long magic cut" % event)
                 if event in ("step_snow", "step_mud"):
-                    self.assertLessEqual(options.get("keep", 0), 0.15, event)
+                    self.assertIn("keep", options, event)
+                    self.assertLessEqual(options["keep"], 0.15, event)
                 if self.audio["events"][event]["family"] == "ambience":
                     self.assertIn("loop", options, "%s: a bed loops" % event)
 

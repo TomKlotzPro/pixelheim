@@ -704,7 +704,7 @@ static func ambience_for(map_id: String, region := "", night := false) -> String
 		"frostgate":
 			return "frost"
 		"deepwood":
-			return "deepforest"
+			return "deepforest_night" if night else "deepforest"
 		"mirefen":
 			return "marsh_night" if night else "marsh"
 		"town":

@@ -83,7 +83,11 @@ func _eases_in() -> bool:
 func _open() -> void:
 	layer = 7
 	Sound.play_track("title")
+	# Sound outlives the world it leaves (an autoload): the last place's bed
+	# and birds go quiet under the title (PIX-413).
 	Sound.set_ambience("")
+	Sound.set_bed("")
+	Sound.extras.clear()
 	scene = TitleScene.new()
 	add_child(scene)
 	_rest_world(true)

@@ -103,6 +103,26 @@ func test_a_place_has_its_own_bed_where_the_packs_are() -> void:
 	Sound._paid = saved
 
 
+## PIX-413's review: Sound outlives the world it leaves, so back at the
+## title the last place's bed and birds go quiet.
+func test_the_title_hushes_the_last_place() -> void:
+	var saved: Dictionary = Sound._paid
+	Sound._paid = {"amb_forest_day": ["ambience/bed_deepwind"]}
+	Sound.set_ambience("forest_day")
+	Sound.set_bed("")
+	Sound.set_extras(["birds"] as Array[String])
+	assert_eq(Sound.bed, "amb_forest_day", "the woods' own bed")
+	var title: Node = preload("res://scripts/title_screen.gd").new()
+	add_child(title)
+	assert_eq(Sound.place, "")
+	assert_eq(Sound.bed, "", "no birdsong under the title")
+	assert_eq(Sound.extras, [] as Array[String])
+	title.close()
+	await get_tree().process_frame
+	Sound._paid = saved
+	Sound.stop_all()
+
+
 func test_places_and_fights_choose_the_webs_themes() -> void:
 	assert_eq(Sound.track_for("town", ""), "town")
 	assert_eq(Sound.track_for("overworld", ""), "world")
@@ -120,6 +140,8 @@ func test_the_weather_follows_the_place() -> void:
 	assert_eq(Sound.ambience_for("town"), "town", "the square's bustle by day")
 	assert_eq(Sound.ambience_for("town", "", true), "forest_night")
 	assert_eq(Sound.ambience_for("deepwood"), "deepforest")
+	assert_eq(Sound.ambience_for("deepwood", "", true), "deepforest_night", "no birdsong in the Bois-Profonds at night")
+	assert_eq(String(Sound._doc["places"]["deepforest_night"]["bed"]), "amb_forest_night")
 	assert_eq(Sound.ambience_for("mirefen"), "marsh")
 	assert_eq(Sound.ambience_for("mirefen", "mire", true), "marsh_night")
 	assert_eq(Sound.ambience_for("town_house"), "indoor")

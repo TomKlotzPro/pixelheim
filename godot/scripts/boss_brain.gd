@@ -77,6 +77,8 @@ func _cast(move: String) -> void:
 	enemy.velocity = Vector2.ZERO
 	var hero: Vector2 = world.player.global_position
 	var at: Vector2 = enemy.global_position
+	# Its sound warns with the mark (PIX-413): the takes' bodies (some 1.0 to
+	# 1.5 s) span the tell (0.9 to 1.1 s), so the fire roars as it lands.
 	match String(attack["shape"]):
 		"line":
 			Sound.play("dragon_breath")
