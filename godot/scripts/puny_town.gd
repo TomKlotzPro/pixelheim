@@ -83,8 +83,8 @@ static func compose(grid: Dictionary, style := {}) -> Dictionary:
 ## (what the tests check). A `style` (Hamlet.house_style, PIX-313) builds
 ## them in a settlement's own grammar: its `walls` (sets of [left end,
 ## middle, right end] for Shade's timber frame's, one per house in turn,
-## PIX-400; [] keeps his), a `chimney` on every roof (but a roof
-## carrying one of the settlement's own `stacks`, by cell: a forge's).
+## PIX-400; [] keeps his), a `chimney` on every roof (but a house with one
+## of the settlement's own `stacks` cells: a forge's stack, a shed's door).
 static func plan(grid: Dictionary, style := {}) -> Dictionary:
 	var pieces := {}
 	var decor := {}

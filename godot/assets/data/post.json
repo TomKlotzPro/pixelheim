@@ -92,7 +92,7 @@
         "grows": [
           {"news": "Saltmere's lighthouse is mended, new stones on the point.", "line": "Brin says it's only a tower until it's lit. He says it every morning.", "pieces": [{"art": "keg", "cell": [36, 23]}, {"art": "box", "cell": [37, 23]}, {"art": "lighthouse_dark", "cell": [35, 29]}]},
           {"news": "Sea glass in the lantern of Saltmere's lighthouse.", "line": "Every pane picked off the beach by Pip, who wants it known.", "pieces": [{"art": "fish_rack", "cell": [43, 22]}, {"art": "fish_rack", "cell": [45, 22]}, {"art": "lighthouse_glass", "cell": [35, 29]}]},
-          {"news": "Saltmere's lighthouse is lit again.", "line": "Every boat in the bay saw it. So did Bram, from Pixelheim, he says.", "pieces": [{"art": "lamp_post", "cell": [34, 22], "lit": true}, {"art": "lamp_post", "cell": [42, 21], "lit": true}, {"art": "lighthouse", "cell": [35, 29], "lit": true}]}
+          {"news": "Saltmere's lighthouse is lit again.", "line": "Every boat in the bay saw it. So did Bram, from Pixelheim, he says.", "pieces": [{"art": "lamp_post", "cell": [30, 22], "lit": true}, {"art": "lamp_post", "cell": [42, 21], "lit": true}, {"art": "lighthouse", "cell": [35, 29], "lit": true}]}
         ]
       },
       {

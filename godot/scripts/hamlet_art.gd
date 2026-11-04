@@ -325,7 +325,8 @@ const PIECES := {
 		".oooooooooooooooooooooooooo.....",
 	],
 	## A lamp post on a hamlet's street (PIX-400): LampArt's street lamp in
-	## these inks, its candle wax-pale by day (q: it burns at night, `shine`).
+	## these inks, its candle wax-pale by day (q: its halo stands on it,
+	## `shine_at`); at night LampArt's lit glass burns over it, as the town's.
 	"lamp_post": [
 		"................",
 		"................",

@@ -139,7 +139,8 @@ func test_each_settlement_builds_in_its_own_grammar() -> void:
 				assert_has(walls, own["pieces"][cell], "%s: its own walls at %s" % [map_id, cell])
 			elif was in [PunyTown.WINDOW, PunyTown.DOOR]:
 				assert_eq(own["pieces"][cell], was, "%s: windows and doors stay" % map_id)
-		# A chimney on every roof, but where a forge's stack stands for it.
+		# A chimney on every roof, but where a forge's stack stands for it or
+		# over a shed (PIX-400's review: the Frostgate's woodshed).
 		var chimneys: Array = own["decor"].keys().filter(func(cell: Vector2i) -> bool: return own["decor"][cell] == PunyTown.CHIMNEY[1])
 		var stacked := 0
 		for house: Dictionary in PunyTown.houses(map.grid):
@@ -147,7 +148,7 @@ func test_each_settlement_builds_in_its_own_grammar() -> void:
 			var flues := chimneys.filter(func(cell: Vector2i) -> bool: return rect.has_point(cell)).size()
 			if style["stacks"].any(func(cell: Vector2i) -> bool: return rect.has_point(cell)):
 				stacked += 1
-				assert_eq(flues, 0, "%s: the forge stack at %s is its chimney" % [map_id, rect])
+				assert_eq(flues, 0, "%s: no chimney at %s, a forge's stack or a shed" % [map_id, rect])
 				continue
 			assert_eq(flues, 1, "%s: a chimney on the roof at %s" % [map_id, rect])
 			if house["door"].x >= 0:

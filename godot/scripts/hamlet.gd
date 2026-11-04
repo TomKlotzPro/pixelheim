@@ -32,7 +32,7 @@ const LOOKS := {
 ## Medieval Age, a set of [left end, middle, right end] per house in turn
 ## ([]: Shade's timber frame), and snow on the roofs. Every look puts a
 ## chimney on each roof but one carrying a stack of its own (DRESSING's
-## `roof`: Morvax's forge, Blackiron's). Greyhold's and Morvax's of the fort's stone; at
+## `roof`: Morvax's forge, Blackiron's) or over a shed (SHEDS). Greyhold's and Morvax's of the fort's stone; at
 ## Saltmere a whitewashed cottage, a timbered one and one of planks, their
 ## roofs slate, thatch and moss (the map's roof kinds, PIX-400: they were
 ## one thatched cottage three times); Blackiron's forge of stone and its
@@ -48,6 +48,10 @@ const HOUSES := {
 	"mine": {"walls": [FORT, PLANKS]},
 	"smithy": {"walls": [[3802, 3803, 3805]]},
 }
+## Sheds, not homes, by their door: no chimney on the roof, no smoke from
+## the door (PIX-400's review: the Frostgate's woodshed under a chimney
+## stack read as a tiny cottage).
+const SHEDS := {"frostgate": [Vector2i(17, 38)]}
 ## A barrel and a crate outdoors, at the Puny folk's scale (HamletArt): Shade's
 ## stood as tall as the villager beside them, a barrel on a crate a tower.
 ## By look, what a settlement keeps in them.
@@ -154,7 +158,7 @@ static func house_style(map_id: String) -> Dictionary:
 		return {}
 	var style: Dictionary = HOUSES[look].duplicate()
 	style["chimney"] = true
-	style["stacks"] = DRESSING.get(map_id, []).filter(func(piece: Dictionary) -> bool: return piece.has("roof")).map(func(piece: Dictionary) -> Vector2i: return piece["cell"])
+	style["stacks"] = DRESSING.get(map_id, []).filter(func(piece: Dictionary) -> bool: return piece.has("roof")).map(func(piece: Dictionary) -> Vector2i: return piece["cell"]) + SHEDS.get(map_id, [])
 	return style
 
 
