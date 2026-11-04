@@ -499,7 +499,7 @@ class Painting extends Control:
 	## The plate's shade on most ground, and on light ground (mean luminance
 	## of its cells' colours past LIGHT_GROUND: snow, ice, sand).
 	const PLATE_DARK := 0.6
-	const PLATE_LIGHT := 0.85
+	const PLATE_LIGHT := 0.72
 	const LIGHT_GROUND := 0.5
 	var world: Node2D
 	## The page shown, by the map it's named for: the hero's map, or another
@@ -524,6 +524,9 @@ class Painting extends Control:
 	## What's drawn of the page: page cell -> the tile it's painted as (seen
 	## ground, the ridge seen between maps, the village).
 	var _ground := {}
+	## The region of each seen cell of a map (MapData.regions), whose tone
+	## the world gives its ground: the page paints it so (MapGround).
+	var _regions := {}
 	## How far each seen cell is darkened to the night (the lookout's).
 	var dim := 0.0
 	## The page painted from its ground (MapGround, PIX-403), and each page's
@@ -562,22 +565,27 @@ class Painting extends Control:
 		custom_minimum_size = Vector2(cells * tile_px)
 		var discovered: Dictionary = GameState.world.discovered
 		_ground = {}
+		_regions = {}
 		# The ridge between the maps on the Reach's page, where the hero had
 		# it in sight: the cliffs every map there is rimmed with.
 		for cell: Vector2i in Atlas.ridge(sheets, discovered):
 			_ground[cell] = ReachPlane.RIDGE
 		for sheet: Dictionary in sheets:
 			var grid: Dictionary = sheet["map"].grid
+			var regions: Dictionary = sheet["map"].regions
 			var at: Vector2i = sheet["at"]
 			for cell: Vector2i in discovered.get(sheet["id"], {}):
 				if grid.has(cell):
 					_ground[cell + at] = grid[cell]
+					if regions.has(cell):
+						_regions[cell + at] = regions[cell]
 		for cell: Vector2i in village:
 			_ground[cell] = village[cell]
+			_regions.erase(cell)
 		var made := [cells, tile_px, dim, _ground]
 		var kept: Array = _papers.get(map.id, [])
 		if kept.is_empty() or kept[0] != made:
-			kept = [made, ImageTexture.create_from_image(MapGround.paint(cells, tile_px, _ground, dim))]
+			kept = [made, ImageTexture.create_from_image(MapGround.paint(cells, tile_px, _ground, _regions, dim))]
 			_papers[map.id] = kept
 		_paper = kept[1]
 		_gates = _shut_gates()
@@ -746,9 +754,10 @@ class Painting extends Control:
 				split = i
 		return PackedStringArray([text.left(split), text.substr(split + 1)])
 
-	## How dark a name's plate is over `box` (px): near solid on light ground
+	## How dark a name's plate is over `box` (px): darker on light ground
 	## (the Frostgate's snow, where the see-through shade let the lake and
-	## the pines through the letters), see-through on the rest.
+	## the pines through the letters), yet not so dark it hides the frozen
+	## lake under the pass's name; see-through on the rest.
 	func _shade(box: Rect2) -> float:
 		var light := 0.0
 		var count := 0

@@ -4,27 +4,32 @@ class_name MapGround
 ## world draws it with, Shade's CC0 overworld tiles (PunyTerrain) shrunk to
 ## the page's pixels a cell, so the woods, the water, the snow, the Ash and
 ## the village read on the page as they do underfoot. One flat colour a tile
-## made the world a quilt of swatches. The grounds the world tones (the Ash,
-## the mire, the snow, the pass's stone) keep their texture in the map's
-## colour for them, as region_tint.gdshader tones them; what the ground
-## doesn't draw (roofs, the rampart, bridges, fields, the rooms' floors)
-## keeps its flat colour, lightly grained.
+## made the world a quilt of swatches. A ground the world tones keeps its
+## texture in the tone the world's tint mask gives it (PunyTerrain.toned_as:
+## the Ash, the mire, the pass's stone, and a region's every ground, the
+## Frostgate's snow and the Mountain Road's ash), so the page shows no green
+## the world doesn't. The rock is drawn as rock, not as the grassy top Shade
+## draws his cliffs with, so the page shows where the land is shut; what the
+## ground doesn't draw (roofs, the rampart, bridges, fields, the rooms'
+## floors) keeps its flat colour, lightly grained.
 
 ## The tiles painted from the ground's own tiles; the rest are flat.
 const TEXTURED := [
-	"grass", "flowers", "forest", "mountain", "water", "path", "sand", "marsh", "ash",
+	"grass", "flowers", "forest", "water", "path", "sand", "marsh", "ash",
 	"shore", "sea", "deep_sea", "snow", "ice", "stone",
 ]
-## The grounds the world tones from Shade's grass and dirt (PunyTerrain.TINTS):
-## their texture in the map's colour for them.
-const TONED := ["ash", "marsh", "snow", "ice", "stone"]
+## The rock: flat in its own grey (the ridges' and the mountains' on the
+## page before PIX-403), or in a toned region its tone ROCK_SHADE darker, a
+## cliff's face in the snow or the ash, so it never reads as the ground.
+const ROCK := ["mountain"]
+const ROCK_SHADE := 0.35
 ## How many of a terrain's tiles a page mixes, picked by the cell, so a field
 ## isn't one stamp repeated.
 const VARIANTS := 4
 ## The untoned grounds' brightness and saturation on the page.
 const GRADE := Vector2(0.8, 0.8)
 
-## "tile:px:variant:dim" -> its cell's Image, made once a session.
+## "tile:tone:px:variant:dim" -> its cell's Image, made once a session.
 static var _swatches := {}
 ## The overworld sheet, decoded while swatches are cut and let go after the
 ## paint (as PunySheet lets go of its own, PIX-269): the swatches are kept.
@@ -32,30 +37,43 @@ static var _sheet: Image
 
 
 ## The page `cells` big at `px` pixels a cell: `ground` (page cell -> tile
-## id) painted, the night everywhere else; each cell `dim` of the way to the
-## night (the lookout's panorama), in plain colour values as its flat
-## colours were: a see-through night over the page reads far lighter on the
-## desktop's linear canvas.
-static func paint(cells: Vector2i, px: int, ground: Dictionary, dim := 0.0) -> Image:
+## id) painted in its `regions`' tones (page cell -> region id), the night
+## everywhere else; each cell `dim` of the way to the night (the lookout's
+## panorama), in plain colour values as its flat colours were: a see-through
+## night over the page reads far lighter on the desktop's linear canvas.
+static func paint(cells: Vector2i, px: int, ground: Dictionary, regions: Dictionary, dim := 0.0) -> Image:
 	var image := Image.create_empty(maxi(1, cells.x * px), maxi(1, cells.y * px), false, Image.FORMAT_RGBA8)
 	image.fill(UiStyle.NIGHT)
 	var whole := Rect2i(0, 0, px, px)
-	# tile -> its VARIANTS swatches, so a cell costs no key of its own.
+	# tile -> region -> its VARIANTS swatches, so a cell costs no key of its own.
 	var cut := {}
 	for cell: Vector2i in ground:
 		var tile: String = ground[cell]
-		if not cut.has(tile):
-			cut[tile] = range(VARIANTS).map(func(variant: int) -> Image: return swatch(tile, px, variant, dim))
-		image.blit_rect(cut[tile][absi(hash(cell)) % VARIANTS], whole, cell * px)
+		var region: String = regions.get(cell, "")
+		var in_region: Dictionary = cut.get_or_add(tile, {})
+		if not in_region.has(region):
+			var tone := tone_of(tile, region)
+			in_region[region] = range(VARIANTS).map(func(variant: int) -> Image: return swatch(tile, px, variant, dim, tone))
+		image.blit_rect(in_region[region][absi(hash(cell)) % VARIANTS], whole, cell * px)
 	_sheet = null
 	return image
 
 
-## One cell of `tile`, `px` pixels square: its ground's tile `variant`
-## (forests its pines' crowns over the grass) shrunk to it, or its flat
-## colour grained; `dim` of the way to the night.
-static func swatch(tile: String, px: int, variant: int, dim := 0.0) -> Image:
-	var key := "%s:%d:%d:%s" % [tile, px, variant, dim]
+## The tone `tile` takes in `region` (a PunyTerrain.TINTS key, "" for
+## none): the world's tint mask's where the page draws the ground or the
+## rock; the water keeps its own, as region_tint.gdshader keeps it.
+static func tone_of(tile: String, region: String) -> String:
+	if tile in PunyTerrain.WATERS or not (tile in TEXTURED or tile in ROCK):
+		return ""
+	return PunyTerrain.toned_as(tile, region)
+
+
+## One cell of `tile`, `px` pixels square, toned `tone` (tone_of): its
+## ground's tile `variant` (forests its pines' crowns over the grass) shrunk
+## to it, or the rock's or its flat colour grained; `dim` of the way to the
+## night.
+static func swatch(tile: String, px: int, variant: int, dim := 0.0, tone := "") -> Image:
+	var key := "%s:%s:%d:%d:%s" % [tile, tone, px, variant, dim]
 	if _swatches.has(key):
 		return _swatches[key]
 	var cut: Image
@@ -63,15 +81,16 @@ static func swatch(tile: String, px: int, variant: int, dim := 0.0) -> Image:
 		cut = _tile(PunyTerrain.ground_of(tile), variant)
 		if tile == "forest":
 			cut.blend_rect(_tile("trees", variant), Rect2i(0, 0, PunyTerrain.TILE, PunyTerrain.TILE), Vector2i.ZERO)
-		if tile in TONED:
-			_tone(cut, Atlas.color(tile))
+		# The ice is its lake's blue over the snow, in any region.
+		if tile == "ice" or tone != "":
+			_tone(cut, Atlas.color(tile) if tile == "ice" else PunyTerrain.TINTS[tone])
 		else:
 			# Shade's sheet is brighter than his ground looks lit in the world.
 			cut.adjust_bcs(GRADE.x, 1.0, GRADE.y)
 		cut.resize(px, px, Image.INTERPOLATE_TRILINEAR)
 	else:
 		cut = Image.create_empty(px, px, false, Image.FORMAT_RGBA8)
-		var flat := Atlas.color(tile)
+		var flat: Color = PunyTerrain.TINTS[tone].darkened(ROCK_SHADE) if tile in ROCK and tone != "" else Atlas.color(tile)
 		for y in px:
 			for x in px:
 				cut.set_pixel(x, y, flat.darkened(0.06) if (x + y + variant) % 3 == 0 else flat)

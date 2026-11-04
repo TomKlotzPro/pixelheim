@@ -405,6 +405,46 @@ func test_every_region_is_named_wherever_the_hero_stands() -> void:
 	Text.apply("en")
 
 
+## PIX-403's review: the page tones a cell by its region as the world does
+## (PunyTerrain.toned_as) and draws the rock as rock, not as the cliffs'
+## grassy top: the Frostgate's rock, pines and snow read as snow on the
+## Reach's page and the Mountain Road's rock and ash as ash on its own,
+## never the grass's green; the rock darker than the ground it shuts in, and
+## the ridges between the maps grey.
+func test_the_page_tones_each_region_as_the_world_does() -> void:
+	Atlas.walk_all(GameState.world.discovered)
+	for page: Array in [["overworld", "frostgate", "frost", "snow"], ["mountain_road", "mountain_road", "road", "ash"]]:
+		var opened := _open(page[0])
+		var screen: Node = opened[0]
+		var painting: Control = screen.painting
+		var paper: Image = painting._paper.get_image()
+		var map := MapData.load_by_id(page[1])
+		var at: Vector2i = painting.at_of(page[1])
+		var green := []
+		var light := {"mountain": [], page[3]: []}
+		for cell: Vector2i in map.regions:
+			var tile := map.tile_at(cell)
+			if map.regions[cell] != page[2] or not tile in ["mountain", "forest", page[3]]:
+				continue
+			var mean := _mean(paper, cell + at, painting.tile_px)
+			if mean.g > maxf(mean.r, mean.b) + 0.02:
+				green.append(tile)
+			if light.has(tile):
+				light[tile].append(mean.get_luminance())
+		assert_eq(green, [], "%s's rock, pines and %s, never green" % [page[1], page[3]])
+		var rock: float = light["mountain"].reduce(func(sum: float, l: float) -> float: return sum + l, 0.0) / light["mountain"].size()
+		var ground: float = light[page[3]].reduce(func(sum: float, l: float) -> float: return sum + l, 0.0) / light[page[3]].size()
+		assert_lt(rock, ground - 0.1, "%s's rock darker than its %s" % [page[1], page[3]])
+		var ridges := 0
+		for cell: Vector2i in painting._ground:
+			var mean := _mean(paper, cell, painting.tile_px)
+			if painting._ground[cell] == "mountain" and not painting._regions.has(cell) and mean.g > mean.b:
+				ridges += 1
+		assert_eq(ridges, 0, "%s: the ridges and the untoned rock grey" % page[0])
+		screen.close()
+		await wait_process_frames(1)
+
+
 ## The mean colour of page cell `cell` on the painted page.
 func _mean(paper: Image, cell: Vector2i, px: int) -> Color:
 	var sum := Color(0, 0, 0, 0)
