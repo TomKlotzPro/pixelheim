@@ -3149,6 +3149,10 @@ msgid "Every skill branch grew a tier-3 capstone: 12 nodes per role, from Skulls
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every skill has its own look now, from Shade's Puny Skills: fireballs fly and burst, frost novas bloom, lightning strikes, heals rise and every landed hit sparks; bows shoot arrows and a staff throws an arcane orb; and spells still light the ground where they land at night"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every spawn belongs to its terrain: ash beasts in the ash, bog things in the Mirefen - the beast you see is the beast you fight"
 msgstr ""
 
@@ -5158,6 +5162,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Specializations! At your first ascension, every class faces a choice of two paths - Juggernaut or Warlord, Pyromancer or Stormcaller, Plaguelord or Bonelord... fourteen identities across the roster"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Spellfire"
 msgstr ""
 
 #: assets/data/changelog.json
