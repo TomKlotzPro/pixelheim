@@ -139,16 +139,20 @@ func test_each_settlement_builds_in_its_own_grammar() -> void:
 				assert_has(walls, own["pieces"][cell], "%s: its own walls at %s" % [map_id, cell])
 			elif was in [PunyTown.WINDOW, PunyTown.DOOR]:
 				assert_eq(own["pieces"][cell], was, "%s: windows and doors stay" % map_id)
-		# A chimney on every roof, but where the smithy's stack stands for it.
-		var chimneys: Array = own["decor"].values().filter(func(tile: int) -> bool: return tile == PunyTown.CHIMNEY[1])
-		var houses := PunyTown.houses(map.grid)
-		if style.has("stack"):
-			assert_eq(chimneys.size(), 0, "%s: the forge stack is its chimney" % map_id)
-		else:
-			assert_eq(chimneys.size(), houses.size(), "%s: a chimney on every roof" % map_id)
-		for house: Dictionary in houses:
-			if house["door"].x >= 0 and not style.has("stack"):
+		# A chimney on every roof, but where a forge's stack stands for it.
+		var chimneys: Array = own["decor"].keys().filter(func(cell: Vector2i) -> bool: return own["decor"][cell] == PunyTown.CHIMNEY[1])
+		var stacked := 0
+		for house: Dictionary in PunyTown.houses(map.grid):
+			var rect: Rect2i = house["rect"]
+			var flues := chimneys.filter(func(cell: Vector2i) -> bool: return rect.has_point(cell)).size()
+			if style["stacks"].any(func(cell: Vector2i) -> bool: return rect.has_point(cell)):
+				stacked += 1
+				assert_eq(flues, 0, "%s: the forge stack at %s is its chimney" % [map_id, rect])
+				continue
+			assert_eq(flues, 1, "%s: a chimney on the roof at %s" % [map_id, rect])
+			if house["door"].x >= 0:
 				assert_gte(SettlementsLayer.chimney_of(house["door"], own["decor"]).x, 0, "%s: the door at %s smokes from its chimney" % [map_id, house["door"]])
+		assert_eq(stacked, style["stacks"].size(), "%s: every stack stands on a roof" % map_id)
 
 
 ## PIX-400: Saltmere's three houses were one thatched cottage three times.
@@ -183,6 +187,18 @@ func test_a_lamp_by_every_door() -> void:
 				var cell: Vector2i = piece["cell"]
 				return cell.y == door.y and absi(cell.x - door.x) <= 1 and (piece.get("art", "") == "lantern" or piece.has("glow")))
 			assert_true(lit, "%s: a lamp by the door at %s" % [map_id, door])
+
+
+## PIX-400 review: what hangs on a wall (a net, a lantern) hangs on bare
+## wall, never over a window lit at night nor a door.
+func test_wall_pieces_hang_on_bare_wall() -> void:
+	for map_id: String in MAPS:
+		var map := MapData.load_by_id(map_id)
+		var built: Dictionary = PunyTown.plan(map.grid, Hamlet.house_style(map_id))["pieces"]
+		for piece: Dictionary in Hamlet.plan(map, Hamlet.kept_on(map))["pieces"]:
+			if piece["kind"] == "wall":
+				assert_true(built.has(piece["cell"]), "%s: the %s at %s hangs on a house" % [map_id, piece.get("art", ""), piece["cell"]])
+				assert_does_not_have([PunyTown.WINDOW, PunyTown.DOOR], built.get(piece["cell"], -1), "%s: the %s at %s on bare wall" % [map_id, piece.get("art", ""), piece["cell"]])
 
 
 func test_pixelheim_keeps_its_houses() -> void:

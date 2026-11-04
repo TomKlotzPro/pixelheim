@@ -31,7 +31,8 @@ const LOOKS := {
 ## Each look's houses (PunyTown.plan's style): their wall rows in the
 ## Medieval Age, a set of [left end, middle, right end] per house in turn
 ## ([]: Shade's timber frame), and snow on the roofs. Every look puts a
-## chimney on each roof. Greyhold's and Morvax's of the fort's stone; at
+## chimney on each roof but one carrying a stack of its own (DRESSING's
+## `roof`: Morvax's forge, Blackiron's). Greyhold's and Morvax's of the fort's stone; at
 ## Saltmere a whitewashed cottage, a timbered one and one of planks, their
 ## roofs slate, thatch and moss (the map's roof kinds, PIX-400: they were
 ## one thatched cottage three times); Blackiron's forge of stone and its
@@ -45,7 +46,7 @@ const HOUSES := {
 	"fort": {"walls": [FORT]},
 	"frost": {"walls": [FORT, [], PLANKS], "snow": true},
 	"mine": {"walls": [FORT, PLANKS]},
-	"smithy": {"walls": [[3802, 3803, 3805]], "stack": "forge_stack"},
+	"smithy": {"walls": [[3802, 3803, 3805]]},
 }
 ## A barrel and a crate outdoors, at the Puny folk's scale (HamletArt): Shade's
 ## stood as tall as the villager beside them, a barrel on a crate a tower.
@@ -77,15 +78,16 @@ const DRESSING := {
 		{"art": "creels", "cell": Vector2i(44, 18)},
 		{"art": "fish_stall", "cell": Vector2i(42, 17)},
 		{"line": 2, "cell": Vector2i(40, 14)},
-		{"art": "wall_net", "cell": Vector2i(23, 14), "wall": true},
-		{"art": "wall_net", "cell": Vector2i(36, 14), "wall": true},
-		{"art": "wall_net", "cell": Vector2i(45, 14), "wall": true},
-		# PIX-400: a lantern by each door; the jetty's head a quay (a keg,
+		{"art": "wall_net", "cell": Vector2i(24, 14), "wall": true},
+		{"art": "wall_net", "cell": Vector2i(39, 14), "wall": true},
+		{"art": "wall_net", "cell": Vector2i(42, 14), "wall": true},
+		# PIX-400: a lantern by each door, on bare wall as the nets are (never
+		# over a window: test_wall_pieces_hang_on_bare_wall); the jetty's head a quay (a keg,
 		# a handcart with the catch on it); fish racks down the beach
 		# and a boat drawn up on the point's shore.
 		{"art": "lantern", "cell": Vector2i(21, 14), "wall": true},
-		{"art": "lantern", "cell": Vector2i(38, 14), "wall": true},
-		{"art": "lantern", "cell": Vector2i(43, 14), "wall": true},
+		{"art": "lantern", "cell": Vector2i(36, 14), "wall": true},
+		{"art": "lantern", "cell": Vector2i(45, 14), "wall": true},
 		{"art": "handcart", "cell": Vector2i(34, 23)},
 		{"art": "fish_crate", "cell": Vector2i(34, 23), "on": Vector2i(11, -5)},
 		{"art": "keg", "cell": Vector2i(33, 25)},
@@ -104,7 +106,7 @@ const DRESSING := {
 		# firewood stacked by his hut and his woodshed, a sledge loaded with
 		# it by the road and another at Gunnar's camp.
 		{"art": "lantern", "cell": Vector2i(11, 38), "wall": true},
-		{"art": "lantern", "cell": Vector2i(28, 6), "wall": true},
+		{"art": "lantern", "cell": Vector2i(26, 6), "wall": true},
 		{"art": "lantern", "cell": Vector2i(16, 38), "wall": true},
 		{"art": "woodpile_snow", "cell": Vector2i(13, 38)},
 		{"art": "woodpile_snow", "cell": Vector2i(19, 38)},
@@ -152,6 +154,7 @@ static func house_style(map_id: String) -> Dictionary:
 		return {}
 	var style: Dictionary = HOUSES[look].duplicate()
 	style["chimney"] = true
+	style["stacks"] = DRESSING.get(map_id, []).filter(func(piece: Dictionary) -> bool: return piece.has("roof")).map(func(piece: Dictionary) -> Vector2i: return piece["cell"])
 	return style
 
 

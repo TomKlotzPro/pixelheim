@@ -507,7 +507,7 @@ hamlet-smithy | --map mountain_road --at 17,7 | map=mountain_road hamlet=smithy:
 homes-coast | --map saltmere --at 31,15 | map=saltmere homes=3:looks3:lamps3 | travel field
 homes-mines | --map blackiron --at 25,18 | map=blackiron homes=3:looks3:lamps3 | travel field
 homes-frost | --map frostgate --at 14,39 | map=frostgate homes=3:looks3:lamps3 | travel field
-homes-coast-grown | --map saltmere --routes saltmere:7 --at 33,17 night | map=saltmere homes=3:looks3:lamps6 hub=saltmere:3:.* | travel field night
+homes-coast-grown | --map saltmere --routes saltmere:7 --at 33,17 night | map=saltmere homes=3:looks3:lamps5 hub=saltmere:3:.* | travel field night
 # The hubs grow as their post roads fill (PIX-324): three pieces carried
 # and Saltmere's lighthouse stands mended on the point; seven, and it's lit
 # at night; arriving there, the place's tour of its new steps; the stall at

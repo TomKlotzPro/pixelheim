@@ -83,8 +83,8 @@ static func compose(grid: Dictionary, style := {}) -> Dictionary:
 ## (what the tests check). A `style` (Hamlet.house_style, PIX-313) builds
 ## them in a settlement's own grammar: its `walls` (sets of [left end,
 ## middle, right end] for Shade's timber frame's, one per house in turn,
-## PIX-400; [] keeps his), a `chimney` on every roof (but
-## where a `stack` of the settlement's own stands for it).
+## PIX-400; [] keeps his), a `chimney` on every roof (but a roof
+## carrying one of the settlement's own `stacks`, by cell: a forge's).
 static func plan(grid: Dictionary, style := {}) -> Dictionary:
 	var pieces := {}
 	var decor := {}
@@ -92,10 +92,11 @@ static func plan(grid: Dictionary, style := {}) -> Dictionary:
 	# Each house its own walls, the style's sets in turn (PIX-400: Saltmere's
 	# three were one cottage three times); an empty set keeps Shade's timber.
 	var walls: Array = style.get("walls", [])
+	var stacks: Array = style.get("stacks", [])
 	var blobs := _blobs(grid)
 	for i in blobs.size():
 		var house := {}
-		_building(blobs[i], grid, house, decor, style.get("chimney", false) and not style.has("stack"))
+		_building(blobs[i], grid, house, decor, style.get("chimney", false) and not blobs[i].any(func(cell: Vector2i) -> bool: return cell in stacks))
 		var own: Array = walls[i % walls.size()] if not walls.is_empty() else []
 		var swap := {WALL_LEFT: own[0], WALL: own[1], WALL_RIGHT: own[2]} if not own.is_empty() else {}
 		for cell: Vector2i in house:

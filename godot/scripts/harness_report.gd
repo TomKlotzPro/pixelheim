@@ -508,7 +508,7 @@ func field_homes() -> String:
 	for home: String in homes:
 		looks[home] = true
 	var lamps: Array = world.view.hamlet["pieces"].filter(func(piece: Dictionary) -> bool:
-		return piece.get("art", "") == "lantern" or piece.get("lit", false) or piece.has("glow"))
+		return piece.get("art", "") in ["lantern", "lamp_post"] or piece.has("glow"))
 	return "%d:looks%d:lamps%d" % [homes.size(), looks.size(), lamps.size()]
 
 
