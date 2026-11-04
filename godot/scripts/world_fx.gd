@@ -272,12 +272,10 @@ func float_number(value: int, at: Vector2, color: Color, crit := false, who: Obj
 	tween.chain().tween_callback(label.queue_free)
 
 
-## A skill's light where it lands: a soft burst that swells and fades.
-func skill_flash(at: Vector2, color: Color) -> void:
-	var burst := Sprite2D.new()
-	burst.texture = preload("res://scripts/player.gd")._glow()
-	burst.material = Lights.glow()
-	burst.modulate = Color(color, 0.85)
+## A skill's light where it lands: the ground lit for a breath, and a soft
+## burst that swells and fades, unless the skill's own strips stand there
+## (`glow` false, PIX-396: they took the ground's light with the burst).
+func skill_flash(at: Vector2, color: Color, glow := true) -> void:
 	# A spell lights the ground for a breath where it lands (PIX-221).
 	var flare := Lights.make(at, 96.0, color, 0.8)
 	flare.remove_from_group("lights")
@@ -286,6 +284,12 @@ func skill_flash(at: Vector2, color: Color) -> void:
 	var dim := flare.create_tween()
 	dim.tween_property(flare, "energy", 0.0, 0.45).set_ease(Tween.EASE_IN)
 	dim.tween_callback(flare.queue_free)
+	if not glow:
+		return
+	var burst := Sprite2D.new()
+	burst.texture = preload("res://scripts/player.gd")._glow()
+	burst.material = Lights.glow()
+	burst.modulate = Color(color, 0.85)
 	burst.global_position = at
 	burst.scale = Vector2(0.4, 0.6)
 	burst.z_index = 5
