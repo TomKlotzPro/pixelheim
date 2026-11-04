@@ -49,6 +49,12 @@ const int TONE_ICE = 4;
 // bank draws back.
 const float BANK_WANDER = 5.0;
 const float BANK_BENDS = 1.5;
+// The Mirefen's pools were laid two cells a step and their banks stepped
+// with them (PIX-401): there the mask is read softened this many pixels
+// each way, and the bank bends further and wider.
+const float MIRE_SOFT = 9.0;
+const float MIRE_WANDER = 7.0;
+const float MIRE_BENDS = 2.2;
 const float BANK_OUT = 3.0;
 const float SHADE_BANK = 9.5;
 // Where a bridge lands the bank lies this far in under its planks.
@@ -209,10 +215,24 @@ vec2 flow_of(int code) {
 	return flow == 1 ? vec2(-1.0, 0.0) : (flow == 2 ? vec2(0.0, 1.0) : vec2(0.0));
 }
 
-// How many pixels the bank lies from `at` (mask pixels) into the water,
-// read where the bank's bend moves it: below 0 on the land side.
+// The mask's red at `at` (mask pixels), read smoothly between its cells;
+// softened over `soft` pixels each way (the mire's, PIX-401), so a bank laid
+// two cells a step rounds its corners and runs on between them.
+float water_red(vec2 at, float soft) {
+	if (soft <= 0.0) {
+		return texture(water_map, at / map_pixels).r;
+	}
+	return 0.25 * (texture(water_map, (at + vec2(-soft, -soft)) / map_pixels).r
+		+ texture(water_map, (at + vec2(soft, -soft)) / map_pixels).r
+		+ texture(water_map, (at + vec2(-soft, soft)) / map_pixels).r
+		+ texture(water_map, (at + vec2(soft, soft)) / map_pixels).r);
+}
+
+// How many pixels the mire's bank lies from `at` (mask pixels) into the
+// water, read where the bank's bend moves it: below 0 on the land side.
+// Only the mire's lily pads and reeds ask, so it reads the mire's soft bank.
 float bank_depth(vec2 at, vec2 bend) {
-	return (texture(water_map, (at + bend) / map_pixels).r - 0.5) * CELL + BANK_OUT;
+	return (water_red(at + bend, MIRE_SOFT) - 0.5) * CELL + BANK_OUT;
 }
 
 // A lily pad on still water, if one floats over `px` (plane pixels): its
@@ -307,13 +327,14 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	// The bank, bent off the grid; but where a bridge lands, straight and
 	// in under its planks' ends.
 	bool landing = (code / 8) % 2 == 1 && mask_texel(cell).r < 0.5;
-	vec2 cells = floor(px) / CELL / BANK_BENDS;
-	vec2 bend = clamp((vec2(value_noise(cells + 31.7), value_noise(cells + 47.1)) - 0.5) * 1.7, -0.5, 0.5) * 2.0 * BANK_WANDER;
+	bool mire = tone == TONE_MIRE;
+	vec2 cells = floor(px) / CELL / (mire ? MIRE_BENDS : BANK_BENDS);
+	vec2 bend = clamp((vec2(value_noise(cells + 31.7), value_noise(cells + 47.1)) - 0.5) * 1.7, -0.5, 0.5) * 2.0 * (mire ? MIRE_WANDER : BANK_WANDER);
 	if (landing) {
 		bend = vec2(0.0);
 	}
-	vec4 here = texture(water_map, (local_px + bend) / map_pixels);
-	float in_water = (here.r - 0.5) * CELL + (landing ? LANDING_IN : BANK_OUT);
+	float here = water_red(local_px + bend, mire && !landing ? MIRE_SOFT : 0.0);
+	float in_water = (here - 0.5) * CELL + (landing ? LANDING_IN : BANK_OUT);
 	float threshold = bayer_at(px);
 	if (in_water < 0.0) {
 		vec4 reed = tone == TONE_MIRE && in_water > -9.0 ? reeds(px, local_px, bend) : vec4(0.0);

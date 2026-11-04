@@ -1,0 +1,4 @@
+# The Mirefen's report field (PIX-401): `field | says`, as the core's
+# (scripts/harness_report.txt), which it joins after its head, by name; its
+# function is `field_mire(report)` in feature.gd.
+mire | on the Mirefen: how many dead trees, reed beds, boardwalks and stilt huts stand, how many wisps, and lit while they're out at night: trees 70 reeds 120 walks 5 huts 2 wisps 9 lit (PIX-401)

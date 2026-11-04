@@ -499,6 +499,9 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/lookout/feature.gd` — The lookout on the mountain road in the harness (PIX-363)
 - `scripts/features/lookout/lookout.gd` — The lookout on the mountain road (PIX-363, the Post's step 6b): a brass spyglass on a tripod beside the road where it turns under Morvax's forge, over the drop.
 - `scripts/features/lookout/lookout_screen.gd` — The view from the lookout on the mountain road at night (PIX-363)
+- `scripts/features/mirefen/feature.gd` — The Mirefen alive in the harness (PIX-401)
+- `scripts/features/mirefen/mire_art.gd` — What the Mirefen stands in that Shade's sheets don't draw (PIX-401)
+- `scripts/features/mirefen/mire_dressing.gd` — The Mirefen alive (PIX-401, the v0.307 world audit: « a uniform fen of puddles and a few shrubs, one ruin and two camps »)
 - `scripts/fire_art.gd` — The fires of a burning house (PIX-327): the Night of Ash's ruins and the Night of Bells' roofs.
 - `scripts/firebolt.gd` — A fireborn elite's firebolt (PIX-155): flies straight, burns the hero it meets, and gutters out against a wall or after eight tiles.
 - `scripts/gait.gd` — How the cast walks (PIX-243): the hero, the villagers, the monsters and the wagon all step through their sheet's walk (PunyArt.WALKS) by the ground they cover, not by the clock, so their feet keep pace with the ground at any speed

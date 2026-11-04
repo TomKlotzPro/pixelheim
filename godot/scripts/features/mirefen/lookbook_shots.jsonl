@@ -1,0 +1,5 @@
+# The Mirefen alive (PIX-401): the middle road going on west as a boardwalk
+# to the stilt hut, dead trees and reed beds about it; the south hut by the
+# channel at night, its window lit and the wisps out.
+{"shot": "mire_boardwalk", "area": "regions", "map": "mirefen", "cell": [9, 24], "time": "day"}
+{"shot": "mire_wisps", "area": "regions", "map": "mirefen", "cell": [27, 30], "time": "night"}
