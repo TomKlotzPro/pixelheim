@@ -117,3 +117,16 @@ func test_a_move_ticks_unless_it_made_its_own_sound() -> void:
 	Sound.play_ui("page")
 	Sound._tick_unless_heard(before)
 	assert_eq(Sound.asked, before + 1, "the page alone")
+
+
+## Every bus Sound plays on comes from default_bus_layout.tres, the limiter
+## on Master with them: made at run time, the web wired Master into a loop of
+## them and the game went silent there (PIX-412).
+func test_the_buses_come_from_the_layout_not_from_code() -> void:
+	assert_eq(Sound.buses_added, 0, "no bus made at run time")
+	for bus: String in ["Music", "SFX", "Ambience"]:
+		var index := AudioServer.get_bus_index(bus)
+		assert_true(index > 0, bus)
+		assert_eq(AudioServer.get_bus_send(index), &"Master", bus + " sends to Master")
+	assert_true(AudioServer.get_bus_effect(0, 0) is AudioEffectHardLimiter, "the limiter on Master")
+

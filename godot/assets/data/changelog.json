@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.313.0",
+      "date": "2026-11-04",
+      "codename": "Sound Restored",
+      "notes": [
+        "The web build plays its music and sounds again: its audio buses now come from the project's layout, where making them at start-up had wired the browser's output into a loop and left the game silent"
+      ]
+    },
+    {
       "version": "0.312.0",
       "date": "2026-11-04",
       "codename": "The Wider Reach",

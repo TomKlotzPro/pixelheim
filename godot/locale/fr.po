@@ -5173,6 +5173,10 @@ msgid "Some day camps sleep by their lit torch at night, a Z drifting up: walk r
 msgstr "Certains camps de jour dorment la nuit près de leur torche allumée, un Z flottant au-dessus : approchez tout près ou frappez, et toute la meute se réveille"
 
 #: assets/data/changelog.json
+msgid "Sound Restored"
+msgstr "Le son revient"
+
+#: assets/data/changelog.json
 msgid "Sounds are never quite the same twice, a little higher or lower, louder or softer; a flurry of hits sounds as one, and footsteps are softer, left foot and right"
 msgstr "Les sons ne sont jamais tout à fait les mêmes, un peu plus aigus ou plus graves, plus forts ou plus doux ; une volée de coups sonne d'un seul bloc, et les pas sont plus discrets, pied gauche, pied droit"
 
@@ -6479,6 +6483,10 @@ msgstr "La liste des relais les montre tous sous leur lieu, grise ceux qui ne so
 #: assets/data/changelog.json
 msgid "The ways between maps are natural passes now: the cliffs part and the road runs through, with no signposts, no name boxes and no framed caves or torches"
 msgstr "Les passages entre les cartes sont naturels : les falaises s'écartent et la route passe, sans panneaux, sans encadrés de nom, sans grottes encadrées ni torches"
+
+#: assets/data/changelog.json
+msgid "The web build plays its music and sounds again: its audio buses now come from the project's layout, where making them at start-up had wired the browser's output into a loop and left the game silent"
+msgstr "La version web joue de nouveau sa musique et ses bruitages : ses bus audio viennent désormais de la configuration du projet, alors que les créer au démarrage reliait la sortie du navigateur en boucle et rendait le jeu muet"
 
 #: assets/data/changelog.json
 msgid "The web game no longer carries its test suite: about 1.4 MB less to download before you play"
