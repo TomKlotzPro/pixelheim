@@ -10,7 +10,9 @@ shader_type canvas_item;
 // wherever a road thinned it). Water keeps its own colours, so the mire and
 // the ash stop at the shore. On the ground layer (`ground_life`) the open
 // ground has its patches, drifts, murk and puddles, and the Ash its char,
-// pale ash, cracks and cinders (open_ground.gdshaderinc).
+// pale ash, cracks and cinders (open_ground.gdshaderinc); and a country
+// road's ends and turns their own shape, not its cells' (PIX-404,
+// road_shape.gdshaderinc).
 //
 // And what moves in the open air (PIX-223): `sway` leans the top of each quad
 // it draws (a tree, a wheat sheaf, a flower) while its foot stays put - one
@@ -133,10 +135,13 @@ float value_noise(vec2 p) {
 
 #include "res://shaders/open_ground.gdshaderinc"
 #include "res://shaders/frozen.gdshaderinc"
+#include "res://shaders/road_shape.gdshaderinc"
 
 // The tone over the art pixel at `at`: the mask's texel (hue, and the kind
 // in its alpha) of the one cell it's read from, where a slow noise bends the
 // grid and the pixel's Bayer step jitters it by up to EDGE_SEAM pixels.
+// Where a country road meets open ground, the road's own shape decides
+// which (PIX-404, road_toned).
 vec4 region_tone(vec2 at) {
 	vec2 px = floor(at);
 	vec2 cells = px / CELL;
@@ -144,7 +149,7 @@ vec4 region_tone(vec2 at) {
 	vec2 jitter = vec2(art_dither(px), art_dither(px.yx + vec2(1.0, 2.0))) - 0.5;
 	// The masks are the map's own, from its corner in the plane.
 	vec2 read = px + 0.5 + bend * 2.0 * EDGE_WANDER * CELL + jitter * 2.0 * EDGE_SEAM - map_origin - mask_origin;
-	vec2 texel = floor(read / CELL) + 0.5;
+	vec2 texel = road_toned(floor(read / CELL) + 0.5, read + mask_origin);
 	return texture(tint_map, texel * CELL / map_pixels);
 }
 
@@ -173,6 +178,11 @@ void fragment() {
 		}
 	}
 	bool water = inland == INLAND_WATER || (inland == INLAND_NONE && base.b > base.g);
+	// A country road's ends and turns drawn to its shape (PIX-404), before
+	// the grass's patches read the ground.
+	if (road_ground && !water) {
+		base.rgb = road_ground_at(base.rgb, floor(world_pos) + 0.5 - map_origin);
+	}
 	int kind = tone_kind(tint.a);
 	// The Ash's ground and burnt rock's grassy top, scorched once toned
 	// (PIX-308).

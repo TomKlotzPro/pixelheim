@@ -577,6 +577,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/rebuild_rise.gd` — A building rising on the town's tour (PIX-264).
 - `scripts/reveal_screen.gd` — The town risen (PIX-147): after a project is funded, the camera walks the town to what was built
 - `scripts/ring_toss_screen.gd` — The festival's ring toss (PIX-159): a ring slides along the rail, back and forth, quicker each throw; E throws it, and it lands if it's over the peg.
+- `scripts/road_shape.gd` — The shape of a country road's ends and turns (PIX-404), as a mask the ground's shader reads (shaders/road_shape.gdshaderinc).
 - `scripts/road_wear.gd` — The wear of wheels and feet on the dirt roads (PIX-307).
 - `scripts/room_art.gd` — A keeper's room its own (PIX-315): Liane keeps the stars in her observatory, and nothing in Shade's packs is a telescope, a star chart or a globe of the sky.
 - `scripts/route_art.gd` — What the Post's routes put up beside the road (PIX-322)

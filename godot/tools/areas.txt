@@ -36,6 +36,7 @@ town story quest save: assets/data/post.json
 dungeon field +icecave* +frostgate*: shaders/frozen.*
 dungeon +seacave* +shafts* +cellars* +icecave* +vault*: shaders/dungeon.* shaders/torch_motes.*
 rooms +observatory*: shaders/stair_frost.*
+travel field +deepwood* +blackiron* +mirefen* +saltmere* +mountain_road* +overworld*: shaders/road_shape.*
 town field title: shaders/*
 save: test/fixtures/*
 title: assets/data/changelog.json assets/*.png
