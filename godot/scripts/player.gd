@@ -378,28 +378,33 @@ func cast(index: int) -> void:
 	_play(art["attack"])
 	Sound.play_ui("cast")
 	var color: Color = SKILL_COLORS.get(skill["stat"], Color.WHITE)
+	# Its own strips light the ground in their colour (PIX-396); the soft
+	# glow without them, in the stat's.
+	var light := String(ItemIcons.skill_look(String(skill["name"]))["light"])
 	if skill["kind"] == "heal":
 		var restored := GameState.upkeep.heal_hero(Skills.heal_power(GameState.hero, GameState.pack, skill))
 		if skill.get("cleanse", false) and not ailments.kinds().is_empty():
 			ailments.clear()
 			_show_ailment()
 			world.messages.log_line("All ailments are purged!")
-		# Its own strips round the hero (PIX-396), the soft glow without them.
-		if not world.fx.skills.cast(skill, self, []):
-			world.fx.skill_flash(global_position, Color(0.5, 1.0, 0.6))
+		# Its own strips round the hero, the soft glow without them; the
+		# ground lit either way.
+		var shown: bool = world.fx.skills.cast(skill, self, [])
+		world.fx.skill_flash(global_position, Color(light) if shown and light != "" else Color(0.5, 1.0, 0.6), not shown)
 		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6), false, self)
 		return
 	# An area skill (PIX-190) strikes every foe in reach, not just the nearest.
 	var targets: Array = _foes_in_reach() if skill.get("area", false) else [target]
-	# Its own strips on each (PIX-396), the soft glow without them; they are
-	# its impact, so a blow's small one stays off.
+	# Its own strips on each, the soft glow without them, the ground lit
+	# either way; they are its impact, so a blow's small one stays off.
 	var glow: bool = not world.fx.skills.cast(skill, self, targets)
+	if not glow and light != "":
+		color = Color(light)
 	world.fx.skills.impacts_held = true
 	var dealt := 0
 	for foe: Node in targets:
 		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * GameState.spoils.damage_scale())
-		if glow:
-			world.fx.skill_flash(foe.global_position, color)
+		world.fx.skill_flash(foe.global_position, color, glow)
 		foe.take_hit(damage, global_position, skill.get("inflicts"))
 		dealt += damage
 	world.fx.skills.impacts_held = false
