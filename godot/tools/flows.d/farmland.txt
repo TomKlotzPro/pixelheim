@@ -7,11 +7,12 @@
 # pasture with its sheep and the lamps along the north road in the Village;
 # the orchard and the farmstead below the south wall in the Town; the full
 # farmland ripe in the City, its lamps lit and its animals asleep at night
-# (the gate's two, the farmland's four, the Reach's five wayside lanterns);
+# (the gate's two, the farmland's four, the Reach's five wayside lanterns:
+# 11, or 7 on Shade's CC0 art, and never 1 or 17, said without a bar);
 # with the paid packs (on Shade's CC0 art alone, none).
 farmland-ashes | --map overworld --town-tier 0 --at 42,38 | map=overworld farmland=(0:field8)? | travel field
 farmland-hamlet | --map overworld --town-tier 1 --at 42,38 | map=overworld farmland=(1:farmstead1,field16)? | travel field
 farmland-village | --map overworld --town-tier 2 --at 48,38 | map=overworld farmland=(2:farmstead2,field40,pasture17,wayside2)? animals=(2:sheep2)? | travel field
 farmland-town | --map overworld --town-tier 3 --at 48,58 | map=overworld farmland=(3:farmstead8,field48,orchard6,pasture17,wayside2)? animals=(3:hen2,sheep3)? | travel field
-farmland-city-night | --map overworld --town-tier 4 --at 48,38 night | map=overworld farmland=(4:farmstead12,field72,orchard10,pasture32,wayside4)? animals=(4:bull1,cow2,hen2,sheep3:asleep)? lamplight=posts (1?[17])/\1 .* | travel field night
+farmland-city-night | --map overworld --town-tier 4 --at 48,38 night | map=overworld farmland=(4:farmstead12,field72,orchard10,pasture32,wayside4)? animals=(4:bull1,cow2,hen2,sheep3:asleep)? lamplight=posts (?!1/)(?!17/)(1?[17])/\1 .* | travel field night
 farmland-cc0 | --map overworld --town-tier 4 cc0 | map=overworld farmland= animals= | travel field

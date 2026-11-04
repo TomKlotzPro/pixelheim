@@ -159,9 +159,50 @@ func test_drawn_on_the_reach() -> void:
 	view.build(root)
 	assert_true(view.has_meta("ash_ruins"), "the Ash's ruins planned")
 	var laid: Dictionary = view.get_meta("ash_ruins")
-	assert_gt(laid["pieces"].size(), 100, "five steads")
+	# Without the pack (CI's checkout) a stead is its orchard, its cart and
+	# its fallen logs.
+	var paid := PunyTown.available()
+	assert_eq(laid["pieces"].size(), _laid({}, paid)["laid"]["pieces"].size(), "five steads, every piece")
 	for cell: Vector2i in laid["blocks"]:
 		assert_false(map.is_walkable(cell), "%s blocked" % cell)
-	assert_string_starts_with(AshRuins.describe(view), "floors 5 posts ")
+	assert_eq(AshRuins.describe(view), "floors 5 posts %d trees 40 carts 5 rubble 5 logs 14 mended 0" % _posts() if paid else "floors 0 posts 0 trees 40 carts 5 rubble 0 logs 14 mended 0")
 	var charred := actors.find_children("*", "Sprite2D", true, false).filter(func(sprite: Sprite2D) -> bool: return sprite.modulate == AshRuins.CHARRED)
-	assert_gt(charred.size(), 20, "the frames and carts charred")
+	assert_gt(charred.size(), 20 if paid else 4, "the frames and carts charred")
+
+
+## How many log walls a stead's frames and paddocks stand: every wall but
+## the door and the fallen, every fence cell but the gaps.
+static func _posts() -> int:
+	var posts := 0
+	for stead: Dictionary in AshRuins.STEADS:
+		var frame: Rect2i = stead["frame"]
+		posts += 2 * (frame.size.x + frame.size.y) - 4 - 1 - stead["fallen"].size()
+		posts += (stead["paddock"] as Rect2i).size.x - stead["gaps"].size()
+	return posts
+
+
+## A day's patch dealt on a stead's cell gives way to it, as under a
+## lantern (PIX-397's review: a wall went missing on the days one was dealt
+## there): on the first day one is dealt there, every piece is laid and no
+## patch lies under one.
+func test_a_stead_stands_whole_whatever_the_day() -> void:
+	var map := MapData.load_by_id(AshRuins.MAP)
+	var under := {}
+	for stead: Dictionary in AshRuins.STEADS:
+		for cell: Vector2i in AshRuins.cells_of(stead):
+			under[cell] = true
+	var decks := KeptGround.decks(map)
+	var day := -1
+	for each in 400:
+		if Gathering.patches_on(decks, each).keys().any(func(cell: Vector2i) -> bool: return under.has(cell)):
+			day = each
+			break
+	assert_gt(day, -1, "a day deals a patch on a stead")
+	var steps := GameState.world.steps
+	GameState.world.steps = day * DayNight.DAY_CYCLE_STEPS
+	var view := MapView.new(map, null)
+	view.plan(map.spawn)
+	GameState.world.steps = steps
+	assert_eq(view.get_meta("ash_ruins")["pieces"].size(), _laid({}, PunyTown.available())["laid"]["pieces"].size(), "every piece laid on day %d" % day)
+	for cell: Vector2i in view.patches:
+		assert_false(under.has(cell), "no patch under a stead at %s on day %d" % [cell, day])

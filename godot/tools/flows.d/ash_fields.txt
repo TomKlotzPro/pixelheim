@@ -2,14 +2,15 @@
 # tools/flows.txt as its own, scripts/features/ash_fields/), a line each as
 # in flows.txt.
 # The Ash's burnt farmsteads (PIX-397, step 2): five steads stand in the
-# Ash, their frames' and paddocks' log walls charred (a day's patch may
-# take a wall's cell), their orchards dead, a cart scorched by each; by
-# Blackiron's and Greyhold's lit lamps the land heals and the ruins on it
-# mend; on Shade's CC0 art alone, the orchards, carts and fallen logs (no
-# sooty floor with no frame round it), as CI's windowed shares run them
-# (one optional group or the other: a flow's line is split on its bars).
-ash-steads | --map overworld --at 22,14 | map=overworld ashruins=floors (?:5 posts [56]\d trees 40 carts 5 rubble 5)?(?:0 posts 0 trees 40 carts 5 rubble 0)? logs 14 mended 0 | travel field
-ash-steads-mend | --map overworld --routes blackiron:6,greyhold:6 --built waystation_blackiron,waystation_greyhold --lit blackiron:5,greyhold:5 --at 25,22 | map=overworld healed=earth\d+,grass\d+,meadow\d+,grove\d+ ashruins=floors (?:5 posts [56]\d trees 40 carts 5 rubble 5)?(?:0 posts 0 trees 40 carts 5 rubble 0)? logs 14 mended [1-9]\d* | travel field
+# Ash whole every day (a day's patch dealt on one gives way), their frames'
+# and paddocks' log walls charred, their orchards dead, a cart scorched by
+# each; by Blackiron's and Greyhold's lit lamps the land heals and the
+# orchards on it mend; on Shade's CC0 art alone, the orchards, carts and
+# fallen logs (no sooty floor with no frame round it), as CI's windowed
+# shares run them (one optional group or the other: a flow's line is split
+# on its bars).
+ash-steads | --map overworld --at 22,14 | map=overworld ashruins=floors (?:5 posts 67 trees 40 carts 5 rubble 5)?(?:0 posts 0 trees 40 carts 5 rubble 0)? logs 14 mended 0 | travel field
+ash-steads-mend | --map overworld --routes blackiron:6,greyhold:6 --built waystation_blackiron,waystation_greyhold --lit blackiron:5,greyhold:5 --at 25,22 | map=overworld healed=earth\d+,grass\d+,meadow\d+,grove\d+ ashruins=floors (?:5 posts 67 trees 40 carts 5 rubble 5)?(?:0 posts 0 trees 40 carts 5 rubble 0)? logs 14 mended [1-9]\d* | travel field
 ash-steads-cc0 | --map overworld --at 22,14 cc0 | map=overworld ashruins=floors 0 posts 0 trees 40 carts 5 rubble 0 logs 14 mended 0 | travel field
 # A stead's ruin stands in the way: the hero stops at the scorched
 # handcart by the frame below Blackiron's waystation (the cart stands on

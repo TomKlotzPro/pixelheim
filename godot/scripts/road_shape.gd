@@ -38,17 +38,22 @@ const TAPER := {1: [0.8, 1.0], 2: [0.45, 0.8], 3: [0.4, 0.75]}
 ## meets open ground within a cell (the tone follows the field there).
 const ZONE := 0.5
 const FILLS := 1.0
-## The maps whose long straight roads are worn wider here and there
-## (PIX-397, the Reach's: seen whole a ruler-drawn grid), as the shader
-## reads the field (road_worn): each edge wanders out off its cells by up to
-## this many pixels and back, never in, so the ruts (RoadWear, on the cells
-## some 7 pixels in from the edge) never meet it; straight by the map's
-## edges and round each `still` cell, where the road meets what's drawn
-## straight (the bridge's middle, the town's gate). The tone draws it (the
-## Ash's, the marsh's), and on Shade's grass his dirt and grass are drawn
-## again along every edge of the road, not only round its ends and turns
-## (`_wanders`).
+## The maps whose long straight roads wander (PIX-397, the Reach's: seen
+## whole a ruler-drawn grid), as the shader reads the field (road_worn):
+## each edge bends out off its cells by up to this many pixels and a little
+## in, never so far the ruts (RoadWear, on the cells some 7 pixels in from
+## the edge) meet it; straight by the map's edges and round each `still`
+## cell, where the road meets what's drawn straight (the bridge's middle,
+## the town's gate). Only where the tone draws the edge (the Ash's, the
+## marsh's): on Shade's grass, and round every turn, junction and end, the
+## road keeps PIX-404's shape (`_calm`).
 const WANDERS := {"overworld": {"wander": 8.0, "still": [Vector2i(48, 29), Vector2i(48, 42)]}}
+## Where roads wander, none of it within CALM_NEAR cells of a turn, a
+## junction or an end (a vertex where the road's outline corners), all of
+## it past CALM_FAR: PIX-404 rounded those, and an edge pushed out there
+## squared them again.
+const CALM_NEAR := 2.0
+const CALM_FAR := 3.5
 
 ## The mask, a cell a texel: texel (0, 0) is cell (-RING, -RING).
 var image: Image
@@ -58,8 +63,7 @@ var _size: Vector2i
 ## The road's cells paved (Streets: the Frostgate's cobbles), whose stone
 ## keeps its cells' shape, and the ground round it with it.
 var _paved: Dictionary
-## Whether the map's roads wander (WANDERS): their straight edges on
-## Shade's grass are drawn again too, so it shows there.
+## Whether the map's roads wander (WANDERS).
 var _wanders: bool
 ## What the first pass read: open ground, the grass among it, the road's
 ## cells and their weights, and the cells beside an unpaved road.
@@ -71,6 +75,9 @@ var _near := {}
 ## or a narrowing on Shade's grass.
 var _vertex_rows := {}
 var _zone := {}
+## Where roads wander, each cell's distance in cells to the nearest vertex
+## where the road's outline corners (within CALM_FAR).
+var _cornered := {}
 
 
 ## The mask of `look`'s country roads (a map's ground as drawn, `size`
@@ -130,8 +137,9 @@ func draw_rows(from: int, to: int) -> void:
 	for row in range(from, mini(to, draw_count())):
 		var y := row - RING
 		# A cell lies near a turn when one of the sixteen corners round it
-		# does: the vertex rows y - 1 to y + 2.
-		for vy in range(y - 1, y + 3):
+		# does: the vertex rows y - 1 to y + 2; and calm within CALM_FAR of
+		# a corner, so four rows either way.
+		for vy in range(y - 4, y + 5):
 			_turns(vy)
 		for x in range(-RING, _size.x + RING):
 			var cell := Vector2i(x, y)
@@ -141,17 +149,18 @@ func draw_rows(from: int, to: int) -> void:
 				continue
 			var drawn := 0.0
 			if _zone.has(cell) and (road or _grassy.has(cell)) and not _paved.has(cell):
-				drawn = FILLS if _grassy.has(cell) and (_inside_turn(cell) or (_wanders and not _between(cell))) else ZONE
+				drawn = FILLS if _grassy.has(cell) and _inside_turn(cell) else ZONE
 			var edge := open and _near.has(cell)
 			if road and not _paved.has(cell):
 				for dy in range(-1, 2):
 					for dx in range(-1, 2):
 						edge = edge or _open.has(cell + Vector2i(dx, dy))
-			image.set_pixel(x + RING, y + RING, Color(_weights.get(cell, 0.0), 1.0 if open else 0.0, drawn, 1.0 if edge else 0.0))
+			image.set_pixel(x + RING, y + RING, Color(_weights.get(cell, 0.0), 1.0 if open else 0.0, drawn, _alpha(cell, edge)))
 
 
 ## The vertices of row `vy` where the road turns or narrows on Shade's
-## grass: the cells round each, and a ring more, are near it.
+## grass: the cells round each, and a ring more, are near it; and where
+## roads wander, each cell's distance to the corners on any ground.
 func _turns(vy: int) -> void:
 	if _vertex_rows.has(vy):
 		return
@@ -162,6 +171,13 @@ func _turns(vy: int) -> void:
 			for dy in range(-2, 2):
 				for dx in range(-2, 2):
 					_zone[vertex + Vector2i(dx, dy)] = true
+		if _wanders and _corners(vertex):
+			for dy in range(-4, 4):
+				for dx in range(-4, 4):
+					var cell := vertex + Vector2i(dx, dy)
+					var away := Vector2(dx + 0.5, dy + 0.5).length()
+					if away < _cornered.get(cell, CALM_FAR):
+						_cornered[cell] = away
 
 
 ## Road cell `cell`'s weight: 1, or less over its lane's last cells before
@@ -196,9 +212,8 @@ static func ends_in(look: Dictionary, beyond: Callable, cell: Vector2i, axis: in
 
 ## Whether the road's outline turns or narrows at `vertex` (the corner its
 ## cells (x - 1, y - 1) to (x, y) share) on Shade's grass: one or three of
-## them road, two across a diagonal, or two along a narrowing edge (along
-## any edge where the map's roads wander); and the others grass. Inside a
-## road (four of them) it's the edges that turn.
+## them road, two across a diagonal, or two along a narrowing edge; and the
+## others grass. Inside a road (four of them) it's the edges that turn.
 func _shaped(vertex: Vector2i) -> bool:
 	var cells := [vertex + Vector2i(-1, -1), vertex + Vector2i(0, -1), vertex, vertex + Vector2i(-1, 0)]
 	var roads := 0
@@ -212,7 +227,7 @@ func _shaped(vertex: Vector2i) -> bool:
 		elif not _grassy.has(cell):
 			return false
 	if roads == 2:
-		return narrows or _wanders or _weights.has(cells[0]) == _weights.has(cells[2])
+		return narrows or _weights.has(cells[0]) == _weights.has(cells[2])
 	return roads == 1 or roads == 3
 
 
@@ -224,8 +239,31 @@ func _inside_turn(cell: Vector2i) -> bool:
 	return across and down
 
 
-## Whether `cell` is a strip of ground between two roads (road on opposite
-## sides): where the roads wander it never fills, or the two would run
-## together.
-func _between(cell: Vector2i) -> bool:
-	return (_weights.has(cell + Vector2i.LEFT) and _weights.has(cell + Vector2i.RIGHT)) or (_weights.has(cell + Vector2i.UP) and _weights.has(cell + Vector2i.DOWN))
+
+## Whether the road's outline corners at `vertex` on any ground: a turn, a
+## junction or an end (one or three of the cells round it road, or two
+## across a diagonal), or a lane narrowing to its end.
+func _corners(vertex: Vector2i) -> bool:
+	var cells := [vertex + Vector2i(-1, -1), vertex + Vector2i(0, -1), vertex, vertex + Vector2i(-1, 0)]
+	var roads := 0
+	for cell: Vector2i in cells:
+		if _weights.has(cell):
+			roads += 1
+			if _weights[cell] < 1.0:
+				return true
+	return roads == 1 or roads == 3 or (roads == 2 and _weights.has(cells[0]) == _weights.has(cells[2]))
+
+
+## The mask's alpha for `cell`: whether the road meets open ground there
+## (`edge`, its top bit), and where roads wander how far they may (its low
+## seven bits, road_shape.gdshaderinc's road_calm): none on Shade's grass or
+## a road cell beside it, nor near a corner, easing in past it.
+func _alpha(cell: Vector2i, edge: bool) -> float:
+	if not _wanders:
+		return 1.0 if edge else 0.0
+	var calm := clampf((_cornered.get(cell, CALM_FAR) - CALM_NEAR) / (CALM_FAR - CALM_NEAR), 0.0, 1.0)
+	for dy in range(-1, 2):
+		for dx in range(-1, 2):
+			if _grassy.has(cell + Vector2i(dx, dy)) and (_weights.has(cell) or (dx == 0 and dy == 0)):
+				calm = 0.0
+	return ((128 if edge else 0) + roundi(calm * 127.0)) / 255.0

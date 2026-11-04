@@ -9,22 +9,24 @@ extends MapLayer
 ## dead orchard in its rows (AshArt's trees, standing as they died); and a
 ## paddock's fence along its edge, fallen in places, the logs lying in the
 ## ash. Where the land heals round a lit ember lamp (Lamps, the Post's
-## waystations) the ruin mends with it, piece by piece on the healed cells:
-## the char gone from what stands (the wood weathered, tidied), and in the
-## orchard's rows a young tree where a dead one stood. Two steads lie by a
-## waystation (Blackiron's, Greyhold's) so their orchards half mend as a
-## ring grows. The Medieval Age's log fence (PunyProps.FENCE, joined to the
-## posts beside it) and its kegs and crates are the pack's, and its young
-## tree; so is the sooty floor, which without a frame round it read as a
-## bare grey rectangle in the ash. The dead trees and the charred logs are
-## AshArt's, the handcart HamletArt's and a mended log Shade's CC0 sheet's,
-## so without the pack a stead is its orchard, its cart and its fallen
-## logs. What stands blocks open ground only, never
-## a road, a portal, a pack's home, a chest, the patches or a way
-## (Hamlet.fits, piece by piece in order: no way closed), and keeps clear
-## of every waystation's and signpost's cell (test_ash_ruins); what lies
-## flat blocks nothing. The field decor is lifted off a stead's cells, so a
-## stead is the same whatever the field grew. The map is untouched.
+## waystations) an orchard mends with it, tree by tree on the healed cells:
+## a young tree where a dead one stood. Two steads' orchards lie by a
+## waystation (Blackiron's, Greyhold's) so they half mend as a ring grows;
+## every frame, cart and fence lies past the widest ring's reach and stays
+## burnt (a piece laid on healed ground would mend as well: the char gone,
+## the wood weathered, a floor gone). The Medieval Age's log fence
+## (PunyProps.FENCE, joined to the posts beside it) and its kegs and crates
+## are the pack's, and its young tree; so is the sooty floor, which without
+## a frame round it read as a bare grey rectangle in the ash. The dead trees
+## and the charred logs are AshArt's and the handcart HamletArt's, so
+## without the pack a stead is its orchard, its cart and its fallen logs.
+## What stands blocks open ground only, never a road, a portal, a pack's
+## home, a chest or a way (Hamlet.fits, piece by piece in order: no way
+## closed), and keeps clear of every waystation's and signpost's cell
+## (test_ash_ruins); what lies flat blocks nothing. The field decor and a
+## day's patch are lifted off a stead's cells, and any rock round its frame,
+## so a stead is the same whatever the field grew, every day. The map is
+## untouched.
 
 const MAP := "overworld"
 ## Each stead: its house's frame (the rect its log walls ring) open at its
@@ -194,15 +196,27 @@ func plan(view: MapView, slices: Slicer) -> void:
 	if view.data.id != MAP:
 		return
 	slices.add("plan_ash_ruins", func() -> void:
-		# The field's decor lifted off the steads: what stands there is theirs.
+		# The field's decor lifted off the steads, and a day's patch dealt
+		# there (as under a lantern, Waysides): what stands there is theirs,
+		# the same every day.
 		for stead: Dictionary in STEADS:
 			for cell: Vector2i in cells_of(stead):
 				view.bare[cell] = true
+				view.patches.erase(cell)
 				if view.solid_scatter.has(cell):
 					view.solid_scatter.erase(cell)
 					view.data.covered.erase(cell)
+			# And a rock it grew round a frame: beside a wall it shut the
+			# ground round it, and the wall wasn't laid (Hamlet.fits).
+			var round_it: Rect2i = (stead["frame"] as Rect2i).grow(1)
+			for y in range(round_it.position.y, round_it.end.y):
+				for x in range(round_it.position.x, round_it.end.x):
+					var cell := Vector2i(x, y)
+					if view.solid_scatter.has(cell):
+						view.bare[cell] = true
+						view.solid_scatter.erase(cell)
+						view.data.covered.erase(cell)
 		var kept := Hamlet.kept_on(view.data, {})
-		kept.merge(view.patches)
 		kept[view.arrival] = true
 		var laid := lay(view.data, kept, view.healed, PunyTown.available())
 		for cell: Vector2i in laid["blocks"]:

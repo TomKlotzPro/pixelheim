@@ -319,8 +319,9 @@ const WATER_TONES := {"mirefen": WATER_MIRE, "deepwood": WATER_DEEP, "frostgate"
 ## ruler-straight band; not the village far off's stream, which runs south
 ## in the same mask): its banks swung in over it by turns, by up to this
 ## many pixels (inland_water.gdshaderinc's river_swing), on the water's
-## cells alone, so where the hero walks is as it was.
-const RIVER_SWING := {"overworld": 14.0}
+## cells alone and never more than its SWING_CAP (8) into them, so where
+## the hero walks is as it was and he stops at most that short of the water.
+const RIVER_SWING := {"overworld": 11.0}
 ## The tones and the ways water runs by name (FLOWS' order), for the harness.
 const TONE_NAMES := ["sea", "clear", "mire", "deep", "ice"]
 const FLOW_NAMES := ["still", "west", "south"]

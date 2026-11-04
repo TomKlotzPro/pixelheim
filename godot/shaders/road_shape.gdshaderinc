@@ -14,23 +14,24 @@ uniform bool road_life = false;
 uniform bool road_ground = false;
 uniform vec2 road_origin = vec2(0.0);
 uniform vec2 road_texels = vec2(1.0);
-// The Reach's long straight roads worn wider here and there (PIX-397: seen
-// whole they were a ruler-drawn grid): the field read up to `road_wander`
-// pixels nearer the road (RoadShape.WANDERS, 0 elsewhere) where a slow
-// noise says, its swells ROAD_WANDERS cells apart, so each edge wanders out
-// off its cells and back, never in: RoadWear's ruts, on the cells some 7
-// pixels in from the edge, never meet it (moving the whole road a few
-// pixels put them on it). Easing to nothing over ROAD_STILL cells by the
-// map's edges (the road runs on straight into the map beside) and round
-// each of `road_still` (map pixels: a bridge, the town's gate), where it
-// meets what's drawn straight. On Shade's grass the ground layer draws his
-// dirt and grass again along every edge of such a road (RoadShape's
-// `_wanders`), so it shows there as in the tone. The grid, and where the
-// hero walks, stay.
+// The Reach's long straight roads wander (PIX-397: seen whole they were a
+// ruler-drawn grid): the field read up to `road_wander` pixels nearer the
+// road (RoadShape.WANDERS, 0 elsewhere), or ROAD_IN further off, as a slow
+// noise goes, its bends ROAD_WANDERS cells apart, so each edge bends out off
+// its cells and a little in: RoadWear's ruts, on the cells some 7 pixels in
+// from the edge, never meet it (moving the whole road a few pixels put them
+// on it). Easing to nothing over ROAD_STILL cells by the map's edges (the
+// road runs on straight into the map beside) and round each of `road_still`
+// (map pixels: a bridge, the town's gate), where it meets what's drawn
+// straight; and as RoadShape's calm says (road_calm): none round a turn, a
+// junction or an end, which keep PIX-404's shape, nor on Shade's grass,
+// whose straight dual-grid edge stays. The grid, and where the hero walks,
+// stay.
 uniform float road_wander = 0.0;
 uniform vec2 road_still[4];
 uniform int road_stills = 0;
-const float ROAD_WANDERS = 6.0;
+const float ROAD_WANDERS = 5.0;
+const float ROAD_IN = 3.0;
 const float ROAD_STILL = 3.0;
 
 // Where the field's edge falls: Shade's dirt meets his grass some 5.5 art
@@ -72,17 +73,38 @@ vec4 road_slope(float f) {
 	return vec4(-(1.0 - f) * (1.0 - f) * 0.5, 1.5 * f * f - 2.0 * f, -1.5 * f * f + f + 0.5, f * f * 0.5);
 }
 
-// How far the road's edge wanders out at map pixel `p` (road_wander), on the
-// plane's pixels, so the Reach drawn beside another map wears just as it
-// does under the hero.
+// How far the road may wander at cell `cell`: the mask's alpha's low seven
+// bits (its top bit says the road meets open ground there).
+float road_calm_at(ivec2 cell) {
+	return mod(round(road_texel(cell).a * 255.0), 128.0) / 127.0;
+}
+
+// How far the road may wander at map pixel `p`, read between the four cells
+// round it, so it eases in and out.
+float road_calm(vec2 p) {
+	vec2 at = p / CELL - 0.5;
+	ivec2 base = ivec2(floor(at));
+	vec2 f = at - floor(at);
+	float top = mix(road_calm_at(base), road_calm_at(base + ivec2(1, 0)), f.x);
+	float bottom = mix(road_calm_at(base + ivec2(0, 1)), road_calm_at(base + ivec2(1, 1)), f.x);
+	return mix(top, bottom, f.y);
+}
+
+// How far the road's edge wanders out at map pixel `p` (road_wander; less
+// than 0, in), on the plane's pixels, so the Reach drawn beside another map
+// wears just as it does under the hero.
 float road_worn(vec2 p) {
 	vec2 inside = min(p, map_pixels - p);
 	float away = min(inside.x, inside.y);
 	for (int i = 0; i < road_stills; i++) {
 		away = min(away, max(distance(p, road_still[i]) - CELL, 0.0));
 	}
-	float swell = smoothstep(0.3, 0.7, value_noise((p + map_origin) / CELL / ROAD_WANDERS + 5.1));
-	return road_wander * swell * smoothstep(0.0, ROAD_STILL * CELL, away);
+	float still = smoothstep(0.0, ROAD_STILL * CELL, away) * smoothstep(0.0, 1.0, road_calm(p));
+	if (still <= 0.0) {
+		return 0.0;
+	}
+	float bend = smoothstep(0.15, 0.85, value_noise((p + map_origin) / CELL / ROAD_WANDERS + 5.1));
+	return mix(-ROAD_IN, road_wander, bend) * still;
 }
 
 // The road's field at map pixel `p` as its cells lie, and its slope per art
@@ -106,13 +128,15 @@ vec3 road_cells_field(vec2 p) {
 }
 
 // The road's field at map pixel `p`, and its slope per art pixel: where it
-// wears wider (road_worn), read that much nearer the road, up its slope.
+// wanders (road_worn), read that much nearer the road, up its slope (or
+// further off, down it).
 vec3 road_field(vec2 p) {
 	vec3 field = road_cells_field(p);
 	if (road_wander <= 0.0 || dot(field.yz, field.yz) < 1e-8) {
 		return field;
 	}
-	return road_cells_field(p + normalize(field.yz) * road_worn(p));
+	float worn = road_worn(p);
+	return worn == 0.0 ? field : road_cells_field(p + normalize(field.yz) * worn);
 }
 
 // The cell whose tone the tint mask's texel `texel` (read at map pixel `p`)
