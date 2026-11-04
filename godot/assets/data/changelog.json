@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.311.0",
+      "date": "2026-11-04",
+      "codename": "Spellfire",
+      "notes": [
+        "Every skill has its own look now, from Shade's Puny Skills: fireballs fly and burst, frost novas bloom, lightning strikes, heals rise and every landed hit sparks; bows shoot arrows and a staff throws an arcane orb; and spells still light the ground where they land at night"
+      ]
+    },
+    {
       "version": "0.310.0",
       "date": "2026-11-01",
       "codename": "Clear Rooms",

@@ -317,64 +317,81 @@
     "haste": "puny-skills/Animation Spritesheets/Time/Haste-Anim.png"
   },
   "skill_fx": {
-    "about": "PIX-396: what each skill plays, from the Puny Skills pack's animated strips (the effects above, by name): 'fly' a bolt from the hero to the foe, 'hit' what lands on the foe, 'self' what rises round the hero for a heal. A skill takes its icon's theme's, its own entry over it ('' for none). 'swings' are the weapons' own (the bow's arrow, the staff's bolt), 'impact' every landed blow's, and 'glow' the strips added onto the world as light (the others are drawn as Shade drew them, their dark afterimages too).",
+    "about": "PIX-396: what each skill plays, from the Puny Skills pack's animated strips (the effects above, by name): 'fly' a bolt from the hero to the foe, 'hit' what lands on the foe, 'self' what rises round the hero for a heal, 'light' the colour the ground is lit where it lands (the stat's colour without the strips). A skill takes its icon's theme's, its own entry over it ('' for none). 'swings' are the weapons' own (the bow's arrow, the staff's bolt), 'impact' every landed blow's, and 'glow' the strips added onto the world as light (the others are drawn as Shade drew them, their dark afterimages too).",
     "themes": {
       "Melee": {
-        "hit": "slash"
+        "hit": "slash",
+        "light": "ffe08a"
       },
       "Martial-Arts": {
         "hit": "punch",
-        "self": "muscle_up"
+        "self": "muscle_up",
+        "light": "ffb84d"
       },
       "Fire": {
         "fly": "fireball",
-        "hit": "fire_burst"
+        "hit": "fire_burst",
+        "light": "ff8c3a"
       },
       "Ice": {
-        "hit": "ice_crystals"
+        "hit": "ice_crystals",
+        "light": "8fd0ff"
       },
       "Electric": {
-        "hit": "thunder"
+        "hit": "thunder",
+        "light": "fff07a"
       },
       "Light": {
         "hit": "sun_burst",
-        "self": "divine_heal"
+        "self": "divine_heal",
+        "light": "ffe27a"
       },
       "Restoration": {
-        "self": "vitality_heal"
+        "self": "vitality_heal",
+        "light": "80ff99"
       },
       "Time": {
-        "self": "haste"
+        "self": "haste",
+        "light": "7fe8ff"
       },
       "Ranged": {
         "fly": "arrow",
-        "hit": "impact"
+        "hit": "impact",
+        "light": "ffe08a"
       },
       "Rogue": {
-        "hit": "backstab"
+        "hit": "backstab",
+        "light": "b48cff"
       },
       "Dark": {
         "fly": "dark_ring",
-        "hit": "dark_spike"
+        "hit": "dark_spike",
+        "light": "c070ff"
       },
       "Poison": {
-        "hit": "poison_skull"
+        "hit": "poison_skull",
+        "light": "9de35a"
       },
       "Vampiric": {
         "fly": "blood_ring",
-        "hit": "vampiric_bite"
+        "hit": "vampiric_bite",
+        "light": "ff5a6e"
       },
       "Monster": {
-        "hit": "claw"
+        "hit": "claw",
+        "light": "ffa040"
       },
       "Rock": {
-        "hit": "rock_spike"
+        "hit": "rock_spike",
+        "light": "d9b07a"
       },
       "Buffs&Debuffs": {
-        "hit": "debuff"
+        "hit": "debuff",
+        "light": "ff4d4d"
       },
       "Flora": {
-        "hit": "rose_burst"
+        "hit": "rose_burst",
+        "light": "ff7a9a"
       }
     },
     "skills": {
@@ -486,16 +503,19 @@
         "fly": "fire_arrow"
       },
       "Wolf Companion": {
-        "hit": "bite"
+        "hit": "bite",
+        "light": "9de35a"
       },
       "Alpha's Call": {
-        "hit": "bite"
+        "hit": "bite",
+        "light": "9de35a"
       },
       "Stampede": {
         "hit": "stomp"
       },
       "Rallying Roar": {
-        "hit": "fear"
+        "hit": "fear",
+        "light": "c070ff"
       },
       "Worldsplitter": {
         "hit": "rock_shards"
