@@ -516,9 +516,13 @@ class Painting extends Control:
 	## The village's block on this page (Atlas.village) in the page's cells,
 	## set before `paint`.
 	var village := {}
-	## What's drawn of the page: page cell -> colour (seen ground, the ridge
-	## seen between maps, the village).
+	## What's drawn of the page: page cell -> the tile it's painted as (seen
+	## ground, the ridge seen between maps, the village).
 	var _ground := {}
+	## The page painted from its ground (MapGround, PIX-403), and what it
+	## was painted from: a choice in the list redraws the marks, not this.
+	var _paper: ImageTexture
+	var _paper_for := []
 	## What the page names, placed: [{text, at (px), size, way}].
 	var _labels: Array[Dictionary] = []
 	## The page's px to the screen's when it was last drawn (PIX-267): the
@@ -552,17 +556,19 @@ class Painting extends Control:
 		_ground = {}
 		# The ridge between the maps on the Reach's page, where the hero had
 		# it in sight: the cliffs every map there is rimmed with.
-		var ridge := Atlas.color(ReachPlane.RIDGE)
 		for cell: Vector2i in Atlas.ridge(sheets, discovered):
-			_ground[cell] = ridge
+			_ground[cell] = ReachPlane.RIDGE
 		for sheet: Dictionary in sheets:
 			var grid: Dictionary = sheet["map"].grid
 			var at: Vector2i = sheet["at"]
 			for cell: Vector2i in discovered.get(sheet["id"], {}):
 				if grid.has(cell):
-					_ground[cell + at] = Atlas.color(grid[cell])
+					_ground[cell + at] = grid[cell]
 		for cell: Vector2i in village:
-			_ground[cell] = Atlas.color(village[cell])
+			_ground[cell] = village[cell]
+		if _paper_for != [cells, tile_px, _ground]:
+			_paper = ImageTexture.create_from_image(MapGround.paint(cells, tile_px, _ground))
+			_paper_for = [cells, tile_px, _ground]
 		_gates = _shut_gates()
 		_name_destination()
 		_place_labels()
@@ -641,46 +647,75 @@ class Painting extends Control:
 	func _open(waypoint: Dictionary) -> bool:
 		return Interactables.waypoint_usable(waypoint, GameState.world.discovered, GameState.settlement.settlers)
 
-	## The page's names (Atlas.page_labels) placed on it, in the labels'
-	## type: a region's clear of the waypoints' marks, the hero's, the chosen
-	## one's tag and the names placed before it, or left off.
-	func _place_labels() -> void:
-		_labels.clear()
-		var font := UiStyle.body_font()
-		var bounds := Vector2(cells * tile_px)
+	## Every mark drawn on the page as the box it covers (PIX-403): the
+	## waypoints', the shut gates', the lairs', the post's, the forgetter's,
+	## the hero's and the quest givers', the goal's and the story's diamonds,
+	## and the chosen waypoint's ring at its widest and its tag.
+	func mark_boxes() -> Array[Rect2]:
 		var mark := _mark()
-		var taken: Array[Rect2] = []
 		var marked: Array[Vector2i] = []
 		for entry: Dictionary in _waypoints():
 			marked.append(entry["cell"])
 		for gate: Dictionary in _gates:
 			marked.append(gate["cell"])
+		marked.append_array(lairs())
+		marked.append_array(post_cells())
+		if forgetter_cell() != Bearing.NOWHERE:
+			marked.append(forgetter_cell())
 		if home:
 			marked.append(hero_cell())
+			for villager in givers(world):
+				marked.append(Vector2i((villager.position / 16.0).floor()) + at_of(world.map.id))
+		var boxes: Array[Rect2] = []
 		for cell in marked:
-			taken.append(Rect2(_center(cell), Vector2.ZERO).grow(floorf(mark / 2.0) + 2.0))
+			boxes.append(Rect2(_center(cell), Vector2.ZERO).grow(floorf(mark / 2.0) + 2.0))
 		var goal := goal_cell()
 		if goal != Bearing.NOWHERE:
-			taken.append(Rect2(_center(goal), Vector2.ZERO).grow(floorf((mark + 6.0) / 2.0) + 3.0))
+			boxes.append(Rect2(_center(goal), Vector2.ZERO).grow(floorf((mark + 6.0) / 2.0) + 3.0))
 		var story := story_cell()
 		if story != Bearing.NOWHERE:
-			taken.append(Rect2(_center(story), Vector2.ZERO).grow(floorf((mark + STORY_GROW) / 2.0) + 3.0))
-		# The chosen waypoint's ring at its widest, and its tag over the names.
+			boxes.append(Rect2(_center(story), Vector2.ZERO).grow(floorf((mark + STORY_GROW) / 2.0) + 3.0))
 		if tag != null:
-			taken.append(Rect2(_center(destination_cell()), Vector2.ZERO).grow(Waypoints.ring_half(mark, Waypoints.PULSE_PX) + 2.0))
-			taken.append(Rect2(tag.position, tag.get_combined_minimum_size()))
+			boxes.append(Rect2(_center(destination_cell()), Vector2.ZERO).grow(Waypoints.ring_half(mark, Waypoints.PULSE_PX) + 2.0))
+			boxes.append(Rect2(tag.position, tag.get_combined_minimum_size()))
+		return boxes
+
+	## Each name's plate as drawn: its letters and the shade past them.
+	func label_boxes() -> Array[Rect2]:
+		var boxes: Array[Rect2] = []
+		for label: Dictionary in _labels:
+			boxes.append(Rect2(label["at"], label["size"]).grow_individual(PLATE.x, PLATE.y, PLATE.x, PLATE.y))
+		return boxes
+
+	## The page's names (Atlas.page_labels) placed on it, in the labels'
+	## type, by Atlas.label_at's solver (PIX-403): each plate clear of every
+	## mark and of the plates placed before it, inside the map it names where
+	## it fits, or left off.
+	func _place_labels() -> void:
+		_labels.clear()
+		var font := UiStyle.body_font()
+		var bounds := Vector2(cells * tile_px)
+		var taken := mark_boxes()
 		# A shut gate's name first (PIX-254): it says why the way past it is shut.
 		var named: Array[Dictionary] = []
 		for gate: Dictionary in _gates:
 			named.append({"text": Gates.mark(gate["gate"]), "at": Vector2(gate["cell"]) + Vector2(0.5, 0.5), "way": true})
 		for label: Dictionary in named + Atlas.page_labels(_on_page(), GameState.world.discovered):
 			var size := Vector2(font.get_string_size(label["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT).x, font.get_height(UiStyle.TEXT))
-			var spot: Vector2 = label["at"] * tile_px
-			var at := Atlas.label_at(spot, size, bounds, label["way"], mark, taken)
+			var plate := size + PLATE * 2.0
+			var at := Atlas.label_at(label["at"] * tile_px, plate, bounds, label["way"], _mark(), taken, _sheet_box(Vector2i(label["at"].floor())))
 			if at == Atlas.NOWHERE:
 				continue
-			taken.append(Rect2(at, size).grow_individual(PLATE.x, PLATE.y, PLATE.x, PLATE.y))
-			_labels.append({"text": label["text"], "at": at, "size": size, "way": label["way"]})
+			taken.append(Rect2(at, plate))
+			_labels.append({"text": label["text"], "at": at + PLATE, "size": size, "way": label["way"]})
+
+	## The box (px) of the map drawn at page cell `cell`, none off them.
+	func _sheet_box(cell: Vector2i) -> Rect2:
+		for sheet: Dictionary in _on_page():
+			var box := Rect2i(sheet["at"], sheet["map"].size)
+			if box.has_point(cell):
+				return Rect2(box.position * tile_px, box.size * tile_px)
+		return Rect2()
 
 	## The chosen waypoint's tag: a card like the chosen one in the list, its
 	## name and the region it sets you down in, over its ring.
@@ -730,10 +765,8 @@ class Painting extends Control:
 		if map == null:
 			return
 		_shown = _on_screen()
-		# The whole page is night until walked.
-		draw_rect(Rect2(Vector2.ZERO, Vector2(cells * tile_px)), UiStyle.NIGHT)
-		for cell: Vector2i in _ground:
-			draw_rect(Rect2(Vector2(cell * tile_px), Vector2(tile_px, tile_px)), _ground[cell])
+		# The whole page is night until walked, painted where it was.
+		draw_texture(_paper, Vector2.ZERO)
 		_draw_roads()
 		_draw_labels()
 		var mark := _mark()

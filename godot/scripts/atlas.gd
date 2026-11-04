@@ -327,17 +327,21 @@ static func page_labels(sheets: Array[Dictionary], discovered: Dictionary) -> Ar
 ## too), in from the edge the door is on - right of a door on the left
 ## edge, else just under or over that; under one on the top edge - else
 ## over the door, or under it; a region's name on its spot, else just under
-## or over it, else a line further (the Reach's page is small print, and a
-## chosen waypoint's tag may sit on a region's middle).
-static func label_at(spot: Vector2, size: Vector2, bounds: Vector2, way: bool, mark: float, taken: Array[Rect2] = []) -> Vector2:
+## or over it. Then the solver (PIX-403: the names ran into each other and
+## into the marks): ring on ring a line further out, under, over, right and
+## left of the spot and its four corners, the first clear by GAP of all
+## that's taken; inside `within` when given (the map it names, on the
+## Reach's page: not over the next region's edge), else at least over it
+## (never out on the night alone), and anywhere on the page without one.
+static func label_at(spot: Vector2, size: Vector2, bounds: Vector2, way: bool, mark: float, taken: Array[Rect2] = [], within := Rect2()) -> Vector2:
 	var tries: Array[Vector2] = []
+	# Past the marker's dark rim, and the goal's diamond round it.
+	var off := floorf(mark / 2.0) + 6.0 + GAP if way else GAP
+	var middle := spot.x - size.x / 2.0
 	if way:
-		# Past the marker's dark rim, and the goal's diamond round it.
-		var off := floorf(mark / 2.0) + 6.0 + GAP
 		var under := spot.y + off
 		var over := spot.y - off - size.y
 		var beside := spot.y - size.y / 2.0
-		var middle := spot.x - size.x / 2.0
 		if spot.x < mark * 2.0 or spot.x > bounds.x - mark * 2.0:
 			var x := spot.x + off if spot.x < mark * 2.0 else spot.x - off - size.x
 			tries.append_array([Vector2(x, beside), Vector2(x, under), Vector2(x, over)])
@@ -346,15 +350,34 @@ static func label_at(spot: Vector2, size: Vector2, bounds: Vector2, way: bool, m
 		else:
 			tries.append_array([Vector2(middle, over), Vector2(middle, under)])
 	else:
-		var middle := spot - size / 2.0
-		var step := Vector2(0, size.y + GAP)
-		tries.append_array([middle, middle + step, middle - step, middle + step * 2.0, middle - step * 2.0])
-	for at: Vector2 in tries:
-		var kept := Vector2(
-			clampf(at.x, GAP, maxf(GAP, bounds.x - size.x - GAP)),
-			clampf(at.y, GAP, maxf(GAP, bounds.y - size.y - GAP)),
-		).round()
-		var rect := Rect2(kept, size)
-		if not taken.any(func(other: Rect2) -> bool: return other.grow(2.0).intersects(rect)):
-			return kept
+		tries.append(spot - size / 2.0)
+	for ring in RINGS:
+		var d := off + ring * (size.y + GAP)
+		var left := spot.x - d - size.x
+		var right := spot.x + d
+		var up := spot.y - d - size.y
+		var down := spot.y + d
+		var level := spot.y - size.y / 2.0
+		tries.append_array([
+			Vector2(middle, down), Vector2(middle, up), Vector2(right, level), Vector2(left, level),
+			Vector2(right, down), Vector2(left, down), Vector2(right, up), Vector2(left, up),
+		])
+	var area := within if within.has_area() else Rect2(Vector2.ZERO, bounds)
+	# Wholly inside its map first; then, for a long name on a narrow region,
+	# over its map still, never off on the night or the next map alone.
+	for whole: bool in [true, false]:
+		for at: Vector2 in tries:
+			var kept := Vector2(
+				clampf(at.x, GAP, maxf(GAP, bounds.x - size.x - GAP)),
+				clampf(at.y, GAP, maxf(GAP, bounds.y - size.y - GAP)),
+			).round()
+			var rect := Rect2(kept, size)
+			if not (area.encloses(rect) if whole else area.intersects(rect)):
+				continue
+			if not taken.any(func(other: Rect2) -> bool: return other.grow(GAP).intersects(rect)):
+				return kept
 	return NOWHERE
+
+
+## How many rings round its spot the solver tries, a line further each.
+const RINGS := 4

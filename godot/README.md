@@ -535,6 +535,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/lights.gd` — Light and darkness (PIX-221).
 - `scripts/lookbook.gd` — The look book (PIX-220): the same scenes, staged the same way every time
 - `scripts/map_data.gd` — A world map loaded from its JSON (assets/maps/<id>.json, edited by hand or drawn as a sketch in maps-src and run through tools/mapgen.py)
+- `scripts/map_ground.gd` — The map screen's ground (PIX-403): each cell painted from the terrain the world draws it with, Shade's CC0 overworld tiles (PunyTerrain) shrunk to the page's pixels a cell, so the woods, the water, the snow, the Ash and the village read on the page as they do underfoot.
 - `scripts/map_layers/camps_layer.gd` — The packs' camps, the town's boards, stalls, tents and post box, and the houses on fire (PIX-142, PIX-145, PIX-197, PIX-327)
 - `scripts/map_layers/dungeon_layer.gd` — A dungeon floor in Shade's Puny Dungeon (PunyDungeon, DungeonLook, PIX-255, PIX-291, PIX-292, PIX-310)
 - `scripts/map_layers/gates_layer.gd` — The gates the story still keeps shut, each dungeon's way in drawn in its setting, and a mining country's workings (PIX-254, PIX-290, PIX-308)

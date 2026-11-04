@@ -103,10 +103,10 @@ class Panorama extends MapScreen.Painting:
 	func _draw() -> void:
 		if map == null:
 			return
-		draw_rect(Rect2(Vector2.ZERO, Vector2(cells * tile_px)), UiStyle.NIGHT)
+		# The page painted from its ground (PIX-403), the night over it.
+		draw_texture(_paper, Vector2.ZERO)
+		draw_rect(Rect2(Vector2.ZERO, Vector2(cells * tile_px)), Color(UiStyle.NIGHT, DARK))
 		var cell_size := Vector2(tile_px, tile_px)
-		for cell: Vector2i in _ground:
-			draw_rect(Rect2(Vector2(cell * tile_px), cell_size), (_ground[cell] as Color).lerp(UiStyle.NIGHT, DARK))
 		var at := at_of(Routes.MAP)
 		for cell: Vector2i in healed:
 			draw_rect(Rect2(Vector2((cell + at) * tile_px), cell_size), healed[cell])

@@ -236,7 +236,7 @@ func test_the_reach_and_its_regions_are_one_page() -> void:
 		assert_eq(at - painting.at_of("overworld"), ReachPlane.origin(map.id), "%s at its place in the plane" % map.id)
 		var wrong := 0
 		for cell: Vector2i in map.grid:
-			if not village.has(cell + at) and painting._ground.get(cell + at) != Atlas.color(map.grid[cell]):
+			if not village.has(cell + at) and painting._ground.get(cell + at) != map.grid[cell]:
 				wrong += 1
 		assert_eq(wrong, 0, "every cell of %s drawn where it lies on the page" % map.id)
 	# The hero's mark and the marks on the maps, each at its map's offset.
@@ -313,5 +313,50 @@ func test_the_ashenreach_draws_the_village_small_in_its_walls() -> void:
 	assert_eq(village.get(Vector2i(36, 42) + at, ""), "wall", "its rampart")
 	assert_true(village.values().any(func(tile: String) -> bool: return tile.begins_with("roof")), "its houses")
 	assert_true(village.values().has("water"), "its river")
-	assert_eq(screen.painting._ground.get(Vector2i(50, 50) + at), Atlas.color(village[Vector2i(50, 50) + at]), "drawn though only the road to its gate was walked")
+	assert_eq(screen.painting._ground.get(Vector2i(50, 50) + at), village[Vector2i(50, 50) + at], "drawn though only the road to its gate was walked")
 	screen.close()
+
+
+## PIX-403: the Reach's page painted from its ground - the night where
+## nothing's been seen, the grass, the sea, the snow and the Ash each in
+## their own colours, the woods darker than the grass - and every name on
+## it clear of the others and of every mark, in English and in French.
+func test_the_reach_is_painted_from_its_ground_and_its_names_are_clear() -> void:
+	Atlas.walk_all(GameState.world.discovered)
+	for lang: String in ["en", "fr"]:
+		Text.apply(lang)
+		var opened := _open("overworld")
+		var screen: Node = opened[0]
+		var painting: Control = screen.painting
+		var paper: Image = painting._paper.get_image()
+		assert_eq(paper.get_size(), Vector2i(painting.cells * painting.tile_px), "the page painted whole")
+		var tone := {}
+		for cell: Vector2i in painting._ground:
+			var tile: String = painting._ground[cell]
+			if tile in ["grass", "forest", "sea", "snow", "ash"] and not tone.has(tile):
+				tone[tile] = _mean(paper, cell, painting.tile_px)
+		assert_eq(tone.size(), 5, "grass, woods, sea, snow and the Ash all on the page")
+		assert_gt(tone["snow"].get_luminance(), tone["grass"].get_luminance() + 0.2, "the snow white over the grass")
+		assert_gt(tone["sea"].b, tone["sea"].g, "the sea blue")
+		assert_lt(tone["ash"].s, tone["grass"].s, "the Ash grey beside the grass")
+		var labels: Array[Rect2] = painting.label_boxes()
+		var marks: Array[Rect2] = painting.mark_boxes()
+		assert_gt(labels.size(), 8, "%s: the regions and the ways named" % lang)
+		for i in labels.size():
+			assert_true(Rect2(Vector2.ZERO, painting.custom_minimum_size).encloses(labels[i]), "%s: %s on the page" % [lang, painting._labels[i]["text"]])
+			for j in range(i + 1, labels.size()):
+				assert_false(labels[i].intersects(labels[j]), "%s: %s clear of %s" % [lang, painting._labels[i]["text"], painting._labels[j]["text"]])
+			for mark: Rect2 in marks:
+				assert_false(labels[i].intersects(mark), "%s: %s clear of the mark at %s" % [lang, painting._labels[i]["text"], mark.get_center()])
+		screen.close()
+		await wait_process_frames(1)
+	Text.apply("en")
+
+
+## The mean colour of page cell `cell` on the painted page.
+func _mean(paper: Image, cell: Vector2i, px: int) -> Color:
+	var sum := Color(0, 0, 0, 0)
+	for y in px:
+		for x in px:
+			sum += paper.get_pixelv(cell * px + Vector2i(x, y))
+	return sum / float(px * px)
