@@ -126,6 +126,7 @@ jobs:
             godot/.godot
             godot/assets/puny/shade/**/*.import
             godot/assets/puny/medieval/*.import
+            godot/assets/audio/paid/*.import
           key: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-${{ hashFiles('godot/project.godot', 'godot/*.import', 'godot/assets/**', 'godot/addons/**', 'godot/locale/**', 'godot/scenes/**', 'godot/scripts/**', 'godot/shaders/**', 'godot/test/**') }}
           restore-keys: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-
 

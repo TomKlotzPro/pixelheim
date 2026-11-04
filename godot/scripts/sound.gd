@@ -94,7 +94,8 @@ var _paid := {}
 var withheld := false
 ## The take each event played last, never played twice running.
 var _last := {}
-## Which take plays is Sound's own throw, so the game's dice stay as they were.
+## Which take plays is Sound's own throw, so the game's dice stay as they
+## were, seeded so a run hears the same takes every time (verify.md).
 var _dice := RandomNumberGenerator.new()
 ## Where each place's track was left (seconds), to take it up there again.
 var _resume_at := {}
@@ -113,7 +114,8 @@ var buses_added := 0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	_doc = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/audio.json"))
+	_dice.seed = 411
+	_doc =SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/audio.json"))
 	# The buses come from default_bus_layout.tres (PIX-412): made here at run
 	# time, the web's sample playback wired Master's output into a loop of
 	# them and nothing reached the speakers. Only a layout that lacks one
@@ -406,9 +408,12 @@ func kill_for(monster_id: String) -> String:
 
 
 ## A step by the ground under it ("steps": grass, dirt, sand, stone, wood,
-## snow, ice or shallow water).
-func step_for(tile: String) -> String:
-	return String(_doc["steps"].get(tile, "step_dirt"))
+## snow, ice or shallow water), and by what's laid over that ground (`over`:
+## a street's paving, or the map's style): "over:tile" first, so a cave's
+## "floor" is rock where a house's is boards, and a cobbled path is stone.
+func step_for(tile: String, over := "") -> String:
+	var steps: Dictionary = _doc["steps"]
+	return String(steps.get("%s:%s" % [over, tile], steps.get(tile, "step_dirt")))
 
 
 ## Plays `stream` on a free voice of `family`'s at `pitch` and `level` dB;
@@ -505,21 +510,27 @@ func _theme_over(player: AudioStreamPlayer) -> void:
 	_after_theme = ""
 
 
-## The new theme comes in from `from` seconds as the old one goes, together.
+## The new theme comes in from `from` seconds as the old one goes, together,
+## each on an equal-power curve: faded in dB, the two sat near -20 dB
+## halfway, a dip of some 17 dB in every change of place.
 func _crossfade(stream: AudioStreamWAV, level: float, from := 0.0) -> void:
 	if _fade != null:
 		_fade.kill()
 	var outgoing := _music
-	_music = _fading
+	var incoming := _fading
+	_music = incoming
 	_fading = outgoing
-	_fade = create_tween().set_parallel()
-	if outgoing.playing:
-		_fade.tween_property(outgoing, "volume_db", -40.0, CROSSFADE_S)
-		_fade.tween_callback(outgoing.stop).set_delay(CROSSFADE_S)
-	_music.stream = stream
-	_music.volume_db = -40.0
-	_music.play(from)
-	_fade.tween_property(_music, "volume_db", level, CROSSFADE_S)
+	var leaving := db_to_linear(outgoing.volume_db) if outgoing.playing else 0.0
+	var coming := db_to_linear(level)
+	var mix := func(t: float) -> void:
+		outgoing.volume_db = linear_to_db(maxf(leaving * cos(t * PI / 2.0), 0.0001))
+		incoming.volume_db = linear_to_db(maxf(coming * sin(t * PI / 2.0), 0.0001))
+	mix.call(0.0)
+	incoming.stream = stream
+	incoming.play(from)
+	_fade = create_tween()
+	_fade.tween_method(mix, 0.0, 1.0, CROSSFADE_S)
+	_fade.tween_callback(outgoing.stop)
 
 
 func stop_music() -> void:

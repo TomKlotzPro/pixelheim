@@ -182,7 +182,12 @@
     "door": "step_wood",
     "snow": "step_snow",
     "ice": "step_ice",
-    "marsh": "step_water"
+    "marsh": "step_water",
+    "cave:floor": "step_stone",
+    "cobbles:path": "step_stone",
+    "flags:path": "step_stone",
+    "sandstone:path": "step_stone",
+    "bricks:path": "step_stone"
   },
   "tracks": {
     "title": {

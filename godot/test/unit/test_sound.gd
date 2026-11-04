@@ -221,7 +221,16 @@ func test_every_ground_has_its_step() -> void:
 	assert_eq(surfaces.keys().size(), 8, "grass, dirt, sand, stone, wood, snow, ice and shallow water")
 	assert_eq(Sound.step_for("grass"), "step_grass")
 	assert_eq(Sound.step_for("marsh"), "step_water")
-	assert_eq(Sound.step_for("floor"), "step_wood")
+	assert_eq(Sound.step_for("floor"), "step_wood", "a house's boards")
+	# A cave's "floor" is its rock: every dungeon's floors, drawn by hand or
+	# laid from a seed, walked on wood before the review.
+	for dungeon_id: String in Depths.dungeons():
+		for floor_def: Dictionary in Depths.floors(dungeon_id):
+			var map := MapData.load_by_id(String(floor_def["mapId"]))
+			assert_eq(Sound.step_for("floor", map.style), "step_stone", map.id)
+	# A paved street is stone; gravel, packed in the dirt, stays the dirt's.
+	for look: String in Streets.LOOKS:
+		assert_eq(Sound.step_for("path", look), "step_dirt" if look == "gravel" else "step_stone", look)
 
 
 ## PIX-411: a jingle steps the music and the weather back, in a blink, and
@@ -257,9 +266,18 @@ func test_a_place_takes_its_music_up_where_it_left_it() -> void:
 	Sound.play_track("battle")
 	assert_almost_eq(float(Sound._resume_at.get("town", 0.0)), 5.0, 0.5, "where the town's music was")
 	assert_almost_eq(Sound._music.get_playback_position(), 0.0, 0.5, "the fight from its top")
+	Sound._fade.custom_step(Sound.CROSSFADE_S + 0.1)
+	assert_almost_eq(Sound._music.volume_db, Sound.level_of("music/battle"), 0.01, "the fight in at its level")
 	Sound.play_track("town")
 	assert_false(Sound._resume_at.has("battle"), "a fight isn't taken up again")
 	assert_almost_eq(Sound._music.get_playback_position(), 5.0, 0.5, "the town's again from there")
 	assert_true(Sound._fading.playing, "the fight fading as the town comes in, together")
+	# Halfway, the two together at the music's full power: no dip.
+	Sound._fade.custom_step(Sound.CROSSFADE_S / 2.0)
+	var rising := db_to_linear(Sound._music.volume_db - Sound.level_of("music/town"))
+	var falling := db_to_linear(Sound._fading.volume_db - Sound.level_of("music/battle"))
+	assert_almost_eq(rising * rising + falling * falling, 1.0, 0.02, "the crossfade holds its power halfway")
+	Sound._fade.custom_step(Sound.CROSSFADE_S)
+	assert_false(Sound._fading.playing, "the fight gone once the town is in")
 	Sound.stop_music()
 	Sound._resume_at.clear()

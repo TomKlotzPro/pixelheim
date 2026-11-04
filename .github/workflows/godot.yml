@@ -89,8 +89,8 @@ jobs:
       # checks. A pull request's run restores only what its own branch or
       # main saved, so the deploy keeps main's (deploy.yml) and this falls
       # back on the newest one there: Godot then imports only the files that
-      # changed since (it compares each one's hash). The paid art's .import
-      # files sit beside it, git-ignored, so they're kept too, or all of it
+      # changed since (it compares each one's hash). The paid art's and sounds'
+      # .import files sit beside them, git-ignored, so they're kept too, or all
       # would import again. With or without the paid art, apart. The paths
       # must stay the same as deploy.yml's: a cache restores only into the
       # paths it was saved from.
@@ -102,6 +102,7 @@ jobs:
             godot/.godot
             godot/assets/puny/shade/**/*.import
             godot/assets/puny/medieval/*.import
+            godot/assets/audio/paid/*.import
           key: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-${{ hashFiles('godot/project.godot', 'godot/*.import', 'godot/assets/**', 'godot/addons/**', 'godot/locale/**', 'godot/scenes/**', 'godot/scripts/**', 'godot/shaders/**', 'godot/test/**') }}
           restore-keys: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-
 
@@ -116,6 +117,7 @@ jobs:
             godot/.godot
             godot/assets/puny/shade/**/*.import
             godot/assets/puny/medieval/*.import
+            godot/assets/audio/paid/*.import
           key: ${{ steps.import.outputs.cache-primary-key }}
 
       - name: Unit tests (GUT)

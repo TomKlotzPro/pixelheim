@@ -244,9 +244,10 @@ func _process(delta: float) -> void:
 	if cell == player_cell:
 		return
 	player_cell = cell
-	# A step by the ground under it (PIX-411), and dust off dry ground, a
-	# splash in a bog (PIX-225).
-	Sound.play(Sound.step_for(map.tile_at(cell)))
+	# A step by the ground under it and what's laid over it, a street's
+	# paving or a cave's rock (PIX-411), and dust off dry ground, a splash in
+	# a bog (PIX-225).
+	Sound.play(Sound.step_for(map.tile_at(cell), view.streets.get(cell, map.style)))
 	atmosphere.footfall(player.global_position + Vector2(0, 2), map.tile_at(cell))
 	GameState.move_to(map, cell, player.facing)
 	# Into a region of the Reach: its name, once (PIX-269).
