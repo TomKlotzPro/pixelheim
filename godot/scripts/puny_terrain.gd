@@ -315,6 +315,11 @@ const WATER_MIRE := 2
 const WATER_DEEP := 3
 const WATER_ICE := 4
 const WATER_TONES := {"mirefen": WATER_MIRE, "deepwood": WATER_DEEP, "frostgate": WATER_ICE}
+## A running river whose banks swing in over it (PIX-397, the Reach's: seen
+## whole a ruler-straight band), by up to this many pixels
+## (inland_water.gdshaderinc's river_swing): on the water's cells alone,
+## within the 8 of them its bank can be drawn over (with its 3 px wander).
+const RIVER_SWING := {"overworld": 7.0}
 ## The tones and the ways water runs by name (FLOWS' order), for the harness.
 const TONE_NAMES := ["sea", "clear", "mire", "deep", "ice"]
 const FLOW_NAMES := ["still", "west", "south"]

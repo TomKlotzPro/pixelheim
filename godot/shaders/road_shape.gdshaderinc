@@ -14,6 +14,18 @@ uniform bool road_life = false;
 uniform bool road_ground = false;
 uniform vec2 road_origin = vec2(0.0);
 uniform vec2 road_texels = vec2(1.0);
+// The Reach's long straight roads bent gently off their cells (PIX-397:
+// seen whole they were a ruler-drawn grid): the field read where a slow
+// noise moves it, up to `road_bend` pixels (RoadShape.BENDS, 0 elsewhere)
+// on bends ROAD_BENDS cells apart, easing to nothing over ROAD_STILL cells
+// by the map's edges (the road runs on straight into the map beside) and
+// round each of `road_still` (map pixels: a bridge, the town's gate), where
+// it meets what's drawn straight. The grid, and where the hero walks, stay.
+uniform float road_bend = 0.0;
+uniform vec2 road_still[4];
+uniform int road_stills = 0;
+const float ROAD_BENDS = 6.0;
+const float ROAD_STILL = 3.0;
 
 // Where the field's edge falls: Shade's dirt meets his grass some 5.5 art
 // pixels past a straight road's cells (the field's value there), and a
@@ -54,8 +66,26 @@ vec4 road_slope(float f) {
 	return vec4(-(1.0 - f) * (1.0 - f) * 0.5, 1.5 * f * f - 2.0 * f, -1.5 * f * f + f + 0.5, f * f * 0.5);
 }
 
+// Where the road's field is read for map pixel `p`: bent off the grid
+// (road_bend), on the plane's pixels, so the Reach drawn beside another map
+// bends just as it does under the hero.
+vec2 road_bent(vec2 p) {
+	if (road_bend <= 0.0) {
+		return p;
+	}
+	vec2 cells = (p + map_origin) / CELL / ROAD_BENDS;
+	vec2 bend = vec2(value_noise(cells + 5.1), value_noise(cells + 83.7)) * 2.0 - 1.0;
+	vec2 inside = min(p, map_pixels - p);
+	float away = min(inside.x, inside.y);
+	for (int i = 0; i < road_stills; i++) {
+		away = min(away, max(distance(p, road_still[i]) - CELL, 0.0));
+	}
+	return p + bend * road_bend * smoothstep(0.0, ROAD_STILL * CELL, away);
+}
+
 // The road's field at map pixel `p`, and its slope per art pixel.
 vec3 road_field(vec2 p) {
+	p = road_bent(p);
 	vec2 at = p / CELL - 0.5;
 	vec2 base = floor(at);
 	vec2 f = at - base;

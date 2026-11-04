@@ -486,6 +486,8 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/enemy.gd` — A monster in the field: wanders near its home, notices a hero it can see (a "!" and a hop first), chases, bites after a tell, and gives up a chase that strays too far, walking home to heal (PIX-142).
 - `scripts/entrance_art.gd` — What a dungeon's way in looks like (PIX-290, Tom: « Pas super beau les entrées de donjon, porte du Fernoir et le premier »).
 - `scripts/escort.gd` — An escort (PIX-192): Gunnar's last wagon down the Frostgate - an old mammoth hauling the pass's last crates.
+- `scripts/features/ash_fields/ash_ruins.gd` — The Ash Fields' burnt farmsteads (PIX-397, step 2; the v0.307 world audit: « a flat grey plain with blobs, in a rectangle »).
+- `scripts/features/ash_fields/feature.gd` — The Ash Fields' burnt farmsteads in the harness (PIX-397, step 2)
 - `scripts/features/farm_animals/farm_animals.gd` — Pixelheim's farm animals by its age (PIX-387, the village's step 2)
 - `scripts/features/farm_animals/feature.gd` — The town's farm animals in the harness (PIX-387)
 - `scripts/features/farm_animals/herd.gd` — The town's farm animals as they live (PIX-387)
@@ -504,6 +506,8 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/mirefen/feature.gd` — The Mirefen alive in the harness (PIX-401)
 - `scripts/features/mirefen/mire_art.gd` — What the Mirefen stands in that Shade's sheets don't draw (PIX-401)
 - `scripts/features/mirefen/mire_dressing.gd` — The Mirefen alive (PIX-401, the v0.307 world audit: « a uniform fen of puddles and a few shrubs, one ruin and two camps »)
+- `scripts/features/waysides/feature.gd` — The Reach's wayside lanterns in the harness (PIX-397, step 4)
+- `scripts/features/waysides/waysides.gd` — Wayside lanterns on the Reach's main roads (PIX-397, step 4; the v0.307 world audit: « at night the Reach is unlit beyond the town »)
 - `scripts/fire_art.gd` — The fires of a burning house (PIX-327): the Night of Ash's ruins and the Night of Bells' roofs.
 - `scripts/firebolt.gd` — A fireborn elite's firebolt (PIX-155): flies straight, burns the hero it meets, and gutters out against a wall or after eight tiles.
 - `scripts/gait.gd` — How the cast walks (PIX-243): the hero, the villagers, the monsters and the wagon all step through their sheet's walk (PunyArt.WALKS) by the ground they cover, not by the clock, so their feet keep pace with the ground at any speed

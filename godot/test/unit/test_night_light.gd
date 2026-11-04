@@ -187,6 +187,31 @@ func test_the_hubs_grown_and_every_lamp_lit() -> void:
 	GameState.post = kept_post
 
 
+## Everything that lights the Reach at once (PIX-397): the City's farmland
+## lamps, the wayside lanterns at its forks and bridge, every signpost up
+## and every ember lamp lit; within the budget alone and as one land.
+func test_the_reach_at_the_city_with_every_lamp_and_lantern() -> void:
+	GameState.progression.prologue = Prologue.DONE
+	var kept_post := GameState.post
+	GameState.post = PostState.new()
+	GameState.settlement.town_tier = Town.MAX_TIER
+	var done := Town.projects_through(Town.MAX_TIER)
+	for place: String in Routes.places():
+		Routes.tally(GameState.post, place, "bram", int(Hubs.marks()[-1]))
+		var lamp := Routes.lamp_of(place)
+		if not lamp.is_empty():
+			done.append(String(lamp["work"]))
+	Routes.raise_signs(GameState.post)
+	GameState.settlement.projects.assign(done)
+	var root := _drawn(MapData.load_by_id(Routes.MAP))
+	var lanterns := root.find_children("*", "PointLight2D", true, false).filter(func(light: Node) -> bool:
+		return light.get_meta("tint") == Lights.LAMP)
+	assert_gte(lanterns.size(), Waysides.LANTERNS.size(), "a light to each wayside lantern")
+	_check("the Reach at the City with every lamp and lantern", root, _moving_on([Routes.MAP]))
+	_check("the Reach as one land at the City with every lamp and lantern", _one_land(), _moving_on(ReachPlane.maps()))
+	GameState.post = kept_post
+
+
 ## Dozens of ember lamps (PIX-323): a road of the Reach lined with them, a
 ## lamp to a cell. Those close to one already lit keep their halo alone, a
 ## cheaper light, and the Reach holds the budget.

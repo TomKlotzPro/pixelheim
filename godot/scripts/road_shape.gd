@@ -38,6 +38,14 @@ const TAPER := {1: [0.8, 1.0], 2: [0.45, 0.8], 3: [0.4, 0.75]}
 ## meets open ground within a cell (the tone follows the field there).
 const ZONE := 0.5
 const FILLS := 1.0
+## The maps whose long straight roads bend gently off their cells (PIX-397,
+## the Reach's: seen whole a ruler-drawn grid), as the shader reads the
+## field (road_bent): this many pixels at most, never past the cell beside;
+## straight by the map's edges and round each `still` cell, where the road
+## meets what's drawn straight (the bridge's middle, the town's gate). On
+## his grass Shade's own edge stays: the tone draws the bend (the Ash's, the
+## marsh's).
+const BENDS := {"overworld": {"bend": 7.0, "still": [Vector2i(48, 29), Vector2i(48, 42)]}}
 
 ## The mask, a cell a texel: texel (0, 0) is cell (-RING, -RING).
 var image: Image

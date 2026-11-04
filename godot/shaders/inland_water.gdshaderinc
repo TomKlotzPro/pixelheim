@@ -59,6 +59,20 @@ const float BANK_OUT = 3.0;
 const float SHADE_BANK = 9.5;
 // Where a bridge lands the bank lies this far in under its planks.
 const float LANDING_IN = -3.0;
+// The Reach's river swings off its cells (PIX-397: seen whole it was a
+// ruler-straight band): each bank pulled in over its water by up to
+// `river_swing` pixels (PunyTerrain.RIVER_SWING, 0 elsewhere) on bends
+// SWING_BENDS cells apart, never out over the land; its bank's quick
+// wander a little less (SWING_WANDER), so less of what's drawn as water
+// lies where the hero walks and the bank stays within the half cell of its
+// water that the land's tile can be read for (bank_land). It eases to
+// nothing over SWING_STILL cells by a bridge.
+uniform float river_swing = 0.0;
+const float SWING_BENDS = 6.0;
+const float SWING_STILL = 3.0;
+const float SWING_WANDER = 3.0;
+// Over how many pixels toward the middle the swing eases out.
+const float SWING_EASE = 2.0;
 // The mask's blue (cells from the bank / 3) where the water starts to
 // deepen, and over how much more it reaches its deepest; how far its deep
 // channel wanders off the cells, in pixels, and over how many; where each
@@ -208,6 +222,22 @@ bool span_at(ivec2 cell) {
 	return (water_code_at(cell) / 8) % 2 == 1;
 }
 
+// How far the river's swing reaches at `local_px` (mask pixels, in `cell`):
+// all of it SWING_STILL cells from a bridge, easing to nothing at its side.
+// The Reach's river runs across the map, its bridge across it.
+float swing_ease(vec2 local_px, ivec2 cell) {
+	float nearest = SWING_STILL * CELL;
+	for (int dy = -1; dy <= 1; dy++) {
+		for (int dx = -int(SWING_STILL); dx <= int(SWING_STILL); dx++) {
+			if (span_at(cell + ivec2(dx, dy))) {
+				float left = float(cell.x + dx) * CELL;
+				nearest = min(nearest, max(max(left - local_px.x, local_px.x - left - CELL), 0.0));
+			}
+		}
+	}
+	return smoothstep(0.0, SWING_STILL * CELL, nearest);
+}
+
 // Which way the water in a cell of code `code` runs: (0, 0) still, west
 // along a river across the map, south down one (PunyTerrain.FLOWS).
 vec2 flow_of(int code) {
@@ -328,13 +358,22 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	// in under its planks' ends.
 	bool landing = (code / 8) % 2 == 1 && mask_texel(cell).r < 0.5;
 	bool mire = tone == TONE_MIRE;
+	bool swings = river_swing > 0.0 && code % 8 != 0;
 	vec2 cells = floor(px) / CELL / (mire ? MIRE_BENDS : BANK_BENDS);
-	vec2 bend = clamp((vec2(value_noise(cells + 31.7), value_noise(cells + 47.1)) - 0.5) * 1.7, -0.5, 0.5) * 2.0 * (mire ? MIRE_WANDER : BANK_WANDER);
+	vec2 bend = clamp((vec2(value_noise(cells + 31.7), value_noise(cells + 47.1)) - 0.5) * 1.7, -0.5, 0.5) * 2.0 * (mire ? MIRE_WANDER : (swings ? SWING_WANDER : BANK_WANDER));
 	if (landing) {
 		bend = vec2(0.0);
 	}
 	float here = water_red(local_px + bend, mire && !landing ? MIRE_SOFT : 0.0);
 	float in_water = (here - 0.5) * CELL + (landing ? LANDING_IN : BANK_OUT);
+	// A running river's banks swing in over it, slowly (the Reach's): the
+	// ground by its bank only, not its middle, where the mask lies whole (a
+	// cell in, BANK_OUT past half a cell): there it would have lapped foam.
+	if (swings && !landing) {
+		float swing = smoothstep(0.3, 0.7, value_noise(floor(px) / (CELL * SWING_BENDS) + 61.3));
+		float by_bank = clamp((0.5 * CELL + BANK_OUT - in_water) / SWING_EASE, 0.0, 1.0);
+		in_water -= river_swing * swing * swing_ease(local_px, cell) * by_bank;
+	}
 	float threshold = bayer_at(px);
 	if (in_water < 0.0) {
 		vec4 reed = tone == TONE_MIRE && in_water > -9.0 ? reeds(px, local_px, bend) : vec4(0.0);
