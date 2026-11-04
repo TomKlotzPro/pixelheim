@@ -753,7 +753,7 @@ func _decor_lights() -> void:
 	var room := buildings.has("floor")
 	for cell: Vector2i in built:
 		var tile: int = built[cell]
-		if tile == PunyTown.WINDOW and room:
+		if room and PunyInterior.is_window(tile):
 			# The day comes in through a room's window and lies on the floor
 			# below it, slanting (PIX-311); its glass is full of the sky
 			# (_build_room).
@@ -824,7 +824,7 @@ func _add_hearth(at: Vector2, embers_at: Vector2) -> void:
 	flame.offset = Vector2(-(size.x / 2), -size.y)
 	flame.speed_scale = FireArt.pace({"cell": Vector2i(embers_at), "frame": 0}, GameState.settings.reduce_motion)
 	flame.material = Lights.unshaded()
-	flame.z_index = 5
+	# props' own order: over the fire's tile, under the actors standing at it.
 	props.add_child(flame)
 	flame.play()
 

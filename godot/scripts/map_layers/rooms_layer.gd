@@ -177,7 +177,7 @@ static func _free_windows(view: MapView, root: Node2D) -> void:
 static func _day_windows(view: MapView, root: Node2D) -> void:
 	var glass := LampArt.day_panes()
 	for cell: Vector2i in view.buildings.get("walls", {}):
-		if view.buildings["walls"][cell] != PunyTown.WINDOW or glass == null:
+		if not PunyInterior.is_window(view.buildings["walls"][cell]) or glass == null:
 			continue
 		var pane := Sprite2D.new()
 		pane.texture = glass

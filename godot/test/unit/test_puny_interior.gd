@@ -21,9 +21,9 @@ func _plain_walls(map_id: String) -> Array:
 	return PunyInterior.WALLS.values().map(func(tile: int) -> int: return tile + int(PunyInterior.WALL_SETS.get(map_id, 0)))
 
 
-## Shade's wall tiles and the window: what a wall cell may be drawn as.
+## Shade's wall tiles and the room's window: what a wall cell may be drawn as.
 func _wall_tiles(map_id: String) -> Array:
-	return _plain_walls(map_id) + [PunyInterior.WINDOW]
+	return _plain_walls(map_id) + [PunyInterior.SET_WINDOWS.get(map_id, PunyInterior.WINDOW)]
 
 
 func test_every_room_keeps_its_door_floor_and_walls() -> void:
@@ -148,12 +148,17 @@ func test_rooms_have_straight_walls_and_no_lone_counter() -> void:
 	var inn := _room("town_inn")
 	assert_true("hearth" in inn.grid.values(), "the inn's hearth")
 	assert_gte(inn.grid.values().count("counter"), 6, "the inn's bar")
+	# Sela keeps (8, 2): her bar either side of (8, 3), as Odo's counter is.
+	assert_eq([inn.grid[Vector2i(7, 3)], inn.grid[Vector2i(9, 3)]], ["counter", "counter"], "the bar in front of Sela")
 	assert_true("coals" in _room("town_smith").grid.values(), "the smithy's forge")
 	var area := func(name: String) -> int: return _room(name).size.x * _room(name).size.y
 	assert_gt(area.call("town_hall"), area.call("town_inn"), "the hall is the grandest")
 	assert_gt(area.call("town_inn"), area.call("town_shop"), "the inn wider than a shop")
 	assert_lt(area.call("town_house"), area.call("town_shop"), "the house is small")
-	assert_eq(PunyInterior.plan("keep", _room("keep").grid)["walls"][Vector2i(1, 1)], PunyInterior.WALLS[6] + PunyInterior.WALL_SETS["keep"], "the keep is stone")
+	var keep: Dictionary = PunyInterior.plan("keep", _room("keep").grid)["walls"]
+	assert_eq(keep[Vector2i(1, 1)], PunyInterior.WALLS[6] + PunyInterior.WALL_SETS["keep"], "the keep is stone")
+	assert_true(PunyInterior.SET_WINDOWS["keep"] in keep.values(), "the keep's windows sit in its stone")
+	assert_false(PunyInterior.WINDOW in keep.values(), "no plaster window's wooden sill in the stone")
 	assert_false(PunyInterior.WINDOW in PunyInterior.plan("morvax_forge", _room("morvax_forge").grid)["walls"].values(), "no window in the rock")
 
 

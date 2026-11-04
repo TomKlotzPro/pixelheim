@@ -827,7 +827,8 @@
       "mapId": "town_smith",
       "tiles": [
         "forge",
-        "anvil"
+        "anvil",
+        "coals"
       ],
       "hint": "Craft at Hilda's forge - the FORGE door in town",
       "project": "hildas_forge",

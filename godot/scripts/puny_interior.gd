@@ -33,7 +33,11 @@ const WALLS := {
 const WALL_SETS := {"keep": 14 * 220, "morvax_forge": 18 * 220}
 ## Rooms with no window to the day: Morvax's forge is cut into the rock.
 const WINDOWLESS := ["morvax_forge"]
+## The plaster's window, its sill the plaster wall's wooden band.
 const WINDOW := 3659
+## A walled set's own window, its sill in that set's band: Shade's stone
+## window for the keep (the plaster's would set a wood patch into the stone).
+const SET_WINDOWS := {"keep": 54}
 ## A hearth's and a forge's fire (their lower left), and the smithy's coal
 ## bed (its middle), where a room's warm light comes from (PIX-221), by
 ## where the fire burns in the tile, in pixels (PIX-402: a flame burns
@@ -163,6 +167,12 @@ const FREE_VIGNETTES := {
 
 static func is_room(map_id: String) -> bool:
 	return map_id in ROOMS
+
+
+## A room's window in any wall (the day comes in through it, its glass full
+## of the sky): the plaster's or a set's own.
+static func is_window(tile: int) -> bool:
+	return tile == WINDOW or SET_WINDOWS.values().has(tile)
 
 
 # ---- furnishing (PIX-163) ----------------------------------------------------
@@ -396,7 +406,7 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 		# Windows along the back wall's straight runs, where nothing stands
 		# in front of them.
 		if cell.y == top and mask == 10 and cell.x % 4 == 1 and not leaning.has(cell) and not map_id in WINDOWLESS:
-			tile = WINDOW
+			tile = SET_WINDOWS.get(map_id, WINDOW)
 		walls[cell] = tile
 	return {"floor": floor, "walls": walls, "pieces": pieces, "void": beyond, "blocked": blocked, "over": over}
 
