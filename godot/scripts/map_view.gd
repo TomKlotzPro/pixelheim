@@ -791,7 +791,7 @@ func _free_room_lights() -> void:
 		props.add_child(beam)
 		beams.append(beam)
 	for cell: Vector2i in buildings.get("fires", []):
-		_add_hearth(center(cell) + Vector2(0, 4), Vector2(cell * TILE) + HamletArt.STACK_MOUTH)
+		_add_hearth(center(cell) + Vector2(0, 4), Vector2(cell * TILE) + PunyInterior.FREE_FIRES[buildings["pieces"][cell]])
 	for at: Vector2 in buildings.get("flames", []):
 		_add_candle(at)
 	var objects: Dictionary = buildings.get("objects", {})

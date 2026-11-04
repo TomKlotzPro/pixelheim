@@ -102,7 +102,7 @@ launch |  | with --slots: the run opens the folder's slot 1 as a plain launch op
 talk |  | below the map's first villager, facing them, E pressed, then --keys | talk | 510
 near |  | below the map's first villager, facing them (the prompt) | near | 520
 chest |  | with --map town: the nook chest faced and opened | chest | 530
-station |  | the room's first station (a cauldron, a forge) faced and E pressed; the report adds tab= (PIX-234) | station | 540
+station |  | the room's first station (a cauldron, a forge), or the one above --at's cell (PIX-402: the smithy's coal bed), faced and E pressed; the report adds tab= (PIX-234) | station | 540
 sleep |  | with --map town_inn: the room's first bed faced and E pressed, a night slept; the report adds clock= (PIX-246) | sleep | 550
 --hunted | <ids> | named monsters already slain before the map loads (PIX-156; PIX-255: their lairs empty, a dungeon's shortcut open, a keepsake's family home); the report adds home= for them | hunted | 560
 reveal |  | the town risen (PIX-147): the lamps' stop, then the age's; with --hunted, the first one's homecoming (or the door of whoever its keepsake brought home, PIX-255) | reveal | 570

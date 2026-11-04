@@ -1,7 +1,7 @@
 {
   "id": "town_house",
   "width": 30,
-  "height": 14,
+  "height": 12,
   "spawn": {
     "x": 8,
     "y": 8
@@ -9,7 +9,7 @@
   "portals": [
     {
       "x": 8,
-      "y": 12,
+      "y": 10,
       "to": {
         "kind": "map",
         "mapId": "town",
@@ -28,8 +28,6 @@
     ["wall", "wall", "hearth", "floor", "floor", "floor", "floor", "floor", "counter", "counter", "counter", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "garden", "garden", "garden", "garden", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
     ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
     ["wall", "wall", "barrel", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
-    ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
-    ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
     ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
     ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "door", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
     ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"]

@@ -67,10 +67,11 @@ func step_chest() -> void:
 
 func step_station() -> void:
 	# Pair with `--map town_alchemist` (or town_smith): stand below the
-	# room's first station (a cauldron, a forge), face it and press E
-	# (PIX-234); the report adds the tab the counter opened on.
+	# room's first station (a cauldron, a forge), or the one above --at's
+	# cell (PIX-402: the smithy's coal bed), face it and press E (PIX-234);
+	# the report adds the tab the counter opened on.
 	var map: MapData = world.map
-	var station := Vector2i(-1, -1)
+	var station: Vector2i = world.player_cell + Vector2i.UP if flags.has("--at") else Vector2i(-1, -1)
 	for y in map.size.y:
 		for x in map.size.x:
 			if station.x < 0 and Economy.station_job(map.id, map.tile_at(Vector2i(x, y))) != "":

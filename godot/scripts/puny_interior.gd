@@ -124,10 +124,12 @@ const FREE_FURNITURE := {
 	"counter": "w:844", "shelf": "w:846", "garden": "h:garden", "coals": "h:coal",
 }
 const FREE_BARRELS := ["d:515", "d:516"]
-## The pieces a fire burns in (the hearth's warmth and embers, PIX-221), and
-## where each light's flame burns in its cell: a torch's on the wall, a
-## lantern's glass (the candles' rule, PIX-311).
-const FREE_FIRES := ["h:forge_stack"]
+## The pieces a fire burns in (the hearth's warmth and embers, PIX-221), by
+## where it burns in the cell: the forge stack's mouth, and the coal on a
+## coal bed's middle crate (PIX-402: lit as the pack's is, not three cold
+## crates). Then where each light's flame burns in its cell: a torch's on
+## the wall, a lantern's glass (the candles' rule, PIX-311).
+const FREE_FIRES := {"h:forge_stack": HamletArt.STACK_MOUTH, "h:coal": Vector2(8, 9)}
 const FREE_FLAMES := {"d:16": Vector2(8, 5), "h:lantern": Vector2(8, 9), "r:desk": Vector2(23.5, 2.5)}
 ## The furnished corners (interiors.json's vignettes) that have a likeness,
 ## as the vignettes are written: rows above `floorRow` hang on the back
@@ -454,7 +456,9 @@ static func plan_free(map_id: String, grid: Dictionary) -> Dictionary:
 			_:
 				if FREE_FURNITURE.has(tile):
 					pieces[cell] = FREE_FURNITURE[tile]
-					if FREE_FURNITURE[tile] in FREE_FIRES:
+					# A run burns in its middle, as `plan` draws it (FIRE_TILES).
+					var middle: bool = (grid.get(cell + Vector2i.LEFT, "") == tile) == (grid.get(cell + Vector2i.RIGHT, "") == tile)
+					if FREE_FIRES.has(pieces[cell]) and (middle or not RUNS.has(tile)):
 						fires.append(cell)
 	# A wall the story has written on keeps it whole (Letters.drawn_on).
 	var leaning := {}

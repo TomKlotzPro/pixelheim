@@ -145,12 +145,16 @@ func test_rooms_have_straight_walls_and_no_lone_counter() -> void:
 				var joined: bool = data.grid.get(cell + Vector2i.LEFT, "") == tile or data.grid.get(cell + Vector2i.RIGHT, "") == tile
 				assert_true(joined, "%s: the %s at %s stands alone" % [name, tile, cell])
 		assert_eq(inside.size(), box.get_area(), "%s: a wall stub or notch inside its walls" % name)
+		# Taller and its bottom wall draws under the HUD's dock at play zoom,
+		# its door with it (PIX-402 review: the hall at 28x14).
+		assert_lte(data.size.y, 12, "%s: its door clear of the dock" % name)
 	var inn := _room("town_inn")
 	assert_true("hearth" in inn.grid.values(), "the inn's hearth")
 	assert_gte(inn.grid.values().count("counter"), 6, "the inn's bar")
 	# Sela keeps (8, 2): her bar either side of (8, 3), as Odo's counter is.
 	assert_eq([inn.grid[Vector2i(7, 3)], inn.grid[Vector2i(9, 3)]], ["counter", "counter"], "the bar in front of Sela")
 	assert_true("coals" in _room("town_smith").grid.values(), "the smithy's forge")
+	assert_eq(Economy.station_job("town_smith", "coals"), "smithing", "E at the coal bed crafts, as at the forges")
 	var area := func(name: String) -> int: return _room(name).size.x * _room(name).size.y
 	assert_gt(area.call("town_hall"), area.call("town_inn"), "the hall is the grandest")
 	assert_gt(area.call("town_inn"), area.call("town_shop"), "the inn wider than a shop")
@@ -160,6 +164,48 @@ func test_rooms_have_straight_walls_and_no_lone_counter() -> void:
 	assert_true(PunyInterior.SET_WINDOWS["keep"] in keep.values(), "the keep's windows sit in its stone")
 	assert_false(PunyInterior.WINDOW in keep.values(), "no plaster window's wooden sill in the stone")
 	assert_false(PunyInterior.WINDOW in PunyInterior.plan("morvax_forge", _room("morvax_forge").grid)["walls"].values(), "no window in the rock")
+
+
+## Every fire in a built room burns (PIX-402): a FireArt flame for each
+## FIRE_TILES piece with the pack (hearths, ovens, the coal bed's middle),
+## and for each fire without it (forge stacks and, not three cold crates,
+## the coal bed's middle crate).
+func test_a_built_room_has_a_flame_per_fire() -> void:
+	var withheld := PunyTown.withheld
+	for pack: bool in [true, false]:
+		PunyTown.withheld = not pack
+		if pack and not PunyTown.available():
+			continue
+		for name: String in ["town_smith", "town_inn", "town_hall"]:
+			var view := _view(name)
+			var fires: int = view.buildings.get("fires", []).size()
+			if pack:
+				var built: Dictionary = view.buildings["walls"].merged(view.buildings["pieces"], true)
+				fires = built.values().filter(func(tile: Variant) -> bool: return PunyInterior.FIRE_TILES.has(tile)).size()
+			var flames := view.props.get_children().filter(func(node: Node) -> bool:
+				return node is AnimatedSprite2D and node.sprite_frames == FireArt.frames("lick", 0))
+			assert_gt(fires, 0, "%s has a fire, the pack %s" % [name, pack])
+			assert_eq(flames.size(), fires, "%s: a flame per fire, the pack %s" % [name, pack])
+	PunyTown.withheld = withheld
+	var grid := _room("town_smith").grid
+	var coals: Array = grid.keys().filter(func(cell: Vector2i) -> bool: return grid[cell] == "coals")
+	coals.sort()
+	assert_eq(coals.size(), 3, "the smithy's coal bed")
+	var fires: Array = PunyInterior.plan_free("town_smith", grid)["fires"]
+	assert_eq(fires.filter(func(cell: Vector2i) -> bool: return cell in coals), [coals[1]], "without the pack it burns in its middle")
+
+
+## `map_id` drawn as a door draws it, in the tree.
+func _view(map_id: String) -> MapView:
+	var map := MapData.load_tiered(map_id, [], 1)
+	var root := Node2D.new()
+	add_child_autofree(root)
+	var actors := Node2D.new()
+	root.add_child(actors)
+	var view := MapView.new(map, actors)
+	view.plan(map.spawn)
+	view.build(root)
+	return view
 
 
 func test_walls_follow_their_neighbours() -> void:

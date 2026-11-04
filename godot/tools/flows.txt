@@ -130,6 +130,8 @@ free-rooms | --map observatory cc0 rooms | map=observatory rooms=free walled 9/9
 # E at a cauldron or a forge opens its counter on the craft tab (PIX-234).
 station | --map town_alchemist station | open=shop_screen tab=Craft | rooms trade screen
 forge | --map town_smith station | open=shop_screen tab=Craft | rooms trade screen
+# And at the smithy's lit coal bed, faced at its middle (PIX-402).
+coals | --map town_smith --at 11,3 station | open=shop_screen tab=Craft | rooms trade screen
 # A quest taken in the village (PIX-129).
 quest | --map town quest | map=town | town quest
 # A potion brewed before Vex's quest was taken still finishes it (PIX-231).
