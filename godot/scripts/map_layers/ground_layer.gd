@@ -118,13 +118,13 @@ static func _ground_layers(view: MapView) -> Node2D:
 		view.ground_tint.set_shader_parameter("road_map", view.kept.road_map)
 		view.ground_tint.set_shader_parameter("road_origin", Vector2.ONE * -RoadShape.RING * TILE)
 		view.ground_tint.set_shader_parameter("road_texels", Vector2(view.kept.road_image.get_size()))
-	# The Reach's long roads bent gently and its river's banks swinging
-	# (PIX-397), on every toned layer, so a rut's tone follows the bend.
-	var bends: Dictionary = RoadShape.BENDS.get(view.data.id, {})
-	if not bends.is_empty():
-		view.ground_tint.set_shader_parameter("road_bend", bends["bend"])
-		view.ground_tint.set_shader_parameter("road_still", PackedVector2Array(bends["still"].map(func(cell: Vector2i) -> Vector2: return Vector2(cell * TILE) + Vector2.ONE * TILE / 2.0)))
-		view.ground_tint.set_shader_parameter("road_stills", bends["still"].size())
+	# The Reach's long roads worn wider here and there and its river's banks
+	# swinging (PIX-397), on every toned layer, so a road's tone follows.
+	var wanders: Dictionary = RoadShape.WANDERS.get(view.data.id, {})
+	if not wanders.is_empty():
+		view.ground_tint.set_shader_parameter("road_wander", wanders["wander"])
+		view.ground_tint.set_shader_parameter("road_still", PackedVector2Array(wanders["still"].map(func(cell: Vector2i) -> Vector2: return Vector2(cell * TILE) + Vector2.ONE * TILE / 2.0)))
+		view.ground_tint.set_shader_parameter("road_stills", wanders["still"].size())
 	view.ground_tint.set_shader_parameter("river_swing", PunyTerrain.RIVER_SWING.get(view.data.id, 0.0))
 	view._toned.append(view.ground_tint)
 	# The water swells, glints and foams at the shore (PIX-223).

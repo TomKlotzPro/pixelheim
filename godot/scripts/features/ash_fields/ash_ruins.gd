@@ -15,9 +15,11 @@ extends MapLayer
 ## waystation (Blackiron's, Greyhold's) so their orchards half mend as a
 ## ring grows. The Medieval Age's log fence (PunyProps.FENCE, joined to the
 ## posts beside it) and its kegs and crates are the pack's, and its young
-## tree; the dead trees AshArt's, the handcart HamletArt's and the fallen
-## logs Shade's CC0 sheet's, so without the pack a stead is its orchard,
-## its cart and its fallen logs. What stands blocks open ground only, never
+## tree; so is the sooty floor, which without a frame round it read as a
+## bare grey rectangle in the ash. The dead trees and the charred logs are
+## AshArt's, the handcart HamletArt's and a mended log Shade's CC0 sheet's,
+## so without the pack a stead is its orchard, its cart and its fallen
+## logs. What stands blocks open ground only, never
 ## a road, a portal, a pack's home, a chest, the patches or a way
 ## (Hamlet.fits, piece by piece in order: no way closed), and keeps clear
 ## of every waystation's and signpost's cell (test_ash_ruins); what lies
@@ -53,8 +55,9 @@ const STEADS: Array[Dictionary] = [
 ## what has mended, weathered grey-brown.
 const CHARRED := Color(0.5, 0.42, 0.38)
 const WEATHERED := Color(0.86, 0.8, 0.74)
-## A log lying where a wall or a fence fell: Shade's fallen log (Skyline's
-## debris), CC0.
+## A log lying where a wall or a fence fell: AshArt's charred log (Shade's
+## fallen log is drawn in his rock's olive greys, and any tint left it a
+## mossy blob); once mended, his log (Skyline's debris, CC0) weathered.
 const LOG := 703
 ## A young tree where a dead one stood, once the ground has healed: the
 ## Medieval Age's small tree (Farmland's orchard's).
@@ -97,7 +100,8 @@ static func lay(map: MapData, kept: Dictionary, healed: Dictionary, paid: bool) 
 				var cell := Vector2i(x, y)
 				_stand(map, kept, out, {"kind": "tree", "cell": cell, "variant": absi(hash(cell)) % 3})
 		var frame: Rect2i = stead["frame"]
-		pieces.append({"kind": "floor", "cell": frame.position, "size": frame.size, "cells": [] as Array[Vector2i], "middle": frame.get_center()})
+		if paid:
+			pieces.append({"kind": "floor", "cell": frame.position, "size": frame.size, "cells": [] as Array[Vector2i], "middle": frame.get_center()})
 		var walls := ring(frame, stead["door"])
 		for cell: Vector2i in walls:
 			if cell in stead["fallen"]:
@@ -234,10 +238,11 @@ static func _draw(view: MapView, piece: Dictionary) -> void:
 			view.ground.add_child(sprite)
 			return
 		"log":
-			sprite.texture = PunyTerrain.sheet().tile_texture(LOG)
+			sprite.texture = PunyTerrain.sheet().tile_texture(LOG) if mended else AshArt.texture("log")
 			sprite.flip_h = h % 2 == 1
 			sprite.position = Vector2(cell * TILE) + Vector2(h % 5 - 2, (h >> 3) % 3)
-			sprite.modulate = WEATHERED if mended else CHARRED
+			if mended:
+				sprite.modulate = WEATHERED
 			sprite.add_to_group("decor")
 			view.ground.add_child(sprite)
 			return

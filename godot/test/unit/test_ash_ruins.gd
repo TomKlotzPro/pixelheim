@@ -140,7 +140,8 @@ func test_without_the_pack_and_off_the_reach() -> void:
 	var kinds := {}
 	for piece: Dictionary in laid["pieces"]:
 		kinds[piece["kind"]] = true
-	assert_eq_deep(kinds.keys().filter(func(kind: String) -> bool: return kind in ["post", "rubble"]), [])
+	# No floor either: with no frame round it, a bare grey rectangle.
+	assert_eq_deep(kinds.keys().filter(func(kind: String) -> bool: return kind in ["post", "rubble", "floor"]), [])
 	assert_true(kinds.has("tree") and kinds.has("cart") and kinds.has("log"), "the trees, carts and logs without the pack")
 	assert_eq(AshRuins.lay(MapData.load_by_id("blackiron"), {}, {}, true)["pieces"].size(), 0, "nothing off the Reach")
 

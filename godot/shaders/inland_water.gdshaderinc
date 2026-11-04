@@ -358,7 +358,10 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	// in under its planks' ends.
 	bool landing = (code / 8) % 2 == 1 && mask_texel(cell).r < 0.5;
 	bool mire = tone == TONE_MIRE;
-	bool swings = river_swing > 0.0 && code % 8 != 0;
+	// Only a river running west swings (the Reach's, across the map): the
+	// village far off's stream, in the same mask, runs south, and swing_ease
+	// looks for its bridge to the side.
+	bool swings = river_swing > 0.0 && flow_of(code).x < 0.0;
 	vec2 cells = floor(px) / CELL / (mire ? MIRE_BENDS : BANK_BENDS);
 	vec2 bend = clamp((vec2(value_noise(cells + 31.7), value_noise(cells + 47.1)) - 0.5) * 1.7, -0.5, 0.5) * 2.0 * (mire ? MIRE_WANDER : (swings ? SWING_WANDER : BANK_WANDER));
 	if (landing) {

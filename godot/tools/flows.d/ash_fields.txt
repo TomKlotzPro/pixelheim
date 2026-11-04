@@ -5,10 +5,11 @@
 # Ash, their frames' and paddocks' log walls charred (a day's patch may
 # take a wall's cell), their orchards dead, a cart scorched by each; by
 # Blackiron's and Greyhold's lit lamps the land heals and the ruins on it
-# mend; on Shade's CC0 art alone, the orchards, carts and fallen logs.
+# mend; on Shade's CC0 art alone, the orchards, carts and fallen logs (no
+# sooty floor with no frame round it).
 ash-steads | --map overworld --at 22,14 | map=overworld ashruins=floors 5 posts [56]\d trees 40 carts 5 rubble 5 logs 14 mended 0 | travel field
 ash-steads-mend | --map overworld --routes blackiron:6,greyhold:6 --built waystation_blackiron,waystation_greyhold --lit blackiron:5,greyhold:5 --at 25,22 | map=overworld healed=earth\d+,grass\d+,meadow\d+,grove\d+ ashruins=floors 5 posts [56]\d trees 40 carts 5 rubble 5 logs 14 mended [1-9]\d* | travel field
-ash-steads-cc0 | --map overworld --at 22,14 cc0 | map=overworld ashruins=floors 5 posts 0 trees 40 carts 5 rubble 0 logs 14 mended 0 | travel field
+ash-steads-cc0 | --map overworld --at 22,14 cc0 | map=overworld ashruins=floors 0 posts 0 trees 40 carts 5 rubble 0 logs 14 mended 0 | travel field
 # A stead's charred walls stand in the way: the hero stops before the
 # frame below Blackiron's waystation.
 ash-steads-block | --map overworld --at 32,21 --walk d,d | map=overworld cell=\(32, 21\) | travel field
