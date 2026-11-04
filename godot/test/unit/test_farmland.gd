@@ -3,7 +3,8 @@ extends GutTest
 ## every piece is laid where it's placed, at every age; nothing on a road, a
 ## portal, a foe region, the gate's fork, a settler's spot or pacing, the
 ## spawn or where the story starts, nothing standing under a fork's
-## signpost, and no way closed; each age keeps the
+## signpost or on a lamp's lantern, and no way closed; every fork keeps its
+## signpost beside it; each age keeps the
 ## last's and adds to it; the pastures' animals graze inside their fences;
 ## nothing without the paid pack, nor off the Reach.
 
@@ -35,12 +36,22 @@ static func _spots(map: MapData) -> Dictionary:
 	return out
 
 
-## The cell under each fork: a piece standing there is two cells tall, so it
-## would hide the fork's signpost behind it (the City's lamp did).
-static func _under_forks() -> Dictionary:
+## The cells nothing may stand on: the one under each fork (a piece standing
+## there is two cells tall, so it would hide the fork's signpost behind it,
+## as the City's lamp did), and each lamp's lantern, the map's and the
+## farmland's, with the cell over it (the Village's hay sat on the gate
+## lamp's head).
+static func _kept_clear(map: MapData, grown: Array) -> Dictionary:
 	var out := {}
 	for fork: Dictionary in Routes.forks():
 		out[Vector2i(int(fork["at"][0]), int(fork["at"][1])) + Vector2i.DOWN] = true
+	var lamps: Array = map.grid.keys().filter(func(cell: Vector2i) -> bool: return map.tile_at(cell) == "lamp")
+	for piece: Dictionary in grown:
+		if piece.get("lamp", false):
+			lamps.append(piece["cell"])
+	for lamp: Vector2i in lamps:
+		out[lamp + Vector2i.UP] = true
+		out[lamp + Vector2i.UP * 2] = true
 	return out
 
 
@@ -59,7 +70,7 @@ func test_nothing_on_a_road_a_portal_a_region_or_a_spot() -> void:
 		var reach := _reach(age)
 		var map: MapData = reach["map"]
 		var spots := _spots(map)
-		var under := _under_forks()
+		var clear := _kept_clear(map, reach["grown"])
 		for piece: Dictionary in reach["planned"]["pieces"]:
 			for cell: Vector2i in piece["cells"]:
 				var at := "age %d: %s at %s" % [age, piece.get("set", ""), cell]
@@ -70,7 +81,7 @@ func test_nothing_on_a_road_a_portal_a_region_or_a_spot() -> void:
 				assert_false(spots.has(cell), at + " off the story's spots")
 				assert_false(reach["kept"].has(cell), at + " off the packs, chests and patches")
 				if not piece.get("flat", false):
-					assert_false(under.has(cell), at + " not standing under a fork's signpost")
+					assert_false(clear.has(cell), at + " not standing under a fork's signpost or on a lantern")
 
 
 func test_no_way_is_closed() -> void:
@@ -86,6 +97,25 @@ func test_no_way_is_closed() -> void:
 				assert_true(after.has(cell), "age %d: %s still reached from the spawn" % [age, cell])
 		for portal: Vector2i in map.portals:
 			assert_true(after.has(portal) or not before.has(portal), "age %d: the way out at %s" % [age, portal])
+
+
+## Routes.plan comes after the farmland (MapView plans the settlements
+## first), so a piece in a signpost's ring (Hamlet.fits) would drop it.
+func test_every_fork_keeps_its_signpost() -> void:
+	var post := PostState.new()
+	for fork: Dictionary in Routes.forks():
+		post.signs[fork["id"]] = "bram"
+	for age in Town.MAX_TIER + 1:
+		var reach := _reach(age)
+		var map: MapData = reach["map"]
+		for cell: Vector2i in reach["planned"]["blocks"]:
+			map.covered[cell] = true
+		var signed: Array[String] = []
+		# Kept as MapView keeps it for the routes: no gathering patches.
+		for piece: Dictionary in Routes.plan(map, post, SettlementState.new(), Hamlet.kept_on(map, {}))["pieces"]:
+			if piece["kind"] == "signpost":
+				signed.append(piece["fork"])
+		assert_eq(signed, Routes.signposts(post), "age %d: every fork's signpost stands" % age)
 
 
 func test_each_age_keeps_the_last_and_adds_to_it() -> void:

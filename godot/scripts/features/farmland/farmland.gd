@@ -17,7 +17,8 @@ class_name Farmland
 ## and a woodpile), laid as a settlement's dressing is (Hamlet.plan's `grown`): fields
 ## lie flat, what stands blocks open ground and never closes a way. All of
 ## it lies in the open ground round the town that no foe region takes, off
-## the roads, the gate's fork, the settlers found there and the spawn
+## the roads, the gate's fork, the settlers found there and the spawn, and
+## nothing stands under a fork's signpost or on a lamp's lantern
 ## (test_farmland). The pastures' animals are FarmAnimals'. Only with the
 ## paid pack, as the town's houses and yards. Pure: MapView draws it.
 
@@ -70,10 +71,11 @@ const PASTURES := [
 const PIECES := [
 	# The Hamlet: a scarecrow over the first plot.
 	{"tile": SCARECROW, "cell": Vector2i(40, 36), "set": "farmstead", "age": 1},
-	# The Village: lamps along the road out of the gate, hay by the plots.
+	# The Village: lamps along the road out of the gate, hay between the
+	# plots (by the road, over the gate's west lamp, it sat on its lantern).
 	{"lamp": true, "cell": Vector2i(46, 37), "set": "wayside", "age": 2},
 	{"lamp": true, "cell": Vector2i(50, 37), "set": "wayside", "age": 2},
-	{"tile": HAY, "cell": Vector2i(45, 39), "set": "farmstead", "age": 2},
+	{"tile": HAY, "cell": Vector2i(40, 38), "set": "farmstead", "age": 2},
 	# The Town: the orchard's first rows and the farmstead's yard below the
 	# south wall.
 	{"tile": TREES[0], "cell": Vector2i(42, 57), "set": "orchard", "age": 3},
