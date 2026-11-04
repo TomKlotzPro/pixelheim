@@ -153,7 +153,7 @@ func test_nothing_without_the_pack() -> void:
 func test_every_piece_is_drawn() -> void:
 	for piece: Dictionary in _town(Town.MAX_TIER)["planned"]["pieces"]:
 		if piece.has("tile"):
-			assert_between(int(piece["tile"]), 0, PunyTown.COLUMNS * 132 - 1, "%s: a tile of the pack" % piece["cell"])
+			assert_between(int(piece["tile"]), 0, PunyTown.COLUMNS * PunyTown.ROWS - 1, "%s: a tile of the pack" % piece["cell"])
 		elif piece.get("art", "") == "bunting":
 			var drawn := HamletArt.bunting(int(piece["line"]))
 			assert_eq((drawn["day"] as Texture2D).get_width(), (int(piece["line"]) + 1) * MapView.TILE, "from lamp to lamp")

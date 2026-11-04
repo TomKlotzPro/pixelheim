@@ -18,6 +18,7 @@ class_name PunyTown
 
 const SHEET := "res://assets/puny/medieval/punyworld-atlas.png"
 const COLUMNS := 220
+const ROWS := 132
 
 ## Roof kind -> rows down the atlas to that colour's copy of the pieces.
 const ROOF_ROWS := {

@@ -2,7 +2,8 @@ extends GutTest
 ## The farmland round Pixelheim on the Reach by the town's age (PIX-397):
 ## every piece is laid where it's placed, at every age; nothing on a road, a
 ## portal, a foe region, the gate's fork, a settler's spot or pacing, the
-## spawn or where the story starts, and no way closed; each age keeps the
+## spawn or where the story starts, nothing standing under a fork's
+## signpost, and no way closed; each age keeps the
 ## last's and adds to it; the pastures' animals graze inside their fences;
 ## nothing without the paid pack, nor off the Reach.
 
@@ -34,6 +35,15 @@ static func _spots(map: MapData) -> Dictionary:
 	return out
 
 
+## The cell under each fork: a piece standing there is two cells tall, so it
+## would hide the fork's signpost behind it (the City's lamp did).
+static func _under_forks() -> Dictionary:
+	var out := {}
+	for fork: Dictionary in Routes.forks():
+		out[Vector2i(int(fork["at"][0]), int(fork["at"][1])) + Vector2i.DOWN] = true
+	return out
+
+
 func test_every_piece_is_laid_at_every_age() -> void:
 	for age in Town.MAX_TIER + 1:
 		var reach := _reach(age)
@@ -49,6 +59,7 @@ func test_nothing_on_a_road_a_portal_a_region_or_a_spot() -> void:
 		var reach := _reach(age)
 		var map: MapData = reach["map"]
 		var spots := _spots(map)
+		var under := _under_forks()
 		for piece: Dictionary in reach["planned"]["pieces"]:
 			for cell: Vector2i in piece["cells"]:
 				var at := "age %d: %s at %s" % [age, piece.get("set", ""), cell]
@@ -58,6 +69,8 @@ func test_nothing_on_a_road_a_portal_a_region_or_a_spot() -> void:
 				assert_eq(map.region_at(cell), "", at + " in no foe region")
 				assert_false(spots.has(cell), at + " off the story's spots")
 				assert_false(reach["kept"].has(cell), at + " off the packs, chests and patches")
+				if not piece.get("flat", false):
+					assert_false(under.has(cell), at + " not standing under a fork's signpost")
 
 
 func test_no_way_is_closed() -> void:
@@ -76,9 +89,8 @@ func test_no_way_is_closed() -> void:
 
 
 func test_each_age_keeps_the_last_and_adds_to_it() -> void:
-	assert_eq(_reach(0)["planned"]["pieces"].size(), 0, "the Ashes are bare")
 	var before := {}
-	for age in range(1, Town.MAX_TIER + 1):
+	for age in Town.MAX_TIER + 1:
 		var cells := {}
 		for piece: Dictionary in _reach(age)["planned"]["pieces"]:
 			cells[piece["cell"]] = true
@@ -113,6 +125,6 @@ func test_nothing_without_the_pack_nor_off_the_reach() -> void:
 func test_every_tile_is_the_pack_s() -> void:
 	for piece: Dictionary in Farmland.plan(MapData.load_by_id(Farmland.MAP), Town.MAX_TIER, true):
 		if piece.has("tile"):
-			assert_between(int(piece["tile"]), 0, PunyTown.COLUMNS * 132 - 1, "%s: a tile of the pack" % piece["cell"])
+			assert_between(int(piece["tile"]), 0, PunyTown.COLUMNS * PunyTown.ROWS - 1, "%s: a tile of the pack" % piece["cell"])
 		elif piece.has("art"):
 			assert_gt(HamletArt.rows_of(piece["art"]).size(), 0, "%s: one of ours" % piece["art"])

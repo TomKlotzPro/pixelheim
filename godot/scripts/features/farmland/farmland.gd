@@ -4,7 +4,8 @@ class_name Farmland
 ## (PIX-397, step 1). The v0.307 audit found bare grass, dark patches and
 ## stumps round the walls, a third of the town's decor, and the land unlit
 ## at night. It grows as the town does (GameState.town_tier, as Yards):
-## - the Hamlet: a vegetable plot sprouting by the north road, a scarecrow;
+## - the Ashes: one plot by the north road, dug but trampled bare;
+## - the Hamlet: that plot sown and sprouting, a scarecrow over it;
 ## - the Village: a second plot and a wheat field, a fenced pasture by the
 ##   north road, and lamps along the road out of the gate;
 ## - the Town: the crops grown, a second wheat field, an orchard and a
@@ -23,16 +24,15 @@ class_name Farmland
 const MAP := "overworld"
 
 ## The Medieval Age's tilled soil, its furrows a nine-slice by row (top,
-## middle, bottom) and column (left, middle, right), and a strip a row high.
+## middle, bottom) and column (left, middle, right).
 const SOIL := [[3508, 3509, 3510], [3728, 3729, 3730], [3948, 3949, 3950]]
-const SOIL_ROW := [4168, 4169, 4170]
 ## A crop in the furrows as it grows: sprouts, leaves, heads, ripe cabbages;
 ## the town's age picks the stage, the Hamlet's sprouts to the City's ripe.
 const CROPS := [3651, 3652, 3653, 3654]
-## Wheat standing in a block, a nine-slice as the soil's: green in the
-## Village, turning in the Town, gold in the City.
+## Wheat standing in a block, a nine-slice as the soil's: turning in the
+## Village and the Town, gold in the City. The pack's green stage reads as a
+## lawn, not a field, so it's left out.
 const WHEAT := [
-	[[868, 869, 870], [1088, 1089, 1090], [1308, 1309, 1310]],
 	[[1748, 1749, 1750], [1968, 1969, 1970], [2188, 2189, 2190]],
 	[[2628, 2629, 2630], [2848, 2849, 2850], [3068, 3069, 3070]],
 ]
@@ -49,7 +49,7 @@ const WELL := 3444
 ## Fields: a rect of tilled soil with its crop in rows (`veg`) or
 ## a block of wheat, and the age it's dug at.
 const FIELDS := [
-	{"rect": Rect2i(41, 36, 4, 2), "crop": "veg", "age": 1},
+	{"rect": Rect2i(41, 36, 4, 2), "crop": "veg", "age": 0},
 	{"rect": Rect2i(36, 36, 4, 2), "crop": "veg", "age": 2},
 	{"rect": Rect2i(36, 39, 4, 2), "crop": "wheat", "age": 2},
 	{"rect": Rect2i(41, 39, 4, 2), "crop": "wheat", "age": 3},
@@ -97,8 +97,10 @@ const PIECES := [
 	{"tile": BASKET, "cell": Vector2i(52, 57), "set": "farmstead", "age": 4},
 	{"tile": HAY, "cell": Vector2i(35, 38), "set": "farmstead", "age": 4},
 	{"tile": SCARECROW, "cell": Vector2i(56, 60), "set": "farmstead", "age": 4},
-	{"lamp": true, "cell": Vector2i(46, 35), "set": "wayside", "age": 4},
-	{"lamp": true, "cell": Vector2i(50, 35), "set": "wayside", "age": 4},
+	# Off column 46 at row 35: a lamp there stands its lantern over the
+	# gate fork's signpost at (46, 34) (test_farmland).
+	{"lamp": true, "cell": Vector2i(45, 35), "set": "wayside", "age": 4},
+	{"lamp": true, "cell": Vector2i(51, 35), "set": "wayside", "age": 4},
 ]
 
 
@@ -123,18 +125,17 @@ static func plan(map: MapData, age: int, paid: bool) -> Array[Dictionary]:
 
 ## A field's flat pieces at `age`: its soil (or its wheat) cell by cell from
 ## the nine-slice, and a row of crops along each of the soil's, its stage the
-## age's.
+## age's; none in the Ashes, the plot trampled bare.
 static func field_pieces(rect: Rect2i, crop: String, age: int) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	var crops: Array[Dictionary] = []
-	var slice: Array = WHEAT[clampi(age - 2, 0, WHEAT.size() - 1)] if crop == "wheat" else SOIL
+	var slice: Array = WHEAT[clampi(age - 3, 0, WHEAT.size() - 1)] if crop == "wheat" else SOIL
 	for y in range(rect.position.y, rect.end.y):
 		for x in range(rect.position.x, rect.end.x):
 			var cell := Vector2i(x, y)
-			var column := _part(x, rect.position.x, rect.end.x - 1)
-			var tile: int = SOIL_ROW[column] if crop == "veg" and rect.size.y == 1 else slice[_part(y, rect.position.y, rect.end.y - 1)][column]
+			var tile: int = slice[_part(y, rect.position.y, rect.end.y - 1)][_part(x, rect.position.x, rect.end.x - 1)]
 			out.append({"tile": tile, "cell": cell, "flat": true, "set": "field", "age": age})
-			if crop == "veg":
+			if crop == "veg" and age > 0:
 				crops.append({"tile": CROPS[clampi(age - 1, 0, CROPS.size() - 1)], "cell": cell, "flat": true, "set": "field", "age": age})
 	return out + crops
 

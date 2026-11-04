@@ -1,5 +1,5 @@
 extends Feature
-## areas: town night
+## areas: town night travel field +overworld*
 ## The town's farm animals in the harness (PIX-387): their map layer
 ## (FarmAnimals, the herd as Herd lives it) and the report's animals=, its
 ## row beside this script and its flows in tools/flows.d/farm_animals.txt.

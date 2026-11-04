@@ -97,7 +97,7 @@ func test_the_pack_draws_when_installed() -> void:
 		pass_test("Medieval Age pack not installed here (scripts/fetch-private-art.sh); the town keeps its old houses.")
 		return
 	var sheet: Texture2D = load(PunyTown.SHEET)
-	assert_eq(sheet.get_size(), Vector2(PunyTown.COLUMNS * 16, 132 * 16), "the whole atlas")
+	assert_eq(sheet.get_size(), Vector2(PunyTown.COLUMNS * 16, PunyTown.ROWS * 16), "the whole atlas")
 	var layer := TileMapLayer.new()
 	layer.tile_set = PunyTown.tileset()
 	PunyTown.place(layer, Vector2i(3, 4), PunyTown.DOOR)
