@@ -354,12 +354,14 @@ func test_the_reach_is_painted_from_its_ground_and_its_names_are_clear() -> void
 
 
 ## The region names the Reach's page may still leave off where the hero
-## stands (PIX-403): at 3 px a cell (MAP_BOX) the Ashenreach's three long
-## names, its ways, the hero's mark and the chosen one's tag don't all fit
-## in its 288 px; the Blackiron's with the hero and the tag over its strip.
+## stands (PIX-403): a name goes on its own map or not at all, and at 3 px a
+## cell (MAP_BOX) the Ashenreach is 288x192 px for its three regions' names,
+## the Mountain Road, Pixelheim, the marks and the chosen one's tag; the
+## Blackiron's and the Frostgate's strips with the hero and the tag on them.
+## Tom's call: a larger page (PIX-403's "larger scale") would name them all.
 const CROWDED := [
-	"The Whispering Forest", "La Forêt murmurante", "Les Champs de Cendres",
-	"The Blackiron Valley", "La vallée de Fernoir",
+	"The Whispering Forest", "The Sunken Marsh", "The Blackiron Valley", "The Frostgate Pass",
+	"La Forêt murmurante", "Le Marais englouti", "Les Champs de Cendres", "La vallée de Fernoir", "Le col de la Porte-Givre",
 ]
 
 
@@ -386,9 +388,18 @@ func test_every_region_is_named_wherever_the_hero_stands() -> void:
 			# The chosen waypoint's tag names the region it sets you down in.
 			if painting.tag != null:
 				placed.append(Waypoints.region_name(painting.destination, MapData.load_by_id(painting.destination["mapId"])))
+			var maps := {}
 			for named: Dictionary in Atlas.page_labels(painting._on_page(), GameState.world.discovered):
+				maps[named["text"]] = maps.get(named["text"], []) + [painting._sheet_box(Vector2i(named["at"].floor()))]
 				if not named["way"] and not named["text"] in CROWDED:
 					assert_has(placed, named["text"], "%s, the hero in %s: %s named" % [lang, id, named["text"]])
+			# Each name mostly over the map it names, never on the next one's
+			# ground (« Le col de la Porte-Givre » on Greyhold's grass).
+			var plates: Array[Rect2] = painting.label_boxes()
+			for i in plates.size():
+				var text: String = painting._labels[i]["text"]
+				var over: bool = maps.get(text, []).any(func(box: Rect2) -> bool: return box.has_point(plates[i].get_center()) or plates[i].intersection(box).get_area() * 2.0 >= plates[i].get_area())
+				assert_true(over or not maps.has(text), "%s, the hero in %s: %s over its own map" % [lang, id, text])
 			screen.close()
 			await wait_process_frames(1)
 	Text.apply("en")

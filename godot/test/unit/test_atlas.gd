@@ -244,6 +244,17 @@ func test_crowded_names_each_find_a_clear_place() -> void:
 	assert_true(region.encloses(Rect2(edge, size)), "kept inside its map, not over the next one's edge")
 	var full: Array[Rect2] = [region]
 	assert_eq(Atlas.label_at(Vector2(310, 100), size, bounds, false, 11.2, full, region), Atlas.NOWHERE, "never off it alone")
+	# Rings full round the spot: the rest of its map, before it goes unsaid.
+	var ringed: Array[Rect2] = [Rect2(Vector2(300, 0), Vector2(372, 300))]
+	var far := Atlas.label_at(Vector2(310, 100), size, bounds, false, 11.2, ringed, region)
+	assert_true(region.encloses(Rect2(far, size)) and far.y >= 300, "further down its own map")
+	# A name wider than its strip: only mostly over it, never mostly over the next.
+	var strip := Rect2(Vector2(300, 0), Vector2(100, 448))
+	assert_eq(Atlas.label_at(Vector2(350, 100), size, bounds, false, 11.2, [], strip), Atlas.NOWHERE, "not wholly inside")
+	var hung := Rect2(Atlas.label_at(Vector2(350, 100), size, bounds, false, 11.2, [], strip, true), size)
+	assert_true(strip.has_point(hung.get_center()), "mostly over its strip")
+	var left: Array[Rect2] = [Rect2(Vector2(0, 0), Vector2(340, 448))]
+	assert_eq(Atlas.label_at(Vector2(350, 100), size, bounds, false, 11.2, left, strip, true), Atlas.NOWHERE, "or off, not on the next map")
 
 
 func test_the_village_is_drawn_small_in_its_walls() -> void:

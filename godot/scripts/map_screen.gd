@@ -713,20 +713,24 @@ class Painting extends Control:
 			named.append({"text": Gates.mark(gate["gate"]), "at": Vector2(gate["cell"]) + Vector2(0.5, 0.5), "way": true})
 		for label: Dictionary in named + Atlas.page_labels(_on_page(), GameState.world.discovered):
 			var within := _sheet_box(Vector2i(label["at"].floor()))
-			# One line where it fits its map, else (or where one line finds no
-			# place clear of the rest) two.
-			for room: float in [within.size.x - PLATE.x * 2.0, 1.0]:
-				var lines := _lines(label["text"], font, room)
+			# One line inside its map where it fits there, then two; only then
+			# mostly over it (PIX-403: never on the next map's ground), or off.
+			var one := _lines(label["text"], font, within.size.x - PLATE.x * 2.0)
+			var two := _lines(label["text"], font, 1.0)
+			var tries: Array = []
+			for mostly: bool in [false, true]:
+				for lines: PackedStringArray in ([one] if one == two else [one, two]):
+					tries.append([lines, mostly])
+			for each: Array in tries:
+				var lines: PackedStringArray = each[0]
 				var size := Vector2(0, font.get_height(UiStyle.TEXT) * lines.size())
 				for line: String in lines:
 					size.x = maxf(size.x, font.get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT).x)
 				var plate := size + PLATE * 2.0
-				var at := Atlas.label_at(label["at"] * tile_px, plate, bounds, label["way"], _mark(), taken, within)
+				var at := Atlas.label_at(label["at"] * tile_px, plate, bounds, label["way"], _mark(), taken, within, each[1])
 				if at != Atlas.NOWHERE:
 					taken.append(Rect2(at, plate))
 					_labels.append({"text": label["text"], "lines": lines, "at": at + PLATE, "size": size, "way": label["way"], "shade": _shade(Rect2(at, plate))})
-					break
-				if lines.size() > 1:
 					break
 
 	## `text` on one line, or on two split at the space nearest its middle
