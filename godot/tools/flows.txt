@@ -498,12 +498,8 @@ mouth-road | --map mountain_road --at 13,5 | map=mountain_road entrance=mountain
 # smithy (PIX-312): Saltmere's boats, nets, creels, stall and washing line,
 # Greyhold's beds, Blackiron's ore, coal, cart and lanterns, the forge's
 # stack and the fire under its door.
-hamlet-coast | --map saltmere --at 31,15 | map=saltmere hamlet=fishing:line1,moored2,stand4,wall3 | travel field
-hamlet-fort | --map greyhold --at 14,25 | map=greyhold hamlet=fort:flat3,(on1,stand15,wall7)?(stand4,wall3)? | travel field
-hamlet-mines | --map blackiron --at 25,18 | map=blackiron hamlet=mine:stand4,wall2 | travel field
-hamlet-frost | --map frostgate --at 14,39 | map=frostgate hamlet=frost: | travel field
 hamlet-coast | --map saltmere --at 31,15 | map=saltmere hamlet=fishing:line1,moored3,on1,stand8,wall6 | travel field
-hamlet-fort | --map greyhold --at 14,25 | map=greyhold hamlet=fort:flat3 | travel field
+hamlet-fort | --map greyhold --at 14,25 | map=greyhold hamlet=fort:flat3,(on1,stand15,wall7)?(stand4,wall3)? | travel field
 hamlet-mines | --map blackiron --at 25,18 | map=blackiron hamlet=mine:glow1,roof1,stand7,wall2 | travel field
 hamlet-frost | --map frostgate --at 14,39 | map=frostgate hamlet=frost:stand5,wall3 | travel field
 hamlet-smithy | --map mountain_road --at 17,7 | map=mountain_road hamlet=smithy:glow1,roof1 | travel field story
