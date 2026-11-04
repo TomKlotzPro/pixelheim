@@ -362,7 +362,7 @@ static func site_workers(done: Array) -> Array[Dictionary]:
 		out.append({
 			"id": "worker_%s" % entry["id"], "mapId": "town", "name": worker["name"],
 			"x": worker["x"], "y": worker["y"], "wander": false,
-			"sprite": "worker" if out.size() % 2 == 0 else "worker_alt",
+			"sprite": worker["sprite"],
 			"lines": [
 				String(entry["blurb"]),
 				Text.t("All it wants is %s. The board on the square takes it, and we'll have it up by the time you're back.") % cost_line(entry["id"]),

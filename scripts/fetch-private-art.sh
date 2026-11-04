@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Installs the paid art the Godot build draws from the private
 # TomKlotzPro/pixelheim-assets repo (retro-rpg/shade/): the Medieval Age atlas
-# into godot/assets/puny/medieval/ (PIX-133), and every icon
+# and its sample characters (PIX-405) into godot/assets/puny/medieval/
+# (PIX-133), and every icon
 # godot/assets/puny/icons.json names into godot/assets/puny/shade/ (PIX-138),
 # and GegX's UI kit as UiStyle's pieces (retro-rpg/gegx/pixel-ui-kit/pixelheim/,
 # made by godot/tools/ui_kit_prep.gd) into godot/assets/puny/gegx/ (PIX-385),
@@ -30,6 +31,12 @@ shade="$src/retro-rpg/shade"
 mkdir -p godot/assets/puny/medieval
 cp "$shade/puny-world-medieval/punyworld-atlas.png" godot/assets/puny/medieval/
 echo "Installed godot/assets/puny/medieval/punyworld-atlas.png"
+
+# The pack's sample villagers, guards, mages and archers (PIX-405): faces
+# for the folk who talk (PunyArt.VILLAGERS' "paid" sheets).
+mkdir -p godot/assets/puny/medieval/characters
+cp "$shade/puny-world-medieval/Sample 32 by 32 Characters/"*.png godot/assets/puny/medieval/characters/
+echo "Installed $(ls godot/assets/puny/medieval/characters/*.png | wc -l | tr -d ' ') sample characters into godot/assets/puny/medieval/characters/"
 
 # The paid icons icons.json maps (not "free/..." or "medieval@..."), one file
 # per line, sheets once however many cells they give.

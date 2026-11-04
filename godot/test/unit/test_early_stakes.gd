@@ -91,14 +91,9 @@ func test_a_night_at_the_rebuilt_inn_leaves_you_rested() -> void:
 	assert_eq(int(state.settlement.house.get("rested", 0)), int(Town._data()["rested"]["innFights"]))
 
 
+## Everyone's own look is test_faces' (PIX-405); these two once wore one sheet.
 func test_no_two_people_on_a_map_share_a_face() -> void:
-	var faces := Npcs.face_indexes()
-	var seen := {}
+	var looks := {}
 	for person: Dictionary in Npcs.people():
-		var index: int = faces[person["id"]]
-		assert_lt(index, Npcs.FACE_TINTS.size(), "%s has a tint of its own" % person["id"])
-		for map_id: String in person["maps"]:
-			var key := "%s|%s|%d" % [map_id, person["look"], index]
-			assert_false(seen.has(key), "%s and %s look alike on %s" % [person["id"], seen.get(key, ""), map_id])
-			seen[key] = person["id"]
-	assert_ne(Npcs.tint_of("villager_ana"), Npcs.tint_of("settler_iva"), "Ana and Iva, both in purple, side by side in town")
+		looks[person["id"]] = person["look"]
+	assert_ne(looks["villager_ana"], looks["settler_iva"], "Ana and Iva, side by side in town")

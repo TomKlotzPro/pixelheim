@@ -434,7 +434,7 @@ func _cast_member(monster_id: String) -> Control:
 ## cross to another (`to_cell`). A step naming an actor (`name`) already
 ## on stage moves it on (`to`, `to_cell`) or changes what it does (`anim`,
 ## `dir`) instead: Fafnyr, lying on the square, takes off. `tint` colours
-## it (Morvax beside Maren: Shade drew one old man).
+## it; `villager` (a PunyArt.VILLAGERS id) dresses it as that villager.
 func _actor(step: Dictionary) -> void:
 	var named := String(step.get("name", ""))
 	if named != "" and cast.has(named) and is_instance_valid(cast[named]):
@@ -444,7 +444,8 @@ func _actor(step: Dictionary) -> void:
 	var moving := step.has("to") or step.has("to_cell")
 	if moving and still and not on_cell:
 		return
-	var spec := {"sheet": step["sheet"], "family": step["family"]}
+	# A villager by sprite id wears their own look (PIX-405: Maren's).
+	var spec: Dictionary = PunyArt.villager(step["villager"]) if step.has("villager") else {"sheet": step["sheet"], "family": step["family"]}
 	if step.has("frame"):
 		spec["frame"] = int(step["frame"])
 	var sprite := AnimatedSprite2D.new()

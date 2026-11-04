@@ -116,35 +116,46 @@ func step_wait() -> void:
 	await h.get_tree().create_timer(float(flags.value("--wait"))).timeout
 
 
-## Harness `lineup`: the cast PunyArt assigns, side by side with names.
+## Harness `lineup`: the cast PunyArt assigns, side by side with names:
+## the heroes, everyone who talks (PIX-405: by name, each their own look)
+## and the monsters, 20 a line, the HUD put away.
 func _lineup() -> void:
 	for node in h.get_tree().get_nodes_in_group("mobs") + h.get_tree().get_nodes_in_group("npcs"):
 		node.queue_free()
-	world.camera_rig.camera.zoom = Vector2(2.6, 2.6)
+	(world.hud.dock.get_parent() as CanvasLayer).hide()
+	world.camera_rig.camera.zoom = Vector2(2, 2)
 	var rows := [
 		PunyArt.HEROES.keys().map(func(role: String) -> Array: return [role, PunyArt.hero(role)]),
-		PunyArt.VILLAGERS.keys().map(func(id: String) -> Array: return [id, PunyArt.villager(id)]),
+		Npcs.people().map(func(person: Dictionary) -> Array: return [_short(person["name"]), PunyArt.villager(person["sprite"])]),
 		PunyArt.MONSTERS.keys().map(func(id: String) -> Array: return [id, PunyArt.monster(id)]),
 	]
-	var origin: Vector2 = world.player.position + Vector2(-210, -100)
+	var origin: Vector2 = world.player.position + Vector2(-290, -120)
 	var y := 0
 	for row: Array in rows:
-		for dir in ["down", "right"]:
-			var x := 0
-			for entry: Array in row:
-				var spec: Dictionary = entry[1]
-				var sprite := AnimatedSprite2D.new()
-				sprite.sprite_frames = PunyArt.frames(spec)
-				sprite.play(PunyArt.pick(sprite.sprite_frames, "walk", dir))
-				sprite.scale = Vector2.ONE * spec.get("scale", 1.0)
-				sprite.self_modulate = spec.get("tint", Color.WHITE)
-				sprite.position = origin + Vector2(x * 28, y * 34)
-				world.add_child(sprite)
-				if dir == "down":
-					var label := Label.new()
-					label.text = entry[0]
-					label.add_theme_font_size_override("font_size", 5)
-					label.position = sprite.position + Vector2(-12, 9)
-					world.add_child(label)
-				x += 1
-			y += 1
+		for line in range(0, row.size(), 20):
+			for dir in ["down", "right"]:
+				var x := 0
+				for entry: Array in row.slice(line, line + 20):
+					var spec: Dictionary = entry[1]
+					var sprite := AnimatedSprite2D.new()
+					sprite.sprite_frames = PunyArt.frames(spec)
+					sprite.play(PunyArt.pick(sprite.sprite_frames, "walk", dir))
+					sprite.scale = Vector2.ONE * spec.get("scale", 1.0)
+					sprite.self_modulate = spec.get("tint", Color.WHITE)
+					sprite.position = origin + Vector2(x * 30, y * 28)
+					world.add_child(sprite)
+					if dir == "down":
+						var label := Label.new()
+						label.text = entry[0]
+						label.add_theme_font_size_override("font_size", 5)
+						label.position = sprite.position + Vector2(-12, 9)
+						world.add_child(label)
+					x += 1
+				y += 1
+
+
+## A person's name as the lineup prints it: "Merchant Odo" is Odo, "Mira the
+## Weaver" Mira.
+static func _short(name: String) -> String:
+	var words := name.split(" ")
+	return words[0] if " the " in name else words[-1]

@@ -46,6 +46,14 @@ const FAMILIES := {
 	# The slime's strip: six frames of bounce, its white hit flash at 6 and 9
 	# (never in a loop, or every hop flashes white), and a splat from 9.
 	"strip": {"frame": 32, "anims": {"idle": [0, 3, 5.0, true], "death": [9, 6, 12.0, false]}},
+	# The Medieval Age's sample folk (PIX-405, paid): Mini World's rows in
+	# 32 px cells, stand and step twice, a gesture in the rows below. No
+	# breath between the steps, so they stand still; their feet two pixels
+	# lower in the cell than Puny Characters' (`lift`).
+	"medieval": {
+		"frame": 32, "rows": {"down": 0, "up": 1, "right": 2, "left": 3}, "attack_row_offset": 4, "lift": -6.0,
+		"anims": {"idle": [0, 1, 3.0, true], "attack": [0, 3, 10.0, false]},
+	},
 }
 
 ## How each family walks (PIX-243): the columns of one cycle, the frame rate
@@ -70,6 +78,7 @@ const WALKS := {
 	"beast": {"cycle": [0, 1, 2, 3, 4, 5], "fps": 10.0, "stride": 4.0, "level": false},
 	"mini": {"cycle": [1, 2, 3, 4], "fps": 8.0, "stride": 4.0, "level": true},
 	"strip": {"cycle": [0, 1, 2, 3, 4, 5], "fps": 10.0, "stride": 4.0, "level": false},
+	"medieval": {"cycle": [0, 1, 2, 3], "fps": 8.0, "stride": 6.0, "level": false},
 }
 
 ## Mini World's dragons face left in row 2 and right in row 3, the old way
@@ -201,11 +210,19 @@ const HEAD_ROWS := 7
 ## (column, row) - no helmet on the fallen, but no two heroes in one either.
 const LYING := [Vector2i(22, 2), Vector2i(23, 2), Vector2i(22, 4), Vector2i(23, 4), Vector2i(22, 6), Vector2i(23, 6)]
 
-## Villagers by the web's sprite id (npcs.ts / settlers.ts).
+## Villagers by sprite id: everyone who talks wears a look of their own
+## (PIX-405: thirty-eight people shared sixteen sheets, Odo was the hero's
+## twin), each sheet drawn at 1x on the world's grid. Most are dyed (DYED:
+## `dye` names a SHADES colour for a part) from one of Shade's CC0 Puny
+## Characters, and with the paid pack from its sample villager, archer or
+## guard (`paid`, the "medieval" family) in the same colours. Npcs.people()
+## lists who talks; test_faces keeps no two alike where they meet.
+const WORKER := "characters/aligned/Human-Worker-Red.png"
+const MAN := "medieval/characters/Male-Villager.png"
+const WOMAN := "medieval/characters/Female-Villager.png"
 const VILLAGERS := {
-	"elder": {"sheet": "mini/Okomo.png", "family": "mini"},
+	# Anyone not drawn: a Mini World farmer (the walk and mark tests' too).
 	"villager": {"sheet": "mini/FarmerRed.png", "family": "mini"},
-	"villager_woman": {"sheet": "mini/FarmerPurple.png", "family": "mini"},
 	# A living village (PIX-149): Shade's cat and dog, retouched (RESTYLED)
 	# and drawn at the farm animals' size, an art pixel two screen pixels
 	# at the play zoom (Herd.SCALE), and the farmers drawn small as children.
@@ -213,25 +230,90 @@ const VILLAGERS := {
 	"dog": {"sheet": "beasts/Blonde-Dog-32x32.png", "family": "beast", "scale": 2.0 / 3.0},
 	"child": {"sheet": "mini/FarmerRed.png", "family": "mini", "scale": 0.75},
 	"child_alt": {"sheet": "mini/FarmerPurple.png", "family": "mini", "scale": 0.75},
-	# The builders at the village's construction sites (PIX-147).
-	"worker": {"sheet": "mini/FarmerLime.png", "family": "mini"},
-	"worker_alt": {"sheet": "mini/FarmerCyan.png", "family": "mini"},
-	"merchant": {"sheet": "characters/aligned/Human-Worker-Red.png", "family": "puny"},
+	# The keepers Shade drew whole: Hilda, Vex, the mayor, Old Hessa in a
+	# silk-grey robe (PIX-331), and Morvax, the old man of the cutscenes.
 	"smith": {"sheet": "characters/aligned/Human-Soldier-Red.png", "family": "puny"},
 	"alchemist": {"sheet": "characters/Mage-Cyan.png", "family": "puny"},
-	"innkeeper": {"sheet": "characters/aligned/Human-Worker-Cyan.png", "family": "puny"},
 	"mayor": {"sheet": "characters/aligned/Human-Soldier-Cyan.png", "family": "puny"},
-	# Saltmere's folk (PIX-165), and Rook, the smuggler who talks.
-	"fisher": {"sheet": "mini/FarmerCyan.png", "family": "mini"},
-	"fisher_alt": {"sheet": "mini/FarmerLime.png", "family": "mini"},
+	"keeper": {"sheet": "characters/Mage-Silk.png", "family": "puny"},
+	"morvax": {"sheet": "mini/Okomo.png", "family": "mini"},
+	# Rook, the smuggler who talks (PIX-165), Greyhold's old guard at their
+	# posts and its chapel's monk (PIX-168), the Frostgate's hermit (PIX-169).
 	"smuggler": {"sheet": "mini/PirateGrunt.png", "family": "mini"},
-	# Greyhold's old guard in the fort's cyan, and the chapel's monk (PIX-168).
 	"guard": {"sheet": "mini/SwordsmanCyan.png", "family": "mini"},
 	"monk": {"sheet": "mini/MagePurple.png", "family": "mini"},
-	# The Frostgate's hermit, in his big hat (PIX-169).
 	"hermit": {"sheet": "mini/Gangblanc.png", "family": "mini"},
-	# Old Hessa, the shrine's keeper, in a silk-grey robe (PIX-331).
-	"keeper": {"sheet": "characters/Mage-Silk.png", "family": "puny"},
+	# Loras the bard in plum, Wren in the ranger's greens, Ulla in Greyhold's
+	# slate (an Iron Guard with the pack).
+	"loras": {"sheet": "characters/Archer-Purple.png", "family": "puny", "paid": "medieval/characters/Archer.png", "dye": {"cloth": "plum"}},
+	"wren": {"sheet": "characters/Archer-Ranger.png", "family": "puny", "paid": "medieval/characters/Archer.png"},
+	"ulla": {"sheet": "characters/Guard-Warden.png", "family": "puny", "paid": "medieval/characters/Iron-Guard.png"},
+	# The folk, each in their own colours: hair, clothes (a man's trousers
+	# his `dress`) and skin. Pixelheim's own first, then the five regions'.
+	"maren": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "white", "cloth": "lilac", "skin": "pale"}},
+	"ana": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "blonde", "cloth": "green"}},
+	"bram": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "black", "cloth": "blue", "skin": "brown"}},
+	"odo": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "grey", "cloth": "olive", "dress": "soot"}},
+	"sela": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "ginger", "cloth": "white"}},
+	"mira": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "black", "cloth": "purple"}},
+	"tomas": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "white", "cloth": "brown"}},
+	"serra": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "auburn", "cloth": "teal", "skin": "tan"}},
+	"fenn": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "blonde", "cloth": "orange"}},
+	"iva": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"cloth": "sage"}},
+	"mirelle": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "black", "cloth": "gold", "skin": "brown"}},
+	"jory": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "ginger", "cloth": "yellow", "dress": "red", "skin": "tan"}},
+	"joss": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"cloth": "lime"}},
+	"dorran": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "auburn", "cloth": "slate", "skin": "brown"}},
+	"mason_pell": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "black", "cloth": "grey"}},
+	"ilka": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "blonde", "cloth": "pink"}},
+	"brin": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "black", "cloth": "sky", "dress": "navy", "skin": "brown"}},
+	"ola": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "ginger", "cloth": "forest"}},
+	"marta": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "grey", "cloth": "cream"}},
+	"wenna": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "white", "cloth": "navy"}},
+	"garrick": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "black", "cloth": "maroon", "skin": "tan"}},
+	"dagny": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "ginger", "cloth": "rust"}},
+	"brann": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "auburn", "cloth": "mustard"}},
+	"pell": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "grey", "cloth": "soot"}},
+	"fenwick": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"cloth": "maroon", "skin": "pale"}},
+	"mabel": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "black", "cloth": "teal", "skin": "tan"}},
+	"gunnar": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "blonde", "cloth": "sky", "skin": "pale"}},
+	"linnea": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "blonde", "cloth": "navy"}},
+}
+
+## The parts a look's `dye` may colour, by sheet (PIX-405): each part's
+## tones, light to dark, drawn as its SHADES colour's ramp. The male
+## villager's hair and trousers are one brown, told apart by `head` (hair
+## only in a figure's top rows, `dress` only below them); the woman's hair
+## falls over her dress in that brown and is dyed with it, her apron the
+## `cloth`. The worker's red shirt is the hero's own (PLAIN): dyed always.
+## `columns`: only that many of a sheet's first columns are dyed.
+const DYED := {
+	WORKER: {
+		# shortcut: villagers only stand and walk (columns 0-3), a sixth of the
+		# sheet and of its dyeing; dye them all if one ever swings.
+		"columns": 4,
+		"head": 10, "hair": ["8c4d2b", "754227", "51301e", "2f1e16"], "cloth": ["b60000", "770000", "46000a"],
+		"dress": ["5d4717", "3f3013"], "skin": ["f7d099", "f6a954", "d97f40", "aa5a33", "84482a"],
+	},
+	MAN: {
+		"head": 8, "hair": ["a66e46", "8f563b", "5d342a"], "dress": ["a66e46", "8f563b", "5d342a"],
+		"cloth": ["e1c48b", "a38a5d", "6e5d39"], "skin": ["f7d099", "f6a954", "c16e38", "743a1d"],
+	},
+	WOMAN: {
+		"hair": ["a66e46", "8f563b", "5d342a"], "cloth": ["e1c48b", "a38a5d", "6e5d39"],
+		"skin": ["f7d099", "f6a954", "c16e38", "743a1d"],
+	},
+	"medieval/characters/Archer.png": {"cloth": ["8b9e0f", "616f05", "455000", "1f2c00"]},
+}
+## The colours a dye names, each the middle of its ramp (`_ramp`).
+const SHADES := {
+	"black": "3a3238", "blonde": "d8a845", "ginger": "c4602a", "auburn": "84321f", "grey": "8f8c88",
+	"white": "d6d2ca", "pale": "f2c49a", "tan": "c88550", "brown": "8e5634",
+	"red": "b03a2e", "green": "4f8f3a", "blue": "3e62b4", "olive": "7d7a35", "purple": "7b4aa8",
+	"teal": "2f8a83", "orange": "d0742c", "soot": "3d3a40", "sage": "8fa475", "lilac": "a28ccf",
+	"navy": "2f3f73", "rust": "9c4a28", "yellow": "d9b23a", "lime": "93b83e", "slate": "5d6b80",
+	"pink": "cf7898", "sky": "6fa8d8", "forest": "2f5a34", "gold": "c09030", "maroon": "6e2030",
+	"cream": "e3d2a2", "mustard": "a8902a", "plum": "6e2e5e",
 }
 
 ## Sheets retouched as they load (PIX-393: Tom found the dog didn't match
@@ -548,8 +630,66 @@ static func _figure(index: int) -> Rect2i:
 	return _figures[index]
 
 
+## A villager's spec: with the paid pack (and not held back), the sample
+## folk it names in their `paid` sheet, in the same colours.
 static func villager(sprite: String) -> Dictionary:
-	return VILLAGERS.get(sprite, VILLAGERS["villager"])
+	var entry: Dictionary = VILLAGERS.get(sprite, VILLAGERS["villager"])
+	if entry.has("paid") and not PunyTown.withheld and ResourceLoader.exists(path(entry["paid"])):
+		return entry.merged({"sheet": entry["paid"], "family": "medieval"}, true)
+	return entry
+
+
+## What a spec looks like, as one string: its sheet and the dye its sheet
+## takes (DYED), so two looks are the same only where they draw the same.
+static func look_of(spec: Dictionary) -> String:
+	var parts: Dictionary = DYED.get(spec["sheet"], {})
+	var dye: Dictionary = spec.get("dye", {})
+	var worn := dye.keys().filter(func(part: String) -> bool: return parts.has(part))
+	worn.sort()
+	return "%s|%s" % [spec["sheet"], ",".join(worn.map(func(part: String) -> String: return "%s=%s" % [part, dye[part]]))]
+
+
+## `image`, a sheet of `size` px frames, dyed (DYED's `parts`, `dye`'s
+## shades): hair only in each figure's top `head` rows, a dress only below
+## them, the rest anywhere. Only each figure's bytes are looked at: once a
+## session, 3-10 ms a sheet.
+static func dyed(image: Image, size: int, parts: Dictionary, dye: Dictionary) -> Image:
+	var out := image.duplicate() as Image
+	out.convert(Image.FORMAT_RGBA8)
+	# Tone -> dyed tone (as 0xRRGGBB), above the neck and below it.
+	var above := {}
+	var below := {}
+	for part: String in dye:
+		if not parts.has(part):
+			continue
+		var tones: Array = parts[part]
+		var ramp := _ramp(Color(SHADES[dye[part]]), tones.size())
+		for i in tones.size():
+			var tone := Color(tones[i]).to_rgba32() >> 8
+			var into := ramp[i].to_rgba32() >> 8
+			# Hair and a dress share tones: each keeps its side, over the rest.
+			if part != "dress" and (part == "hair" or not above.has(tone)):
+				above[tone] = into
+			if part != "hair" and (part == "dress" or not below.has(tone)):
+				below[tone] = into
+	var head: int = parts.get("head", size)
+	var width := out.get_width()
+	var data := out.get_data()
+	for top in range(0, out.get_height(), size):
+		for left in range(0, mini(width, int(parts.get("columns", 99)) * size), size):
+			var used := out.get_region(Rect2i(left, top, size, size)).get_used_rect()
+			var neck := top + used.position.y + head
+			for y in range(top + used.position.y, top + used.end.y):
+				var swap := above if y < neck else below
+				for at in range((y * width + left + used.position.x) * 4, (y * width + left + used.end.x) * 4, 4):
+					if data[at + 3] == 0:
+						continue
+					var into: int = swap.get((data[at] << 16) | (data[at + 1] << 8) | data[at + 2], -1)
+					if into >= 0:
+						data[at] = into >> 16
+						data[at + 1] = (into >> 8) & 0xff
+						data[at + 2] = into & 0xff
+	return Image.create_from_data(width, out.get_height(), false, Image.FORMAT_RGBA8, data)
 
 
 static func monster(id: String) -> Dictionary:
@@ -568,6 +708,8 @@ static func sheet_texture(spec: Dictionary) -> Texture2D:
 	var drawn: Texture2D = load(path(spec["sheet"]))
 	if RESTYLED.has(spec["sheet"]):
 		return ImageTexture.create_from_image(restyle(drawn.get_image(), frame_size(spec), RESTYLED[spec["sheet"]]))
+	if spec.has("dye") and DYED.has(spec["sheet"]):
+		return ImageTexture.create_from_image(dyed(drawn.get_image(), frame_size(spec), DYED[spec["sheet"]], spec["dye"]))
 	return drawn
 
 
@@ -605,7 +747,7 @@ static func restyle(image: Image, size: int, merge: Dictionary) -> Image:
 ## SpriteFrames with "<anim>_<dir>" animations (or "<anim>" for strips) for a
 ## spec; cached per sheet so a pack of twelve shares one set of frames.
 static func frames(spec: Dictionary) -> SpriteFrames:
-	var key: String = "%s|%s|%d" % [spec["sheet"], spec["family"], frame_size(spec)]
+	var key: String = "%s|%s|%d" % [look_of(spec), spec["family"], frame_size(spec)]
 	if _frames_cache.has(key):
 		return _frames_cache[key]
 	var family: Dictionary = FAMILIES[spec["family"]]
@@ -743,4 +885,4 @@ static func pick(sheet: SpriteFrames, anim: String, dir: String) -> String:
 ## How far to lift a sprite so its feet stand on the node: Shade's figures sit
 ## low in their cells (about 3/4 down in 32px cells, at the bottom of 16px ones).
 static func lift(spec: Dictionary) -> float:
-	return -4.0 if frame_size(spec) == 32 else -3.0
+	return FAMILIES[spec["family"]].get("lift", -4.0 if frame_size(spec) == 32 else -3.0)

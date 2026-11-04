@@ -3,7 +3,7 @@
     "odo": {
       "id": "odo",
       "keeper": "Merchant Odo",
-      "sprite": "merchant",
+      "sprite": "odo",
       "greeting": "General goods! Food, sundries, and I will buy nearly anything.",
       "sells": [
         "food",
@@ -139,7 +139,7 @@
     "chandler": {
       "id": "chandler",
       "keeper": "Marta the Chandler",
-      "sprite": "villager_woman",
+      "sprite": "marta",
       "greeting": "Rope, tar, lamp oil and whatever the tide brings. Mostly fish.",
       "sells": [
         "food",
@@ -168,7 +168,7 @@
     "quartermaster": {
       "id": "quartermaster",
       "keeper": "Quartermaster Brann",
-      "sprite": "worker",
+      "sprite": "brann",
       "greeting": "Pick, plate or pickled egg. The mine pays in iron, I sell in iron.",
       "sells": [
         "weapons",
@@ -196,7 +196,7 @@
     "sutler": {
       "id": "sutler",
       "keeper": "Mabel the Sutler",
-      "sprite": "villager_woman",
+      "sprite": "mabel",
       "greeting": "I've followed armies since before you were born. I sell what keeps soldiers alive.",
       "sells": [
         "weapons",
@@ -224,7 +224,7 @@
     "caravan": {
       "id": "caravan",
       "keeper": "Gunnar's Caravan",
-      "sprite": "merchant",
+      "sprite": "gunnar",
       "greeting": "Three wagons up the pass, one wagon down. What's left is for sale - furs, glass and good steel.",
       "sells": [
         "weapons",

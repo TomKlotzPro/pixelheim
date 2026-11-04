@@ -37,13 +37,18 @@ func test_every_step_is_a_kind_the_player_knows_with_what_it_needs() -> void:
 			if step["kind"] == "actor" and cast.has(String(step.get("name", ""))):
 				assert_true(step.has("to") or step.has("to_cell") or step.has("anim") or step.has("dir"), "%s: %s does something" % [scene_id, step["name"]])
 				continue
-			for field: String in needs.get(step["kind"], []):
+			# A villager (PIX-405: Maren) comes dressed as they are in the world.
+			var dressed := step.has("villager")
+			if dressed:
+				assert_true(PunyArt.VILLAGERS.has(step["villager"]), "%s: %s is a villager" % [scene_id, step["villager"]])
+			for field: String in [] if dressed else needs.get(step["kind"], []):
 				assert_true(step.has(field), "%s: a %s step needs %s" % [scene_id, step["kind"], field])
 			if step["kind"] == "actor":
-				assert_true(ResourceLoader.exists(PunyArt.path(step["sheet"])), "%s is one of Shade's sheets" % step["sheet"])
+				var sheet: String = PunyArt.villager(step["villager"])["sheet"] if dressed else step["sheet"]
+				assert_true(ResourceLoader.exists(PunyArt.path(sheet)), "%s is one of Shade's sheets" % sheet)
 				assert_true(step.has("at") or step.has("cell") or (step.has("from") and step.has("to")), "an actor stands or crosses")
 				# On the world's stage an actor stands on a cell of it.
-				assert_eq(step.has("cell"), on_world, "%s: %s stands where its stage is" % [scene_id, step["sheet"]])
+				assert_eq(step.has("cell"), on_world, "%s: %s stands where its stage is" % [scene_id, sheet])
 				if step.has("name"):
 					cast[String(step["name"])] = true
 

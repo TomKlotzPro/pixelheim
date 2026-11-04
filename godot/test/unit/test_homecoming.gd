@@ -186,6 +186,8 @@ func test_the_city_is_the_age_after_the_night_of_bells() -> void:
 
 # ---- His face -----------------------------------------------------------------
 
-## Morvax has a face of his own beside Maren: Shade drew one old man.
+## Morvax has a face of his own beside Maren (PIX-405: they wore one old man).
 func test_morvax_has_a_face_of_his_own_beside_maren() -> void:
-	assert_ne(Npcs.tint_of(Homecoming.MORVAX), Npcs.tint_of("elder"))
+	var morvax: Dictionary = Npcs.by_id(Homecoming.MORVAX, [])
+	var maren: Dictionary = Npcs.by_id("elder", [])
+	assert_ne(PunyArt.look_of(PunyArt.villager(morvax["sprite"])), PunyArt.look_of(PunyArt.villager(maren["sprite"])))
