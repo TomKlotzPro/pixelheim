@@ -529,14 +529,14 @@ frost-yard | --map frostgate --at 25,9 | map=frostgate street=flags | travel
 fort-gate | --map greyhold --at 37,28 --walk u,u,u,u,u | map=greyhold cell=\(37, 2[0-4]\) | travel
 # Greyhold's fort lived in (PIX-399): its barracks, stable and smithy, racks,
 # armour, a dummy, a supply cart and a lantern by each new door, the
-# turncoats' red on the keep while the Hollow Captain holds the cellars and
-# the fort's teal once he stands down, its paths worn into the flags, lamps
-# at its gates and every window lit at night. Without the pack its own
-# pieces and the houses' glass aren't drawn (cc0).
-fort-turncoats | --map greyhold --at 37,19 | map=greyhold fort=turncoats:houses5,(red2,worn35)?(worn0)? hamlet=fort:flat3,(on1,stand15,wall7)?(stand4,wall3)? street=flags | travel field
-fort-garrison | --map greyhold --hunted hollow_captain --at 37,19 | map=greyhold fort=garrison:houses5,(teal3,worn35)?(worn0)? hamlet=fort:flat3,(on1,stand19,wall9)?(stand4,wall3)? | travel field story
+# turncoats' red on the keep until Ulla's The Turncoats is handed in and
+# the fort's teal after, the racks and dummies whole (tops), its paths worn
+# into the flags, lamps at its gates and every window lit at night. Without
+# the pack its own pieces and the houses' glass aren't drawn (cc0).
+fort-turncoats | --map greyhold --at 37,19 | map=greyhold fort=turncoats:houses5,(red2,tops4,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand15,wall7)?(stand4,wall3)? street=flags | travel field
+fort-garrison | --map greyhold --delivered ulla_turncoats --at 37,19 | map=greyhold fort=garrison:houses5,(teal3,tops6,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand19,wall9)?(stand4,wall3)? | travel field story
 fort-night | --map greyhold --at 37,14 night | map=greyhold lamplight=posts 10/10 panes [06] flames 0 beams 0 | travel field night
-fort-cc0 | --map greyhold --at 37,19 cc0 | map=greyhold fort=turncoats:houses5,worn0 hamlet=fort:flat3,stand4,wall3 | travel field
+fort-cc0 | --map greyhold --at 37,19 cc0 | map=greyhold fort=turncoats:houses5,tops0,worn0 hamlet=fort:flat3,stand4,wall3 | travel field
 # The Blackiron shafts in three floors (PIX-255, PIX-253 step 5): down the
 # upper shafts' stair (it asks; going down keeps the dark) to the west
 # gallery, down past Pell's canary to the Black Seam, and back up (it

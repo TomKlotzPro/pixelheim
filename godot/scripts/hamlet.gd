@@ -91,13 +91,13 @@ const DRESSING := {
 		{"art": "lantern", "cell": Vector2i(31, 7), "wall": true},
 		{"art": "keg", "cell": Vector2i(47, 5)},
 		{"art": "box", "cell": Vector2i(47, 6)},
-		{"art": "lantern", "cell": Vector2i(45, 7), "wall": true},
+		{"art": "lantern", "cell": Vector2i(46, 7), "wall": true},
 		{"tile": ARMOUR, "cell": Vector2i(42, 10)},
 		{"tile": POLEARMS, "cell": Vector2i(49, 14)},
-		{"tile": SPEARS, "cell": Vector2i(49, 15)},
-		{"tile": SWORDS, "cell": Vector2i(49, 16)},
-		{"tile": SWORDS, "cell": Vector2i(25, 20)},
-		{"tile": POLEARMS, "cell": Vector2i(25, 21)},
+		{"tile": SPEARS, "cell": Vector2i(49, 16)},
+		{"tile": SWORDS, "cell": Vector2i(49, 17)},
+		{"tile": POLEARMS, "cell": Vector2i(25, 20)},
+		{"tile": SWORDS, "cell": Vector2i(25, 21)},
 		{"tile": Yards.ANVIL, "cell": Vector2i(38, 23)},
 		{"tile": Yards.GRINDSTONE, "cell": Vector2i(42, 23)},
 		{"art": "lantern", "cell": Vector2i(41, 22), "wall": true},
@@ -125,22 +125,26 @@ const DRESSING := {
 ## weapon racks (polearms, spears, swords), armour on its stand, the
 ## training dummy, and banners two tiles tall, the rod on top: the
 ## turncoats' red and the fort's own teal.
-const POLEARMS := 1246
-const SPEARS := 1247
+const POLEARMS := 1466
+const SPEARS := 1467
 const SWORDS := 1465
 const ARMOUR := 1907
 const DUMMY := 3006
+## The pack's pieces two tiles tall, by the tile that stands: the tile
+## drawn a cell above it, blocking nothing (a rack's weapon heads, the
+## dummy's straw). Plan gives such a piece its `top`.
+const TOPS := {POLEARMS: 1246, SPEARS: 1247, DUMMY: 2786}
 const BANNERS := {"red": [9152, 9372], "teal": [11792, 12012]}
-## Who holds a settlement, by map (PIX-399): `by` until the named foe
-## `until` is down (GameState.progression.hunted), `then` after, and the
+## Who holds a settlement, by map (PIX-399): `by` until the quest `until`
+## is handed in (GameState.progression.quests), `then` after, and the
 ## dressing each lays under its name. Greyhold's keep hangs the turncoats'
-## red while the Hollow Captain holds its cellars; once he stands down the
+## red until Ulla's "The Turncoats" is done ("The yard's quiet"); then the
 ## fort's teal goes up on the keep and the barracks and its garrison's
 ## drill fills the yard. A `banner` hangs on the wall at its cell, its rod
 ## a cell above.
 const HELD := {
 	"greyhold": {
-		"until": "hollow_captain", "by": "turncoats", "then": "garrison",
+		"until": "ulla_turncoats", "by": "turncoats", "then": "garrison",
 		"turncoats": [
 			{"banner": "red", "cell": Vector2i(34, 12)},
 			{"banner": "red", "cell": Vector2i(40, 12)},
@@ -196,21 +200,21 @@ static func store(map_id: String, kind: String, cell: Vector2i) -> String:
 	return STORES.get(look_of(map_id), STORES[""]).get(kind, STORES[""][kind])
 
 
-## Who holds map `map_id` now, the named foes down being `hunted` (HELD):
-## "" where no one does.
-static func holder(map_id: String, hunted: Array) -> String:
+## Who holds map `map_id` now, by the hero's `quests` (HELD): "" where no
+## one does.
+static func holder(map_id: String, quests: Dictionary) -> String:
 	var held: Dictionary = HELD.get(map_id, {})
 	if held.is_empty():
 		return ""
-	return held["then"] if held["until"] in hunted else held["by"]
+	return held["then"] if quests.get(held["until"], {}).get("done", false) else held["by"]
 
 
 ## The dressing of whoever holds map `map_id` now (HELD), as Hamlet.plan's
 ## `grown` entries: a banner as its two tiles hung on the wall, the rod's
 ## a cell above its own.
-static func held(map_id: String, hunted: Array) -> Array[Dictionary]:
+static func held(map_id: String, quests: Dictionary) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	var by := holder(map_id, hunted)
+	var by := holder(map_id, quests)
 	if by == "":
 		return out
 	for entry: Dictionary in HELD[map_id][by]:
@@ -225,8 +229,8 @@ static func held(map_id: String, hunted: Array) -> Array[Dictionary]:
 
 ## The dressing `map` takes: {"look", "pieces": [piece], "blocks": [cells]}.
 ## Each piece is DRESSING's, with its "cells" and "kind" ("stand", "flat",
-## "moored", "wall", "roof", "line", "glow", "on"); a standing piece that doesn't
-## fit (`fits`) is left out. `kept`: cells a piece must leave open (where
+## "moored", "wall", "roof", "line", "glow", "on"), a piece two tiles tall
+## its "top" (TOPS); a standing piece that doesn't fit (`fits`) is left out. `kept`: cells a piece must leave open (where
 ## a villager stands, the hero arrives, a chest...). `grown`: what the
 ## place's hub has grown since (PIX-324, Hubs.dressing), laid after it.
 ## Without the paid pack (`paid` false) the pack's own pieces (`tile`) are
@@ -241,6 +245,8 @@ static func plan(map: MapData, kept: Dictionary, grown: Array[Dictionary] = [], 
 		var piece := entry.duplicate()
 		piece["kind"] = kind_of(entry)
 		piece["cells"] = cells_of(entry)
+		if TOPS.has(entry.get("tile", -1)):
+			piece["top"] = TOPS[entry["tile"]]
 		if piece["kind"] == "stand":
 			if not fits(map, piece["cells"], kept, blocks):
 				continue

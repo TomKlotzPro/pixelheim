@@ -186,6 +186,14 @@ static func _decor_hamlet(view: MapView) -> void:
 				var tall := TILE if piece.has("tile") else HamletArt.size(art).y
 				var root := stand_on(view, still, cell, Vector2(0, TILE - tall))
 				stood[cell] = root
+				if piece.has("top"):
+					# The pack's piece two tiles tall (Hamlet.TOPS): its top a
+					# cell up, sorted with its foot.
+					var top := Sprite2D.new()
+					top.centered = false
+					top.texture = PunyProps.texture(piece["top"])
+					top.position = still.position - Vector2(0, TILE)
+					root.add_child(top)
 				if HamletArt.STALLS.has(art):
 					var awning := Sprite2D.new()
 					awning.centered = false
