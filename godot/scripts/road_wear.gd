@@ -53,6 +53,12 @@ const COUNT := KERBS + 15 * VERGE_VARIANTS
 ## What a road is, and what grass grows in from beside it.
 const ROAD := "path"
 const GRASSY := ["grass", "forest", "flowers", "crops"]
+## What a country road's ruts run on into: more road, a way in or over (a
+## door, a bridge, a cave's mouth), or what no cart turns on before (water,
+## a mountain). Past a map's edge the ground there decides. Any other ground
+## (grass, ash, snow, stone, marsh, sand) is open, and the ruts give out
+## before it (PIX-404).
+const RUNS_ON := [ROAD, "door", "door_shut", "bridge", "water", "cave", "mountain", ""]
 const SIDES := {1: Vector2i.UP, 2: Vector2i.RIGHT, 4: Vector2i.DOWN, 8: Vector2i.LEFT}
 
 ## Shade's dirt (c4b253) worn deeper in the ruts, its lip catching the light;
@@ -155,16 +161,15 @@ static func lane_of(grid: Dictionary, beyond: Callable, cell: Vector2i) -> Array
 ## variants, the same for every lane across the road at that point (so a
 ## crown's tuft or a pebble split between two lanes meets itself), or a worn
 ## patch: always on a `square` (a strip of it beside a crate is no street),
-## and on a dirt road's last cell where it ends in the open (PIX-404: the
-## audit found the Deepwood's and the Mirefen's roads running their ruts
-## hard up to a square end; a track's ruts give out before the grass).
+## and across a country road's last cells where it ends in the open (PIX-404:
+## the audit found the Deepwood's, the Mirefen's and Blackiron's roads
+## running their ruts hard up to a square end; a track's ruts give out
+## before the open ground).
 static func wear_tile(grid: Dictionary, beyond: Callable, cell: Vector2i, origin: Vector2i, style: int, square := false) -> int:
 	var lane := [] if square else lane_of(grid, beyond, cell)
 	var at := origin + cell
-	if not lane.is_empty() and style != PAVED:
-		var along := Vector2i.RIGHT if lane[0] == ACROSS else Vector2i.DOWN
-		if _tile(grid, beyond, cell + along) in GRASSY or _tile(grid, beyond, cell - along) in GRASSY:
-			lane = []
+	if not lane.is_empty() and style == COUNTRY and _ends(grid, beyond, cell, lane):
+		lane = []
 	if lane.is_empty():
 		return PATCHES + style * VARIANTS + absi(hash(at)) % VARIANTS
 	var axis: int = lane[0]
@@ -172,6 +177,19 @@ static func wear_tile(grid: Dictionary, beyond: Callable, cell: Vector2i, origin
 	var first := at - (Vector2i(0, lane[2]) if axis == ACROSS else Vector2i(lane[2], 0))
 	var variant := absi(hash(first)) % VARIANTS
 	return lane_tile(style, axis, lane[1], lane[2], variant)
+
+
+## Whether the road across `cell` (its `lane`, lane_of) ends here: any of
+## its cells across, not only `cell`'s, with open ground next along it, so
+## a ragged end wears all its lanes alike and a crown's tuft is never cut.
+static func _ends(grid: Dictionary, beyond: Callable, cell: Vector2i, lane: Array) -> bool:
+	var along := Vector2i.RIGHT if lane[0] == ACROSS else Vector2i.DOWN
+	var across := Vector2i(along.y, along.x)
+	for k in range(-lane[2], lane[1] - lane[2]):
+		var at: Vector2i = cell + across * k
+		if _tile(grid, beyond, at + along) not in RUNS_ON or _tile(grid, beyond, at - along) not in RUNS_ON:
+			return true
+	return false
 
 
 static func lane_tile(style: int, axis: int, width: int, index: int, variant: int) -> int:

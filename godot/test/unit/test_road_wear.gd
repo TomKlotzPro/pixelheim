@@ -68,8 +68,7 @@ func test_crossings_and_squares_are_worn_not_rutted() -> void:
 ## next; and the tile is the lane's, in the road's look.
 func test_the_lanes_across_a_road_pick_alike() -> void:
 	var at := _at(_meadow(_road_down(4, 3)))
-	# Its first and last rows end in the meadow past the edges: no ruts.
-	for y in range(1, 11):
+	for y in 12:
 		var tiles := []
 		for x in range(4, 7):
 			tiles.append(RoadWear.wear_tile(at, _grass, Vector2i(x, y), Vector2i(10, 20), RoadWear.TOWN))
@@ -93,9 +92,10 @@ func test_grass_creeps_in_only_where_a_road_meets_grass() -> void:
 	assert_false(worn["wear"].has(Vector2i(4, 5)), "a paved cell wears nothing")
 
 
-## A dirt road ending in the open (PIX-404) wears its last cell bare of
-## ruts, so they give out before the grass; one ending at a door keeps
-## them to the end; and the map's grid is untouched.
+## A country road ending in the open (PIX-404), whatever the open ground,
+## wears its last cells bare of ruts, so they give out before it; one
+## running up to a door, a bridge, water, a cave or a mountain keeps them to
+## the end; a town street keeps them; and the map's grid is untouched.
 func test_a_road_end_gives_out_its_ruts() -> void:
 	var road := []
 	for x in range(0, 8):
@@ -106,13 +106,41 @@ func test_a_road_end_gives_out_its_ruts() -> void:
 	var worn := RoadWear.rows(grid, _grass, Vector2i(12, 12), 0, 12, {}, Vector2i.ZERO, RoadWear.COUNTRY)
 	assert_eq(grid, before, "the grid is the same: every road cell still a road")
 	for cell: Vector2i in [Vector2i(7, 4), Vector2i(7, 5), Vector2i(0, 4)]:
-		var tile: int = worn["wear"][cell]
-		assert_true(tile >= RoadWear.PATCHES and tile < RoadWear.VERGES, "%s: the ruts give out at the end" % cell)
-	assert_true(worn["wear"][Vector2i(6, 4)] < RoadWear.PATCHES, "and run on the cell before")
-	grid[Vector2i(8, 4)] = "door"
-	grid[Vector2i(8, 5)] = "door"
-	worn = RoadWear.rows(grid, _grass, Vector2i(12, 12), 0, 12, {}, Vector2i.ZERO, RoadWear.COUNTRY)
-	assert_true(worn["wear"][Vector2i(7, 4)] < RoadWear.PATCHES, "a road up to a door is rutted to its end")
+		assert_true(_patch(worn["wear"][cell]), "%s: the ruts give out at the end" % cell)
+	assert_false(_patch(worn["wear"][Vector2i(6, 4)]), "and run on the cell before")
+	for ground: String in ["ash", "snow", "stone", "marsh", "sand"]:
+		grid[Vector2i(8, 4)] = ground
+		grid[Vector2i(8, 5)] = ground
+		worn = RoadWear.rows(grid, _grass, Vector2i(12, 12), 0, 12, {}, Vector2i.ZERO, RoadWear.COUNTRY)
+		assert_true(_patch(worn["wear"][Vector2i(7, 4)]), "a road into %s ends" % ground)
+	for ground: String in ["door", "door_shut", "bridge", "water", "cave", "mountain"]:
+		grid[Vector2i(8, 4)] = ground
+		grid[Vector2i(8, 5)] = ground
+		worn = RoadWear.rows(grid, _grass, Vector2i(12, 12), 0, 12, {}, Vector2i.ZERO, RoadWear.COUNTRY)
+		assert_false(_patch(worn["wear"][Vector2i(7, 4)]), "a road up to a %s is rutted to its end" % ground)
+	worn = RoadWear.rows(_meadow(road), _grass, Vector2i(12, 12), 0, 12, {}, Vector2i.ZERO, RoadWear.TOWN)
+	assert_false(_patch(worn["wear"][Vector2i(7, 4)]), "a town street keeps its ruts to its end")
+
+
+## A two-wide road whose end is ragged (one lane a cell longer) gives out
+## its ruts across the whole road at once (PIX-404), so no single rut runs
+## on beside a bare lane: Saltmere's road down from the ridge, the town's
+## east street.
+func test_a_ragged_end_wears_both_lanes_alike() -> void:
+	var road := []
+	for y in range(3, 12):
+		road.append(Vector2i(4, y))
+		road.append(Vector2i(5, y))
+	road.append(Vector2i(4, 2))
+	var worn := RoadWear.rows(_meadow(road), _grass, Vector2i(12, 12), 0, 12, {}, Vector2i.ZERO, RoadWear.COUNTRY)
+	assert_true(_patch(worn["wear"][Vector2i(5, 3)]), "the short lane's end")
+	assert_true(_patch(worn["wear"][Vector2i(4, 3)]), "and the long lane beside it, alike")
+	assert_false(_patch(worn["wear"][Vector2i(4, 5)]), "the road runs rutted below")
+
+
+## Whether wear `tile` is a worn patch, not a lane's ruts.
+func _patch(tile: int) -> bool:
+	return tile >= RoadWear.PATCHES and tile < RoadWear.VERGES
 
 
 ## Where the town's traffic runs over its paving (PIX-382 step 4), the stone
