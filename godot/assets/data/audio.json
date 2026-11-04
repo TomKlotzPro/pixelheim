@@ -184,6 +184,7 @@
     "ice": "step_ice",
     "marsh": "step_water",
     "cave:floor": "step_stone",
+    "stone:floor": "step_stone",
     "cobbles:path": "step_stone",
     "flags:path": "step_stone",
     "sandstone:path": "step_stone",

@@ -99,10 +99,21 @@ def read_member(zips, zip_name, member, into):
             file.write(archive.read(info))
 
 
+def refuse_public(out):
+    """Paid takes never go where git tracks them: inside this repo only the
+    git-ignored godot/assets/audio/paid/ may take them (PIX-411's review)."""
+    repo = os.path.realpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+    target = os.path.realpath(out)
+    allowed = os.path.join(repo, "godot", "assets", "audio", "paid")
+    if (target + os.sep).startswith(repo + os.sep) and not (target + os.sep).startswith(allowed + os.sep):
+        raise ValueError("%s is inside the public repo: paid takes go to the private repo or godot/assets/audio/paid" % out)
+
+
 def prepare(zips, out):
     families = load(AUDIO)["families"]
     events = load(AUDIO)["events"]
     manifest = load(MANIFEST)
+    refuse_public(out)
     os.makedirs(out, exist_ok=True)
     for old in glob.glob(os.path.join(out, "*.wav")) + glob.glob(os.path.join(out, "takes.json")):
         os.remove(old)

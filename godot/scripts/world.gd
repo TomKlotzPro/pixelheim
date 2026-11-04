@@ -247,7 +247,8 @@ func _process(delta: float) -> void:
 	# A step by the ground under it and what's laid over it, a street's
 	# paving or a cave's rock (PIX-411), and dust off dry ground, a splash in
 	# a bog (PIX-225).
-	Sound.play(Sound.step_for(map.tile_at(cell), view.streets.get(cell, map.style)))
+	# A stone room's floor is its flags (PunyInterior.STONE_ROOMS), not boards.
+	Sound.play(Sound.step_for(map.tile_at(cell), view.streets.get(cell, "stone" if map.id in PunyInterior.STONE_ROOMS else map.style)))
 	atmosphere.footfall(player.global_position + Vector2(0, 2), map.tile_at(cell))
 	GameState.move_to(map, cell, player.facing)
 	# Into a region of the Reach: its name, once (PIX-269).

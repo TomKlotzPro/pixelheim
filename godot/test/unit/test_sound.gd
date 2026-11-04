@@ -228,6 +228,9 @@ func test_every_ground_has_its_step() -> void:
 		for floor_def: Dictionary in Depths.floors(dungeon_id):
 			var map := MapData.load_by_id(String(floor_def["mapId"]))
 			assert_eq(Sound.step_for("floor", map.style), "step_stone", map.id)
+	# A stone room's floor is stone, as world.gd reads it (PIX-411's review).
+	for room_id: String in PunyInterior.STONE_ROOMS:
+		assert_eq(Sound.step_for("floor", "stone"), "step_stone", room_id)
 	# A paved street is stone; gravel, packed in the dirt, stays the dirt's.
 	for look: String in Streets.LOOKS:
 		assert_eq(Sound.step_for("path", look), "step_dirt" if look == "gravel" else "step_stone", look)
@@ -281,3 +284,19 @@ func test_a_place_takes_its_music_up_where_it_left_it() -> void:
 	assert_false(Sound._fading.playing, "the fight gone once the town is in")
 	Sound.stop_music()
 	Sound._resume_at.clear()
+
+
+## A track with an intro loops from its loopBegin, not from the top (PIX-411).
+func test_a_track_with_an_intro_loops_from_its_loop_begin() -> void:
+	var name := "title"
+	var tracks: Dictionary = Sound._doc["tracks"]
+	var was: Dictionary = tracks[name].duplicate()
+	tracks[name]["loopBegin"] = 2.0
+	Sound.track = ""
+	Sound.play_track(name)
+	var stream: AudioStreamWAV = Sound._music.stream
+	assert_eq(stream.loop_begin, roundi(2.0 * stream.mix_rate), "the loop starts after the intro")
+	tracks[name] = was
+	stream.loop_begin = 0
+	Sound.stop_music()
+

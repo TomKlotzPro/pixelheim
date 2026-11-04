@@ -69,5 +69,12 @@ class SoundPrepTest(unittest.TestCase):
             self.assertIn("godot/assets/audio/paid/", file.read())
 
 
+    def test_it_never_writes_paid_takes_where_git_tracks_them(self):
+        with self.assertRaises(ValueError):
+            sound_prep.refuse_public(os.path.join(GODOT, "assets", "audio", "sfx"))
+        sound_prep.refuse_public(os.path.join(GODOT, "assets", "audio", "paid"))
+        sound_prep.refuse_public("/tmp/elsewhere")
+
+
 if __name__ == "__main__":
     unittest.main()
