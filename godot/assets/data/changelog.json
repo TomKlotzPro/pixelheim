@@ -1,6 +1,21 @@
 {
   "releases": [
     {
+      "version": "0.312.0",
+      "date": "2026-11-04",
+      "codename": "The Wider Reach",
+      "notes": [
+        "Outside the walls, the Reach's farmland grows with the town: a plot trampled bare in the Ashes, rows sprouting under a scarecrow at the Hamlet, wheat, a fenced sheep pasture and lamps along the north road at the Village, an orchard and a farmstead with its hay, cart and well under the south wall at the Town, and ripe crops and grazing cows at the City",
+        "The town's rooms are shaped by their keepers: the inn is wider with a bar and a hearth, the hall grand, the cottage small, Odo stands behind his counter, the smithy's coal bed glows, Hale's keep is walled in stone and Morvax's forge in dark stone, and every hearth and oven burns; furniture an old save placed where the cottage or the manor shrank may stand in or past their walls",
+        "Greyhold's fort is lived in: a barracks, a stable and a smithy round the keep, weapon racks, banners, carts and a training dummy, worn paving where the garrison walks, and lamps and lit windows at night",
+        "Saltmere, Fernoir and the Frostgate are lived in: no two houses alike, Saltmere's boats, fish racks and kegs on its quay, ore carts coming down the miners' road, firewood and a loaded sledge at the Frostgate, lamps by their doors at night, and each step the Post brings them shows in the street as you walk in",
+        "The Mirefen comes alive: dead trees, reed beds and boardwalks over the fen, a stilt hut, the channel's banks bent off the grid, the west road ending where it should, and will-o'-wisps drifting at night",
+        "The world map is painted from the land itself, larger, and its names stand clear of each other and of the markers, in English and French",
+        "Country roads end and turn as worn tracks, tapering out and rounding their corners instead of stopping square",
+        "Every speaker has a look of their own: no more faceless farmers, no keeper dressed like the hero, and the dialogue portrait shows their head and shoulders"
+      ]
+    },
+    {
       "version": "0.311.0",
       "date": "2026-11-04",
       "codename": "Spellfire",

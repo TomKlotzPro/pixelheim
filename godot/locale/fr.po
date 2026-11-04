@@ -2729,6 +2729,10 @@ msgid "Country roads carry cart ruts, grass on the crown, pebbles and grass cree
 msgstr "Les routes de campagne portent des ornières de charrette, de l'herbe au milieu, des cailloux et de l'herbe qui gagne les bords"
 
 #: assets/data/changelog.json
+msgid "Country roads end and turn as worn tracks, tapering out and rounding their corners instead of stopping square"
+msgstr "Les routes de campagne finissent et tournent comme des chemins usés, qui s'effilent et arrondissent leurs virages au lieu de s'arrêter net"
+
+#: assets/data/changelog.json
 msgid "Crackle and Hum"
 msgstr "Crépitements et bourdonnements"
 
@@ -3157,6 +3161,10 @@ msgid "Every spawn belongs to its terrain: ash beasts in the ash, bog things in 
 msgstr "Chaque apparition appartient à son terrain : bêtes de cendre dans la cendre, créatures des tourbières dans les Marais de Fange - la bête que vous voyez est celle que vous combattez"
 
 #: assets/data/changelog.json
+msgid "Every speaker has a look of their own: no more faceless farmers, no keeper dressed like the hero, and the dialogue portrait shows their head and shoulders"
+msgstr "Chaque personnage a désormais son propre visage : fini les fermiers sans visage et les marchands habillés comme le héros, et le portrait de dialogue montre leur tête et leurs épaules"
+
+#: assets/data/changelog.json
 msgid "Every tenth depth a warden guards the stair down, a boss with its own attacks: the Deep Warden, then the Hollow King"
 msgstr "Toutes les dix profondeurs, un gardien tient l'escalier, un boss avec ses propres attaques : le Gardien des Profondeurs, puis le Roi Creux"
 
@@ -3507,6 +3515,10 @@ msgstr "La main verte"
 #: assets/data/changelog.json
 msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate's road is cobbled up to a flagged yard before the observatory"
 msgstr "La cour de Greyhold est dallée et ses allées pavées, et la route de la Porte-Givre est pavée jusqu'à une cour dallée devant l'observatoire"
+
+#: assets/data/changelog.json
+msgid "Greyhold's fort is lived in: a barracks, a stable and a smithy round the keep, weapon racks, banners, carts and a training dummy, worn paving where the garrison walks, and lamps and lit windows at night"
+msgstr "Le fort de Greyhold est habité : une caserne, une écurie et une forge autour du donjon, des râteliers d'armes, des bannières, des charrettes et un mannequin d'entraînement, des dalles usées là où passe la garnison, et des lanternes et des fenêtres éclairées la nuit"
 
 #: assets/data/changelog.json
 msgid "Greyhold's fort stands in solid grey stone now, with battlements along its walls, weathering and moss, instead of pale striped blocks"
@@ -4533,6 +4545,10 @@ msgid "Options on the title screen opens again: it was opening behind the title"
 msgstr "Les options de l'écran titre s'ouvrent de nouveau : elles s'ouvraient derrière le titre"
 
 #: assets/data/changelog.json
+msgid "Outside the walls, the Reach's farmland grows with the town: a plot trampled bare in the Ashes, rows sprouting under a scarecrow at the Hamlet, wheat, a fenced sheep pasture and lamps along the north road at the Village, an orchard and a farmstead with its hay, cart and well under the south wall at the Town, and ripe crops and grazing cows at the City"
+msgstr "Hors des murs, les terres de la Marche grandissent avec la ville : un champ piétiné dans les Cendres, des rangs qui pointent sous un épouvantail au Hameau, du blé, un pré à moutons clos et des lanternes le long de la route du nord au Village, un verger et une ferme avec son foin, sa charrette et son puits sous le rempart sud au Bourg, et à la Cité des récoltes mûres et des vaches au pré"
+
+#: assets/data/changelog.json
 msgid "Owned businesses pay RENT: +2g each after every victory, straight into your purse with a line in the battle log"
 msgstr "Les commerces que vous possédez versent un LOYER : +2 o chacun après chaque victoire, droit dans votre bourse, avec une ligne dans le journal de combat"
 
@@ -5019,6 +5035,10 @@ msgstr "La Grotte marine de Saltmere descend désormais sur trois étages : le
 #: assets/data/changelog.json
 msgid "Saltmere's sea runs on past the edge of the map instead of stopping at a hedge, and the pines whiten along a ragged snowline toward the Frostgate"
 msgstr "La mer de Saltmere continue au-delà du bord de la carte au lieu de s'arrêter sur une haie, et les pins blanchissent le long d'une limite de neige irrégulière vers la Porte-Givre"
+
+#: assets/data/changelog.json
+msgid "Saltmere, Fernoir and the Frostgate are lived in: no two houses alike, Saltmere's boats, fish racks and kegs on its quay, ore carts coming down the miners' road, firewood and a loaded sledge at the Frostgate, lamps by their doors at night, and each step the Post brings them shows in the street as you walk in"
+msgstr "Saltmere, Fernoir et la Porte-Givre sont habités : pas deux maisons pareilles, les barques, les séchoirs à poisson et les tonneaux sur le quai de Saltmere, des chariots de minerai qui descendent la route des mineurs, du bois et un traîneau chargé à la Porte-Givre, des lanternes à leurs portes la nuit, et chaque étape que le Courrier leur apporte se voit dans la rue en arrivant"
 
 #: assets/data/changelog.json
 msgid "Save codes and delete-save moved into Options"
@@ -5833,6 +5853,10 @@ msgid "The Miners' Camp waypoint moved a few steps east, onto its road"
 msgstr "Le relais du camp des mineurs s'est déplacée de quelques pas vers l'est, sur sa route"
 
 #: assets/data/changelog.json
+msgid "The Mirefen comes alive: dead trees, reed beds and boardwalks over the fen, a stilt hut, the channel's banks bent off the grid, the west road ending where it should, and will-o'-wisps drifting at night"
+msgstr "Les Marais de Fange s'animent : des arbres morts, des roselières et des pontons sur la fange, une cabane sur pilotis, les berges du chenal qui ne suivent plus la grille, la route de l'ouest qui finit où il faut, et des feux follets qui dérivent la nuit"
+
+#: assets/data/changelog.json
 msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and reeds, the Deepwood's lake dark teal and the Frostgate's water icy"
 msgstr "Les mares des Marais de Fange sont d'une eau olive trouble avec nénuphars, lentilles d'eau et roseaux, le lac des Bois-Profonds sarcelle sombre et l'eau de la Porte-Givre glacée"
 
@@ -5943,6 +5967,10 @@ msgstr "Toute la Marche"
 #: assets/data/changelog.json
 msgid "The Wide View"
 msgstr "Le Grand Angle"
+
+#: assets/data/changelog.json
+msgid "The Wider Reach"
+msgstr "La Marche entière"
 
 #: assets/data/changelog.json
 msgid "The Wilds Bite"
@@ -6413,6 +6441,10 @@ msgid "The town's dog and cat now share the farm animals' look: a dark outline, 
 msgstr "Le chien et le chat du village ont désormais le même style que les animaux de la ferme : un contour sombre, des couleurs plus franches et la même taille de pixel, si bien qu'ils ne détonnent plus à côté des poules et des moutons"
 
 #: assets/data/changelog.json
+msgid "The town's rooms are shaped by their keepers: the inn is wider with a bar and a hearth, the hall grand, the cottage small, Odo stands behind his counter, the smithy's coal bed glows, Hale's keep is walled in stone and Morvax's forge in dark stone, and every hearth and oven burns; furniture an old save placed where the cottage or the manor shrank may stand in or past their walls"
+msgstr "Les pièces du village ont la forme de ceux qui les tiennent : l'auberge s'élargit avec un comptoir et un âtre, l'hôtel de ville se fait grand, la chaumière petite, Odo se tient derrière son comptoir, le lit de braises de la forge rougeoie, le donjon de Hale est en pierre et la forge de Morvax en pierre sombre, et chaque âtre et chaque four brûle ; les meubles qu'une ancienne sauvegarde avait posés là où la chaumière ou le manoir ont rétréci peuvent se retrouver dans les murs ou derrière"
+
+#: assets/data/changelog.json
 msgid "The town's south street no longer runs into the river: a grass bank lies between them now, with reeds in the water along it"
 msgstr "La rue sud de la ville ne plonge plus dans la rivière : une berge herbeuse les sépare désormais, avec des roseaux dans l'eau tout du long"
 
@@ -6483,6 +6515,10 @@ msgstr "La carte du monde connaît déjà le chemin - à vous de lever le brouil
 #: assets/data/changelog.json
 msgid "The world map is here: press M for the Ashenreach under fog of war - you only see what you have walked"
 msgstr "Voici la carte du monde : appuyez sur M pour voir la Marche des Cendres sous le brouillard de guerre - vous ne voyez que ce que vous avez parcouru"
+
+#: assets/data/changelog.json
+msgid "The world map is painted from the land itself, larger, and its names stand clear of each other and of the markers, in English and French"
+msgstr "La carte du monde est peinte d'après le terrain lui-même, en plus grand, et ses noms ne se chevauchent plus ni entre eux ni avec les repères, en français comme en anglais"
 
 #: assets/data/changelog.json
 msgid "The world now darkens with the hour instead of under a veil: gold dawns, orange dusks and blue nights, and lamps, lit windows, torches, camp fires and hearths truly light the dark around them"
