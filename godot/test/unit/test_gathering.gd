@@ -55,6 +55,10 @@ func test_patches_grow_only_on_their_regions_open_ground() -> void:
 		view.plan(map.spawn)
 		assert_false(view.patch_decks.is_empty(), "%s has ground for patches" % map_id)
 		var villagers: Array = Npcs.on_map(map_id, Town.MAX_TIER, []).map(func(npc: Dictionary) -> Vector2i: return Vector2i(int(npc["x"]), int(npc["y"])))
+		# The Mirefen's dead trees and huts (PIX-401) stand on deck cells,
+		# which are read before anything is drawn: no patch is dealt under
+		# one (PatchesLayer.deal_patches), checked below.
+		var stands: Array = view.get_meta("mire", {}).get("blocks", [])
 		for region: String in view.patch_decks:
 			var deck: Array = view.patch_decks[region]
 			assert_gt(deck.size(), 30, "%s: %s has room to move its patches" % [map_id, region])
@@ -64,13 +68,14 @@ func test_patches_grow_only_on_their_regions_open_ground() -> void:
 				assert_has(ground[region], raw.tile_at(cell), "%s is its region's ground" % where)
 				assert_false(raw.tile_at(cell) in ROADS, "%s is off the road" % where)
 				# Open once everything stands: no prop, camp or bush on it.
-				assert_true(map.is_walkable(cell), "%s is open ground" % where)
+				assert_true(map.is_walkable(cell) or cell in stands, "%s is open ground" % where)
 				assert_eq(Scatter.choice(map.grid, cell), -1, "%s is bare, so the patch shows" % where)
 				assert_false(map.portals.has(cell), where)
 				assert_false(view.camps.has(cell), where)
 				assert_false(_in_a_village(raw, cell, villagers), "%s is out of the villages" % where)
 		# Today's are dealt from those decks.
 		for cell: Vector2i in view.patches:
+			assert_true(map.is_walkable(cell), "%s: today's patch at %s on open ground" % [map_id, cell])
 			assert_eq(Gathering.material_at(map, cell), view.patches[cell]["item"])
 			assert_has(view.patch_decks[raw.region_at(cell)], cell)
 

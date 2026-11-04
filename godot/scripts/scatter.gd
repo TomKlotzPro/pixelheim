@@ -47,9 +47,14 @@ const DETAIL := {
 	"meadow": [40, ["flowers_white", "flowers_yellow", "flowers_red", "flowers_blue", "clover", "tuft"]],
 	"grove": [70, ["sapling", "sapling", "sapling", "sapling", "flowers_yellow", "flowers_white", "tuft"]],
 	# The river's shallows along a grassy bank (PIX-390: `bank`), reeds at
-	# the bank's foot, so a straight shore reads as a riverside.
+	# the bank's foot, so a straight shore reads as a riverside; the
+	# Mirefen's pools along the mire's too (PIX-401).
 	"bank": [45, ["reeds"]],
 }
+
+
+## The land a bank of reeds grows by: grass, and the mire (PIX-401).
+const BANKS := ["grass", "marsh"]
 
 
 ## The ridges' decor stands on their rim (PIX-309): this share (%) of the
@@ -101,7 +106,7 @@ static func _rim_share(grid: Dictionary, cell: Vector2i) -> int:
 ## something.
 static func detail(grid: Dictionary, cell: Vector2i, region := "") -> String:
 	var tile: String = grid.get(cell, "")
-	if tile == "water" and [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN].any(func(step: Vector2i) -> bool: return grid.get(cell + step, "") == "grass"):
+	if tile == "water" and [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN].any(func(step: Vector2i) -> bool: return grid.get(cell + step, "") in BANKS):
 		tile = "bank"
 	if not DETAIL.has(tile) or choice(grid, cell) >= 0:
 		return ""
