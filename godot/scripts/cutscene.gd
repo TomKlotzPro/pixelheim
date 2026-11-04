@@ -172,6 +172,9 @@ func _run(step: Dictionary) -> void:
 			ash.emitting = true
 			ash.visible = true
 		"shake":
+			# The story's ground is heard even where reduced motion keeps the
+			# picture still; the logo's slam shakes in silence (PIX-413).
+			Sound.play("rumble")
 			_shake(float(step.get("strength", 5)), float(step.get("seconds", 1.0)))
 		"actor":
 			_actor(step)
@@ -527,8 +530,6 @@ func _on_screen(sprite: AnimatedSprite2D, at: Array) -> Vector2:
 
 
 func _shake(strength: float, seconds: float) -> void:
-	# The ground is heard even where reduced motion keeps the picture still.
-	Sound.play("rumble")
 	if still:
 		return
 	var shake := create_tween()
