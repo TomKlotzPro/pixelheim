@@ -100,7 +100,7 @@ func _portrait(sprite: String) -> Control:
 	var figure := AnimatedSprite2D.new()
 	figure.sprite_frames = PunyArt.frames(art)
 	figure.play(PunyArt.pick(figure.sprite_frames, "idle", "down"))
-	var crop := bust(figure.sprite_frames)
+	var crop := bust(art)
 	var zoom := floorf(inner / crop.size.x)
 	figure.scale = Vector2(zoom, zoom)
 	# The bust's corner where it stands centred in the slot: the frame's
@@ -115,9 +115,23 @@ func _portrait(sprite: String) -> Control:
 const BUST := 14
 
 
-static func bust(frames: SpriteFrames) -> Rect2:
-	var head := Ink.head(frames, PunyArt.pick(frames, "idle", "down"))
-	return Rect2(floorf(head.get_center().x - BUST / 2.0), head.position.y - 1, BUST, BUST)
+## What of `art`'s idle the portrait shows: a person's head and shoulders
+## (BUST), a beast whole and square round its middle. A pet is 16-18 rows
+## deep and its head the whole front of it: a bust cut the dog through its
+## eyes (the ticket kept the dog and cat as they were, v0.304).
+static func bust(art: Dictionary) -> Rect2:
+	var frames := PunyArt.frames(art)
+	var idle := PunyArt.pick(frames, "idle", "down")
+	if art["family"] != "beast":
+		var head := Ink.head(frames, idle)
+		return Rect2(floorf(head.get_center().x - BUST / 2.0), head.position.y - 1, BUST, BUST)
+	var drawn := Rect2()
+	for index in frames.get_frame_count(idle):
+		var used := Rect2(frames.get_frame_texture(idle, index).get_image().get_used_rect())
+		drawn = used if index == 0 else drawn.merge(used)
+	var side := maxf(drawn.size.x, drawn.size.y)
+	var middle := drawn.get_center() - frames.get_frame_texture(idle, 0).get_size() / 2.0
+	return Rect2((middle - Vector2.ONE * side / 2.0).floor(), Vector2.ONE * side)
 
 
 ## E, Enter, Space or a click turns the page (and closes after the last);

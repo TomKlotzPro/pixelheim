@@ -71,8 +71,17 @@ func test_the_portrait_holds_the_face() -> void:
 	for paid: bool in [true, false]:
 		PunyTown.withheld = not paid
 		for person: Dictionary in Npcs.people():
-			var frames := PunyArt.frames(PunyArt.villager(person["sprite"]))
+			var art := PunyArt.villager(person["sprite"])
+			var frames := PunyArt.frames(art)
+			var bust: Rect2 = DialogueBoxScript.bust(art)
+			if art["family"] == "beast":
+				# The dog and cat whole, as before: Ink.head is a pet's ears.
+				for index in frames.get_frame_count("idle_down"):
+					var frame := frames.get_frame_texture("idle_down", index)
+					var drawn := Rect2(frame.get_image().get_used_rect())
+					drawn.position -= frame.get_size() / 2.0
+					assert_true(bust.encloses(drawn), "%s drawn %s in the portrait %s" % [person["id"], drawn, bust])
+				continue
 			var head := Ink.head(frames, "idle_down")
-			var bust: Rect2 = DialogueBoxScript.bust(frames)
 			assert_true(bust.encloses(head), "%s's head %s in the portrait %s (paid art: %s)" % [person["id"], head, bust, paid])
 			assert_gt(bust.end.y, head.end.y + 2, "%s: and their shoulders" % person["id"])

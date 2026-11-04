@@ -32,10 +32,14 @@ mkdir -p godot/assets/puny/medieval
 cp "$shade/puny-world-medieval/punyworld-atlas.png" godot/assets/puny/medieval/
 echo "Installed godot/assets/puny/medieval/punyworld-atlas.png"
 
-# The pack's sample villagers, guards, mages and archers (PIX-405): faces
-# for the folk who talk (PunyArt.VILLAGERS' "paid" sheets).
+# The pack's sample folk PunyArt.VILLAGERS' "paid" sheets name (PIX-405),
+# faces for the folk who talk: only those, as the export takes every file
+# in the folder.
+rm -rf godot/assets/puny/medieval/characters
 mkdir -p godot/assets/puny/medieval/characters
-cp "$shade/puny-world-medieval/Sample 32 by 32 Characters/"*.png godot/assets/puny/medieval/characters/
+for sheet in $(grep -o 'medieval/characters/[A-Za-z-]*\.png' godot/scripts/puny_art.gd | sort -u); do
+  cp "$shade/puny-world-medieval/Sample 32 by 32 Characters/$(basename "$sheet")" godot/assets/puny/medieval/characters/
+done
 echo "Installed $(ls godot/assets/puny/medieval/characters/*.png | wc -l | tr -d ' ') sample characters into godot/assets/puny/medieval/characters/"
 
 # The paid icons icons.json maps (not "free/..." or "medieval@..."), one file

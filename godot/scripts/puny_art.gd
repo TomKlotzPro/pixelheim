@@ -214,8 +214,8 @@ const LYING := [Vector2i(22, 2), Vector2i(23, 2), Vector2i(22, 4), Vector2i(23, 
 ## (PIX-405: thirty-eight people shared sixteen sheets, Odo was the hero's
 ## twin), each sheet drawn at 1x on the world's grid. Most are dyed (DYED:
 ## `dye` names a SHADES colour for a part) from one of Shade's CC0 Puny
-## Characters, and with the paid pack from its sample villager, archer or
-## guard (`paid`, the "medieval" family) in the same colours. Npcs.people()
+## Characters, and with the paid pack from its sample villager or archer
+## (`paid`, the "medieval" family) in the same colours. Npcs.people()
 ## lists who talks; test_faces keeps no two alike where they meet.
 const WORKER := "characters/aligned/Human-Worker-Red.png"
 const MAN := "medieval/characters/Male-Villager.png"
@@ -244,10 +244,11 @@ const VILLAGERS := {
 	"monk": {"sheet": "mini/MagePurple.png", "family": "mini"},
 	"hermit": {"sheet": "mini/Gangblanc.png", "family": "mini"},
 	# Loras the bard in plum, Wren in the ranger's greens, Ulla in Greyhold's
-	# slate (an Iron Guard with the pack).
+	# slate (with the pack a villager in it: the Iron Guard's closed helmet
+	# showed no face).
 	"loras": {"sheet": "characters/Archer-Purple.png", "family": "puny", "paid": "medieval/characters/Archer.png", "dye": {"cloth": "plum"}},
 	"wren": {"sheet": "characters/Archer-Ranger.png", "family": "puny", "paid": "medieval/characters/Archer.png"},
-	"ulla": {"sheet": "characters/Guard-Warden.png", "family": "puny", "paid": "medieval/characters/Iron-Guard.png"},
+	"ulla": {"sheet": "characters/Guard-Warden.png", "family": "puny", "paid": WOMAN, "dye": {"hair": "grey", "cloth": "slate"}},
 	# The folk, each in their own colours: hair, clothes (a man's trousers
 	# his `dress`) and skin. Pixelheim's own first, then the five regions'.
 	"maren": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "white", "cloth": "lilac", "skin": "pale"}},
@@ -268,7 +269,7 @@ const VILLAGERS := {
 	"ilka": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "blonde", "cloth": "pink"}},
 	"brin": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "black", "cloth": "sky", "dress": "navy", "skin": "brown"}},
 	"ola": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "ginger", "cloth": "forest"}},
-	"marta": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "grey", "cloth": "cream"}},
+	"marta": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "auburn", "cloth": "cream"}},
 	"wenna": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "white", "cloth": "navy"}},
 	"garrick": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "black", "cloth": "maroon", "skin": "tan"}},
 	"dagny": {"sheet": WORKER, "family": "puny", "paid": WOMAN, "dye": {"hair": "ginger", "cloth": "rust"}},
