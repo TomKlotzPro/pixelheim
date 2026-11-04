@@ -16897,6 +16897,10 @@ msgid "%s is now %s."
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "Ambience volume"
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "CRT scanlines"
 msgstr ""
 
@@ -17790,6 +17794,10 @@ msgstr ""
 
 #: scripts/sound.gd
 msgid "Ambience"
+msgstr ""
+
+#: scripts/sound.gd
+msgid "Jingle"
 msgstr ""
 
 #: scripts/sound.gd

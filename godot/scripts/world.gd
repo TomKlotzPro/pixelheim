@@ -78,9 +78,11 @@ func _ready() -> void:
 	# letterboxing it.
 	Touch.forced = flags.has("touch")
 	# `cc0` (harness): the paid pack held back, as a build without the
-	# private art draws (PIX-318), and GegX's UI kit with it (PIX-385).
+	# private art draws (PIX-318), and GegX's UI kit with it (PIX-385), and
+	# the sound packs' takes (PIX-411).
 	PunyTown.withheld = flags.has("cc0")
 	UiStyle.withheld = PunyTown.withheld
+	Sound.withheld = PunyTown.withheld
 	if Touch.enabled():
 		get_tree().root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
 	if harness:
@@ -242,8 +244,9 @@ func _process(delta: float) -> void:
 	if cell == player_cell:
 		return
 	player_cell = cell
-	Sound.play("step")
-	# Dust off dry ground, a splash in a bog (PIX-225).
+	# A step by the ground under it (PIX-411), and dust off dry ground, a
+	# splash in a bog (PIX-225).
+	Sound.play(Sound.step_for(map.tile_at(cell)))
 	atmosphere.footfall(player.global_position + Vector2(0, 2), map.tile_at(cell))
 	GameState.move_to(map, cell, player.facing)
 	# Into a region of the Reach: its name, once (PIX-269).
@@ -728,7 +731,7 @@ func _build_hud() -> void:
 	GameState.hp_changed.connect(hud.on_hp_changed)
 	soundscape.listen()
 	GameState.leveled_up.connect(func(_level: int) -> void:
-		Sound.play("levelUp")
+		Sound.play("level_up")
 		soundscape.heard_hp = GameState.hero.hp
 		fx.level_up_burst()
 	)

@@ -170,7 +170,7 @@ func _advance() -> void:
 		_close()
 		return
 	page += 1
-	Sound.play_ui("page")
+	Sound.play("ui_page")
 	_show()
 
 
@@ -184,7 +184,7 @@ func _choose(step: int) -> void:
 		choice_focus = 0 if step > 0 else choices.size() - 1
 	else:
 		choice_focus = posmod(choice_focus + step, choices.size())
-	Sound.play_ui("tick")
+	Sound.play("ui_tick")
 	for index in choice_buttons.size():
 		UiStyle.focus(choice_buttons[index], index == choice_focus)
 

@@ -573,7 +573,7 @@ func _slot(slot: String, label: String) -> Control:
 		box.gui_input.connect(func(event: InputEvent) -> void:
 			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 				GameState.upkeep.unequip(slot)
-				Sound.play("equip")
+				Sound.play("unequip")
 				_refresh()
 		)
 	return box
@@ -637,7 +637,7 @@ func _primary() -> void:
 					GameState.upkeep.unequip(slot)
 					break
 			status.text = Text.t("%s goes back in the pack.") % InventoryState.gear_name(piece)
-			Sound.play("equip")
+			Sound.play("unequip")
 		elif GameState.upkeep.equip(piece["uid"]):
 			status.text = Text.t("You put on %s.") % InventoryState.gear_name(piece)
 			Sound.play("equip")
@@ -654,6 +654,7 @@ func _primary() -> void:
 		if not used["used"]:
 			status.text = "Nothing to do with that here."
 		else:
+			Sound.play("item_use")
 			status.text = used["text"]
 			if used["cures"] != "" and world != null and world.player.ailments.cure(used["cures"]):
 				status.text += Text.t(" Cured %s.") % Ailments.label(used["cures"])
@@ -710,10 +711,12 @@ func _drop(whole_stack: bool) -> void:
 	if row["kind"] == "gear":
 		var piece: Dictionary = row["piece"]
 		GameState.upkeep.drop_gear(piece["uid"])
+		Sound.play("item_drop")
 		status.text = Text.t("You leave %s behind.") % InventoryState.gear_name(piece)
 	else:
 		var count: int = row["count"] if whole_stack else 1
 		GameState.upkeep.drop_item(row["item_id"], count)
+		Sound.play("item_drop")
 		status.text = Text.t("You drop %s.") % Text.count(count, Catalog.item_name(row["item_id"]))
 	_refresh()
 

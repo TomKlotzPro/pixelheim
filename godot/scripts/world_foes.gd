@@ -371,7 +371,7 @@ func mimic_wakes(sprite: Sprite2D, chest: Dictionary) -> void:
 	if world.view != visit:
 		return
 	sprite.texture = MapView.treasure_texture(chest, true)
-	Sound.play("chest")
+	Sound.play("chest_open")
 	var at := Vector2i(int(chest["x"]), int(chest["y"]))
 	var ambush := Vector2i(-1, -1)
 	for step: Vector2i in [Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i(-1, 1), Vector2i(1, 1)]:
@@ -413,9 +413,9 @@ func on_enemy_noticed(enemy: Node) -> void:
 	world.hud.hint("dodge")
 	# A named monster or a boss roars (PIX-158, PIX-210); anything else bumps.
 	if fights_like_boss(enemy):
-		Sound.play("roar")
+		Sound.play("boss_sighted")
 	elif now - noticed_at > 1.5:
-		Sound.play("bump")
+		Sound.play("foe_noticed")
 	noticed_at = now
 	hunted_at = now
 	hunted_by_boss = hunted_by_boss or fights_like_boss(enemy)
@@ -432,7 +432,7 @@ func on_enemy_frightened(_enemy: Node) -> void:
 	fled += 1
 	world.hud.hint("fright")
 	if now - frightened_at > 1.5:
-		Sound.play_ui("fright")
+		Sound.play("foe_fright")
 	frightened_at = now
 
 
@@ -510,13 +510,13 @@ func on_enemy_died(enemy: Node) -> void:
 	if enemy.has_meta("bells_wave"):
 		world.night.ember_fell(enemy)
 	if enemy.fighter.has("named"):
-		Sound.play("bounty")
+		Sound.play("bounty_slain")
 		# A region dungeon's boss down: its shortcut out opens (PIX-255), and
 		# a way out where it fell when that's far from it (PIX-292), once it
 		# has finished falling (PIX-339).
 		world.delve.open_shortcut(Vector2i((enemy.position / MapView.TILE).floor()), enemy)
 	if GameState.pack.gear.size() > gear_before:
-		Sound.play("drop")
+		Sound.play("loot_drop")
 	if cleared != "":
 		world.messages.log_lines([Text.t("Pack scattered: another comes after a long walk or a night's rest.")], true)
 
@@ -549,7 +549,7 @@ func stood_down(enemy: Node) -> void:
 		GameState.spoils.slay_boss()
 		world.hud.title_card(String(said.get("card", Text.t("Stood down"))), String(said.get("line", "")))
 		world.messages.make_way()
-		Sound.play("victory")
+		Sound.play("stood_down")
 		enemy.lie_down()
 	var lines: Array = said.get("lines", [])
 	if lines.is_empty():
@@ -574,7 +574,7 @@ func boss_fell(boss: Node) -> void:
 	Sound.stop_music()
 	world.soundscape.hush(BOSS_HUSH_S)
 	hunted_by_boss = false
-	Sound.play("victory")
+	Sound.play("boss_down")
 	world.camera_rig.shake(8.0, 0.6)
 	if GameState.settings.reduce_motion:
 		return

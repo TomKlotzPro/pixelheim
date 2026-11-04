@@ -1,0 +1,109 @@
+{
+  "about": "Leohpaz's sounds the game plays (PIX-411): for each event in assets/data/audio.json, its takes as [the bundle's zip, the file's path inside it]. tools/sound_prep.py reads them out of the zips, trims and levels each to its family and writes <event>_<n>.wav and takes.json into the private pixelheim-assets repo (retro-rpg/leohpaz/pixelheim/); scripts/fetch-private-art.sh installs them, git-ignored, into assets/audio/paid/, where they stand in for the event's own takes. The packs may not be redistributed, so no take enters this repo. Picked by folder and file name and measured, not heard: these are the first examples, the rest come with PIX-412.",
+  "events": {
+    "step_grass": [
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_a.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_b.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_c.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_d.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_e.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_f.ogg"],
+      ["90_Player_Movement_SFX.zip", "01_Step_grass_01.wav"],
+      ["90_Player_Movement_SFX.zip", "02_Step_grass_02.wav"],
+      ["90_Player_Movement_SFX.zip", "03_Step_grass_03.wav"]
+    ],
+    "step_dirt": [
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_a.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_b.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_c.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_d.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_e.ogg"]
+    ],
+    "step_sand": [
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_a.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_b.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_c.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_d.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_e.ogg"],
+      ["90_Player_Movement_SFX.zip", "04_Step_sand_01.wav"],
+      ["90_Player_Movement_SFX.zip", "05_Step_sand_02.wav"],
+      ["90_Player_Movement_SFX.zip", "06_Step_sand_03.wav"]
+    ],
+    "step_stone": [
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_a.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_b.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_c.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_d.ogg"],
+      ["90_Player_Movement_SFX.zip", "07_Step_rock_01.wav"],
+      ["90_Player_Movement_SFX.zip", "08_Step_rock_02.wav"],
+      ["90_Player_Movement_SFX.zip", "09_Step_rock_03.wav"]
+    ],
+    "step_wood": [
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_a.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_b.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_c.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_d.ogg"],
+      ["90_Player_Movement_SFX.zip", "10_Step_wood_01.wav"],
+      ["90_Player_Movement_SFX.zip", "11_Step_wood_02.wav"],
+      ["90_Player_Movement_SFX.zip", "12_Step_wood_03.wav"]
+    ],
+    "step_snow": [
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_a.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_b.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_c.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_d.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_e.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_f.ogg"]
+    ],
+    "step_ice": [
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Cave_NoDebris_a.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Cave_NoDebris_b.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Cave_NoDebris_c.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Cave_NoDebris_d.ogg"]
+    ],
+    "step_water": [
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_a.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_b.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_c.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_d.ogg"],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_e.ogg"],
+      ["90_Player_Movement_SFX.zip", "13_Step_water_01.wav"],
+      ["90_Player_Movement_SFX.zip", "14_Step_water_02.wav"],
+      ["90_Player_Movement_SFX.zip", "15_Step_water_03.wav"]
+    ],
+    "hit_blade": [
+      ["90_RPG_Battle_SFX.zip", "14_Impact_flesh_01.wav"],
+      ["90_RPG_Battle_SFX.zip", "15_Impact_flesh_02.wav"],
+      ["90_RPG_Battle_SFX.zip", "16_Impact_flesh_03.wav"],
+      ["90_RPG_Battle_SFX.zip", "17_Impact_flesh_04.wav"]
+    ],
+    "hit_blunt": [
+      ["90_RPG_Battle_SFX.zip", "09_Impact_01.wav"],
+      ["90_RPG_Battle_SFX.zip", "10_Impact_02.wav"],
+      ["90_RPG_Battle_SFX.zip", "11_Impact_03.wav"]
+    ],
+    "hit_arrow": [
+      ["90_RPG_Battle_SFX.zip", "47_Bow_hit_01.wav"],
+      ["90_RPG_Battle_SFX.zip", "48_Bow_hit_02.wav"],
+      ["90_RPG_Battle_SFX.zip", "49_Bow_hit_01.wav"]
+    ],
+    "hit_blocked": [
+      ["90_RPG_Battle_SFX.zip", "37_Block_01.wav"],
+      ["90_RPG_Battle_SFX.zip", "38_Block_02.wav"],
+      ["90_RPG_Battle_SFX.zip", "39_Block_03.wav"]
+    ],
+    "ui_tick": [
+      ["100_rpg_ui_sfx.zip", "001_Hover_01.wav"],
+      ["100_rpg_ui_sfx.zip", "002_Hover_02.wav"],
+      ["100_rpg_ui_sfx.zip", "003_Hover_03.wav"]
+    ],
+    "ui_confirm": [
+      ["100_rpg_ui_sfx.zip", "011_Confirm_01.wav"],
+      ["100_rpg_ui_sfx.zip", "012_Confirm_02.wav"]
+    ],
+    "ui_deny": [
+      ["100_rpg_ui_sfx.zip", "031_Denied_01.wav"],
+      ["100_rpg_ui_sfx.zip", "032_Denied_02.wav"]
+    ]
+  }
+}

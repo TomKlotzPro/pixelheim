@@ -1,41 +1,48 @@
 extends GutTest
 ## Audio that breathes (PIX-212): a stinger is never the same twice, the
 ## same one within a breath sounds once, steps alternate at their own
-## level, a sound that matters takes a voice when all are busy, and the
-## quiet answers (yes, no, a page, an ailment) are there to be played.
+## level, every family keeps voices of its own (PIX-411) so a busy fight
+## never silences a step or a page, and the quiet answers (yes, no, a page,
+## an ailment) are there to be played.
 ## PIX-383: the game at a normal loudness, a limiter on Master.
+## The game's own takes throughout, the packs' held back as `cc0` holds them.
 
 
 func before_each() -> void:
+	Sound.withheld = true
 	_hush()
 
 
 func after_each() -> void:
 	_hush()
+	Sound.withheld = false
 
 
 func _hush() -> void:
-	for voice in Sound._voices:
+	for voice in Sound._voices():
 		voice.stop()
-	Sound._sfx_at.clear()
 	Sound._played_at.clear()
 	Sound._began.clear()
+	Sound._last.clear()
+	if Sound._duck != null:
+		Sound._duck.kill()
+	Sound._set_ducked(0.0)
 
 
 func _playing(sfx: String) -> Array:
-	return Sound._voices.filter(func(voice: AudioStreamPlayer) -> bool:
+	return Sound._voices().filter(func(voice: AudioStreamPlayer) -> bool:
 		return voice.playing and voice.stream != null and voice.stream.resource_path.ends_with("/%s.wav" % sfx))
 
 
 func test_a_stinger_varies_and_sounds_once_in_a_breath() -> void:
-	Sound.play("hit")
-	Sound.play("hit")
+	Sound.play("hit_blade")
+	Sound.play("hit_crit")
 	var heard := _playing("hit")
-	assert_eq(heard.size(), 1, "two hits in one frame sound once")
+	assert_eq(heard.size(), 1, "two hits in one frame sound once, whatever moments asked")
 	assert_between(heard[0].pitch_scale, 1.0 - Sound.VARY_PITCH, 1.0 + Sound.VARY_PITCH)
 	assert_between(heard[0].volume_db, -Sound.VARY_DB, Sound.VARY_DB)
-	Sound._sfx_at.clear()
-	Sound.play("hit", false)
+	Sound._played_at.clear()
+	Sound.play("hit_blade", false)
 	assert_eq(_playing("hit").filter(func(voice: AudioStreamPlayer) -> bool: return voice.pitch_scale == 1.0).size(), 1, "unvaried when asked")
 
 
@@ -49,30 +56,45 @@ func test_a_stinger_plays_at_its_own_level() -> void:
 
 
 func test_steps_alternate_at_their_own_level() -> void:
-	Sound.play("step")
+	var family: Dictionary = Sound._doc["families"]["step"]
+	Sound.play("step_grass")
 	var first: AudioStreamPlayer = _playing("step")[0]
 	var first_pitch := first.pitch_scale
-	assert_eq(first.volume_db, Sound.STEP_DB)
-	Sound._sfx_at.clear()
-	Sound.play("step")
+	assert_eq(first.volume_db, float(family["db"]), "the step family's level, unvaried")
+	Sound._played_at.clear()
+	Sound.play("step_stone")
 	# The first step is short and may have finished on a slow runner, so look only for the new voice.
 	var others: Array = _playing("step").filter(func(voice: AudioStreamPlayer) -> bool: return voice != first)
 	assert_eq(others.size(), 1, "a second voice")
 	if not others.is_empty():
 		assert_ne(others[0].pitch_scale, first_pitch, "left foot, right foot")
-	assert_true(Sound.STEP_PITCHES.any(func(pitch: float) -> bool: return is_equal_approx(pitch, first_pitch)), "one of the two feet")
+	assert_true(family["feet"].any(func(pitch: float) -> bool: return is_equal_approx(pitch, first_pitch)), "one of the two feet")
 
 
-func test_a_sound_that_matters_takes_a_voice_when_all_are_busy() -> void:
-	for i in Sound.SFX_VOICES:
-		Sound._sfx_at.clear()
-		Sound.play("coin")
-	assert_eq(_playing("coin").size(), Sound.SFX_VOICES, "every voice busy")
-	Sound._sfx_at.clear()
-	Sound.play("drop")
-	assert_eq(_playing("drop").size(), 0, "a small sound waits its turn")
+## PIX-411: each family its own voices. A fight using every one of its
+## blows' still lets a step, a tick and the hero's hurt be heard, and a new
+## blow takes the oldest of its own.
+func test_every_family_keeps_voices_of_its_own() -> void:
+	var blows: Array = Sound._pools["blow"]
+	for i in blows.size():
+		Sound._played_at.clear()
+		Sound.play("hit_blade")
+	assert_eq(_playing("hit").size(), blows.size(), "every blow's voice busy")
 	Sound.play("hurt")
-	assert_eq(_playing("hurt").size(), 1, "the hero's hurt is always heard")
+	Sound.play("step_grass")
+	Sound.play("ui_tick")
+	assert_eq(_playing("hurt").size(), 1, "the hero's hurt is heard")
+	assert_eq(_playing("step").size(), 1, "and their step")
+	assert_true(Sound._pools["ui"].any(func(voice: AudioStreamPlayer) -> bool: return voice.playing), "and the page's tick")
+	Sound._played_at.clear()
+	var oldest: AudioStreamPlayer = blows[0]
+	Sound._began[oldest] = -1
+	Sound.play("hit_blunt")
+	assert_eq(_playing("hit").size(), blows.size(), "a new blow takes the oldest of its own")
+	assert_ne(Sound._began[oldest], -1, "the one that began first")
+	for family: String in Sound._doc["families"]:
+		var bus: String = Sound._doc["families"][family]["bus"]
+		assert_true(Sound._pools[family].all(func(voice: AudioStreamPlayer) -> bool: return voice.bus == bus), "%s on %s" % [family, bus])
 
 
 func test_the_quiet_answers_are_there() -> void:
@@ -83,13 +105,16 @@ func test_the_quiet_answers_are_there() -> void:
 
 ## PIX-383: every bus LOUDNESS_DB over the player's slider, so the mix keeps
 ## its balance and the options' sliders work as before; nought is silent.
+## PIX-411: the pages and the jingles on the effects' slider, the ambience
+## on its own, where it sat under the effects'.
 func test_every_bus_is_as_loud_over_its_slider() -> void:
 	var settings: GameSettings = GameState.settings
 	Sound.apply_volumes()
-	var music := AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Music"))
-	var sfx := AudioServer.get_bus_volume_db(AudioServer.get_bus_index("SFX"))
-	assert_almost_eq(music, linear_to_db(maxf(settings.music_volume, 0.0001)) + Sound.LOUDNESS_DB, 0.01)
-	assert_almost_eq(sfx, linear_to_db(maxf(settings.sfx_volume, 0.0001)) + Sound.LOUDNESS_DB, 0.01)
+	var level := func(bus: String) -> float: return AudioServer.get_bus_volume_db(AudioServer.get_bus_index(bus))
+	assert_almost_eq(level.call("Music"), linear_to_db(maxf(settings.music_volume, 0.0001)) + Sound.LOUDNESS_DB, 0.01)
+	for bus: String in ["SFX", "UI", "Jingle"]:
+		assert_almost_eq(level.call(bus), linear_to_db(maxf(settings.sfx_volume, 0.0001)) + Sound.LOUDNESS_DB, 0.01, bus)
+	assert_almost_eq(level.call("Ambience"), Sound.bus_db(settings.ambience_volume * Sound.AMBIENCE_SHARE), 0.01)
 	assert_almost_eq(Sound.bus_db(0.7), -3.1 + Sound.LOUDNESS_DB, 0.01, "the default 70%")
 	assert_almost_eq(Sound.bus_db(0.0), -80.0, 0.01, "nought as silent as it was")
 
@@ -114,6 +139,14 @@ func test_a_move_ticks_unless_it_made_its_own_sound() -> void:
 	assert_eq(Sound.asked, before + 1, "a plain move ticks")
 	_hush()
 	before = Sound.asked
-	Sound.play_ui("page")
+	Sound.play("ui_page")
 	Sound._tick_unless_heard(before)
 	assert_eq(Sound.asked, before + 1, "the page alone")
+
+
+## PIX-411: a moment the game has no sound for yet is silent, and asks for none.
+func test_a_moment_without_a_take_is_silent() -> void:
+	assert_eq(Sound.takes_of("foe_bite"), [], "no take of the game's own")
+	var before := Sound.asked
+	Sound.play("foe_bite")
+	assert_eq(Sound.asked, before, "nothing played")

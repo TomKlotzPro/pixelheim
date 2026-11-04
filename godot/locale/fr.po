@@ -16897,6 +16897,10 @@ msgid "%s is now %s."
 msgstr "%s : désormais %s."
 
 #: scripts/options_screen.gd
+msgid "Ambience volume"
+msgstr "Volume de l'ambiance"
+
+#: scripts/options_screen.gd
 msgid "CRT scanlines"
 msgstr "Lignes CRT"
 
@@ -17791,6 +17795,10 @@ msgstr "mettre sur une touche"
 #: scripts/sound.gd
 msgid "Ambience"
 msgstr "Ambiance"
+
+#: scripts/sound.gd
+msgid "Jingle"
+msgstr "Jingle"
 
 #: scripts/sound.gd
 msgid "Master"

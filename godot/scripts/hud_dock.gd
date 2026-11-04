@@ -541,7 +541,7 @@ func _warn_low_hp(delta: float) -> void:
 		_beat_left -= delta
 		if _beat_left <= 0.0:
 			_beat_left = HEARTBEAT_S
-			Sound.play_ui("heart")
+			Sound.play("heartbeat")
 
 
 ## "Power Strike" -> "PS": what a slot shows until the skills have icons.
@@ -687,7 +687,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				if (menu_lines[menu_focus]["line"] as Control).visible:
 					break
 			_show_focus()
-			Sound.play_ui("tick")
+			Sound.play("ui_tick")
 			return
 	if event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()

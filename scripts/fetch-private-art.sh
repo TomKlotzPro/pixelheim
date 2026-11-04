@@ -7,15 +7,18 @@
 # and GegX's UI kit as UiStyle's pieces (retro-rpg/gegx/pixel-ui-kit/pixelheim/,
 # made by godot/tools/ui_kit_prep.gd) into godot/assets/puny/gegx/ (PIX-385),
 # and ninth-jedi's Farm Animals (retro-rpg/ninth-jedi/farm-animals/) into
-# godot/assets/puny/animals/ (PIX-387).
-# All four folders are git-ignored: the packs may not be redistributed, even
+# godot/assets/puny/animals/ (PIX-387), and Leohpaz's sounds as the game
+# plays them (retro-rpg/leohpaz/pixelheim/, made by godot/tools/sound_prep.py)
+# into godot/assets/audio/paid/ (PIX-411).
+# All five folders are git-ignored: the packs may not be redistributed, even
 # modified, so they never enter this repo.
 #
 #   scripts/fetch-private-art.sh            clones the repo (your GitHub login)
 #   scripts/fetch-private-art.sh <checkout> uses a checkout already made (CI)
 #
 # Without it the game still runs on Shade's free art alone: the town's
-# houses, props and paid icons are missing (collision is the same).
+# houses, props and paid icons are missing (collision is the same), and
+# every sound is the game's own.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -91,3 +94,11 @@ for dir in "$farm"/*/; do
   done
 done
 echo "Installed $count farm animal frames into godot/assets/puny/animals/"
+
+# Leohpaz's sounds, prepared (PIX-411): each event's takes and the list the
+# game reads them by (godot/assets/audio/paid.json names where each is from).
+sounds="$src/retro-rpg/leohpaz/pixelheim"
+rm -rf godot/assets/audio/paid
+mkdir -p godot/assets/audio/paid
+cp "$sounds"/*.wav "$sounds"/takes.json godot/assets/audio/paid/
+echo "Installed $(ls "$sounds"/*.wav | wc -l | tr -d ' ') sound takes into godot/assets/audio/paid/"

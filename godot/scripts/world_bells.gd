@@ -104,7 +104,7 @@ func begin() -> void:
 	_stage()
 	var settlers := GameState.settlement.settlers
 	if not Bells.job("bell", settlers, GameState.town_tier()).is_empty():
-		Sound.play("bell", false)
+		Sound.play("alarm_bell", false)
 	world.camera_rig.shake(3.0, 0.6)
 	world.messages.flash(Bells.start_line(settlers, GameState.town_tier()))
 
@@ -198,7 +198,7 @@ func _lantern(faced: Vector2i) -> bool:
 	GameState.mark_dirty()
 	if index < _lanterns.size() and is_instance_valid(_lanterns[index]):
 		light(_lanterns[index], index)
-	Sound.play_ui("confirm")
+	Sound.play("lantern_lit")
 	if lit.size() < Bells.lanterns().size():
 		world.messages.flash("%s (%d/%d)" % [Bells.data()["lanterns"]["lit"], lit.size(), Bells.lanterns().size()])
 		return true
@@ -262,7 +262,7 @@ func _water(faced: Vector2i) -> bool:
 	var fires: Dictionary = Bells.data()["fires"]
 	if world.map.tile_at(faced) == "well":
 		bucket = true
-		Sound.play("drop")
+		Sound.play("bucket_fill")
 		world.messages.flash(String(fires["well"]))
 		return true
 	var roof := Bells.roof_at(faced)
@@ -281,7 +281,7 @@ func _douse(roof: int) -> void:
 	GameState.mark_dirty()
 	if _fires.has(roof):
 		world.view.douse(int(_fires[roof]))
-	Sound.play("heal")
+	Sound.play("douse")
 	var fires: Dictionary = Bells.data()["fires"]
 	var all := Bells.roofs().size()
 	world.messages.flash(String(fires["done"]) if doused.size() >= all else "%s (%d/%d)" % [fires["doused"], doused.size(), all])
@@ -327,7 +327,7 @@ func _land() -> void:
 	world.actors.add_child(enemy)
 	dragon = enemy
 	world.fx.appear(enemy)
-	Sound.play("roar")
+	Sound.play("dragon_roar")
 	world.camera_rig.shake(7.0, 0.9)
 	world.hud.title_card(String(spec["card"]), String(spec["cardLine"]))
 	enemy.notice()
@@ -414,7 +414,7 @@ func _tend_tent() -> void:
 		return
 	_healed_at = GameClock.seconds()
 	GameState.make_whole()
-	Sound.play("heal")
+	Sound.play("heal_whole")
 	world.messages.flash(String(tent["said"]))
 	_note("heal")
 
@@ -422,7 +422,7 @@ func _tend_tent() -> void:
 ## Teo's bell: a breath's stun on the dragon every ring.
 func _ring(entry: Dictionary) -> void:
 	dragon.ailments.stun_for(int(entry["stun"]))
-	Sound.play("bell", false)
+	Sound.play("bell_ring", false)
 	world.camera_rig.shake(2.0, 0.3)
 	world.fx.float_text(Text.t("Dong!"), MapView.center(Bells.cell(entry["at"])) + Vector2(0, -18), UiStyle.GOLD, true)
 	if not _said.has("bell"):
@@ -432,7 +432,7 @@ func _ring(entry: Dictionary) -> void:
 
 ## Ulla's old guard: arrows down off the walls at him.
 func _volley(entry: Dictionary) -> void:
-	Sound.play_ui("loose")
+	Sound.play("volley")
 	for i in int(entry["count"]):
 		var arrow := Shot.new()
 		arrow.target = dragon
@@ -673,7 +673,7 @@ class Shot:
 		var aim: Vector2 = target.global_position + Vector2(0, -10)
 		var to := aim - position
 		if to.length() < 8.0:
-			target.chip(damage, Color(0.85, 0.9, 1.0))
+			target.chip(damage, Color(0.85, 0.9, 1.0), "hit_arrow")
 			queue_free()
 			return
 		rotation = to.angle()
@@ -708,7 +708,7 @@ class Wheel:
 		var to: Vector2 = target.global_position - position
 		if to.length() < 10.0:
 			target.chip(damage, Color(1.0, 0.86, 0.4))
-			Sound.play_ui("slam")
+			Sound.play("cheese_thud")
 			queue_free()
 			return
 		var step := minf(SPEED * delta, to.length())

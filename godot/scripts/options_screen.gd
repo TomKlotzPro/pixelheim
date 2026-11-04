@@ -1,9 +1,10 @@
 extends Screen
 ## areas: screen
-## Options (Options.tsx): sound, the CRT scanlines, fullscreen, reduced
-## motion, and the keys. W/S choose a row, A/D move a slider or flip a
-## switch, E rebinds a key (the next key pressed takes it; Esc cancels).
-## Everything is saved at once in GameSettings. Esc closes.
+## Options (Options.tsx): sound (music, effects and ambience, PIX-411), the
+## CRT scanlines, fullscreen, reduced motion, and the keys. W/S choose a
+## row, A/D move a slider or flip a switch, E rebinds a key (the next key
+## pressed takes it; Esc cancels). Everything is saved at once in
+## GameSettings. Esc closes.
 
 var world: Node
 var rows: Array[Dictionary] = []
@@ -49,6 +50,7 @@ func _build() -> Array[Dictionary]:
 	out.append({"label": "Sound", "value": "Muted" if settings.muted else "On", "adjust": _flip.bind("muted")})
 	out.append({"label": "Music volume", "value": "%d%%" % roundi(settings.music_volume * 100), "adjust": _volume.bind("music")})
 	out.append({"label": "Effects volume", "value": "%d%%" % roundi(settings.sfx_volume * 100), "adjust": _volume.bind("sfx")})
+	out.append({"label": "Ambience volume", "value": "%d%%" % roundi(settings.ambience_volume * 100), "adjust": _volume.bind("ambience")})
 	out.append({"heading": "Video"})
 	out.append({"label": "CRT scanlines", "value": "On" if settings.scanlines else "Off", "adjust": _flip.bind("scanlines")})
 	out.append({"label": "Fullscreen", "value": "On" if settings.fullscreen else "Off", "adjust": _flip.bind("fullscreen")})
@@ -196,16 +198,15 @@ func _act(direction: int) -> void:
 	_refresh()
 
 
+## A slider ("music", "sfx" or "ambience") a tenth up or down.
 func _volume(direction: int, bus: String) -> void:
 	var settings := GameState.settings
-	if bus == "music":
-		settings.music_volume = clampf(snappedf(settings.music_volume + direction * 0.1, 0.1), 0.0, 1.0)
-	else:
-		settings.sfx_volume = clampf(snappedf(settings.sfx_volume + direction * 0.1, 0.1), 0.0, 1.0)
+	var key := bus + "_volume"
+	settings.set(key, clampf(snappedf(float(settings.get(key)) + direction * 0.1, 0.1), 0.0, 1.0))
 	settings.save_file()
 	Sound.apply_volumes()
 	if bus == "sfx":
-		Sound.play("coin")
+		Sound.play("ui_volume")
 
 
 func _flip(_direction: int, setting: String) -> void:

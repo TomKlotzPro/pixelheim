@@ -332,7 +332,7 @@ func _bind(index: int) -> void:
 		status.text = "Only a skill you know can go on a key."
 		return
 	if GameState.training.dock_skill(key, index):
-		Sound.play("learn")
+		Sound.play("skill_docked")
 		status.text = Text.t("%s is on key %d.") % [name, index + 1]
 	_layout()
 
@@ -366,12 +366,12 @@ func _act() -> void:
 	var entry: Dictionary = cell["entry"]
 	if cell["kind"] == "path":
 		if GameState.training.choose_path(entry["id"]):
-			Sound.play("learn")
+			Sound.play("path_chosen")
 			status.text = Text.t("You walk the path of the %s.") % entry["name"]
 		else:
 			status.text = "That path isn't yours to walk now."
 	elif GameState.training.buy_skill_node(entry["id"]):
-		Sound.play("learn")
+		Sound.play("skill_learned")
 		status.text = Text.t("Learned: %s.") % entry["name"]
 		# The first skill bought names who can make the hero forget it (PIX-331).
 		var hud: Variant = get_tree().current_scene.get("hud")

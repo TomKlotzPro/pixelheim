@@ -461,7 +461,7 @@ func _lift() -> void:
 ## white, sparks fly, the halo swells and the pool takes the class's light.
 ## With Reduce motion the light only brightens.
 func _flare() -> void:
-	Sound.play_ui("ascend")
+	Sound.play("ascend_flare")
 	var lit := Color(light, POOL_LIT)
 	if still:
 		var brighten := create_tween().set_parallel()
@@ -616,7 +616,7 @@ func _pick(index: int) -> void:
 ## With nothing further to choose, the moment passes a little after.
 func _walk() -> void:
 	if GameState.training.choose_path(choices[selected]["id"]):
-		Sound.play("learn")
+		Sound.play("path_chosen")
 	selected = 0
 	_offer()
 	if choices.is_empty() and phase == "settled":

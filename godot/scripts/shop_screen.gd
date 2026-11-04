@@ -491,7 +491,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 					"action": func() -> void:
 						var line := trade.quench_gear(uid)
 						if line != "":
-							Sound.play("craft")
+							Sound.play("quench")
 						status.text = line if line != "" else Text.t("That takes %dg and a gem.") % cost,
 				})
 		"Salvage":
@@ -848,20 +848,20 @@ func _act() -> void:
 		amount = 0
 		var gold := GameState.trade.sell_item(item_id, sold)
 		status.text = Text.t("Sold %s for %dg.") % [Text.count(sold, Catalog.item_name(item_id)), gold] if gold > 0 else "Not for sale."
-		Sound.play("coin")
+		Sound.play("sell")
 		_refresh()
 		return
 	if asking_junk:
 		asking_junk = false
 		status.text = Text.t("Sold the junk for %dg.") % GameState.trade.sell_junk()
-		Sound.play("coin")
+		Sound.play("sell")
 		_refresh()
 		return
 	if not row["enabled"]:
 		# A recipe says what it lacks (PIX-234); anything else, only no.
 		var why: String = row["why_of"].call() if row.has("why_of") else ""
 		status.text = why if why != "" else "Not possible right now."
-		Sound.play_ui("deny")
+		Sound.play("ui_deny")
 		return
 	row["action"].call()
 	_refresh()
@@ -871,15 +871,15 @@ func _after(ok: bool, done: String, refused: String) -> void:
 	status.text = done if ok else refused
 	# Coin for a deal, a no for a refusal (PIX-212).
 	if ok:
-		Sound.play("coin")
+		Sound.play("buy")
 	else:
-		Sound.play_ui("deny")
+		Sound.play("ui_deny")
 
 
 func _sold(gold: int) -> void:
 	status.text = Text.t("Sold for %dg.") % gold if gold > 0 else "Not for sale."
 	if gold > 0:
-		Sound.play("coin")
+		Sound.play("sell")
 
 
 ## A craft, unless it would take what a taken delivery needs: then it asks
