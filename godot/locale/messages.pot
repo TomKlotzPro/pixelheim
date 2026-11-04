@@ -5173,6 +5173,10 @@ msgid "Some day camps sleep by their lit torch at night, a Z drifting up: walk r
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Sound Restored"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Sounds are never quite the same twice, a little higher or lower, louder or softer; a flurry of hits sounds as one, and footsteps are softer, left foot and right"
 msgstr ""
 
@@ -6478,6 +6482,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The ways between maps are natural passes now: the cliffs part and the road runs through, with no signposts, no name boxes and no framed caves or torches"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The web build plays its music and sounds again: its audio buses now come from the project's layout, where making them at start-up had wired the browser's output into a loop and left the game silent"
 msgstr ""
 
 #: assets/data/changelog.json
