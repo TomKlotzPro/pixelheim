@@ -435,10 +435,12 @@ func _plan_hamlet() -> void:
 	# Pixelheim's yards and square by its age (PIX-382), laid as a
 	# settlement's dressing is.
 	var yards := Yards.plan(data, buildings["pieces"], GameState.town_tier(), PunyTown.available()) if data.id == "town" else ([] as Array[Dictionary])
+	# The farmland round its walls on the Reach (PIX-397), laid the same way.
+	yards.append_array(Farmland.plan(data, GameState.town_tier(), PunyTown.available()))
 	if Hamlet.look_of(data.id) == "" and yards.is_empty():
 		return
 	var kept := Hamlet.kept_on(data, patch_decks)
-	if not yards.is_empty():
+	if data.id == "town" and not yards.is_empty():
 		kept.merge(Yards.kept(data))
 	kept[arrival] = true
 	# What its hub has grown as its post road filled (PIX-324).

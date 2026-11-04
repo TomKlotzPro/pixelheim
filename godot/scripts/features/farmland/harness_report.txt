@@ -1,0 +1,4 @@
+# The farmland's report field (PIX-397): `field | says`, as the core's
+# (scripts/harness_report.txt), which it joins after its head, by name; its
+# function is `field_farmland(report)` in feature.gd.
+farmland | on the Reach (with the paid pack): the town's age and the farmland laid round its walls, its pieces counted by set: 4:farmstead12,field72,orchard10,pasture32,wayside4 (PIX-397)
