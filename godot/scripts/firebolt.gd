@@ -43,6 +43,7 @@ func _physics_process(delta: float) -> void:
 	if not player.dead and position.distance_to(player.global_position + Vector2(0, -6)) < REACH:
 		var damage := roundi(Bestiary.monster_attack_damage(caster, GameState.hero, GameState.pack, GameState.roll) * power)
 		player.take_hit(damage, position, caster.get("inflicts"))
+		Sound.play("firebolt_hit")
 		queue_free()
 		return
 	if flown > RANGE or not world.map.is_walkable(Vector2i((position / TILE).floor())):

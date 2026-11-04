@@ -349,6 +349,7 @@ func _lair() -> Control:
 
 ## A name to remember, in the logo's capitals over the scene, a line beneath.
 func _card(text: String, sub: String) -> void:
+	Sound.play("cutscene_card")
 	var card := VBoxContainer.new()
 	card.position = Vector2(0, BAR + 40)
 	card.custom_minimum_size = Vector2(VIEW.x, 0)
@@ -526,6 +527,8 @@ func _on_screen(sprite: AnimatedSprite2D, at: Array) -> Vector2:
 
 
 func _shake(strength: float, seconds: float) -> void:
+	# The ground is heard even where reduced motion keeps the picture still.
+	Sound.play("rumble")
 	if still:
 		return
 	var shake := create_tween()

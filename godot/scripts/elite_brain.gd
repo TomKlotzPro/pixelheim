@@ -129,6 +129,7 @@ func _strike(shape: PackedVector2Array, move: Dictionary, jump: String) -> void:
 ## A guard raised for a moment: blows mostly glance off (enemy.take_hit).
 func _guard(move: Dictionary) -> void:
 	enemy.guarding = true
+	Sound.play("guard_raise")
 	var shine: Tween = enemy.sprite.create_tween()
 	shine.tween_property(enemy.sprite, "modulate", Color(0.7, 0.85, 1.4), 0.12)
 	shine.tween_interval(float(move["seconds"]))
@@ -165,6 +166,7 @@ func _bolt(move: Dictionary, heading: Vector2) -> void:
 	bolt.heading = heading
 	bolt.speed = float(move["speed"])
 	world.add_child(bolt)
+	Sound.play("firebolt_cast")
 
 
 ## The forest answers a howl: wolves of its kind at its side.

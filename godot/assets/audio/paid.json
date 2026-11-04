@@ -1,109 +1,894 @@
 {
-  "about": "Leohpaz's sounds the game plays (PIX-411): for each event in assets/data/audio.json, its takes as [the bundle's zip, the file's path inside it]. tools/sound_prep.py reads them out of the zips, trims and levels each to its family and writes <event>_<n>.wav and takes.json into the private pixelheim-assets repo (retro-rpg/leohpaz/pixelheim/); scripts/fetch-private-art.sh installs them, git-ignored, into assets/audio/paid/, where they stand in for the event's own takes. The packs may not be redistributed, so no take enters this repo. Picked by folder and file name and measured, not heard: these are the first examples, the rest come with PIX-412.",
+  "about": "Leohpaz's sounds the game plays (PIX-411, PIX-413): for each event in assets/data/audio.json, its takes as [the bundle's zip, the file's path inside it, how to cut it], or the name of the event whose takes it shares. tools/sound_prep.py reads them out of the zips, cuts each (\"keep\": seconds after its start, the tail faded; \"loop\": a bed's seconds, its end crossfaded into its start; \"pitch\", \"lowpass\" Hz, \"db\" after levelling), levels it to its family and writes <event>_<n>.wav and takes.json into the private pixelheim-assets repo (retro-rpg/leohpaz/pixelheim/); scripts/fetch-private-art.sh installs them, git-ignored, into assets/audio/paid/, where they stand in for the event's own takes. The packs may not be redistributed, so no take enters this repo. Picked by name and measured from ~/playground/leohpaz-sfx/mapping, never heard: the PR's listening list says which to hear first. No take that may hold words (the game speaks English and French).",
   "events": {
-    "step_grass": [
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_a.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_b.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_c.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_d.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_e.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_f.ogg"],
-      ["90_Player_Movement_SFX.zip", "01_Step_grass_01.wav"],
-      ["90_Player_Movement_SFX.zip", "02_Step_grass_02.wav"],
-      ["90_Player_Movement_SFX.zip", "03_Step_grass_03.wav"]
+    "swing": [
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Slash_Attacks/Slash_Attack_Sword_1.wav", {"keep": 0.165}],
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Slash_Attacks/Slash_Attack_Sword_2.wav", {"keep": 0.195}],
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Slash_Attacks/Slash_Attack_Sword_3.wav", {"keep": 0.16}],
+      ["90_RPG_Battle_SFX.zip", "31_swoosh_sword_1.wav", {"keep": 0.28}]
     ],
-    "step_dirt": [
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_a.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_b.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_c.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_d.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_e.ogg"]
+    "shoot": [
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Ranged_Attacks/Bow_Release.wav", {"keep": 0.225}],
+      ["90_RPG_Battle_SFX.zip", "46_bow_shot_03.wav", {"keep": 0.255}],
+      ["90_RPG_Battle_SFX.zip", "45_bow_shot_02.wav", {"keep": 0.285}]
     ],
-    "step_sand": [
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_a.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_b.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_c.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_d.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_e.ogg"],
-      ["90_Player_Movement_SFX.zip", "04_Step_sand_01.wav"],
-      ["90_Player_Movement_SFX.zip", "05_Step_sand_02.wav"],
-      ["90_Player_Movement_SFX.zip", "06_Step_sand_03.wav"]
-    ],
-    "step_stone": [
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_a.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_b.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_c.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_d.ogg"],
-      ["90_Player_Movement_SFX.zip", "07_Step_rock_01.wav"],
-      ["90_Player_Movement_SFX.zip", "08_Step_rock_02.wav"],
-      ["90_Player_Movement_SFX.zip", "09_Step_rock_03.wav"]
-    ],
-    "step_wood": [
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_a.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_b.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_c.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_d.ogg"],
-      ["90_Player_Movement_SFX.zip", "10_Step_wood_01.wav"],
-      ["90_Player_Movement_SFX.zip", "11_Step_wood_02.wav"],
-      ["90_Player_Movement_SFX.zip", "12_Step_wood_03.wav"]
-    ],
-    "step_snow": [
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_a.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_b.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_c.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_d.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_e.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_f.ogg"]
-    ],
-    "step_ice": [
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Cave_NoDebris_a.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Cave_NoDebris_b.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Cave_NoDebris_c.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Cave_NoDebris_d.ogg"]
-    ],
-    "step_water": [
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_a.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_b.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_c.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_d.ogg"],
-      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_e.ogg"],
-      ["90_Player_Movement_SFX.zip", "13_Step_water_01.wav"],
-      ["90_Player_Movement_SFX.zip", "14_Step_water_02.wav"],
-      ["90_Player_Movement_SFX.zip", "15_Step_water_03.wav"]
+    "bolt": [
+      ["LEOHPAZ_Minifantasy_Spell_Effects_II_SFX.zip", "LEOHPAZ_Minifantasy_Spell_Effects_II_SFX/Arcane_Magic_School/Arcane_Missile/Arcane_Missile_Throw.wav", {"keep": 0.44}],
+      ["LEOHPAZ_EnchantedCompanions_SFX_Pack.zip", "LEOHPAZ_EnchantedCompanions_SFX_Pack/BabySeeker/BabySeeker_Attack.wav", {"keep": 0.4}]
     ],
     "hit_blade": [
-      ["90_RPG_Battle_SFX.zip", "14_Impact_flesh_01.wav"],
-      ["90_RPG_Battle_SFX.zip", "15_Impact_flesh_02.wav"],
-      ["90_RPG_Battle_SFX.zip", "16_Impact_flesh_03.wav"],
-      ["90_RPG_Battle_SFX.zip", "17_Impact_flesh_04.wav"]
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Hits/Hit_Metal_on_flesh.wav", {"keep": 0.155}],
+      ["90_RPG_Battle_SFX.zip", "78_flesh_03.wav", {"keep": 0.28}],
+      ["90_RPG_Battle_SFX.zip", "79_flesh_04.wav", {"keep": 0.275}],
+      ["90_RPG_Battle_SFX.zip", "80_flesh_05.wav", {"keep": 0.28}]
     ],
     "hit_blunt": [
-      ["90_RPG_Battle_SFX.zip", "09_Impact_01.wav"],
-      ["90_RPG_Battle_SFX.zip", "10_Impact_02.wav"],
-      ["90_RPG_Battle_SFX.zip", "11_Impact_03.wav"]
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Hits/Hit_Wood_on_flesh.wav", {"keep": 0.12}],
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Hits/Hit_Wood_on_leather.wav", {"keep": 0.13}],
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Hits/Hit_Wood_on_wood.wav", {"keep": 0.13}]
     ],
     "hit_arrow": [
-      ["90_RPG_Battle_SFX.zip", "47_Bow_hit_01.wav"],
-      ["90_RPG_Battle_SFX.zip", "48_Bow_hit_02.wav"],
-      ["90_RPG_Battle_SFX.zip", "49_Bow_hit_01.wav"]
+      ["90_RPG_Battle_SFX.zip", "47_Bow_hit_01.wav", {"keep": 0.205}],
+      ["90_RPG_Battle_SFX.zip", "48_Bow_hit_02.wav", {"keep": 0.185}],
+      ["90_RPG_Battle_SFX.zip", "49_Bow_hit_01.wav", {"keep": 0.13}]
+    ],
+    "hit_spell": [
+      ["LEOHPAZ_EnchantedCompanions_SFX_Pack.zip", "LEOHPAZ_EnchantedCompanions_SFX_Pack/BabySeeker/BabySeeker_ProjectileHit.wav", {"keep": 0.385}],
+      ["LEOHPAZ_OtherwordlyCreatures_SFX.zip", "LEOHPAZ_OtherwordlyCreatures_SFX/Will_o_Wisp/Will_O_Wisp_ProjectileCollision.wav", {"keep": 0.44}],
+      ["LEOHPAZ_EnchantedCompanions_SFX_Pack.zip", "LEOHPAZ_EnchantedCompanions_SFX_Pack/Draco/Draco_ProjectileHit.wav", {"keep": 0.685}]
+    ],
+    "hit_crit": [
+      ["90_RPG_Battle_SFX.zip", "18_Impact_flesh_05.wav", {"keep": 0.185}],
+      ["90_RPG_Battle_SFX.zip", "16_Impact_flesh_03.wav", {"keep": 0.155}],
+      ["90_RPG_Battle_SFX.zip", "17_Impact_flesh_04.wav", {"keep": 0.235}]
     ],
     "hit_blocked": [
-      ["90_RPG_Battle_SFX.zip", "37_Block_01.wav"],
-      ["90_RPG_Battle_SFX.zip", "38_Block_02.wav"],
-      ["90_RPG_Battle_SFX.zip", "39_Block_03.wav"]
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Guard/Iron_shield_1.wav", {"keep": 0.11}],
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Guard/Iron_shield_2.wav", {"keep": 0.11}],
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Guard/Wooden_Shield_Heavy.wav", {"keep": 0.145}],
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Guard/Wooden_Shield_Light.wav", {"keep": 0.12}]
+    ],
+    "guard_raise": [
+      ["Minifantasy_TrueHeroes_SFX.zip", "Minifantasy_TrueHeroes_SFX/Barbarian/General_Sounds/Barbarian_Guard_1.wav", {"keep": 0.355}],
+      ["Minifantasy_TrueHeroes_SFX.zip", "Minifantasy_TrueHeroes_SFX/Barbarian/General_Sounds/Barbarian_Guard_2.wav", {"keep": 0.4}],
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Skeletons/Skeleton_Generic_Activate.wav", {"keep": 0.55}]
+    ],
+    "hurt": [
+      ["90_Player_Movement_SFX.zip", "62_Get_hit_01.wav", {"keep": 0.125}],
+      ["90_Player_Movement_SFX.zip", "63_Get_hit_02.wav", {"keep": 0.11}],
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Hits/Hit_Metal_on_leather.wav", {"keep": 0.15}]
+    ],
+    "dodge": [
+      ["90_Player_Movement_SFX.zip", "67_Dash_evade_03.wav", {"keep": 0.32}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Humanoids/Human/18_human_dash_1.wav", {"keep": 0.25}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Humanoids/Human/19_human_dash_2.wav", {"keep": 0.225}],
+      ["Minifantasy_TrueHeroes_SFX.zip", "Minifantasy_TrueHeroes_SFX/Rogue/Special_Sounds/Rogue_Dodge.wav", {"keep": 0.47}]
+    ],
+    "whiff": [
+      ["90_RPG_Battle_SFX.zip", "34_Miss_Evade_01.wav", {"keep": 0.255}],
+      ["90_RPG_Battle_SFX.zip", "35_Miss_Evade_02.wav", {"keep": 0.255}],
+      ["90_RPG_Battle_SFX.zip", "36_Miss_Evade_03.wav", {"keep": 0.34}]
+    ],
+    "kill": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Big_Guys/Wargo/07_Wargo_Land.wav", {"keep": 0.105}],
+      ["Minifantasy_True_Heroes_II_SFX_Pack.zip", "Minifantasy_True_Heroes_II_SFX_Pack/Paladin/General_Moves/Paladin_Land.wav", {"keep": 0.15}],
+      ["Minifantasy_True_Heroes_II_SFX_Pack.zip", "Minifantasy_True_Heroes_II_SFX_Pack/Cleric/General_Moves/Cleric_Land.wav", {"keep": 0.15}]
+    ],
+    "strike": [
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Spells/Earth/04_Earth_Hit.wav", {"keep": 0.34}],
+      ["LEOHPAZ_Elemental_Creatures_SFX.zip", "LEOHPAZ_Elemental_Creatures_SFX/Earth_Elemental/Earth_Elemental_Attack_Hit.wav", {"keep": 0.5}],
+      ["19_Earth_SFX.zip", "08_Earth_III_Hit_I.wav", {"keep": 0.395}]
+    ],
+    "afflicted": [
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Hits/Stun_Hit.wav", {"keep": 0.515}],
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Hits/Sleep_Hit.wav", {"keep": 0.26}],
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Hits/Sickness_Hit.wav", {"keep": 0.52}]
+    ],
+    "foe_fright": [
+      ["90_RPG_Battle_SFX.zip", "51_Flee_02.wav", {"keep": 0.335}],
+      ["90_RPG_Battle_SFX.zip", "53_Flee_04.wav", {"keep": 0.945}],
+      ["90_RPG_Battle_SFX.zip", "50_Flee_01.wav", {"keep": 0.335}]
+    ],
+    "volley": [
+      ["Minifantasy_True_Heroes_III_SFX_Pack.zip", "Minifantasy_True_Heroes_III_SFX_Pack/Ranger/Special/14_Ranger_Double_Shot.wav", {"keep": 0.84}],
+      ["Minifantasy_True_Heroes_III_SFX_Pack.zip", "Minifantasy_True_Heroes_III_SFX_Pack/Ranger/Special/15_Ranger_Triple_Shot.wav", {"keep": 1.145}]
+    ],
+    "firebolt_cast": [
+      ["50_RPG_Battle_Magic_SFX.zip", "07_Fireball_01.wav", {"keep": 0.44}],
+      ["50_RPG_Battle_Magic_SFX.zip", "08_Fireball_02.wav", {"keep": 0.46}],
+      ["50_RPG_Battle_Magic_SFX.zip", "09_Fireball_03.wav", {"keep": 0.485}]
+    ],
+    "firebolt_hit": [
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Hits/Fire_Hit.wav", {"keep": 0.58}],
+      ["LEOHPAZ_Elemental_Creatures_SFX.zip", "LEOHPAZ_Elemental_Creatures_SFX/Fire_Elemental/Fire_Elemental_Fireball_Critical_Hit.wav", {"keep": 0.47}],
+      ["Retro_Fire_SFX_1_WAV.zip", "04_Fire_I_Hit.wav", {"keep": 0.56}]
+    ],
+    "cast_melee": [
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Charged_Attacks/Charge_1.wav", {"keep": 0.415}],
+      ["90_RPG_Battle_SFX.zip", "32_Swoosh_sword_2.wav", {"keep": 0.285}],
+      ["90_RPG_Battle_SFX.zip", "33_Swoosh_Sword_3.wav", {"keep": 0.28}]
+    ],
+    "impact_melee": [
+      ["90_RPG_Battle_SFX.zip", "19_Slash_01.wav", {"keep": 0.33}],
+      ["90_RPG_Battle_SFX.zip", "22_Slash_04.wav", {"keep": 0.355}],
+      ["90_RPG_Battle_SFX.zip", "21_Slash_03.wav", {"keep": 0.31}]
+    ],
+    "cast_martial": [
+      ["Minifantasy_True_Heroes_III_SFX_Pack.zip", "Minifantasy_True_Heroes_III_SFX_Pack/Fighter/Special/13_Fighter_Uppercut.wav", {"keep": 0.39}],
+      ["Minifantasy_True_Heroes_III_SFX_Pack.zip", "Minifantasy_True_Heroes_III_SFX_Pack/Fighter/Special/10_Fighter_Swirl.wav", {"keep": 0.465}],
+      ["Minifantasy_True_Heroes_III_SFX_Pack.zip", "Minifantasy_True_Heroes_III_SFX_Pack/Fighter/Special/12_Fighter_Tempest.wav", {"keep": 0.6}]
+    ],
+    "impact_martial": [
+      ["90_Player_Movement_SFX.zip", "59_Hit_01.wav", {"keep": 0.205}],
+      ["90_Player_Movement_SFX.zip", "60_Hit_02.wav", {"keep": 0.275}],
+      ["90_Player_Movement_SFX.zip", "61_Hit_03.wav", {"keep": 0.18}]
+    ],
+    "cast_fire": [
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Spells/Fire/01_Fire_Cast.wav", {"keep": 0.6}],
+      ["Retro_Fire_SFX_1_WAV.zip", "01_Cast.wav", {"keep": 0.42}],
+      ["Retro_Fire_SFX_2.zip", "01_Cast_Long.wav", {"keep": 0.495}]
+    ],
+    "impact_fire": [
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Spells/Fire/04_Fire_Hit.wav", {"keep": 0.47}],
+      ["50_RPG_Battle_Magic_SFX.zip", "01_Fire_explosion_01_small.wav", {"keep": 0.6}],
+      ["50_RPG_Battle_Magic_SFX.zip", "02_Fire_explosion_02_small.wav", {"keep": 0.6}]
+    ],
+    "cast_ice": [
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Spells/Ice/01_Ice_Cast.wav", {"keep": 0.6}],
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Spells/Ice/04_Ice_Throw.wav", {"keep": 0.46}],
+      ["LEOHPAZ_SpellEffects_SFX.zip", "LEOHPAZ_SpellEffects_SFX/Ice/05_Ice_Tile_Start.wav", {"keep": 0.6}]
+    ],
+    "impact_ice": [
+      ["LEOHPAZ_Elemental_Creatures_SFX.zip", "LEOHPAZ_Elemental_Creatures_SFX/Water_Elemental/Ice_Critical_Hit.wav", {"keep": 0.425}],
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Spells/Ice/05_Ice_Hit.wav", {"keep": 0.585}],
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Hits/Ice_Hit.wav", {"keep": 0.52}]
+    ],
+    "cast_lightning": [
+      ["Lightning_magic_SFX.zip", "01_Cast.wav", {"keep": 0.6}],
+      ["Lightning_magic_SFX.zip", "08_Charge.wav", {"keep": 0.385}],
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Effects/Shock/Shock_Enchant_On.wav", {"keep": 0.6}]
+    ],
+    "impact_lightning": [
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Hits/Shock_Hit.wav", {"keep": 0.36}],
+      ["Lightning_magic_SFX.zip", "04_Lightning_II.wav", {"keep": 0.6}],
+      ["Lightning_magic_SFX.zip", "02_Hit.wav", {"keep": 0.52}]
+    ],
+    "cast_light": [
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Spells/Holy/01_Holy_Cast.wav", {"keep": 0.6}],
+      ["Minifantasy_True_Heroes_II_SFX_Pack.zip", "Minifantasy_True_Heroes_II_SFX_Pack/Paladin/Special_Moves/Dictums/Dome_Of_Rightfulness/Paladin_Dome_Of_Rightfulness_Cast_Effect_Only.wav", {"keep": 0.6}],
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Spells/Holy/05_Holy_Shield.wav", {"keep": 0.505}]
+    ],
+    "impact_light": [
+      ["Minifantasy_True_Heroes_II_SFX_Pack.zip", "Minifantasy_True_Heroes_II_SFX_Pack/Paladin/Special_Moves/Holy_Hammer/Paladin_Holy_Hammer_Hit.wav", {"keep": 0.6}],
+      ["Minifantasy_True_Heroes_II_SFX_Pack.zip", "Minifantasy_True_Heroes_II_SFX_Pack/Cleric/Special_Moves/Divine_Fire/Cleric_Divine_Fire.wav", {"keep": 0.6}]
+    ],
+    "cast_restoration": [
+      ["50_RPG_Heals_Buffs_SFX.zip", "06_Regen_01.wav", {"keep": 0.32}],
+      ["50_RPG_Heals_Buffs_SFX.zip", "08_Regen_03.wav", {"keep": 0.29}]
+    ],
+    "impact_restoration": [
+      ["50_RPG_Heals_Buffs_SFX.zip", "01_Heal_01.wav", {"keep": 0.485}],
+      ["50_RPG_Heals_Buffs_SFX.zip", "03_Heal_03.wav", {"keep": 0.5}]
+    ],
+    "cast_time": [
+      ["LEOHPAZ_Portals_Runes_SFX.zip", "LEOHPAZ_Portals_Runes_SFX/Portals/Time/Time_Portal_Close.wav", {"keep": 0.6}],
+      ["LEOHPAZ_Minifantasy_Spell_Effects_II_SFX.zip", "LEOHPAZ_Minifantasy_Spell_Effects_II_SFX/Cartomancy_Magic_School/Fate/Hermit/Hermit_Teleport_End.wav", {"keep": 0.6}]
+    ],
+    "impact_time": [
+      ["50_RPG_Heals_Buffs_SFX.zip", "48_Speed_up_02.wav", {"keep": 0.6}],
+      ["50_RPG_Heals_Buffs_SFX.zip", "47_Speed_up_01.wav", {"keep": 0.6}]
+    ],
+    "cast_ranged": [
+      ["Minifantasy_True_Heroes_III_SFX_Pack.zip", "Minifantasy_True_Heroes_III_SFX_Pack/Ranger/General/02_Ranger_Bow_Charge_Release.wav", {"keep": 0.6}],
+      ["90_RPG_Battle_SFX.zip", "44_bow_shot_01.wav", {"keep": 0.34}],
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Ranged_Attacks/Bow_Charge_2.wav", {"keep": 0.285}]
+    ],
+    "impact_ranged": [
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Attacks/Pierce/Pierce_Bleeding.wav", {"keep": 0.34}],
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Attacks/Pierce/Pierce_Shock.wav", {"keep": 0.385}],
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Attacks/Pierce/Pierce_Nature.wav", {"keep": 0.415}]
+    ],
+    "cast_rogue": [
+      ["Minifantasy_TrueHeroes_SFX.zip", "Minifantasy_TrueHeroes_SFX/Rogue/General_Sounds/Rogue_Attack.wav", {"keep": 0.265}],
+      ["Leohpaz_Minifantasy_TrueHeroes_IV_SFX.zip", "Leohpaz_Minifantasy_TrueHeroes_IV_SFX/NinjaAssassin/General_Moves/NinjaAssassin_Attack_1.ogg", {"keep": 0.34}],
+      ["Leohpaz_Minifantasy_TrueHeroes_IV_SFX.zip", "Leohpaz_Minifantasy_TrueHeroes_IV_SFX/NinjaAssassin/General_Moves/NinjaAssassin_Attack_2.ogg", {"keep": 0.355}]
+    ],
+    "impact_rogue": [
+      ["90_RPG_Battle_SFX.zip", "24_Pierce_01.wav", {"keep": 0.325}],
+      ["90_RPG_Battle_SFX.zip", "25_Pierce_02.wav", {"keep": 0.29}],
+      ["90_RPG_Battle_SFX.zip", "26_Pierce_03.wav", {"keep": 0.265}]
+    ],
+    "cast_dark": [
+      ["Retro_DarkMagic_SFX_1.zip", "01_Cast.wav", {"keep": 0.43}],
+      ["Retro_DarkMagic_SFX_1.zip", "04_Dark_II_cast.wav", {"keep": 0.6}],
+      ["Retro_DarkMagic_SFX_1.zip", "06_Cast_Long.wav", {"keep": 0.6}]
+    ],
+    "impact_dark": [
+      ["Retro_DarkMagic_SFX_1.zip", "03_Hit.wav", {"keep": 0.325}],
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Hits/Fear_Hit.wav", {"keep": 0.6}],
+      ["Retro_DarkMagic_SFX_1.zip", "09_Dark_III.wav", {"keep": 0.6}]
+    ],
+    "cast_poison": [
+      ["LEOHPAZ_SpellEffects_SFX.zip", "LEOHPAZ_SpellEffects_SFX/Venom/01_Venom_Aura_Start.wav", {"keep": 0.6}],
+      ["LEOHPAZ_SpellEffects_SFX.zip", "LEOHPAZ_SpellEffects_SFX/Poison/04_Poison_Tile_Start.wav", {"keep": 0.6}]
+    ],
+    "impact_poison": [
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Hits/Poison_Hit.wav", {"keep": 0.46}],
+      ["50_RPG_Battle_Magic_SFX.zip", "46_Poison_01.wav", {"keep": 0.6}],
+      ["50_RPG_Battle_Magic_SFX.zip", "49_Poison_04.wav", {"keep": 0.6}]
+    ],
+    "cast_vampiric": [
+      ["Leohpaz_Minifantasy_TrueHeroes_IV_SFX.zip", "Leohpaz_Minifantasy_TrueHeroes_IV_SFX/BloodMage/Special_Animations/BloodShards/2_BloodMage_BloodShards_Throw.ogg", {"keep": 0.335}],
+      ["Leohpaz_Minifantasy_TrueHeroes_IV_SFX.zip", "Leohpaz_Minifantasy_TrueHeroes_IV_SFX/BloodMage/Special_Animations/BloodMage_Vampirize.ogg", {"keep": 0.6}]
+    ],
+    "impact_vampiric": [
+      ["Leohpaz_Minifantasy_TrueHeroes_IV_SFX.zip", "Leohpaz_Minifantasy_TrueHeroes_IV_SFX/BloodMage/Special_Animations/BloodShards/BloodMage_Shard_Impact.ogg", {"keep": 0.385}],
+      ["90_RPG_Battle_SFX.zip", "06_Bite_02.wav", {"keep": 0.26}],
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Hits/Bleeding_Hit.wav", {"keep": 0.53}]
+    ],
+    "cast_monster": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Beast/Beast_Wind_up_1.wav", {"keep": 0.6}],
+      ["90_RPG_Battle_SFX.zip", "81_Whip_woosh_1.wav", {"keep": 0.26}]
+    ],
+    "impact_monster": [
+      ["90_RPG_Battle_SFX.zip", "02_Claw_02.wav", {"keep": 0.27}],
+      ["90_RPG_Battle_SFX.zip", "03_Claw_03.wav", {"keep": 0.32}],
+      ["90_RPG_Battle_SFX.zip", "04_Claw_04.wav", {"keep": 0.45}]
+    ],
+    "cast_earth": [
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Spells/Earth/01_Earth_Surge.wav", {"keep": 0.6}],
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Spells/Earth/03_Earth_Throw.wav", {"keep": 0.485}],
+      ["19_Earth_SFX.zip", "01_Earth_I_Raise.wav", {"keep": 0.6}]
+    ],
+    "impact_earth": [
+      ["19_Earth_SFX.zip", "03_Earth_I_Hit.wav", {"keep": 0.36}],
+      ["19_Earth_SFX.zip", "09_Earth_III_Hit_II.wav", {"keep": 0.6}],
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Spells/Earth/05_Earth_Explosion.wav", {"keep": 0.6}]
+    ],
+    "cast_buff": [
+      ["Minifantasy_MagicAndSorcery_SFX.zip", "Minifantasy_MagicAndSorcery_SFX/Buffs/Buff_Start.wav", {"keep": 0.475}],
+      ["50_RPG_Heals_Buffs_SFX.zip", "10_Buff_02.wav", {"keep": 0.58}]
+    ],
+    "impact_buff": [
+      ["50_RPG_Heals_Buffs_SFX.zip", "23_Debuff_03.wav", {"keep": 0.6}],
+      ["Retro_DarkMagic_SFX_2.zip", "03_Debuff.wav", {"keep": 0.6}]
+    ],
+    "cast_nature": [
+      ["Minifantasy_TrueHeroes_SFX.zip", "Minifantasy_TrueHeroes_SFX/Druid/Special_Sounds/Root_Summoning/Druid_Cast.wav", {"keep": 0.6}],
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Effects/Nature/Nature_Enchant_On.wav", {"keep": 0.6}]
+    ],
+    "impact_nature": [
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Hits/Nature_Hit.wav", {"keep": 0.6}],
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Attacks/SlashS/SlashS_Nature.wav", {"keep": 0.25}],
+      ["Minifantasy_TrueHeroes_SFX.zip", "Minifantasy_TrueHeroes_SFX/Druid/Special_Sounds/Root_Summoning/Druid_Root.wav", {"keep": 0.6}]
+    ],
+    "heal": [
+      ["50_RPG_Heals_Buffs_SFX.zip", "02_Heal_02.wav", {"keep": 0.6}],
+      ["50_RPG_Heals_Buffs_SFX.zip", "04_Heal_04.wav", {"keep": 0.6}],
+      ["50_RPG_Heals_Buffs_SFX.zip", "07_Regen_02.wav", {"keep": 0.6}]
+    ],
+    "step_grass": [
+      ["90_Player_Movement_SFX.zip", "01_Step_grass_01.wav", {"keep": 0.085}],
+      ["90_Player_Movement_SFX.zip", "02_Step_grass_02.wav", {"keep": 0.12}],
+      ["90_Player_Movement_SFX.zip", "03_Step_grass_03.wav", {"keep": 0.105}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_f.ogg", {"keep": 0.135}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_a.ogg", {"keep": 0.24}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_b.ogg", {"keep": 0.25}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_c.ogg", {"keep": 0.21}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_d.ogg", {"keep": 0.2}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Grass/Footstep_Grass_e.ogg", {"keep": 0.145}]
+    ],
+    "step_dirt": [
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_c.ogg", {"keep": 0.085}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_e.ogg", {"keep": 0.07}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_d.ogg", {"keep": 0.095}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_a.ogg", {"keep": 0.1}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Earth/Footstep_Earth_b.ogg", {"keep": 0.1}]
+    ],
+    "step_sand": [
+      ["90_Player_Movement_SFX.zip", "04_Step_sand_01.wav", {"keep": 0.13}],
+      ["90_Player_Movement_SFX.zip", "05_Step_sand_02.wav", {"keep": 0.14}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_a.ogg", {"keep": 0.11}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_b.ogg", {"keep": 0.115}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_c.ogg", {"keep": 0.135}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_d.ogg", {"keep": 0.12}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Sand/Footstep_Sand_e.ogg", {"keep": 0.115}],
+      ["90_Player_Movement_SFX.zip", "06_Step_sand_03.wav", {"keep": 0.16}]
+    ],
+    "step_stone": [
+      ["90_Player_Movement_SFX.zip", "07_Step_rock_01.wav", {"keep": 0.07}],
+      ["90_Player_Movement_SFX.zip", "08_Step_rock_02.wav", {"keep": 0.05}],
+      ["90_Player_Movement_SFX.zip", "09_Step_rock_03.wav", {"keep": 0.05}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_a.ogg", {"keep": 0.065}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_b.ogg", {"keep": 0.065}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_c.ogg", {"keep": 0.065}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Rock/Footstep_Rocks_NoDebris_d.ogg", {"keep": 0.065}]
+    ],
+    "step_wood": [
+      ["90_Player_Movement_SFX.zip", "10_Step_wood_01.wav", {"keep": 0.08}],
+      ["90_Player_Movement_SFX.zip", "11_Step_wood_02.wav", {"keep": 0.07}],
+      ["90_Player_Movement_SFX.zip", "12_Step_wood_03.wav", {"keep": 0.05}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_d.ogg", {"keep": 0.065}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_a.ogg", {"keep": 0.135}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_b.ogg", {"keep": 0.085}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wood/Footstep_Wood_c.ogg", {"keep": 0.065}]
+    ],
+    "step_snow": [
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_e.ogg", {"keep": 0.145}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_f.ogg", {"keep": 0.15}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_d.ogg", {"keep": 0.145}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_a.ogg", {"keep": 0.15}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_b.ogg", {"keep": 0.15}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Snow/Footstep_Snow_c.ogg", {"keep": 0.15}]
+    ],
+    "step_mud": [
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_a.ogg", {"keep": 0.15}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_c.ogg", {"keep": 0.15}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_d.ogg", {"keep": 0.15}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_SwampMud_a.ogg", {"keep": 0.11}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_SwampMud_b.ogg", {"keep": 0.11}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_SwampMud_f.ogg", {"keep": 0.085}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_SwampMud_h.ogg", {"keep": 0.12}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_b.ogg", {"keep": 0.15}],
+      ["LEOHPAZ_Footsteps_SFX.zip", "LEOHPAZ_Footsteps_SFX/Wet/Footstep_Water_e.ogg", {"keep": 0.15}],
+      ["90_Player_Movement_SFX.zip", "13_Step_water_01.wav", {"keep": 0.15}],
+      ["90_Player_Movement_SFX.zip", "14_Step_water_02.wav", {"keep": 0.15}],
+      ["90_Player_Movement_SFX.zip", "15_Step_water_03.wav", {"keep": 0.15}]
+    ],
+    "foe_noticed_beasts": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Beasts/Wolf/05_Wolf_growl_1.wav", {"keep": 0.755}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Beasts/Wolf/06_Wolf_growl_2.wav", {"keep": 0.905}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Beast/Beast_Idle_1.wav", {"keep": 1.195}]
+    ],
+    "wolf_attack": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Beasts/Wolf/01_Wolf_attack_1a.wav", {"keep": 0.3}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Beasts/Wolf/03_Wolf_attack_2a.wav", {"keep": 0.23}],
+      ["LEOHPAZ_DarkOrcArmy_SFX.zip", "LEOHPAZ_DarkOrcArmy_SFX/Others/Warg/Warg_Bite_1.wav", {"keep": 0.41}]
+    ],
+    "wolf_hurt": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Beasts/Wolf/08_Wolf_damage_1.wav", {"keep": 0.245}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Beasts/Wolf/09_Wolf_damage_2.wav", {"keep": 0.23}],
+      ["LEOHPAZ_DarkOrcArmy_SFX.zip", "LEOHPAZ_DarkOrcArmy_SFX/Others/Warg/Warg_Damage_1.wav", {"keep": 0.325}]
+    ],
+    "wolf_death": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Beasts/Wolf/07_Wolf_death.wav", {"keep": 1.025}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Beast/Beast_Death_2.wav", {"keep": 1.505}]
+    ],
+    "slime_attack": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Monsters/Slime/04_Slime_jump.wav", {"keep": 0.23}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Big_Guys/Mother_Slime/02_Mother_Slime_jump.wav", {"keep": 0.325}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Big_Guys/Mother_Slime/03_Mother_Slime_land.wav", {"keep": 0.305}]
+    ],
+    "slime_hurt": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Monsters/Slime/01_Slime_damage.wav", {"keep": 0.335}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Big_Guys/Mother_Slime/01_Mother_Slime_damage.wav", {"keep": 0.42}]
+    ],
+    "slime_death": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Monsters/Slime/02_Slime_death.wav", {"keep": 1.07}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Big_Guys/Mother_Slime/04_Mother_Slime_death.wav", {"keep": 1.08}]
+    ],
+    "bigbeast_attack": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Big_Guys/Yeti/01_Yeti_Attack_01.wav", {"keep": 0.345}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Big_Guys/Yeti/02_Yeti_Attack_02.wav", {"keep": 0.375}]
+    ],
+    "bigbeast_hurt": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Big_Guys/Yeti/03_Yeti_Damage_01.wav", {"keep": 0.165}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Big_Guys/Yeti/04_Yeti_Damage_02.wav", {"keep": 0.24}]
+    ],
+    "bigbeast_death": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Big_Guys/Yeti/05_Yeti_Death.wav", {"keep": 0.965}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Big_Guys/Minotaur/04_Minotaur_Death.wav", {"keep": 1.1}]
+    ],
+    "crab_attack": [
+      ["LEOHPAZ_InsectoidCreatures_SFX.zip", "LEOHPAZ_InsectoidCreatures_SFX/Insectoid_Creatures/Insectoid_Mandible_1.wav", {"keep": 0.15}],
+      ["LEOHPAZ_InsectoidCreatures_SFX.zip", "LEOHPAZ_InsectoidCreatures_SFX/Insectoid_Creatures/Insectoid_Mandible_2.wav", {"keep": 0.15}]
+    ],
+    "crab_hurt": [
+      ["LEOHPAZ_InsectoidCreatures_SFX.zip", "LEOHPAZ_InsectoidCreatures_SFX/Insectoid_Creatures/Insectoid_Damage_1.wav", {"keep": 0.405}],
+      ["LEOHPAZ_InsectoidCreatures_SFX.zip", "LEOHPAZ_InsectoidCreatures_SFX/Insectoid_Creatures/Insectoid_Damage_2.wav", {"keep": 0.385}]
+    ],
+    "crab_death": [
+      ["LEOHPAZ_InsectoidCreatures_SFX.zip", "LEOHPAZ_InsectoidCreatures_SFX/Insectoid_Creatures/Insectoid_Death_3.wav", {"keep": 1.395}]
+    ],
+    "drake_attack": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Chimera/Chimera_Attack_1.wav", {"keep": 0.6}],
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Chimera/Chimera_Attack_2.wav", {"keep": 0.52}]
+    ],
+    "drake_hurt": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Chimera/Chimera_Damage_1.wav", {"keep": 0.44}],
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Chimera/Chimera_Damage_2.wav", {"keep": 0.45}]
+    ],
+    "drake_death": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Chimera/Chimera_Death.wav", {"keep": 1.38}]
+    ],
+    "foe_noticed_greenskins": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Orc/Orc_Wind_up_3.wav", {"keep": 1.005}]
+    ],
+    "goblin_attack": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Goblin/Goblin_Attack_3.wav", {"keep": 0.29}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Goblin/Goblin_Attack_5.wav", {"keep": 0.325}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Goblin/Goblin_Attack_6.wav", {"keep": 0.32}]
+    ],
+    "goblin_hurt": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Goblin/Goblin_Damage_1.wav", {"keep": 0.21}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Goblin/Goblin_Damage_2.wav", {"keep": 0.165}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Goblin/Goblin_Damage_3.wav", {"keep": 0.245}]
+    ],
+    "goblin_death": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Goblin/Goblin_Death_1.wav", {"keep": 0.945}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Goblin/Goblin_Death_2.wav", {"keep": 0.56}]
+    ],
+    "orc_attack": [
+      ["LEOHPAZ_DarkOrcArmy_SFX.zip", "LEOHPAZ_DarkOrcArmy_SFX/Lesser_Orcs/Orc_Raider/OrcRaider_Attack_1.wav", {"keep": 0.575}],
+      ["LEOHPAZ_DarkOrcArmy_SFX.zip", "LEOHPAZ_DarkOrcArmy_SFX/Lesser_Orcs/Orc_Raider/OrcRaider_Attack_2.wav", {"keep": 0.61}],
+      ["LEOHPAZ_DarkOrcArmy_SFX.zip", "LEOHPAZ_DarkOrcArmy_SFX/Lesser_Orcs/Orc_Blade/OrcBlade_Attack_1.wav", {"keep": 0.345}]
+    ],
+    "orc_hurt": [
+      ["LEOHPAZ_DarkOrcArmy_SFX.zip", "LEOHPAZ_DarkOrcArmy_SFX/Lesser_Orcs/Orc_Raider/OrcRaider_Damage_1.wav", {"keep": 0.37}],
+      ["LEOHPAZ_DarkOrcArmy_SFX.zip", "LEOHPAZ_DarkOrcArmy_SFX/Lesser_Orcs/LesserOrc_Damage_1.wav", {"keep": 0.245}],
+      ["LEOHPAZ_DarkOrcArmy_SFX.zip", "LEOHPAZ_DarkOrcArmy_SFX/Lesser_Orcs/LesserOrc_Damage_2.wav", {"keep": 0.26}]
+    ],
+    "orc_death": [
+      ["LEOHPAZ_DarkOrcArmy_SFX.zip", "LEOHPAZ_DarkOrcArmy_SFX/Lesser_Orcs/Orc_Blade/OrcBlade_Death.wav", {"keep": 1.635}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Orc/Orc_Death_1.wav", {"keep": 1.53}]
+    ],
+    "troll_attack": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Troll/Troll_Attack_2.wav", {"keep": 0.42}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Troll/Troll_Attack_4.wav", {"keep": 0.445}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Troll/Troll_Attack_5.wav", {"keep": 0.425}]
+    ],
+    "troll_hurt": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Troll/Troll_Damage_5.wav", {"keep": 0.375}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Troll/Troll_Damage_4.wav", {"keep": 0.3}],
+      ["LEOHPAZ_DarkOrcArmy_SFX.zip", "LEOHPAZ_DarkOrcArmy_SFX/Others/CaveTroll/CaveTroll_Damage_3.wav", {"keep": 0.55}]
+    ],
+    "troll_death": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Troll/Troll_Death_1.wav", {"keep": 1.505}]
+    ],
+    "foe_noticed_undead": [
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Skeletons/Skeleton_Generic_Deactivate.wav", {"keep": 0.605}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Undead/Undead_Idle_3.wav", {"keep": 0.77}],
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Ghost/Ghost_Appear.wav", {"keep": 1.505}]
+    ],
+    "skeleton_attack": [
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Skeletons/Skeleton_Warrior/Skeleton_Warrior_Attack.wav", {"keep": 0.45}],
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Skeletons/Headless_Skeleton/Headless_Skeleton_Attack.wav", {"keep": 0.38}],
+      ["Leohpaz_Undead_Creatures_SFX_Pack.zip", "Leohpaz_Undead_Creatures_SFX_Pack/Skeleton/01_Skeleton_attack.wav", {"keep": 0.185}]
+    ],
+    "skeleton_hurt": [
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Skeletons/Skeleton_Generic_Damage_1.wav", {"keep": 0.275}],
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Skeletons/Skeleton_Generic_Damage_2.wav", {"keep": 0.26}],
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Skeletons/Skeleton_Generic_Damage_3.wav", {"keep": 0.28}]
+    ],
+    "skeleton_death": [
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Skeletons/Skeleton_Generic_Death_1.wav", {"keep": 0.935}],
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Skeletons/Skeleton_Generic_Death_2.wav", {"keep": 0.88}],
+      ["Leohpaz_Undead_Creatures_SFX_Pack.zip", "Leohpaz_Undead_Creatures_SFX_Pack/Skeleton/03_Skeleton_death.wav", {"keep": 1.005}]
+    ],
+    "knight_attack": [
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/UndeadKnight/UndeadKnight_Attack.wav", {"keep": 0.57}]
+    ],
+    "knight_hurt": [
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/UndeadKnight/UndeadKnight_Damage_1.wav", {"keep": 0.29}],
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/UndeadKnight/UndeadKnight_Damage_2.wav", {"keep": 0.315}],
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/UndeadKnight/UndeadKnight_Damage_3.wav", {"keep": 0.29}]
+    ],
+    "knight_death": [
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/UndeadKnight/UndeadKnight_Death_1.wav", {"keep": 1.085}],
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/UndeadKnight/UndeadKnight_Death_2.wav", {"keep": 0.91}]
+    ],
+    "ghost_attack": [
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Ghost/Ghost_Attack.wav", {"keep": 0.59}],
+      ["Leohpaz_Undead_Creatures_SFX_Pack.zip", "Leohpaz_Undead_Creatures_SFX_Pack/Wraith/Wraith_Attack.wav", {"keep": 0.705}]
+    ],
+    "ghost_hurt": [
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Ghost/Ghost_Damage_1.wav", {"keep": 0.32}],
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Ghost/Ghost_Damage_2.wav", {"keep": 0.305}],
+      ["Leohpaz_Undead_Creatures_SFX_Pack.zip", "Leohpaz_Undead_Creatures_SFX_Pack/Wraith/Wraith_Damage.wav", {"keep": 0.475}]
+    ],
+    "ghost_death": [
+      ["LEOHPAZ_Undead_Creatures_2_SFX_Pack.zip", "Leohpaz_Undead_Creatures_2_SFX_Pack/Ghost/Ghost_Death.wav", {"keep": 1.48}],
+      ["Leohpaz_Undead_Creatures_SFX_Pack.zip", "Leohpaz_Undead_Creatures_SFX_Pack/Wraith/Wraith_Death.wav", {"keep": 1.77}]
+    ],
+    "wendigo_attack": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Undead/Undead_Attack_1.wav", {"keep": 0.595}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Undead/Undead_Attack_3.wav", {"keep": 0.74}]
+    ],
+    "wendigo_hurt": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Undead/Undead_Damage_3.wav", {"keep": 0.61}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Undead/Undead_Damage_2.wav", {"keep": 0.65}]
+    ],
+    "wendigo_death": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Undead/Undead_Death_1.wav", {"keep": 1.03}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Undead/Undead_Death_2.wav", {"keep": 1.395}]
+    ],
+    "foe_noticed_constructs": [
+      ["19_Earth_SFX.zip", "15_Golem_Raise.wav", {"keep": 1.03}],
+      ["LEOHPAZ_Elemental_Creatures_SFX.zip", "LEOHPAZ_Elemental_Creatures_SFX/Earth_Elemental/Earth_Elemental_Activation.wav", {"keep": 1.43}]
+    ],
+    "golem_attack": [
+      ["LEOHPAZ_Elemental_Creatures_SFX.zip", "LEOHPAZ_Elemental_Creatures_SFX/Earth_Elemental/Earth_Elemental_Attack.wav", {"keep": 0.44}],
+      ["19_Earth_SFX.zip", "16_Golem_Attack_I.wav", {"keep": 0.785}]
+    ],
+    "golem_hurt": [
+      ["LEOHPAZ_Elemental_Creatures_SFX.zip", "LEOHPAZ_Elemental_Creatures_SFX/Earth_Elemental/Earth_Elemental_Damage.wav", {"keep": 0.49}],
+      ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Hits/Hit_Metal_on_stone.wav", {"keep": 0.165}],
+      ["19_Earth_SFX.zip", "11_Wall_Block.wav", {"keep": 0.145}]
+    ],
+    "golem_death": [
+      ["LEOHPAZ_Elemental_Creatures_SFX.zip", "LEOHPAZ_Elemental_Creatures_SFX/Earth_Elemental/Earth_Elemental_Death.wav", {"keep": 1.715}],
+      ["19_Earth_SFX.zip", "18_Golem_Return.wav", {"keep": 0.705}]
+    ],
+    "mimic_attack": [
+      ["LEOHPAZ_EnchantedCompanions_SFX_Pack.zip", "LEOHPAZ_EnchantedCompanions_SFX_Pack/Chest/Chest_Close.wav", {"keep": 0.725}]
+    ],
+    "mimic_hurt": [
+      ["LEOHPAZ_EnchantedCompanions_SFX_Pack.zip", "LEOHPAZ_EnchantedCompanions_SFX_Pack/Chest/Chest_Damage.wav", {"keep": 0.36}]
+    ],
+    "mimic_death": [
+      ["LEOHPAZ_EnchantedCompanions_SFX_Pack.zip", "LEOHPAZ_EnchantedCompanions_SFX_Pack/Chest/Chest_Death.wav", {"keep": 1.265}]
+    ],
+    "mimic_wake": [
+      ["LEOHPAZ_EnchantedCompanions_SFX_Pack.zip", "LEOHPAZ_EnchantedCompanions_SFX_Pack/Chest/Chest_Idle.wav", {"keep": 1.61}]
+    ],
+    "foe_noticed_fireborn": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Krampus/Krampus_Idle_2.wav", {"keep": 0.74}],
+      ["LEOHPAZ_SpellEffects_SFX.zip", "LEOHPAZ_SpellEffects_SFX/Fire/01_Fire_Aura_Start.wav", {"keep": 1.095}]
+    ],
+    "imp_attack": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Imp/Imp_Attack.wav", {"keep": 0.25}],
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Imp/Imp_Fire.wav", {"keep": 0.84}]
+    ],
+    "imp_hurt": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Imp/Imp_Damage_1.wav", {"keep": 0.35}],
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Imp/Imp_Damage_2.wav", {"keep": 0.35}]
+    ],
+    "imp_death": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Imp/Imp_Death.wav", {"keep": 2.49}]
+    ],
+    "demon_attack": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Demon_Lord/Demon_Lord_Attack_1.wav", {"keep": 0.715}],
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Demon_Lord/Demon_Lord_Attack_2.wav", {"keep": 0.55}]
+    ],
+    "demon_hurt": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Demon_Lord/Demon_Lord_Damage_1.wav", {"keep": 0.295}],
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Demon_Lord/Demon_Lord_Damage_2.wav", {"keep": 0.27}]
+    ],
+    "demon_death": [
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Demon/Demon_Death_1.wav", {"keep": 1.035}]
+    ],
+    "foe_noticed_outlaws": [
+      ["Minifantasy_TrueHeroes_SFX.zip", "Minifantasy_TrueHeroes_SFX/Barbarian/General_Sounds/Barbarian_BattleCry.wav", {"keep": 0.765}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Humanoids/Human/05_human_charge_2.wav", {"keep": 0.595}]
+    ],
+    "human_attack": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Humanoids/Human/01_human_atk_sword_1.wav", {"keep": 0.16}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Humanoids/Human/02_human_atk_sword_2.wav", {"keep": 0.185}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Humanoids/Human/03_human_atk_sword_3.wav", {"keep": 0.15}]
+    ],
+    "human_hurt": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Humanoids/Human/10_human_damage_1.wav", {"keep": 0.17}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Humanoids/Human/11_human_damage_2.wav", {"keep": 0.2}],
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Humanoids/Human/12_human_damage_3.wav", {"keep": 0.18}]
+    ],
+    "human_death": [
+      ["Minifantasy_Creatures_SFX_v3.0.zip", "Minifantasy_Creatures_SFX_v3.0/Humanoids/Human/23_human_death_spin.wav", {"keep": 1.31}],
+      ["Minifantasy_TrueHeroes_SFX.zip", "Minifantasy_TrueHeroes_SFX/Barbarian/General_Sounds/Barbarian_Death.wav", {"keep": 1.755}],
+      ["Minifantasy_True_Heroes_III_SFX_Pack.zip", "Minifantasy_True_Heroes_III_SFX_Pack/Fighter/General/05_Fighter_Death.wav", {"keep": 1.62}]
+    ],
+    "animal_hen": [
+      ["Minifantasy_CraftingAndProfessions2_SFX.zip", "Minifantasy_CraftingAndProfessions2_SFX/Gathering_Professions/Hunting/Animals/Turkey/Turkey_Idle.wav", {"keep": 0.965}]
+    ],
+    "animal_sheep": [
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Animals/Sheep_1.wav", {"keep": 0.42}],
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Animals/Sheep_2.wav", {"keep": 0.7}],
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Animals/Sheep_3.wav", {"keep": 0.765}]
+    ],
+    "animal_pig": [
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Animals/Pig_Oink_1.wav", {"keep": 0.515}],
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Animals/Pig_Oink_2.wav", {"keep": 0.565}],
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Animals/Pig_Oink_3.wav", {"keep": 0.165}],
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Animals/Pig_Oink_4.wav", {"keep": 0.17}]
+    ],
+    "animal_cow": [
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Animals/Cow_Moo_1.wav", {"keep": 1.07}],
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Animals/Cow_Moo_2.wav", {"keep": 1.155}]
+    ],
+    "animal_bull": [
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Animals/Cow_Moo_2.wav", {"keep": 1.155, "pitch": 0.8}]
+    ],
+    "dragon_roar": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Dragon/Dragon_Idle.wav", {"keep": 1.18}],
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Dragon/Dragon_Attack_Start.wav", {"keep": 1.005}],
+      ["LEOHPAZ_HumanoidsGrunts_SFX.zip", "LEOHPAZ_HumanoidsGrunts_SFX/Beast/Beast_Wind_up_3.wav", {"keep": 1.16}]
+    ],
+    "distant_roar": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Dragon/Dragon_Idle.wav", {"keep": 1.18, "lowpass": 700, "db": -8}]
+    ],
+    "dragon_breath": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Dragon/Dragon_Attack_OneShot.wav", {"keep": 1.405}],
+      ["Retro_Fire_SFX_2.zip", "03_Napalm.wav", {"keep": 1.285}]
+    ],
+    "dragon_embers": [
+      ["Retro_Fire_SFX_2.zip", "05_Meteors.wav", {"keep": 1.81}],
+      ["Retro_Fire_SFX_2.zip", "04_Cast_Multiple.wav", {"keep": 1.135}]
+    ],
+    "dragon_hurt": [
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Dragon/Dragon_Damage_1.wav", {"keep": 0.38}],
+      ["LEOHPAZ_HellishCreatures_SFX.zip", "LEOHPAZ_HellishCreatures_SFX/Dragon/Dragon_Damage_2.wav", {"keep": 0.34}]
+    ],
+    "boss_down": [
+      ["Boss_Encounter_SFX_Pack.zip", "Boss_Encounter_SFX_Pack/Boss_Encounter_SFX/Battle/Boss_Final_Blow.wav", {"keep": 1.135}]
     ],
     "ui_tick": [
-      ["100_rpg_ui_sfx.zip", "001_Hover_01.wav"],
-      ["100_rpg_ui_sfx.zip", "002_Hover_02.wav"],
-      ["100_rpg_ui_sfx.zip", "003_Hover_03.wav"]
+      ["100_rpg_ui_sfx.zip", "007_Hover_07.wav", {"keep": 0.095}],
+      ["100_rpg_ui_sfx.zip", "003_Hover_03.wav", {"keep": 0.115}],
+      ["100_rpg_ui_sfx.zip", "004_Hover_04.wav", {"keep": 0.1}]
     ],
     "ui_confirm": [
-      ["100_rpg_ui_sfx.zip", "011_Confirm_01.wav"],
-      ["100_rpg_ui_sfx.zip", "012_Confirm_02.wav"]
+      ["100_rpg_ui_sfx.zip", "011_Confirm_01.wav", {"keep": 0.275}],
+      ["100_rpg_ui_sfx.zip", "015_Confirm_05.wav", {"keep": 0.24}],
+      ["22_book_parchment_ui_SFX.zip", "06_confirm_1.wav", {"keep": 0.195}]
     ],
     "ui_deny": [
-      ["100_rpg_ui_sfx.zip", "031_Denied_01.wav"],
-      ["100_rpg_ui_sfx.zip", "032_Denied_02.wav"]
-    ]
+      ["100_rpg_ui_sfx.zip", "032_Denied_02.wav", {"keep": 0.165}],
+      ["100_rpg_ui_sfx.zip", "035_Denied_05.wav", {"keep": 0.19}],
+      ["100_rpg_ui_sfx.zip", "029_Decline_09.wav", {"keep": 0.16}]
+    ],
+    "ui_page": [
+      ["22_book_parchment_ui_SFX.zip", "03_flip_page_once_3.wav", {"keep": 0.375}],
+      ["22_book_parchment_ui_SFX.zip", "03_flip_page_once_1b.wav", {"keep": 0.415}],
+      ["22_book_parchment_ui_SFX.zip", "03_flip_page_once_4b.wav", {"keep": 0.345}]
+    ],
+    "ui_open": [
+      ["22_book_parchment_ui_SFX.zip", "01_book_open_1_fast.wav", {"keep": 0.32}],
+      ["22_book_parchment_ui_SFX.zip", "01_book_open_2_slow.wav", {"keep": 0.415}],
+      ["100_rpg_ui_sfx.zip", "091_Pause_03.wav", {"keep": 0.23}]
+    ],
+    "ui_close": [
+      ["22_book_parchment_ui_SFX.zip", "02_book_close_2.wav", {"keep": 0.19}],
+      ["100_rpg_ui_sfx.zip", "099_Unpause_05.wav", {"keep": 0.175}],
+      ["100_rpg_ui_sfx.zip", "095_Unpause_01.wav", {"keep": 0.265}]
+    ],
+    "equip": [
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Managing/Equip.wav", {"keep": 0.45}],
+      ["100_rpg_ui_sfx.zip", "062_Equip_02.wav", {"keep": 0.17}],
+      ["100_rpg_ui_sfx.zip", "066_Equip_06.wav", {"keep": 0.15}]
+    ],
+    "unequip": [
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Managing/Unequip.wav", {"keep": 0.315}],
+      ["100_rpg_ui_sfx.zip", "071_Unequip_01.wav", {"keep": 0.285}],
+      ["100_rpg_ui_sfx.zip", "073_Unequip_03.wav", {"keep": 0.2}]
+    ],
+    "buy": [
+      ["100_rpg_ui_sfx.zip", "080_Buy_sell_02.wav", {"keep": 0.375}],
+      ["100_rpg_ui_sfx.zip", "082_Buy_sell_04.wav", {"keep": 0.195}]
+    ],
+    "sell": [
+      ["100_rpg_ui_sfx.zip", "079_Buy_sell_01.wav", {"keep": 0.445}],
+      ["100_rpg_ui_sfx.zip", "081_Buy_sell_03.wav", {"keep": 0.365}],
+      ["100_rpg_ui_sfx.zip", "083_Buy_sell_05.wav", {"keep": 0.295}]
+    ],
+    "coin_gain": [
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Drops/Coins.wav", {"keep": 0.23}],
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Drops/Jewel.wav", {"keep": 0.24}]
+    ],
+    "fund": [
+      ["LEOHPAZ_HumanSettlementRTS_SFX.zip", "LEOHPAZ_HumanSettlementRTS_SFX/Construction/Building_Start_1.wav", {"keep": 0.81}],
+      ["LEOHPAZ_HumanSettlementRTS_SFX.zip", "LEOHPAZ_HumanSettlementRTS_SFX/Construction/Building_Start_2.wav", {"keep": 0.505}]
+    ],
+    "quest_taken": [
+      ["Jingles_Fanfares_SFX_Pack.zip", "Jingles_Fanfares_SFX_Pack/Jingles_and_Fanfares/Quest/Quest_Accepted.wav", {"keep": 1.05}]
+    ],
+    "level_up": [
+      ["Jingles_Fanfares_SFX_Pack.zip", "Jingles_Fanfares_SFX_Pack/Jingles_and_Fanfares/UI/Level_Up.wav", {"keep": 1.01}]
+    ],
+    "chapter": [
+      ["Jingles_Fanfares_SFX_Pack.zip", "Jingles_Fanfares_SFX_Pack/Jingles_and_Fanfares/UI/Game_Start.wav", {"keep": 1.5}]
+    ],
+    "feat": [
+      ["Jingles_Fanfares_SFX_Pack.zip", "Jingles_Fanfares_SFX_Pack/Jingles_and_Fanfares/Secrets/Small_Secret.wav", {"keep": 1.545}]
+    ],
+    "skill_learned": [
+      ["22_book_parchment_ui_SFX.zip", "11_upgrade.wav", {"keep": 0.55}],
+      ["90_Player_Movement_SFX.zip", "80_Power_up_01.wav", {"keep": 0.67}],
+      ["90_Player_Movement_SFX.zip", "83_Power_up_04.wav", {"keep": 0.515}]
+    ],
+    "path_chosen": [
+      ["90_RPG_Battle_SFX.zip", "73_Lvl_up_01.wav", {"keep": 0.75}],
+      ["90_RPG_Battle_SFX.zip", "75_Lvl_up_03.wav", {"keep": 0.54}]
+    ],
+    "skill_docked": [
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Managing/Socket_Equip.wav", {"keep": 0.235}],
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Managing/Item_Lock.wav", {"keep": 0.175}]
+    ],
+    "forget": [
+      ["22_book_parchment_ui_SFX.zip", "12_rollback.wav", {"keep": 0.225}],
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Managing/Socket_Remove.wav", {"keep": 0.28}]
+    ],
+    "stat_point": [
+      ["90_RPG_Battle_SFX.zip", "87_exp_up_1_short.wav", {"keep": 0.235}],
+      ["90_RPG_Battle_SFX.zip", "88_exp_up_2_short.wav", {"keep": 0.315}]
+    ],
+    "ascend_flare": [
+      ["90_Player_Movement_SFX.zip", "72_Transform_01.wav", {"keep": 0.965}],
+      ["90_Player_Movement_SFX.zip", "73_Transform_02.wav", {"keep": 1.08}]
+    ],
+    "travel": [
+      ["LEOHPAZ_Portals_Runes_SFX.zip", "LEOHPAZ_Portals_Runes_SFX/Portals/_Generic/Generic_Portal_Teleport.wav", {"keep": 0.76}],
+      ["LEOHPAZ_Minifantasy_Spell_Effects_II_SFX.zip", "LEOHPAZ_Minifantasy_Spell_Effects_II_SFX/Cartomancy_Magic_School/Fate/Hermit/Hermit_Teleport_Start.wav", {"keep": 1.135}],
+      ["Minifantasy_True_Heroes_III_SFX_Pack.zip", "Minifantasy_True_Heroes_III_SFX_Pack/Wizard/Special/13_Wizard_Teleport_Start.wav", {"keep": 0.925}]
+    ],
+    "way_out": [
+      ["LEOHPAZ_Portals_Runes_SFX.zip", "LEOHPAZ_Portals_Runes_SFX/Portals/_Generic/Generic_Portal_Open.wav", {"keep": 1.02}]
+    ],
+    "post_taken": [
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Bag/Bag_Open.wav", {"keep": 0.4}]
+    ],
+    "craft": [
+      ["Minifantasy_CraftingAndProfessions_SFX.zip", "Minifantasy_CraftingAndProfessions_SFX/Crafting_Professions/Blacksmith/01_Smith_Anvil_Hit_01.wav", {"keep": 0.26}],
+      ["Minifantasy_CraftingAndProfessions_SFX.zip", "Minifantasy_CraftingAndProfessions_SFX/Crafting_Professions/Blacksmith/02_Smith_Anvil_Hit_02.wav", {"keep": 0.34}],
+      ["Minifantasy_CraftingAndProfessions_SFX.zip", "Minifantasy_CraftingAndProfessions_SFX/Crafting_Professions/Blacksmith/03_Smith_Anvil_Hit_03.wav", {"keep": 0.235}]
+    ],
+    "quench": [
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Managing/Item_Fusion.wav", {"keep": 0.815}],
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Effects/_Generic/_Generic_Enchant_On.wav", {"keep": 0.735}]
+    ],
+    "loot_drop": [
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Drops/Metal_Light.wav", {"keep": 0.31}],
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Drops/Metal_Heavy.wav", {"keep": 0.305}],
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Drops/Leather.wav", {"keep": 0.245}]
+    ],
+    "rare_drop": [
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Drops/Rare_Drop.wav", {"keep": 0.955}],
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Drops/Legendary_Drop.wav", {"keep": 1.015}]
+    ],
+    "pickup": [
+      ["100_rpg_ui_sfx.zip", "046_Pick_item_01.wav", {"keep": 0.12}],
+      ["100_rpg_ui_sfx.zip", "047_Pick_item_02.wav", {"keep": 0.12}],
+      ["100_rpg_ui_sfx.zip", "049_Pick_item_04.wav", {"keep": 0.15}]
+    ],
+    "gather": [
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Actions/Harvest_1.wav", {"keep": 0.73}],
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Actions/Harvest_2.wav", {"keep": 0.535}]
+    ],
+    "mine": [
+      ["LEOHPAZ_MiningCave_SFX.zip", "LEOHPAZ_MiningCave_SFX/Mining/Mining_Ore_3.ogg", {"keep": 0.24}],
+      ["Minifantasy_CraftingAndProfessions_SFX.zip", "Minifantasy_CraftingAndProfessions_SFX/Gathering_Professions/Mining/02_Mining_Pickaxe_Hit_2.wav", {"keep": 0.135}],
+      ["LEOHPAZ_MiningCave_SFX.zip", "LEOHPAZ_MiningCave_SFX/Mining/Mining_Rock_3.ogg", {"keep": 0.2}]
+    ],
+    "chest_open": [
+      ["LEOHPAZ_EnchantedCompanions_SFX_Pack.zip", "LEOHPAZ_EnchantedCompanions_SFX_Pack/Chest/Chest_Open.wav", {"keep": 0.92}]
+    ],
+    "door": [
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Ambient/Barn_Door_Open.wav", {"keep": 0.415}],
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Ambient/Barn_Door_Close.wav", {"keep": 0.53}]
+    ],
+    "stair_rise": [
+      ["19_Earth_SFX.zip", "10_Wall_Raise.wav", {"keep": 0.87}],
+      ["19_Earth_SFX.zip", "13_Rockfall.wav", {"keep": 1.57}],
+      ["Leohpaz_IndustrialMining_SFX.zip", "Leohpaz_IndustrialMining_SFX/Rocks/Rock_Collapse_Large_2.wav", {"keep": 1.18}]
+    ],
+    "bucket_fill": [
+      ["Minifantasy_CraftingAndProfessions2_SFX.zip", "Minifantasy_CraftingAndProfessions2_SFX/Crafting_Professions/Dyeing/Dyeing_Submerge.wav", {"keep": 0.41}],
+      ["Minifantasy_CraftingAndProfessions2_SFX.zip", "Minifantasy_CraftingAndProfessions2_SFX/Crafting_Professions/Dyeing/Dyeing_Emerge.wav", {"keep": 0.555}]
+    ],
+    "douse": [
+      ["10_Retro_Water_SFX.zip", "03_Water_ball_Hit.wav", {"keep": 0.35}],
+      ["8_retro_water_sfx_2.zip", "07_Wave_hit.wav", {"keep": 0.645}],
+      ["Farm_SFX_Pack_Minifantasy_Compatible.zip", "Farm_SFX_Pack_Minifantasy_Compatible/Actions/Watering_2.wav", {"keep": 0.68}]
+    ],
+    "fish_cast": [
+      ["Minifantasy_CraftingAndProfessions2_SFX.zip", "Minifantasy_CraftingAndProfessions2_SFX/Gathering_Professions/Fishing/Fishing_Cast.wav", {"keep": 1.13}]
+    ],
+    "fish_catch": [
+      ["Minifantasy_CraftingAndProfessions2_SFX.zip", "Minifantasy_CraftingAndProfessions2_SFX/Gathering_Professions/Fishing/Fishing_Catch_Something.wav", {"keep": 0.87}],
+      ["Minifantasy_CraftingAndProfessions2_SFX.zip", "Minifantasy_CraftingAndProfessions2_SFX/Gathering_Professions/Fishing/Fishing_Fish_Jump.wav", {"keep": 0.8}]
+    ],
+    "fish_nothing": [
+      ["Minifantasy_CraftingAndProfessions2_SFX.zip", "Minifantasy_CraftingAndProfessions2_SFX/Gathering_Professions/Fishing/Fishing_Catch_Nothing.wav", {"keep": 0.435}]
+    ],
+    "rebuild": [
+      ["LEOHPAZ_HumanSettlementRTS_SFX.zip", "LEOHPAZ_HumanSettlementRTS_SFX/Construction/Building_Complete_1.wav", {"keep": 0.42}],
+      ["LEOHPAZ_HumanSettlementRTS_SFX.zip", "LEOHPAZ_HumanSettlementRTS_SFX/Construction/Building_Complete_2.wav", {"keep": 0.52}]
+    ],
+    "ruin_falls": [
+      ["LEOHPAZ_HumanSettlementRTS_SFX.zip", "LEOHPAZ_HumanSettlementRTS_SFX/Construction/Destruction_2.wav", {"keep": 0.98}],
+      ["LEOHPAZ_HumanSettlementRTS_SFX.zip", "LEOHPAZ_HumanSettlementRTS_SFX/Construction/Destruction_1.wav", {"keep": 1.605}],
+      ["Leohpaz_IndustrialMining_SFX.zip", "Leohpaz_IndustrialMining_SFX/Rocks/Rock_Collapse_Small_1.wav", {"keep": 0.57}]
+    ],
+    "spyglass": [
+      ["Minifantasy_CraftingAndProfessions_SFX.zip", "Minifantasy_CraftingAndProfessions_SFX/Crafting_Professions/Jewelry/02_Jewelry_Handling_1.wav", {"keep": 0.26}],
+      ["Inventory_SFX_Pack.zip", "Inventory_SFX_Pack/Inventory_SFX/Managing/Item_Unlock.wav", {"keep": 0.145}]
+    ],
+    "lantern_lit": [
+      ["Minifantasy_Magic_Weapons_SFX.zip", "Minifantasy_Magic_Weapons_SFX/Effects/Fire/Fire_Enchant_On.wav", {"keep": 0.81}],
+      ["LEOHPAZ_SpellEffects_SFX.zip", "LEOHPAZ_SpellEffects_SFX/Fire/05_Fire_Tile_Start.wav", {"keep": 1.2}]
+    ],
+    "forge_glow": [
+      ["Minifantasy_CraftingAndProfessions_SFX.zip", "Minifantasy_CraftingAndProfessions_SFX/Crafting_Professions/Blacksmith/07_Smith_Ignition.wav", {"keep": 1.995}],
+      ["Minifantasy_CraftingAndProfessions_SFX.zip", "Minifantasy_CraftingAndProfessions_SFX/Crafting_Professions/Blacksmith/05_Smith_Foundry_Pour.wav", {"keep": 0.88}]
+    ],
+    "rumble": [
+      ["Leohpaz_IndustrialMining_SFX.zip", "Leohpaz_IndustrialMining_SFX/Rocks/Rock_Collapse_Large_1.wav", {"keep": 0.72}],
+      ["Leohpaz_IndustrialMining_SFX.zip", "Leohpaz_IndustrialMining_SFX/Rocks/Rock_Collapse_Large_3.wav", {"keep": 1.175}]
+    ],
+    "quest_done": [
+      ["Jingles_Fanfares_SFX_Pack.zip", "Jingles_Fanfares_SFX_Pack/Jingles_and_Fanfares/Quest/Quest_Clear.wav", {"keep": 3.435}]
+    ],
+    "boss_sighted": [
+      ["Boss_Encounter_SFX_Pack.zip", "Boss_Encounter_SFX_Pack/Boss_Encounter_SFX/Jingles/Boss_Encounter_1.wav", {"keep": 1.2}]
+    ],
+    "stood_down": [
+      ["Boss_Encounter_SFX_Pack.zip", "Boss_Encounter_SFX_Pack/Boss_Encounter_SFX/Jingles/Target_Slain_1.wav", {"keep": 1.265}]
+    ],
+    "bounty_slain": [
+      ["Boss_Encounter_SFX_Pack.zip", "Boss_Encounter_SFX_Pack/Boss_Encounter_SFX/Jingles/Target_Slain_2.wav", {"keep": 3.215}]
+    ],
+    "defeat": [
+      ["Jingles_Fanfares_SFX_Pack.zip", "Jingles_Fanfares_SFX_Pack/Jingles_and_Fanfares/Puzzle_Minigame/Failure.wav", {"keep": 1.14}]
+    ],
+    "ascension": [
+      ["Jingles_Fanfares_SFX_Pack.zip", "Jingles_Fanfares_SFX_Pack/Jingles_and_Fanfares/Puzzle_Minigame/Puzzle_Solved.wav", {"keep": 2.73}]
+    ],
+    "ring_prize": [
+      ["Jingles_Fanfares_SFX_Pack.zip", "Jingles_Fanfares_SFX_Pack/Jingles_and_Fanfares/Puzzle_Minigame/Success_1.wav", {"keep": 1.345}]
+    ],
+    "ring_hit": [
+      ["Leohpaz_MedievalCarnival_SFX_Pack.zip", "Leohpaz_MedievalCarnival_SFX_Pack/Ambience/Pop_1.wav", {"keep": 0.13}],
+      ["Leohpaz_MedievalCarnival_SFX_Pack.zip", "Leohpaz_MedievalCarnival_SFX_Pack/Ambience/Pop_2.wav", {"keep": 0.13}]
+    ],
+    "cutscene_card": [
+      ["Jingles_Fanfares_SFX_Pack.zip", "Jingles_Fanfares_SFX_Pack/Jingles_and_Fanfares/Drums/Drums_2.wav", {"keep": 1.25}]
+    ],
+    "amb_forest_day": [
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Birds/1_birds_outside.wav", {"loop": 12.0}]
+    ],
+    "amb_forest_night": [
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Night/1_night_outside.wav", {"loop": 12.0}]
+    ],
+    "amb_coast": [
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Island/1_island_beach_no_seagulls.wav", {"loop": 12.0}]
+    ],
+    "amb_ash": [
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Cave/3_cave_lava_outside.wav", {"loop": 12.0}]
+    ],
+    "amb_mines": [
+      ["LEOHPAZ_MiningCave_SFX.zip", "LEOHPAZ_MiningCave_SFX/Water_Drops/Loop_LowDrops_Slow.ogg", {"loop": 12.0}]
+    ],
+    "amb_cave": [
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Cave/1_cave.wav", {"loop": 12.0}]
+    ],
+    "amb_frost": [
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Wind/1_wind_outside.wav", {"loop": 12.0}]
+    ],
+    "amb_marsh_night": [
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Swamp/1_swamp_outside.wav", {"loop": 12.0}]
+    ],
+    "amb_town": [
+      ["Leohpaz_MedievalCarnival_SFX_Pack.zip", "Leohpaz_MedievalCarnival_SFX_Pack/Ambience/Ambience_People.wav", {"loop": 12.0}]
+    ],
+    "ward": "hit_blocked",
+    "forge_strike": "strike",
+    "cheese_thud": "strike",
+    "foe_afflicted": "afflicted",
+    "heal_whole": "heal",
+    "step_ice": "step_stone",
+    "boss_phase": "dragon_roar",
+    "skill_refused": "ui_deny",
+    "letter_read": "ui_page",
+    "bench_rest": "ui_open",
+    "ui_volume": "coin_gain",
+    "reveal_built": "coin_gain",
+    "ring_done": "coin_gain",
+    "shortcut_open": "door",
+    "lamp_lit": "lantern_lit",
+    "town_grows": "ascension",
+    "kill_beasts": "kill",
+    "kill_greenskins": "kill",
+    "kill_undead": "kill",
+    "kill_constructs": "kill",
+    "kill_fireborn": "kill",
+    "kill_outlaws": "kill"
   }
 }

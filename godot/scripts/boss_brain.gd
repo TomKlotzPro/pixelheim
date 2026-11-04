@@ -79,8 +79,10 @@ func _cast(move: String) -> void:
 	var at: Vector2 = enemy.global_position
 	match String(attack["shape"]):
 		"line":
+			Sound.play("dragon_breath")
 			_tell(Telegraph.band(at, hero, float(attack["length"]) * TILE, float(attack["width"]) * TILE), attack)
 		"circles":
+			Sound.play("dragon_embers")
 			for i in int(attack["count"]):
 				var spot := hero if i == 0 else hero + Vector2(randf_range(-1, 1), randf_range(-1, 1)) * float(attack["spread"]) * TILE
 				_tell(Telegraph.circle(spot, float(attack["radius"]) * TILE), attack)

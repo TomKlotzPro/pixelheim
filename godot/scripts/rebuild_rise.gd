@@ -334,7 +334,7 @@ func _hide(node: CanvasItem) -> void:
 ## The ruin gives way: a cloud of dust off it, its rubble sinking, the town
 ## as it stood dissolving into the town as it stands.
 func _give_way() -> void:
-	Sound.play("rebuild")
+	Sound.play("ruin_falls")
 	var dissolve := func(at: float) -> void:
 		for material in _past_materials:
 			material.set_shader_parameter("dissolve", at)

@@ -238,7 +238,7 @@ func attack() -> void:
 	# A staff bites on its second frame: its bolt leaves now (PIX-396).
 	if STRIKE_FRAMES.get(art["attack"], [1, 2])[0] == 1:
 		_loose()
-	Sound.play("swing")
+	Sound.play(Sound.swing_for(GameState.pack.worn_items().get("weapon", "")))
 	get_tree().create_timer(ATTACK_COOLDOWN).timeout.connect(
 		func() -> void: attack_ready = true
 	)
@@ -405,7 +405,7 @@ func cast(index: int) -> void:
 	for foe: Node in targets:
 		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * GameState.spoils.damage_scale())
 		world.fx.skill_flash(foe.global_position, color, glow)
-		foe.take_hit(damage, global_position, skill.get("inflicts"), false, "hit_spell")
+		foe.take_hit(damage, global_position, skill.get("inflicts"), false, Sound.impact_for(String(skill["name"])))
 		dealt += damage
 	world.fx.skills.impacts_held = false
 	# What it dealt (or a heal restored) is the numbers over the heads: the

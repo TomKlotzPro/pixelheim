@@ -372,6 +372,7 @@ func mimic_wakes(sprite: Sprite2D, chest: Dictionary) -> void:
 		return
 	sprite.texture = MapView.treasure_texture(chest, true)
 	Sound.play("chest_open")
+	Sound.play("mimic_wake")
 	var at := Vector2i(int(chest["x"]), int(chest["y"]))
 	var ambush := Vector2i(-1, -1)
 	for step: Vector2i in [Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i(-1, 1), Vector2i(1, 1)]:
@@ -415,7 +416,7 @@ func on_enemy_noticed(enemy: Node) -> void:
 	if fights_like_boss(enemy):
 		Sound.play("boss_sighted")
 	elif now - noticed_at > 1.5:
-		Sound.play("foe_noticed")
+		Sound.play(Sound.of_family("foe_noticed", String(enemy.fighter["id"])))
 	noticed_at = now
 	hunted_at = now
 	hunted_by_boss = hunted_by_boss or fights_like_boss(enemy)
@@ -516,7 +517,9 @@ func on_enemy_died(enemy: Node) -> void:
 		# has finished falling (PIX-339).
 		world.delve.open_shortcut(Vector2i((enemy.position / MapView.TILE).floor()), enemy)
 	if GameState.pack.gear.size() > gear_before:
-		Sound.play("loot_drop")
+		# An epic piece rings out of the drop (PIX-413).
+		var epic: bool = GameState.pack.gear[-1].get("rarity", "") == "epic"
+		Sound.play("rare_drop" if epic else "loot_drop")
 	if cleared != "":
 		world.messages.log_lines([Text.t("Pack scattered: another comes after a long walk or a night's rest.")], true)
 

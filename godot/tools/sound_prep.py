@@ -3,15 +3,19 @@
 plays (PIX-411), as tools/ui_kit_prep.gd does GegX's UI kit.
 
 For each take godot/assets/audio/paid.json names (an event, then the zip it
-is in and its path inside), this reads the file straight out of the zip,
-makes it mono at 44.1 kHz, trims the silence before and after it, and brings
-it to its family's loudness in godot/assets/data/audio.json's "families" (the
-400 ms max, as the audio pass measured the game's own), never past the
-family's peak: the packs sit near -1 dBFS, and every bus plays 14 dB over
-its renders (Sound.LOUDNESS_DB). It writes <event>_<n>.wav, 16-bit, and
-takes.json, the list the game reads them by (each event's takes, each take's
-peak, loudness, length and source). Godot compresses them on import as it
-does the game's own sounds.
+is in, its path inside and how to cut it), this reads the file straight out
+of the zip, makes it mono at its family's rate (audio.json's "families":
+44.1 kHz unless the budget asks for less, PIX-413), trims the silence before
+it, cuts it (PIX-413: "keep" its first seconds, the tail faded out; "loop" a
+bed's first seconds, its end crossfaded into its start so it loops without
+a seam; "pitch", "lowpass" in Hz), and brings it to its family's loudness in
+godot/assets/data/audio.json's "families" (the 400 ms max, as the audio pass
+measured the game's own), never past the family's peak, then "db" more: the
+packs sit near -1 dBFS, and every bus plays 14 dB over its renders
+(Sound.LOUDNESS_DB). It writes <event>_<n>.wav, 16-bit, and takes.json, the
+list the game reads them by (each event's takes, each take's peak, loudness,
+length and source; an event the manifest names another for shares that
+one's). Godot compresses them on import as it does the game's own sounds.
 
 The packs are paid and may not be redistributed, modified or not: write the
 takes outside this repo, into the private pixelheim-assets repo
@@ -37,6 +41,11 @@ GODOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 MANIFEST = os.path.join(GODOT, "assets", "audio", "paid.json")
 AUDIO = os.path.join(GODOT, "assets", "data", "audio.json")
 RATE = 44100
+# The longest a cut's fade-out runs, and its share of a short take.
+FADE_S = 0.5
+FADE_SHARE = 0.3
+# A bed's end crossfaded into its start.
+LOOP_FADE_S = 1.5
 # A member bigger than this is no sound effect (a zip bomb, a whole album).
 LARGEST = 64 * 1024 * 1024
 # Silence: under this, before the take starts and after it has rung out.
@@ -52,12 +61,48 @@ def load(path):
 
 
 def takes(manifest):
-    """[(event, name, zip, path)] in the manifest's order, each named <event>_<n>."""
+    """[(event, name, zip, path, cut)] in the manifest's order, each named
+    <event>_<n>; an event sharing another's takes has none of its own."""
     out = []
     for event, sources in manifest["events"].items():
-        for n, (zip_name, member) in enumerate(sources, 1):
-            out.append((event, "%s_%d" % (event, n), zip_name, member))
+        if isinstance(sources, str):
+            continue
+        for n, source in enumerate(sources, 1):
+            out.append((event, "%s_%d" % (event, n), source[0], source[1], source[2] if len(source) > 2 else {}))
     return out
+
+
+def shared(manifest):
+    """{event: the event whose takes it plays}."""
+    return {event: sources for event, sources in manifest["events"].items() if isinstance(sources, str)}
+
+
+def cut(options):
+    """The ffmpeg filters, after the lead's trim, that cut a take as the
+    manifest says: a pitch, a low-pass, its tail faded where it is kept to."""
+    out = []
+    if "pitch" in options:
+        # Lower and slower together, as a bigger beast's voice is.
+        out.append("asetrate=%d,aresample=%d" % (round(RATE * float(options["pitch"])), RATE))
+    if "lowpass" in options:
+        out.append("lowpass=f=%d" % options["lowpass"])
+    if "keep" in options:
+        keep = float(options["keep"])
+        fade = min(FADE_S, keep * FADE_SHARE)
+        out.append("atrim=end=%.3f,afade=t=out:st=%.3f:d=%.3f" % (keep, keep - fade, fade))
+    return out
+
+
+def loop_graph(seconds):
+    """A filter graph cutting a bed to `seconds` that loops without a seam:
+    the moment after its end, fading out, laid over its start fading in."""
+    x = LOOP_FADE_S
+    return ("[0:a]asplit=3[a][b][c];"
+            "[a]atrim=start=%.3f:end=%.3f,asetpts=PTS-STARTPTS,afade=t=out:d=%.3f:curve=qsin[tail];"
+            "[b]atrim=end=%.3f,asetpts=PTS-STARTPTS,afade=t=in:d=%.3f:curve=qsin[head];"
+            "[c]atrim=start=%.3f:end=%.3f,asetpts=PTS-STARTPTS[body];"
+            "[tail][head]amix=inputs=2:normalize=0[seam];"
+            "[seam][body]concat=n=2:v=0:a=1[out]") % (seconds, seconds + x, x, x, x, x, seconds)
 
 
 def gain_for(loudness, peak, family):
@@ -118,16 +163,26 @@ def prepare(zips, out):
     for old in glob.glob(os.path.join(out, "*.wav")) + glob.glob(os.path.join(out, "takes.json")):
         os.remove(old)
     listed = {"events": {}, "takes": {}}
-    trim = "silenceremove=start_periods=1:start_threshold=%ddB,areverse,silenceremove=start_periods=1:start_threshold=%ddB,areverse" % (LEAD_DB, TAIL_DB)
+    lead = "silenceremove=start_periods=1:start_threshold=%ddB" % LEAD_DB
+    tail = "areverse,silenceremove=start_periods=1:start_threshold=%ddB,areverse" % TAIL_DB
     with tempfile.TemporaryDirectory() as work:
-        for event, name, zip_name, member in takes(manifest):
+        for event, name, zip_name, member, options in takes(manifest):
             family = families[events[event]["family"]]
+            rate = str(family.get("rate", RATE))
             source = os.path.join(work, "source" + os.path.splitext(member)[1].lower())
             read_member(zips, zip_name, member, source)
+            mono = os.path.join(work, "mono.wav")
+            ffmpeg("-i", source, "-ac", "1", "-ar", str(RATE), "-c:a", "pcm_f32le", mono)
             trimmed = os.path.join(work, name + ".wav")
-            ffmpeg("-i", source, "-ac", "1", "-ar", str(RATE), "-af", trim, "-c:a", "pcm_f32le", trimmed)
+            if "loop" in options:
+                ffmpeg("-i", mono, "-filter_complex", loop_graph(float(options["loop"])), "-map", "[out]",
+                       "-ar", rate, "-c:a", "pcm_f32le", trimmed)
+            else:
+                # Kept to a length, the cut's fade is its end; else the silence after it goes.
+                filters = [lead] + cut(options) + ([] if "keep" in options else [tail])
+                ffmpeg("-i", mono, "-af", ",".join(filters), "-ar", rate, "-c:a", "pcm_f32le", trimmed)
             loudness, peak, _ = measure(trimmed)
-            gain = gain_for(loudness, peak, family)
+            gain = gain_for(loudness, peak, family) + float(options.get("db", 0))
             made = os.path.join(out, name + ".wav")
             ffmpeg("-i", trimmed, "-af", "volume=%.2fdB" % gain, "-c:a", "pcm_s16le", made)
             loudness, peak, seconds = measure(made)
@@ -137,6 +192,8 @@ def prepare(zips, out):
             listed["takes"][name] = {"loudness": round(loudness, 1), "peak": round(peak, 1), "seconds": round(seconds, 3),
                                      "from": "%s/%s" % (zip_name, member)}
             print("%-18s %6.1f LUFS %6.1f dBFS %5.2fs  %s/%s" % (name, loudness, peak, seconds, zip_name, member))
+    for event, other in shared(manifest).items():
+        listed["events"][event] = listed["events"][other]
     with open(os.path.join(out, "takes.json"), "w", encoding="utf-8") as file:
         json.dump(listed, file, indent=1)
         file.write("\n")
