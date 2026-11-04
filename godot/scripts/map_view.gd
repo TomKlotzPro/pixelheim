@@ -444,7 +444,9 @@ func _plan_hamlet() -> void:
 	# What its hub has grown as its post road filled (PIX-324).
 	var grown := Hubs.dressing(data.id, GameState.post)
 	grown.append_array(yards)
-	hamlet = Hamlet.plan(data, kept, grown)
+	# Whoever holds the place now (PIX-399: Greyhold's colours).
+	grown.append_array(Hamlet.held(data.id, GameState.progression.hunted))
+	hamlet = Hamlet.plan(data, kept, grown, PunyTown.available())
 	for cell: Vector2i in hamlet["blocks"]:
 		data.covered[cell] = true
 

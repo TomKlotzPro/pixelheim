@@ -51,7 +51,7 @@ func test_nothing_stands_on_a_villager_a_door_a_path_or_a_portal() -> void:
 		for cell: Vector2i in Hamlet.plan(map, kept)["blocks"]:
 			assert_false(kept.has(cell), "%s: %s keeps clear of villagers, portals, chests and packs" % [map_id, cell])
 			assert_true(WorldTiles.is_walkable(map.tile_at(cell)), "%s: %s stands on open ground" % [map_id, cell])
-			assert_does_not_have(Hamlet.WAYS, map.tile_at(cell), "%s: %s off the paths" % [map_id, cell])
+			assert_false(Hamlet.is_way(map_id, map.tile_at(cell)), "%s: %s off the paths" % [map_id, cell])
 			assert_false(map.tile_at(cell + Vector2i.UP).begins_with("door"), "%s: %s is no door's step" % [map_id, cell])
 
 
@@ -73,7 +73,8 @@ func test_what_floats_hangs_or_lies_flat_blocks_nothing() -> void:
 		var map := MapData.load_by_id(map_id)
 		var planned := Hamlet.plan(map, Hamlet.kept_on(map))
 		for piece: Dictionary in planned["pieces"]:
-			if piece["kind"] != "stand":
+			# A ware `on` a cart lies on the cart's own block (test_a_ware_lies_only_on_what_stands).
+			if piece["kind"] not in ["stand", "on"]:
 				for cell: Vector2i in piece["cells"]:
 					assert_does_not_have(planned["blocks"], cell, "%s: a %s piece blocks nothing" % [map_id, piece["kind"]])
 			if piece["kind"] == "moored":
@@ -216,3 +217,46 @@ func test_a_settlement_drawn_lays_its_dressing() -> void:
 		for cell: Vector2i in view.hamlet["blocks"]:
 			assert_true(map.covered.has(cell), "%s: what stands at %s blocks" % [map_id, cell])
 			assert_true(view.bare.has(cell), "%s: no field decor under it" % map_id)
+
+
+## Greyhold's fort lived in (PIX-399): its barracks, stable and smithy stand
+## with their doors shut, its keep's door still opens on the keep, and
+## whoever holds it (the turncoats, the garrison once the Hollow Captain
+## stands down) lays all its dressing where it says, in no one's way, no
+## way closed, the banners in their colours on the keep's wall.
+func test_greyhold_fort_lived_in() -> void:
+	var map := MapData.load_by_id("greyhold")
+	var houses := PunyTown.houses(map.grid)
+	assert_eq(houses.size(), 5, "the keep, the cottage, the barracks, the stable and the smithy")
+	for door: Vector2i in [Vector2i(30, 7), Vector2i(44, 7), Vector2i(40, 22)]:
+		assert_eq(map.tile_at(door), "door_shut", "%s shut: no room behind it" % door)
+	assert_eq(map.tile_at(Vector2i(37, 12)), "door", "the keep's door opens")
+	assert_true(map.portals.has(Vector2i(37, 12)))
+	var kept := Hamlet.kept_on(map)
+	var before := _reach(map, map.spawn)
+	for hunted: Array in [[], ["hollow_captain"]]:
+		var by := Hamlet.holder("greyhold", hunted)
+		assert_eq(by, "garrison" if hunted else "turncoats")
+		var grown := Hamlet.held("greyhold", hunted)
+		var planned := Hamlet.plan(map, kept, grown)
+		var wanted: Array = Hamlet.DRESSING["greyhold"] + grown
+		assert_eq(planned["pieces"].size(), wanted.size(), "%s: no piece left out" % by)
+		for cell: Vector2i in planned["blocks"]:
+			assert_false(kept.has(cell), "%s: %s keeps clear of villagers, portals and packs" % [by, cell])
+			assert_false(Hamlet.is_way(map.id, map.tile_at(cell)), "%s: %s off the paths" % [by, cell])
+		var walked := MapData.load_by_id("greyhold")
+		for cell: Vector2i in planned["blocks"]:
+			walked.covered[cell] = true
+		var after := _reach(walked, walked.spawn)
+		for cell: Vector2i in before:
+			if cell not in planned["blocks"]:
+				assert_true(after.has(cell), "%s: %s still reached" % [by, cell])
+		var colours := {}
+		for piece: Dictionary in planned["pieces"]:
+			if piece.has("banner"):
+				colours[piece["banner"]] = true
+				assert_eq(piece["kind"], "wall", "a banner hangs on a wall")
+		assert_eq(colours.keys(), ["teal"] if hunted else ["red"], "%s's colours" % by)
+	var cheap := Hamlet.plan(map, kept, Hamlet.held("greyhold", []), false)
+	assert_false(cheap["pieces"].any(func(piece: Dictionary) -> bool: return piece.has("tile")), "without the pack none of its pieces")
+	assert_eq(Hamlet.holder("saltmere", []), "", "no one holds a fishing village")

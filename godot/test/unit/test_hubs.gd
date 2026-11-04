@@ -171,7 +171,7 @@ func test_every_step_stands_where_it_says_and_closes_no_way() -> void:
 		for cell: Vector2i in blocks:
 			assert_false(kept.has(cell), "%s: %s keeps clear of villagers, portals, chests and packs" % [place, cell])
 			assert_true(WorldTiles.is_walkable(map.tile_at(cell)), "%s: %s stands on open ground" % [place, cell])
-			assert_does_not_have(Hamlet.WAYS, map.tile_at(cell), "%s: %s off the paths" % [place, cell])
+			assert_false(Hamlet.is_way(place, map.tile_at(cell)), "%s: %s off the paths" % [place, cell])
 			assert_false(map.tile_at(cell + Vector2i.UP).begins_with("door"), "%s: %s is no door's step" % [place, cell])
 			map.covered[cell] = true
 		var after := _reach(map, map.spawn)
