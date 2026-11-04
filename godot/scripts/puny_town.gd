@@ -81,23 +81,28 @@ static func compose(grid: Dictionary, style := {}) -> Dictionary:
 
 ## The houses as tile ids, whether or not the pack is here to draw them
 ## (what the tests check). A `style` (Hamlet.house_style, PIX-313) builds
-## them in a settlement's own grammar: its `walls` ([left end, middle,
-## right end] for Shade's timber frame's), a `chimney` on every roof (but
+## them in a settlement's own grammar: its `walls` (sets of [left end,
+## middle, right end] for Shade's timber frame's, one per house in turn,
+## PIX-400; [] keeps his), a `chimney` on every roof (but
 ## where a `stack` of the settlement's own stands for it).
 static func plan(grid: Dictionary, style := {}) -> Dictionary:
 	var pieces := {}
 	var decor := {}
 	var freed: Array[Vector2i] = []
-	for blob: Array in _blobs(grid):
-		_building(blob, grid, pieces, decor, style.get("chimney", false) and not style.has("stack"))
-		for cell: Vector2i in blob:
+	# Each house its own walls, the style's sets in turn (PIX-400: Saltmere's
+	# three were one cottage three times); an empty set keeps Shade's timber.
+	var walls: Array = style.get("walls", [])
+	var blobs := _blobs(grid)
+	for i in blobs.size():
+		var house := {}
+		_building(blobs[i], grid, house, decor, style.get("chimney", false) and not style.has("stack"))
+		var own: Array = walls[i % walls.size()] if not walls.is_empty() else []
+		var swap := {WALL_LEFT: own[0], WALL: own[1], WALL_RIGHT: own[2]} if not own.is_empty() else {}
+		for cell: Vector2i in house:
+			pieces[cell] = swap.get(house[cell], house[cell])
+		for cell: Vector2i in blobs[i]:
 			if not pieces.has(cell):
 				freed.append(cell)
-	var walls: Array = style.get("walls", [])
-	if not walls.is_empty():
-		var swap := {WALL_LEFT: walls[0], WALL: walls[1], WALL_RIGHT: walls[2]}
-		for cell: Vector2i in pieces:
-			pieces[cell] = swap.get(pieces[cell], pieces[cell])
 	return {"pieces": pieces, "decor": decor, "freed": freed}
 
 

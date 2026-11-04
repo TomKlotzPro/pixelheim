@@ -59,6 +59,7 @@ hamlet | on a settlement beyond Pixelheim: its look and its dressing counted by 
 hero | with --role or --level: the hero as built, role:level, health/mana, strength, intelligence, dexterity, endurance, skills learned and the weapon in hand: mage:10:91/140:3,28,4,12:skills12:arch_staff (PIX-379)
 hint | the first-time hint on the screen, by the id it's seen by, or held:<id> while one waits its turn (PIX-341: never over a boss's entrance)
 home | who the story brought home to live in town, by first name: wenna (PIX-255)
+homes | on a settlement beyond Pixelheim: its houses, how many looks (roof and walls) they wear between them and the lamps by its doors and on its street (a lantern, a lit piece, a fire under a door): 3:looks3:lamps3 (PIX-400)
 hour | at the Night of Ash's dawn: the HUD's clock as it reads, its dial a sun or a moon: 04:48 sun (PIX-346)
 houses | on the town: its age and the houses standing on it, ruins not counted (the same with or without the paid art): 4:17 (PIX-382 step 3)
 hub | on a hub's map: its place, the step it has grown to and what of it stands, drawn: saltmere:3:lighthouse (PIX-324)

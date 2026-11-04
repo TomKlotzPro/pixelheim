@@ -13,8 +13,11 @@ class_name Hubs
 ## there (`news`), what's said under it (`line`), and the pieces it puts up
 ## on the place's own map (HamletArt's or HubArt's, laid as Hamlet lays a
 ## settlement's dressing: a later step's piece on a cell stands in for the
-## one before). The first time the hero is there after a step, the place
-## has a tour of its own, as the town does after the board (Stage).
+## one before), and something of it in the street, where the hero walks in
+## (PIX-400: kegs on Saltmere's quay, fish racks, lamps lit by the jetty;
+## the tour still looks at a step's last piece). The first time the hero is
+## there after a step, the place has a tour of its own, as the town does
+## after the board (Stage).
 ## Pure; saved: only the step each place was last toured at (PostState.hubs);
 ## the rest comes from the roads' counts.
 

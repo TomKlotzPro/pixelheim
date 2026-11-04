@@ -103,19 +103,20 @@ func test_a_hub_grows_a_step_at_each_mark_a_later_piece_in_place_of_the_one_befo
 	var arts: Array[String] = []
 	for n: int in [3, 5, 7]:
 		_carried("saltmere", n)
-		var dressing := Hubs.dressing("saltmere", GameState.post)
-		assert_eq(dressing.size(), 1, "one lighthouse at each step")
-		arts.append(String(dressing[0]["art"]))
+		var tower := Hubs.dressing("saltmere", GameState.post).filter(func(entry: Dictionary) -> bool: return String(entry["art"]).begins_with("lighthouse"))
+		assert_eq(tower.size(), 1, "one lighthouse at each step")
+		arts.append(String(tower[0]["art"]))
 	assert_eq(arts, ["lighthouse_dark", "lighthouse_glass", "lighthouse"] as Array[String], "mended, glazed in sea glass, lit")
-	assert_true(Hubs.dressing("saltmere", GameState.post)[0].get("lit", false), "lit, it burns at night")
+	assert_true(Hubs.dressing("saltmere", GameState.post).any(func(entry: Dictionary) -> bool: return entry["art"] == "lighthouse" and entry.get("lit", false)), "lit, it burns at night")
 	_carried("greyhold", 7)
 	assert_eq(Hubs.dressing("greyhold", GameState.post).map(func(entry: Dictionary) -> String: return entry["art"]), ["sutler_tent", "market_stall", "market_stall_blue"],
 		"Mabel's tent, a stall beside it, then a second: a market")
 	_carried("blackiron", 7)
-	assert_eq(Hubs.dressing("blackiron", GameState.post).map(func(entry: Dictionary) -> String: return entry["art"]), ["keg", "box", "ore_stall"],
-		"goods come down, then the trestle that becomes a stall")
+	assert_eq(Hubs.dressing("blackiron", GameState.post).map(func(entry: Dictionary) -> String: return entry["art"]), ["cart", "keg", "box", "ore", "ore_stall", "lamp_post"],
+		"goods and a cart come down, then ore and the trestle that becomes a stall, then a lamp by the road")
 	_carried("frostgate", 7)
-	assert_eq(Hubs.dressing("frostgate", GameState.post).map(func(entry: Dictionary) -> String: return entry["art"]), ["lodge"], "Gunnar's lodge, its fire lit")
+	assert_eq(Hubs.dressing("frostgate", GameState.post).map(func(entry: Dictionary) -> String: return entry["art"]), ["woodpile_snow", "lodge", "sledge_wood", "lamp_post"],
+		"firewood, a sledge of it and a lamp by Gunnar's lodge, its fire lit")
 	assert_true(Hubs.dressing("town", GameState.post).is_empty(), "nowhere else grows")
 	assert_true(Hubs.dressing("overworld", GameState.post).is_empty())
 
@@ -182,6 +183,24 @@ func test_every_step_stands_where_it_says_and_closes_no_way() -> void:
 		assert_true(after.has(hub), "%s: its hub still reached" % place)
 
 
+## PIX-400: with every road carried Saltmere's street looked as it did, its
+## lighthouse on the point out of sight. Every step now puts something up
+## within a few cells of a road, where the hero walks in.
+func test_every_step_shows_on_the_street() -> void:
+	const STREET := 5
+	for place: String in Hubs.places():
+		var map := MapData.load_by_id(place)
+		var roads: Array[Vector2i] = []
+		for cell: Vector2i in map.grid:
+			if map.tile_at(cell) == "path":
+				roads.append(cell)
+		for i in Hubs.steps(place).size():
+			var near: bool = Hubs.steps(place)[i]["pieces"].any(func(piece: Dictionary) -> bool:
+				var at := Routes.cell_of(piece["cell"])
+				return roads.any(func(road: Vector2i) -> bool: return maxi(absi(road.x - at.x), absi(road.y - at.y)) <= STREET))
+			assert_true(near, "%s: step %d shows on the street" % [place, i + 1])
+
+
 func test_hub_art_is_drawn_on_the_grid_in_shade_s_inks() -> void:
 	for art: String in HubArt.PIECES:
 		assert_false(HamletArt.PIECES.has(art), "%s: one name for one piece" % art)
@@ -228,4 +247,5 @@ func test_a_hub_drawn_burns_its_lit_pieces_at_night() -> void:
 			assert_true(burning.all(func(sprite: Sprite2D) -> bool: return sprite.visible), "%s: alight at night" % place)
 		assert_eq(shines[5], 0, "%s: nothing burns before its last step" % place)
 		assert_eq(shines[7], 1, "%s: its last step burns" % place)
-		assert_eq(lights[7], lights[5] + 1, "%s: with a light of its own" % place)
+		var lit: int = Hubs.steps(place)[2]["pieces"].filter(func(piece: Dictionary) -> bool: return piece.get("lit", false)).size()
+		assert_eq(lights[7], lights[5] + lit, "%s: each lit piece with a light of its own" % place)

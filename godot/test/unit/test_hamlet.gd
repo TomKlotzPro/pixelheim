@@ -73,7 +73,8 @@ func test_what_floats_hangs_or_lies_flat_blocks_nothing() -> void:
 		var map := MapData.load_by_id(map_id)
 		var planned := Hamlet.plan(map, Hamlet.kept_on(map))
 		for piece: Dictionary in planned["pieces"]:
-			if piece["kind"] != "stand":
+			# A ware lies on what blocks its cell already (a cart, a stall).
+			if piece["kind"] not in ["stand", "on"]:
 				for cell: Vector2i in piece["cells"]:
 					assert_does_not_have(planned["blocks"], cell, "%s: a %s piece blocks nothing" % [map_id, piece["kind"]])
 			if piece["kind"] == "moored":
@@ -129,7 +130,9 @@ func test_each_settlement_builds_in_its_own_grammar() -> void:
 		var own := PunyTown.plan(map.grid, style)
 		assert_false(own["pieces"].is_empty(), "%s has houses" % map_id)
 		assert_eq(own["pieces"].keys(), plain["pieces"].keys(), "%s: every house stands where it stood" % map_id)
-		var walls: Array = style["walls"]
+		var walls: Array = []
+		for one: Array in style["walls"]:
+			walls.append_array(one if not one.is_empty() else [PunyTown.WALL_LEFT, PunyTown.WALL, PunyTown.WALL_RIGHT])
 		for cell: Vector2i in own["pieces"]:
 			var was: int = plain["pieces"][cell]
 			if not walls.is_empty() and was in [PunyTown.WALL_LEFT, PunyTown.WALL, PunyTown.WALL_RIGHT]:
@@ -146,6 +149,40 @@ func test_each_settlement_builds_in_its_own_grammar() -> void:
 		for house: Dictionary in houses:
 			if house["door"].x >= 0 and not style.has("stack"):
 				assert_gte(SettlementsLayer.chimney_of(house["door"], own["decor"]).x, 0, "%s: the door at %s smokes from its chimney" % [map_id, house["door"]])
+
+
+## PIX-400: Saltmere's three houses were one thatched cottage three times.
+## Each house now wears a roof and walls its neighbours don't, and a house
+## is as tall or as wide as its own.
+func test_no_two_houses_of_a_hamlet_alike() -> void:
+	for map_id: String in ["saltmere", "blackiron", "frostgate"]:
+		var map := MapData.load_by_id(map_id)
+		var homes := Hamlet.homes(map)
+		assert_gte(homes.size(), 3, "%s: three houses at least" % map_id)
+		var looks := {}
+		for home: String in homes:
+			looks[home] = true
+		assert_eq(looks.size(), homes.size(), "%s: no two houses alike: %s" % [map_id, homes])
+	var sizes := {}
+	for house: Dictionary in PunyTown.houses(MapData.load_by_id("saltmere").grid):
+		sizes[house["rect"].size] = true
+	assert_eq(sizes.size(), 3, "Saltmere's houses each their own size")
+
+
+## PIX-400: a lantern hangs by every door that opens on a hamlet's street,
+## or its fire shows under it (Blackiron's forge), lit at night.
+func test_a_lamp_by_every_door() -> void:
+	for map_id: String in ["saltmere", "blackiron", "frostgate"]:
+		var map := MapData.load_by_id(map_id)
+		var pieces: Array = Hamlet.plan(map, Hamlet.kept_on(map))["pieces"]
+		for house: Dictionary in PunyTown.houses(map.grid):
+			var door: Vector2i = house["door"]
+			if door.x < 0:
+				continue
+			var lit := pieces.any(func(piece: Dictionary) -> bool:
+				var cell: Vector2i = piece["cell"]
+				return cell.y == door.y and absi(cell.x - door.x) <= 1 and (piece.get("art", "") == "lantern" or piece.has("glow")))
+			assert_true(lit, "%s: a lamp by the door at %s" % [map_id, door])
 
 
 func test_pixelheim_keeps_its_houses() -> void:

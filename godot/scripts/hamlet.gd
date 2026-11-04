@@ -28,18 +28,24 @@ class_name Hamlet
 const LOOKS := {
 	"saltmere": "fishing", "greyhold": "fort", "frostgate": "frost", "blackiron": "mine", "mountain_road": "smithy",
 }
-## Each look's houses (PunyTown.plan's style): their wall row in the
-## Medieval Age [left end, middle, right end] (none: Shade's timber
-## frame), and snow on the roofs. Every look puts a chimney on each roof.
-## Saltmere's cottages are whitewashed, Greyhold's and Morvax's of the
-## fort's stone, Blackiron's huts of planks; the Frostgate's hermit keeps
-## his timber under the snow.
+## Each look's houses (PunyTown.plan's style): their wall rows in the
+## Medieval Age, a set of [left end, middle, right end] per house in turn
+## ([]: Shade's timber frame), and snow on the roofs. Every look puts a
+## chimney on each roof. Greyhold's and Morvax's of the fort's stone; at
+## Saltmere a whitewashed cottage, a timbered one and one of planks, their
+## roofs slate, thatch and moss (the map's roof kinds, PIX-400: they were
+## one thatched cottage three times); Blackiron's forge of stone and its
+## huts of planks and stone; at the Frostgate the observatory of stone, the
+## hermit keeping his timber under the snow and his woodshed of planks.
+const PLANKS := [5558, 5559, 5561]
+const WHITEWASH := [723, 724, 725]
+const FORT := [3799, 3800, 3801]
 const HOUSES := {
-	"fishing": {"walls": [723, 724, 725]},
-	"fort": {"walls": [3799, 3800, 3801]},
-	"frost": {"walls": [], "snow": true},
-	"mine": {"walls": [5558, 5559, 5561]},
-	"smithy": {"walls": [3802, 3803, 3805], "stack": "forge_stack"},
+	"fishing": {"walls": [WHITEWASH, [], PLANKS]},
+	"fort": {"walls": [FORT]},
+	"frost": {"walls": [FORT, [], PLANKS], "snow": true},
+	"mine": {"walls": [FORT, PLANKS]},
+	"smithy": {"walls": [[3802, 3803, 3805]], "stack": "forge_stack"},
 }
 ## A barrel and a crate outdoors, at the Puny folk's scale (HamletArt): Shade's
 ## stood as tall as the villager beside them, a barrel on a crate a tower.
@@ -74,6 +80,18 @@ const DRESSING := {
 		{"art": "wall_net", "cell": Vector2i(23, 14), "wall": true},
 		{"art": "wall_net", "cell": Vector2i(36, 14), "wall": true},
 		{"art": "wall_net", "cell": Vector2i(45, 14), "wall": true},
+		# PIX-400: a lantern by each door; the jetty's head a quay (a keg,
+		# a handcart with the catch on it); fish racks down the beach
+		# and a boat drawn up on the point's shore.
+		{"art": "lantern", "cell": Vector2i(21, 14), "wall": true},
+		{"art": "lantern", "cell": Vector2i(38, 14), "wall": true},
+		{"art": "lantern", "cell": Vector2i(43, 14), "wall": true},
+		{"art": "handcart", "cell": Vector2i(34, 23)},
+		{"art": "fish_crate", "cell": Vector2i(34, 23), "on": Vector2i(11, -5)},
+		{"art": "keg", "cell": Vector2i(33, 25)},
+		{"art": "fish_rack", "cell": Vector2i(23, 21)},
+		{"art": "fish_rack", "cell": Vector2i(29, 21)},
+		{"art": "boat", "cell": Vector2i(40, 27), "moored": true},
 	],
 	"greyhold": [
 		{"art": "garden", "cell": Vector2i(17, 22), "flat": true},
@@ -82,6 +100,17 @@ const DRESSING := {
 	],
 	"frostgate": [
 		{"store": "woodpile_snow", "cell": Vector2i(7, 38)},
+		# PIX-400: lanterns by the hermit's and the observatory's doors,
+		# firewood stacked by his hut and his woodshed, a sledge loaded with
+		# it by the road and another at Gunnar's camp.
+		{"art": "lantern", "cell": Vector2i(11, 38), "wall": true},
+		{"art": "lantern", "cell": Vector2i(28, 6), "wall": true},
+		{"art": "lantern", "cell": Vector2i(16, 38), "wall": true},
+		{"art": "woodpile_snow", "cell": Vector2i(13, 38)},
+		{"art": "woodpile_snow", "cell": Vector2i(19, 38)},
+		{"art": "sledge_wood", "cell": Vector2i(20, 39)},
+		{"art": "sledge", "cell": Vector2i(31, 38)},
+		{"art": "woodpile_snow", "cell": Vector2i(34, 37)},
 	],
 	"blackiron": [
 		{"art": "lantern", "cell": Vector2i(20, 15), "wall": true},
@@ -90,6 +119,14 @@ const DRESSING := {
 		{"art": "cart", "cell": Vector2i(22, 14)},
 		{"art": "coal", "cell": Vector2i(35, 22)},
 		{"art": "ore", "cell": Vector2i(29, 22)},
+		# PIX-400: the forge west of the old face, its stack smoking and its
+		# fire under the door, a quenching tub and coal by it; an ore cart up
+		# at the shaft's path.
+		{"art": "forge_stack", "cell": Vector2i(6, 14), "roof": true},
+		{"glow": true, "cell": Vector2i(7, 15)},
+		{"art": "tub", "cell": Vector2i(5, 15)},
+		{"art": "coal", "cell": Vector2i(10, 15)},
+		{"art": "cart", "cell": Vector2i(28, 15)},
 	],
 	"mountain_road": [
 		{"art": "forge_stack", "cell": Vector2i(19, 3), "roof": true},
@@ -270,7 +307,21 @@ static func kept_on(map: MapData, decks: Variant = null) -> Dictionary:
 static func pieces() -> Array[int]:
 	var out: Array[int] = []
 	for look: String in HOUSES:
-		for tile: int in HOUSES[look]["walls"]:
-			if tile not in out:
-				out.append(tile)
+		for walls: Array in HOUSES[look]["walls"]:
+			for tile: int in walls:
+				if tile not in out:
+					out.append(tile)
+	return out
+
+
+## Each house on `map` as it's built: its roof kind and its walls' middle
+## tile (Shade's timber where its set is none), in PunyTown's order; what
+## the report's `homes=` and the tests tell houses apart by (PIX-400).
+static func homes(map: MapData) -> Array[String]:
+	var out: Array[String] = []
+	var walls: Array = house_style(map.id).get("walls", [])
+	var houses := PunyTown.houses(map.grid)
+	for i in houses.size():
+		var own: Array = walls[i % walls.size()] if not walls.is_empty() else []
+		out.append("%s/%d" % [houses[i]["kind"], own[1] if not own.is_empty() else PunyTown.WALL])
 	return out
