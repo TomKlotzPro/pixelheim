@@ -3165,6 +3165,10 @@ msgid "Every speaker has a look of their own: no more faceless farmers, no keepe
 msgstr "Chaque personnage a désormais son propre visage : fini les fermiers sans visage et les marchands habillés comme le héros, et le portrait de dialogue montre leur tête et leurs épaules"
 
 #: assets/data/changelog.json
+msgid "Every step now sounds of the ground under it, grass, dirt, sand, stone, wood, snow, ice or shallow water, from Leohpaz's retro RPG sounds, and blows land with their own impact by weapon; each moment of the game has its own sound to fill, never the same take twice running"
+msgstr "Chaque pas sonne désormais selon le sol, herbe, terre, sable, pierre, bois, neige, glace ou eau peu profonde, avec les sons rétro de Leohpaz, et les coups ont leur propre impact selon l'arme ; chaque moment du jeu a désormais son propre son, jamais deux fois la même prise d'affilée"
+
+#: assets/data/changelog.json
 msgid "Every tenth depth a warden guards the stair down, a boss with its own attacks: the Deep Warden, then the Hollow King"
 msgstr "Toutes les dix profondeurs, un gardien tient l'escalier, un boss avec ses propres attaques : le Gardien des Profondeurs, puis le Roi Creux"
 
@@ -3391,6 +3395,10 @@ msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la
 #: assets/data/changelog.json
 msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
 msgstr "Les ennemis côte à côte n'empilent plus leurs niveaux : le plus proche affiche le sien, et une étiquette qui le chevaucherait attend son tour"
+
+#: assets/data/changelog.json
+msgid "Footfalls"
+msgstr "Bruits de pas"
 
 #: assets/data/changelog.json
 msgid "Forged in Fire"
@@ -4135,6 +4143,10 @@ msgstr "La forge de Morvax rougeoie à sa gueule et sous sa porte, le Caveau des
 #: assets/data/changelog.json
 msgid "Most depths now have a twist, shown at the gate: swift foes, warded skills, venomous bites or proud elites, with richer drops and a richer hoard"
 msgstr "La plupart des profondeurs ont désormais une particularité, affichée à la porte : ennemis vifs, compétences scellées, morsures venimeuses ou élites altières, avec plus de butin et un trésor plus riche"
+
+#: assets/data/changelog.json
+msgid "Music and ambience dip under jingles and roars and come back, a place's music picks up where it left off, and the options gain a slider for ambience"
+msgstr "La musique et l'ambiance s'effacent sous les jingles et les rugissements puis reviennent, la musique d'un lieu reprend là où elle s'était arrêtée, et les options gagnent un curseur pour l'ambiance"
 
 #: assets/data/changelog.json
 msgid "Mute button top right; your choice is remembered"
