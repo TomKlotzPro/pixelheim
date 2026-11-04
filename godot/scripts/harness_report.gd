@@ -520,6 +520,19 @@ func field_home() -> String:
 	return ",".join(homecomers.map(func(recruit: Dictionary) -> String: return String(recruit["id"]).get_slice("_", 1)))
 
 
+func field_homes() -> String:
+	if world.map == null or world.view == null or Hamlet.look_of(world.map.id) == "":
+		return ""
+	# The map as its file has it: by the report, the world's copy holds every roof as plain `roof`.
+	var homes := Hamlet.homes(MapData.load_by_id(world.map.id))
+	var looks := {}
+	for home: String in homes:
+		looks[home] = true
+	var lamps: Array = world.view.hamlet["pieces"].filter(func(piece: Dictionary) -> bool:
+		return piece.get("art", "") in ["lantern", "lamp_post"] or piece.has("glow"))
+	return "%d:looks%d:lamps%d" % [homes.size(), looks.size(), lamps.size()]
+
+
 func field_hour() -> String:
 	var hud: Hud = world.hud
 	if hud.clock_plate == null or not world.get_children().any(func(node: Node) -> bool: return node.get_script() == preload("res://scripts/dawn_screen.gd")):
