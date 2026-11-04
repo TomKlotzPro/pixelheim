@@ -154,10 +154,17 @@ static func lane_of(grid: Dictionary, beyond: Callable, cell: Vector2i) -> Array
 ## The wear tile of road cell `cell`: its lane's ruts in one of their
 ## variants, the same for every lane across the road at that point (so a
 ## crown's tuft or a pebble split between two lanes meets itself), or a worn
-## patch: always on a `square` (a strip of it beside a crate is no street).
+## patch: always on a `square` (a strip of it beside a crate is no street),
+## and on a dirt road's last cell where it ends in the open (PIX-404: the
+## audit found the Deepwood's and the Mirefen's roads running their ruts
+## hard up to a square end; a track's ruts give out before the grass).
 static func wear_tile(grid: Dictionary, beyond: Callable, cell: Vector2i, origin: Vector2i, style: int, square := false) -> int:
 	var lane := [] if square else lane_of(grid, beyond, cell)
 	var at := origin + cell
+	if not lane.is_empty() and style != PAVED:
+		var along := Vector2i.RIGHT if lane[0] == ACROSS else Vector2i.DOWN
+		if _tile(grid, beyond, cell + along) in GRASSY or _tile(grid, beyond, cell - along) in GRASSY:
+			lane = []
 	if lane.is_empty():
 		return PATCHES + style * VARIANTS + absi(hash(at)) % VARIANTS
 	var axis: int = lane[0]

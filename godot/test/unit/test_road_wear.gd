@@ -68,7 +68,8 @@ func test_crossings_and_squares_are_worn_not_rutted() -> void:
 ## next; and the tile is the lane's, in the road's look.
 func test_the_lanes_across_a_road_pick_alike() -> void:
 	var at := _at(_meadow(_road_down(4, 3)))
-	for y in 12:
+	# Its first and last rows end in the meadow past the edges: no ruts.
+	for y in range(1, 11):
 		var tiles := []
 		for x in range(4, 7):
 			tiles.append(RoadWear.wear_tile(at, _grass, Vector2i(x, y), Vector2i(10, 20), RoadWear.TOWN))
@@ -90,6 +91,28 @@ func test_grass_creeps_in_only_where_a_road_meets_grass() -> void:
 	var paved := {Vector2i(4, 5): "gravel"}
 	worn = RoadWear.rows(grid, _grass, Vector2i(12, 12), 0, 12, paved, Vector2i.ZERO, RoadWear.COUNTRY)
 	assert_false(worn["wear"].has(Vector2i(4, 5)), "a paved cell wears nothing")
+
+
+## A dirt road ending in the open (PIX-404) wears its last cell bare of
+## ruts, so they give out before the grass; one ending at a door keeps
+## them to the end; and the map's grid is untouched.
+func test_a_road_end_gives_out_its_ruts() -> void:
+	var road := []
+	for x in range(0, 8):
+		road.append(Vector2i(x, 4))
+		road.append(Vector2i(x, 5))
+	var grid := _meadow(road)
+	var before := grid.duplicate()
+	var worn := RoadWear.rows(grid, _grass, Vector2i(12, 12), 0, 12, {}, Vector2i.ZERO, RoadWear.COUNTRY)
+	assert_eq(grid, before, "the grid is the same: every road cell still a road")
+	for cell: Vector2i in [Vector2i(7, 4), Vector2i(7, 5), Vector2i(0, 4)]:
+		var tile: int = worn["wear"][cell]
+		assert_true(tile >= RoadWear.PATCHES and tile < RoadWear.VERGES, "%s: the ruts give out at the end" % cell)
+	assert_true(worn["wear"][Vector2i(6, 4)] < RoadWear.PATCHES, "and run on the cell before")
+	grid[Vector2i(8, 4)] = "door"
+	grid[Vector2i(8, 5)] = "door"
+	worn = RoadWear.rows(grid, _grass, Vector2i(12, 12), 0, 12, {}, Vector2i.ZERO, RoadWear.COUNTRY)
+	assert_true(worn["wear"][Vector2i(7, 4)] < RoadWear.PATCHES, "a road up to a door is rutted to its end")
 
 
 ## Where the town's traffic runs over its paving (PIX-382 step 4), the stone
