@@ -42,8 +42,11 @@ func build(view: MapView, slices: Slicer) -> void:
 ## A thread of smoke from a house's chimney (PIX-313: out of the chimney's
 ## own mouth, where the house has one); without one, up from its door to
 ## the roof's top, a little to the side. A house whose settlement raised a
-## stack of its own (Morvax's forge) smokes from that (_decor_hamlet).
+## stack of its own (Morvax's forge) smokes from that (_decor_hamlet); a
+## shed (Hamlet.SHEDS) not at all.
 static func _add_chimney_smoke(view: MapView, door: Vector2i) -> void:
+	if door in Hamlet.SHEDS.get(view.data.id, []):
+		return
 	for piece: Dictionary in view.hamlet["pieces"]:
 		if piece["kind"] == "roof" and absi(piece["cell"].x - door.x) <= 4 and piece["cell"].y < door.y:
 			return
@@ -162,9 +165,10 @@ static func _decor_hamlet(view: MapView) -> void:
 				_add_door_glow(view, cell)
 			"flat":
 				var flat := Sprite2D.new()
-				flat.texture = HamletArt.texture(piece["art"])
+				# The pack's tiles lie flat too (the Reach's fields, PIX-397).
+				flat.texture = PunyProps.texture(piece["tile"]) if piece.has("tile") else HamletArt.texture(piece["art"])
 				flat.centered = false
-				flat.position = Vector2(cell * TILE) + Vector2(0, TILE - HamletArt.size(piece["art"]).y)
+				flat.position = Vector2(cell * TILE) + Vector2(0, TILE - flat.texture.get_height())
 				flat.add_to_group("decor")
 				view.ground.add_child(flat)
 			"moored":
@@ -175,6 +179,11 @@ static func _decor_hamlet(view: MapView) -> void:
 				boat.play()
 				stand_on(view, boat, cell, Vector2(-HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
 			_:
+				if piece.get("lamp", false):
+					# A wayside lamp (PIX-397): the town's street lamp, its foot,
+					# body and light, lit with them at night.
+					PropsLayer.add_puny_prop(view, PunyProps.plan({cell: "lamp"})["props"][0])
+					continue
 				var art: String = piece.get("art", "")
 				var still := Sprite2D.new()
 				still.centered = false
@@ -186,6 +195,14 @@ static func _decor_hamlet(view: MapView) -> void:
 				var tall := TILE if piece.has("tile") else HamletArt.size(art).y
 				var root := stand_on(view, still, cell, Vector2(0, TILE - tall))
 				stood[cell] = root
+				if piece.has("top"):
+					# The pack's piece two tiles tall (Hamlet.TOPS): its top a
+					# cell up, sorted with its foot.
+					var top := Sprite2D.new()
+					top.centered = false
+					top.texture = PunyProps.texture(piece["top"])
+					top.position = still.position - Vector2(0, TILE)
+					root.add_child(top)
 				if HamletArt.STALLS.has(art):
 					var awning := Sprite2D.new()
 					awning.centered = false
@@ -370,11 +387,23 @@ static func _add_lantern_light(view: MapView, root: Node2D, cell: Vector2i, own_
 
 ## A hub's lit piece at night (PIX-324: the lighthouse's lantern, the
 ## lodge's windows, the stall's lantern): what burns in it (the dark doesn't
-## touch it), a halo and its light on the ground about it.
+## touch it), a halo and its light on the ground about it. A lamp post's
+## whole glass burns, flickering as the town's lamps' do (LampArt.glass,
+## PIX-400's review: its candle alone left the glass dark under its halo).
 static func _add_shine(view: MapView, root: Node2D, cell: Vector2i, art: String) -> void:
-	var lit := Sprite2D.new()
-	lit.texture = HamletArt.shine(art)
-	lit.centered = false
+	var lit: Node2D
+	if art == "lamp_post":
+		var flame := AnimatedSprite2D.new()
+		flame.sprite_frames = LampArt.glass()
+		flame.centered = false
+		flame.frame = absi(hash(cell)) % flame.sprite_frames.get_frame_count("default")
+		flame.play()
+		lit = flame
+	else:
+		var burns := Sprite2D.new()
+		burns.texture = HamletArt.shine(art)
+		burns.centered = false
+		lit = burns
 	lit.material = Lights.unshaded()
 	lit.position = Vector2(0, -HamletArt.size(art).y)
 	lit.visible = false

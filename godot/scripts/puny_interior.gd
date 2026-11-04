@@ -26,10 +26,23 @@ const WALLS := {
 	0: 278, 1: 498, 2: 719, 3: 499, 4: 58, 5: 278, 6: 59, 7: 279,
 	8: 721, 9: 501, 10: 720, 11: 720, 12: 61, 13: 281, 14: 60, 15: 720,
 }
+## Rooms walled by their place, not in the town's plaster (PIX-402): Shade
+## draws the same walls in grey stone 14 rows down his atlas (Hale's keep)
+## and in a darker, weathered stone 18 rows down (Morvax's forge in the
+## rock), so a room's wall is WALLS' tile plus its set's offset.
+const WALL_SETS := {"keep": 14 * 220, "morvax_forge": 18 * 220}
+## Rooms with no window to the day: Morvax's forge is cut into the rock.
+const WINDOWLESS := ["morvax_forge"]
+## The plaster's window, its sill the plaster wall's wooden band.
 const WINDOW := 3659
-## A hearth's and a forge's fire (their lower left), where a room's warm
-## light comes from (PIX-221).
-const FIRE_TILES := [2565, 2567]
+## A walled set's own window, its sill in that set's band: Shade's stone
+## window for the keep (the plaster's would set a wood patch into the stone).
+const SET_WINDOWS := {"keep": 54}
+## A hearth's and a forge's fire (their lower left), and the smithy's coal
+## bed (its middle), where a room's warm light comes from (PIX-221), by
+## where the fire burns in the tile, in pixels (PIX-402: a flame burns
+## there).
+const FIRE_TILES := {2565: Vector2(16, 12), 2567: Vector2(16, 12), 3003: Vector2(8, 9)}
 ## The candles and sconces in a room, by tile, and where each one's flame
 ## burns in its tile: at night each warms the floor round it (PIX-311).
 const FLAMES := {
@@ -77,8 +90,11 @@ const PLACED := {
 	"furn_bench": [[Vector2i(0, 0), 1659]],
 }
 ## Runs of these draw as one piece with ends: [left end, middle, right end].
+## A run of coals is the smithy's forge, a bed of them glowing in a stone
+## kerb (PIX-402, his blacksmith sample's).
 const RUNS := {
 	"counter": [5180, 5181, 5182],
+	"coals": [3002, 3003, 3004],
 	"shelf": [2995, 2996, 2998],
 	"garden": [1241, 1242, 1243],
 	"trophy_shelf": [1904, 1905, 1904],
@@ -105,13 +121,15 @@ const FREE_WINDOW := "a:window"
 ## Furniture by web tile; barrels roll one of the dungeon's two.
 const FREE_FURNITURE := {
 	"hearth": "h:forge_stack", "forge": "h:forge_stack", "cauldron": "d:517", "crate": "h:box",
-	"counter": "w:844", "shelf": "w:846", "garden": "h:garden",
+	"counter": "w:844", "shelf": "w:846", "garden": "h:garden", "coals": "h:coal",
 }
 const FREE_BARRELS := ["d:515", "d:516"]
-## The pieces a fire burns in (the hearth's warmth and embers, PIX-221), and
-## where each light's flame burns in its cell: a torch's on the wall, a
-## lantern's glass (the candles' rule, PIX-311).
-const FREE_FIRES := ["h:forge_stack"]
+## The pieces a fire burns in (the hearth's warmth and embers, PIX-221), by
+## where it burns in the cell: the forge stack's mouth, and the coal on a
+## coal bed's middle crate (PIX-402: lit as the pack's is, not three cold
+## crates). Then where each light's flame burns in its cell: a torch's on
+## the wall, a lantern's glass (the candles' rule, PIX-311).
+const FREE_FIRES := {"h:forge_stack": HamletArt.STACK_MOUTH, "h:coal": Vector2(8, 9)}
 const FREE_FLAMES := {"d:16": Vector2(8, 5), "h:lantern": Vector2(8, 9), "r:desk": Vector2(23.5, 2.5)}
 ## The furnished corners (interiors.json's vignettes) that have a likeness,
 ## as the vignettes are written: rows above `floorRow` hang on the back
@@ -151,6 +169,12 @@ const FREE_VIGNETTES := {
 
 static func is_room(map_id: String) -> bool:
 	return map_id in ROOMS
+
+
+## A room's window in any wall (the day comes in through it, its glass full
+## of the sky): the plaster's or a set's own.
+static func is_window(tile: int) -> bool:
+	return tile == WINDOW or SET_WINDOWS.values().has(tile)
 
 
 # ---- furnishing (PIX-163) ----------------------------------------------------
@@ -371,6 +395,7 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 	var top := 1 << 20
 	for cell: Vector2i in ring:
 		top = mini(top, cell.y)
+	var wall_set: int = WALL_SETS.get(map_id, 0)
 	for cell: Vector2i in ring:
 		var mask := 0
 		for bit: Array in [[Vector2i.UP, 1], [Vector2i.RIGHT, 2], [Vector2i.DOWN, 4], [Vector2i.LEFT, 8]]:
@@ -379,11 +404,11 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 			# wall stops at the door (its ends face the gap).
 			if ring.has(next) and not String(grid.get(next, "")).begins_with("door"):
 				mask |= bit[1]
-		var tile: int = WALLS[mask]
+		var tile: int = WALLS[mask] + wall_set
 		# Windows along the back wall's straight runs, where nothing stands
 		# in front of them.
-		if cell.y == top and mask == 10 and cell.x % 4 == 1 and not leaning.has(cell):
-			tile = WINDOW
+		if cell.y == top and mask == 10 and cell.x % 4 == 1 and not leaning.has(cell) and not map_id in WINDOWLESS:
+			tile = SET_WINDOWS.get(map_id, WINDOW)
 		walls[cell] = tile
 	return {"floor": floor, "walls": walls, "pieces": pieces, "void": beyond, "blocked": blocked, "over": over}
 
@@ -431,7 +456,9 @@ static func plan_free(map_id: String, grid: Dictionary) -> Dictionary:
 			_:
 				if FREE_FURNITURE.has(tile):
 					pieces[cell] = FREE_FURNITURE[tile]
-					if FREE_FURNITURE[tile] in FREE_FIRES:
+					# A run burns in its middle, as `plan` draws it (FIRE_TILES).
+					var middle: bool = (grid.get(cell + Vector2i.LEFT, "") == tile) == (grid.get(cell + Vector2i.RIGHT, "") == tile)
+					if FREE_FIRES.has(pieces[cell]) and (middle or not RUNS.has(tile)):
 						fires.append(cell)
 	# A wall the story has written on keeps it whole (Letters.drawn_on).
 	var leaning := {}
@@ -469,7 +496,7 @@ static func plan_free(map_id: String, grid: Dictionary) -> Dictionary:
 		walls[cell] = "d:%d" % tile
 		# The back wall's straight runs, as `plan` sets its windows.
 		if cell.y == top and east and west and not north and not ring.has(cell + Vector2i.DOWN) \
-				and cell.x % 4 == 1 and not leaning.has(cell):
+				and cell.x % 4 == 1 and not leaning.has(cell) and not map_id in WINDOWLESS:
 			windows.append(cell)
 	return {
 		"free": true, "floor": floor, "walls": walls, "rug": rug, "pieces": pieces, "windows": windows,

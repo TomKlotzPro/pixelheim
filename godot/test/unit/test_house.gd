@@ -41,9 +41,9 @@ func test_odo_sells_the_bigger_deeds_in_order_and_gated_on_gold() -> void:
 
 func test_each_tier_has_its_own_interior() -> void:
 	var sizes := [1, 2, 3].map(func(tier: int) -> Vector2i: return MapData.load_tiered("town_house", [], tier).size)
-	assert_eq(sizes[0], Vector2i(20, 12))
+	assert_eq(sizes[0], Vector2i(15, 12), "a cottage, small and homely (PIX-402)")
 	assert_eq(sizes[1], Vector2i(26, 12))
-	assert_eq(sizes[2], Vector2i(30, 14))
+	assert_eq(sizes[2], Vector2i(30, 12))
 	assert_true(MapData.load_tiered("town_house", [], 3).grid.values().has("cauldron"))
 
 

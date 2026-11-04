@@ -15,7 +15,9 @@ class_name Hamlet
 ##   at the forge, a woodpile by the hermit's hut);
 ## - its set dressing, placed by hand (DRESSING): Saltmere's boats, drying
 ##   nets, creels, fish rack and stall and a washing line between two
-##   houses; Greyhold's vegetable beds; Blackiron's ore, coal, a cart and a
+##   houses; Greyhold's vegetable beds, and its fort's hay, racks, armour,
+##   anvil, dummy, cart, lanterns and the colours of whoever holds it
+##   (PIX-399, HELD); Blackiron's ore, coal, a cart and a
 ##   lantern by each miner's door; Morvax's forge stack and the fire's light
 ##   under his door.
 ## Nothing moves a house, a door, a path or a villager: what stands blocks
@@ -28,19 +30,30 @@ class_name Hamlet
 const LOOKS := {
 	"saltmere": "fishing", "greyhold": "fort", "frostgate": "frost", "blackiron": "mine", "mountain_road": "smithy",
 }
-## Each look's houses (PunyTown.plan's style): their wall row in the
-## Medieval Age [left end, middle, right end] (none: Shade's timber
-## frame), and snow on the roofs. Every look puts a chimney on each roof.
-## Saltmere's cottages are whitewashed, Greyhold's and Morvax's of the
-## fort's stone, Blackiron's huts of planks; the Frostgate's hermit keeps
-## his timber under the snow.
+## Each look's houses (PunyTown.plan's style): their wall rows in the
+## Medieval Age, a set of [left end, middle, right end] per house in turn
+## ([]: Shade's timber frame), and snow on the roofs. Every look puts a
+## chimney on each roof but one carrying a stack of its own (DRESSING's
+## `roof`: Morvax's forge, Blackiron's) or over a shed (SHEDS). Greyhold's and Morvax's of the fort's stone; at
+## Saltmere a whitewashed cottage, a timbered one and one of planks, their
+## roofs slate, thatch and moss (the map's roof kinds, PIX-400: they were
+## one thatched cottage three times); Blackiron's forge of stone and its
+## huts of planks and stone; at the Frostgate the observatory of stone, the
+## hermit keeping his timber under the snow and his woodshed of planks.
+const PLANKS := [5558, 5559, 5561]
+const WHITEWASH := [723, 724, 725]
+const FORT := [3799, 3800, 3801]
 const HOUSES := {
-	"fishing": {"walls": [723, 724, 725]},
-	"fort": {"walls": [3799, 3800, 3801]},
-	"frost": {"walls": [], "snow": true},
-	"mine": {"walls": [5558, 5559, 5561]},
-	"smithy": {"walls": [3802, 3803, 3805], "stack": "forge_stack"},
+	"fishing": {"walls": [WHITEWASH, [], PLANKS]},
+	"fort": {"walls": [FORT]},
+	"frost": {"walls": [FORT, [], PLANKS], "snow": true},
+	"mine": {"walls": [FORT, PLANKS]},
+	"smithy": {"walls": [[3802, 3803, 3805]]},
 }
+## Sheds, not homes, by their door: no chimney on the roof, no smoke from
+## the door (PIX-400's review: the Frostgate's woodshed under a chimney
+## stack read as a tiny cottage).
+const SHEDS := {"frostgate": [Vector2i(17, 38)]}
 ## A barrel and a crate outdoors, at the Puny folk's scale (HamletArt): Shade's
 ## stood as tall as the villager beside them, a barrel on a crate a tower.
 ## By look, what a settlement keeps in them.
@@ -71,17 +84,64 @@ const DRESSING := {
 		{"art": "creels", "cell": Vector2i(44, 18)},
 		{"art": "fish_stall", "cell": Vector2i(42, 17)},
 		{"line": 2, "cell": Vector2i(40, 14)},
-		{"art": "wall_net", "cell": Vector2i(23, 14), "wall": true},
-		{"art": "wall_net", "cell": Vector2i(36, 14), "wall": true},
-		{"art": "wall_net", "cell": Vector2i(45, 14), "wall": true},
+		{"art": "wall_net", "cell": Vector2i(24, 14), "wall": true},
+		{"art": "wall_net", "cell": Vector2i(39, 14), "wall": true},
+		{"art": "wall_net", "cell": Vector2i(42, 14), "wall": true},
+		# PIX-400: a lantern by each door, on bare wall as the nets are (never
+		# over a window: test_wall_pieces_hang_on_bare_wall); the jetty's head a quay (a keg,
+		# a handcart with the catch on it); fish racks down the beach
+		# and a boat drawn up on the point's shore.
+		{"art": "lantern", "cell": Vector2i(21, 14), "wall": true},
+		{"art": "lantern", "cell": Vector2i(36, 14), "wall": true},
+		{"art": "lantern", "cell": Vector2i(45, 14), "wall": true},
+		{"art": "handcart", "cell": Vector2i(34, 23)},
+		{"art": "fish_crate", "cell": Vector2i(34, 23), "on": Vector2i(11, -5)},
+		{"art": "keg", "cell": Vector2i(33, 25)},
+		{"art": "fish_rack", "cell": Vector2i(23, 21)},
+		{"art": "fish_rack", "cell": Vector2i(29, 21)},
+		{"art": "boat", "cell": Vector2i(40, 27), "moored": true},
 	],
 	"greyhold": [
 		{"art": "garden", "cell": Vector2i(17, 22), "flat": true},
 		{"art": "garden", "cell": Vector2i(13, 24), "flat": true},
 		{"art": "garden", "cell": Vector2i(14, 24), "flat": true},
+		# The fort lived in (PIX-399): hay and a trough by the stable, stores
+		# by the barracks and armour on its stand, racks along the walls, the
+		# smithy's anvil and grindstone, a dummy in the drill yard, a
+		# supply cart in from the west gate, a lantern by each new door.
+		{"tile": Yards.HAY, "cell": Vector2i(25, 5)},
+		{"tile": Yards.HAY, "cell": Vector2i(26, 5)},
+		{"art": "tub", "cell": Vector2i(33, 6)},
+		{"art": "lantern", "cell": Vector2i(31, 7), "wall": true},
+		{"art": "keg", "cell": Vector2i(47, 5)},
+		{"art": "box", "cell": Vector2i(47, 6)},
+		{"art": "lantern", "cell": Vector2i(46, 7), "wall": true},
+		{"tile": ARMOUR, "cell": Vector2i(42, 10)},
+		{"tile": POLEARMS, "cell": Vector2i(49, 14)},
+		{"tile": SPEARS, "cell": Vector2i(49, 16)},
+		{"tile": SWORDS, "cell": Vector2i(49, 17)},
+		{"tile": POLEARMS, "cell": Vector2i(25, 20)},
+		{"tile": SWORDS, "cell": Vector2i(25, 21)},
+		{"tile": Yards.ANVIL, "cell": Vector2i(38, 23)},
+		{"tile": Yards.GRINDSTONE, "cell": Vector2i(42, 23)},
+		{"art": "lantern", "cell": Vector2i(41, 22), "wall": true},
+		{"tile": DUMMY, "cell": Vector2i(33, 21)},
+		{"art": "handcart", "cell": Vector2i(26, 13)},
+		{"tile": Yards.FLOUR, "cell": Vector2i(26, 13), "on": Vector2i(2, -6)},
 	],
 	"frostgate": [
 		{"store": "woodpile_snow", "cell": Vector2i(7, 38)},
+		# PIX-400: lanterns by the hermit's and the observatory's doors,
+		# firewood stacked by his hut and his woodshed, a sledge loaded with
+		# it by the road and another at Gunnar's camp.
+		{"art": "lantern", "cell": Vector2i(11, 38), "wall": true},
+		{"art": "lantern", "cell": Vector2i(26, 6), "wall": true},
+		{"art": "lantern", "cell": Vector2i(16, 38), "wall": true},
+		{"art": "woodpile_snow", "cell": Vector2i(13, 38)},
+		{"art": "woodpile_snow", "cell": Vector2i(19, 38)},
+		{"art": "sledge_wood", "cell": Vector2i(20, 39)},
+		{"art": "sledge", "cell": Vector2i(31, 38)},
+		{"art": "woodpile_snow", "cell": Vector2i(34, 37)},
 	],
 	"blackiron": [
 		{"art": "lantern", "cell": Vector2i(20, 15), "wall": true},
@@ -90,14 +150,64 @@ const DRESSING := {
 		{"art": "cart", "cell": Vector2i(22, 14)},
 		{"art": "coal", "cell": Vector2i(35, 22)},
 		{"art": "ore", "cell": Vector2i(29, 22)},
+		# PIX-400: the forge west of the old face, its stack smoking and its
+		# fire under the door, a quenching tub and coal by it; an ore cart up
+		# at the shaft's path.
+		{"art": "forge_stack", "cell": Vector2i(6, 14), "roof": true},
+		{"glow": true, "cell": Vector2i(7, 15)},
+		{"art": "tub", "cell": Vector2i(5, 15)},
+		{"art": "coal", "cell": Vector2i(10, 15)},
+		{"art": "cart", "cell": Vector2i(28, 15)},
 	],
 	"mountain_road": [
 		{"art": "forge_stack", "cell": Vector2i(19, 3), "roof": true},
 		{"glow": true, "cell": Vector2i(17, 5)},
 	],
 }
+## The Medieval Age's own pieces Greyhold's fort is dressed in (PIX-399):
+## weapon racks (polearms, spears, swords), armour on its stand, the
+## training dummy, and banners two tiles tall, the rod on top: the
+## turncoats' red and the fort's own teal.
+const POLEARMS := 1466
+const SPEARS := 1467
+const SWORDS := 1465
+const ARMOUR := 1907
+const DUMMY := 3006
+## The pack's pieces two tiles tall, by the tile that stands: the tile
+## drawn a cell above it, blocking nothing (a rack's weapon heads, the
+## dummy's straw). Plan gives such a piece its `top`.
+const TOPS := {POLEARMS: 1246, SPEARS: 1247, DUMMY: 2786}
+const BANNERS := {"red": [9152, 9372], "teal": [11792, 12012]}
+## Who holds a settlement, by map (PIX-399): `by` until the quest `until`
+## is handed in (GameState.progression.quests), `then` after, and the
+## dressing each lays under its name. Greyhold's keep hangs the turncoats'
+## red until Ulla's "The Turncoats" is done ("The yard's quiet"); then the
+## fort's teal goes up on the keep and the barracks and its garrison's
+## drill fills the yard. A `banner` hangs on the wall at its cell, its rod
+## a cell above.
+const HELD := {
+	"greyhold": {
+		"until": "ulla_turncoats", "by": "turncoats", "then": "garrison",
+		"turncoats": [
+			{"banner": "red", "cell": Vector2i(34, 12)},
+			{"banner": "red", "cell": Vector2i(40, 12)},
+		],
+		"garrison": [
+			{"banner": "teal", "cell": Vector2i(34, 12)},
+			{"banner": "teal", "cell": Vector2i(40, 12)},
+			{"banner": "teal", "cell": Vector2i(43, 7)},
+			{"tile": DUMMY, "cell": Vector2i(35, 21)},
+			{"tile": ARMOUR + 1, "cell": Vector2i(42, 12)},
+			{"tile": SPEARS, "cell": Vector2i(25, 23)},
+			{"tile": Yards.HAY, "cell": Vector2i(25, 6)},
+		],
+	},
+}
 ## Ground a standing piece never blocks: the roads, the docks and bridges.
 const WAYS := ["path", "dock", "bridge", "stone"]
+## A look's yard: ground of WAYS that is no way there (PIX-399: Greyhold's
+## courtyard is flagged all over; its ways are the paths across it).
+const YARDS := {"fort": ["stone"]}
 ## Afloat: the water a moored boat rides on, and the shallows a boat is
 ## drawn up into.
 const AFLOAT := ["sea", "shore", "water", "deep_sea"]
@@ -108,6 +218,12 @@ static func look_of(map_id: String) -> String:
 	return LOOKS.get(map_id, "")
 
 
+## Whether `tile` is a way on map `map_id`, which a standing piece never
+## blocks (WAYS, but for its look's yard).
+static func is_way(map_id: String, tile: String) -> bool:
+	return tile in WAYS and tile not in YARDS.get(look_of(map_id), [])
+
+
 ## The houses' style on map `map_id` (PunyTown.plan): {} where none is set.
 static func house_style(map_id: String) -> Dictionary:
 	var look := look_of(map_id)
@@ -115,6 +231,7 @@ static func house_style(map_id: String) -> Dictionary:
 		return {}
 	var style: Dictionary = HOUSES[look].duplicate()
 	style["chimney"] = true
+	style["stacks"] = DRESSING.get(map_id, []).filter(func(piece: Dictionary) -> bool: return piece.has("roof")).map(func(piece: Dictionary) -> Vector2i: return piece["cell"]) + SHEDS.get(map_id, [])
 	return style
 
 
@@ -127,22 +244,53 @@ static func store(map_id: String, kind: String, cell: Vector2i) -> String:
 	return STORES.get(look_of(map_id), STORES[""]).get(kind, STORES[""][kind])
 
 
+## Who holds map `map_id` now, by the hero's `quests` (HELD): "" where no
+## one does.
+static func holder(map_id: String, quests: Dictionary) -> String:
+	var held: Dictionary = HELD.get(map_id, {})
+	if held.is_empty():
+		return ""
+	return held["then"] if quests.get(held["until"], {}).get("done", false) else held["by"]
+
+
+## The dressing of whoever holds map `map_id` now (HELD), as Hamlet.plan's
+## `grown` entries: a banner as its two tiles hung on the wall, the rod's
+## a cell above its own.
+static func held(map_id: String, quests: Dictionary) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	var by := holder(map_id, quests)
+	if by == "":
+		return out
+	for entry: Dictionary in HELD[map_id][by]:
+		if not entry.has("banner"):
+			out.append(entry)
+			continue
+		var tiles: Array = BANNERS[entry["banner"]]
+		out.append({"tile": tiles[0], "cell": entry["cell"] + Vector2i.UP, "wall": true, "banner": entry["banner"]})
+		out.append({"tile": tiles[1], "cell": entry["cell"], "wall": true, "banner": entry["banner"]})
+	return out
+
+
 ## The dressing `map` takes: {"look", "pieces": [piece], "blocks": [cells]}.
 ## Each piece is DRESSING's, with its "cells" and "kind" ("stand", "flat",
-## "moored", "wall", "roof", "line", "glow", "on"); a standing piece that doesn't
-## fit (`fits`) is left out. `kept`: cells a piece must leave open (where
+## "moored", "wall", "roof", "line", "glow", "on"), a piece two tiles tall
+## its "top" (TOPS); a standing piece that doesn't fit (`fits`) is left out. `kept`: cells a piece must leave open (where
 ## a villager stands, the hero arrives, a chest...). `grown`: what the
 ## place's hub has grown since (PIX-324, Hubs.dressing), laid after it.
-static func plan(map: MapData, kept: Dictionary, grown: Array[Dictionary] = []) -> Dictionary:
+## Without the paid pack (`paid` false) the pack's own pieces (`tile`) are
+## left out: their sheet isn't there.
+static func plan(map: MapData, kept: Dictionary, grown: Array[Dictionary] = [], paid := true) -> Dictionary:
 	var pieces: Array[Dictionary] = []
 	var blocks: Array[Vector2i] = []
 	var out := {"look": look_of(map.id), "pieces": pieces, "blocks": blocks}
 	for entry: Dictionary in DRESSING.get(map.id, []) + grown:
-		if entry.has("store"):
+		if entry.has("store") or (entry.has("tile") and not paid):
 			continue
 		var piece := entry.duplicate()
 		piece["kind"] = kind_of(entry)
 		piece["cells"] = cells_of(entry)
+		if TOPS.has(entry.get("tile", -1)):
+			piece["top"] = TOPS[entry["tile"]]
 		if piece["kind"] == "stand":
 			if not fits(map, piece["cells"], kept, blocks):
 				continue
@@ -207,7 +355,7 @@ static func fits(map: MapData, cells: Array[Vector2i], kept: Dictionary, blocks:
 		taken[cell] = true
 	for cell: Vector2i in cells:
 		var tile := map.tile_at(cell)
-		if not map.is_walkable(cell) or tile in WAYS or map.portals.has(cell) or kept.has(cell) or cell in blocks:
+		if not map.is_walkable(cell) or is_way(map.id, tile) or map.portals.has(cell) or kept.has(cell) or cell in blocks:
 			return false
 		if map.tile_at(cell + Vector2i.UP).begins_with("door"):
 			return false
@@ -270,7 +418,21 @@ static func kept_on(map: MapData, decks: Variant = null) -> Dictionary:
 static func pieces() -> Array[int]:
 	var out: Array[int] = []
 	for look: String in HOUSES:
-		for tile: int in HOUSES[look]["walls"]:
-			if tile not in out:
-				out.append(tile)
+		for walls: Array in HOUSES[look]["walls"]:
+			for tile: int in walls:
+				if tile not in out:
+					out.append(tile)
+	return out
+
+
+## Each house on `map` as it's built: its roof kind and its walls' middle
+## tile (Shade's timber where its set is none), in PunyTown's order; what
+## the report's `homes=` and the tests tell houses apart by (PIX-400).
+static func homes(map: MapData) -> Array[String]:
+	var out: Array[String] = []
+	var walls: Array = house_style(map.id).get("walls", [])
+	var houses := PunyTown.houses(map.grid)
+	for i in houses.size():
+		var own: Array = walls[i % walls.size()] if not walls.is_empty() else []
+		out.append("%s/%d" % [houses[i]["kind"], own[1] if not own.is_empty() else PunyTown.WALL])
 	return out

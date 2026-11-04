@@ -90,6 +90,9 @@ class Panorama extends MapScreen.Painting:
 	var lamps: Array[Dictionary] = []
 	var healed := {}
 
+	func _init() -> void:
+		dim = DARK
+
 	func light(lit: Array[Dictionary], rings: Dictionary) -> void:
 		lamps = lit
 		healed = rings
@@ -103,10 +106,10 @@ class Panorama extends MapScreen.Painting:
 	func _draw() -> void:
 		if map == null:
 			return
-		draw_rect(Rect2(Vector2.ZERO, Vector2(cells * tile_px)), UiStyle.NIGHT)
+		# The page painted from its ground (PIX-403), each cell DARK of the
+		# way to the night (MapGround.paint's dim).
+		draw_texture(_paper, Vector2.ZERO)
 		var cell_size := Vector2(tile_px, tile_px)
-		for cell: Vector2i in _ground:
-			draw_rect(Rect2(Vector2(cell * tile_px), cell_size), (_ground[cell] as Color).lerp(UiStyle.NIGHT, DARK))
 		var at := at_of(Routes.MAP)
 		for cell: Vector2i in healed:
 			draw_rect(Rect2(Vector2((cell + at) * tile_px), cell_size), healed[cell])

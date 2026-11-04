@@ -2729,6 +2729,10 @@ msgid "Country roads carry cart ruts, grass on the crown, pebbles and grass cree
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Country roads end and turn as worn tracks, tapering out and rounding their corners instead of stopping square"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Crackle and Hum"
 msgstr ""
 
@@ -3157,6 +3161,10 @@ msgid "Every spawn belongs to its terrain: ash beasts in the ash, bog things in 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every speaker has a look of their own: no more faceless farmers, no keeper dressed like the hero, and the dialogue portrait shows their head and shoulders"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every tenth depth a warden guards the stair down, a boss with its own attacks: the Deep Warden, then the Hollow King"
 msgstr ""
 
@@ -3506,6 +3514,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate's road is cobbled up to a flagged yard before the observatory"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Greyhold's fort is lived in: a barracks, a stable and a smithy round the keep, weapon racks, banners, carts and a training dummy, worn paving where the garrison walks, and lamps and lit windows at night"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4533,6 +4545,10 @@ msgid "Options on the title screen opens again: it was opening behind the title"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Outside the walls, the Reach's farmland grows with the town: a plot trampled bare in the Ashes, rows sprouting under a scarecrow at the Hamlet, wheat, a fenced sheep pasture and lamps along the north road at the Village, an orchard and a farmstead with its hay, cart and well under the south wall at the Town, and ripe crops and grazing cows at the City"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Owned businesses pay RENT: +2g each after every victory, straight into your purse with a line in the battle log"
 msgstr ""
 
@@ -5018,6 +5034,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Saltmere's sea runs on past the edge of the map instead of stopping at a hedge, and the pines whiten along a ragged snowline toward the Frostgate"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Saltmere, Fernoir and the Frostgate are lived in: no two houses alike, Saltmere's boats, fish racks and kegs on its quay, ore carts coming down the miners' road, firewood and a loaded sledge at the Frostgate, lamps by their doors at night, and each step the Post brings them shows in the street as you walk in"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5833,6 +5853,10 @@ msgid "The Miners' Camp waypoint moved a few steps east, onto its road"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Mirefen comes alive: dead trees, reed beds and boardwalks over the fen, a stilt hut, the channel's banks bent off the grid, the west road ending where it should, and will-o'-wisps drifting at night"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and reeds, the Deepwood's lake dark teal and the Frostgate's water icy"
 msgstr ""
 
@@ -5942,6 +5966,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Wide View"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Wider Reach"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6413,6 +6441,10 @@ msgid "The town's dog and cat now share the farm animals' look: a dark outline, 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The town's rooms are shaped by their keepers: the inn is wider with a bar and a hearth, the hall grand, the cottage small, Odo stands behind his counter, the smithy's coal bed glows, Hale's keep is walled in stone and Morvax's forge in dark stone, and every hearth and oven burns; furniture an old save placed where the cottage or the manor shrank may stand in or past their walls"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The town's south street no longer runs into the river: a grass bank lies between them now, with reeds in the water along it"
 msgstr ""
 
@@ -6482,6 +6514,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The world map is here: press M for the Ashenreach under fog of war - you only see what you have walked"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The world map is painted from the land itself, larger, and its names stand clear of each other and of the markers, in English and French"
 msgstr ""
 
 #: assets/data/changelog.json

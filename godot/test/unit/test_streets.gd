@@ -72,7 +72,12 @@ func test_the_traffic_wears_the_busiest_streets_by_age() -> void:
 		assert_gt(worn[tier].size(), worn[tier - 1].size(), "age %d wears more than the one before" % tier)
 		for cell: Vector2i in worn[tier - 1]:
 			assert_true(worn[tier].has(cell), "age %d keeps %s worn" % [tier, cell])
-	assert_true(Streets.worn("greyhold", MapData.load_by_id("greyhold").grid, Streets.plan("greyhold", MapData.load_by_id("greyhold").grid, 4), 4).is_empty(), "Greyhold's flags lie as laid")
+	# PIX-399: Greyhold's garrison wears its paths from the first, and only them.
+	var fort := MapData.load_by_id("greyhold").grid
+	for tier in [0, Town.MAX_TIER]:
+		var fort_worn := Streets.worn("greyhold", fort, Streets.plan("greyhold", fort, tier), tier)
+		assert_true(fort_worn.has(Vector2i(37, 20)) and fort_worn.has(Vector2i(30, 18)), "Greyhold's paths worn at age %d" % tier)
+		assert_false(fort_worn.has(Vector2i(33, 20)), "its yard's flags off the paths lie as laid")
 
 
 ## The fountain stands on its paving, centred (PIX-364). The grid marks one
@@ -121,7 +126,7 @@ func test_greyhold_and_the_frostgate_are_paved_at_any_age() -> void:
 	for tier in [0, Town.MAX_TIER]:
 		var yard := Streets.plan("greyhold", fort, tier)
 		assert_eq(yard.get(Vector2i(33, 20)), "flags", "the courtyard flagged")
-		assert_eq(yard.get(Vector2i(37, 20)), "sandstone", "its paths in sandstone, the road through the gate showing on the flags")
+		assert_eq(yard.get(Vector2i(37, 20)), "flags", "its paths flagged too, worn where they're walked (PIX-399: no sand cross)")
 		assert_false(yard.has(Vector2i(12, 26)), "the road outside the walls stays dirt")
 		var frost := Streets.plan("frostgate", pass_, tier)
 		assert_eq(frost.get(Vector2i(27, 14)), "cobbles", "the road to the observatory cobbled")

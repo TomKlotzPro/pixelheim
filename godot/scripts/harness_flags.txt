@@ -86,7 +86,7 @@ brew |  | a potion brewed at Vex's cauldron (her stall's counter while her house
 --post | <open|box|read|book|piece> | the Pixelheim Post open (PIX-320: Maren's first letter delivered and Saltmere walked, and the Reach on the way, before the first map is drawn, its box on the square), and nothing more with `open` (PIX-322: a waystation's box faced by --walk); then `box` the hero facing the box, E taking the day's post; `read` the day's post taken and the first piece handed over, by the rules; `book` the day's post taken and all of it delivered, replies too, stamping the courier's book (PIX-321); a piece's id, every piece before it in its thread delivered, it in the satchel and the hero below its addressee on this map, E pressed; the report adds post= | post | 400
 journal |  | the journal, a few quests in hand (PIX-171) and Maren's letters in the satchel, two delivered (PIX-253 step 2); the report adds tracked= (PIX-239) | journal | 410
 dockmenu |  | the dock's menu of screens, open | dockmenu | 420
-lineup |  | every hero role, villager and monster sheet, walking down then right | lineup | 430
+lineup |  | every hero role, everyone who talks (by name) and every monster sheet, walking down then right, the HUD put away | lineup | 430
 shop |  | the keeper's counter, 500g in hand and a pack to sell: 3 pelts, 10 herbs and 2 old boots (with --map town_shop, town_smith or town_alchemist; PIX-336) | shop | 440
 home |  | the house's fixtures (with --map town_house) | home | 450
 --mode | <mode> | with home: storage, workbench, trophies, nook or furniture
@@ -97,12 +97,12 @@ saves |  | the saves screen | saves | 480
 --slots | <dir> | the slots read from that folder, for saves (res://test/fixtures/slots: three heroes, the longest lines a card shows, PIX-230; slots_unread: saves the game can't read, PIX-303; slots_backup: a hero from the save before; slots_older: a save from before v5 beside a hero, PIX-302), nothing written or erased
 launch |  | with --slots: the run opens the folder's slot 1 as a plain launch opens the last slot played, nothing written (PIX-303: one it can't read stands in, and New Game goes to a free slot)
 --ready | <quest> | a quest accepted and its goal met (PIX-192) | ready | 490
---delivered | <quest> | one of Maren's letters already handed over and answered (PIX-255: Hale's order book open to read)
+--delivered | <quest> | a quest already handed in: one of Maren's letters handed over and answered (PIX-255: Hale's order book open to read), or any other (PIX-399: ulla_turncoats, Greyhold's fort the garrison's)
 --talk-to | <villager> | a conversation with that villager, wherever they stand, then --keys | talk_to | 500
 talk |  | below the map's first villager, facing them, E pressed, then --keys | talk | 510
 near |  | below the map's first villager, facing them (the prompt) | near | 520
 chest |  | with --map town: the nook chest faced and opened | chest | 530
-station |  | the room's first station (a cauldron, a forge) faced and E pressed; the report adds tab= (PIX-234) | station | 540
+station |  | the room's first station (a cauldron, a forge), or the one above --at's cell (PIX-402: the smithy's coal bed), faced and E pressed; the report adds tab= (PIX-234) | station | 540
 sleep |  | with --map town_inn: the room's first bed faced and E pressed, a night slept; the report adds clock= (PIX-246) | sleep | 550
 --hunted | <ids> | named monsters already slain before the map loads (PIX-156; PIX-255: their lairs empty, a dungeon's shortcut open, a keepsake's family home); the report adds home= for them | hunted | 560
 reveal |  | the town risen (PIX-147): the lamps' stop, then the age's; with --hunted, the first one's homecoming (or the door of whoever its keepsake brought home, PIX-255) | reveal | 570

@@ -42,7 +42,7 @@ func _open() -> void:
 	panel.add_child(row)
 	# A narrator (the victory) has no face; everyone else speaks from a slot.
 	if npc.has("sprite"):
-		row.add_child(_portrait(npc["sprite"], Npcs.tint_of(String(npc.get("id", "")))))
+		row.add_child(_portrait(npc["sprite"]))
 	var column := VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 10)
@@ -82,8 +82,9 @@ func _open() -> void:
 	_show()
 
 
-## The speaker standing in a framed slot, a few times life size, idling.
-func _portrait(sprite: String, tint := Color.WHITE) -> Control:
+## The speaker's head and shoulders (PIX-405: the whole figure stood small
+## in it) in the kit's slot, idling, a whole number of times life size.
+func _portrait(sprite: String) -> Control:
 	var slot := PanelContainer.new()
 	slot.custom_minimum_size = Vector2(PORTRAIT, PORTRAIT)
 	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -98,15 +99,39 @@ func _portrait(sprite: String, tint := Color.WHITE) -> Control:
 	var art := PunyArt.villager(sprite)
 	var figure := AnimatedSprite2D.new()
 	figure.sprite_frames = PunyArt.frames(art)
-	figure.self_modulate = tint
 	figure.play(PunyArt.pick(figure.sprite_frames, "idle", "down"))
-	# Whole-number zoom: small sheets x6, Shade's 32px cells x4 (the figure
-	# stands in the lower half of its cell, so it sits a little higher).
-	var zoom := 6 if PunyArt.frame_size(art) <= 16 else 4
+	var crop := bust(art)
+	var zoom := floorf(inner / crop.size.x)
 	figure.scale = Vector2(zoom, zoom)
-	figure.position = Vector2(inner / 2.0, inner / 2.0 + PunyArt.lift(art) * zoom * 0.5)
+	# The bust's corner where it stands centred in the slot: the frame's
+	# middle is the sprite's position.
+	figure.position = Vector2.ONE * floorf((inner - crop.size.x * zoom) / 2.0) - crop.position * zoom
 	stage.add_child(figure)
 	return slot
+
+
+## The rows the portrait shows, from the frame's middle in the sheet's
+## pixels: a square BUST rows deep from a pixel over the head, centred on it.
+const BUST := 14
+
+
+## What of `art`'s idle the portrait shows: a person's head and shoulders
+## (BUST), a beast whole and square round its middle. A pet is 16-18 rows
+## deep and its head the whole front of it: a bust cut the dog through its
+## eyes (the ticket kept the dog and cat as they were, v0.304).
+static func bust(art: Dictionary) -> Rect2:
+	var frames := PunyArt.frames(art)
+	var idle := PunyArt.pick(frames, "idle", "down")
+	if art["family"] != "beast":
+		var head := Ink.head(frames, idle)
+		return Rect2(floorf(head.get_center().x - BUST / 2.0), head.position.y - 1, BUST, BUST)
+	var drawn := Rect2()
+	for index in frames.get_frame_count(idle):
+		var used := Rect2(frames.get_frame_texture(idle, index).get_image().get_used_rect())
+		drawn = used if index == 0 else drawn.merge(used)
+	var side := maxf(drawn.size.x, drawn.size.y)
+	var middle := drawn.get_center() - frames.get_frame_texture(idle, 0).get_size() / 2.0
+	return Rect2((middle - Vector2.ONE * side / 2.0).floor(), Vector2.ONE * side)
 
 
 ## E, Enter, Space or a click turns the page (and closes after the last);

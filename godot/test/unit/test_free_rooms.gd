@@ -62,7 +62,10 @@ func test_every_room_has_walls_a_floor_and_its_door() -> void:
 		var room := PunyInterior.plan_free(map.id, map.grid)
 		assert_true(room["free"], key)
 		assert_gt(room["walls"].size(), 10, "%s is walled" % key)
-		assert_gt(room["windows"].size(), 0, "%s has windows for the day" % key)
+		if map.id in PunyInterior.WINDOWLESS:
+			assert_eq(room["windows"].size(), 0, "%s is cut into the rock" % key)
+		else:
+			assert_gt(room["windows"].size(), 0, "%s has windows for the day" % key)
 		for cell: Vector2i in map.grid:
 			var tile: String = map.grid[cell]
 			if tile != "wall":

@@ -435,16 +435,20 @@ func _plan_hamlet() -> void:
 	# Pixelheim's yards and square by its age (PIX-382), laid as a
 	# settlement's dressing is.
 	var yards := Yards.plan(data, buildings["pieces"], GameState.town_tier(), PunyTown.available()) if data.id == "town" else ([] as Array[Dictionary])
+	# The farmland round its walls on the Reach (PIX-397), laid the same way.
+	yards.append_array(Farmland.plan(data, GameState.town_tier(), PunyTown.available()))
 	if Hamlet.look_of(data.id) == "" and yards.is_empty():
 		return
 	var kept := Hamlet.kept_on(data, patch_decks)
-	if not yards.is_empty():
+	if data.id == "town" and not yards.is_empty():
 		kept.merge(Yards.kept(data))
 	kept[arrival] = true
 	# What its hub has grown as its post road filled (PIX-324).
 	var grown := Hubs.dressing(data.id, GameState.post)
 	grown.append_array(yards)
-	hamlet = Hamlet.plan(data, kept, grown)
+	# Whoever holds the place now (PIX-399: Greyhold's colours).
+	grown.append_array(Hamlet.held(data.id, GameState.progression.quests))
+	hamlet = Hamlet.plan(data, kept, grown, PunyTown.available())
 	for cell: Vector2i in hamlet["blocks"]:
 		data.covered[cell] = true
 
@@ -753,7 +757,7 @@ func _decor_lights() -> void:
 	var room := buildings.has("floor")
 	for cell: Vector2i in built:
 		var tile: int = built[cell]
-		if tile == PunyTown.WINDOW and room:
+		if room and PunyInterior.is_window(tile):
 			# The day comes in through a room's window and lies on the floor
 			# below it, slanting (PIX-311); its glass is full of the sky
 			# (_build_room).
@@ -762,10 +766,11 @@ func _decor_lights() -> void:
 			beams.append(beam)
 		elif tile == PunyTown.WINDOW:
 			_add_lit_window(cell, not skyline.is_empty())
-		elif tile in PunyInterior.FIRE_TILES:
+		elif PunyInterior.FIRE_TILES.has(tile):
 			# A hearth or a forge warms the room it's in, and embers rise off
 			# it (PIX-225).
-			_add_hearth(center(cell) + Vector2(TILE / 2.0, 4), center(cell) + Vector2(TILE / 2.0, 6))
+			var fire: Vector2 = Vector2(cell * TILE) + PunyInterior.FIRE_TILES[tile]
+			_add_hearth(fire, fire + Vector2(0, 2))
 		elif tile == PunyTown.DOOR and skyline.is_empty():
 			SettlementsLayer._add_chimney_smoke(self, cell)
 	# A room's candles and sconces burn at night, each warming the floor
@@ -790,7 +795,7 @@ func _free_room_lights() -> void:
 		props.add_child(beam)
 		beams.append(beam)
 	for cell: Vector2i in buildings.get("fires", []):
-		_add_hearth(center(cell) + Vector2(0, 4), Vector2(cell * TILE) + HamletArt.STACK_MOUTH)
+		_add_hearth(center(cell) + Vector2(0, 4), Vector2(cell * TILE) + PunyInterior.FREE_FIRES[buildings["pieces"][cell]])
 	for at: Vector2 in buildings.get("flames", []):
 		_add_candle(at)
 	var objects: Dictionary = buildings.get("objects", {})
@@ -807,13 +812,25 @@ func _free_room_lights() -> void:
 
 
 ## A hearth's or a forge's fire (PIX-225): its warmth on the room, its
-## light from `at`, and embers rising off it at `embers_at`.
+## light from `at`, embers rising off it at `embers_at`, and since PIX-402
+## a fire seen burning there (FireArt's lick, its foot on the embers).
 func _add_hearth(at: Vector2, embers_at: Vector2) -> void:
 	props.add_child(Lights.make(at, 96.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
 	var embers := _still(Motes.make_embers())
 	embers.position = embers_at
 	embers.z_index = 6
 	props.add_child(embers)
+	var size: Vector2i = FireArt.KINDS["lick"]
+	var flame := AnimatedSprite2D.new()
+	flame.sprite_frames = FireArt.frames("lick", 0)
+	flame.centered = false
+	flame.position = embers_at.floor()
+	flame.offset = Vector2(-(size.x / 2), -size.y)
+	flame.speed_scale = FireArt.pace({"cell": Vector2i(embers_at), "frame": 0}, GameState.settings.reduce_motion)
+	flame.material = Lights.unshaded()
+	# props' own order: over the fire's tile, under the actors standing at it.
+	props.add_child(flame)
+	flame.play()
 
 
 ## A candle's or a sconce's flame at `at` (PIX-311): lit at night, a halo

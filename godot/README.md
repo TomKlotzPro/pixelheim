@@ -489,6 +489,8 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/farm_animals/farm_animals.gd` — Pixelheim's farm animals by its age (PIX-387, the village's step 2)
 - `scripts/features/farm_animals/feature.gd` — The town's farm animals in the harness (PIX-387)
 - `scripts/features/farm_animals/herd.gd` — The town's farm animals as they live (PIX-387)
+- `scripts/features/farmland/farmland.gd` — The farmland round Pixelheim's walls on the Reach, by the town's age (PIX-397, step 1).
+- `scripts/features/farmland/feature.gd` — The farmland round the town on the Reach in the harness (PIX-397)
 - `scripts/features/feature.gd` — A feature that plugs itself in from a folder of its own (PIX-361): its harness flags, presets, report fields, look book shots and map layers, beside the core's.
 - `scripts/features/features.gd` — Every feature under scripts/features/ (PIX-361), found once: each folder there is one, its feature.gd a Feature, in the folders' name order.
 - `scripts/features/lamps/feature.gd` — The lamps in the harness (PIX-323, PIX-324; PIX-361's first feature)
@@ -499,6 +501,9 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/lookout/feature.gd` — The lookout on the mountain road in the harness (PIX-363)
 - `scripts/features/lookout/lookout.gd` — The lookout on the mountain road (PIX-363, the Post's step 6b): a brass spyglass on a tripod beside the road where it turns under Morvax's forge, over the drop.
 - `scripts/features/lookout/lookout_screen.gd` — The view from the lookout on the mountain road at night (PIX-363)
+- `scripts/features/mirefen/feature.gd` — The Mirefen alive in the harness (PIX-401)
+- `scripts/features/mirefen/mire_art.gd` — What the Mirefen stands in that Shade's sheets don't draw (PIX-401)
+- `scripts/features/mirefen/mire_dressing.gd` — The Mirefen alive (PIX-401, the v0.307 world audit: « a uniform fen of puddles and a few shrubs, one ruin and two camps »)
 - `scripts/fire_art.gd` — The fires of a burning house (PIX-327): the Night of Ash's ruins and the Night of Bells' roofs.
 - `scripts/firebolt.gd` — A fireborn elite's firebolt (PIX-155): flies straight, burns the hero it meets, and gutters out against a wall or after eight tiles.
 - `scripts/gait.gd` — How the cast walks (PIX-243): the hero, the villagers, the monsters and the wagon all step through their sheet's walk (PunyArt.WALKS) by the ground they cover, not by the clock, so their feet keep pace with the ground at any speed
@@ -535,6 +540,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/lights.gd` — Light and darkness (PIX-221).
 - `scripts/lookbook.gd` — The look book (PIX-220): the same scenes, staged the same way every time
 - `scripts/map_data.gd` — A world map loaded from its JSON (assets/maps/<id>.json, edited by hand or drawn as a sketch in maps-src and run through tools/mapgen.py)
+- `scripts/map_ground.gd` — The map screen's ground (PIX-403): each cell painted from the terrain the world draws it with, Shade's CC0 overworld tiles (PunyTerrain) shrunk to the page's pixels a cell, so the woods, the water, the snow, the Ash and the village read on the page as they do underfoot.
 - `scripts/map_layers/camps_layer.gd` — The packs' camps, the town's boards, stalls, tents and post box, and the houses on fire (PIX-142, PIX-145, PIX-197, PIX-327)
 - `scripts/map_layers/dungeon_layer.gd` — A dungeon floor in Shade's Puny Dungeon (PunyDungeon, DungeonLook, PIX-255, PIX-291, PIX-292, PIX-310)
 - `scripts/map_layers/gates_layer.gd` — The gates the story still keeps shut, each dungeon's way in drawn in its setting, and a mining country's workings (PIX-254, PIX-290, PIX-308)
@@ -571,6 +577,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/rebuild_rise.gd` — A building rising on the town's tour (PIX-264).
 - `scripts/reveal_screen.gd` — The town risen (PIX-147): after a project is funded, the camera walks the town to what was built
 - `scripts/ring_toss_screen.gd` — The festival's ring toss (PIX-159): a ring slides along the rail, back and forth, quicker each throw; E throws it, and it lands if it's over the peg.
+- `scripts/road_shape.gd` — The shape of a country road's ends and turns (PIX-404), as a mask the ground's shader reads (shaders/road_shape.gdshaderinc).
 - `scripts/road_wear.gd` — The wear of wheels and feet on the dirt roads (PIX-307).
 - `scripts/room_art.gd` — A keeper's room its own (PIX-315): Liane keeps the stars in her observatory, and nothing in Shade's packs is a telescope, a star chart or a globe of the sky.
 - `scripts/route_art.gd` — What the Post's routes put up beside the road (PIX-322)

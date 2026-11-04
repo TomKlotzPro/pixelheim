@@ -1,0 +1,14 @@
+# The Mirefen's flows (PIX-361: a feature's flows, read after
+# tools/flows.txt as its own, scripts/features/mirefen/), a line each as in
+# flows.txt.
+# The Mirefen alive (PIX-401): dead trees, reed beds, five boardwalks and
+# two stilt huts stand in the fen by day, the wisps dark; at night the
+# wisps are out; the middle road goes on west as a boardwalk the hero walks
+# along to the west hut, which blocks the way into it.
+mire-fen | --map mirefen --at 30,20 | map=mirefen mire=trees [3-9]\d reeds \d{2,3} walks 5 huts 2 wisps 9 dark | field
+mire-night | --map mirefen --at 30,20 night | map=mirefen mire=trees [3-9]\d reeds \d{2,3} walks 5 huts 2 wisps 9 lit | field night
+mire-boardwalk | --map mirefen --at 12,24 --walk l,l,l,l,l | map=mirefen cell=\([4-9], 24\) | field
+mire-hut | --map mirefen --at 5,24 --walk u,u | map=mirefen cell=\(5, 24\) | field
+# What a frame of the Mirefen costs at night with its wisps drifting
+# (PIX-401), held under 1.00 ms as the Deepwood.
+cpu-mire | --map mirefen --at 30,20 night cpu --wait 2 | map=mirefen cpu=0\.\d\d/\d+\.\d\d | field night

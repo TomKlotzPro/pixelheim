@@ -44,7 +44,10 @@ func test_the_way_through_is_open() -> void:
 		assert_false(view.outdoor_props["drawn"].has(cell), "no prop stands at %s" % cell)
 		assert_false(cell in view.hamlet["blocks"], "no dressing at %s" % cell)
 	assert_eq(PunyTerrain.ground_at(map.grid, GATE), "dirt", "the gate stands on the road")
-	assert_eq(Streets.plan("greyhold", map.grid, 0).get(Vector2i(37, 25)), "sandstone", "the road paved on through the yard")
+	# PIX-399: flagged as the yard, worn where it's walked, not a sand cross.
+	var paved := Streets.plan("greyhold", map.grid, 0)
+	assert_eq(paved.get(Vector2i(37, 25)), "flags", "the road paved on through the yard")
+	assert_true(Streets.worn("greyhold", map.grid, paved, 0).has(Vector2i(37, 25)), "and worn by the garrison's feet")
 
 
 func test_its_lamps_stand_before_its_towers() -> void:

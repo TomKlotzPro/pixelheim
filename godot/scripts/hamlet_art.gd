@@ -11,7 +11,8 @@ class_name HamletArt
 ## with the day's post in it, and the post house behind it (PIX-325). Pixelheim's
 ## yards take its window boxes and the City's bunting (PIX-382, Yards), and
 ## its market Mabel's stalls cleared for the pack's wares, a handcart and a
-## crate of fish (PIX-382 step 4). Drawn here in code in Shade's palette (his
+## crate of fish (PIX-382 step 4); the Frostgate's sledges, bare and loaded
+## with firewood, and a street's lamp post (PIX-400). Drawn here in code in Shade's palette (his
 ## outline, his woods, irons and greys), at 1x on his 16 px grid, so they
 ## sit beside his art as his. Our own, so CC0 like the rest of the
 ## repository: they draw the same with or without the paid pack. Pictures
@@ -283,6 +284,82 @@ const PIECES := {
 		".o3o..........o3o............o3o",
 		".o2o..........o2o............o2o",
 		".ooo..........ooo............ooo",
+	],
+	## A sledge at the Frostgate (PIX-400), bow to the east: a deck of planks
+	## on iron-shod runners curling up at the bow, snow on its back corner.
+	"sledge": [
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"...ooooooooooooooooooooooo......",
+		"..oss6666666666666666666o.......",
+		"..o553553553553553553553o.......",
+		"..o444444444444444444443o.......",
+		"..o333333333333333333333o..oo...",
+		"...oo2oooooooooooooo2oo...ohko..",
+		"....oko.............oko..ohlo...",
+		".ollllllllllllllllllllllllo.....",
+		".oooooooooooooooooooooooooo.....",
+	],
+	## The same loaded with firewood, roped down.
+	"sledge_wood": [
+		"................................",
+		"................................",
+		".....ooooooorooooooooooooo......",
+		"....oss44444r44444444o5665o.....",
+		"....o3333333r33333333o6c36o.....",
+		"...s44444444r44444444oo56oo.....",
+		"...o33333333r33333333o5665o.....",
+		"...o22222222r22222222o6c36o.....",
+		"..osooooooooroooooooooooooo.....",
+		"..o553553553553553553553o.......",
+		"..o444444444444444444443o.......",
+		"..o333333333333333333333o..oo...",
+		"...oo2oooooooooooooo2oo...ohko..",
+		"....oko.............oko..ohlo...",
+		".ollllllllllllllllllllllllo.....",
+		".oooooooooooooooooooooooooo.....",
+	],
+	## A lamp post on a hamlet's street (PIX-400): LampArt's street lamp in
+	## these inks, its candle wax-pale by day (q: its halo stands on it,
+	## `shine_at`); at night LampArt's lit glass burns over it, as the town's.
+	"lamp_post": [
+		"................",
+		"................",
+		".......oo.......",
+		"......oiko......",
+		".....oliiko.....",
+		"....oiiiiiko....",
+		"....okkkkkko....",
+		"....okGgggko....",
+		"....okGgggko....",
+		"....okggogko....",
+		"....okggqgko....",
+		"....okggqgko....",
+		"....okgiigko....",
+		"....oiiiiiio....",
+		".....okkkko.....",
+		"......o53o......",
+		"......o53o......",
+		"......o53o......",
+		"......o52o......",
+		"......o53o......",
+		"......o53o......",
+		"......o53o......",
+		"......o53o......",
+		"......o52o......",
+		"......o53o......",
+		"......o53o......",
+		".....oiiiio.....",
+		".....o5332o.....",
+		"....ohlllllo....",
+		"....oiiiiiio....",
+		"....oooooooo....",
+		"................",
 	],
 	## A rowing boat, bow to the east: its strakes, its thwarts, a pair of oars
 	## shipped along it. 32x16, its keel on the bottom rows.

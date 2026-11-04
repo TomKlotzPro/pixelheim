@@ -90,9 +90,9 @@
         "hub": [30, 14],
         "station": {"work": "waystation_saltmere", "name": "The Saltmere Waystation", "hut": [19, 48], "lamp": [17, 48], "box": [17, 50], "bench": [21, 49], "arrival": [19, 49], "kind": "sea_glass", "find": [18, 49], "visit": [22, 49]},
         "grows": [
-          {"news": "Saltmere's lighthouse is mended, new stones on the point.", "line": "Brin says it's only a tower until it's lit. He says it every morning.", "pieces": [{"art": "lighthouse_dark", "cell": [35, 29]}]},
-          {"news": "Sea glass in the lantern of Saltmere's lighthouse.", "line": "Every pane picked off the beach by Pip, who wants it known.", "pieces": [{"art": "lighthouse_glass", "cell": [35, 29]}]},
-          {"news": "Saltmere's lighthouse is lit again.", "line": "Every boat in the bay saw it. So did Bram, from Pixelheim, he says.", "pieces": [{"art": "lighthouse", "cell": [35, 29], "lit": true}]}
+          {"news": "Saltmere's lighthouse is mended, new stones on the point.", "line": "Brin says it's only a tower until it's lit. He says it every morning.", "pieces": [{"art": "keg", "cell": [36, 23]}, {"art": "box", "cell": [37, 23]}, {"art": "lighthouse_dark", "cell": [35, 29]}]},
+          {"news": "Sea glass in the lantern of Saltmere's lighthouse.", "line": "Every pane picked off the beach by Pip, who wants it known.", "pieces": [{"art": "fish_rack", "cell": [43, 22]}, {"art": "fish_rack", "cell": [45, 22]}, {"art": "lighthouse_glass", "cell": [35, 29]}]},
+          {"news": "Saltmere's lighthouse is lit again.", "line": "Every boat in the bay saw it. So did Bram, from Pixelheim, he says.", "pieces": [{"art": "lamp_post", "cell": [30, 22], "lit": true}, {"art": "lamp_post", "cell": [42, 21], "lit": true}, {"art": "lighthouse", "cell": [35, 29], "lit": true}]}
         ]
       },
       {
@@ -102,9 +102,9 @@
         "hub": [35, 20],
         "station": {"work": "waystation_blackiron", "name": "The Blackiron Waystation", "hut": [24, 18], "lamp": [23, 19], "box": [28, 19], "bench": [26, 19], "arrival": [24, 19], "find": [22, 19], "visit": [27, 19]},
         "grows": [
-          {"news": "Crates come down the road to the miners' camp at Blackiron.", "line": "Garrick counts them twice. The post brought more than letters.", "pieces": [{"art": "keg", "cell": [37, 22]}, {"art": "box", "cell": [41, 22]}]},
-          {"news": "A trestle at the miners' camp, ore laid out on it.", "line": "Brann calls it a shop. Dagny calls it a table.", "pieces": [{"art": "ore_trestle", "cell": [38, 22]}]},
-          {"news": "A stall at the miners' camp, under an awning of its own.", "line": "Ore, ingots and coal for whoever walks in, lit till the last shift comes up.", "pieces": [{"art": "ore_stall", "cell": [38, 22], "lit": true}]}
+          {"news": "Crates come down the road to the miners' camp at Blackiron.", "line": "Garrick counts them twice. The post brought more than letters.", "pieces": [{"art": "cart", "cell": [43, 23]}, {"art": "keg", "cell": [37, 22]}, {"art": "box", "cell": [41, 22]}]},
+          {"news": "A trestle at the miners' camp, ore laid out on it.", "line": "Brann calls it a shop. Dagny calls it a table.", "pieces": [{"art": "ore", "cell": [45, 23]}, {"art": "ore_trestle", "cell": [38, 22]}]},
+          {"news": "A stall at the miners' camp, under an awning of its own.", "line": "Ore, ingots and coal for whoever walks in, lit till the last shift comes up.", "pieces": [{"art": "lamp_post", "cell": [40, 19], "lit": true}, {"art": "ore_stall", "cell": [38, 22], "lit": true}]}
         ]
       },
       {
@@ -127,9 +127,9 @@
         "stationAt": 5,
         "station": {"work": "waystation_frostgate", "name": "The Frostgate Waystation", "hut": [57, 8], "lamp": [56, 9], "box": [61, 9], "bench": [59, 9], "arrival": [57, 9], "kind": "frost_lily", "find": [55, 9], "visit": [60, 9]},
         "grows": [
-          {"news": "Timber for a lodge at Gunnar's camp on the Frostgate.", "line": "Gunnar says the horses chose the spot.", "pieces": [{"art": "lodge_frame", "cell": [37, 38]}]},
-          {"news": "The lodge's walls are up at Gunnar's camp.", "line": "Logs from the pass, and snow on the roof by nightfall.", "pieces": [{"art": "lodge_walls", "cell": [37, 38]}]},
-          {"news": "Gunnar's lodge is open, a fire in it.", "line": "Linnea swears the stew is hers. Gunnar swears a lot.", "pieces": [{"art": "lodge", "cell": [37, 38], "lit": true, "smoke": [35, 2]}]}
+          {"news": "Timber for a lodge at Gunnar's camp on the Frostgate.", "line": "Gunnar says the horses chose the spot.", "pieces": [{"art": "woodpile_snow", "cell": [32, 39]}, {"art": "lodge_frame", "cell": [37, 38]}]},
+          {"news": "The lodge's walls are up at Gunnar's camp.", "line": "Logs from the pass, and snow on the roof by nightfall.", "pieces": [{"art": "sledge_wood", "cell": [33, 41]}, {"art": "lodge_walls", "cell": [37, 38]}]},
+          {"news": "Gunnar's lodge is open, a fire in it.", "line": "Linnea swears the stew is hers. Gunnar swears a lot.", "pieces": [{"art": "lamp_post", "cell": [34, 39], "lit": true}, {"art": "lodge", "cell": [37, 38], "lit": true, "smoke": [35, 2]}]}
         ]
       },
       {

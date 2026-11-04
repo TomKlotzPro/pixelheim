@@ -18,6 +18,7 @@ class_name PunyTown
 
 const SHEET := "res://assets/puny/medieval/punyworld-atlas.png"
 const COLUMNS := 220
+const ROWS := 132
 
 ## Roof kind -> rows down the atlas to that colour's copy of the pieces.
 const ROOF_ROWS := {
@@ -81,23 +82,29 @@ static func compose(grid: Dictionary, style := {}) -> Dictionary:
 
 ## The houses as tile ids, whether or not the pack is here to draw them
 ## (what the tests check). A `style` (Hamlet.house_style, PIX-313) builds
-## them in a settlement's own grammar: its `walls` ([left end, middle,
-## right end] for Shade's timber frame's), a `chimney` on every roof (but
-## where a `stack` of the settlement's own stands for it).
+## them in a settlement's own grammar: its `walls` (sets of [left end,
+## middle, right end] for Shade's timber frame's, one per house in turn,
+## PIX-400; [] keeps his), a `chimney` on every roof (but a house with one
+## of the settlement's own `stacks` cells: a forge's stack, a shed's door).
 static func plan(grid: Dictionary, style := {}) -> Dictionary:
 	var pieces := {}
 	var decor := {}
 	var freed: Array[Vector2i] = []
-	for blob: Array in _blobs(grid):
-		_building(blob, grid, pieces, decor, style.get("chimney", false) and not style.has("stack"))
-		for cell: Vector2i in blob:
+	# Each house its own walls, the style's sets in turn (PIX-400: Saltmere's
+	# three were one cottage three times); an empty set keeps Shade's timber.
+	var walls: Array = style.get("walls", [])
+	var stacks: Array = style.get("stacks", [])
+	var blobs := _blobs(grid)
+	for i in blobs.size():
+		var house := {}
+		_building(blobs[i], grid, house, decor, style.get("chimney", false) and not blobs[i].any(func(cell: Vector2i) -> bool: return cell in stacks))
+		var own: Array = walls[i % walls.size()] if not walls.is_empty() else []
+		var swap := {WALL_LEFT: own[0], WALL: own[1], WALL_RIGHT: own[2]} if not own.is_empty() else {}
+		for cell: Vector2i in house:
+			pieces[cell] = swap.get(house[cell], house[cell])
+		for cell: Vector2i in blobs[i]:
 			if not pieces.has(cell):
 				freed.append(cell)
-	var walls: Array = style.get("walls", [])
-	if not walls.is_empty():
-		var swap := {WALL_LEFT: walls[0], WALL: walls[1], WALL_RIGHT: walls[2]}
-		for cell: Vector2i in pieces:
-			pieces[cell] = swap.get(pieces[cell], pieces[cell])
 	return {"pieces": pieces, "decor": decor, "freed": freed}
 
 
@@ -224,18 +231,19 @@ static func _building(blob: Array, grid: Dictionary, pieces: Dictionary, decor: 
 		_wing(a, b, top, low, -1, attached, shift, pieces)
 	# A settlement's chimney on every roof (PIX-313), where Shade's gable
 	# put none: on the main house's ridge, a column in from its east end.
-	if chimney and not _chimneyed(decor, main_left, main_right, bottom):
-		var roof_top := _top(top_of, main_left, main_right)
+	var roof_top := _top(top_of, main_left, main_right)
+	if chimney and not _chimneyed(decor, main_left, main_right, roof_top, bottom):
 		if bottom - roof_top + 1 >= 2:
 			var ridge := roof_top + (1 if bottom - roof_top + 1 >= 4 else 0)
 			decor[Vector2i(maxi(main_left, main_right - 1), ridge)] = CHIMNEY[1]
 
 
-## Whether a chimney already stands on the house over columns a..b whose
-## wall is row `bottom`.
-static func _chimneyed(decor: Dictionary, a: int, b: int, bottom: int) -> bool:
+## Whether a chimney already stands on the house over columns a..b, rows
+## `top` to its wall's `bottom` (PIX-399: not a house further up the same
+## columns, Greyhold's keep over its smithy).
+static func _chimneyed(decor: Dictionary, a: int, b: int, top: int, bottom: int) -> bool:
 	for cell: Vector2i in decor:
-		if decor[cell] == CHIMNEY[1] and cell.x >= a and cell.x <= b and cell.y < bottom:
+		if decor[cell] == CHIMNEY[1] and cell.x >= a and cell.x <= b and cell.y >= top and cell.y < bottom:
 			return true
 	return false
 

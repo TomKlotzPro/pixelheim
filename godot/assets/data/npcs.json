@@ -5,7 +5,7 @@
       "mapId": "town",
       "x": 12,
       "y": 6,
-      "sprite": "elder",
+      "sprite": "maren",
       "name": "Elder Maren",
       "wander": false,
       "lines": [
@@ -59,7 +59,7 @@
       "mapId": "town",
       "x": 16,
       "y": 12,
-      "sprite": "villager_woman",
+      "sprite": "ana",
       "name": "Ana",
       "wander": true,
       "lines": [
@@ -72,7 +72,7 @@
       "mapId": "town",
       "x": 34,
       "y": 28,
-      "sprite": "villager",
+      "sprite": "bram",
       "name": "Bram",
       "wander": true,
       "lines": [
@@ -96,7 +96,7 @@
       "mapId": "town_shop",
       "x": 8,
       "y": 2,
-      "sprite": "merchant",
+      "sprite": "odo",
       "name": "Merchant Odo",
       "wander": false,
       "lines": [
@@ -149,7 +149,7 @@
       "mapId": "town_inn",
       "x": 8,
       "y": 2,
-      "sprite": "innkeeper",
+      "sprite": "sela",
       "name": "Innkeeper Sela",
       "wander": false,
       "lines": [
@@ -195,7 +195,7 @@
       "mapId": "town",
       "x": 10,
       "y": 19,
-      "sprite": "villager_woman",
+      "sprite": "mira",
       "name": "Mira the Weaver",
       "wander": true,
       "minTownTier": 2,
@@ -219,7 +219,7 @@
       "mapId": "town",
       "x": 36,
       "y": 11,
-      "sprite": "villager",
+      "sprite": "tomas",
       "name": "Old Tomas",
       "wander": true,
       "minTownTier": 3,
@@ -239,7 +239,7 @@
       "mapId": "town",
       "x": 73,
       "y": 19,
-      "sprite": "villager_woman",
+      "sprite": "serra",
       "name": "Serra",
       "wander": true,
       "minTownTier": 4,
@@ -253,7 +253,7 @@
       "mapId": "town",
       "x": 6,
       "y": 19,
-      "sprite": "villager",
+      "sprite": "fenn",
       "name": "Fenn",
       "wander": true,
       "minTownTier": 4,
@@ -319,7 +319,7 @@
       "mapId": "saltmere",
       "x": 33,
       "y": 19,
-      "sprite": "fisher_alt",
+      "sprite": "brin",
       "name": "Harbourmaster Brin",
       "wander": false,
       "lines": [
@@ -332,7 +332,7 @@
       "mapId": "saltmere",
       "x": 30,
       "y": 19,
-      "sprite": "fisher",
+      "sprite": "ola",
       "name": "Ola the Fisher",
       "wander": true,
       "lines": [
@@ -358,7 +358,7 @@
       "mapId": "blackiron",
       "x": 20,
       "y": 18,
-      "sprite": "smith",
+      "sprite": "garrick",
       "name": "Foreman Garrick",
       "wander": false,
       "lines": [
@@ -371,7 +371,7 @@
       "mapId": "blackiron",
       "x": 33,
       "y": 19,
-      "sprite": "worker",
+      "sprite": "dagny",
       "name": "Dagny",
       "wander": true,
       "lines": [
@@ -384,7 +384,7 @@
       "mapId": "greyhold",
       "x": 19,
       "y": 25,
-      "sprite": "villager",
+      "sprite": "fenwick",
       "name": "Fenwick",
       "wander": true,
       "lines": [
@@ -397,7 +397,7 @@
       "mapId": "frostgate",
       "x": 37,
       "y": 41,
-      "sprite": "merchant",
+      "sprite": "gunnar",
       "name": "Gunnar",
       "wander": false,
       "lines": [
@@ -411,7 +411,7 @@
       "mapId": "frostgate",
       "x": 41,
       "y": 38,
-      "sprite": "villager_woman",
+      "sprite": "linnea",
       "name": "Linnea",
       "wander": true,
       "lines": [
@@ -424,7 +424,7 @@
       "mapId": "saltmere",
       "x": 26,
       "y": 17,
-      "sprite": "villager_woman",
+      "sprite": "marta",
       "name": "Marta the Chandler",
       "wander": false,
       "shop": "chandler",
@@ -437,7 +437,7 @@
       "mapId": "blackiron",
       "x": 24,
       "y": 18,
-      "sprite": "worker",
+      "sprite": "brann",
       "name": "Quartermaster Brann",
       "wander": false,
       "shop": "quartermaster",
@@ -450,7 +450,7 @@
       "mapId": "greyhold",
       "x": 16,
       "y": 28,
-      "sprite": "villager_woman",
+      "sprite": "mabel",
       "name": "Mabel the Sutler",
       "wander": false,
       "shop": "sutler",
@@ -465,7 +465,7 @@
       "alsoOn": ["town"],
       "x": 8,
       "y": 4,
-      "sprite": "elder",
+      "sprite": "morvax",
       "name": "Morvax",
       "wander": false,
       "minTownTier": 0,
@@ -479,7 +479,7 @@
     {
       "id": "settler_iva",
       "name": "Iva the Healer",
-      "sprite": "villager_woman",
+      "sprite": "iva",
       "found": {
         "mapId": "mirefen",
         "x": 52,
@@ -526,7 +526,7 @@
     {
       "id": "settler_loras",
       "name": "Loras the Bard",
-      "sprite": "merchant",
+      "sprite": "loras",
       "found": {
         "mapId": "deepwood",
         "x": 6,
@@ -571,7 +571,7 @@
     {
       "id": "settler_wren",
       "name": "Wren the Stablemaster",
-      "sprite": "smith",
+      "sprite": "wren",
       "found": {
         "mapId": "overworld",
         "x": 54,
@@ -614,7 +614,7 @@
     {
       "id": "settler_mirelle",
       "name": "Mirelle the Banker",
-      "sprite": "alchemist",
+      "sprite": "mirelle",
       "found": {
         "mapId": "overworld",
         "x": 52,
@@ -656,7 +656,7 @@
       "id": "saltmere_wenna",
       "about": "PIX-255 (story chapter 2): Tam's sister doesn't ask to be helped; the story brings her home. Once her letter is delivered (`comesHome.letter`) and Tam's Ladle is won (`comesHome.named`), she moves into Sela's inn (`home`, beside Sela's tent while the inn is ash: `homeRuined`) and puts Tam's stew back on the menu: a night at the inn leaves the hero rested `inn.fights` fights longer. The town's tour stops at the inn's door for her homecoming (`homecoming`).",
       "name": "Old Wenna",
-      "sprite": "villager_woman",
+      "sprite": "wenna",
       "found": {
         "mapId": "saltmere",
         "x": 22,
@@ -704,7 +704,7 @@
       "id": "mines_pell",
       "about": "PIX-255 (story chapter 3): the boy with the canary who took the five down the shafts, old now. Once his letter is delivered (`comesHome.letter`) and the last ingot is up from the Black Seam (`comesHome.named`), he and his canary move in above Hilda's forge (`home`, by her stall on the square while the forge is ash: `homeRuined`), and he works her bellows: her +1s cost a tenth less again (`perkValues.forge`). The town's tour stops at the forge's door for his homecoming (`homecoming`).",
       "name": "Old Pell",
-      "sprite": "villager",
+      "sprite": "pell",
       "found": {
         "mapId": "blackiron",
         "x": 16,
@@ -751,7 +751,7 @@
       "id": "greyhold_ulla",
       "about": "PIX-255 (story chapter 4): Captain Hale's sergeant, who took Maren's letter for him. Once it's delivered (`comesHome.letter`) and the Hollow Captain has stood down (`comesHome.named`), she brings the old guard to keep Pixelheim's gate (`home`: just inside it, beside its east torch, off the tower PIX-248 raised where she stood), and her wardens dig out the Frostgate road (the avalanche, gates.json, opens on the same step). The town's tour stops at the gate (`homecoming`).",
       "name": "Sergeant Ulla",
-      "sprite": "guard",
+      "sprite": "ulla",
       "found": {
         "mapId": "greyhold",
         "x": 14,
@@ -881,7 +881,7 @@
   "festivalBarker": {
     "id": "festival_barker",
     "mapId": "town",
-    "sprite": "merchant",
+    "sprite": "jory",
     "name": "Barker Jory",
     "wander": false,
     "lines": [

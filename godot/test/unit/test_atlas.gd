@@ -226,6 +226,37 @@ func test_labels_stay_on_the_page_and_clear_of_the_marks() -> void:
 	assert_eq(Atlas.label_at(Vector2(339, 297), size, bounds, false, 11.2, crowded), Atlas.NOWHERE, "or goes unsaid")
 
 
+## PIX-403: the solver tries round the spot, ring on ring, so names crowded
+## on one spot each find a place clear of the others by GAP; and a name
+## stays inside the map it names while it fits there.
+func test_crowded_names_each_find_a_clear_place() -> void:
+	var bounds := Vector2(672, 448)
+	var size := Vector2(120, 18)
+	var taken: Array[Rect2] = [Rect2(Vector2(336, 224), Vector2.ZERO).grow(8)]
+	for i in 8:
+		var at := Atlas.label_at(Vector2(336, 224), size, bounds, i % 2 == 0, 11.2, taken)
+		assert_ne(at, Atlas.NOWHERE, "name %d placed" % i)
+		var rect := Rect2(at, size)
+		assert_false(taken.any(func(other: Rect2) -> bool: return other.grow(Atlas.GAP).intersects(rect)), "name %d clear" % i)
+		taken.append(rect)
+	var region := Rect2(Vector2(300, 0), Vector2(372, 448))
+	var edge := Atlas.label_at(Vector2(310, 100), size, bounds, false, 11.2, [], region)
+	assert_true(region.encloses(Rect2(edge, size)), "kept inside its map, not over the next one's edge")
+	var full: Array[Rect2] = [region]
+	assert_eq(Atlas.label_at(Vector2(310, 100), size, bounds, false, 11.2, full, region), Atlas.NOWHERE, "never off it alone")
+	# Rings full round the spot: the rest of its map, before it goes unsaid.
+	var ringed: Array[Rect2] = [Rect2(Vector2(300, 0), Vector2(372, 300))]
+	var far := Atlas.label_at(Vector2(310, 100), size, bounds, false, 11.2, ringed, region)
+	assert_true(region.encloses(Rect2(far, size)) and far.y >= 300, "further down its own map")
+	# A name wider than its strip: only mostly over it, never mostly over the next.
+	var strip := Rect2(Vector2(300, 0), Vector2(100, 448))
+	assert_eq(Atlas.label_at(Vector2(350, 100), size, bounds, false, 11.2, [], strip), Atlas.NOWHERE, "not wholly inside")
+	var hung := Rect2(Atlas.label_at(Vector2(350, 100), size, bounds, false, 11.2, [], strip, true), size)
+	assert_true(strip.has_point(hung.get_center()), "mostly over its strip")
+	var left: Array[Rect2] = [Rect2(Vector2(0, 0), Vector2(340, 448))]
+	assert_eq(Atlas.label_at(Vector2(350, 100), size, bounds, false, 11.2, left, strip, true), Atlas.NOWHERE, "or off, not on the next map")
+
+
 func test_the_village_is_drawn_small_in_its_walls() -> void:
 	var overworld := MapData.load_by_id("overworld")
 	var town := MapData.load_by_id("town")

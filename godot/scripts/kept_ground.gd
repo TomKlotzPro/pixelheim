@@ -37,6 +37,11 @@ var water_map: ImageTexture
 ## other's beside its own across the line (MapView.lay_masks).
 var tint_image: Image
 var water_image: Image
+## The shape of the country roads' ends and turns (RoadShape, PIX-404), a
+## cell a texel from cell (-RoadShape.RING, -RoadShape.RING); null on the
+## village's map, whose streets keep their cells' shape.
+var road_image: Image
+var road_map: ImageTexture
 ## Whether the region tones the pines on its ridges too (PIX-169: under
 ## snow), so a map beside it tones its own along the line alike.
 var crowns_toned := false
@@ -180,6 +185,18 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 	slices.add_each("kept_water", ceili(data.size.y / float(WATER_ROWS_A_SLICE)), func(i: int) -> void:
 		PunyTerrain.water_rows(kept.water_image, look, i * WATER_ROWS_A_SLICE, mini((i + 1) * WATER_ROWS_A_SLICE, data.size.y), kept._above, data.id))
 	slices.add_each("kept_detail", cell_slices, func(i: int) -> void: kept._detail_rows(i * ROWS_A_SLICE))
+	# The country roads' ends and turns (PIX-404): the village's streets, and
+	# a road the pack's stone paves (GroundLayer._plan_streets), keep their
+	# cells' shape. shortcut: the paving read at the first age, as every
+	# country street's is; one paved later needs the age in the fingerprint.
+	if data.id not in Rampart.MAPS:
+		var paved := Streets.plan(data.id, data.grid, 0) if PunyTown.available() else {}
+		var shaping := RoadShape.new(look, kept._beyond, data.size, paved)
+		slices.add_each("kept_roads", ceili(shaping.read_count() / float(ROWS_A_SLICE)), func(i: int) -> void:
+			shaping.read_rows(i * ROWS_A_SLICE, (i + 1) * ROWS_A_SLICE))
+		slices.add_each("kept_road_shape", ceili(shaping.draw_count() / float(ROWS_A_SLICE)), func(i: int) -> void:
+			shaping.draw_rows(i * ROWS_A_SLICE, (i + 1) * ROWS_A_SLICE)
+			kept.road_image = shaping.image)
 	# The Medieval Age's patches in the open land only: in Pixelheim's yards
 	# and gardens, a few cells across, one read as a rug laid on the lawn.
 	if PunyTown.available() and kept._plane:
@@ -202,6 +219,7 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 		kept.crown_image = kept.tint_image if kept.crowns_toned else PunyTerrain.snow_image(data.id, data.size)
 		kept.crown_map = null if kept.crown_image == null else (kept.tint_map if kept.crowns_toned else ImageTexture.create_from_image(kept.crown_image))
 		kept.shade_map = ImageTexture.create_from_image(kept.shade_image) if kept._shaded > 0 else null
+		kept.road_map = ImageTexture.create_from_image(kept.road_image) if kept.road_image != null else null
 		# Done: kept, and what it was worked out from let go.
 		kept._data = null
 		kept._look = {}
@@ -292,6 +310,14 @@ func _crown_kept(cell: Vector2i) -> bool:
 
 func _clamped(cell: Vector2i) -> Vector2i:
 	return Vector2i(clampi(cell.x, 0, _data.size.x - 1), clampi(cell.y, 0, _data.size.y - 1))
+
+
+## The ground past the map's edges, as the road's wear reads it (GroundLayer
+## ._street_rows): on the plane what lies there, off it the edge carried on.
+func _beyond(cell: Vector2i) -> String:
+	if _plane:
+		return ReachPlane.tile(_origin + cell)
+	return _look.get(_clamped(cell), "")
 
 
 ## Whether `cell` and its four neighbours are all rock (false at the ring's
@@ -490,6 +516,8 @@ static func bytes() -> int:
 		# Eight bits a channel, four each (the tint, the water), each once
 		# as an image and once as a texture.
 		total += 2 * (kept.tint_image.get_width() * kept.tint_image.get_height() * 4 + kept.water_image.get_width() * kept.water_image.get_height() * 4)
+		if kept.road_image != null:
+			total += 2 * kept.road_image.get_width() * kept.road_image.get_height() * 4
 	for drawing: String in _decks:
 		for deck: Array in (_decks[drawing]["decks"] as Dictionary).values():
 			total += deck.size() * 24

@@ -1,6 +1,6 @@
 class_name FarmAnimals
 extends MapLayer
-## areas: town night
+## areas: town night travel field +overworld*
 ## Pixelheim's farm animals by its age (PIX-387, the village's step 2): hens
 ## and chicks pecking round the farmhouses and kitchen gardens, sheep on the
 ## meadow by the river, pigs in the sty by the east field, cows and the bull
@@ -11,11 +11,13 @@ extends MapLayer
 ## a door or its step, a villager's place or pacing, a stall, wherever the
 ## story stands someone (Yards.kept) or what the yards lay. The hero bumps
 ## into them and they step aside from him (Herd, PIX-389); they're no
-## foes. Drawn from ninth-jedi's Farm Animals, a paid pack
+## foes. On the Reach (PIX-397) a few graze the farmland round the walls
+## (Farmland): sheep in the pasture by the north road from the Village,
+## hens in the farmstead's yard, cows and the bull in the City. Drawn from
+## ninth-jedi's Farm Animals, a paid pack
 ## (scripts/fetch-private-art.sh), at two thirds of its size (Herd.SCALE):
 ## without it, none. The plan is pure (`plan_herd`).
 
-const MAP := "town"
 const FOLDER := "res://assets/puny/animals"
 ## Each sheet's kind, as the report counts them.
 const KINDS := {"chicken1": "hen", "chicken2": "hen", "chick": "chick", "sheep": "sheep", "pig": "pig", "cow": "cow", "bull": "bull"}
@@ -63,6 +65,24 @@ const HERD := [
 	{"sheet": "cow", "pen": RIVER_FIELD, "age": 3},
 	{"sheet": "bull", "pen": RIVER_FIELD, "age": 3},
 ]
+## On the Reach (PIX-397): inside the fences of the pasture by the north
+## road and the one by the orchard below the south wall (Farmland's
+## PASTURES), and the farmstead's yard.
+const NORTH_PASTURE := Rect2i(57, 36, 3, 4)
+const SOUTH_PASTURE := Rect2i(35, 58, 4, 2)
+const FARMYARD := Rect2i(58, 58, 4, 1)
+const REACH := [
+	{"sheet": "sheep", "pen": NORTH_PASTURE, "age": 2},
+	{"sheet": "sheep", "pen": NORTH_PASTURE, "age": 2},
+	{"sheet": "sheep", "pen": NORTH_PASTURE, "age": 3},
+	{"sheet": "chicken1", "pen": FARMYARD, "age": 3},
+	{"sheet": "chicken2", "pen": FARMYARD, "age": 3},
+	{"sheet": "cow", "pen": SOUTH_PASTURE, "age": 4},
+	{"sheet": "cow", "pen": SOUTH_PASTURE, "age": 4},
+	{"sheet": "bull", "pen": SOUTH_PASTURE, "age": 4},
+]
+## Each map's herd.
+const HERDS := {"town": HERD, "overworld": REACH}
 ## Their walk's and their sleep's frames a second.
 const FPS := {"walk": 6.0, "sleep": 2.0}
 
@@ -74,11 +94,12 @@ static var _frames := {}
 ## it may stand on)}, each on a cell of its own. None without the pack.
 static func plan_herd(map: MapData, age: int, kept: Dictionary, paid: bool) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	if not paid or map.id != MAP:
+	if not paid or not HERDS.has(map.id):
 		return out
+	var herd: Array = HERDS[map.id]
 	var taken := {}
-	for index in HERD.size():
-		var entry: Dictionary = HERD[index]
+	for index in herd.size():
+		var entry: Dictionary = herd[index]
 		if int(entry["age"]) > age:
 			continue
 		var pen: Rect2i = entry["pen"]
@@ -112,7 +133,8 @@ static func grazes(map: MapData, kept: Dictionary, cell: Vector2i) -> bool:
 ## what the yards lay (`pieces`, Hamlet.plan's: a hen in the cabbages).
 static func kept_on(map: MapData, decks: Variant, pieces: Array) -> Dictionary:
 	var out := Hamlet.kept_on(map, decks)
-	out.merge(Yards.kept(map))
+	if map.id == "town":
+		out.merge(Yards.kept(map))
 	for piece: Dictionary in pieces:
 		for cell: Vector2i in piece["cells"]:
 			out[cell] = true
@@ -151,7 +173,7 @@ static func frames(sheet: String) -> SpriteFrames:
 ## The herd, wandering among the actors once the yards are laid.
 func build(view: MapView, slices: Slicer) -> void:
 	# Without the pack, nothing to plan: kept_on's merge isn't free.
-	if view.data.id != MAP or not available():
+	if not HERDS.has(view.data.id) or not available():
 		return
 	slices.add("decor_animals", func() -> void:
 		var herd := plan_herd(view.data, GameState.town_tier(), kept_on(view.data, view.patch_decks, view.hamlet["pieces"]), true)

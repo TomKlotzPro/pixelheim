@@ -1458,7 +1458,8 @@
         "floor"
       ],
       "castle": [
-        "stone"
+        "stone",
+        "grass"
       ],
       "cellars": [
         "floor"

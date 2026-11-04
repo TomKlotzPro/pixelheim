@@ -130,6 +130,8 @@ free-rooms | --map observatory cc0 rooms | map=observatory rooms=free walled 9/9
 # E at a cauldron or a forge opens its counter on the craft tab (PIX-234).
 station | --map town_alchemist station | open=shop_screen tab=Craft | rooms trade screen
 forge | --map town_smith station | open=shop_screen tab=Craft | rooms trade screen
+# And at the smithy's lit coal bed, faced at its middle (PIX-402).
+coals | --map town_smith --at 11,3 station | open=shop_screen tab=Craft | rooms trade screen
 # A quest taken in the village (PIX-129).
 quest | --map town quest | map=town | town quest
 # A potion brewed before Vex's quest was taken still finishes it (PIX-231).
@@ -496,24 +498,31 @@ mouth-road | --map mountain_road --at 13,5 | map=mountain_road entrance=mountain
 # smithy (PIX-312): Saltmere's boats, nets, creels, stall and washing line,
 # Greyhold's beds, Blackiron's ore, coal, cart and lanterns, the forge's
 # stack and the fire under its door.
-hamlet-coast | --map saltmere --at 31,15 | map=saltmere hamlet=fishing:line1,moored2,stand4,wall3 | travel field
-hamlet-fort | --map greyhold --at 14,25 | map=greyhold hamlet=fort:flat3 | travel field
-hamlet-mines | --map blackiron --at 25,18 | map=blackiron hamlet=mine:stand4,wall2 | travel field
-hamlet-frost | --map frostgate --at 14,39 | map=frostgate hamlet=frost: | travel field
+hamlet-coast | --map saltmere --at 31,15 | map=saltmere hamlet=fishing:line1,moored3,on1,stand8,wall6 | travel field
+hamlet-fort | --map greyhold --at 14,25 | map=greyhold hamlet=fort:flat3,(on1,stand15,wall7)?(stand4,wall3)? | travel field
+hamlet-mines | --map blackiron --at 25,18 | map=blackiron hamlet=mine:glow1,roof1,stand7,wall2 | travel field
+hamlet-frost | --map frostgate --at 14,39 | map=frostgate hamlet=frost:stand5,wall3 | travel field
 hamlet-smithy | --map mountain_road --at 17,7 | map=mountain_road hamlet=smithy:glow1,roof1 | travel field story
+# Saltmere, Blackiron and the Frostgate lived in (PIX-400): three houses
+# each, no two alike, a lamp by every door (a fire under the forge's), and
+# Saltmere's quay lamps lit once its road has carried seven pieces.
+homes-coast | --map saltmere --at 31,15 | map=saltmere homes=3:looks3:lamps3 | travel field
+homes-mines | --map blackiron --at 25,18 | map=blackiron homes=3:looks3:lamps3 | travel field
+homes-frost | --map frostgate --at 14,39 | map=frostgate homes=3:looks3:lamps3 | travel field
+homes-coast-grown | --map saltmere --routes saltmere:7 --at 33,17 night | map=saltmere homes=3:looks3:lamps5 hub=saltmere:3:.* | travel field night
 # The hubs grow as their post roads fill (PIX-324): three pieces carried
 # and Saltmere's lighthouse stands mended on the point; seven, and it's lit
 # at night; arriving there, the place's tour of its new steps; the stall at
 # the miners' camp, Mabel's tent become a market, Gunnar's lodge with its
 # fire lit at night; and a piece handed over at Saltmere that makes it grow
 # redraws it round the hero.
-hub-lighthouse | --map saltmere --routes saltmere:3 --at 34,27 | map=saltmere hub=saltmere:1:lighthouse_dark | travel field
-hub-lighthouse-night | --map saltmere --routes saltmere:7 --at 34,27 night | map=saltmere hub=saltmere:3:lighthouse | travel field night
+hub-lighthouse | --map saltmere --routes saltmere:3 --at 34,27 | map=saltmere hub=saltmere:1:keg\+box\+lighthouse_dark | travel field
+hub-lighthouse-night | --map saltmere --routes saltmere:7 --at 34,27 night | map=saltmere hub=saltmere:3:keg\+box\+lighthouse\+fish_rack\+fish_rack\+lamp_post\+lamp_post | travel field night
 hub-tour | --map saltmere --routes saltmere:7 hubtour --wait 1.6 | open=reveal_screen tour=.*Saltmere.* | travel story
-hub-stall | --map blackiron --routes blackiron:7 --at 38,24 | map=blackiron hub=blackiron:3:keg\+box\+ore_stall | travel field
+hub-stall | --map blackiron --routes blackiron:7 --at 38,24 | map=blackiron hub=blackiron:3:cart\+keg\+box\+ore\+ore_stall\+lamp_post | travel field
 hub-market | --map greyhold --routes greyhold:7 --at 18,29 | map=greyhold hub=greyhold:3:sutler_tent\+market_stall\+market_stall_blue | travel field
-hub-lodge | --map frostgate --routes frostgate:7 --at 37,40 night | map=frostgate hub=frostgate:3:lodge | travel field night
-hub-delivered | --map saltmere --post club_ola --routes saltmere:2 --keys e,e --wait 0.6 | map=saltmere post=box:3,bag:1,sent:1 hub=saltmere:1:lighthouse_dark | travel story quest
+hub-lodge | --map frostgate --routes frostgate:7 --at 37,40 night | map=frostgate hub=frostgate:3:woodpile_snow\+lodge\+sledge_wood\+lamp_post | travel field night
+hub-delivered | --map saltmere --post club_ola --routes saltmere:2 --keys e,e --wait 0.6 | map=saltmere post=box:3,bag:1,sent:1 hub=saltmere:1:keg\+box\+lighthouse_dark | travel story quest
 mouth-ice | --map observatory --at 12,8 | map=observatory entrance=ice_stair | rooms
 # The roads beyond the village (PIX-307): the Reach's road south of the
 # river rutted, Greyhold's courtyard flagged and its paths in sandstone
@@ -521,12 +530,22 @@ mouth-ice | --map observatory --at 12,8 | map=observatory entrance=ice_stair | r
 # flagged yard.
 road-worn | --map overworld --at 48,36 | map=overworld street=worn | travel
 courtyard | --map greyhold --at 33,20 | map=greyhold street=flags | travel
-courtyard-path | --map greyhold --at 37,20 | map=greyhold street=sandstone | travel
+courtyard-path | --map greyhold --at 37,20 | map=greyhold street=flags | travel
 frost-road | --map frostgate --at 27,14 | map=frostgate street=cobbles | travel
 frost-yard | --map frostgate --at 25,9 | map=frostgate street=flags | travel
 # Greyhold's way in (PIX-337): up the road from the south, through the
 # gatehouse between its towers and on up the yard toward the keep.
 fort-gate | --map greyhold --at 37,28 --walk u,u,u,u,u | map=greyhold cell=\(37, 2[0-4]\) | travel
+# Greyhold's fort lived in (PIX-399): its barracks, stable and smithy, racks,
+# armour, a dummy, a supply cart and a lantern by each new door, the
+# turncoats' red on the keep until Ulla's The Turncoats is handed in and
+# the fort's teal after, the racks and dummies whole (tops), its paths worn
+# into the flags, lamps at its gates and every window lit at night. Without
+# the pack its own pieces and the houses' glass aren't drawn (cc0).
+fort-turncoats | --map greyhold --at 37,19 | map=greyhold fort=turncoats:houses5,(red2,tops4,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand15,wall7)?(stand4,wall3)? street=flags | travel field
+fort-garrison | --map greyhold --delivered ulla_turncoats --at 37,19 | map=greyhold fort=garrison:houses5,(teal3,tops6,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand19,wall9)?(stand4,wall3)? | travel field story
+fort-night | --map greyhold --at 37,14 night | map=greyhold lamplight=posts 10/10 panes [06] flames 0 beams 0 | travel field night
+fort-cc0 | --map greyhold --at 37,19 cc0 | map=greyhold fort=turncoats:houses5,tops0,worn0 hamlet=fort:flat3,stand4,wall3 | travel field
 # The Blackiron shafts in three floors (PIX-255, PIX-253 step 5): down the
 # upper shafts' stair (it asks; going down keeps the dark) to the west
 # gallery, down past Pell's canary to the Black Seam, and back up (it
