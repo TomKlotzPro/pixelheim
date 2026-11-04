@@ -59,20 +59,18 @@ const float BANK_OUT = 3.0;
 const float SHADE_BANK = 9.5;
 // Where a bridge lands the bank lies this far in under its planks.
 const float LANDING_IN = -3.0;
-// The Reach's river swings off its cells (PIX-397: seen whole it was a
-// ruler-straight band): each bank pulled in over its water by up to
-// `river_swing` pixels (PunyTerrain.RIVER_SWING, 0 elsewhere) on bends
-// SWING_BENDS cells apart, never out over the land; its bank's quick
-// wander a little less (SWING_WANDER), so less of what's drawn as water
-// lies where the hero walks and the bank stays within the half cell of its
-// water that the land's tile can be read for (bank_land). It eases to
-// nothing over SWING_STILL cells by a bridge.
+// The Reach's river meanders off its cells (PIX-397: seen whole it was a
+// ruler-straight band): its banks pulled in over its water by turns, the
+// north bank then the south, by up to `river_swing` pixels
+// (PunyTerrain.RIVER_SWING, 0 elsewhere) on bends SWING_BENDS cells long,
+// never out over the land. Each bank's distance is counted down the
+// column's water cells, up to SWING_CELLS of them (the mask's red lies
+// whole a cell in, too near to swing a bank further). It eases to nothing
+// over SWING_STILL cells by a bridge.
 uniform float river_swing = 0.0;
-const float SWING_BENDS = 6.0;
+const float SWING_BENDS = 7.0;
 const float SWING_STILL = 3.0;
-const float SWING_WANDER = 3.0;
-// Over how many pixels toward the middle the swing eases out.
-const float SWING_EASE = 2.0;
+const int SWING_CELLS = 6;
 // The mask's blue (cells from the bank / 3) where the water starts to
 // deepen, and over how much more it reaches its deepest; how far its deep
 // channel wanders off the cells, in pixels, and over how many; where each
@@ -198,9 +196,11 @@ int water_code_near(ivec2 cell) {
 // the land round it; toned after as the land is. Where to read it on the
 // tile layer's sheet (`sheet_pixel` its texel's size), in its pixels: the
 // fragment reads it (a function can't be handed the TEXTURE built-in).
-vec2 bank_land(vec2 local_px, vec2 map_px, vec2 sheet_pixel) {
+// `fallback`: the ground where no land cell is that near (a meandering
+// river's bank drawn a cell in, river_swung).
+vec2 bank_land(vec2 local_px, vec2 map_px, vec2 sheet_pixel, int fallback) {
 	ivec2 corner = ivec2(floor((local_px - CELL * 0.5) / CELL));
-	int ground = 0;
+	int ground = fallback;
 	for (int i = 0; i < 4; i++) {
 		vec4 texel = mask_texel(corner + ivec2(i % 2, i / 2));
 		if (texel.r < 0.5 && texel.a > 0.0) {
@@ -236,6 +236,44 @@ float swing_ease(vec2 local_px, ivec2 cell) {
 		}
 	}
 	return smoothstep(0.0, SWING_STILL * CELL, nearest);
+}
+
+// A meandering river's `in_water` at `at` (mask pixels, the bank's wander
+// in it): no further in than either bank, each swung in over the water by
+// turns (river_swing, eased by `ease` near a bridge). `ground` becomes the
+// ground of the nearer bank's land, for what's drawn back over the water.
+float river_swung(vec2 at, float in_water, float ease, inout int ground) {
+	ivec2 cell = ivec2(floor(at / CELL));
+	// On the land by a bank, the water's column is the one beside it.
+	if (mask_texel(cell).r < 0.5) {
+		if (mask_texel(cell + ivec2(0, 1)).r > 0.5) {
+			cell.y += 1;
+		} else if (mask_texel(cell - ivec2(0, 1)).r > 0.5) {
+			cell.y -= 1;
+		} else {
+			return in_water;
+		}
+	}
+	ivec2 north = cell - ivec2(0, 1);
+	for (int i = 0; i < SWING_CELLS; i++) {
+		if (mask_texel(north).r < 0.5) {
+			break;
+		}
+		north.y -= 1;
+	}
+	ivec2 south = cell + ivec2(0, 1);
+	for (int i = 0; i < SWING_CELLS; i++) {
+		if (mask_texel(south).r < 0.5) {
+			break;
+		}
+		south.y += 1;
+	}
+	float bends = CELL * SWING_BENDS;
+	float turn = sin(at.x / bends * PI + value_noise(vec2(at.x / (bends * 2.0), 61.3)) * 2.5);
+	float from_north = at.y - float(north.y + 1) * CELL - river_swing * ease * max(turn, 0.0);
+	float from_south = float(south.y) * CELL - at.y - river_swing * ease * max(-turn, 0.0);
+	ground = int(round(mask_texel(from_north < from_south ? north : south).a * 255.0)) % 16;
+	return min(in_water, min(from_north, from_south) + BANK_OUT);
 }
 
 // Which way the water in a cell of code `code` runs: (0, 0) still, west
@@ -358,24 +396,20 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	// in under its planks' ends.
 	bool landing = (code / 8) % 2 == 1 && mask_texel(cell).r < 0.5;
 	bool mire = tone == TONE_MIRE;
-	// Only a river running west swings (the Reach's, across the map): the
+	// Only a river running west meanders (the Reach's, across the map): the
 	// village far off's stream, in the same mask, runs south, and swing_ease
 	// looks for its bridge to the side.
 	bool swings = river_swing > 0.0 && flow_of(code).x < 0.0;
 	vec2 cells = floor(px) / CELL / (mire ? MIRE_BENDS : BANK_BENDS);
-	vec2 bend = clamp((vec2(value_noise(cells + 31.7), value_noise(cells + 47.1)) - 0.5) * 1.7, -0.5, 0.5) * 2.0 * (mire ? MIRE_WANDER : (swings ? SWING_WANDER : BANK_WANDER));
+	vec2 bend = clamp((vec2(value_noise(cells + 31.7), value_noise(cells + 47.1)) - 0.5) * 1.7, -0.5, 0.5) * 2.0 * (mire ? MIRE_WANDER : BANK_WANDER);
 	if (landing) {
 		bend = vec2(0.0);
 	}
 	float here = water_red(local_px + bend, mire && !landing ? MIRE_SOFT : 0.0);
 	float in_water = (here - 0.5) * CELL + (landing ? LANDING_IN : BANK_OUT);
-	// A running river's banks swing in over it, slowly (the Reach's): the
-	// ground by its bank only, not its middle, where the mask lies whole (a
-	// cell in, BANK_OUT past half a cell): there it would have lapped foam.
+	int bank_ground = 0;
 	if (swings && !landing) {
-		float swing = smoothstep(0.3, 0.7, value_noise(floor(px) / (CELL * SWING_BENDS) + 61.3));
-		float by_bank = clamp((0.5 * CELL + BANK_OUT - in_water) / SWING_EASE, 0.0, 1.0);
-		in_water -= river_swing * swing * swing_ease(local_px, cell) * by_bank;
+		in_water = river_swung(local_px + bend, in_water, swing_ease(local_px, cell), bank_ground);
 	}
 	float threshold = bayer_at(px);
 	if (in_water < 0.0) {
@@ -395,7 +429,7 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 		// The land's own ground where the bank draws back over Shade's water
 		// and his rim.
 		if ((plain.r - 0.5) * CELL >= -SHADE_BANK) {
-			base = vec3(bank_land(local_px, px - map_origin, sheet_pixel), 0.0);
+			base = vec3(bank_land(local_px, px - map_origin, sheet_pixel, bank_ground), 0.0);
 			return INLAND_LAND;
 		}
 		return INLAND_NONE;

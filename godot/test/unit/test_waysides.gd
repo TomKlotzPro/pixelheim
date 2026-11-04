@@ -102,3 +102,27 @@ func test_lit_at_night_alone_a_light_each() -> void:
 	for lamp: Dictionary in lamps:
 		assert_true(lamp["glow"].has_meta("light"), "a light of its own")
 	assert_eq(Waysides.plan_on(MapData.load_by_id("saltmere"), {}).size(), 0, "nothing off the Reach")
+
+
+## A day's patch dealt on a lantern's cell gives way to it (PIX-397's
+## review: a fork's lamp went out on the day one was dealt there): on the
+## first day one is dealt under a lantern, every lantern stands and no
+## patch lies under one.
+func test_every_lantern_stands_whatever_the_day() -> void:
+	var map := _map()
+	var under: Array = Waysides.LANTERNS.values()
+	var decks := KeptGround.decks(map)
+	var day := -1
+	for each in 400:
+		if Gathering.patches_on(decks, each).keys().any(func(cell: Vector2i) -> bool: return cell in under):
+			day = each
+			break
+	assert_gt(day, -1, "a day deals a patch under a lantern")
+	var steps := GameState.world.steps
+	GameState.world.steps = day * DayNight.DAY_CYCLE_STEPS
+	var view := MapView.new(map, null)
+	view.plan(map.spawn)
+	GameState.world.steps = steps
+	assert_eq(view.get_meta("waysides").size(), Waysides.LANTERNS.size(), "every lantern stands on day %d" % day)
+	for cell: Vector2i in under:
+		assert_false(view.patches.has(cell), "no patch under the lantern at %s on day %d" % [cell, day])

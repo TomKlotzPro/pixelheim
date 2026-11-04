@@ -13,17 +13,20 @@ extends MapLayer
 ## at least LAMP_APART cells off every waystation's lamp, and off the cell
 ## under each fork's signpost (it would hide it, as the City's farmland
 ## lamp once did; test_waysides). Each blocks its cell, never a road nor a
-## way (Hamlet.fits).
+## way (Hamlet.fits), and stands every day: a day's patch dealt under one
+## is left out, as under the Post's pieces (MapView._plan_routes).
 
 const MAP := "overworld"
 ## Each lantern by where it stands: the bridge, or a fork's id (post.json's
-## forks), beside the road on the inside of the turn.
+## forks), beside the road a cell along from the turn's inside corner (the
+## road's dirt fills that corner, PIX-404: a lamp there stood in the road)
+## and a cell clear of the fork's signpost.
 const LANTERNS := {
 	"bridge": Vector2i(50, 27),
-	"saltmere_fork": Vector2i(15, 34),
+	"saltmere_fork": Vector2i(14, 34),
 	"river_fork": Vector2i(50, 21),
-	"greyhold_fork": Vector2i(51, 16),
-	"mountain_fork": Vector2i(47, 12),
+	"greyhold_fork": Vector2i(52, 16),
+	"mountain_fork": Vector2i(46, 12),
 }
 ## How far (cells, either way) a lantern keeps from a waystation's lamp.
 const LAMP_APART := 6
@@ -52,12 +55,12 @@ func plan(view: MapView, slices: Slicer) -> void:
 		return
 	slices.add("plan_waysides", func() -> void:
 		var kept := Hamlet.kept_on(view.data, {})
-		kept.merge(view.patches)
 		kept[view.arrival] = true
 		var lanterns := plan_on(view.data, kept)
 		for cell: Vector2i in lanterns.values():
 			view.data.covered[cell] = true
 			view.bare[cell] = true
+			view.patches.erase(cell)
 		view.set_meta("waysides", lanterns))
 
 
