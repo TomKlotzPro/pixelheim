@@ -451,6 +451,7 @@
           ],
           "worker": {
             "name": "Builder Joss",
+            "sprite": "joss",
             "x": 11,
             "y": 33
           }
@@ -540,6 +541,7 @@
           ],
           "worker": {
             "name": "Mason Dorran",
+            "sprite": "dorran",
             "x": 42,
             "y": 26
           }
@@ -684,6 +686,7 @@
           ],
           "worker": {
             "name": "Mason Pell",
+            "sprite": "mason_pell",
             "x": 74,
             "y": 18
           }
@@ -828,6 +831,7 @@
           ],
           "worker": {
             "name": "Builder Ilka",
+            "sprite": "ilka",
             "x": 20,
             "y": 33
           }

@@ -507,7 +507,6 @@
         "anim": "walk",
         "dir": "left",
         "scale": 4,
-        "tint": "#c8c0d8",
         "from": [
           760,
           540
@@ -564,7 +563,6 @@
         "anim": "idle",
         "dir": "right",
         "scale": 1,
-        "tint": "#c8c0d8",
         "cell": [
           38,
           27
@@ -572,8 +570,7 @@
       },
       {
         "kind": "actor",
-        "sheet": "mini/Okomo.png",
-        "family": "mini",
+        "villager": "maren",
         "anim": "idle",
         "dir": "left",
         "scale": 1,
