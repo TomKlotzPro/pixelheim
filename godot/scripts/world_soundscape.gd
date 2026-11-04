@@ -115,7 +115,8 @@ func _soundscape() -> Array[String]:
 	# The birds keep quiet in the rain.
 	if outdoors and not burning and bells == Bells.NONE and Sound.place not in SONGLESS and not raining():
 		out.append("crickets" if DayNight.is_night(GameState.world.steps) else "birds")
-		if world.map.id == "town" and GameState.town_tier() >= 1 and not DayNight.is_night(GameState.world.steps):
+		# The packs' crowd bed is the square's talk where they're installed.
+		if world.map.id == "town" and GameState.town_tier() >= 1 and not DayNight.is_night(GameState.world.steps) and Sound.takes_of("amb_town").is_empty():
 			out.append("chatter")
 	if burning or world.map.id == "town_smith" or _near_camp_fire():
 		out.append("fire")
