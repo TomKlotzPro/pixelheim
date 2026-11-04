@@ -162,9 +162,10 @@ static func _decor_hamlet(view: MapView) -> void:
 				_add_door_glow(view, cell)
 			"flat":
 				var flat := Sprite2D.new()
-				flat.texture = HamletArt.texture(piece["art"])
+				# The pack's tiles lie flat too (the Reach's fields, PIX-397).
+				flat.texture = PunyProps.texture(piece["tile"]) if piece.has("tile") else HamletArt.texture(piece["art"])
 				flat.centered = false
-				flat.position = Vector2(cell * TILE) + Vector2(0, TILE - HamletArt.size(piece["art"]).y)
+				flat.position = Vector2(cell * TILE) + Vector2(0, TILE - flat.texture.get_height())
 				flat.add_to_group("decor")
 				view.ground.add_child(flat)
 			"moored":
@@ -175,6 +176,11 @@ static func _decor_hamlet(view: MapView) -> void:
 				boat.play()
 				stand_on(view, boat, cell, Vector2(-HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
 			_:
+				if piece.get("lamp", false):
+					# A wayside lamp (PIX-397): the town's street lamp, its foot,
+					# body and light, lit with them at night.
+					PropsLayer.add_puny_prop(view, PunyProps.plan({cell: "lamp"})["props"][0])
+					continue
 				var art: String = piece.get("art", "")
 				var still := Sprite2D.new()
 				still.centered = false

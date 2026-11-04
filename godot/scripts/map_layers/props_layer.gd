@@ -15,7 +15,7 @@ func build(view: MapView, slices: Slicer) -> void:
 	var standing: Array = view.outdoor_props["props"]
 	slices.add_each("decor_props", ceili(standing.size() / float(PROPS_A_UNIT)), func(i: int) -> void:
 		for prop: Dictionary in standing.slice(i * PROPS_A_UNIT, (i + 1) * PROPS_A_UNIT):
-			_add_puny_prop(view, prop))
+			add_puny_prop(view, prop))
 
 
 ## The street lamps' glass lit from dusk's end to dawn, cold by day; a lamp
@@ -29,7 +29,7 @@ func set_night(view: MapView, night: bool) -> void:
 ## One of Shade's props among the actors (PunyProps): sorted on the bottom of
 ## its foot, so the hero passes behind it from the north and in front from
 ## the south, with a body exactly where the foot is.
-static func _add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
+static func add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
 	var foot: Rect2 = prop["foot"]
 	var sort_y := foot.end.y if foot.has_area() else float(TILE)
 	var root := Node2D.new()
@@ -188,7 +188,7 @@ static func _place_furniture(view: MapView, item_id: String, cell: Vector2i) -> 
 			rug.add_to_group("furniture")
 			view.ground.add_child(rug)
 		return
-	var root := _add_puny_prop(view, {
+	var root := add_puny_prop(view, {
 		"kind": item_id, "cell": cell, "tiles": tiles, "sheet": "medieval", "frames": [],
 		"foot": Rect2(0, 0, TILE, TILE), "covers": [cell],
 	})
