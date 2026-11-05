@@ -5769,6 +5769,10 @@ msgid "The Bosses Fight Back"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Bridge's Foot"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The CODEX opens from the HUD: your mastery progress bars on one tab, a bestiary on the other - monsters reveal their numbers only once you've drawn their family's blood"
 msgstr ""
 
@@ -6926,6 +6930,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Where It Leads"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Where a bridge lands, the bank now curves in to meet it, instead of leaving a square block of ground at its foot"
 msgstr ""
 
 #: assets/data/changelog.json

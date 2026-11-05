@@ -57,8 +57,11 @@ const float MIRE_WANDER = 7.0;
 const float MIRE_BENDS = 2.2;
 const float BANK_OUT = 3.0;
 const float SHADE_BANK = 9.5;
-// Where a bridge lands the bank lies this far in under its planks.
+// Where a bridge lands the bank lies this far in under its planks, and the
+// bank beside comes round to meet it over LANDING_EASE cells (it stood out of
+// the bank's wander as a square tongue of land before).
 const float LANDING_IN = -3.0;
+const float LANDING_EASE = 1.5;
 // The Reach's river meanders off its cells (PIX-397: seen whole it was a
 // ruler-straight band): its banks pulled in over its water, the north bank
 // as the south lets go and back, by up to `river_swing` pixels
@@ -241,6 +244,23 @@ float swing_ease(vec2 local_px, ivec2 cell) {
 	return smoothstep(0.0, SWING_STILL * CELL, nearest);
 }
 
+// How much of the bank's own wander and lie the bank keeps at `local_px`
+// (mask pixels, in `cell`): none on a bridge's cells, all of it LANDING_EASE
+// cells from them, so it meets the bank where the bridge lands.
+float landing_ease(vec2 local_px, ivec2 cell) {
+	float nearest = LANDING_EASE * CELL;
+	for (int dy = -1; dy <= 1; dy++) {
+		for (int dx = -2; dx <= 2; dx++) {
+			ivec2 span = cell + ivec2(dx, dy);
+			if (span_at(span)) {
+				vec2 low = vec2(span) * CELL;
+				nearest = min(nearest, length(max(max(low - local_px, local_px - low - CELL), vec2(0.0))));
+			}
+		}
+	}
+	return smoothstep(0.0, LANDING_EASE * CELL, nearest);
+}
+
 // A meandering river's `in_water` at `at` (mask pixels, the bank's wander
 // in it; `plain` without it): no further in than either bank, each swung in
 // over the water by turns (river_swing, eased by `ease` near a bridge), and
@@ -407,11 +427,11 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	bool swings = river_swing > 0.0 && flow_of(code).x < 0.0;
 	vec2 cells = floor(px) / CELL / (mire ? MIRE_BENDS : BANK_BENDS);
 	vec2 bend = clamp((vec2(value_noise(cells + 31.7), value_noise(cells + 47.1)) - 0.5) * 1.7, -0.5, 0.5) * 2.0 * (mire ? MIRE_WANDER : BANK_WANDER);
-	if (landing) {
-		bend = vec2(0.0);
-	}
+	// Out in the water (the mask's red whole) no bank is near to ease.
+	float ease = landing ? 0.0 : (plain.r < 1.0 ? landing_ease(local_px, cell) : 1.0);
+	bend *= ease;
 	float here = water_red(local_px + bend, mire && !landing ? MIRE_SOFT : 0.0);
-	float in_water = (here - 0.5) * CELL + (landing ? LANDING_IN : BANK_OUT);
+	float in_water = (here - 0.5) * CELL + mix(LANDING_IN, BANK_OUT, ease);
 	int bank_ground = 0;
 	if (swings && !landing) {
 		in_water = river_swung(local_px + bend, local_px, in_water, swing_ease(local_px, cell), bank_ground);

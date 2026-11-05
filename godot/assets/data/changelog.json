@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.319.0",
+      "date": "2026-11-05",
+      "codename": "The Bridge's Foot",
+      "notes": [
+        "Where a bridge lands, the bank now curves in to meet it, instead of leaving a square block of ground at its foot"
+      ]
+    },
+    {
       "version": "0.318.0",
       "date": "2026-11-05",
       "codename": "Songs of the Reach",
