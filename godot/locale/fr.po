@@ -2325,6 +2325,10 @@ msgid "Ascension is a scene now: letterbox bars, turning light, your hero marchi
 msgstr "L'ascension est désormais une scène : bandes noires, lumière tournoyante, votre héros qui défile dans sa NOUVELLE apparence, le titre frappé par-dessus"
 
 #: assets/data/changelog.json
+msgid "Ash and Lanterns"
+msgstr "Cendres et lanternes"
+
+#: assets/data/changelog.json
 msgid "Ask by Name"
 msgstr "Demander par son nom"
 
@@ -2343,6 +2347,10 @@ msgstr "À l'aube, Morvax descend la route de la montagne, le collier tombe, et 
 #: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
 msgstr "La nuit, ses fenêtres et ses lanternes s'allument, et la fumée monte de ses toits"
+
+#: assets/data/changelog.json
+msgid "At night, lanterns light the bridge's north end and the four forks past the town gate"
+msgstr "La nuit, des lanternes éclairent le bout nord du pont et les quatre embranchements au-delà de la porte du bourg"
 
 #: assets/data/changelog.json
 msgid "At the Bench"
@@ -2543,6 +2551,10 @@ msgstr "Foncez sur un monstre pour l'attaquer ; un monstre tué ne réapparaî
 #: assets/data/changelog.json
 msgid "Buried Riches"
 msgstr "Richesses enfouies"
+
+#: assets/data/changelog.json
+msgid "Burnt farmsteads stand in the Ash Fields: charred frames fallen in places, scorched carts and dead orchards in rows, and the orchards nearest the lit ember lamps grow young again as the ash heals"
+msgstr "Des fermes brûlées se dressent dans les Champs de Cendres : charpentes calcinées en partie effondrées, charrettes roussies et vergers morts en rangées, et les vergers les plus proches des lampes de braise allumées reverdissent à mesure que la cendre guérit"
 
 #: assets/data/changelog.json
 msgid "Buy the street: Odo's Emporium (2,500g), Vex's Workshop (3,500g) and Hilda's Smithy (4,000g) each sell their deed - ask the keeper behind the counter"
@@ -5091,6 +5103,10 @@ msgstr "Les écrans ne passent plus par-dessus l'interface : un écran qui ass
 #: assets/data/changelog.json
 msgid "Second Thoughts"
 msgstr "Réflexion faite"
+
+#: assets/data/changelog.json
+msgid "Seen whole, the river now winds in gentle bends, and the roads across the Ash and the marsh wander off the grid, while every turn and fork keeps its rounded corners"
+msgstr "Vu de loin, le fleuve serpente désormais en douces courbes, et les routes qui traversent les cendres et le marais s'écartent de la grille, tandis que chaque virage et chaque embranchement garde ses angles arrondis"
 
 #: assets/data/changelog.json
 msgid "Sell all your junk in one go, choose how many of a stack to sell, and buy back what you just sold at the price you got, until you leave the counter"

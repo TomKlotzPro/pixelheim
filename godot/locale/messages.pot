@@ -2325,6 +2325,10 @@ msgid "Ascension is a scene now: letterbox bars, turning light, your hero marchi
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Ash and Lanterns"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Ask by Name"
 msgstr ""
 
@@ -2342,6 +2346,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "At night, lanterns light the bridge's north end and the four forks past the town gate"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2542,6 +2550,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Buried Riches"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Burnt farmsteads stand in the Ash Fields: charred frames fallen in places, scorched carts and dead orchards in rows, and the orchards nearest the lit ember lamps grow young again as the ash heals"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5090,6 +5102,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Second Thoughts"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Seen whole, the river now winds in gentle bends, and the roads across the Ash and the marsh wander off the grid, while every turn and fork keeps its rounded corners"
 msgstr ""
 
 #: assets/data/changelog.json
