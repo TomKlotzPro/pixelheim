@@ -1,0 +1,120 @@
+{
+  "about": "Leohpaz's Complete RPG Music Bundle as the game plays it (PIX-416): for each of assets/data/audio.json's tracks and story themes (\"theme_<name>\"), the track it plays as [the bundle's zip, the file's path inside it], the retro versions to match the pixel art, an \"intro\" played once before it as [zip, path, the handover in seconds, from the bundle's V03 _README.txt] (where its loop starts: loopBegin), the runner-up and why. tools/music_prep.py reads them out of the zips, levels each to \"loudness\" (the integrated LUFS the v0.307 tracks are heard at: -37.5 measured off their mono renders, 3 LU more on both channels) never past \"peak\" dBTP (the Music bus plays Sound.LOUDNESS_DB over it at the full slider, and the web has no limiter), encodes it as Ogg Vorbis at \"quality\" (Godot loops it without a seam and takes it up part-way in at once, PIX-416's PR) and writes music_<slot>.ogg and music.json into the private pixelheim-assets repo (retro-rpg/leohpaz/music/); scripts/fetch-private-art.sh installs them, git-ignored, into assets/audio/paid/, where they stand in for the game's own tracks. The bundle may not be redistributed, so no track enters this repo. Picked by name and measured, never heard: the PR's listening list says which to hear first. A slot audio.json doesn't have is skipped, so the private repo may run ahead.",
+  "loudness": -34.5,
+  "peak": -15.5,
+  "quality": 5,
+  "budgetMiB": 40,
+  "tracks": {
+    "title": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/01-Main_Menu.wav"],
+      "runnerUp": "V02 01_Title_Theme_II_Retro (47 s, loud from its first bar)",
+      "why": "the bundle's own menu theme"
+    },
+    "town": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/02-Home_Town.wav"],
+      "runnerUp": "V01 05-Farm",
+      "why": "the hero's home village"
+    },
+    "world": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/03b-Overworld_No_Chorus.wav"],
+      "runnerUp": "V01 03a-Overworld_Chorus (a choir: wordless or not, Tom to hear) or V02 10_Exploration_Retro",
+      "why": "the Reach is the overworld; without the chorus, as no track may hold words"
+    },
+    "deepwood": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/04-Forest.wav"],
+      "runnerUp": "V02 13_ElvenKingdom_Retro",
+      "why": "the Deepwood is the forest"
+    },
+    "mirefen": {
+      "from": ["LEOHPAZ_RPG-Music-V02_Retro.zip", "LEOHPAZ_RPG-Music-V02_Retro/RPG-Music-V02_Retro/12_Swamp_Retro_Music.wav"],
+      "runnerUp": "V03 07_ForbiddenSwamp_Retro (the bundle ships it only as an OGG, lossy before ours)",
+      "why": "the Mirefen is the marsh"
+    },
+    "interior": {
+      "from": ["LEOHPAZ_RPG-Music-V03_Retro.zip", "LEOHPAZ_RPG-Music-V03_Retro/RPG-Music-V03_Retro/09a_BardMelody_1_Retro_v1.wav"],
+      "runnerUp": "V03 09b_BardMelody_1_Retro_v2, or V03 10_BardMelody_2_Retro (35 s)",
+      "why": "a bard's tune, quiet indoors: the houses, the shops, the hall, the keep, the observatory, the forge"
+    },
+    "inn": {
+      "from": ["LEOHPAZ_RPG-Music-V02_Retro.zip", "LEOHPAZ_RPG-Music-V02_Retro/RPG-Music-V02_Retro/05_FeastHall_Retro.wav"],
+      "runnerUp": "V02 06_Upbeat_Medieval_Retro_1 (35 s)",
+      "why": "the inn's common room is a feast hall; its file ends on a 0.3 s rest in tempo (41 bars at 110 BPM), so its loop rests there"
+    },
+    "descent": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/10-Ancient_Cave.wav"],
+      "runnerUp": "V03 12_FaeDepths_Retro (98 s, a third the size)",
+      "why": "the Sea Cave's and the Blackiron Shafts' floors"
+    },
+    "crypt": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/08-Catacombs.wav"],
+      "runnerUp": "V03 08 MysticalTheme (intro and loop)",
+      "why": "the Greyhold Cellars and the Kings' Vault are crypts"
+    },
+    "icecave": {
+      "from": ["LEOHPAZ_RPG-Music-V02_Retro.zip", "LEOHPAZ_RPG-Music-V02_Retro/RPG-Music-V02_Retro/02_Crystal_Caves_Retro.wav"],
+      "runnerUp": "V03 12_FaeDepths_Retro",
+      "why": "the Ice Cave's glass and ice"
+    },
+    "coast": {
+      "from": ["LEOHPAZ_RPG-Music-V03_Retro.zip", "LEOHPAZ_RPG-Music-V03_Retro/RPG-Music-V03_Retro/13_FrogfolkVillage_Retro.wav"],
+      "runnerUp": "V02 10_Exploration_Retro",
+      "why": "Saltmere is a small village by the water; the bundle's only sea track is NorthSeaBattle, a fight"
+    },
+    "frost": {
+      "intro": ["LEOHPAZ_RPG-Music-V03_Retro.zip", "LEOHPAZ_RPG-Music-V03_Retro/RPG-Music-V03_Retro/08a_MysticalTheme_Retro_Intro.wav", 16.0],
+      "from": ["LEOHPAZ_RPG-Music-V03_Retro.zip", "LEOHPAZ_RPG-Music-V03_Retro/RPG-Music-V03_Retro/08b_MysticalTheme_Retro_Loop.wav"],
+      "runnerUp": "V03 03_EmeraldEyes_Retro",
+      "why": "the Frostgate pass, high and cold: the bundle has no snow track, so the mystical one"
+    },
+    "greyhold": {
+      "from": ["LEOHPAZ_RPG-Music-V02_Retro.zip", "LEOHPAZ_RPG-Music-V02_Retro/RPG-Music-V02_Retro/11_MedievalCity_Retro.wav"],
+      "runnerUp": "V03 01_MountainStronghold_Retro",
+      "why": "the castle of Greyhold and its market"
+    },
+    "fernoir": {
+      "from": ["LEOHPAZ_RPG-Music-V03_Retro.zip", "LEOHPAZ_RPG-Music-V03_Retro/RPG-Music-V03_Retro/01_MountainStronghold_Retro.wav"],
+      "runnerUp": "V03 05_OrcKingdom_Retro",
+      "why": "Blackiron (Fernoir), the miners' camp under the mountain"
+    },
+    "mountain": {
+      "from": ["LEOHPAZ_RPG-Music-V02_Retro.zip", "LEOHPAZ_RPG-Music-V02_Retro/RPG-Music-V02_Retro/04_March_of_Fate_Retro.wav"],
+      "runnerUp": "V03 03_EmeraldEyes_Retro",
+      "why": "the mountain road, climbed last, to Morvax's forge"
+    },
+    "battle": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/06-Battle.wav"],
+      "runnerUp": "V03 04_MountainStrongholdBattle_Retro",
+      "why": "the bundle's own battle theme"
+    },
+    "boss": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/07-Boss_Battle.wav"],
+      "runnerUp": "V03 02 SandDwellersBattle (intro and loop, its handover at 9.6 s; its intro rings past the handover, so the prep must first mix that tail over the loop's first pass)",
+      "why": "the bundle's own boss theme"
+    },
+    "dragon": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/11-Final-Battle.wav"],
+      "runnerUp": "V03 06 NorthSeaBattle (intro and loop, its handover at 10.8 s; its intro rings past the handover, so the prep must first mix that tail over the loop's first pass)",
+      "why": "the Night of Bells' dragon on the square is the last fight"
+    },
+    "victory": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/09-Victory.wav"],
+      "runnerUp": "V02 06_Upbeat_Medieval_Retro_1",
+      "why": "the ending's festival on the square, looping"
+    },
+    "theme_dawn": {
+      "from": ["LEOHPAZ_RPG-Music-V02_Retro.zip", "LEOHPAZ_RPG-Music-V02_Retro/RPG-Music-V02_Retro/03_Melancholic_Theme_Retro.wav"],
+      "runnerUp": "V03 10_BardMelody_2_Retro",
+      "why": "the dawn after the Night of Ash, the village burned"
+    },
+    "theme_ending": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/12a-Credits_One_Shot.wav"],
+      "runnerUp": "V01 12b-Credits_Loop",
+      "why": "\"Come home.\": the credits, once through"
+    },
+    "theme_ending_rest": {
+      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/12b-Credits_Loop.wav"],
+      "runnerUp": "V02 03_Melancholic_Theme_Retro (the dawn's)",
+      "why": "\"Stay with them.\": the credits' other cut"
+    }
+  }
+}

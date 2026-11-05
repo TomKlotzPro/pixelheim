@@ -57,6 +57,8 @@ python3 -m venv /tmp/pw && /tmp/pw/bin/pip install playwright==1.56.0
 
 An export with the paid art installed measures that art too: keep its numbers, never the export.
 
+**The music on the web** (PIX-416 review, 2026-11-05, the export with the paid pack, headless Chrome muted, two or three runs each). As samples (the web's default) each of the bundle's tracks was decoded whole on the main thread at its first play and kept as float PCM for good: the line's crossing (the Deepwood's track first heard) took 135-146 ms, the town's gate out 414-423 ms, and the page made 152-156 MB of AudioBuffers in one short walk. Streamed (`Sound`'s two music players, `PLAYBACK_TYPE_STREAM`): the crossing 13-15 ms, the gate 310-369 ms (the Reach's first visit alone), 19-24 MB of AudioBuffers (the effects' and beds' samples, the largest 4.4 MB). The cost: the single-threaded build mixes a stream on the main thread into a 2048-frame ring (`audio/driver/output_latency.web`, 50 ms), so a task longer than that holds the music with it. Steady frames never ran it dry; the gate's first visit held it some 340-400 ms, a 140 ms task (the harness's shot) about 130. A longer latency would bridge more, but the music would answer a duck or a crossfade that much late.
+
 ## Entering a map (`reentry`, ms)
 
 | Map | First visit | Again | Drawn beside (BESIDE total) | Nodes | of which decor |

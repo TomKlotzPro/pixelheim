@@ -3197,6 +3197,10 @@ msgid "Every tenth depth a warden guards the stair down, a boss with its own att
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every track loops without a gap, and a place's music picks up where it left off when you come back"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every way out of a map reads as a way on: the road runs right to it, through an opening wide enough to look walkable, and a signpost names where it leads"
 msgstr ""
 
@@ -4301,6 +4305,10 @@ msgid "Night Watch"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Nine places that shared a track now have their own: Saltmere, the Frostgate, Greyhold, Blackiron, the mountain road, the inn, the crypts, the ice cave, and the dragon's fight on the square"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
 msgstr ""
 
@@ -5226,6 +5234,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Some day camps sleep by their lit torch at night, a Z drifting up: walk right up to one or strike it and the whole pack wakes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Songs of the Reach"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6270,6 +6282,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The map shows the world as it stands: every map you've found is a page, turned with left and right, its roads out and regions named, and the village drawn small inside its walls"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The menu and the whole world play new music from Leohpaz's RPG music bundle: the title, the town, the Reach, the forest, the marsh, the dungeons, the fights, the bosses, the victory and the story's themes"
 msgstr ""
 
 #: assets/data/changelog.json

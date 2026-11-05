@@ -9,7 +9,8 @@
 # and ninth-jedi's Farm Animals (retro-rpg/ninth-jedi/farm-animals/) into
 # godot/assets/puny/animals/ (PIX-387), and Leohpaz's sounds as the game
 # plays them (retro-rpg/leohpaz/pixelheim/, made by godot/tools/sound_prep.py)
-# into godot/assets/audio/paid/ (PIX-411).
+# and his RPG music (retro-rpg/leohpaz/music/, made by
+# godot/tools/music_prep.py, PIX-416) into godot/assets/audio/paid/ (PIX-411).
 # All five folders are git-ignored: the packs may not be redistributed, even
 # modified, so they never enter this repo.
 #
@@ -18,7 +19,7 @@
 #
 # Without it the game still runs on Shade's free art alone: the town's
 # houses, props and paid icons are missing (collision is the same), and
-# every sound is the game's own.
+# every sound and track is the game's own.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -102,3 +103,12 @@ rm -rf godot/assets/audio/paid
 mkdir -p godot/assets/audio/paid
 cp "$sounds"/*.wav "$sounds"/takes.json godot/assets/audio/paid/
 echo "Installed $(ls "$sounds"/*.wav | wc -l | tr -d ' ') sound takes into godot/assets/audio/paid/"
+
+# Leohpaz's RPG music, prepared (PIX-416): each track's and story theme's
+# music and the list the game reads them by (godot/assets/audio/paid_music.json
+# names where each is from), beside the sounds. A checkout from before it has none.
+music="$src/retro-rpg/leohpaz/music"
+if [ -d "$music" ]; then
+  cp "$music"/*.ogg "$music"/music.json godot/assets/audio/paid/
+  echo "Installed $(ls "$music"/*.ogg | wc -l | tr -d ' ') music tracks into godot/assets/audio/paid/"
+fi

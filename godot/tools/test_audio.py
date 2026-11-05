@@ -3,7 +3,8 @@ its level in audio.json's "levels" (the audio pass): Sound skips a name it
 doesn't know in silence, so a typo would never be heard, and a file
 without a level would be the one nobody measured. PIX-411: every event is
 some moment's, and no family's loudest take, through its bus at the full
-slider, passes 0 dBFS (the web has no limiter).
+slider, passes 0 dBFS (the web has no limiter). PIX-416: nor does any music
+track, the bundle's at the music's loudness and within its size budget.
 
     python3 -m unittest discover -s godot/tools -p 'test_*.py'
 """
@@ -134,6 +135,35 @@ class AudioTest(unittest.TestCase):
         for take, peak in loudest.items():
             self.assertLess(peak + bus, 0.0, "%s peaks at %.1f dBFS through its bus" % (take, peak + bus))
 
+    def test_no_track_clips_at_the_full_slider(self):
+        # PIX-416: the game's renders by their peak and level, the bundle's
+        # by the true peak the prep measured, through the Music bus at the
+        # full slider: under 0 dBFS, the web having no limiter.
+        bus = const("LOUDNESS_DB")
+        renders = [name for name, track in DOC["tracks"].items() if "fallback" not in track]
+        for name in renders + ["theme_" + theme for theme in DOC["themes"]]:
+            key = "music/" + name
+            self.assertLess(take_peak(key) + DOC["levels"][key] + bus, 0.0, key)
+        for slot, track in installed_music():
+            self.assertLessEqual(track["peak"], MUSIC["peak"] + 0.2, slot)
+            self.assertLess(track["peak"] + bus, 0.0, "%s peaks at %.1f dBFS through its bus" % (slot, track["peak"] + bus))
+
+    def test_the_bundles_tracks_play_at_the_musics_loudness(self):
+        # PIX-416: as the v0.307 tracks are heard (-37.5 LUFS off their mono
+        # renders, 3 LU more on both channels), so a place changing its
+        # track never jumps in level.
+        for slot, track in installed_music():
+            self.assertAlmostEqual(track["loudness"], MUSIC["loudness"], delta=0.5, msg=slot)
+
+    def test_the_bundles_tracks_keep_to_their_budget(self):
+        # PIX-416: every byte of them is in the web build's download.
+        if not PAID_MUSIC:
+            self.skipTest("the bundle isn't installed (scripts/fetch-private-art.sh)")
+        paid = os.path.join(GODOT, "assets", "audio", "paid")
+        total = sum(os.path.getsize(os.path.join(paid, name)) for name in os.listdir(paid) if name.startswith("music_") and name.endswith(".ogg"))
+        self.assertGreater(total, 0)
+        self.assertLessEqual(total, MUSIC["budgetMiB"] * 2 ** 20, "%.1f MiB of music" % (total / 2 ** 20))
+
 
 def const(name):
     return float(re.search(r"^const %s := (-?[\d.]+)" % name, SOUND, re.M).group(1))
@@ -154,6 +184,22 @@ def take_peak(take):
 
 PAID_LIST = os.path.join(GODOT, "assets", "audio", "paid", "takes.json")
 PAID = json.loads(read("assets", "audio", "paid", "takes.json")) if os.path.exists(PAID_LIST) else {}
+# PIX-416: the bundle's music, its manifest and the list the prep wrote.
+MUSIC = json.loads(read("assets", "audio", "paid_music.json"))
+PAID_MUSIC_LIST = os.path.join(GODOT, "assets", "audio", "paid", "music.json")
+PAID_MUSIC = json.loads(read("assets", "audio", "paid", "music.json")) if os.path.exists(PAID_MUSIC_LIST) else {}
+
+
+def installed_music():
+    """(slot, its entry) for each installed track this build plays: the
+    private repo may run ahead of this branch (a slot pushed before the PR
+    naming it merges), and such a slot is no music of this build's."""
+    known = set(DOC["tracks"]) | {"theme_" + theme for theme in DOC["themes"]}
+    for slot, track in PAID_MUSIC.get("tracks", {}).items():
+        if slot not in known:
+            print("note: music.json's %s is no slot here yet: skipped" % slot)
+            continue
+        yield slot, track
 
 
 if __name__ == "__main__":

@@ -144,6 +144,7 @@ func finish() -> void:
 	if finished:
 		return
 	finished = true
+	Sound.end_theme()
 	close()
 	if on_done.is_valid():
 		on_done.call()

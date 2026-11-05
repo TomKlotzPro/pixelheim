@@ -421,6 +421,41 @@
     "victory": {
       "seconds": 9.23076923076923,
       "beats": 16
+    },
+    "inn": {
+      "fallback": "interior",
+      "resume": true
+    },
+    "crypt": {
+      "fallback": "descent",
+      "resume": true
+    },
+    "icecave": {
+      "fallback": "descent",
+      "resume": true
+    },
+    "coast": {
+      "fallback": "world",
+      "resume": true
+    },
+    "frost": {
+      "fallback": "world",
+      "resume": true
+    },
+    "greyhold": {
+      "fallback": "world",
+      "resume": true
+    },
+    "fernoir": {
+      "fallback": "world",
+      "resume": true
+    },
+    "mountain": {
+      "fallback": "world",
+      "resume": true
+    },
+    "dragon": {
+      "fallback": "boss"
     }
   },
   "ambience": {
