@@ -26,7 +26,8 @@ func test_every_rendered_sound_is_shipped() -> void:
 		assert_gt(float(doc["tracks"][track]["seconds"]), 1.0)
 	for place: String in doc["ambience"]:
 		for index in doc["ambience"][place].size():
-			for variant in int(doc["ambience"][place][index]["variants"]):
+			# A one-shot the packs fill is an event's, not a render (PIX-414).
+			for variant in int(doc["ambience"][place][index].get("variants", 0)):
 				assert_true(ResourceLoader.exists("res://assets/audio/ambience/%s_%d_%d.wav" % [place, index, variant]))
 	assert_eq(stingers.size(), 22, "the web's 17 SFX, then the dodge, the roar and the bounty (PIX-158), Teo's bell (PIX-253 step 9), and a way out rising where a boss fell (PIX-339), every one some moment's")
 	assert_eq(doc["tracks"].size(), 10)
@@ -91,6 +92,20 @@ func test_a_place_has_its_own_bed_where_the_packs_are() -> void:
 	assert_eq(Sound.bed, "wind", "hushed, the game's")
 	Sound.set_bed("rain")
 	assert_eq(Sound.bed, "rain", "the rain over all")
+	# PIX-414: where a shower is the place, its bed is the pack's rain, else
+	# the game's; and a village house's roof has none of the game's.
+	Sound.set_ambience("rain")
+	Sound.set_bed("rain")
+	assert_eq(Sound.bed, "rain", "without the pack's rain, the game's")
+	Sound._paid = {"amb_rain": ["ambience/bed_rain"]}
+	Sound.set_bed("rain")
+	assert_eq(Sound.bed, "amb_rain", "the pack's rain in the open")
+	Sound.set_ambience("rain_inside")
+	Sound.set_bed("")
+	assert_eq(Sound.bed, "", "no rain on the roof without the packs")
+	Sound.set_ambience("crypt")
+	Sound.set_bed("deepwind")
+	assert_eq(Sound.bed, "deepwind", "the Kings' Vault's deeper wind without the packs")
 	Sound.withheld = true
 	Sound.set_bed("")
 	assert_eq(Sound.bed, "", "held back, the game's silence")
@@ -145,7 +160,6 @@ func test_the_weather_follows_the_place() -> void:
 	assert_eq(Sound.ambience_for("mirefen"), "marsh")
 	assert_eq(Sound.ambience_for("mirefen", "mire", true), "marsh_night")
 	assert_eq(Sound.ambience_for("town_house"), "indoor")
-	assert_eq(Sound.ambience_for("vault_1"), "indoor")
 	# PIX-413: the audit's places, and the Reach by the ground underfoot.
 	assert_eq(Sound.ambience_for("saltmere", "coast"), "coast", "the sea at Saltmere, no birdsong")
 	assert_eq(Sound.ambience_for("saltmere"), "coast", "off its region too")
@@ -155,20 +169,102 @@ func test_the_weather_follows_the_place() -> void:
 	assert_eq(Sound.ambience_for("overworld", "ash"), "ash")
 	assert_eq(Sound.ambience_for("overworld", "marsh", true), "marsh_night")
 	assert_eq(Sound.ambience_for("shafts"), "mines")
+	assert_eq(Sound.ambience_for("shafts_gallery"), "mines", "a laid-out floor by its dungeon")
 	assert_eq(Sound.ambience_for("seacave"), "cave")
-	assert_eq(Sound.ambience_for("icecave_lake"), "cave")
-	for map_id: String in ["overworld", "town", "saltmere", "blackiron", "frostgate", "mountain_road", "shafts", "seacave", "deepwood", "mirefen", "town_inn"]:
+	# PIX-414: the forge, the crypts, the ice cave, a shower, the river.
+	assert_eq(Sound.ambience_for("town_smith"), "smithy")
+	assert_eq(Sound.ambience_for("town_smith", "", true, true), "smithy", "the forge over the rain on its roof")
+	assert_eq(Sound.ambience_for("cellars_crypt"), "crypt")
+	assert_eq(Sound.ambience_for("vault_1"), "crypt", "the Kings' Vault a crypt's, quiet")
+	assert_eq(Sound.ambience_for("icecave_lake"), "ice_cave")
+	assert_eq(Sound.ambience_for("overworld", "", false, true), "rain")
+	assert_eq(Sound.ambience_for("overworld", "forest", true, true), "rain_forest", "through the Reach's woods")
+	assert_eq(Sound.ambience_for("deepwood", "", false, true), "rain_forest")
+	assert_eq(Sound.ambience_for("saltmere", "coast", false, true), "rain")
+	assert_eq(Sound.ambience_for("town_inn", "", true, true), "rain_inside", "the inn on a rainy night")
+	assert_eq(Sound.ambience_for("overworld", "", false, true, true), "rain", "the rain over the river")
+	assert_eq(Sound.ambience_for("overworld", "", true, false, true), "river")
+	assert_eq(Sound.ambience_for("overworld", "forest", false, false, true), "river")
+	assert_eq(Sound.ambience_for("overworld", "ash", false, false, true), "ash", "no songbird by the river through the ash")
+	assert_eq(Sound.ambience_for("town", "", false, false, true), "river")
+	assert_eq(Sound.ambience_for("mirefen", "", false, false, true), "marsh", "the Mirefen's pools lie still")
+	for map_id: String in ["overworld", "town", "saltmere", "blackiron", "frostgate", "mountain_road", "shafts", "seacave", "deepwood", "mirefen", "town_inn", "town_smith", "cellars", "vault_3", "icecave"]:
 		for night: bool in [false, true]:
-			assert_true(Sound._doc["places"].has(Sound.ambience_for(map_id, "", night)), map_id)
+			for wet: bool in [false, true]:
+				assert_true(Sound._doc["places"].has(Sound.ambience_for(map_id, "", night, wet, wet)), map_id)
 	for place: String in Sound._doc["places"]:
 		var entry: Dictionary = Sound._doc["places"][place]
 		assert_true(entry.get("sprinkle", "") == "" or Sound._doc["ambience"].has(entry["sprinkle"]), place)
 		assert_true(entry.get("bed", "") == "" or Sound._doc["events"][entry["bed"]]["family"] == "ambience", place)
-	for key: String in ["coast", "ash", "frost", "mines", "cave", "marsh_night", "forest_day", "forest_night", "town"]:
+	for place: String in Sound.RAIN_PLACES:
+		assert_true(Sound._doc["places"].has(place), place)
+	for key: String in ["coast", "ash", "frost", "mines", "cave", "marsh_night", "forest_day", "forest_night", "town", "rain", "rain_forest", "rain_inside", "crypt", "ice_cave", "smithy", "river"]:
 		assert_ne(String(Sound._doc["places"][key].get("bed", "")), "", "%s has a bed of its own" % key)
+	# A sprinkle's one-shot names an event of the sprinkle family (PIX-414).
+	for sprinkle: String in Sound._doc["ambience"]:
+		for one: Dictionary in Sound._doc["ambience"][sprinkle]:
+			assert_true(one.has("event") != one.has("variants"), "%s: an event's or a render's" % sprinkle)
+			if one.has("event"):
+				assert_eq(Sound._doc["events"][one["event"]]["family"], "sprinkle", sprinkle)
 	# The Kings' Vault breathes the deeper wind (PIX-257); the caves their own.
 	assert_eq(Depths.wind("vault_2"), "deepwind")
 	assert_eq(Depths.wind("seacave"), "wind")
+
+
+## PIX-414: running water is heard within RIVER_NEAR cells of its water or
+## its bridge, either way and on the diagonal; still water never.
+func test_a_river_is_heard_near_it() -> void:
+	var map := MapData.new()
+	map.id = "overworld"
+	map.grid[Vector2i(10, 10)] = "water"
+	map.grid[Vector2i(10, 20)] = "bridge"
+	assert_true(Sound.near_river(map, Vector2i(10, 10)), "in it")
+	assert_true(Sound.near_river(map, Vector2i(10 + Sound.RIVER_NEAR, 10 - Sound.RIVER_NEAR)), "at the edge of hearing")
+	assert_false(Sound.near_river(map, Vector2i(10 + Sound.RIVER_NEAR + 1, 10)), "a step past it")
+	assert_true(Sound.near_river(map, Vector2i(10, 20 + Sound.RIVER_NEAR)), "by its bridge")
+	assert_false(Sound.near_river(map, Vector2i(30, 30)))
+	map.id = "mirefen"
+	assert_false(Sound.near_river(map, Vector2i(10, 10)), "the Mirefen's pools lie still")
+	# The real ones: the Reach's river under its bridge, the village's stream.
+	var reach := MapData.load_by_id("overworld")
+	assert_true(Sound.near_river(reach, reach.grid.find_key("bridge")))
+	assert_false(Sound.near_river(reach, reach.spawn), "not where the Reach opens")
+	var town := MapData.load_by_id("town")
+	assert_true(Sound.near_river(town, town.grid.find_key("water")))
+
+
+## PIX-414: a cave drips and its stones fall, the packs' one-shots, on
+## Sound's own dice: what it sprinkles never moves the game's (it moved where
+## the Tidecaller fell). Without the packs the cave keeps quiet, no hearth.
+func test_a_cave_drips_on_sounds_own_dice() -> void:
+	var saved: Dictionary = Sound._paid
+	for place: String in ["cave", "mines", "crypt", "ice_cave"]:
+		assert_eq(String(Sound._doc["places"][place]["sprinkle"]), "cave", place)
+	Sound._paid = {}
+	Sound.set_ambience("cave")
+	seed(414)
+	var first := randi()
+	var second := randi()
+	seed(414)
+	var asked := Sound.asked
+	for i in 300:
+		Sound._sprinkle()
+	assert_eq(Sound.asked, asked, "without the packs, silence")
+	Sound._paid = {"cave_drip": ["ambience/marsh_0_0", "ambience/marsh_0_1"], "cave_stones": ["ambience/indoor_1_0"]}
+	for i in 300:
+		Sound._played_at.clear()
+		Sound._sprinkle()
+	assert_between(Sound.asked - asked, 30, 90, "drips and now and then a stone, some one tick in five")
+	assert_eq(randi(), first, "the game's dice as they were")
+	# The game's own renders (a room's pops) on Sound's dice too.
+	Sound.set_ambience("indoor")
+	for i in 50:
+		Sound._sprinkle()
+	assert_eq(randi(), second, "and still")
+	Sound._paid = saved
+	Sound.stop_all()
+	Sound._played_at.clear()
+	Sound._last.clear()
 
 
 func test_music_loops_its_whole_render() -> void:

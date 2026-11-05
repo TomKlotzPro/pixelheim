@@ -40,7 +40,7 @@ class SoundPrepTest(unittest.TestCase):
                 self.assertRegex(member.lower(), r"\.(wav|ogg)$", event)
                 self.assertNotIn("..", member, event)
                 options = source[2] if len(source) > 2 else {}
-                self.assertLessEqual(set(options), {"keep", "loop", "pitch", "lowpass", "db"}, event)
+                self.assertLessEqual(set(options), {"keep", "loop", "pitch", "lowpass", "db", "rate"}, event)
             self.assertEqual(len({tuple(s[:2]) for s in sources}), len(sources), "%s: a take twice" % event)
 
     def test_every_take_is_in_its_zip(self):
@@ -102,7 +102,9 @@ class SoundPrepTest(unittest.TestCase):
         # PIX-413: some 15 MB of 16-bit mono, each family at its own rate.
         size = 0
         for event, _, _, _, options in sound_prep.takes(self.manifest):
-            rate = self.audio["families"][self.audio["events"][event]["family"]].get("rate", sound_prep.RATE)
+            rate = options.get("rate", self.audio["families"][self.audio["events"][event]["family"]].get("rate", sound_prep.RATE))
+            # PIX-414: the web's AudioBuffer takes 8 kHz and up, everywhere.
+            self.assertGreaterEqual(rate, 8000, event)
             size += float(options.get("keep", options.get("loop", 1.0))) * rate * 2
         self.assertLess(size, 16 * 1024 * 1024)
 

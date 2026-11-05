@@ -72,6 +72,8 @@ class AudioTest(unittest.TestCase):
         chosen |= {e for e in DOC["events"] if e.startswith(("impact_", "foe_noticed_", "animal_"))}
         chosen |= {"%s_%s" % (kind, what) for kind in DOC["voices"].values() for what in ("attack", "hurt", "death")}
         chosen |= {place["bed"] for place in DOC["places"].values() if "bed" in place}
+        # PIX-414: a place's sprinkle of the packs' one-shots (a cave's drips).
+        chosen |= {one["event"] for ones in DOC["ambience"].values() for one in ones if "event" in one}
         self.assertEqual(sorted(set(DOC["events"]) - named - chosen), [], "events no moment asks for")
 
     def test_every_theme_a_cutscene_plays_exists(self):
@@ -117,6 +119,12 @@ class AudioTest(unittest.TestCase):
             pack = family["peak"] + family["db"] + (vary if varies else 0)
             loudest["the packs' " + entry["family"]] = pack
         for event, names in PAID.get("events", {}).items():
+            # PIX-414: the private repo can run ahead of this branch (its
+            # takes pushed before the PR that names them merges): an event
+            # audio.json doesn't have yet is no moment of this build's.
+            if event not in DOC["events"]:
+                print("note: takes.json's %s is no event here yet: skipped" % event)
+                continue
             family = DOC["families"][DOC["events"][event]["family"]]
             for name in names:
                 # PIX-413: none over its family's peak, as the prep holds them.

@@ -86,8 +86,11 @@ func refresh() -> void:
 	# A fallen boss's silence holds a moment before the place's music.
 	if now >= hushed_until and (Sound.track != "victory" or fight != ""):
 		Sound.play_track(Sound.track_for(world.map.id, fight))
-	# By the ground underfoot, the Reach's ash or its marsh (PIX-413).
-	Sound.set_ambience(Sound.ambience_for(world.map.id, world.map.region_at(world.player_cell), DayNight.is_night(GameState.world.steps)))
+	# By the ground underfoot, the Reach's ash or its marsh (PIX-413); a
+	# shower heard, running water near (PIX-414).
+	var cell: Vector2i = world.player_cell
+	var here := Sound.ambience_for(world.map.id, world.map.region_at(cell), DayNight.is_night(GameState.world.steps), raining() or rain_on_roof(), Sound.near_river(world.map, cell))
+	Sound.set_ambience(here)
 	# The soundscape changes slowly: twice a second is plenty.
 	soundscape_left -= get_process_delta_time()
 	if soundscape_left <= 0.0:
@@ -126,6 +129,12 @@ func _soundscape() -> Array[String]:
 ## A shower falling here now, enough to hear (PIX-224).
 func raining() -> bool:
 	return world.atmosphere != null and world.atmosphere.rain > RAIN_HEARD
+
+
+## A shower on the roof of a village house (PIX-414): the inn on a rainy
+## night hears what falls on the village outside.
+func rain_on_roof() -> bool:
+	return world.map.id.begins_with("town_") and Weather.village_rains() and Weather.rain_at(GameState.world.steps) > RAIN_HEARD
 
 
 ## A camp's torch within a few tiles of the hero.

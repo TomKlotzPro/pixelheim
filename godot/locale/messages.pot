@@ -3753,6 +3753,10 @@ msgid "In a conversation, Esc now says « quitter » in French"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "In caves and mines, water drips and stones tumble, where a hearth used to crackle"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "In the Ashes, Hilda's and Vex's crafts are at their stalls on the square; Sela's slimes are in her stores, Wren lost her stable to the fire, and Ana warns of the packs, not the grass"
 msgstr ""
 
@@ -4246,6 +4250,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "New Frames"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "New beds of sound: rain on open land, in the woods and on a house's roof, the furnace in the smithy, Greyhold's cellars and the Kings' Vault, the ice cave, and the river when you walk close by"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4846,6 +4854,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "RUN AHEAD IF YOU LIKE: a hero who goes deeper early is never sent back for an errand"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Rain and Stone"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6174,6 +6186,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The hero walks in four beats, rising as the feet pass, each step timed to the ground it covers, so the feet no longer slide"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The hero's fall has its own sound now, and stairs and cave mouths ring with steps in the stone"
 msgstr ""
 
 #: assets/data/changelog.json

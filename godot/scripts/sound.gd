@@ -25,6 +25,9 @@ extends Node
 ## ("voices"), a skill's impact by its theme, a bow's shot and a staff's
 ## bolt ("swings"), and each place's own bed from the packs ("places"),
 ## quiet under the music, where the game's own has wind or nothing.
+## PIX-414: the rain, the river, the forge, a crypt's air and the ice
+## cave's wind as places with beds of their own, and a cave's drips and
+## stones as its sprinkle, thrown on Sound's own dice.
 ## Autoload `Sound`.
 
 const FADE_S := 0.35
@@ -598,11 +601,12 @@ func set_extras(names: Array[String]) -> void:
 ## A looping bed under the ambience, faded in and out: the place's own from
 ## the packs where they're installed (PIX-413: its "bed", an event of the
 ## "ambience" family, quiet under the music), else `name`, the game's own
-## ("wind", "deepwind", or "" for none). The rain is always the rain's;
-## `hushed` keeps the place's quiet (a town burning, a night of bells).
+## ("wind", "deepwind", or "" for none). The rain is always the rain's: the
+## packs' only where a shower is the place (PIX-414, RAIN_PLACES); `hushed`
+## keeps the place's quiet (a town burning, a night of bells).
 func set_bed(name: String, hushed := false) -> void:
 	var own := String(_doc["places"].get(place, {}).get("bed", ""))
-	if name != "rain" and not hushed and not takes_of(own).is_empty():
+	if (name != "rain" or place in RAIN_PLACES) and not hushed and not takes_of(own).is_empty():
 		name = own
 	elif name not in _doc["beds"]:
 		name = ""
@@ -649,14 +653,26 @@ func _process(delta: float) -> void:
 	var tick: float = _doc["ambienceTick"]
 	while _ambience_clock >= tick:
 		_ambience_clock -= tick
-		var events: Array = _doc["ambience"].get(ambience, [])
-		for index in events.size():
-			if randf() < float(events[index]["chance"]):
-				_ambient(index, randi() % int(events[index]["variants"]))
+		_sprinkle()
 		for name in extras:
 			var extra: Dictionary = _doc["ambienceExtras"][name]
 			if randf() < float(extra["chance"]):
 				_ambient_file("res://assets/audio/ambience/%s_%d.wav" % [name, randi() % int(extra["variants"])], level_of("ambience/" + name))
+
+
+## One tick of the place's one-shots, each by its chance: a render of the
+## game's ("indoor"'s pops), or an event the packs fill (PIX-414: a cave's
+## drips and stones, silent without them). On Sound's own dice, so what a
+## place sprinkles never moves the game's: on the game's, a new sprinkle
+## moved where the Tidecaller fell and what the Mirefen dropped.
+func _sprinkle() -> void:
+	var events: Array = _doc["ambience"].get(ambience, [])
+	for index in events.size():
+		if _dice.randf() < float(events[index]["chance"]):
+			if events[index].has("event"):
+				play(String(events[index]["event"]), false)
+			else:
+				_ambient(index, _dice.randi() % int(events[index]["variants"]))
 
 
 func _ambient(index: int, variant: int) -> void:
@@ -694,8 +710,18 @@ static func track_for(map_id: String, fight: String) -> String:
 ## birdsong; the wind at the Frostgate and on the mountain road, never a
 ## hearth; the Reach by the ground underfoot (`region`: its ash, its marsh);
 ## the woods, the marsh and the town by day or `night`; the mines' shafts
-## and the caves their own.
-static func ambience_for(map_id: String, region := "", night := false) -> String:
+## and the caves their own. PIX-414: the smith's forge; a shower heard
+## (`rain`) in the open, through a wood's leaves or on a village house's
+## roof; running water `river` (near_river) in the village and on the
+## Reach's open land; under the ground by the dungeon: the cellars and the
+## Kings' Vault a crypt's, the ice cave its own.
+static func ambience_for(map_id: String, region := "", night := false, rain := false, river := false) -> String:
+	if map_id == "town_smith":
+		return "smithy"
+	if rain:
+		if map_id.begins_with("town_"):
+			return "rain_inside"
+		return "rain_forest" if map_id == "deepwood" or region == "forest" else "rain"
 	match map_id:
 		"saltmere":
 			return "coast"
@@ -708,17 +734,47 @@ static func ambience_for(map_id: String, region := "", night := false) -> String
 		"mirefen":
 			return "marsh_night" if night else "marsh"
 		"town":
+			if river:
+				return "river"
 			return "forest_night" if night else "town"
 		"overworld", "demo", "greyhold":
+			# The ash and the marsh keep theirs by the river: no songbird there.
 			match region:
 				"ash":
 					return "ash"
 				"marsh":
 					return "marsh_night" if night else "marsh"
+			if river:
+				return "river"
 			return "forest_night" if night else "forest_day"
-	if map_id.begins_with("shafts"):
-		return "mines"
-	# Every dungeon's floors but the Kings' Vault's halls (its deeper wind).
-	if not Depths.floor_of(map_id).is_empty() and not map_id.begins_with("vault"):
-		return "cave"
-	return "indoor"
+	match String(Depths.floor_of(map_id).get("dungeon", "")):
+		"":
+			return "indoor"
+		"shafts":
+			return "mines"
+		"cellars", "vault":
+			return "crypt"
+		"icecave":
+			return "ice_cave"
+	return "cave"
+
+
+## Places a shower is (ambience_for): their bed is the rain's.
+const RAIN_PLACES: Array[String] = ["rain", "rain_forest", "rain_inside"]
+## How near running water is heard, in cells either way (PIX-414): on a
+## river's bank or its bridge, or a few steps off it.
+const RIVER_NEAR := 3
+
+
+## Whether running water lies within RIVER_NEAR cells of `cell` (PIX-414):
+## a river's water or its bridge, on a map whose inland water runs
+## (PunyTerrain's tones: not the Mirefen's pools, the Deepwood's lake or
+## the Frostgate's ice, which lie still).
+static func near_river(map: MapData, cell: Vector2i) -> bool:
+	if PunyTerrain.WATER_TONES.get(map.id, PunyTerrain.WATER_CLEAR) in PunyTerrain.STILL_WATERS:
+		return false
+	for dy in range(-RIVER_NEAR, RIVER_NEAR + 1):
+		for dx in range(-RIVER_NEAR, RIVER_NEAR + 1):
+			if map.tile_at(cell + Vector2i(dx, dy)) in ["water", "bridge"]:
+				return true
+	return false
