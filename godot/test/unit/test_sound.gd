@@ -74,6 +74,55 @@ func test_extras_and_beds_take_only_what_exists() -> void:
 	assert_eq(Sound.extras, [] as Array[String])
 
 
+## PIX-413: a place's own bed from the packs stands in for the game's wind
+## or silence under it; never for the rain, never while it's hushed, and
+## without the packs the game's own as before.
+func test_a_place_has_its_own_bed_where_the_packs_are() -> void:
+	var saved: Dictionary = Sound._paid
+	Sound._paid = {}
+	Sound.set_ambience("frost")
+	assert_eq(Sound.ambience, "", "no hearth at the Frostgate")
+	Sound.set_bed("wind")
+	assert_eq(Sound.bed, "wind", "without the packs, the game's wind")
+	Sound._paid = {"amb_frost": ["ambience/bed_deepwind"]}
+	Sound.set_bed("wind")
+	assert_eq(Sound.bed, "amb_frost", "the pack's own wind stands in")
+	Sound.set_bed("wind", true)
+	assert_eq(Sound.bed, "wind", "hushed, the game's")
+	Sound.set_bed("rain")
+	assert_eq(Sound.bed, "rain", "the rain over all")
+	Sound.withheld = true
+	Sound.set_bed("")
+	assert_eq(Sound.bed, "", "held back, the game's silence")
+	Sound.withheld = false
+	Sound.set_ambience("forest_day")
+	assert_eq(Sound.ambience, "greenwood", "the woods keep their one-shots")
+	Sound.stop_all()
+	assert_eq(Sound.place, "")
+	assert_eq(Sound.bed, "", "stopped: no place's bed comes back")
+	Sound._paid = saved
+
+
+## PIX-413's review: Sound outlives the world it leaves, so back at the
+## title the last place's bed and birds go quiet.
+func test_the_title_hushes_the_last_place() -> void:
+	var saved: Dictionary = Sound._paid
+	Sound._paid = {"amb_forest_day": ["ambience/bed_deepwind"]}
+	Sound.set_ambience("forest_day")
+	Sound.set_bed("")
+	Sound.set_extras(["birds"] as Array[String])
+	assert_eq(Sound.bed, "amb_forest_day", "the woods' own bed")
+	var title: Node = preload("res://scripts/title_screen.gd").new()
+	add_child(title)
+	assert_eq(Sound.place, "")
+	assert_eq(Sound.bed, "", "no birdsong under the title")
+	assert_eq(Sound.extras, [] as Array[String])
+	title.close()
+	await get_tree().process_frame
+	Sound._paid = saved
+	Sound.stop_all()
+
+
 func test_places_and_fights_choose_the_webs_themes() -> void:
 	assert_eq(Sound.track_for("town", ""), "town")
 	assert_eq(Sound.track_for("overworld", ""), "world")
@@ -86,12 +135,37 @@ func test_places_and_fights_choose_the_webs_themes() -> void:
 
 
 func test_the_weather_follows_the_place() -> void:
-	assert_eq(Sound.ambience_for("overworld"), "greenwood")
-	assert_eq(Sound.ambience_for("town"), "greenwood")
+	assert_eq(Sound.ambience_for("overworld"), "forest_day")
+	assert_eq(Sound.ambience_for("overworld", "", true), "forest_night")
+	assert_eq(Sound.ambience_for("town"), "town", "the square's bustle by day")
+	assert_eq(Sound.ambience_for("town", "", true), "forest_night")
 	assert_eq(Sound.ambience_for("deepwood"), "deepforest")
+	assert_eq(Sound.ambience_for("deepwood", "", true), "deepforest_night", "no birdsong in the Bois-Profonds at night")
+	assert_eq(String(Sound._doc["places"]["deepforest_night"]["bed"]), "amb_forest_night")
 	assert_eq(Sound.ambience_for("mirefen"), "marsh")
+	assert_eq(Sound.ambience_for("mirefen", "mire", true), "marsh_night")
 	assert_eq(Sound.ambience_for("town_house"), "indoor")
 	assert_eq(Sound.ambience_for("vault_1"), "indoor")
+	# PIX-413: the audit's places, and the Reach by the ground underfoot.
+	assert_eq(Sound.ambience_for("saltmere", "coast"), "coast", "the sea at Saltmere, no birdsong")
+	assert_eq(Sound.ambience_for("saltmere"), "coast", "off its region too")
+	assert_eq(Sound.ambience_for("blackiron", "mines"), "ash", "Fernoir's ash, no birdsong")
+	assert_eq(Sound.ambience_for("frostgate", "frost"), "frost", "no hearth at the Frostgate")
+	assert_eq(Sound.ambience_for("mountain_road", "road"), "ash", "nor on the mountain road")
+	assert_eq(Sound.ambience_for("overworld", "ash"), "ash")
+	assert_eq(Sound.ambience_for("overworld", "marsh", true), "marsh_night")
+	assert_eq(Sound.ambience_for("shafts"), "mines")
+	assert_eq(Sound.ambience_for("seacave"), "cave")
+	assert_eq(Sound.ambience_for("icecave_lake"), "cave")
+	for map_id: String in ["overworld", "town", "saltmere", "blackiron", "frostgate", "mountain_road", "shafts", "seacave", "deepwood", "mirefen", "town_inn"]:
+		for night: bool in [false, true]:
+			assert_true(Sound._doc["places"].has(Sound.ambience_for(map_id, "", night)), map_id)
+	for place: String in Sound._doc["places"]:
+		var entry: Dictionary = Sound._doc["places"][place]
+		assert_true(entry.get("sprinkle", "") == "" or Sound._doc["ambience"].has(entry["sprinkle"]), place)
+		assert_true(entry.get("bed", "") == "" or Sound._doc["events"][entry["bed"]]["family"] == "ambience", place)
+	for key: String in ["coast", "ash", "frost", "mines", "cave", "marsh_night", "forest_day", "forest_night", "town"]:
+		assert_ne(String(Sound._doc["places"][key].get("bed", "")), "", "%s has a bed of its own" % key)
 	# The Kings' Vault breathes the deeper wind (PIX-257); the caves their own.
 	assert_eq(Depths.wind("vault_2"), "deepwind")
 	assert_eq(Depths.wind("seacave"), "wind")
@@ -140,19 +214,36 @@ func test_every_event_resolves() -> void:
 				assert_true(Sound.UI_SOUNDS.has(take.trim_prefix("blip/")), "%s: %s" % [event, take])
 			else:
 				assert_true(take.begins_with("sfx/") and ResourceLoader.exists("res://assets/audio/%s.wav" % take), "%s: %s" % [event, take])
-	for table: String in ["blows", "casts", "steps"]:
+	for table: String in ["blows", "casts", "steps", "swings", "gathers"]:
 		for key: String in doc[table]:
 			assert_true(doc["events"].has(doc[table][key]), "%s: %s" % [table, key])
 	for family: String in Bestiary.family_names():
 		assert_true(doc["events"].has("kill_" + family), "a fall for %s" % family)
-	assert_eq(Sound.kill_for("skeleton"), "kill_undead")
-	assert_eq(Sound.kill_for("no_such_foe"), "kill", "a foe of no family falls plainly")
+		assert_true(doc["events"].has("foe_noticed_" + family), "a growl for %s (PIX-413)" % family)
+	assert_eq(Sound.of_family("kill", "skeleton"), "kill_undead")
+	assert_eq(Sound.of_family("kill", "no_such_foe"), "kill", "a foe of no family falls plainly")
+	assert_eq(Sound.of_family("foe_noticed", "wolf"), "foe_noticed_beasts")
 	assert_eq(Sound.blow_for(""), "hit_blade", "bare hands, a blade's blow")
 	assert_eq(Sound.blow_for("hunting_bow"), "hit_arrow")
 	assert_eq(Sound.blow_for("war_hammer"), "hit_blunt")
 	assert_eq(Sound.blow_for("apprentice_staff"), "hit_spell")
+	assert_eq(Sound.swing_for("hunting_bow"), "shoot", "a bow's shot (PIX-413)")
+	assert_eq(Sound.swing_for("apprentice_staff"), "bolt")
+	assert_eq(Sound.swing_for(""), "swing")
 	assert_eq(Sound.cast_for("Fireball"), "cast_fire")
 	assert_eq(Sound.cast_for("No Such Skill"), "cast")
+	assert_eq(Sound.impact_for("Fireball"), "impact_fire", "where it lands, its theme's")
+	assert_eq(Sound.impact_for("No Such Skill"), "hit_spell")
+	assert_eq(Sound.gather_for("blackiron_ore"), "mine")
+	assert_eq(Sound.gather_for("forest_herb"), "gather")
+	# PIX-413: every foe a voice of its kind, every kind's voice a moment.
+	for monster_id: String in Bestiary._data()["monsters"]:
+		assert_true(doc["voices"].has(monster_id), "%s has a voice" % monster_id)
+	for kind: String in doc["voices"].values():
+		assert_true(doc["events"].has(kind + "_hurt"), "%s cries out" % kind)
+	assert_eq(Sound.voice_for("frost_wolf", "attack"), "wolf_attack")
+	assert_eq(Sound.voice_for("dragon", "attack", "foe_bite"), "foe_bite", "a kind without it, the plain one")
+	assert_eq(Sound.voice_for("no_such_foe", "death"), "")
 
 
 ## PIX-411: a take is never the one its event played last, and every one
@@ -218,9 +309,9 @@ func test_every_ground_has_its_step() -> void:
 			assert_true(Sound._doc["steps"].has(tile), "%s has its own step" % tile)
 			assert_eq(Sound._doc["events"][event]["family"], "step", tile)
 			surfaces[event] = true
-	assert_eq(surfaces.keys().size(), 8, "grass, dirt, sand, stone, wood, snow, ice and shallow water")
+	assert_eq(surfaces.keys().size(), 8, "grass, dirt, sand, stone, wood, snow, ice and the marsh's mud and water")
 	assert_eq(Sound.step_for("grass"), "step_grass")
-	assert_eq(Sound.step_for("marsh"), "step_water")
+	assert_eq(Sound.step_for("marsh"), "step_mud", "squelch and splash (PIX-413)")
 	assert_eq(Sound.step_for("floor"), "step_wood", "a house's boards")
 	# A cave's "floor" is its rock: every dungeon's floors, drawn by hand or
 	# laid from a seed, walked on wood before the review.

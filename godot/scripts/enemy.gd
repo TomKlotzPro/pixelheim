@@ -881,7 +881,7 @@ func _bite(to_player: Vector2) -> void:
 	if to_player.length() > BITE_REACH:
 		return
 	can_bite = false
-	Sound.play("foe_bite")
+	Sound.play(Sound.voice_for(String(fighter["id"]), "attack", "foe_bite"))
 	_play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
 	# At the wagon the bite lands on it (the escort counts it).
 	if _at_quarry:
@@ -1186,8 +1186,12 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	Juice.flash(sprite, Juice.KILL_FLASH_SECONDS if fell else Juice.FLASH_SECONDS)
 	# A small impact where it lands (PIX-396).
 	world.fx.skills.impact(self)
+	# Its own voice with it (PIX-413): a cry, or its death call over the thud.
 	if fell:
-		Sound.play(Sound.kill_for(String(fighter["id"])))
+		Sound.play(Sound.of_family("kill", String(fighter["id"])))
+		Sound.play(Sound.voice_for(String(fighter["id"]), "death"))
+	elif not guarding:
+		Sound.play(Sound.voice_for(String(fighter["id"]), "hurt"))
 	# A named monster falls as a boss does (PIX-232), not just a boss.
 	if fell and Bestiary.fights_like_boss(fighter):
 		world.foes.boss_fell(self)

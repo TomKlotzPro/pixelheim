@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.315.0",
+      "date": "2026-11-05",
+      "codename": "Every Voice",
+      "notes": [
+        "Every foe now has its own voice when it bites, takes a blow and falls, and growls when it spots you; skills land with the sound of their element, bows and staffs have their own shot, and the dragon breathes fire you can hear",
+        "Rare loot, ore struck loose, a mimic waking, a ruin giving way and the farm animals you shoo all have their own sound now, from Leohpaz's retro RPG library",
+        "Each place has its own quiet bed of sound under the music: the coast, the ash, the frost, the caves and mines, the marsh by night, the forest by day and by night, and the town by day; Saltmere and Blackiron no longer hear birdsong, and the Frostgate and the mountain road no longer crackle like a hearth"
+      ]
+    },
+    {
       "version": "0.314.0",
       "date": "2026-11-04",
       "codename": "Footfalls",

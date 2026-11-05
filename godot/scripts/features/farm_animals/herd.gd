@@ -140,6 +140,8 @@ func shoo(hero: Vector2i, cell: Vector2i) -> void:
 		if next != cell:
 			animal["shooed"] = true
 			_set_off(animal, next)
+			# It says so as it goes (PIX-413): a hen clucks, the bull lows.
+			Sound.play("animal_%s" % animal["kind"])
 
 
 ## A frame of one animal's day: walking on to its goal, or standing until

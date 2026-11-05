@@ -172,6 +172,9 @@ func _run(step: Dictionary) -> void:
 			ash.emitting = true
 			ash.visible = true
 		"shake":
+			# The story's ground is heard even where reduced motion keeps the
+			# picture still; the logo's slam shakes in silence (PIX-413).
+			Sound.play("rumble")
 			_shake(float(step.get("strength", 5)), float(step.get("seconds", 1.0)))
 		"actor":
 			_actor(step)
@@ -349,6 +352,7 @@ func _lair() -> Control:
 
 ## A name to remember, in the logo's capitals over the scene, a line beneath.
 func _card(text: String, sub: String) -> void:
+	Sound.play("cutscene_card")
 	var card := VBoxContainer.new()
 	card.position = Vector2(0, BAR + 40)
 	card.custom_minimum_size = Vector2(VIEW.x, 0)
