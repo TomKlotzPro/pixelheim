@@ -1,0 +1,4 @@
+# The wayside lanterns' report field (PIX-397): `field | says`, as the
+# core's (scripts/harness_report.txt), which it joins after its head, by
+# name; its function is `field_waysides(report)` in feature.gd.
+waysides | on the Reach: where its wayside lanterns stand (the bridge, the forks of the Post's roads) and how many burn, none by day: bridge,greyhold_fork,mountain_fork,river_fork,saltmere_fork lit 5 (PIX-397)

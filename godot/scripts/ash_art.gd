@@ -127,6 +127,18 @@ const SPOIL_B := [
 	"KNQXNNQNXNNQNNK.",
 	".KKKKKKKKKKKKK..",
 ]
+## A wall's log fallen in the Ash (AshRuins, PIX-397): charred as the posts
+## are, its end's rings warm to the west, an ember in a crack, ash heaped
+## under it.
+const LOG := [
+	"..KKKKKKKKKKKK..",
+	".KDDKXNXXNXXNXK.",
+	"KDMDKXXNXXNXXNK.",
+	"KMLMKNNNKNNNNNK.",
+	"KDMDKNNNNNENNNK.",
+	".KDDKKKKKKKKKKK.",
+	"..KKNQQNQQQNQQ..",
+]
 const TILE := 16
 ## A dead tree's picture is two cells tall, its foot at the bottom.
 const SNAG_HEIGHT := 32
@@ -134,7 +146,7 @@ const SNAG_HEIGHT := 32
 static var _textures := {}
 
 
-## A piece's picture by name: "shoring", "spoil_a", "spoil_b", or
+## A piece's picture by name: "shoring", "spoil_a", "spoil_b", "log", or
 ## "snag_<n>" (SNAGS), made once a session.
 static func texture(name: String) -> Texture2D:
 	if not _textures.has(name):
@@ -153,13 +165,15 @@ static func draw(name: String) -> Image:
 			rows = SPOIL_A
 		"spoil_b":
 			rows = SPOIL_B
+		"log":
+			rows = LOG
 		_:
 			rows = SNAGS[int(name.trim_prefix("snag_")) % SNAGS.size()]
 			height = SNAG_HEIGHT
 	var image := Image.create(TILE, height, false, Image.FORMAT_RGBA8)
 	image.fill(Color(0, 0, 0, 0))
 	# Feet on the bottom row (the heaps one up, on the ground's middle).
-	var top := height - rows.size() - (2 if name.begins_with("spoil") else 0)
+	var top := height - rows.size() - (2 if name.begins_with("spoil") or name == "log" else 0)
 	for y in rows.size():
 		var line: String = rows[y]
 		for x in line.length():

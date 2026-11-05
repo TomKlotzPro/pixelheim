@@ -1,0 +1,9 @@
+# The wayside lanterns' flows (PIX-361: a feature's flows, read after
+# tools/flows.txt as its own, scripts/features/waysides/), a line each as
+# in flows.txt.
+# The Reach's wayside lanterns (PIX-397, step 4): a lamp at the bridge and
+# at each fork of the Post's roads past the gate's, cold by day and lit at
+# night with the gate's two; the river fork's stands in the hero's way.
+waysides-day | --map overworld --at 50,24 | map=overworld waysides=bridge,greyhold_fork,mountain_fork,river_fork,saltmere_fork lit 0 lamplight=posts 0/7 .* | travel field
+waysides-night | --map overworld --at 50,24 night | map=overworld waysides=bridge,greyhold_fork,mountain_fork,river_fork,saltmere_fork lit 5 lamplight=posts 7/7 .* | travel field night
+waysides-block | --map overworld --at 51,21 --walk l,l | map=overworld cell=\(51, 21\) | travel field

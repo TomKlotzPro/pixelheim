@@ -95,9 +95,47 @@ func test_a_turn_on_grass_is_drawn_again_and_fills_inside() -> void:
 	assert_eq(_texel(image, Vector2i(1, 1)).b, 0.0)
 
 
+## How far the road may wander at `cell` (the mask's alpha's low seven bits).
+func _calm(image: Image, cell: Vector2i) -> float:
+	return (roundi(_texel(image, cell).a * 255.0) % 128) / 127.0
+
+
+## The Reach's long roads wander (PIX-397, RoadShape.WANDERS) only where the
+## tone draws them: the mask's alpha keeps whether the tone follows the road
+## (its top bit) and carries how far it may wander (its low seven bits): all
+## of it along a straight lane on the ash, none by its end or round a turn
+## (PIX-404's shape), none on Shade's grass, drawn there as where roads
+## don't wander.
+func test_where_roads_wander_only_a_straight_lane_on_the_ash() -> void:
+	var lane := _rect(Vector2i(0, 4), Vector2i(11, 5))
+	var ash := RoadShape.image_of(_field(lane, "ash"), _past("ash", [4, 5]), Vector2i(12, 12), {}, true)
+	for cell: Vector2i in [Vector2i(3, 3), Vector2i(3, 4), Vector2i(5, 6)]:
+		assert_almost_eq(_calm(ash, cell), 1.0, 0.01, "a straight lane wanders at %s" % cell)
+		assert_gte(_texel(ash, cell).a, 0.5, "and the tone follows it at %s" % cell)
+	assert_eq(_calm(ash, Vector2i(11, 4)), 0.0, "not by its end")
+	assert_lt(_texel(ash, Vector2i(3, 9)).a, 0.5, "away from it the tone is the cell's")
+	var bend := _rect(Vector2i(0, 4), Vector2i(5, 5)) + _rect(Vector2i(4, 6), Vector2i(5, 11))
+	var turn := RoadShape.image_of(_field(bend, "ash"), _past("ash", [4, 5]), Vector2i(12, 12), {}, true)
+	for cell: Vector2i in [Vector2i(3, 6), Vector2i(6, 5)]:
+		assert_eq(_calm(turn, cell), 0.0, "nor round a turn, at %s" % cell)
+	var grass := RoadShape.image_of(_field(lane), _past("grass", [4, 5]), Vector2i(12, 12), {}, true)
+	var still := RoadShape.image_of(_field(lane), _past("grass", [4, 5]), Vector2i(12, 12))
+	for y in 12:
+		for x in 12:
+			var cell := Vector2i(x, y)
+			var drawn := [_texel(grass, cell).r, _texel(grass, cell).b, _texel(grass, cell).a >= 0.5]
+			assert_eq(_calm(grass, cell), 0.0, "never on grass, at %s" % cell)
+			assert_eq(drawn, [_texel(still, cell).r, _texel(still, cell).b, _texel(still, cell).a >= 0.5], "drawn as where roads don't wander, at %s" % cell)
+
+
 func test_grass_between_two_roads_never_fills() -> void:
+	for wanders: bool in [false, true]:
+		_never_fills_between(wanders)
+
+
+func _never_fills_between(wanders: bool) -> void:
 	var grid := _field(_rect(Vector2i(2, 3), Vector2i(7, 3)) + _rect(Vector2i(4, 5), Vector2i(9, 5)))
-	var image := RoadShape.image_of(grid, _past(), Vector2i(12, 12))
+	var image := RoadShape.image_of(grid, _past(), Vector2i(12, 12), {}, wanders)
 	for x in range(4, 8):
 		assert_ne(_texel(image, Vector2i(x, 4)).b, RoadShape.FILLS, "the strip at %d stays grass" % x)
 

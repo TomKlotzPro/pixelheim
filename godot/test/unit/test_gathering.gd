@@ -59,6 +59,10 @@ func test_patches_grow_only_on_their_regions_open_ground() -> void:
 		# which are read before anything is drawn: no patch is dealt under
 		# one (PatchesLayer.deal_patches), checked below.
 		var stands: Array = view.get_meta("mire", {}).get("blocks", [])
+		# So do the Ash's burnt farmsteads and the Reach's wayside lanterns
+		# (PIX-397).
+		stands.append_array(view.get_meta("ash_ruins", {}).get("blocks", []))
+		stands.append_array(view.get_meta("waysides", {}).values())
 		for region: String in view.patch_decks:
 			var deck: Array = view.patch_decks[region]
 			assert_gt(deck.size(), 30, "%s: %s has room to move its patches" % [map_id, region])

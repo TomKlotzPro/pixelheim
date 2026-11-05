@@ -191,7 +191,7 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 	# country street's is; one paved later needs the age in the fingerprint.
 	if data.id not in Rampart.MAPS:
 		var paved := Streets.plan(data.id, data.grid, 0) if PunyTown.available() else {}
-		var shaping := RoadShape.new(look, kept._beyond, data.size, paved)
+		var shaping := RoadShape.new(look, kept._beyond, data.size, paved, RoadShape.WANDERS.has(data.id))
 		slices.add_each("kept_roads", ceili(shaping.read_count() / float(ROWS_A_SLICE)), func(i: int) -> void:
 			shaping.read_rows(i * ROWS_A_SLICE, (i + 1) * ROWS_A_SLICE))
 		slices.add_each("kept_road_shape", ceili(shaping.draw_count() / float(ROWS_A_SLICE)), func(i: int) -> void:
