@@ -68,6 +68,24 @@ func test_a_theme_plays_once_then_hands_over() -> void:
 	Sound.stop_music()
 
 
+## PIX-416: the bundle's ending (157 s) outlasts its scene (46 s): the
+## scene's close hands it over to its `then`, as its end would have.
+func test_a_scene_ending_hands_its_theme_over() -> void:
+	Sound.stop_music()
+	Sound.play_theme("ending", "victory")
+	if FileAccess.file_exists(Sound.PAID_MUSIC):
+		assert_true(Sound._music.stream is AudioStreamOggVorbis, "the bundle's ending")
+	Sound.end_theme()
+	assert_eq(Sound.track, "victory", "its then, though the theme still plays")
+	Sound.end_theme()
+	assert_eq(Sound.track, "victory", "a track plays on")
+	Sound.play_theme("dawn")
+	Sound.end_theme()
+	assert_eq(Sound.track, "theme:dawn", "no then: the world replaces it")
+	Sound.stop_music()
+	Sound._resume_at.clear()
+
+
 func test_extras_and_beds_take_only_what_exists() -> void:
 	Sound.set_extras(["birds", "thunder", "fire"] as Array[String])
 	assert_eq(Sound.extras, ["birds", "fire"] as Array[String])
@@ -169,6 +187,7 @@ func test_places_with_their_own_music() -> void:
 	assert_eq(Sound.track_for("town", "battle"), "battle")
 	Sound.withheld = true
 	assert_eq(Sound.heard_as("coast"), "world", "the Reach's chiptune without the bundle")
+	assert_eq(Sound.heard_as("mountain"), "world", "the road is outdoors: the Reach's, no longer the rooms' tune")
 	assert_eq(Sound.heard_as("crypt"), "descent")
 	assert_eq(Sound.heard_as("dragon"), "boss")
 	assert_eq(Sound.heard_as("town"), "town")

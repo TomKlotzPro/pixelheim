@@ -8,7 +8,7 @@ extends Node
 ## tools/synth.py. Music crossfades between themes (the old and the new
 ## together, PIX-411) and keeps playing under the menus, a place's track
 ## taken up where it was left; a story theme plays once, then what it names
-## or the place's music. Ambience rolls its chances every tick like
+## (when it ends or its scene does, PIX-416) or the place's music. Ambience rolls its chances every tick like
 ## ambience.ts, the extras the world asks for with it, over a looping bed
 ## (wind). Volumes are the player's (GameSettings), on Music, SFX, UI,
 ## Jingle and Ambience buses, each sound at its own level first
@@ -32,7 +32,8 @@ extends Node
 ## (assets/audio/paid/music.json, tools/music_prep.py), the game's own
 ## chiptune without it; the places that had no track of their own (the inn,
 ## the crypts, the ice cave, the coast, the Frostgate, Greyhold, Fernoir, the
-## mountain road, the dragon) play their "fallback"'s then.
+## mountain road, the dragon) play their "fallback"'s then: the same as before
+## but for the mountain road, the Reach's now, not the rooms' tune.
 ## Autoload `Sound`.
 
 const FADE_S := 0.35
@@ -639,6 +640,15 @@ func _theme_over(player: AudioStreamPlayer) -> void:
 	_after_theme = ""
 
 
+## Hands a story theme still playing over to its `then`, as if it had ended:
+## the bundle's themes outlast the scenes that play them (PIX-416: the
+## ending's 157 s against its 46 s scene), so the scene's close hands over.
+## A theme with no `then` plays on for the world to replace.
+func end_theme() -> void:
+	if track.begins_with("theme:") and _after_theme != "":
+		_theme_over(_music)
+
+
 ## The new theme comes in from `from` seconds as the old one goes, together,
 ## each on an equal-power curve: faded in dB, the two sat near -20 dB
 ## halfway, a dip of some 17 dB in every change of place.
@@ -795,7 +805,7 @@ static func track_for(map_id: String, fight: String) -> String:
 ## Each place's track (track_for), "interior" for the rest: PIX-416 gave the
 ## coast, the Frostgate, Greyhold, Fernoir, the mountain road and the inn
 ## their own, each its "fallback"'s (the Reach's, the rooms') without the
-## bundle.
+## bundle: the road's the Reach's, no longer the rooms' tune it fell to.
 const PLACE_TRACKS := {
 	"town": "town", "deepwood": "deepwood", "mirefen": "mirefen", "overworld": "world", "demo": "world",
 	"saltmere": "coast", "frostgate": "frost", "greyhold": "greyhold", "blackiron": "fernoir",
