@@ -2965,6 +2965,10 @@ msgid "Each material grows a set number a day, so the rare ones stay rare: one F
 msgstr "Chaque matériau pousse en nombre fixe chaque jour, si bien que les rares le restent : un Lys de givre, un Minerai de Fernoir et un Vieil acier par jour, leurs deux foyers à tour de rôle"
 
 #: assets/data/changelog.json
+msgid "Each place has its own quiet bed of sound under the music: the coast, the ash, the frost, the caves and mines, the marsh by night, the forest by day and by night, and the town by day; Saltmere and Blackiron no longer hear birdsong, and the Frostgate and the mountain road no longer crackle like a hearth"
+msgstr "Chaque lieu a son propre fond sonore, discret sous la musique : la côte, les cendres, le givre, les grottes et les mines, le marais la nuit, la forêt de jour comme de nuit, et le bourg le jour ; Saltmere et Fernoir n'entendent plus d'oiseaux, et la Porte-Givre et la route de la montagne ne crépitent plus comme un âtre"
+
+#: assets/data/changelog.json
 msgid "Each rank shows on the hero, in the class's colours: an edge at rank II, a rim of light at III, a weapon that glows as it strikes at IV, and light trailing your steps at V"
 msgstr "Chaque rang se voit sur le héros, aux couleurs de la classe : un liseré au rang II, un contour de lumière au III, une arme qui luit quand elle frappe au IV, et la lumière qui suit vos pas au V"
 
@@ -3089,8 +3093,16 @@ msgid "Every Point Counts"
 msgstr "Chaque point compte"
 
 #: assets/data/changelog.json
+msgid "Every Voice"
+msgstr "Chaque voix"
+
+#: assets/data/changelog.json
 msgid "Every cleared depth opens a hole into the dark beside the way up: keep going, or climb out. The Undermountain's gate offers the first depth and the next one past your deepest"
 msgstr "Chaque profondeur nettoyée ouvre un trou vers les ténèbres à côté du chemin de sortie : continuez, ou remontez. La porte du Sous-Mont propose la première profondeur et celle qui suit la plus profonde que vous ayez atteinte"
+
+#: assets/data/changelog.json
+msgid "Every foe now has its own voice when it bites, takes a blow and falls, and growls when it spots you; skills land with the sound of their element, bows and staffs have their own shot, and the dragon breathes fire you can hear"
+msgstr "Chaque ennemi a désormais sa propre voix quand il mord, encaisse un coup et tombe, et il grogne quand il vous repère ; les compétences frappent avec le son de leur élément, arcs et bâtons ont leur propre tir, et on entend le dragon cracher le feu"
 
 #: assets/data/changelog.json
 msgid "Every hero starts as a survivor of the Night of Ash: plain worker's clothes in the colour you chose, whatever the role; hero creation still shows the role's full kit, what you'll become, and gear shows on you as you put it on"
@@ -4847,6 +4859,10 @@ msgstr "Évolution de rang ! Tous les 5 niveaux, votre héros s'élève : l'
 #: assets/data/changelog.json
 msgid "Rank shows on the hero: an aura that deepens with each ascension (silver, gold, radiant) and a touch more presence on the map"
 msgstr "Le rang se voit sur le héros : une aura qui s'intensifie à chaque ascension (argentée, dorée, rayonnante) et un peu plus de présence sur la carte"
+
+#: assets/data/changelog.json
+msgid "Rare loot, ore struck loose, a mimic waking, a ruin giving way and the farm animals you shoo all have their own sound now, from Leohpaz's retro RPG library"
+msgstr "Les butins rares, le minerai qui se détache, un mimique qui s'éveille, une ruine qui cède et les animaux de la ferme qu'on chasse ont désormais leur propre son, tiré de la bibliothèque rétro de Leohpaz"
 
 #: assets/data/changelog.json
 msgid "Reaching a new rank is a moment: the world darkens, a shaft of your class's light lifts the hero, the old look burns away into the new, and the rank's name and what it unlocks follow"

@@ -5,8 +5,9 @@ extends Node
 ## was): the place's theme, the fight's or the boss's while something hunts
 ## the hero, a fallen boss's silence; the place's ambience, birds or
 ## crickets, the town's chatter, fire close by, wind or rain underneath
-## (PIX-158, PIX-224); and coins, hurts and heals as they happen. The fight's
-## clock it reads (and keeps) is Foes': hunted_at, hunted_by_boss.
+## (PIX-158, PIX-224), or the place's own bed from the packs (PIX-413); and
+## coins, hurts and heals as they happen. The fight's clock it reads (and
+## keeps) is Foes': hunted_at, hunted_by_boss.
 
 var world: Node
 ## Sound's view of the hero: what changed is heard (coin, heal, hurt).
@@ -18,6 +19,10 @@ var hushed_until := 0.0
 var soundscape_left := 0.0
 ## Open-air maps too high and cold for birdsong: wind instead (PIX-169).
 const WINDY_MAPS := ["frostgate"]
+## Places no songbird sings in (PIX-413: Saltmere and Fernoir had them).
+const SONGLESS := ["coast", "ash", "frost"]
+## The place's own bed keeps quiet now, as the birds do (PIX-413).
+var hushed := false
 ## How hard it must rain before the rain is heard over the birds.
 const RAIN_HEARD := 0.3
 
@@ -81,7 +86,8 @@ func refresh() -> void:
 	# A fallen boss's silence holds a moment before the place's music.
 	if now >= hushed_until and (Sound.track != "victory" or fight != ""):
 		Sound.play_track(Sound.track_for(world.map.id, fight))
-	Sound.set_ambience(Sound.ambience_for(world.map.id))
+	# By the ground underfoot, the Reach's ash or its marsh (PIX-413).
+	Sound.set_ambience(Sound.ambience_for(world.map.id, world.map.region_at(world.player_cell), DayNight.is_night(GameState.world.steps)))
 	# The soundscape changes slowly: twice a second is plenty.
 	soundscape_left -= get_process_delta_time()
 	if soundscape_left <= 0.0:
@@ -90,7 +96,7 @@ func refresh() -> void:
 		var windy: bool = world.map.style == "cave" or world.map.id in WINDY_MAPS
 		# The Kings' Vault breathes the deeper wind (PIX-257): a dungeon's own.
 		var bed := Depths.wind(world.map.id) if windy else ""
-		Sound.set_bed("rain" if raining() else bed)
+		Sound.set_bed("rain" if raining() else bed, hushed)
 
 
 ## What else the hero hears here (PIX-158): birds by day and crickets by
@@ -104,10 +110,13 @@ func _soundscape() -> Array[String]:
 	var bells: int = GameState.progression.bells if world.map.id == "town" else Bells.NONE
 	var burning: bool = world.map.id == "town" and (GameState.progression.prologue != Prologue.DONE or bells == Bells.EMBERS)
 	var outdoors: bool = world.map.id == "town" or (PunyTerrain.is_outdoor(world.map.grid) and not world.map.id.begins_with("town_"))
+	# The square's own bed with them, and before anyone is back (PIX-413).
+	hushed = world.map.id == "town" and (burning or bells != Bells.NONE or GameState.town_tier() < 1)
 	# The birds keep quiet in the rain.
-	if outdoors and not burning and bells == Bells.NONE and world.map.id not in WINDY_MAPS and not raining():
+	if outdoors and not burning and bells == Bells.NONE and Sound.place not in SONGLESS and not raining():
 		out.append("crickets" if DayNight.is_night(GameState.world.steps) else "birds")
-		if world.map.id == "town" and GameState.town_tier() >= 1 and not DayNight.is_night(GameState.world.steps):
+		# The packs' crowd bed is the square's talk where they're installed.
+		if world.map.id == "town" and GameState.town_tier() >= 1 and not DayNight.is_night(GameState.world.steps) and Sound.takes_of("amb_town").is_empty():
 			out.append("chatter")
 	if burning or world.map.id == "town_smith" or _near_camp_fire():
 		out.append("fire")

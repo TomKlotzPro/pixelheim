@@ -35,9 +35,10 @@ icons are missing, collision is the same, and every sound is the game's own.
 Every sound is a moment's event in `assets/data/audio.json` ("events": its
 family and its own takes, a rendered stinger or a blip `sound.gd` makes).
 `assets/audio/paid.json` names, for an event, takes inside Leohpaz's zips;
-`tools/sound_prep.py` reads them out, trims them and brings each to its
-family's loudness, and writes them to the private repo, where they stand in
-for the event's own takes once installed:
+`tools/sound_prep.py` reads them out, cuts them (a tail faded, a bed
+looped) and brings each to its family's loudness, and writes them to the
+private repo, where they stand in for the event's own takes once installed
+(PIX-413: foes' voices, skills' impacts, each place's own bed):
 
 ```sh
 python3 -I godot/tools/sound_prep.py ~/playground/leohpaz-sfx <pixelheim-assets>/retro-rpg/leohpaz/pixelheim

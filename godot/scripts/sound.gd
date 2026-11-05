@@ -21,6 +21,10 @@ extends Node
 ## A family ("families") has its bus, its own voices, its level and the
 ## loudness the prep brings a pack's take to; a jingle or a stinger ducks
 ## the music and the weather under it.
+## PIX-413: the whole library wired in - a foe's own voice by its kind
+## ("voices"), a skill's impact by its theme, a bow's shot and a staff's
+## bolt ("swings"), and each place's own bed from the packs ("places"),
+## quiet under the music, where the game's own has wind or nothing.
 ## Autoload `Sound`.
 
 const FADE_S := 0.35
@@ -71,6 +75,9 @@ var _fading: AudioStreamPlayer
 var _pools := {}
 var _ambient_voices: Array[AudioStreamPlayer] = []
 var track := ""
+## Where the hero's ears are (audio.json's "places": "forest_day", "coast"...).
+var place := ""
+## The place's one-shots, by their renders ("greenwood", "marsh"...).
 var ambience := ""
 var _ambience_clock := 0.0
 var _fade: Tween
@@ -392,8 +399,18 @@ static func paid_takes(list: String) -> Dictionary:
 ## The blow a weapon lands (audio.json's "blows" by its drawing): a blade's
 ## for a sword, an axe, a dagger or none.
 func blow_for(weapon_id: String) -> String:
+	return _by_weapon("blows", weapon_id, "hit_blade")
+
+
+## The swing a weapon makes (PIX-413, "swings"): a bow's shot, a staff's
+## bolt, a blade's swish for the rest.
+func swing_for(weapon_id: String) -> String:
+	return _by_weapon("swings", weapon_id, "swing")
+
+
+func _by_weapon(table: String, weapon_id: String, plain: String) -> String:
 	var sprite := String(Catalog.item(weapon_id).get("sprite", "")) if weapon_id != "" else ""
-	return String(_doc["blows"].get(sprite, "hit_blade"))
+	return String(_doc[table].get(sprite, plain))
 
 
 ## A skill's sound by its theme in the skills pack ("casts": Fire, Light...).
@@ -401,10 +418,32 @@ func cast_for(skill_name: String) -> String:
 	return String(_doc["casts"].get(ItemIcons.skill_theme(skill_name), "cast"))
 
 
-## A foe's fall by its family ("kill_undead"), the plain one without.
-func kill_for(monster_id: String) -> String:
-	var event := "kill_" + Bestiary.family_of(monster_id)
-	return event if _doc["events"].has(event) else "kill"
+## Where a skill lands (PIX-413): its theme's impact ("impact_fire" for
+## "cast_fire"), a spell's plain hit without one.
+func impact_for(skill_name: String) -> String:
+	var event := "impact_" + cast_for(skill_name).trim_prefix("cast_")
+	return event if _doc["events"].has(event) else "hit_spell"
+
+
+## A foe's moment by its family (`event` "kill" gives "kill_undead": its
+## fall; "foe_noticed" its growl, PIX-413), the plain one without.
+func of_family(event: String, monster_id: String) -> String:
+	var own := "%s_%s" % [event, Bestiary.family_of(monster_id)]
+	return own if _doc["events"].has(own) else event
+
+
+## A foe's own voice (PIX-413: audio.json's "voices" by its kind, a frost
+## wolf a wolf's): `what` is "attack", "hurt" or "death"; `plain` for a
+## kind without one.
+func voice_for(monster_id: String, what: String, plain := "") -> String:
+	var event := "%s_%s" % [_doc["voices"].get(monster_id, ""), what]
+	return event if _doc["events"].has(event) else plain
+
+
+## What picking a patch sounds like (PIX-413, "gathers"): ore and glass
+## struck loose, the herbs and reeds pulled.
+func gather_for(item_id: String) -> String:
+	return String(_doc["gathers"].get(item_id, "gather"))
 
 
 ## A step by the ground under it ("steps": grass, dirt, sand, stone, wood,
@@ -543,7 +582,7 @@ func stop_music() -> void:
 ## Silence: music, weather and every stinger still ringing.
 func stop_all() -> void:
 	stop_music()
-	ambience = ""
+	set_ambience("")
 	extras.clear()
 	set_bed("")
 	for voice in _voices() + _ambient_voices:
@@ -556,23 +595,34 @@ func set_extras(names: Array[String]) -> void:
 	extras.assign(names.filter(func(name: String) -> bool: return _doc["ambienceExtras"].has(name)))
 
 
-## A looping bed under the ambience ("wind", "deepwind", or "" for none),
-## faded in and out.
-func set_bed(name: String) -> void:
-	if name not in _doc["beds"]:
+## A looping bed under the ambience, faded in and out: the place's own from
+## the packs where they're installed (PIX-413: its "bed", an event of the
+## "ambience" family, quiet under the music), else `name`, the game's own
+## ("wind", "deepwind", or "" for none). The rain is always the rain's;
+## `hushed` keeps the place's quiet (a town burning, a night of bells).
+func set_bed(name: String, hushed := false) -> void:
+	var own := String(_doc["places"].get(place, {}).get("bed", ""))
+	if name != "rain" and not hushed and not takes_of(own).is_empty():
+		name = own
+	elif name not in _doc["beds"]:
 		name = ""
 	if name == bed:
 		return
 	bed = name
 	if _bed_fade != null:
 		_bed_fade.kill()
+	# Nothing to fade out or in: a tween with nothing to do is an error.
+	if name == "" and not _bed.playing:
+		return
 	_bed_fade = create_tween()
 	if _bed.playing:
 		_bed_fade.tween_property(_bed, "volume_db", -40.0, FADE_S * 2)
 		_bed_fade.tween_callback(_bed.stop)
 	if name == "":
 		return
-	var stream := _stream("res://assets/audio/ambience/bed_%s.wav" % name)
+	var take := String(takes_of(name)[0]) if name == own else ""
+	var stream := _take(take) if take != "" else _stream("res://assets/audio/ambience/bed_%s.wav" % name)
+	var level := float(_doc["families"]["ambience"]["db"]) if take != "" else level_of("ambience/bed_" + name)
 	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	stream.loop_begin = 0
 	stream.loop_end = roundi(stream.get_length() * stream.mix_rate)
@@ -581,12 +631,15 @@ func set_bed(name: String) -> void:
 		_bed.volume_db = -40.0
 		_bed.play()
 	)
-	_bed_fade.tween_property(_bed, "volume_db", level_of("ambience/bed_" + name), FADE_S * 3)
+	_bed_fade.tween_property(_bed, "volume_db", level, FADE_S * 3)
 
 
-## The weather of a place: "greenwood", "deepforest", "marsh", "indoor" or "".
-func set_ambience(place: String) -> void:
-	ambience = place if _doc["ambience"].has(place) else ""
+## Where the hero's ears are (audio.json's "places": "forest_day", "coast",
+## or "" for nowhere): its one-shots ("sprinkle", one of "ambience"'s
+## renders) start at once, its bed with the next `set_bed`.
+func set_ambience(name: String) -> void:
+	place = name if _doc["places"].has(name) else ""
+	ambience = String(_doc["places"].get(place, {}).get("sprinkle", ""))
 
 
 func _process(delta: float) -> void:
@@ -636,13 +689,36 @@ static func track_for(map_id: String, fight: String) -> String:
 	return "interior"
 
 
-## Where the hero's ears are (ambienceForState).
-static func ambience_for(map_id: String) -> String:
+## Where the hero's ears are (ambienceForState): a key of audio.json's
+## "places". PIX-413: the sea at Saltmere and the ash at Fernoir, never
+## birdsong; the wind at the Frostgate and on the mountain road, never a
+## hearth; the Reach by the ground underfoot (`region`: its ash, its marsh);
+## the woods, the marsh and the town by day or `night`; the mines' shafts
+## and the caves their own.
+static func ambience_for(map_id: String, region := "", night := false) -> String:
 	match map_id:
-		"overworld", "town", "demo", "saltmere", "blackiron", "greyhold":
-			return "greenwood"
+		"saltmere":
+			return "coast"
+		"blackiron", "mountain_road":
+			return "ash"
+		"frostgate":
+			return "frost"
 		"deepwood":
-			return "deepforest"
+			return "deepforest_night" if night else "deepforest"
 		"mirefen":
-			return "marsh"
+			return "marsh_night" if night else "marsh"
+		"town":
+			return "forest_night" if night else "town"
+		"overworld", "demo", "greyhold":
+			match region:
+				"ash":
+					return "ash"
+				"marsh":
+					return "marsh_night" if night else "marsh"
+			return "forest_night" if night else "forest_day"
+	if map_id.begins_with("shafts"):
+		return "mines"
+	# Every dungeon's floors but the Kings' Vault's halls (its deeper wind).
+	if not Depths.floor_of(map_id).is_empty() and not map_id.begins_with("vault"):
+		return "cave"
 	return "indoor"

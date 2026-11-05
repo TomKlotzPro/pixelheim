@@ -123,8 +123,8 @@ func interact() -> void:
 		world.messages.flash(cast["message"])
 		world.messages.log_lines(cast["lines"])
 		world.fx.show_gains(cast["gains"], MapView.center(faced) + WorldFx.OVER_THING)
-		if not Gains.is_empty(cast["gains"]):
-			Sound.play("fish_catch")
+		var caught := not Gains.is_empty(cast["gains"])
+		Sound.play("fish_catch" if caught else "fish_nothing")
 		return
 	# The projects board on the square opens the village's ledger (PIX-145);
 	# what it built, the town shows off as it closes (PIX-147).
@@ -661,7 +661,7 @@ func _gather_at(cell: Vector2i) -> void:
 	var picked := GameState.spoils.gather(patch["id"], patch["item"])
 	if Gains.is_empty(picked["gains"]):
 		return
-	Sound.play("gather")
+	Sound.play(Sound.gather_for(String(patch["item"])))
 	world.messages.log_lines(picked["lines"])
 	world.fx.show_gains(picked["gains"], MapView.center(cell) + WorldFx.OVER_HERO)
 	world.view.refresh_patches()

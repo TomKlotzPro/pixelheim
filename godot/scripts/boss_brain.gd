@@ -77,10 +77,14 @@ func _cast(move: String) -> void:
 	enemy.velocity = Vector2.ZERO
 	var hero: Vector2 = world.player.global_position
 	var at: Vector2 = enemy.global_position
+	# Its sound warns with the mark (PIX-413): the takes' bodies (some 1.0 to
+	# 1.5 s) span the tell (0.9 to 1.1 s), so the fire roars as it lands.
 	match String(attack["shape"]):
 		"line":
+			Sound.play("dragon_breath")
 			_tell(Telegraph.band(at, hero, float(attack["length"]) * TILE, float(attack["width"]) * TILE), attack)
 		"circles":
+			Sound.play("dragon_embers")
 			for i in int(attack["count"]):
 				var spot := hero if i == 0 else hero + Vector2(randf_range(-1, 1), randf_range(-1, 1)) * float(attack["spread"]) * TILE
 				_tell(Telegraph.circle(spot, float(attack["radius"]) * TILE), attack)

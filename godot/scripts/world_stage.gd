@@ -81,6 +81,7 @@ func watch_continued() -> void:
 ## breath he says what it means (`lines`, his).
 func mountain_shakes(npc: Dictionary, lines: Array) -> void:
 	world.camera_rig.shake(8.0, 1.4)
+	Sound.play("rumble")
 	Sound.play("distant_roar")
 	await get_tree().create_timer(1.0).timeout
 	if not is_inside_tree():

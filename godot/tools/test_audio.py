@@ -66,6 +66,12 @@ class AudioTest(unittest.TestCase):
         # tables Sound chooses by) is one a typo orphaned.
         chosen = set(DOC["blows"].values()) | set(DOC["casts"].values()) | set(DOC["steps"].values())
         chosen |= {"hit_blade", "kill", "step_dirt", "cast"} | {e for e in DOC["events"] if e.startswith("kill_")}
+        # PIX-413: a weapon's swing, a skill's impact, a foe's growl and voice,
+        # a patch's, an animal's call, a place's bed.
+        chosen |= set(DOC["swings"].values()) | set(DOC["gathers"].values()) | {"swing", "gather", "foe_bite"}
+        chosen |= {e for e in DOC["events"] if e.startswith(("impact_", "foe_noticed_", "animal_"))}
+        chosen |= {"%s_%s" % (kind, what) for kind in DOC["voices"].values() for what in ("attack", "hurt", "death")}
+        chosen |= {place["bed"] for place in DOC["places"].values() if "bed" in place}
         self.assertEqual(sorted(set(DOC["events"]) - named - chosen), [], "events no moment asks for")
 
     def test_every_theme_a_cutscene_plays_exists(self):
@@ -113,6 +119,8 @@ class AudioTest(unittest.TestCase):
         for event, names in PAID.get("events", {}).items():
             family = DOC["families"][DOC["events"][event]["family"]]
             for name in names:
+                # PIX-413: none over its family's peak, as the prep holds them.
+                self.assertLessEqual(PAID["takes"][name]["peak"], family["peak"] + 0.1, "%s: over %s's peak" % (name, event))
                 loudest["paid/" + name] = PAID["takes"][name]["peak"] + family["db"] + (vary if "feet" not in family else 0)
         self.assertGreater(len(loudest), 30)
         for take, peak in loudest.items():

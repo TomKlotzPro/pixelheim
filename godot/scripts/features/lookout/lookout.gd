@@ -87,6 +87,7 @@ static func use(world: Node2D, cell: Vector2i) -> bool:
 	if not DayNight.is_night(GameState.world.steps):
 		world.messages.flash(Text.t("By day the Reach is only ash and roads from up here. Come back after dark, when the lamps are lit."))
 		return true
+	Sound.play("spyglass")
 	var screen := LookoutScreen.new()
 	screen.world = world
 	world.add_child(screen)
