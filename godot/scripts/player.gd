@@ -508,6 +508,7 @@ func respawn(at: Vector2) -> void:
 func _die() -> void:
 	dead = true
 	Sound.play("defeat")
+	Sound.play("hero_death")
 	_end_swing()
 	_play("death")
 	world.on_player_died()

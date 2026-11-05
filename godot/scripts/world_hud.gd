@@ -373,6 +373,8 @@ func name_place(map: MapData, cell: Vector2i, quiet := false) -> void:
 		return
 	_drop_place_card()
 	place_card = title_card(card[0], card[1])
+	# Silent until a take fits (PIX-414: no short clean one in the packs).
+	Sound.play("place_card")
 	_place_named = card[0]
 
 

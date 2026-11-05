@@ -437,11 +437,14 @@ homecoming | --map town --hunted tidecaller reveal | open=reveal_screen home=wen
 # (PIX-292). PIX-377: where a way out rises from where a boss fell, its
 # share leaves it the health it had before monster health grew (the
 # Tidecaller 11, the Seam Warden 18, Rimefang 31, the Captain 26 over his
-# yield), so it falls where it did.
-tidecaller-bar | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.007 --wait 2.5 | map=seacave_grotto fell=1 bossbar=none shortcut=open wayout=\(30, 4\);\(25, 12\) | dungeon combat
+# yield), so it falls where it did. PIX-414: the grotto's drips thrown on
+# Sound's own dice, no longer the game's, he falls a cell further west, at
+# 24,12 (tidecaller-stair-still took either already), and out by it the
+# hero's second step right walks on a cell along the beach, to 10,25.
+tidecaller-bar | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.007 --wait 2.5 | map=seacave_grotto fell=1 bossbar=none shortcut=open wayout=\(30, 4\);\(2[45], 12\) | dungeon combat
 tidecaller-tick | --map seacave_grotto --at 23,12 fight --foe tidecaller --foe-left 0.2 --foe-ail poison --wait 3 | map=seacave_grotto fell=1 bossbar=none | dungeon combat
 tidecaller-felled | --map seacave_grotto --at 23,12 fight hurt --foe tidecaller --foe-left 0.5 die --wait 0.5 | map=town_inn bossbar=none | dungeon combat
-tidecaller-out | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.007 --then-walk r,r --wait 0.4 | map=saltmere cell=\([89], 2[45]\) bossbar=none | dungeon travel combat
+tidecaller-out | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.007 --then-walk r,r --wait 0.4 | map=saltmere cell=\(10, 2[45]\) bossbar=none | dungeon travel combat
 # The way out where the Tidecaller fell rises out of the floor (PIX-339,
 # Tom: « ça fait bizarre de tuer un boss et qu'un escalier pop »): it waits
 # out his fall and his spoils, then the floor cracks and the stair forms

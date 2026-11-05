@@ -98,7 +98,13 @@ static func next_shower(steps: float) -> float:
 static func rains_in(map: MapData, air: String) -> bool:
 	if map == null or not Lights.under_sky(map) or air in ["ash", "frost", "mire"]:
 		return false
-	return not (map.id == "town" and (GameState.progression.prologue != Prologue.DONE or GameState.progression.bells != Bells.NONE))
+	return map.id != "town" or village_rains()
+
+
+## Whether it may rain on the village: not the night it burns, nor the
+## night it holds (PIX-253 step 9); its houses' roofs hear it (PIX-414).
+static func village_rains() -> bool:
+	return GameState.progression.prologue == Prologue.DONE and GameState.progression.bells == Bells.NONE
 
 
 ## The colour mood of `weights` (air -> 0..1) at darkness `dark`: [tint,

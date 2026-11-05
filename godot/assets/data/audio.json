@@ -12,7 +12,8 @@
     "loot": {"bus": "SFX", "voices": 3, "db": 0, "peak": -18, "loudness": -37, "rate": 22050},
     "world": {"bus": "SFX", "voices": 3, "db": 0, "peak": -18, "loudness": -38, "rate": 22050},
     "jingle": {"bus": "Jingle", "voices": 2, "db": 0, "duck": true, "peak": -16, "loudness": -31, "rate": 22050},
-    "ambience": {"bus": "Ambience", "voices": 1, "db": 0, "peak": -24, "loudness": -40, "rate": 16000}
+    "ambience": {"bus": "Ambience", "voices": 1, "db": 0, "peak": -24, "loudness": -40, "rate": 16000},
+    "sprinkle": {"bus": "Ambience", "voices": 2, "db": 0, "peak": -30, "loudness": -50, "rate": 22050}
   },
   "events": {
     "ui_open": {"family": "ui", "takes": ["blip/open"]},
@@ -25,6 +26,7 @@
     "quest_taken": {"family": "ui", "takes": ["blip/confirm"]},
     "ui_deny": {"family": "ui", "takes": ["blip/deny"]},
     "skill_refused": {"family": "ui", "takes": ["blip/deny"]},
+    "place_card": {"family": "ui", "takes": []},
     "ui_volume": {"family": "loot", "takes": ["sfx/coin"]},
     "skill_docked": {"family": "ui", "takes": ["sfx/learn"]},
     "step_grass": {"family": "step", "takes": ["sfx/step"]},
@@ -61,6 +63,7 @@
     "volley": {"family": "swing", "takes": ["blip/loose"]},
     "foe_bite": {"family": "swing", "takes": []},
     "hurt": {"family": "hurt", "takes": ["sfx/hurt"]},
+    "hero_death": {"family": "hurt", "takes": []},
     "cast": {"family": "magic", "takes": ["blip/cast"]},
     "cast_melee": {"family": "magic", "takes": ["blip/cast"]},
     "cast_martial": {"family": "magic", "takes": ["blip/cast"]},
@@ -207,6 +210,7 @@
     "shortcut_open": {"family": "world", "takes": ["sfx/door"]},
     "travel": {"family": "world", "takes": ["sfx/travel"]},
     "stair_rise": {"family": "world", "takes": ["sfx/stairRise"]},
+    "stairs": {"family": "world", "takes": []},
     "way_out": {"family": "world", "takes": ["blip/wayout"]},
     "alarm_bell": {"family": "world", "takes": ["sfx/bell"]},
     "bell_ring": {"family": "world", "takes": ["sfx/bell"]},
@@ -243,7 +247,16 @@
     "amb_frost": {"family": "ambience", "takes": []},
     "amb_mines": {"family": "ambience", "takes": []},
     "amb_cave": {"family": "ambience", "takes": []},
-    "amb_marsh_night": {"family": "ambience", "takes": []}
+    "amb_marsh_night": {"family": "ambience", "takes": []},
+    "amb_rain": {"family": "ambience", "takes": []},
+    "amb_rain_forest": {"family": "ambience", "takes": []},
+    "amb_rain_inside": {"family": "ambience", "takes": []},
+    "amb_crypt": {"family": "ambience", "takes": []},
+    "amb_ice_cave": {"family": "ambience", "takes": []},
+    "amb_smithy": {"family": "ambience", "takes": []},
+    "amb_river": {"family": "ambience", "takes": []},
+    "cave_drip": {"family": "sprinkle", "takes": []},
+    "cave_stones": {"family": "sprinkle", "takes": []}
   },
   "swings": {
     "bow": "shoot",
@@ -300,8 +313,15 @@
     "coast": {"bed": "amb_coast"},
     "ash": {"bed": "amb_ash"},
     "frost": {"bed": "amb_frost"},
-    "mines": {"sprinkle": "indoor", "bed": "amb_mines"},
-    "cave": {"sprinkle": "indoor", "bed": "amb_cave"},
+    "mines": {"sprinkle": "cave", "bed": "amb_mines"},
+    "cave": {"sprinkle": "cave", "bed": "amb_cave"},
+    "crypt": {"sprinkle": "cave", "bed": "amb_crypt"},
+    "ice_cave": {"sprinkle": "cave", "bed": "amb_ice_cave"},
+    "smithy": {"sprinkle": "indoor", "bed": "amb_smithy"},
+    "river": {"sprinkle": "greenwood", "bed": "amb_river"},
+    "rain": {"bed": "amb_rain"},
+    "rain_forest": {"bed": "amb_rain_forest"},
+    "rain_inside": {"sprinkle": "indoor", "bed": "amb_rain_inside"},
     "indoor": {"sprinkle": "indoor"}
   },
   "blows": {
@@ -446,6 +466,16 @@
       {
         "chance": 0.04,
         "variants": 4
+      }
+    ],
+    "cave": [
+      {
+        "chance": 0.18,
+        "event": "cave_drip"
+      },
+      {
+        "chance": 0.03,
+        "event": "cave_stones"
       }
     ]
   },
