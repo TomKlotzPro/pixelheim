@@ -26,7 +26,8 @@ by `tools/ui_kit_prep.gd` and named in `assets/puny/ui_kit.json`, into
 `godot/assets/puny/gegx/`, and ninth-jedi's paid Farm Animals (the town's
 hens, sheep, pigs and cattle, `retro-rpg/ninth-jedi/farm-animals/`, PIX-387)
 into `godot/assets/puny/animals/`, and Leohpaz's paid sound packs as the
-game plays them (`retro-rpg/leohpaz/pixelheim/`, PIX-411) into
+game plays them (`retro-rpg/leohpaz/pixelheim/`, PIX-411) and his RPG music
+(`retro-rpg/leohpaz/music/`, PIX-416) into
 `godot/assets/audio/paid/` (all git-ignored) with your GitHub login; the deploy and the Godot CI run the same script on a checkout
 made with a read-only deploy key (secret `PIXELHEIM_ASSETS_KEY`). Without it
 the game runs on Shade's free art alone: the town's houses, props and paid
@@ -42,6 +43,19 @@ private repo, where they stand in for the event's own takes once installed
 
 ```sh
 python3 -I godot/tools/sound_prep.py ~/playground/leohpaz-sfx <pixelheim-assets>/retro-rpg/leohpaz/pixelheim
+```
+
+The music is a track per place, fight and story theme in `audio.json`'s
+"tracks" and "themes", the game's own chiptune WAVs in `assets/audio/music/`.
+`assets/audio/paid_music.json` names, for each, the retro track it plays from
+Leohpaz's RPG music bundle (with its runner-up and why); `tools/music_prep.py`
+reads them out, levels them to the music's loudness and writes them as Ogg
+Vorbis to the private repo, where they stand in for the game's own once
+installed (PIX-416). A place with no WAV of its own (the inn, the coast, the
+crypts...) plays its "fallback"'s without them:
+
+```sh
+python3 -I godot/tools/music_prep.py ~/playground/leohpaz-music/zips <pixelheim-assets>/retro-rpg/leohpaz/music
 ```
 
 Combat runs on the game's numbers since its first edition: the hero's real HP

@@ -28,6 +28,11 @@ extends Node
 ## PIX-414: the rain, the river, the forge, a crypt's air and the ice
 ## cave's wind as places with beds of their own, and a cave's drips and
 ## stones as its sprinkle, thrown on Sound's own dice.
+## PIX-416: the music from Leohpaz's RPG music bundle where it's installed
+## (assets/audio/paid/music.json, tools/music_prep.py), the game's own
+## chiptune without it; the places that had no track of their own (the inn,
+## the crypts, the ice cave, the coast, the Frostgate, Greyhold, Fernoir, the
+## mountain road, the dragon) play their "fallback"'s then.
 ## Autoload `Sound`.
 
 const FADE_S := 0.35
@@ -68,6 +73,10 @@ const COMBAT_LINGER_S := 3.0
 ## Where the packs' prepared takes are installed (scripts/fetch-private-art.sh),
 ## with the list tools/sound_prep.py wrote of them.
 const PAID := "res://assets/audio/paid/takes.json"
+## The bundle's tracks installed beside them, with tools/music_prep.py's list
+## (PIX-416), and the rate it wrote them at.
+const PAID_MUSIC := "res://assets/audio/paid/music.json"
+const PAID_MUSIC_RATE := 44100.0
 
 var _doc := {}
 var _streams := {}
@@ -78,6 +87,10 @@ var _fading: AudioStreamPlayer
 var _pools := {}
 var _ambient_voices: Array[AudioStreamPlayer] = []
 var track := ""
+## The music playing for `track`: the slot itself, or the one it falls back
+## on without the bundle (PIX-416: Saltmere's "coast" is the Reach's
+## "world"), so a place sharing the music playing doesn't start it over.
+var _heard := ""
 ## Where the hero's ears are (audio.json's "places": "forest_day", "coast"...).
 var place := ""
 ## The place's one-shots, by their renders ("greenwood", "marsh"...).
@@ -99,6 +112,9 @@ var _began := {}
 var _foot := 0
 ## The packs' takes installed, by event ("paid/<name>"); {} without them.
 var _paid := {}
+## The bundle's tracks installed, by slot ("town", "theme_dawn"): each
+## one's path and loopBegin; {} without them (PIX-416).
+var _paid_music := {}
 ## The packs' takes held back though they're here (the harness's `cc0`, as
 ## the paid art is): the run hears what a build without them hears.
 var withheld := false
@@ -155,6 +171,7 @@ func _ready() -> void:
 	for player in [_music, _fading]:
 		player.finished.connect(_theme_over.bind(player))
 	_paid = paid_takes(PAID)
+	_paid_music = paid_music(PAID_MUSIC)
 	apply_volumes()
 
 
@@ -399,6 +416,24 @@ static func paid_takes(list: String) -> Dictionary:
 	return out
 
 
+## The bundle's tracks a prepared list names (tools/music_prep.py's
+## music.json, {"tracks": {slot: {"file", "loopBegin", ...}}}), by slot: only
+## those whose file is here and whose slot this build has (PIX-416: the
+## private repo is pushed before the PR naming a new slot merges), {}
+## without the list.
+func paid_music(list: String) -> Dictionary:
+	if not FileAccess.file_exists(list):
+		return {}
+	var out := {}
+	var tracks: Dictionary = SaveCodec.parse_json(FileAccess.get_file_as_string(list)).get("tracks", {})
+	for slot: String in tracks:
+		var path := "res://assets/audio/paid/%s" % tracks[slot]["file"]
+		var known: bool = _doc["tracks"].has(slot) or (slot.begins_with("theme_") and _doc["themes"].has(slot.trim_prefix("theme_")))
+		if known and ResourceLoader.exists(path):
+			out[slot] = {"path": path, "loopBegin": float(tracks[slot].get("loopBegin", 0.0))}
+	return out
+
+
 ## The blow a weapon lands (audio.json's "blows" by its drawing): a blade's
 ## for a sword, an axe, a dagger or none.
 func blow_for(weapon_id: String) -> String:
@@ -505,29 +540,75 @@ func _set_ducked(db: float) -> void:
 ## the frame the line is crossed in).
 func ready_track(name: String) -> void:
 	if _doc.has("tracks") and _doc["tracks"].has(name):
-		_stream("res://assets/audio/music/%s.wav" % name)
+		_music_of(heard_as(name), true)
+
+
+## The music a slot plays (PIX-416): its own, the bundle's where it's
+## installed and not held back, else the game's file; a slot the game has
+## no file for (the inn, the coast...) its "fallback"'s.
+func heard_as(name: String) -> String:
+	if _bundled(name):
+		return name
+	return String(_doc["tracks"][name].get("fallback", name))
+
+
+## Whether `key` ("town", "theme_dawn") plays the bundle's track.
+func _bundled(key: String) -> bool:
+	return not withheld and _paid_music.has(key)
 
 
 ## Crossfades to a place's or a fight's theme, a place's taken up where it
 ## was left ("resume"), round and round from its "loopBegin" (after an
-## intro) to its end.
+## intro) to its end. A slot whose music is already playing (a place sharing
+## its fallback's, PIX-416) carries on.
 func play_track(name: String) -> void:
 	if name == track or not _doc["tracks"].has(name):
 		return
 	_keep_place()
 	track = name
-	var info: Dictionary = _doc["tracks"][name]
-	var stream := _stream("res://assets/audio/music/%s.wav" % name)
+	var heard := heard_as(name)
+	if heard == _heard and _music.playing:
+		return
+	_heard = heard
+	_crossfade(_music_of(heard, true), _music_level(heard), float(_resume_at.get(heard, 0.0)))
+
+
+## A track's or a story theme's music (`key`: "town", "theme_dawn"): the
+## bundle's where it's installed (PIX-416), looping from its loopBegin when
+## `loop`; else the game's WAV, looping from its "loopBegin" to its
+## "seconds".
+func _music_of(key: String, loop: bool) -> AudioStream:
+	if _bundled(key):
+		var path: String = _paid_music[key]["path"]
+		if not _streams.has(path):
+			_streams[path] = load(path)
+		var ogg: AudioStreamOggVorbis = _streams[path]
+		ogg.loop = loop
+		# Godot lands a loop on the sample its offset falls in, rounding down:
+		# half a sample on, it lands on the one the prep meant.
+		ogg.loop_offset = float(_paid_music[key]["loopBegin"]) + 0.5 / PAID_MUSIC_RATE
+		return ogg
+	var stream := _stream("res://assets/audio/music/%s.wav" % key)
+	if not loop:
+		stream.loop_mode = AudioStreamWAV.LOOP_DISABLED
+		return stream
+	var info: Dictionary = _doc["tracks"][key]
 	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	stream.loop_begin = roundi(float(info.get("loopBegin", 0.0)) * stream.mix_rate)
 	stream.loop_end = roundi(float(info["seconds"]) * stream.mix_rate)
-	_crossfade(stream, level_of("music/" + name), float(_resume_at.get(name, 0.0)))
+	return stream
+
+
+## The dB a track or a theme plays at: the game's file's own level, the
+## bundle's none (the prep brought it to the music's loudness, PIX-416).
+func _music_level(key: String) -> float:
+	return 0.0 if _bundled(key) else level_of("music/" + key)
 
 
 ## Notes where a place's track is, before it gives way.
 func _keep_place() -> void:
-	if _music.playing and _doc["tracks"].get(track, {}).get("resume", false):
-		_resume_at[track] = _music.get_playback_position()
+	if _music.playing and _doc["tracks"].get(_heard, {}).get("resume", false):
+		_resume_at[_heard] = _music.get_playback_position()
 
 
 ## A story theme (PIX-158: a boss's intro, the dawn, an ending), once
@@ -537,16 +618,16 @@ func play_theme(name: String, then := "") -> void:
 		return
 	_keep_place()
 	track = "theme:" + name
+	_heard = track
 	_after_theme = then
-	var stream := _stream("res://assets/audio/music/theme_%s.wav" % name)
-	stream.loop_mode = AudioStreamWAV.LOOP_DISABLED
-	_crossfade(stream, level_of("music/theme_" + name))
+	_crossfade(_music_of("theme_" + name, false), _music_level("theme_" + name))
 
 
 func _theme_over(player: AudioStreamPlayer) -> void:
 	if player != _music or not track.begins_with("theme:"):
 		return
 	track = ""
+	_heard = ""
 	if _after_theme != "":
 		play_track(_after_theme)
 	_after_theme = ""
@@ -555,7 +636,7 @@ func _theme_over(player: AudioStreamPlayer) -> void:
 ## The new theme comes in from `from` seconds as the old one goes, together,
 ## each on an equal-power curve: faded in dB, the two sat near -20 dB
 ## halfway, a dip of some 17 dB in every change of place.
-func _crossfade(stream: AudioStreamWAV, level: float, from := 0.0) -> void:
+func _crossfade(stream: AudioStream, level: float, from := 0.0) -> void:
 	if _fade != null:
 		_fade.kill()
 	var outgoing := _music
@@ -578,6 +659,7 @@ func _crossfade(stream: AudioStreamWAV, level: float, from := 0.0) -> void:
 func stop_music() -> void:
 	_keep_place()
 	track = ""
+	_heard = ""
 	_music.stop()
 	_fading.stop()
 
@@ -691,18 +773,30 @@ func _ambient_file(path: String, level: float) -> void:
 ## Which theme a moment deserves (trackForState): places, then a fight on top.
 ## `fight` is "" (none), "battle" or "boss".
 static func track_for(map_id: String, fight: String) -> String:
+	# The one boss the square ever holds is the Night of Bells' dragon (PIX-416).
+	if fight == "boss" and map_id == "town":
+		return "dragon"
 	if fight != "":
 		return fight
 	# Every dungeon's floors play the way down (PIX-255; the Kings' Vault's
-	# too, PIX-257).
-	if not Depths.floor_of(map_id).is_empty():
-		return "descent"
-	match map_id:
-		"deepwood", "mirefen", "town":
-			return map_id
-		"overworld", "demo", "saltmere", "blackiron", "greyhold", "frostgate":
-			return "world"
-	return "interior"
+	# too, PIX-257), the crypts and the ice cave their own (PIX-416).
+	var dungeon := String(Depths.floor_of(map_id).get("dungeon", ""))
+	if dungeon != "":
+		return String(DUNGEON_TRACKS.get(dungeon, "descent"))
+	return String(PLACE_TRACKS.get(map_id, "interior"))
+
+
+## Each place's track (track_for), "interior" for the rest: PIX-416 gave the
+## coast, the Frostgate, Greyhold, Fernoir, the mountain road and the inn
+## their own, each its "fallback"'s (the Reach's, the rooms') without the
+## bundle.
+const PLACE_TRACKS := {
+	"town": "town", "deepwood": "deepwood", "mirefen": "mirefen", "overworld": "world", "demo": "world",
+	"saltmere": "coast", "frostgate": "frost", "greyhold": "greyhold", "blackiron": "fernoir",
+	"mountain_road": "mountain", "town_inn": "inn",
+}
+## A dungeon's floors' track where it isn't the way down's (PIX-416).
+const DUNGEON_TRACKS := {"cellars": "crypt", "vault": "crypt", "icecave": "icecave"}
 
 
 ## Where the hero's ears are (ambienceForState): a key of audio.json's

@@ -4,7 +4,9 @@ extends GutTest
 ## (trackForState, ambienceForState); the sound pass's renders (PIX-158) too,
 ## with its themes, extras and beds. PIX-411: every moment an event of its
 ## own, its takes the game's or the packs', the music stepping back under a
-## jingle and taken up where it was left, a step for every ground.
+## jingle and taken up where it was left, a step for every ground. PIX-416:
+## the music from Leohpaz's bundle where it's installed, every slot playing
+## something without it, the loops landing where the prep meant.
 
 const DOC := "res://assets/data/audio.json"
 
@@ -22,15 +24,18 @@ func test_every_rendered_sound_is_shipped() -> void:
 				stingers[take] = true
 				assert_true(ResourceLoader.exists("res://assets/audio/%s.wav" % take), "%s: %s" % [event, take])
 	for track: String in doc["tracks"]:
-		assert_true(ResourceLoader.exists("res://assets/audio/music/%s.wav" % track), track)
-		assert_gt(float(doc["tracks"][track]["seconds"]), 1.0)
+		# PIX-416: a slot the game has no render for plays one that has.
+		var own := String(doc["tracks"][track].get("fallback", track))
+		assert_false(doc["tracks"][own].has("fallback"), "%s falls back on a render" % track)
+		assert_true(ResourceLoader.exists("res://assets/audio/music/%s.wav" % own), track)
+		assert_gt(float(doc["tracks"][own]["seconds"]), 1.0)
 	for place: String in doc["ambience"]:
 		for index in doc["ambience"][place].size():
 			# A one-shot the packs fill is an event's, not a render (PIX-414).
 			for variant in int(doc["ambience"][place][index].get("variants", 0)):
 				assert_true(ResourceLoader.exists("res://assets/audio/ambience/%s_%d_%d.wav" % [place, index, variant]))
 	assert_eq(stingers.size(), 22, "the web's 17 SFX, then the dodge, the roar and the bounty (PIX-158), Teo's bell (PIX-253 step 9), and a way out rising where a boss fell (PIX-339), every one some moment's")
-	assert_eq(doc["tracks"].size(), 10)
+	assert_eq(doc["tracks"].size(), 19, "the web's 10, then nine places with their own in the bundle (PIX-416)")
 
 
 ## The sound pass (PIX-158): every render tools/synth.py makes is shipped.
@@ -50,6 +55,7 @@ func test_the_newer_sounds_are_shipped() -> void:
 
 
 func test_a_theme_plays_once_then_hands_over() -> void:
+	Sound.withheld = true
 	Sound.play_theme("dawn", "victory")
 	assert_eq(Sound.track, "theme:dawn")
 	var stream := load("res://assets/audio/music/theme_dawn.wav") as AudioStreamWAV
@@ -142,11 +148,122 @@ func test_places_and_fights_choose_the_webs_themes() -> void:
 	assert_eq(Sound.track_for("town", ""), "town")
 	assert_eq(Sound.track_for("overworld", ""), "world")
 	assert_eq(Sound.track_for("deepwood", ""), "deepwood")
-	assert_eq(Sound.track_for("town_inn", ""), "interior")
+	assert_eq(Sound.track_for("town_shop", ""), "interior")
 	assert_eq(Sound.track_for("seacave_galleries", ""), "descent", "below ground")
-	assert_eq(Sound.track_for("vault_3", ""), "descent", "the Kings' Vault too (PIX-257)")
+	assert_eq(Sound.track_for("shafts", ""), "descent")
 	assert_eq(Sound.track_for("overworld", "battle"), "battle", "a hunt takes over")
 	assert_eq(Sound.track_for("vault_5", "boss"), "boss")
+
+
+## PIX-416: a place with an identity of its own has its own slot, which
+## plays its fallback's music without the bundle.
+func test_places_with_their_own_music() -> void:
+	var expected := {
+		"saltmere": "coast", "frostgate": "frost", "greyhold": "greyhold", "blackiron": "fernoir",
+		"mountain_road": "mountain", "town_inn": "inn", "cellars_crypt": "crypt", "vault_3": "crypt",
+		"icecave_lake": "icecave", "keep": "interior", "observatory": "interior",
+	}
+	for map_id: String in expected:
+		assert_eq(Sound.track_for(map_id, ""), expected[map_id], map_id)
+	assert_eq(Sound.track_for("town", "boss"), "dragon", "the Night of Bells' dragon on the square")
+	assert_eq(Sound.track_for("town", "battle"), "battle")
+	Sound.withheld = true
+	assert_eq(Sound.heard_as("coast"), "world", "the Reach's chiptune without the bundle")
+	assert_eq(Sound.heard_as("crypt"), "descent")
+	assert_eq(Sound.heard_as("dragon"), "boss")
+	assert_eq(Sound.heard_as("town"), "town")
+
+
+## PIX-416: every slot and theme plays something, the bundle's track where
+## it's installed and the game's WAV without it (or held back).
+func test_every_slot_resolves_with_the_bundle_and_without() -> void:
+	var doc: Dictionary = SaveCodec.parse_json(FileAccess.get_file_as_string(DOC))
+	var keys: Array[String] = []
+	for name: String in doc["tracks"]:
+		keys.append(name)
+	for name: String in doc["themes"]:
+		keys.append("theme_" + name)
+	for held: bool in [true, false]:
+		Sound.withheld = held
+		for key in keys:
+			var looped := not key.begins_with("theme_")
+			var heard := Sound.heard_as(key) if looped else key
+			var stream := Sound._music_of(heard, looped)
+			if Sound._bundled(heard):
+				assert_true(stream is AudioStreamOggVorbis, key)
+				assert_eq((stream as AudioStreamOggVorbis).loop, looped, key)
+			else:
+				assert_true(stream is AudioStreamWAV, "%s: the game's own %s" % [key, heard])
+			assert_gt(stream.get_length(), 1.0, key)
+	if not FileAccess.file_exists(Sound.PAID_MUSIC):
+		pending("the bundle isn't installed (scripts/fetch-private-art.sh)")
+		return
+	for key in keys:
+		assert_true(Sound._paid_music.has(key), "%s: the bundle has a track for it" % key)
+
+
+## PIX-416: a place sharing the music already playing (its fallback's,
+## without the bundle) carries on with it, from where it is.
+func test_a_slot_sharing_the_music_playing_carries_on() -> void:
+	Sound.withheld = true
+	Sound.stop_music()
+	Sound.play_track("world")
+	var playing := Sound._music
+	Sound.play_track("coast")
+	assert_eq(Sound.track, "coast")
+	assert_eq(Sound._music, playing, "no crossfade into the same music")
+	assert_true(playing.playing)
+	Sound.play_track("town")
+	Sound._fade.custom_step(Sound.CROSSFADE_S + 0.1)
+	assert_eq(Sound._heard, "town")
+	Sound.stop_music()
+	assert_eq(Sound._heard, "")
+	Sound._resume_at.clear()
+
+
+## PIX-416: the private repo may run ahead of this build: a slot it doesn't
+## have, or a file that isn't here, is left out.
+func test_the_bundles_list_takes_only_what_this_build_plays() -> void:
+	var list := "user://music_list_test.json"
+	var file := FileAccess.open(list, FileAccess.WRITE)
+	file.store_string(JSON.stringify({"tracks": {
+		"a_place_to_come": {"file": "music_a_place_to_come.ogg", "loopBegin": 0.0},
+		"town": {"file": "no_such_file.ogg", "loopBegin": 0.0},
+	}}))
+	file.close()
+	assert_eq(Sound.paid_music(list), {})
+	assert_eq(Sound.paid_music("user://no_list.json"), {})
+	DirAccess.remove_absolute(list)
+
+
+## PIX-416: each of the bundle's tracks loops onto its loopBegin: decoded
+## by Godot across the loop, it plays on exactly as it does started there.
+func test_the_bundles_loops_land_on_their_loop_begin() -> void:
+	if Sound._paid_music.is_empty():
+		pending("the bundle isn't installed (scripts/fetch-private-art.sh)")
+		return
+	var rate := AudioServer.get_mix_rate()
+	for key: String in Sound._paid_music:
+		if key.begins_with("theme_"):
+			continue
+		var stream := Sound._music_of(key, true)
+		var across := stream.instantiate_playback()
+		across.start(stream.get_length() - 0.1)
+		var heard := across.mix_audio(1.0, roundi(0.2 * rate))
+		# A start lands a sample late on some (its seek's rounding, where the
+		# loop's lands on the sample meant): the best of it and a sample before.
+		var best := INF
+		for early: float in [0.0, 1.0]:
+			var there := stream.instantiate_playback()
+			there.start(stream.loop_offset - early / Sound.PAID_MUSIC_RATE)
+			var plain := there.mix_audio(1.0, roundi(0.1 * rate))
+			var half := heard.size() - plain.size()
+			var worst := 0.0
+			# Past the resampler's first few frames, which differ on a fresh start.
+			for i in range(16, plain.size()):
+				worst = maxf(worst, (heard[half + i] - plain[i]).abs().length())
+			best = minf(best, worst)
+		assert_lt(best, 0.001, "%s plays on from its loopBegin" % key)
 
 
 func test_the_weather_follows_the_place() -> void:
@@ -268,6 +385,8 @@ func test_a_cave_drips_on_sounds_own_dice() -> void:
 
 
 func test_music_loops_its_whole_render() -> void:
+	Sound.withheld = true
+	Sound.stop_music()
 	Sound.play_track("world")
 	var stream := load("res://assets/audio/music/world.wav") as AudioStreamWAV
 	assert_eq(stream.loop_mode, AudioStreamWAV.LOOP_FORWARD)
@@ -457,15 +576,15 @@ func test_a_place_takes_its_music_up_where_it_left_it() -> void:
 	assert_almost_eq(float(Sound._resume_at.get("town", 0.0)), 5.0, 0.5, "where the town's music was")
 	assert_almost_eq(Sound._music.get_playback_position(), 0.0, 0.5, "the fight from its top")
 	Sound._fade.custom_step(Sound.CROSSFADE_S + 0.1)
-	assert_almost_eq(Sound._music.volume_db, Sound.level_of("music/battle"), 0.01, "the fight in at its level")
+	assert_almost_eq(Sound._music.volume_db, Sound._music_level("battle"), 0.01, "the fight in at its level")
 	Sound.play_track("town")
 	assert_false(Sound._resume_at.has("battle"), "a fight isn't taken up again")
 	assert_almost_eq(Sound._music.get_playback_position(), 5.0, 0.5, "the town's again from there")
 	assert_true(Sound._fading.playing, "the fight fading as the town comes in, together")
 	# Halfway, the two together at the music's full power: no dip.
 	Sound._fade.custom_step(Sound.CROSSFADE_S / 2.0)
-	var rising := db_to_linear(Sound._music.volume_db - Sound.level_of("music/town"))
-	var falling := db_to_linear(Sound._fading.volume_db - Sound.level_of("music/battle"))
+	var rising := db_to_linear(Sound._music.volume_db - Sound._music_level("town"))
+	var falling := db_to_linear(Sound._fading.volume_db - Sound._music_level("battle"))
 	assert_almost_eq(rising * rising + falling * falling, 1.0, 0.02, "the crossfade holds its power halfway")
 	Sound._fade.custom_step(Sound.CROSSFADE_S)
 	assert_false(Sound._fading.playing, "the fight gone once the town is in")
@@ -475,6 +594,7 @@ func test_a_place_takes_its_music_up_where_it_left_it() -> void:
 
 ## A track with an intro loops from its loopBegin, not from the top (PIX-411).
 func test_a_track_with_an_intro_loops_from_its_loop_begin() -> void:
+	Sound.withheld = true
 	var name := "title"
 	var tracks: Dictionary = Sound._doc["tracks"]
 	var was: Dictionary = tracks[name].duplicate()
