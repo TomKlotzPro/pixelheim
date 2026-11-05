@@ -8,8 +8,8 @@ of the zip, makes it mono at its family's rate (audio.json's "families":
 44.1 kHz unless the budget asks for less, PIX-413), trims the silence before
 it, cuts it (PIX-413: "keep" its first seconds, the tail faded out; "loop" a
 bed's first seconds, its end crossfaded into its start so it loops without
-a seam; "pitch", "lowpass" in Hz; PIX-414: "rate", under its family's for a
-bed with nothing up high), and brings it to its family's loudness in
+a seam; "pitch", "lowpass" in Hz; PIX-414: "rate", a take's own lower rate
+than its family's: a bed with nothing up high, the hero's fall), and brings it to its family's loudness in
 godot/assets/data/audio.json's "families" (the 400 ms max, as the audio pass
 measured the game's own), never past the family's peak, then "db" more: the
 packs sit near -1 dBFS, and every bus plays 14 dB over its renders

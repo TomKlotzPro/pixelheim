@@ -3753,6 +3753,10 @@ msgid "In a conversation, Esc now says « quitter » in French"
 msgstr "Dans une conversation, la touche Esc indique désormais « quitter » en français"
 
 #: assets/data/changelog.json
+msgid "In caves and mines, water drips and stones tumble, where a hearth used to crackle"
+msgstr "Dans les grottes et les mines, l'eau goutte et des pierres dégringolent, là où crépitait un âtre"
+
+#: assets/data/changelog.json
 msgid "In the Ashes, Hilda's and Vex's crafts are at their stalls on the square; Sela's slimes are in her stores, Wren lost her stable to the fire, and Ana warns of the packs, not the grass"
 msgstr "Dans les Cendres, la forge de Hilda et le chaudron de Vex sont à leurs étals sur la place ; les gelées de Sela sont dans ses réserves, Wren a perdu son écurie dans l'incendie, et Ana met en garde contre les meutes, pas l'herbe"
 
@@ -4247,6 +4251,10 @@ msgstr "Nouveaux visages, pas justes"
 #: assets/data/changelog.json
 msgid "New Frames"
 msgstr "Nouveaux cadres"
+
+#: assets/data/changelog.json
+msgid "New beds of sound: rain on open land, in the woods and on a house's roof, the furnace in the smithy, Greyhold's cellars and the Kings' Vault, the ice cave, and the river when you walk close by"
+msgstr "Nouveaux fonds sonores : la pluie en terrain découvert, dans les bois et sur le toit d'une maison, le fourneau chez le forgeron, les caves de Greyhold et le Caveau des rois, la grotte de glace, et la rivière quand on marche tout près"
 
 #: assets/data/changelog.json
 msgid "New brews: Stamina Draughts for fighters, Hunter's Stew, and the scale-steeped Dragon Tonic"
@@ -4847,6 +4855,10 @@ msgstr "DES PIÈCES OÙ L'ON A ENVIE D'ENTRER : parquets et tapis, murs de pl�
 #: assets/data/changelog.json
 msgid "RUN AHEAD IF YOU LIKE: a hero who goes deeper early is never sent back for an errand"
 msgstr "PRENEZ DE L'AVANCE SI VOUS VOULEZ : un héros qui s'enfonce tôt n'est jamais renvoyé en arrière pour une course"
+
+#: assets/data/changelog.json
+msgid "Rain and Stone"
+msgstr "Pluie et pierre"
 
 #: assets/data/changelog.json
 msgid "Raise the Roof"
@@ -6175,6 +6187,10 @@ msgstr "Le héros ne grandit plus un peu à chaque rang"
 #: assets/data/changelog.json
 msgid "The hero walks in four beats, rising as the feet pass, each step timed to the ground it covers, so the feet no longer slide"
 msgstr "Le héros marche en quatre temps, se soulevant quand les pieds se croisent, chaque pas réglé sur le terrain parcouru : ses pieds ne glissent plus"
+
+#: assets/data/changelog.json
+msgid "The hero's fall has its own sound now, and stairs and cave mouths ring with steps in the stone"
+msgstr "La chute du héros a désormais son propre son, et les escaliers et les entrées de grotte résonnent de pas dans la pierre"
 
 #: assets/data/changelog.json
 msgid "The hub screen retires with honor. It served well."

@@ -336,9 +336,9 @@ func use_portal(target: Dictionary) -> void:
 		_step_back()
 		stage.play_story(first, func() -> void: _through_door(through, Ways.goes_under(map, next)))
 		return
-	# A stair taken, down or up (PIX-414): steps ringing in the stone.
+	# A stair taken, down or up, or a cave's mouth (PIX-414): steps ringing in the stone.
 	var at: Variant = map.portals.find_key(target)
-	if at != null and Ways.kind_of(map, at) in ["stairs", "down"]:
+	if at != null and Ways.kind_of(map, at) in ["stairs", "down", "cave"]:
 		Sound.play("stairs")
 	_through_door(through, Ways.goes_under(map, next))
 

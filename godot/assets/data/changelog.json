@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.317.0",
+      "date": "2026-11-05",
+      "codename": "Rain and Stone",
+      "notes": [
+        "The hero's fall has its own sound now, and stairs and cave mouths ring with steps in the stone",
+        "New beds of sound: rain on open land, in the woods and on a house's roof, the furnace in the smithy, Greyhold's cellars and the Kings' Vault, the ice cave, and the river when you walk close by",
+        "In caves and mines, water drips and stones tumble, where a hearth used to crackle"
+      ]
+    },
+    {
       "version": "0.316.0",
       "date": "2026-11-05",
       "codename": "Ash and Lanterns",
