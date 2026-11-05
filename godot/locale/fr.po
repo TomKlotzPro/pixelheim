@@ -3197,6 +3197,10 @@ msgid "Every tenth depth a warden guards the stair down, a boss with its own att
 msgstr "Toutes les dix profondeurs, un gardien tient l'escalier, un boss avec ses propres attaques : le Gardien des Profondeurs, puis le Roi Creux"
 
 #: assets/data/changelog.json
+msgid "Every track loops without a gap, and a place's music picks up where it left off when you come back"
+msgstr "Chaque morceau boucle sans coupure, et la musique d'un lieu reprend là où elle s'était arrêtée quand on y revient"
+
+#: assets/data/changelog.json
 msgid "Every way out of a map reads as a way on: the road runs right to it, through an opening wide enough to look walkable, and a signpost names where it leads"
 msgstr "Chaque sortie d'une carte se lit comme un passage : la route y mène tout droit, par une ouverture assez large pour sembler praticable, et un panneau indique où elle conduit"
 
@@ -4301,6 +4305,10 @@ msgid "Night Watch"
 msgstr "Veille de nuit"
 
 #: assets/data/changelog.json
+msgid "Nine places that shared a track now have their own: Saltmere, the Frostgate, Greyhold, Blackiron, the mountain road, the inn, the crypts, the ice cave, and the dragon's fight on the square"
+msgstr "Neuf lieux qui partageaient une musique ont désormais la leur : Saltmere, la Porte-Givre, Greyhold, Fernoir, la route de la montagne, l'auberge, les cryptes, la grotte de glace et le combat contre le dragon sur la place"
+
+#: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
 msgstr "Fini les embuscades. Les monstres sont désormais VISIBLES dans les terres sauvages - regardez-les rôder, choisissez vos combats"
 
@@ -5227,6 +5235,10 @@ msgstr "Lumière douce"
 #: assets/data/changelog.json
 msgid "Some day camps sleep by their lit torch at night, a Z drifting up: walk right up to one or strike it and the whole pack wakes"
 msgstr "Certains camps de jour dorment la nuit près de leur torche allumée, un Z flottant au-dessus : approchez tout près ou frappez, et toute la meute se réveille"
+
+#: assets/data/changelog.json
+msgid "Songs of the Reach"
+msgstr "Les airs de la Marche"
 
 #: assets/data/changelog.json
 msgid "Sound Restored"
@@ -6271,6 +6283,10 @@ msgstr "L'écran de la carte se lit nettement : sa légende se place sous la c
 #: assets/data/changelog.json
 msgid "The map shows the world as it stands: every map you've found is a page, turned with left and right, its roads out and regions named, and the village drawn small inside its walls"
 msgstr "La carte montre le monde tel qu'il est : chaque carte trouvée est une page que l'on tourne avec gauche et droite, ses routes et ses régions nommées, et le village dessiné en petit dans ses murs"
+
+#: assets/data/changelog.json
+msgid "The menu and the whole world play new music from Leohpaz's RPG music bundle: the title, the town, the Reach, the forest, the marsh, the dungeons, the fights, the bosses, the victory and the story's themes"
+msgstr "Le menu et tout le monde jouent une nouvelle musique, tirée du bundle de musiques RPG de Leohpaz : le titre, le bourg, la Marche, la forêt, le marais, les donjons, les combats, les boss, la victoire et les thèmes de l'histoire"
 
 #: assets/data/changelog.json
 msgid "The menu is drawn over the Next line instead of under it"

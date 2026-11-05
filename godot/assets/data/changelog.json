@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.318.0",
+      "date": "2026-11-05",
+      "codename": "Songs of the Reach",
+      "notes": [
+        "The menu and the whole world play new music from Leohpaz's RPG music bundle: the title, the town, the Reach, the forest, the marsh, the dungeons, the fights, the bosses, the victory and the story's themes",
+        "Nine places that shared a track now have their own: Saltmere, the Frostgate, Greyhold, Blackiron, the mountain road, the inn, the crypts, the ice cave, and the dragon's fight on the square",
+        "Every track loops without a gap, and a place's music picks up where it left off when you come back"
+      ]
+    },
+    {
       "version": "0.317.0",
       "date": "2026-11-05",
       "codename": "Rain and Stone",

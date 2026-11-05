@@ -38,7 +38,7 @@
     "inn": {
       "from": ["LEOHPAZ_RPG-Music-V02_Retro.zip", "LEOHPAZ_RPG-Music-V02_Retro/RPG-Music-V02_Retro/05_FeastHall_Retro.wav"],
       "runnerUp": "V02 06_Upbeat_Medieval_Retro_1 (35 s)",
-      "why": "the inn's common room is a feast hall; its file ends on 0.3 s of silence, so its loop rests there"
+      "why": "the inn's common room is a feast hall; its file ends on a 0.3 s rest in tempo (41 bars at 110 BPM), so its loop rests there"
     },
     "descent": {
       "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/10-Ancient_Cave.wav"],
@@ -88,12 +88,12 @@
     },
     "boss": {
       "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/07-Boss_Battle.wav"],
-      "runnerUp": "V03 02 SandDwellersBattle (intro and loop, its handover at 9.6 s)",
+      "runnerUp": "V03 02 SandDwellersBattle (intro and loop, its handover at 9.6 s; its intro rings past the handover, so the prep must first mix that tail over the loop's first pass)",
       "why": "the bundle's own boss theme"
     },
     "dragon": {
       "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/11-Final-Battle.wav"],
-      "runnerUp": "V03 06 NorthSeaBattle (intro and loop, its handover at 10.8 s)",
+      "runnerUp": "V03 06 NorthSeaBattle (intro and loop, its handover at 10.8 s; its intro rings past the handover, so the prep must first mix that tail over the loop's first pass)",
       "why": "the Night of Bells' dragon on the square is the last fight"
     },
     "victory": {
