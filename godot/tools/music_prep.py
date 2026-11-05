@@ -77,9 +77,14 @@ def piped(zips, zip_name, member, into):
                     "-c:a", "pcm_f32le", into], input=data, check=True)
 
 
-def joined(handover):
+def joined(handover, intro_frames):
     """The filter graph that plays the intro (input 0) up to `handover`
-    samples, then the loop (input 1): the intro's tail after it goes."""
+    samples, then the loop (input 1). An intro ringing on past its handover
+    is refused: cut there, its tail would be lost (PIX-416 review)."""
+    # shortcut: no tail kept; to pick one, ring it over the loop's first pass only (mixed into the
+    # loop's start, the loop rotated by the tail's length), never into every pass.
+    if intro_frames > handover + RATE // 100:
+        raise ValueError("the intro rings %.2f s past its handover: its tail would be cut" % ((intro_frames - handover) / RATE))
     return "[0:a]atrim=end_sample=%d,asetpts=PTS-STARTPTS[intro];[intro][1:a]concat=n=2:v=0:a=1[out]" % handover
 
 
@@ -145,7 +150,7 @@ def prepare(zips, out):
                 piped(zips, entry["intro"][0], entry["intro"][1], intro)
                 loop_begin = round(float(entry["intro"][2]) * RATE)
                 whole = os.path.join(work, slot + "_joined.wav")
-                sound_prep.ffmpeg("-i", intro, "-i", source, "-filter_complex", joined(loop_begin), "-map", "[out]",
+                sound_prep.ffmpeg("-i", intro, "-i", source, "-filter_complex", joined(loop_begin, frames_of(intro)), "-map", "[out]",
                                   "-c:a", "pcm_f32le", whole)
                 source = whole
             looped = not slot.startswith("theme_")

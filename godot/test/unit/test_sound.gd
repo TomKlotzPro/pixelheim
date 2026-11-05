@@ -592,6 +592,13 @@ func test_a_place_takes_its_music_up_where_it_left_it() -> void:
 	Sound._resume_at.clear()
 
 
+## PIX-416 review: the music streams on the web too, where a sample is
+## decoded whole at its first play, kept for good and looped from its start.
+func test_the_music_streams() -> void:
+	for player: AudioStreamPlayer in [Sound._music, Sound._fading]:
+		assert_eq(player.playback_type, AudioServer.PLAYBACK_TYPE_STREAM)
+
+
 ## A track with an intro loops from its loopBegin, not from the top (PIX-411).
 func test_a_track_with_an_intro_loops_from_its_loop_begin() -> void:
 	Sound.withheld = true

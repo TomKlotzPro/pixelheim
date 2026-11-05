@@ -74,10 +74,16 @@ class MusicPrepTest(unittest.TestCase):
         self.assertEqual(music_prep.rounded(100, 0, False), (28, "[0:a]apad=pad_len=28[out]"))
         self.assertEqual(music_prep.rounded(128, 0, False)[0], 0)
 
+    def test_an_intro_is_never_cut_short(self):
+        # Frost's intro ends on its handover; one ringing on past it is refused.
+        self.assertIn("atrim=end_sample=705600", music_prep.joined(705600, 705600))
+        with self.assertRaises(ValueError):
+            music_prep.joined(476280, 542430)
+
     def test_a_track_is_levelled_within_its_peak(self):
         manifest = {"loudness": -34.5, "peak": -15.5}
         self.assertEqual(music_prep.gain_for(-20.0, -6.0, manifest), -14.5)
-        self.assertEqual(music_prep.gain_for(-20.0, -1.0, manifest), -14.5, "a loud peak holds it lower")
+        self.assertEqual(music_prep.gain_for(-20.0, 0.0, manifest), -15.5, "a loud peak holds it lower")
         self.assertLess(music_prep.gain_for(-30.0, -1.0, manifest), -4.5)
 
     def test_a_slot_this_build_lacks_is_left_out(self):

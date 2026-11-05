@@ -170,6 +170,12 @@ func _ready() -> void:
 	_bed = _player("Ambience")
 	for player in [_music, _fading]:
 		player.finished.connect(_theme_over.bind(player))
+		# Streamed on the web too, where a player is a sample by default: a
+		# bundle's track was decoded whole on the main thread at its first
+		# play (the Deepwood's froze the crossing 135 ms), kept as PCM for
+		# good and looped from where it began, not its loopBegin (PIX-416
+		# review, perf.md). The desktop always streams.
+		player.playback_type = AudioServer.PLAYBACK_TYPE_STREAM
 	_paid = paid_takes(PAID)
 	_paid_music = paid_music(PAID_MUSIC)
 	apply_volumes()
