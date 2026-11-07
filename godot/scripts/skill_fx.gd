@@ -8,8 +8,9 @@ extends Node2D
 ## the staff a small bolt, and every landed blow plays a small impact. Drawn
 ## at 1x on the world's pixel grid (a quarter turn at most, whole pixels),
 ## glows added as light, from a pool of sprites. Nothing is drawn without the
-## paid pack or with motion reduced: callers keep their soft glow then. A
-## child of WorldFx.
+## paid pack or with motion reduced, but the bow's and the staff's shot drawn
+## plain without the pack: callers keep their soft glow then. A child of
+## WorldFx.
 
 ## The strips' pace.
 const FPS := 12.0
@@ -60,12 +61,27 @@ func cast(skill: Dictionary, hero: Node2D, targets: Array) -> bool:
 
 
 ## The weapon's own (skill_fx's swings: the bow's arrow, the staff's bolt)
-## from the hero to `target` (or `end`, a miss) in `seconds`, tinted; false
-## when the weapon has none or it can't be drawn.
+## from the hero to `target` (or `end`, a miss) in `seconds`, tinted; without
+## the paid pack the shaft or the ball a foe's shot is drawn with (PIX-410:
+## a blow from afar is seen crossing the gap). False when the weapon has
+## none, or with motion reduced.
 func swing(weapon: String, from: Vector2, target: Node2D, end: Vector2, seconds: float, tint := Color.WHITE) -> bool:
 	var strip := String(ItemIcons.skill_fx().get("swings", {}).get(weapon, ""))
 	_note(strip)
-	return fly(strip, from, target, end, seconds, "", tint)
+	if strip == "" or GameState.settings.reduce_motion:
+		return false
+	if fly(strip, from, target, end, seconds, "", tint):
+		return true
+	var shot := Node2D.new()
+	shot.z_index = Z
+	shot.modulate = tint
+	shot.add_child(Firebolt.plain("arrow" if weapon == "bow" else "ball", (end - from).normalized()))
+	add_child(shot)
+	var goal := func() -> Vector2: return target.global_position if is_instance_valid(target) else end
+	var tween := shot.create_tween()
+	tween.tween_method(func(t: float) -> void: shot.position = (from.lerp(goal.call(), t) + ON_BODY).round(), 0.0, 1.0, seconds)
+	tween.tween_callback(shot.queue_free)
+	return true
 
 
 ## A landed blow's small impact on whoever took it (Enemy.take_hit,

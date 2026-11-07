@@ -41,13 +41,9 @@ func _ready() -> void:
 				arrow.play()
 				add_child(arrow)
 			else:
-				var shaft := Line2D.new()
-				shaft.points = PackedVector2Array([-heading * 4.0, heading * 3.0])
-				shaft.width = 1.0
-				shaft.default_color = SHAFT
-				add_child(shaft)
+				add_child(plain(look, heading))
 		"ball":
-			_dot(BALL, 2.0)
+			add_child(plain(look, heading))
 		_:
 			var frames := ItemIcons.effect("flame", 14.0)
 			if frames != null:
@@ -57,16 +53,25 @@ func _ready() -> void:
 				flame.play()
 				add_child(flame)
 			else:
-				_dot(EMBER, 4.0)
+				add_child(plain(look, heading))
 
 
-## A square of `size` px on its middle.
-func _dot(color: Color, size: float) -> void:
+## Its look drawn without the paid pack's strips, flying `along` a way:
+## an arrow's shaft, a ball, an ember. The hero's arrow and bolt fly these
+## too without the pack (SkillFx.swing).
+static func plain(kind: String, along: Vector2) -> CanvasItem:
+	if kind == "arrow":
+		var shaft := Line2D.new()
+		shaft.points = PackedVector2Array([-along * 4.0, along * 3.0])
+		shaft.width = 1.0
+		shaft.default_color = SHAFT
+		return shaft
+	var size := 2.0 if kind == "ball" else 4.0
 	var dot := ColorRect.new()
-	dot.color = color
+	dot.color = BALL if kind == "ball" else EMBER
 	dot.size = Vector2(size, size)
 	dot.position = -dot.size / 2.0
-	add_child(dot)
+	return dot
 
 
 func _physics_process(delta: float) -> void:

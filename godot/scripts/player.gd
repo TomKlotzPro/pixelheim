@@ -559,7 +559,7 @@ var _loosed := false
 ## weapon bites and flying that frame, so it lands as the blow does, at the
 ## foe the swing reaches (Reach.struck, PIX-410: the nearest a shot does) or
 ## as far as it reaches, a miss. The blow is still the swing's; a staff with
-## no bolt to draw keeps its crescent.
+## no bolt drawn (motion reduced) keeps its crescent.
 func _loose() -> void:
 	# A blade looses nothing.
 	if not ItemIcons.skill_fx().get("swings", {}).has(art["attack"]):

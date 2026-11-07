@@ -44,6 +44,11 @@ func test_the_bow_and_the_staff_land_at_range_on_the_nearest() -> void:
 		assert_eq(_swing(attack, [Vector2(CELL, 2 * CELL)]), [], "%s: not far off its line" % attack)
 		assert_eq(_swing(attack, [Vector2(11, 6)]), [0], "%s: one at its feet too" % attack)
 		assert_eq(_swing(attack, [Vector2(3 * CELL, 0), Vector2(CELL, 4)]), [1], "%s: the shot flies to the nearest" % attack)
+		# Each of the four ways covers its quarter: a shooter on the diagonal
+		# at its hold (3 cells) is answered facing either way beside it.
+		var diagonal := Vector2.ONE.normalized() * 3.0 * CELL
+		assert_eq(_swing(attack, [diagonal]), [0], "%s: the diagonal, facing right" % attack)
+		assert_eq(_swing(attack, [diagonal], Vector2.DOWN), [0], "%s: and facing down" % attack)
 		assert_true(Reach.swing(attack).get("shot", false), "%s: a shot, seen flying" % attack)
 	assert_false(Reach.swing("sword").get("shot", false), "a blade is no shot")
 

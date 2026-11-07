@@ -1539,12 +1539,12 @@
       },
       "bow": {
         "cells": 3.0,
-        "arc": 60,
+        "arc": 90,
         "shot": true
       },
       "staff": {
         "cells": 3.0,
-        "arc": 60,
+        "arc": 90,
         "shot": true
       }
     },
