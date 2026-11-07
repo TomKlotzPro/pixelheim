@@ -403,6 +403,20 @@ func test_a_cave_drips_on_sounds_own_dice() -> void:
 	Sound._last.clear()
 
 
+## PIX-415: the birds, crickets, chatter and fire roll Sound's dice too.
+func test_the_extras_never_move_the_games_dice() -> void:
+	Sound.set_ambience("")
+	Sound.set_extras(["birds", "crickets", "chatter", "fire"] as Array[String])
+	seed(415)
+	var first := randi()
+	seed(415)
+	var before := Sound._dice.state
+	Sound._process(float(Sound._doc["ambienceTick"]) * 20.0)
+	assert_ne(Sound._dice.state, before, "Sound's dice rolled")
+	assert_eq(randi(), first, "the game's as they were")
+	Sound.stop_all()
+
+
 func test_music_loops_its_whole_render() -> void:
 	Sound.withheld = true
 	Sound.stop_music()

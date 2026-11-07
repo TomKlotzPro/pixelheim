@@ -1,5 +1,5 @@
 {
-  "about": "Leohpaz's sounds the game plays (PIX-411, PIX-413): for each event in assets/data/audio.json, its takes as [the bundle's zip, the file's path inside it, how to cut it], or the name of the event whose takes it shares. tools/sound_prep.py reads them out of the zips, cuts each (\"keep\": the source's seconds after its start, the tail faded; \"loop\": a bed's seconds, its end crossfaded into its start; \"pitch\", \"lowpass\" Hz, \"db\" after levelling, \"rate\" Hz, a take's own lower rate than its family's: a bed with nothing up high, the hero's fall, PIX-414), levels it to its family and writes <event>_<n>.wav and takes.json into the private pixelheim-assets repo (retro-rpg/leohpaz/pixelheim/); scripts/fetch-private-art.sh installs them, git-ignored, into assets/audio/paid/, where they stand in for the event's own takes. The packs may not be redistributed, so no take enters this repo. Picked by name and measured from ~/playground/leohpaz-sfx/mapping, never heard: the PR's listening list says which to hear first. No take that may hold words (the game speaks English and French).",
+  "about": "Leohpaz's sounds the game plays (PIX-411, PIX-413): for each event in assets/data/audio.json, its takes as [the bundle's zip, the file's path inside it, how to cut it], or the name of the event whose takes it shares. tools/sound_prep.py reads them out of the zips, cuts each (\"keep\": the source's seconds after its start, the tail faded; \"loop\": a bed's seconds, its end crossfaded into its start; \"pitch\", \"lowpass\" Hz, \"db\" after levelling), levels it to its family at its family's rate (PIX-415: a bed's and the hero's fall's too, no longer lowered to fit) and writes <event>_<n>.wav and takes.json into the private pixelheim-assets repo (retro-rpg/leohpaz/pixelheim/); scripts/fetch-private-art.sh installs them, git-ignored, into assets/audio/paid/, where they stand in for the event's own takes. The packs may not be redistributed, so no take enters this repo. Picked by name and measured from ~/playground/leohpaz-sfx/mapping, never heard: the PR's listening list says which to hear first. No take that may hold words (the game speaks English and French).",
   "events": {
     "swing": [
       ["Minifantasy_Weapons_SFX.zip", "Minifantasy_Weapons_SFX/Slash_Attacks/Slash_Attack_Sword_1.wav", {"keep": 0.165}],
@@ -847,52 +847,52 @@
       ["Jingles_Fanfares_SFX_Pack.zip", "Jingles_Fanfares_SFX_Pack/Jingles_and_Fanfares/Drums/Drums_2.wav", {"keep": 1.25}]
     ],
     "amb_forest_day": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Birds/1_birds_outside.wav", {"loop": 12.0}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Birds/1_birds_outside.wav", {"loop": 36.0}]
     ],
     "amb_forest_night": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Night/1_night_outside.wav", {"loop": 12.0}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Night/1_night_outside.wav", {"loop": 16.5}]
     ],
     "amb_coast": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Island/1_island_beach_no_seagulls.wav", {"loop": 12.0, "rate": 11025}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Island/1_island_beach_no_seagulls.wav", {"loop": 44.5}]
     ],
     "amb_ash": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Cave/3_cave_lava_outside.wav", {"loop": 12.0, "rate": 8000}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Cave/3_cave_lava_outside.wav", {"loop": 12.0}]
     ],
     "amb_mines": [
-      ["LEOHPAZ_MiningCave_SFX.zip", "LEOHPAZ_MiningCave_SFX/Water_Drops/Loop_LowDrops_Slow.ogg", {"loop": 12.0, "rate": 8000}]
+      ["LEOHPAZ_MiningCave_SFX.zip", "LEOHPAZ_MiningCave_SFX/Water_Drops/Loop_LowDrops_Slow.ogg", {"loop": 12.0}]
     ],
     "amb_cave": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Cave/1_cave.wav", {"loop": 12.0, "rate": 11025}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Cave/1_cave.wav", {"loop": 12.0}]
     ],
     "amb_frost": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Wind/1_wind_outside.wav", {"loop": 12.0, "rate": 11025}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Wind/1_wind_outside.wav", {"loop": 12.0}]
     ],
     "amb_marsh_night": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Swamp/1_swamp_outside.wav", {"loop": 12.0}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Swamp/1_swamp_outside.wav", {"loop": 44.5}]
     ],
     "amb_town": [
-      ["Leohpaz_MedievalCarnival_SFX_Pack.zip", "Leohpaz_MedievalCarnival_SFX_Pack/Ambience/Ambience_People.wav", {"loop": 12.0, "rate": 11025}]
+      ["Leohpaz_MedievalCarnival_SFX_Pack.zip", "Leohpaz_MedievalCarnival_SFX_Pack/Ambience/Ambience_People.wav", {"loop": 17.5}]
     ],
     "amb_rain": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Rain/1_rain_outside.wav", {"loop": 12.0}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Rain/1_rain_outside.wav", {"loop": 44.5}]
     ],
     "amb_rain_forest": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Rain/4_rain_forest.wav", {"loop": 12.0}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Rain/4_rain_forest.wav", {"loop": 44.5}]
     ],
     "amb_rain_inside": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Rain/2_rain_house.wav", {"loop": 12.0, "rate": 8000}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Rain/2_rain_house.wav", {"loop": 12.0}]
     ],
     "amb_crypt": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Horror/Layers/graveyard_background_layer.wav", {"loop": 8.0, "rate": 8000}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Horror/Layers/graveyard_background_layer.wav", {"loop": 12.0}]
     ],
     "amb_ice_cave": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Wind/3_wind_cave.wav", {"loop": 8.0, "rate": 8000}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/Wind/3_wind_cave.wav", {"loop": 12.0}]
     ],
     "amb_smithy": [
-      ["Minifantasy_CraftingAndProfessions_SFX.zip", "Minifantasy_CraftingAndProfessions_SFX/Crafting_Professions/Blacksmith/06_Smith_Furnace_Loop.wav", {"loop": 8.0, "rate": 8000}]
+      ["Minifantasy_CraftingAndProfessions_SFX.zip", "Minifantasy_CraftingAndProfessions_SFX/Crafting_Professions/Blacksmith/06_Smith_Furnace_Loop.wav", {"loop": 12.0}]
     ],
     "amb_river": [
-      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/River/1_river_outside.wav", {"loop": 12.0, "rate": 11025}]
+      ["Ambiences_Perspectives_SFX_Pack.zip", "Ambiences_SFX_Pack/River/1_river_outside.wav", {"loop": 43.5}]
     ],
     "cave_drip": [
       ["LEOHPAZ_MiningCave_SFX.zip", "LEOHPAZ_MiningCave_SFX/Water_Drops/Single_Drops_2.ogg", {"keep": 0.6}],
@@ -906,8 +906,8 @@
       ["LEOHPAZ_MiningCave_SFX.zip", "LEOHPAZ_MiningCave_SFX/MiningCart/Reverb_Cart_Load_2.ogg", {"keep": 0.9, "db": -3}]
     ],
     "hero_death": [
-      ["90_Player_Movement_SFX.zip", "68_Die_01.wav", {"keep": 0.8, "rate": 22050}],
-      ["90_Player_Movement_SFX.zip", "69_Die_02.wav", {"keep": 1.2, "rate": 22050}]
+      ["90_Player_Movement_SFX.zip", "68_Die_01.wav", {"keep": 0.8}],
+      ["90_Player_Movement_SFX.zip", "69_Die_02.wav", {"keep": 1.2}]
     ],
     "stairs": [
       ["LEOHPAZ_MiningCave_SFX.zip", "LEOHPAZ_MiningCave_SFX/Reverb_Steps/Reverb_Steps_1.ogg", {"keep": 0.8}],
