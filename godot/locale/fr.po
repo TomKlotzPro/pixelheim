@@ -6741,6 +6741,10 @@ msgid "Three stories to follow, letter by letter: Bram's Cheese Club, Wenna and 
 msgstr "Trois histoires à suivre, lettre après lettre : le Club du fromage de Bram, le canari de Wenna et Pell, et Pip qui écrit au dragon. Rien n'expire : le courrier attend autant que vous voulez"
 
 #: assets/data/changelog.json
+msgid "Through the Leaves"
+msgstr "À travers les feuilles"
+
+#: assets/data/changelog.json
 msgid "Thumb-Sized"
 msgstr "À portée de pouce"
 
@@ -6783,6 +6787,10 @@ msgstr "Les habitants dessinés d'après le même modèle portent désormais leu
 #: assets/data/changelog.json
 msgid "Tracks crossfade instead of cutting, and the whole score plays through a touch of echo"
 msgstr "Les morceaux se fondent l'un dans l'autre au lieu de couper net, et toute la bande-son passe par une pointe d'écho"
+
+#: assets/data/changelog.json
+msgid "Trees, the well's roof and the marsh reeds now turn see-through around you when you walk behind them, and around the nearest foe in a fight, so you never lose sight of your hero"
+msgstr "Les arbres, le toit du puits et les roseaux du marais deviennent désormais transparents autour de vous quand vous passez derrière, et autour de l'ennemi le plus proche en combat : vous ne perdez plus jamais votre héros de vue"
 
 #: assets/data/changelog.json
 msgid "Trees, wheat and field stones are back on every outdoor map: the Deepwood is a forest again and Pixelheim's field grows wheat"

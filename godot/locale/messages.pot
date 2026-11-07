@@ -6741,6 +6741,10 @@ msgid "Three stories to follow, letter by letter: Bram's Cheese Club, Wenna and 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Through the Leaves"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Thumb-Sized"
 msgstr ""
 
@@ -6782,6 +6786,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Tracks crossfade instead of cutting, and the whole score plays through a touch of echo"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Trees, the well's roof and the marsh reeds now turn see-through around you when you walk behind them, and around the nearest foe in a fight, so you never lose sight of your hero"
 msgstr ""
 
 #: assets/data/changelog.json

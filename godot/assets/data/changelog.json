@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.330.0",
+      "date": "2026-11-07",
+      "codename": "Through the Leaves",
+      "notes": [
+        "Trees, the well's roof and the marsh reeds now turn see-through around you when you walk behind them, and around the nearest foe in a fight, so you never lose sight of your hero"
+      ]
+    },
+    {
       "version": "0.329.0",
       "date": "2026-11-07",
       "codename": "One Step Back",
