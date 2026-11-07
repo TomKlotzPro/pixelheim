@@ -3097,6 +3097,10 @@ msgid "Every Corner in French"
 msgstr "Le français jusque dans les coins"
 
 #: assets/data/changelog.json
+msgid "Every Face"
+msgstr "Chaque visage"
+
+#: assets/data/changelog.json
 msgid "Every Lead True"
 msgstr "Chaque piste est juste"
 
@@ -4703,6 +4707,10 @@ msgstr "Des gens vivent ici désormais - parlez-leur avec E, Enter ou Space"
 #: assets/data/changelog.json
 msgid "People with something for you wear a speech bubble: \"!\" for a new quest, \"?\" to hand one in, gold when it's the main story"
 msgstr "Les personnes qui ont quelque chose pour vous portent une bulle : « ! » pour une nouvelle quête, « ? » pour en rendre une, dorée quand c'est l'histoire principale"
+
+#: assets/data/changelog.json
+msgid "Pip and Nell have faces of their own at a child's size, and Morvax, Rook, Brother Teo and Aske the Hermit now stand as tall and as detailed as everyone else, Morvax beside Maren in every scene of his"
+msgstr "Pip et Nell ont désormais leur propre visage à taille d'enfant, et Morvax, Rook, frère Teo et Aske l'ermite sont aussi grands et détaillés que tous les autres, Morvax à côté de Maren dans chacune de ses scènes"
 
 #: assets/data/changelog.json
 msgid "Pitched Tents"

@@ -3097,6 +3097,10 @@ msgid "Every Corner in French"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every Face"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every Lead True"
 msgstr ""
 
@@ -4702,6 +4706,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "People with something for you wear a speech bubble: \"!\" for a new quest, \"?\" to hand one in, gold when it's the main story"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Pip and Nell have faces of their own at a child's size, and Morvax, Rook, Brother Teo and Aske the Hermit now stand as tall and as detailed as everyone else, Morvax beside Maren in every scene of his"
 msgstr ""
 
 #: assets/data/changelog.json
