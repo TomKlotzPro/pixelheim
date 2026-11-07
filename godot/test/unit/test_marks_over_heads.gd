@@ -71,11 +71,11 @@ func test_a_head_is_the_figures_top_rows() -> void:
 	var farmer := PunyArt.frames(PunyArt.villager("villager"))
 	assert_eq(Ink.head(farmer, "idle_down"), Rect2(-5, -6, 10, 7), "a farmer's head, from the frame's middle")
 	assert_eq(Ink.head(farmer, "idle_down", Vector2(0, -3), Vector2.ONE * 0.75), Rect2(-3.75, -7.5, 7.5, 5.25), "where the sprite draws it")
-	# Rook's head isn't over his frame's middle, and it moves as he turns.
-	var rook := PunyArt.frames(PunyArt.villager("smuggler"))
-	assert_eq(Ink.head(rook, "idle_down").get_center().x, -1.0)
-	assert_eq(Ink.head(rook, "idle_right").get_center().x, -2.0)
-	assert_eq(Ink.rest_pose(rook, "walk_right"), "idle_right", "a step is measured at rest")
+	# A pirate's head isn't over his frame's middle, and it moves as he turns.
+	var pirate := PunyArt.frames(PunyArt.monster("pirate"))
+	assert_eq(Ink.head(pirate, "idle_down").get_center().x, -1.0)
+	assert_eq(Ink.head(pirate, "idle_right").get_center().x, -2.0)
+	assert_eq(Ink.rest_pose(pirate, "walk_right"), "idle_right", "a step is measured at rest")
 	assert_eq(Ink.crown(farmer, ["idle_down", "walk_down"]), -7.0, "the walk's rise reaches a pixel higher than the idle")
 
 

@@ -7,7 +7,9 @@ const DIRS := ["down", "right", "up", "left"]
 
 
 func _assert_walks_everywhere(spec: Dictionary, who: String) -> void:
-	assert_true(ResourceLoader.exists(PunyArt.path(spec["sheet"])), "%s: missing %s" % [who, spec["sheet"]])
+	# A head and body joined (PIX-409: Teo) draws from both sheets.
+	for sheet: String in [spec["head"], spec["body"]] if spec.has("head") else [spec["sheet"]]:
+		assert_true(ResourceLoader.exists(PunyArt.path(sheet)), "%s: missing %s" % [who, sheet])
 	var frames := PunyArt.frames(spec)
 	if spec["family"] == "strip":
 		assert_true(frames.has_animation("walk"), "%s: no walk" % who)

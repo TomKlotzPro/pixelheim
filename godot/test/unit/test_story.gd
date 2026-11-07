@@ -65,7 +65,7 @@ func test_the_first_dream_is_morvaxs_voice() -> void:
 	var actors := steps.filter(func(step: Dictionary) -> bool: return step["kind"] == "actor")
 	var lamps := (Cutscene.scenes()["dream_lamps"] as Array).filter(func(step: Dictionary) -> bool: return step["kind"] == "actor")
 	assert_eq(actors.size(), 1)
-	assert_eq(actors[0]["sheet"], lamps[0]["sheet"], "the old man at the forge")
+	assert_eq([actors[0].get("villager"), lamps[0].get("villager")], ["morvax", "morvax"], "the old man at the forge, in his own look")
 	assert_true(steps.any(func(step: Dictionary) -> bool: return String(step.get("text", "")).contains("You're late, courier. Fifty years late.")))
 	assert_false(JSON.stringify(steps).contains("down and down"), "no stair going down")
 
