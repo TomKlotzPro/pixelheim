@@ -181,6 +181,10 @@ func _refresh_mark() -> void:
 		# Morvax with his question (PIX-253 step 10): the same.
 		if id == Homecoming.MORVAX and Homecoming.choice_due(GameState.progression, GameState.settlement):
 			kind = "letter"
+		# On the Night of Ash, the survivor its step waits on (PIX-426): where
+		# the arrow and the map's goal point.
+		if GameState.progression.prologue != Prologue.DONE and id == Prologue.goal(GameState.progression.prologue)["who"]:
+			kind = "letter"
 	var shown := "" if kind == "" else "%s %s" % [kind, mark_tone(kind, story)]
 	if shown == _mark_shown:
 		return

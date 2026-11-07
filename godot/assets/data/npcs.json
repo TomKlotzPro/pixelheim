@@ -27,6 +27,9 @@
           "(You hand her the letter.) Vellmar's seal. I wrote to them three times.",
           "(She reads it twice.) Then no one is coming. Again. Fifty years ago I asked the Crown for soldiers too.",
           "(She looks up at the mountain for a long time.) Rest. We'll talk at dawn."
+        ],
+        "before": [
+          "(She doesn't look round.) Not now, whoever you are. There are still people out in this fire - see to them. I'll be here. I'm always here."
         ]
       },
       "gateLines": [
@@ -88,6 +91,12 @@
           "(A man lies pinned under a burning beam. You put your shoulder to it. It shifts - then rolls away.)",
           "The beam - you got it off - thank you. Thank you. I'm Bram. I'll live, I think. Probably.",
           "Sela's set up a tent on the square for the hurt. Go. I'll follow when my legs remember how."
+        ],
+        "before": [
+          "(A man lies pinned under a burning beam. You can't lift it with hounds snapping at your heels.)"
+        ],
+        "after": [
+          "Go on, go on. I'll follow when my legs remember how. They're thinking about it."
         ]
       }
     },
@@ -168,7 +177,13 @@
         "lines": [
           "Sit. You're bleeding and you haven't even noticed. ... There.",
           "I'm Sela. I kept the inn, when there was an inn. Now I keep a tent and more hurt than I have cloth for.",
-          "Maren's at the shrine. She's the elder - she'll want to know who you are, walking in out of the fire."
+          "When the fire's down, find Maren at the shrine. She's the elder - she'll want to know who you are, walking in out of it."
+        ],
+        "before": [
+          "Not me - I've more cuts than cloth already. Somebody's still out there calling. Go!"
+        ],
+        "after": [
+          "Keep that cap on. Embers like the top of a head best."
         ]
       }
     },

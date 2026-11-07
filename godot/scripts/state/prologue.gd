@@ -93,6 +93,57 @@ static func step_of(npc_id: String) -> int:
 	return DONE
 
 
+## Where the night's `step` is done, the one place every guide points at
+## (PIX-426: the map, the journal and Maren's "!" sent a newcomer to her
+## while the line said Upper Street): {map_id, cell, who} - the survivor
+## whose word finishes it where the fire put them, the first of its foes,
+## the gate, the well; map_id "" for the cap, worn anywhere.
+static func goal(step: int) -> Dictionary:
+	for survivor: Dictionary in survivors():
+		if int(survivor["prologue"]["step"]) == step:
+			return {"map_id": "town", "cell": Vector2i(int(survivor["x"]), int(survivor["y"])), "who": survivor["id"]}
+	var foes := wave(step)
+	if not foes.is_empty():
+		return {"map_id": "town", "cell": Vector2i(int(foes["cells"][0][0]), int(foes["cells"][0][1])), "who": ""}
+	match step:
+		SCAVENGER:
+			var at: Dictionary = data()["scavenger"]
+			return {"map_id": String(start()["mapId"]), "cell": Vector2i(int(at["x"]), int(at["y"])), "who": ""}
+		GATE:
+			return {"map_id": String(start()["mapId"]), "cell": Bearing.way_out(String(start()["mapId"]), "town"), "who": ""}
+		FIRES:
+			return {"map_id": "town", "cell": well(), "who": ""}
+	return {"map_id": "", "cell": Vector2i(-1, -1), "who": ""}
+
+
+static var _well := Vector2i(-1, -1)
+
+
+## The well on the village's green the fires' water comes from.
+static func well() -> Vector2i:
+	if _well.x < 0:
+		var town := MapData.load_by_id("town")
+		for cell: Vector2i in town.grid:
+			if town.grid[cell] == "well":
+				_well = cell
+				break
+	return _well
+
+
+## What a survivor says that night (PIX-426): their scene on their own
+## step; before it or after, a word that sends the hero on without naming
+## where (the line above the dock does), so Maren never takes the letter
+## early and Bram never sends the hero back to Sela's tent.
+static func lines_of(npc: Dictionary, step: int) -> Array:
+	if not npc.has("prologue"):
+		return npc["lines"]
+	var at: Dictionary = npc["prologue"]
+	var theirs := int(at["step"])
+	if theirs == step:
+		return at["lines"]
+	return at.get("before" if ORDER.find(step) < ORDER.find(theirs) else "after", at["lines"])
+
+
 ## Where a fresh hero stands when the night begins.
 static func start() -> Dictionary:
 	return data()["start"]

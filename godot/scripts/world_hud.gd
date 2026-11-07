@@ -542,8 +542,8 @@ func on_saved(how: int) -> void:
 
 ## The arrow at the view's edge (PIX-240): toward the bearing's spot on this
 ## map, or the door that starts the way to its map, while it's off screen;
-## gone once it's in view, with nowhere to head for, on the first night
-## (which has its own steps), or with the quest marks turned off. Gold while
+## gone once it's in view, with nowhere to head for, or with the quest marks
+## turned off; on the first night, to its step's place (PIX-426). Gold while
 ## it leads the main story, cream for a side quest or a bounty (PIX-253
 ## step 2).
 func update_arrow() -> void:
@@ -584,7 +584,7 @@ func arrow_area() -> Rect2:
 
 ## Where the arrow points in the world, or Vector2.INF for nowhere.
 func _bearing_point() -> Vector2:
-	if bearing.is_empty() or not GameState.settings.quest_marks or GameState.progression.prologue != Prologue.DONE:
+	if bearing.is_empty() or not GameState.settings.quest_marks:
 		return Vector2.INF
 	# A person is wherever they stand now: a keeper's tent on the square
 	# before the inn is rebuilt, a wanderer on their round.
