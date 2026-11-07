@@ -845,7 +845,7 @@ func _shoots(to_player: Vector2, delta: float) -> bool:
 	var apart := to_player.length()
 	if _at_quarry or tell_left >= 0.0 or apart <= Reach.bite_lands() or apart > Reach.px(shot):
 		return false
-	if not Packs.can_see(world.map, Packs.cell_of(global_position), Packs.cell_of(global_position + to_player)):
+	if not Packs.shot_clear(world.map, Packs.cell_of(global_position), Packs.cell_of(global_position + to_player)):
 		return false
 	velocity = Vector2.ZERO
 	facing = Gait.steer(facing, to_player)
@@ -856,12 +856,18 @@ func _shoots(to_player: Vector2, delta: float) -> bool:
 		glow.tween_property(sprite, "modulate", Color(1.6, 1.1, 0.6), aim_left)
 		glow.tween_property(sprite, "modulate", Color.WHITE, 0.1)
 		if GameState.settings.clear_warnings:
-			Telegraph.mark(world, Telegraph.band(global_position, global_position + to_player, Reach.px(shot), Firebolt.REACH * 2.0), aim_left, Callable(), false)
+			Telegraph.mark(world, Telegraph.band(global_position, global_position + to_player, _flies(), Firebolt.REACH * 2.0), aim_left, Callable(), false)
 	return true
 
 
+## How far its shot flies: its reach and two cells more (the warning band
+## shows all of it).
+func _flies() -> float:
+	return Reach.px(shot) + 2.0 * Reach.TILE
+
+
 ## The told shot flies (Firebolt) from about its chest at where the hero
-## stands now, as far as its reach and two cells more.
+## stands now, as far as _flies.
 func _loose(to_player: Vector2) -> void:
 	shot_left = float(shot["every"])
 	_play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
@@ -869,7 +875,7 @@ func _loose(to_player: Vector2) -> void:
 	bolt.world = world
 	bolt.caster = fighter.duplicate()
 	bolt.look = String(shot["look"])
-	bolt.flies = Reach.px(shot) + 2.0 * Reach.TILE
+	bolt.flies = _flies()
 	bolt.position = global_position + Vector2(0, -6)
 	bolt.heading = to_player.normalized()
 	bolt.speed = float(shot["speed"])
