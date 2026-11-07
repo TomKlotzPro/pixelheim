@@ -32,6 +32,7 @@ const MENU_GAP := 4.0
 const PLANK_WIDTH := 340.0
 const LIFT := 3.0
 const FOLLOW := 16.0
+const Options := preload("res://scripts/options_screen.gd")
 
 ## Whether this session's first title has risen: later ones (back from the
 ## saves) rise out of the night's colour.
@@ -97,6 +98,11 @@ func _open() -> void:
 	_logo()
 	_card()
 	_arrive()
+	# A language chosen in Options rebuilt the world in it (PIX-428):
+	# Options (the last plank but one) open again over the title, on that row.
+	if Options.back_at >= 0:
+		_take(options.size() - 2)
+		_show_choice()
 
 
 func _exit_tree() -> void:
@@ -493,7 +499,7 @@ func _whats_new() -> void:
 ## Options over the title, so sound and keys can be set before a hero
 ## exists; Esc hands back to the menu.
 func _options() -> void:
-	var screen := preload("res://scripts/options_screen.gd").new()
+	var screen := Options.new()
 	screen.world = world
 	add_child(screen)
 	# Over the title, which shares its layer (Tom: "Options does nothing").

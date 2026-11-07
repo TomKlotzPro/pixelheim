@@ -163,6 +163,10 @@ func _ready() -> void:
 		# before, its last unreadable), on the plate.
 		messages.flash(GameState.slot_note)
 		GameState.slot_note = ""
+	elif preload("res://scripts/options_screen.gd").back_at >= 0:
+		# Rebuilt in a language chosen in Options (PIX-428): the pause menu
+		# they were over opens again, and they over it.
+		open_pause()
 	# The web page's loading screen fades as the first screen rises out of
 	# the same picture (PIX-296, web/shell.html); it waits for this word.
 	if OS.has_feature("web"):
@@ -189,6 +193,14 @@ func open_title() -> void:
 	title.world = self
 	add_child(title)
 
+
+## The pause menu (Esc).
+func open_pause() -> void:
+	var pause := preload("res://scripts/pause_screen.gd").new()
+	pause.world = self
+	add_child(pause)
+
+
 ## Keys arrive as events, never polled: a key a conversation or a menu
 ## already took (E on the last line, Esc to leave, I to close the pack) stops
 ## there, instead of reopening the talk or the pause menu behind it in the
@@ -198,10 +210,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	var command := Callable()
 	if event.is_action_pressed("menu"):
-		command = func() -> void:
-			var pause := preload("res://scripts/pause_screen.gd").new()
-			pause.world = self
-			add_child(pause)
+		command = open_pause
 	elif event.is_action_pressed("interact"):
 		command = interaction.interact
 	else:

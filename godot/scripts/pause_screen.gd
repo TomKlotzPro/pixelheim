@@ -4,6 +4,8 @@ extends Screen
 ## options, or back to the title. Progress saves itself. W/S choose, E or
 ## Enter takes it, Esc resumes. The world holds still.
 
+const Options := preload("res://scripts/options_screen.gd")
+
 var world: Node
 var options: Array[Dictionary] = []
 var selected := 0
@@ -53,6 +55,10 @@ func _open() -> void:
 		{"label": "Options", "action": _options},
 		{"label": "Quit to title", "action": _quit},
 	]
+	# A language chosen in Options rebuilt the world in it (PIX-428):
+	# Options open again over the menu, on that row.
+	if Options.back_at >= 0:
+		_take(2)
 	_draw()
 
 
@@ -100,21 +106,30 @@ func _resume() -> void:
 	close()
 
 
+## The saves over the pause menu, as Options (PIX-427: it closed the menu
+## first, so Esc went back to play); playing the hero in hand is Resume.
 func _saves() -> void:
-	_resume()
-	world.open_saves()
+	var screen := preload("res://scripts/saves_screen.gd").new()
+	screen.on_play_current = _resume
+	_over(screen)
 
 
-## Options open over the pause menu and hand back to it when closed.
 func _options() -> void:
-	var screen := preload("res://scripts/options_screen.gd").new()
+	var screen := Options.new()
 	screen.world = world
+	_over(screen)
+
+
+## `screen` over the pause menu, its keys in place of the menu's: Esc hands
+## back here.
+func _over(screen: Screen) -> void:
 	keys.visible = false
 	screen.tree_exited.connect(func() -> void:
 		if is_instance_valid(keys):
 			keys.visible = true
 	)
 	add_child(screen)
+	screen.layer = layer + 1
 
 
 ## Back to the title: the hero is saved first, then the world starts over.

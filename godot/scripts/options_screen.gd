@@ -6,6 +6,11 @@ extends Screen
 ## pressed takes it; Esc cancels). Everything is saved at once in
 ## GameSettings. Esc closes.
 
+## The row the next Options open on, set as a language rebuilds the world
+## in it (PIX-428: the reload closed Options and every screen under them);
+## the title or the pause menu opens them again there. -1: none.
+static var back_at := -1
+
 var world: Node
 var rows: Array[Dictionary] = []
 var selected := 0
@@ -39,6 +44,9 @@ func _open() -> void:
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 640))
 	add_child(status)
 	add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  adjust      {key:interact}  rebind / toggle      Esc  close"))
+	if back_at >= 0:
+		selected = back_at
+		back_at = -1
 	_refresh()
 
 
@@ -118,7 +126,8 @@ func _language_name(code: String) -> String:
 	return tr("System (%s)") % Text.LANGUAGES[Text.language_for("")]
 
 
-## The next language (or the system's), spoken at once: the town reloads in it.
+## The next language (or the system's), spoken at once: the town reloads in
+## it, Options open again on this row over what they were over.
 func _language(step: int) -> void:
 	var choices: Array = [""] + Text.LANGUAGES.keys()
 	var settings := GameState.settings
@@ -126,6 +135,7 @@ func _language(step: int) -> void:
 	settings.save_file()
 	Text.apply(settings.language)
 	GameState.save_now()
+	back_at = selected
 	get_tree().paused = false
 	get_tree().reload_current_scene()
 
