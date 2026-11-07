@@ -2,7 +2,7 @@
 
 **Goal:** go through every screen and every setting with the keyboard only, and find what doesn't open, doesn't close, loses its focus or lies about its keys.
 
-**Start:** a plain launch, in English. A fresh profile.
+**Start:** a plain launch: `start` with no option, in English. A fresh profile.
 
 **Model:** Haiku. This is the most mechanical player; `lessons.md` says whether Haiku is enough.
 
