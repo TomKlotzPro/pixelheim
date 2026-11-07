@@ -2,10 +2,12 @@ extends GutTest
 ## The bridge tools/play.py plays through (PIX-423): a command's keys held
 ## as the game's actions for its time and let go, the game's clock spent by
 ## that time alone, the answer written and the page frozen; under the game's
-## own pause too, never touching it; a key Godot doesn't know plays nothing;
+## own pause too, never touching it; not before a harness run's steps are
+## done; a key Godot doesn't know plays nothing;
 ## and the words read off a screen are the ones a player sees.
 
 const Bridge := preload("res://scripts/play_bridge.gd")
+const Harness := preload("res://scripts/harness.gd")
 
 
 ## window.pixelheimPlay's stand-in.
@@ -26,6 +28,7 @@ func before_each() -> void:
 
 
 func after_each() -> void:
+	Harness.stepping = false
 	get_tree().paused = false
 	Input.action_release("move_right")
 
@@ -54,6 +57,15 @@ func test_a_hold_presses_its_action_for_its_time_then_freezes() -> void:
 	for field: String in ["level", "hp", "maxHp", "mana", "gold", "hour", "paused"]:
 		assert_true(said.has(field), field)
 	assert_false(said.has("error"))
+
+
+func test_a_harness_run_answers_once_its_steps_are_done() -> void:
+	Harness.stepping = true
+	page.command = JSON.stringify([{"keys": [], "seconds": 0.1}])
+	await wait_physics_frames(5)
+	assert_not_null(page.command, "not taken while the presets' steps go on")
+	Harness.stepping = false
+	await _answer()
 
 
 func test_it_runs_under_the_games_own_pause_and_leaves_it() -> void:

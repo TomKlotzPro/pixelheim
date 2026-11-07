@@ -14,7 +14,9 @@ extends Node
 ## thinking costs the game nothing. The page runs stepped (`--fixed-fps
 ## 60`): a frame is a sixtieth of a second however long it took, and a hold
 ## counts physics ticks. It runs whether the game is paused or not and never
-## touches the tree's pause itself.
+## touches the tree's pause itself. In a harness run it answers only once
+## the run's steps are done (Harness.stepping): the first look is the start
+## the presets set, not a step mid-way.
 
 const Harness := preload("res://scripts/harness.gd")
 ## A tap is held this many ticks, and the keys of a step let go this many
@@ -36,7 +38,7 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if _busy or page == null or page.command == null:
+	if _busy or page == null or page.command == null or Harness.stepping:
 		return
 	var command := String(page.command)
 	page.command = null

@@ -168,6 +168,9 @@ const STEPS := [
 	preload("res://scripts/harness_steps/measure.gd"),
 ]
 
+## True while a `play` run's steps go on (PIX-423): PlayBridge holds its
+## first answer till they're done, or an agent's first look is a step mid-way.
+static var stepping := false
 ## The run's flags, parsed once (HarnessFlags.given()).
 var flags: HarnessFlags
 ## The report line's fields (HarnessReport.TABLE); a value known only
@@ -194,6 +197,7 @@ func _run_test_harness() -> void:
 	# `--dissolve-at S`: a door's dissolve held S seconds in (PIX-269).
 	if flags.has("--dissolve-at"):
 		Dissolve.held_at = float(flags.value("--dissolve-at"))
+	stepping = flags.has("play")
 	await get_tree().create_timer(0.4).timeout
 	report = HarnessReport.new(self, flags)
 	var areas: Array = STEPS.map(func(script: GDScript) -> Object:
@@ -212,7 +216,15 @@ func _run_test_harness() -> void:
 			await areas.filter(func(area: Object) -> bool: return area.has_method(step))[0].call(step)
 	# `play` (PIX-423): the presets and steps were the start of a session
 	# tools/play.py goes on driving (PlayBridge): no report, shot or quit.
+	# Its first look once the maps beside are stitched and the camera has
+	# eased to them (it stood held at the map's edge till then), a frame
+	# first for the neighbours to want those beside the hero where it stands.
 	if flags.has("play"):
+		for _frame in 600:
+			await get_tree().process_frame
+			if world.neighbours.settled() and world.camera_rig.settled():
+				break
+		stepping = false
 		return
 	# What the run left: every field the report has (HarnessReport.TABLE),
 	# read at the same step whether the run has a window or not (PIX-276):

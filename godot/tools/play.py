@@ -6,13 +6,14 @@ hands on the web build in headless Chrome, for playtests.
     play.py look [--out D]                # a screenshot and what the game knows, as JSON
     play.py stop
 
-`start` leaves a small daemon on the port (8642, or the next free one, so
-several sessions run at once; the other commands take --port too). It serves
-godot/export/web as web_perf.py does and opens it in headless Chrome, muted,
-on a fresh profile in the session's folder that `stop` throws away with its
-saves. Without options it is a plain launch from the title, as a new player
-sees it; --role, --level, --map and --at start a harness run's throwaway
-hero with those presets instead, the game's command line then:
+`start` leaves a small daemon on the port (8642, or the next free one; give
+each its own --port when several start at once; the other commands take
+--port too). It serves godot/export/web as web_perf.py does and opens it in
+headless Chrome, muted, on a fresh profile in the session's folder that
+`stop` throws away with its saves. Without options it is a plain launch
+from the title, as a new player sees it; --role, --level, --map and --at
+start a harness run's throwaway hero with those presets instead (`fight`
+always `hurt`, never `kill`), the game's command line then:
 --fixed-fps 60 -- --screenshot play --lang fr --role mage --level 5 --map overworld --at 93,33
 
 The game runs only during a command: between commands the page gives the
@@ -24,7 +25,7 @@ together, `name:s` holds for s seconds (else a tap), `wait:s` waits.
 Needs the export (with the private art copied in) and Playwright for Python
 in a venv, run with the venv's python:
 
-    godot --headless --path godot --export-release Web export/web/index.html
+    mkdir -p godot/export/web && godot --headless --path godot --export-release Web export/web/index.html
     python3 -m venv /tmp/pw && /tmp/pw/bin/pip install playwright==1.56.0
     /tmp/pw/bin/python godot/tools/play.py start --dir /tmp/play
 """
@@ -111,8 +112,14 @@ def game_args(options):
     for flag, value in (("--role", options.role), ("--level", options.level), ("--map", options.map), ("--at", options.at)):
         if value is not None:
             presets += [flag, str(value)]
-    presets += (options.flags or "").split()
-    flags =["--screenshot", "play"] + (["--lang", options.lang] if options.lang else []) + presets if presets else ["play"]
+    more = (options.flags or "").split()
+    if "kill" in more:
+        raise SystemExit("no kill: it swings for up to five minutes of play, through your own keys; fight with yours")
+    # A playtest's fighter is hit, dodges and can fall: the harness's is untouchable without `hurt`.
+    if "fight" in more and "hurt" not in more:
+        more.append("hurt")
+    presets += more
+    flags = (["--screenshot", "play"] + (["--lang", options.lang] if options.lang else []) + presets) if presets else ["play"]
     return ["--fixed-fps", "60", "--"] + flags
 
 
@@ -166,8 +173,9 @@ def call(port, request, timeout=600):
 
 
 def start(options):
+    args = game_args(options)
     if not os.path.exists(os.path.join(EXPORT, "index.html")):
-        raise SystemExit("no web export in %s: godot --headless --path godot --export-release Web export/web/index.html" % EXPORT)
+        raise SystemExit("no web export in %s: mkdir -p godot/export/web && godot --headless --path godot --export-release Web export/web/index.html" % EXPORT)
     port = options.port or free_port()
     if options.port and free_port(port) != port:
         raise SystemExit("port %d is taken" % port)
@@ -177,18 +185,23 @@ def start(options):
     with open(log, "w") as out:
         daemon = subprocess.Popen(
             [sys.executable, os.path.abspath(__file__), "serve", "--port", str(port), "--dir", folder,
-             "--lang", options.lang or "", "--args", json.dumps(game_args(options))],
+             "--lang", options.lang or "", "--args", json.dumps(args)],
             stdout=out, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, start_new_session=True)
-    # The daemon binds its port at once and answers once the game has booted.
+    # The daemon binds its port at once and answers once the game has booted: is it this one?
     for _ in range(300):
         if daemon.poll() is not None:
             break
         try:
-            answer = call(port, {"command": "look"})
-            print(json.dumps({"port": port, "dir": folder, **answer}, ensure_ascii=False))
-            return
+            answer = call(port, {"command": "hello"})
         except SystemExit:
             time.sleep(0.2)
+            continue
+        # Two starts at once can both find the same port free: the other one's game isn't ours.
+        if answer.get("pid") != daemon.pid:
+            daemon.terminate()
+            raise SystemExit("port %d answers another session: give each session its own --port" % port)
+        print(json.dumps({"port": port, "dir": folder, **call(port, {"command": "look"})}, ensure_ascii=False))
+        return
     with open(log) as out:
         sys.stderr.write(out.read()[-3000:])
     if daemon.poll() is None:
@@ -204,7 +217,18 @@ def gone(pid, timeout_s=30):
         except ProcessLookupError:
             return
         time.sleep(0.1)
+    sys.stderr.write("the session didn't close in %d s: killed\n" % timeout_s)
     os.killpg(pid, signal.SIGKILL)
+
+
+def forget(profile):
+    """The session's Chrome profile deleted, its saves with it; Chrome's
+    last helpers may still be writing as it goes: until it's gone."""
+    for _ in range(50):
+        shutil.rmtree(profile, ignore_errors=True)
+        if not os.path.exists(profile):
+            return
+        time.sleep(0.1)
 
 
 class Quiet(http.server.SimpleHTTPRequestHandler):
@@ -252,9 +276,11 @@ class Session:
             self.said = []
             state = json.loads(self.page.evaluate("window.pixelheimPlay.state"))
             return {"shot": shot, **state, "errors": [line if n == 1 else "%s (x%d)" % (line, n) for line, n in counted.items()]}
+        if command == "hello":  # `start`'s: whose session it is (the pid every answer carries)
+            return {}
         if command == "stop":
             self.done = True
-            return {"stopped": True, "pid": os.getpid()}
+            return {"stopped": True, "profile": os.path.join(self.folder, "chrome-profile")}
         return {"error": "no command %s" % command}
 
 
@@ -273,6 +299,8 @@ def serve(options):
                 answer = session.answer(request)
             except Exception as error:  # the game hung or Chrome went: say so, keep serving
                 answer = {"error": str(error).split("\n")[0], "errors": session.said[-20:]}
+            # Whose answer it is: `start` checks it's its own daemon's, `stop` waits for it to go.
+            answer["pid"] = os.getpid()
             body = json.dumps(answer, ensure_ascii=False).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -316,12 +344,7 @@ def serve(options):
     finally:
         files.shutdown()
         control.server_close()
-        # Chrome's last helpers may still be writing as it goes: until it's gone.
-        for _ in range(50):
-            shutil.rmtree(profile, ignore_errors=True)
-            if not os.path.exists(profile):
-                break
-            time.sleep(0.1)
+        forget(profile)
 
 
 def main(argv=None):
@@ -342,6 +365,8 @@ def main(argv=None):
         answer = call(options.port, request)
         if options.command == "stop":
             gone(answer["pid"])
+            # A daemon killed or fallen on the way out left the profile behind: its Chrome has gone with it.
+            forget(answer["profile"])
         print(json.dumps(answer, ensure_ascii=False))
         if "error" in answer:
             sys.exit(1)

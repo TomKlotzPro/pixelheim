@@ -55,7 +55,13 @@ class StartTest(unittest.TestCase):
 
     def test_more_harness_flags_after_the_presets(self):
         self.assertEqual(self.args("--level", "8", "--flags", "fight --foe orc --foe-distance 3")[4:], [
-            "play", "--level", "8", "fight", "--foe", "orc", "--foe-distance", "3"])
+            "play", "--level", "8", "fight", "--foe", "orc", "--foe-distance", "3", "hurt"])
+
+    def test_a_fight_always_hurts_and_kill_is_refused(self):
+        self.assertEqual(self.args("--flags", "fight hurt").count("hurt"), 1)
+        self.assertNotIn("hurt", self.args("--flags", "pack"))
+        with self.assertRaises(SystemExit):
+            self.args("--flags", "fight kill")
 
     def test_every_command_finds_its_session_by_port(self):
         self.assertEqual(play.parser().parse_args(["look"]).port, play.FIRST_PORT)
