@@ -452,6 +452,10 @@ func field_fort() -> String:
 	return "%s:houses%d,%stops%d,worn%d" % [by, PunyTown.houses(world.map.grid).size(), "".join(hung.map(func(each: String) -> String: return each + ",")), tops, world.view.worn_paving.size()]
 
 
+func field_fought() -> String:
+	return noted("fought")
+
+
 func field_frames() -> String:
 	return noted("frames")
 

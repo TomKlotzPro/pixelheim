@@ -175,6 +175,12 @@ skillfx-mend | --role cleric cast | skillfx=vitality_heal drawn \d+ | combat
 skillfx-chill | --role necromancer --level 10 cast --skill 3 | skillfx=ice_arrow,ice_crystals drawn \d+ | combat
 skillfx-arrow | --role ranger fight --wait 0.12 | skillfx=arrow,impact drawn \d+ | combat
 skillfx-still | --role ranger fight --wait 0.12 still | skillfx=arrow,impact drawn 0 | combat
+# Foes that shoot (PIX-410): a coast gunner and a Greyhold bowman stood
+# where a ranger's bow reaches, two cells off, hold there, glow and loose
+# their ball or arrow, and it strikes before they fall: a bite never
+# reaches two cells, so the health fought= notes lost is their shots'.
+shooter-ball | --role ranger --level 4 fight kill hurt --foe pirate_gunner | fought=\d+\.\ds -[1-9]\d* | combat
+shooter-arrow | --role ranger --level 8 fight kill hurt --foe turncoat_bowman | fought=\d+\.\ds -[1-9]\d* | combat
 # A harness hero built as the game makes one (PIX-379): a level-10 mage's
 # growth, its points 2:1 on intelligence and endurance, its tree bought
 # and the band's staff in hand, healed whole.

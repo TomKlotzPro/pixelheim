@@ -9,7 +9,10 @@ extends CharacterBody2D
 ## bestiary's (`fighter` from Bestiary.spawn): hits land through Bestiary's
 ## damage formulas, and its death pays out through
 ## GameState.spoils.defeat_monster (via the world). It wears the Puny sheet
-## PunyArt assigns its species, walking the way it moves.
+## PunyArt assigns its species, walking the way it moves. One that shoots
+## (the gunners, the bowmen, the imps: PIX-410) holds where it has the hero
+## in its shot's reach and looses a told shot that flies (Firebolt); every
+## foe's bite is contact (Reach.bite_tell, Reach.bite_lands).
 
 const WANDER_SPEED := 22.0
 const CHASE_SPEED := 55.0
@@ -33,16 +36,15 @@ const DROP_RUN := 3.0
 ## height over the health bar.
 const MARK_CLEAR := 1.0
 const TAG_HEIGHT := 9.0
-const CONTACT_RADIUS := 13.0
-## A bite that was told lands if the hero is still this close.
-const BITE_REACH := 20.0
+## A bite is told once the hero is within Reach.bite_tell(), and lands if
+## they're still within Reach.bite_lands() (PIX-410: combat.json's reach).
 const CONTACT_COOLDOWN := 0.9
 const ELITE_TINT := Color(1.0, 0.82, 0.7)
 ## A blow's shove (PIX-209): a push that fades to nothing over KNOCK_TIME,
 ## riding on top of the foe's own walk - 6 px all told (v·t/2) for a common
 ## foe, half for an elite or a named one, none for a boss. PIX-377: it was
-## 10 px, which threw a foe telling its bite at CONTACT_RADIUS out of
-## BITE_REACH, so a hero swinging every 0.45 s was hardly ever bitten.
+## 10 px, which threw a foe telling its bite out of its reach, so a hero
+## swinging every 0.45 s was hardly ever bitten.
 const KNOCK_PUSH := 100.0
 const KNOCK_TIME := 0.12
 ## The bite's wind-up (PIX-226): how far it leans back and tilts away.
@@ -89,9 +91,10 @@ const REST_MARGIN := 6.0 * MapView.TILE
 ## or HEAD_CLEAR over the top of a head that reaches higher (over_head).
 const BAR_Y := -20.0
 const HEAD_CLEAR := 6.0
-## Its box for blows at its kind's size, from its feet up (grown with its
+## Its body for blows at its kind's size, from its feet up (grown with its
 ## drawing); an elite's a little bigger, as it was when it was drawn so
-## (PIX-314 drew it its kind's size: whole sizes only).
+## (PIX-314 drew it its kind's size: whole sizes only). A blow reaches it at
+## its near edge, half its width either side of its feet (Reach, PIX-410).
 const BODY := Vector2(16, 24)
 const ELITE_BODY := 1.2
 ## A boss's weight besides its size (PIX-314): its shadow on the ground,
@@ -120,7 +123,6 @@ var can_bite := true
 var wander_dir := Vector2.ZERO
 var wander_time := 0.0
 var sprite: AnimatedSprite2D
-var hurtbox: Area2D
 var health_bar: ColorRect
 var health_bar_back: ColorRect
 ## "Lv N" beside the health bar (PIX-188).
@@ -222,6 +224,12 @@ var _reach_until := -100.0
 ## Where its bar stands, from its feet (over_head, PIX-314); a boss's
 ## shadow and glow (_weigh).
 var _over_head := BAR_Y
+## Its shot (Reach.shot, PIX-410), {} for a foe that only bites; seconds
+## till it may loose the next, and till the one it is telling flies
+## (negative while none is told).
+var shot := {}
+var shot_left := 0.0
+var aim_left := -1.0
 var _shadow: Sprite2D
 var _aura: PointLight2D
 static var _shadows := {}
@@ -238,11 +246,11 @@ func _ready() -> void:
 	# How much bigger than its kind (drawn_size, PIX-314: whole sizes only):
 	# a named monster twice its kind or more and in its own colour
 	# (PIX-156), an elite its kind's size in gold.
-	var grown := growth(fighter)
 	var size := drawn_size(fighter)
 	var tint: Color = art.get("tint", Color.WHITE)
 	sprite.self_modulate = tint * ELITE_TINT if fighter["elite"] else tint
 	boss_like = Bestiary.fights_like_boss(fighter)
+	shot = Reach.shot(String(fighter["id"]))
 	if fighter.has("named"):
 		named = Hunts.named(fighter["named"])
 		of_the_wilds = Hunts.of_the_wilds(fighter["named"])
@@ -283,22 +291,8 @@ func _ready() -> void:
 	var rect := RectangleShape2D.new()
 	rect.size = Vector2(10, 8)
 	shape.shape = rect
+	# Movement collides at the feet; blows reach its body (body_of, Reach).
 	add_child(shape)
-
-	# Movement collides at the feet; swings land anywhere on the visible body.
-	hurtbox = Area2D.new()
-	hurtbox.collision_layer = 4
-	hurtbox.collision_mask = 0
-	hurtbox.monitoring = false
-	var hurt_shape := CollisionShape2D.new()
-	var hurt_rect := RectangleShape2D.new()
-	hurt_rect.size = body_of(fighter)
-	hurt_shape.shape = hurt_rect
-	# Grown with its drawing, from where its kind's stands (PIX-314: a big
-	# foe's box hung half below its feet).
-	hurt_shape.position = Vector2(0, -8 * grown)
-	hurtbox.add_child(hurt_shape)
-	add_child(hurtbox)
 
 	# Health floats above the head, hidden until first scratched; elites in gold.
 	health_bar_back = ColorRect.new()
@@ -465,7 +459,7 @@ static func drawn_size(fighter: Dictionary) -> int:
 	return roundi(float(PunyArt.monster(fighter["id"]).get("scale", 1))) * growth(fighter)
 
 
-## Its box for blows: its kind's body grown with its drawing, an elite's a
+## Its body for blows: its kind's grown with its drawing, an elite's a
 ## little bigger.
 static func body_of(fighter: Dictionary) -> Vector2:
 	var grown := growth(fighter)
@@ -813,6 +807,8 @@ func held_to_fight() -> bool:
 ## a flash tells the bite, which lands if the hero is still close when the
 ## tell is done.
 func _chase(to_player: Vector2, delta: float) -> void:
+	if not shot.is_empty() and _shoots(to_player, delta):
+		return
 	var spot: Vector2 = world.foes.ring_spot(self)
 	if spot != Vector2.INF:
 		# Its place in the ring round the hero (PIX-377), slowing onto it,
@@ -828,8 +824,58 @@ func _chase(to_player: Vector2, delta: float) -> void:
 		tell_left -= delta
 		if tell_left < 0:
 			_bite(to_player)
-	elif to_player.length() < CONTACT_RADIUS and can_bite:
+	elif to_player.length() < Reach.bite_tell() and can_bite:
 		_tell_bite(to_player)
+
+
+## A shooter's turn (PIX-410): while it has the hero beyond a bite and
+## within its shot's reach and sight, it holds there (out of the ring round
+## them) and, ready, tells a shot - a glow, and under clear warnings its
+## line on the ground - then looses it at where the hero stands. False when
+## it should close in as any foe does: out of reach or sight, at the wagon,
+## or near enough to bite.
+func _shoots(to_player: Vector2, delta: float) -> bool:
+	shot_left -= delta
+	if aim_left >= 0.0:
+		velocity = Vector2.ZERO
+		aim_left -= delta
+		if aim_left < 0.0:
+			_loose(to_player)
+		return true
+	var apart := to_player.length()
+	if _at_quarry or tell_left >= 0.0 or apart <= Reach.bite_lands() or apart > Reach.px(shot):
+		return false
+	if not Packs.can_see(world.map, Packs.cell_of(global_position), Packs.cell_of(global_position + to_player)):
+		return false
+	velocity = Vector2.ZERO
+	facing = Gait.steer(facing, to_player)
+	if shot_left <= 0.0:
+		aim_left = float(shot["tell"])
+		Sound.play("tell")
+		var glow := sprite.create_tween()
+		glow.tween_property(sprite, "modulate", Color(1.6, 1.1, 0.6), aim_left)
+		glow.tween_property(sprite, "modulate", Color.WHITE, 0.1)
+		if GameState.settings.clear_warnings:
+			Telegraph.mark(world, Telegraph.band(global_position, global_position + to_player, Reach.px(shot), Firebolt.REACH * 2.0), aim_left, Callable(), false)
+	return true
+
+
+## The told shot flies (Firebolt) from about its chest at where the hero
+## stands now, as far as its reach and two cells more.
+func _loose(to_player: Vector2) -> void:
+	shot_left = float(shot["every"])
+	_play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
+	var bolt := Firebolt.new()
+	bolt.world = world
+	bolt.caster = fighter.duplicate()
+	bolt.look = String(shot["look"])
+	bolt.flies = Reach.px(shot) + 2.0 * Reach.TILE
+	bolt.position = global_position + Vector2(0, -6)
+	bolt.heading = to_player.normalized()
+	bolt.speed = float(shot["speed"])
+	world.add_child(bolt)
+	var fire := bolt.look == "flame"
+	Sound.play("firebolt_cast" if fire else "shoot")
 
 
 ## The bite's tell (PIX-210): it crouches to spring with a red glint and a
@@ -852,14 +898,14 @@ func _tell_bite(toward: Vector2) -> void:
 	tell.tween_property(sprite, "skew", 0.0, tell_left * 0.4)
 	Sound.play("tell")
 	if GameState.settings.clear_warnings:
-		Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, BITE_REACH, 12.0), tell_left, Callable(), false)
+		Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, Reach.bite_lands(), 12.0), tell_left, Callable(), false)
 
 
 ## Whether it takes a place in the ring round the hero (PIX-377,
 ## Foes.ring_spot): hunting them, never a boss or a named monster, nor one
-## sent at a wagon.
+## sent at a wagon, nor one that shoots (PIX-410: it keeps its distance).
 func in_ring() -> bool:
-	return hunting and not dying and mode in ["chase", "cast"] and not boss_like and not _hunts_wagon()
+	return hunting and not dying and mode in ["chase", "cast"] and not boss_like and not _hunts_wagon() and shot.is_empty()
 
 
 ## Where the chase goes: the hero, or the wagon when it's the nearer.
@@ -878,7 +924,7 @@ func _hunts_wagon() -> bool:
 
 
 func _bite(to_player: Vector2) -> void:
-	if to_player.length() > BITE_REACH:
+	if to_player.length() > Reach.bite_lands():
 		return
 	can_bite = false
 	Sound.play(Sound.voice_for(String(fighter["id"]), "attack", "foe_bite"))
@@ -898,6 +944,7 @@ func _bite(to_player: Vector2) -> void:
 ## (PIX-251): back home, deaf to the hero on the way.
 func _give_up() -> void:
 	mode = "homeward"
+	aim_left = -1.0
 	hunting = false
 	at_bay = false
 	tell_left = -1.0
@@ -947,7 +994,7 @@ func _fresh_hunt() -> void:
 ## by the next step of its way round what stands between. With no way at
 ## all it stands and watches, and that counts toward giving up.
 func _heading(to_target: Vector2, delta: float) -> Vector2:
-	if not boss_like or to_target.length() <= BITE_REACH:
+	if not boss_like or to_target.length() <= Reach.bite_lands():
 		blocked_for = 0.0
 		return to_target.normalized()
 	var way := _way(to_target, delta)
@@ -1023,7 +1070,7 @@ func _can_reach(to_player: Vector2) -> bool:
 func _measure_held(walk: Vector2, to_player: Vector2, delta: float) -> void:
 	var pressing := walk.length() > 1.0
 	if mode == "chase" and boss_like:
-		pressing = pressing and tell_left < 0 and to_player.length() > BITE_REACH
+		pressing = pressing and tell_left < 0 and to_player.length() > Reach.bite_lands()
 		held_for = held_for + delta if pressing and get_real_velocity().length() < CHASE_SPEED * pace * 0.25 else 0.0
 	elif mode == "homeward":
 		held_for = held_for + delta if get_real_velocity().length() < HOMEWARD_SPEED * 0.25 else 0.0
@@ -1285,7 +1332,6 @@ func lie_down() -> void:
 		fright_mark.visible = false
 	collision_layer = 0
 	collision_mask = 0
-	hurtbox.collision_layer = 0
 	health_bar.visible = false
 	health_bar_back.visible = false
 	gait.halt()
