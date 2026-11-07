@@ -2185,6 +2185,10 @@ msgid "A stun in the middle of a swing no longer freezes the hero: when it wears
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A summoned wolf's, slime's or skeleton's bite no longer shields you from the boss's own bite right after it: Old Greymaw, the Tidecaller and the Bone Abbot hit as hard as they should with their pack out, and the pack itself still bites one at a time"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A third dream under Sela's roof, the first night after Aske comes home"
 msgstr ""
 
@@ -4686,6 +4690,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "PUNCHING UP PAYS: a foe above your level pays 5% more XP for each level it stands above you, up to a quarter more, so a hero who has fallen behind catches up faster"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Pack Rules"
 msgstr ""
 
 #: assets/data/changelog.json

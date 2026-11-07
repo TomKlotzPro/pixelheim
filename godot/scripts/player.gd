@@ -274,9 +274,17 @@ var crit_primed_until := 0.0
 const PRIMED_SECONDS := 2.0
 
 
-## A blow lands; `infliction` is the attacker's ailment roll, if it carries one.
-func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
-	if invulnerable or dead:
+## Until when a summon's bite guards the hero from the other summons' (PIX-421).
+var _nipped_until := 0.0
+
+
+## A blow lands; `infliction` is the attacker's ailment roll, if it carries
+## one. Without `grace` (a summon's bite, PIX-421) it starts no half-second
+## of invulnerability, so the boss's own bite right after still lands, only
+## a half-second guard against the other summons' bites: they count once,
+## like any pack's.
+func take_hit(damage: int, from: Vector2, infliction: Variant = null, grace := true) -> void:
+	if invulnerable or dead or (not grace and GameClock.seconds() < _nipped_until):
 		return
 	if _dodge_iframes:
 		# The blow swishing past (PIX-383: it was silent).
@@ -309,6 +317,9 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	# the next tick anyway): halting it would set the hero off afresh.
 	if not attacking and not gait.walking:
 		_play("hurt")
+	if not grace:
+		_nipped_until = GameClock.seconds() + INVULNERABLE_SECONDS
+		return
 	invulnerable = true
 	# The blink lasts as long as the grace: three blinks.
 	var tween := create_tween().set_loops(3)
