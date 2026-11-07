@@ -3089,6 +3089,10 @@ msgid "Esc got manners: it closes the menu you are in, and only pauses when noth
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Esc on Saves, opened from the pause menu, now takes you back to the pause menu, and choosing a language keeps Options open, in the new language, on the Language row"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Escape pauses the game: copy your save code, open options, or quit to the title and resume in place"
 msgstr ""
 
@@ -4590,6 +4594,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "One Page"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "One Step Back"
 msgstr ""
 
 #: assets/data/changelog.json
