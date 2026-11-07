@@ -135,8 +135,11 @@ static func after_choice(giver: String, entries: Dictionary) -> String:
 
 ## Whether a quest may be offered yet (PIX-171): side quests open as the
 ## story moves on - "opensAfter" names a main quest step, or another quest
-## that must be done first.
+## that must be done first. None on the Night of Ash (PIX-426): a word that
+## night is only ever the night's, so no "!" or map mark may promise one.
 static func is_open(quest: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
+	if progression.prologue != Prologue.DONE:
+		return false
 	var after: String = quest.get("opensAfter", "")
 	if after == "":
 		return true

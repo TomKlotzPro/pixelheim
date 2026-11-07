@@ -458,7 +458,7 @@ func _fill_now() -> void:
 		tags.add_child(UiStyle.strong(progress, 18, UiStyle.INK))
 	now_box.add_child(tags)
 	var title := String(lead["title"])
-	if lead["main"]:
+	if lead["main"] and progression.prologue == Prologue.DONE:
 		title = Journal.chapter_title(MainQuest.next_step(progression, GameState.settlement))
 	now_box.add_child(Layout.wrapped(UiStyle.heading(title, 18, UiStyle.INK), TEXT_WIDTH))
 	now_step = Layout.wrapped(UiStyle.label(step, 18, UiStyle.INK), TEXT_WIDTH)

@@ -42,7 +42,11 @@ static func rows(progression: ProgressionState, settlement: SettlementState, ite
 	var by_group := {"story": [], "people": [], "bounties": []}
 	var past_gates := func(lead: Dictionary) -> Dictionary: return Gates.detour(lead, progression, settlement, items, discovered)
 	var step := MainQuest.next_step(progression, settlement)
-	if not step.is_empty():
+	if progression.prologue != Prologue.DONE:
+		# The night's step while it runs, where the line above the dock is (PIX-426).
+		var night := Bearing.of_night(progression)
+		by_group["story"].append(_row("story", STORY, String(night["title"]), night, ""))
+	elif not step.is_empty():
 		var lead: Dictionary = past_gates.call(Bearing.of_step(step, progression, settlement, items))
 		by_group["story"].append(_row("story", STORY, chapter_title(step), lead, String(step.get("hint", ""))))
 	for carried: Dictionary in Letters.satchel(progression):

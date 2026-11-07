@@ -175,3 +175,77 @@ func test_the_fires_put_out_are_kept() -> void:
 	state.progression.write_into(saved)
 	assert_eq(saved["prologueDoused"], [2])
 	assert_eq(ProgressionState.from_dict(saved).prologue_doused, [2] as Array[int])
+
+
+## PIX-426: the line above the dock said Upper Street while the map's goal,
+## the journal and Maren's gold "!" sent a newcomer to her, who played her
+## letter scene again and again and never found the caller. At every step of
+## the night every guide points at the one place the step is done: the
+## lead (the line above the dock, the journal's top, the map's goal and the
+## arrow all read it), the journal's main story row, and the marks (no quest
+## is offered that night; the survivor the step waits on wears the gold "!").
+func test_every_guide_points_where_the_nights_step_is_done() -> void:
+	var people := {Prologue.BRAM: "villager_bram", Prologue.SELA: "innkeeper", Prologue.MAREN: "elder"}
+	var town := MapData.load_by_id("town")
+	# Something followed from the journal doesn't take the night's lead.
+	state.progression.tracked = "greymaw"
+	for step: int in Prologue.ORDER:
+		state.progression.prologue = step
+		var goal := Prologue.goal(step)
+		var line := Prologue.objective(step, state.progression.prologue_doused.size())
+		var lead := Bearing.active(state.progression, state.settlement, state.pack.items)
+		assert_eq([lead["map_id"], lead["cell"], lead["who"]], [goal["map_id"], goal["cell"], goal["who"]], "beat %d: the lead is its goal" % step)
+		assert_eq(lead["step"], line, "beat %d: and says the line above the dock" % step)
+		assert_true(Bearing.tells_story(lead), "beat %d: the gold arrow" % step)
+		assert_eq(Bearing.behind(lead, state.progression, state.settlement, state.pack.items), {}, "beat %d: no story behind it" % step)
+		var row: Dictionary = Journal.rows(state.progression, state.settlement, state.pack.items)[0]
+		assert_eq([row["id"], row["title"], row["line"]], [Journal.STORY, "The Night of Ash", line], "beat %d: the journal's row" % step)
+		assert_eq(row["lead"], lead, "beat %d: leads where the line does" % step)
+		assert_eq(goal["who"], people.get(step, ""), "beat %d: who it waits on" % step)
+		for survivor: Dictionary in Prologue.survivors():
+			assert_eq(Quests.mark_for(survivor["id"], state.progression.quests, state.pack.items, state.questing.quest_open), "", "beat %d: %s offers nothing" % [step, survivor["id"]])
+		var cell: Vector2i = goal["cell"]
+		match step:
+			Prologue.SCAVENGER:
+				assert_eq([goal["map_id"], cell], ["overworld", Vector2i(48, 37)], "the thing on the road")
+			Prologue.GATE:
+				var road := MapData.load_by_id("overworld")
+				assert_eq(String(road.portals.get(cell, {}).get("mapId", "")), "town", "the way in")
+			Prologue.FIRES:
+				assert_eq(town.grid.get(cell, ""), "well", "the well")
+			Prologue.CAP:
+				assert_eq([goal["map_id"], cell], ["", Bearing.NOWHERE], "worn anywhere")
+			_:
+				assert_eq(goal["map_id"], "town")
+				assert_true(town.is_walkable(cell), "beat %d: on open ground" % step)
+	state.progression.prologue = Prologue.DONE
+	state.progression.tracked = ""
+	assert_eq(Bearing.active(state.progression, state.settlement, state.pack.items)["step"], MainQuest.next_step(state.progression, state.settlement)["text"], "dawn: the story's own step again")
+	assert_eq(Quests.mark_for("elder", state.progression.quests, state.pack.items, state.questing.quest_open), "offer", "and her relics to offer")
+
+
+## PIX-426: a survivor whose turn it isn't sends the hero on without naming
+## where; their scene is their own step's. Maren never takes the letter early.
+func test_a_survivor_plays_their_scene_only_on_their_step() -> void:
+	var said := {}
+	for survivor: Dictionary in Prologue.survivors():
+		said[survivor["id"]] = survivor
+	var letter := "(You hand her the letter.) Vellmar's seal. I wrote to them three times."
+	assert_true(letter in Prologue.lines_of(said["elder"], Prologue.MAREN), "her scene on her step")
+	for step: int in Prologue.ORDER:
+		if step != Prologue.MAREN:
+			assert_false(letter in Prologue.lines_of(said["elder"], step), "beat %d: not before it" % step)
+	var freed: Array = said["villager_bram"]["prologue"]["lines"]
+	assert_eq(Prologue.lines_of(said["villager_bram"], Prologue.BRAM), freed)
+	assert_ne(Prologue.lines_of(said["villager_bram"], Prologue.HOUNDS), freed, "still pinned")
+	assert_ne(Prologue.lines_of(said["villager_bram"], Prologue.MAREN), freed, "no beam lifted twice")
+	assert_ne(Prologue.lines_of(said["innkeeper"], Prologue.BRAM), Prologue.lines_of(said["innkeeper"], Prologue.FIRES), "before and after")
+	for id: String in said:
+		for step: int in Prologue.ORDER:
+			if Prologue.step_of(id) == step:
+				continue
+			for line: String in Prologue.lines_of(said[id], step):
+				for place: String in ["shrine", "square", "Upper Street", "well"]:
+					assert_false(place in line, "%s at beat %d names no place: %s" % [id, step, line])
+	var wanderer := {"id": "mayor", "lines": ["Hello."]}
+	assert_eq(Prologue.lines_of(wanderer, Prologue.BRAM), ["Hello."], "anyone else says their own")

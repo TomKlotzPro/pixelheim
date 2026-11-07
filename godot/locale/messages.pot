@@ -9685,11 +9685,19 @@ msgid "'The Ballad of the Ashen Patron', verse nine: the fountain. It rhymes wit
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "(A man lies pinned under a burning beam. You can't lift it with hounds snapping at your heels.)"
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "(A man lies pinned under a burning beam. You put your shoulder to it. It shifts - then rolls away.)"
 msgstr ""
 
 #: assets/data/npcs.json
 msgid "(He doesn't look up from the cold anvil.) If Maren wants something, Maren can climb. ...She won't. Neither will I."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "(She doesn't look round.) Not now, whoever you are. There are still people out in this fire - see to them. I'll be here. I'm always here."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -9893,6 +9901,10 @@ msgid "Frost lilies only open in the snow. Vex in Pixelheim swears by them."
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Go on, go on. I'll follow when my legs remember how. They're thinking about it."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Greyhold was Oskar's fort before it was anyone's ruin. We keep this camp because somebody has to."
 msgstr ""
 
@@ -10005,6 +10017,10 @@ msgid "Iva the Healer"
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Keep that cap on. Embers like the top of a head best."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Lamps all the way to the mountain gate. I ride the night shift for fun now."
 msgstr ""
 
@@ -10046,10 +10062,6 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Maren comes in most nights for a bowl. We don't talk about the mountain. We talk about everything else."
-msgstr ""
-
-#: assets/data/npcs.json
-msgid "Maren's at the shrine. She's the elder - she'll want to know who you are, walking in out of the fire."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -10110,6 +10122,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "New roofs going up everywhere. My grandson has a TRADE now. A trade!"
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Not me - I've more cuts than cloth already. Somebody's still out there calling. Go!"
 msgstr ""
 
 #: assets/data/npcs.json
@@ -10462,6 +10478,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "When the bell rings, everyone comes. That's what a bell is for. Remember that, if the mountain ever wakes."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "When the fire's down, find Maren at the shrine. She's the elder - she'll want to know who you are, walking in out of it."
 msgstr ""
 
 #: assets/data/npcs.json
