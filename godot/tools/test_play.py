@@ -1,6 +1,7 @@
 """Tests for play.py (PIX-423): the keys an agent types read as the
-bridge's steps, `start`'s options as the game's command line, and the
-state's text kept short (PIX-435).
+bridge's steps, `start`'s options as the game's command line, the
+state's text kept short and only Chrome's WebGL noise kept out of
+`errors` (PIX-435).
 
     python3 -m unittest discover -s godot/tools -p 'test_*.py'
 """
@@ -8,6 +9,7 @@ import contextlib
 import io
 import os
 import sys
+import types
 import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -55,6 +57,20 @@ class CapTest(unittest.TestCase):
         self.assertEqual(text[-1], "[%d more characters cut]" % (5014 - play.TEXT_CAP))
         self.assertEqual(play.capped(state)["hp"], 9)
         self.assertEqual(len(state["text"][1]), 5000, "the state itself untouched")
+
+
+class HeardTest(unittest.TestCase):
+    def test_only_the_headless_chromes_webgl_noise_is_counted_apart(self):
+        session = play.Session(types.SimpleNamespace(on=lambda *_: None), "")
+        for line in ["warning: WebGL: INVALID_OPERATION: bindBuffer: object does not belong to this context",
+                     "warning: [.WebGL-0x1]GL_INVALID_OPERATION: glBufferSubData: buffer overflow",
+                     "warning: WebGL: too many errors, no more errors will be reported to the console for this context.",
+                     "warning: WebGL: CONTEXT_LOST_WEBGL: loseContext: context lost",
+                     "error: WebGL2 is not available"]:
+            session.heard(line)
+        self.assertEqual(session.webgl, 3)
+        self.assertEqual(session.said, ["warning: WebGL: CONTEXT_LOST_WEBGL: loseContext: context lost",
+                                        "error: WebGL2 is not available"], "a real problem stays in errors")
 
 
 class StartTest(unittest.TestCase):

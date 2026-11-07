@@ -130,7 +130,7 @@ func state() -> Dictionary:
 	said["cell"] = [cell.x, cell.y]
 	var open: PackedStringArray = []
 	var text: PackedStringArray = []
-	var focus: PackedStringArray = []
+	var focus: Array = []
 	# The screens open, in the order they opened; the words of the one on
 	# top, as the one taking the keys (a cutscene covers the title under it).
 	for screen: Screen in Screen._shown:
@@ -138,7 +138,7 @@ func state() -> Dictionary:
 			open.append(screen.get_script().resource_path.get_file().get_basename())
 			if screen.on_top():
 				words(screen, text)
-				focus = chosen(screen)
+				chosen(screen, focus)
 	said["open"] = open
 	said["text"] = text
 	said["focus"] = focus
@@ -199,24 +199,24 @@ static func words(node: Node, out: PackedStringArray, skip: Array = []) -> void:
 			words(child, out, skip)
 
 
-## The words of the first thing under `node` drawn as the chosen one that
-## has any (PIX-435: a menu tester counted key presses blind): a plank
-## `UiStyle.focus` lit, or a row framed in `UiStyle.box`'s gold rim.
-static func chosen(node: Node) -> PackedStringArray:
-	var out: PackedStringArray = []
+## The words of each thing under `node` drawn as chosen, in order, one list
+## apiece, into `out` (PIX-435: a menu tester counted key presses blind): a
+## plank `UiStyle.focus` lit, or a row framed in `UiStyle.box`'s gold rim.
+## All of them, as the pack's and the counter's lit tab comes before their
+## chosen row; one with no words is passed over.
+static func chosen(node: Node, out: Array) -> void:
 	if not _shown(node):
-		return out
+		return
 	if node.get_meta("chosen", false) or (node is Control and node.has_theme_stylebox_override("panel")
 			and node.get_theme_stylebox("panel").get_meta("chosen", false)):
-		words(node, out)
-		if not out.is_empty():
-			return out
+		var said: PackedStringArray = []
+		words(node, said)
+		if not said.is_empty():
+			out.append(said)
+			return
 	for child in node.get_children():
 		if not child is Screen:
-			out = chosen(child)
-			if not out.is_empty():
-				return out
-	return out
+			chosen(child, out)
 
 
 ## Shown: not hidden or faded out.

@@ -4,8 +4,8 @@ extends GutTest
 ## that time alone, the answer written and the page frozen; under the game's
 ## own pause too, never touching it; not before a harness run's steps are
 ## done; a key Godot doesn't know plays nothing; a name field takes letters
-## and Backspace; and the words read off a screen are the ones a player
-## sees, the chosen row's apart.
+## and Backspace; the words read off a screen are the ones a player sees,
+## the chosen ones' apart; and the folk and doors near are listed.
 
 const Bridge := preload("res://scripts/play_bridge.gd")
 const Harness := preload("res://scripts/harness.gd")
@@ -19,12 +19,13 @@ class Page:
 
 
 var page: Page
+var bridge: Node
 
 
 func before_each() -> void:
 	Controls.apply({})
 	page = Page.new()
-	var bridge: Node = add_child_autofree(Bridge.new())
+	bridge = add_child_autofree(Bridge.new())
 	bridge.page = page
 
 
@@ -102,8 +103,16 @@ func test_a_name_typed_and_backspaced() -> void:
 		assert_eq(field.text, typed[1], str(typed[0]))
 
 
-## PIX-435: the chosen row's words, as UiStyle draws it - a plank lit, or a
-## row in the gold rim - and none when nothing is chosen.
+## The chosen ones' words under `node`, one list apiece.
+func _chosen(node: Node) -> Array:
+	var out := []
+	Bridge.chosen(node, out)
+	return out
+
+
+## PIX-435: the chosen ones' words, as UiStyle draws them - a plank lit, a
+## row in the gold rim, a lit tab before the chosen row (the pack's and the
+## counter's: `focus` said only "All") - and none when nothing is chosen.
 func test_the_chosen_ones_words() -> void:
 	var root := VBoxContainer.new()
 	var rows: Array[PanelContainer] = []
@@ -117,19 +126,65 @@ func test_the_chosen_ones_words() -> void:
 		row.add_child(line)
 		root.add_child(row)
 		rows.append(row)
-	assert_eq(Bridge.chosen(root), PackedStringArray(), "nothing chosen")
+	assert_eq(_chosen(root), [], "nothing chosen")
 	rows[1].add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.LAMP))
-	assert_eq(Bridge.chosen(root), PackedStringArray(["Sound", "Off"]))
+	assert_eq(_chosen(root), [PackedStringArray(["Sound", "Off"])])
+	var tab := Button.new()
+	tab.text = "All"
+	root.add_child(tab)
+	root.move_child(tab, 0)
+	UiStyle.tab_button(tab, true)
+	assert_eq(_chosen(root), [PackedStringArray(["All"]), PackedStringArray(["Sound", "Off"])], "the lit tab, then the chosen row")
+	UiStyle.tab_button(tab, false)
 	rows[0].add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM))
 	var plank := Button.new()
 	plank.text = "Saves"
 	root.add_child(plank)
 	UiStyle.focus(plank)
 	rows[1].visible = false
-	assert_eq(Bridge.chosen(root), PackedStringArray(["Saves"]), "the lit plank, the hidden row passed over")
+	assert_eq(_chosen(root), [PackedStringArray(["Saves"])], "the lit plank, the hidden row passed over")
 	UiStyle.focus(plank, false)
-	assert_eq(Bridge.chosen(root), PackedStringArray())
+	assert_eq(_chosen(root), [])
 	root.free()
+
+
+## The world as state() reads it: its HUD, its map and the hero's cell.
+class FakeWorld extends Node2D:
+	var hud: Hud
+	var map := MapData.new()
+	var player_cell := Vector2i(10, 10)
+
+
+## A villager as state() reads one.
+class FakeVillager extends Node2D:
+	var away := false
+	var data := {}
+
+
+## PIX-435 (finding a villager took 40 calls): the folk and the ways out
+## within 12 cells of the hero; one gone home for the night isn't listed.
+func test_the_folk_and_doors_near_are_listed() -> void:
+	var tree := get_tree()
+	var kept := tree.current_scene
+	var world := FakeWorld.new()
+	world.hud = autofree(Hud.new())
+	world.hud.root = autofree(CanvasLayer.new())
+	world.hud.objective_label = autofree(Label.new())
+	world.map.portals = {Vector2i(12, 10): {"mapId": "inn"}, Vector2i(40, 10): {"mapId": "far"}}
+	for one: Array in [["Maren", Vector2i(9, 10), false], ["Hessa", Vector2i(10, 30), false], ["Ana", Vector2i(11, 11), true]]:
+		var villager := FakeVillager.new()
+		villager.data = {"name": one[0]}
+		villager.position = MapView.center(one[1])
+		villager.away = one[2]
+		villager.add_to_group("npcs")
+		world.add_child(villager)
+	tree.root.add_child(world)
+	tree.current_scene = world
+	var said: Dictionary = bridge.state()
+	tree.current_scene = kept
+	world.free()
+	assert_eq(said["npcs"], [{"name": "Maren", "cell": [9, 10]}], "Hessa 20 cells off, Ana gone home")
+	assert_eq(said["doors"], [{"cell": [12, 10], "to": "inn"}])
 
 
 func test_the_words_are_those_shown_and_not_a_screen_under_it() -> void:

@@ -52,6 +52,10 @@ FIRST_PORT = 8642
 IDLE_S = 30 * 60
 # The printed state's `text` keeps to about this many characters (PIX-435).
 TEXT_CAP = 2000
+# The headless Chrome's WebGL warnings play.py counts apart from `errors`
+# (PIX-435): INVALID_OPERATION on bindBuffer and the like, and the line
+# saying it stops repeating them.
+WEBGL_NOISE = ("INVALID_OPERATION", "GL_INVALID", "WebGL: too many errors")
 # What the harness says of a few keys, as Godot names them.
 ALIASES = {"esc": "Escape", "pgup": "PageUp", "pgdn": "PageDown"}
 # Before the page's own scripts: the game's command line, the first command
@@ -272,8 +276,9 @@ class Session:
 
     def heard(self, line):
         # The headless Chrome's software WebGL complains of the engine's
-        # buffers, dozens a look in the burning village: counted apart.
-        if "WebGL" in line or "GL_INVALID" in line:
+        # buffers, dozens a look in the burning village: counted apart. Only
+        # that noise: a lost context or no WebGL2 is the game's to report.
+        if any(noise in line for noise in WEBGL_NOISE):
             self.webgl += 1
         else:
             self.said.append(line)
@@ -379,7 +384,10 @@ def serve(options):
             # output to close, and the GoogleUpdater Chrome wakes now and then
             # holds it open long after Chrome has gone (PIX-435: `stop` took
             # 30 s). Chrome closed, its profile gone, the driver goes with us.
-            os.kill(chrome, signal.SIGTERM)
+            try:
+                os.kill(chrome, signal.SIGTERM)
+            except ProcessLookupError:  # it crashed: still forget and go
+                pass
             gone(chrome, 10, "Chrome")
             forget(profile)
             os.killpg(0, signal.SIGKILL)
