@@ -242,12 +242,13 @@ const VILLAGERS := {
 	"morvax": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "white", "cloth": "soot", "dress": "rust", "skin": "tan"}},
 	# Rook, the smuggler who talks (PIX-165), in the shadow cloak; Greyhold's
 	# old guard at their posts, and its chapel's monk (PIX-168), the bare
-	# template's shaven head over the traveller's amber cloak (a head and
-	# body as the hero's outfits join them); the Frostgate's hermit (PIX-169)
+	# template's shaven head over the Greymaw's grey cloak (a head and
+	# body as the hero's outfits join them; the amber traveller's cloak ran
+	# into his skin); the Frostgate's hermit (PIX-169)
 	# in the frost robe and its big hat. PIX-409: in both builds.
 	"smuggler": {"sheet": "characters/Archer-Shadow.png", "family": "puny"},
 	"guard": {"sheet": "mini/SwordsmanCyan.png", "family": "mini"},
-	"monk": {"sheet": "outfit|monk", "head": BASE, "body": "characters/Archer-Traveler.png", "family": "puny"},
+	"monk": {"sheet": "outfit|monk", "head": BASE, "body": "characters/Archer-Greymaw.png", "family": "puny"},
 	"hermit": {"sheet": "characters/Mage-Frost.png", "family": "puny"},
 	# Loras the bard in plum, Wren in the ranger's greens, Ulla in Greyhold's
 	# slate (with the pack a villager in it: the Iron Guard's closed helmet
