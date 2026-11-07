@@ -34,6 +34,12 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Fallen, stood down or gone home, it calls no one: what it called fights
+	# on as any wild foe, its bites giving the hero grace again (PIX-421).
+	if enemy.dying or enemy.mode == "homeward":
+		for wolf: Variant in called:
+			if is_instance_valid(wolf):
+				wolf.called = false
 	# Stunned, it tries no trick (PIX-186).
 	if enemy.dying or enemy.mode != "chase" or enemy.ailments.is_stunned():
 		return
@@ -195,6 +201,7 @@ func _howl(move: Dictionary) -> void:
 		if not world.map.is_walkable(spot):
 			spot = cell
 		var wolf: Node = world.foes.spawn_enemy(move["monsterId"], spot, enemy.region, "", false, true, Vector2i((enemy.home / TILE).floor()))
+		wolf.called = true
 		called.append(wolf)
 		world.fx.appear(wolf)
 		wolf.notice()

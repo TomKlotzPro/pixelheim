@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.325.0",
+      "date": "2026-11-07",
+      "codename": "Pack Rules",
+      "notes": [
+        "A summoned wolf's, slime's or skeleton's bite no longer shields you from the boss's own bite right after it: Old Greymaw, the Tidecaller and the Bone Abbot hit as hard as they should with their pack out, and the pack itself still bites one at a time"
+      ]
+    },
+    {
       "version": "0.324.0",
       "date": "2026-11-07",
       "codename": "Close Quarters",
