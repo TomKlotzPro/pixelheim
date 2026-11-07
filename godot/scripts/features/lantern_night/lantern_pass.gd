@@ -32,7 +32,8 @@ static func watch(world: Node) -> void:
 		LanternNight.begin(GameState.settlement, day, GameState.town_tier())
 		# In town its stalls go up round the hero, as an age's festival's do
 		# once the board shuts (WorldStage.after_board; PIX-367).
-		if world.map.id == "town":
+		# On the web after the music has hushed, as a door's (PIX-420).
+		if world.map.id == "town" and await world.hushed_build():
 			world.map = world.load_map("town")
 			world.enter_map(world.map, world.player_cell)
 	if world.map.id == Routes.MAP and Screen.holds() == 0 and DayNight.is_night(GameState.world.steps) \

@@ -1,7 +1,7 @@
 export const meta = {
   name: 'pixelheim-playtest',
   description: 'Agents play Pixelheim unseen (the web build in a headless Chrome) on cheaper models; an Opus triage replays every bug and files what holds in Linear',
-  whenToUse: 'A playtest after a big release, or when Tom asks for one. args: {run: "2026-11-07", players?: ["newcomer","fighter","explorer","french","menus"], compare?: "menus" | null, looks?: 70, file?: true}. Needs godot/tools/play.py (PIX-423) and the pixelheim-playtest skill on main. The main session applies the lessons it returns.',
+  whenToUse: 'A playtest after a big release, or when Tom asks for one. args: {run: "2026-11-07", players?: ["newcomer","fighter","explorer","french","menus"], compare?: "french" | null, looks?: 70, file?: true}. Needs godot/tools/play.py (PIX-423) and the pixelheim-playtest skill on main. The main session applies the lessons it returns.',
   phases: [
     { title: 'Build', detail: 'one web export of main, with the private art, shared by every player' },
     { title: 'Play', detail: 'each player plays its own session and reports findings with proof' },
@@ -30,7 +30,7 @@ const RUN_DIR = `/Users/klotztom/playground/pixelheim-playtests/${a.run}`
 const LOOKS = a.looks || 70
 const FILE = a.file !== false
 const chosen = a.players || Object.keys(PLAYERS)
-const compare = a.compare === undefined ? 'menus' : a.compare
+const compare = a.compare === undefined ? 'french' : a.compare
 
 const SAFETY = [
   'Never run godot with a window, shot.sh, flows.sh without --quiet, lookbook.sh, or any --slot.',

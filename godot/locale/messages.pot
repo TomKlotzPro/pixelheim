@@ -3757,6 +3757,10 @@ msgid "How It Ends"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Hush Before Dawn"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "ICE FISHING: stand at the hole cut in the lake's ice, face the water and press E for icefin"
 msgstr ""
 
@@ -4510,6 +4514,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On the town's tour, a rebuilt building rises at its stop: the ruin gives way in a cloud of dust, the walls go up row by row, and it lands under confetti"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "On the web, the music now also fades out softly when a scene takes you somewhere new (the dawn after the Night of Ash, the morning after the Night of Bells, the ending) and when Lantern Night or a new building redraws the village, instead of stopping dead"
 msgstr ""
 
 #: assets/data/changelog.json

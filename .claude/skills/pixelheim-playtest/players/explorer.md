@@ -4,11 +4,13 @@
 
 **Start:** one session per place, each with a level 10 hero standing there, so the wild doesn't kill you while you look. For example `--role warrior --level 10 --map overworld --at 93,33`, or `--map town --at 40,4` for the village gate. Add `--flags night` for the night, or `--flags "--town-tier 0"` for the village in its ashes. Stop each session before starting the next.
 
+Give `--at` an open cell. On a solid one (overworld 2,2), the harness shoves the hero about and leaves it stuck: start again elsewhere, and don't report it.
+
 **Model:** Sonnet. A seam or a layering fault takes a careful eye on the picture.
 
 ## Route
 
-Pick five or six of these and give each about 12 looks:
+Begin with the places the last entry in `lessons.md` says nobody reached, then pick until you have five or six, about 12 looks each, rather than many short visits:
 
 - **The village and its gate**: the bridge, the river banks, the walls, the gate out to the overworld.
 - **The lines between maps**, which you walk over with no door:

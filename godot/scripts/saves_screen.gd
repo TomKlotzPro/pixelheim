@@ -201,7 +201,7 @@ func _continue() -> void:
 			on_play_current.call()
 		return
 	if GameState.play_slot(_target()):
-		_reload()
+		reload_world()
 
 
 ## A copy of the chosen hero in the first empty slot (one where no deleted
@@ -254,7 +254,7 @@ func _delete() -> void:
 			if in_hand:
 				# No one in hand now: back to the title.
 				GameState.title_seen = false
-				_reload()
+				reload_world()
 				return
 			# Their card says it, and that R brings them back.
 			_refresh()
@@ -368,7 +368,7 @@ func paste_text(text: String) -> void:
 func _bring(state: Dictionary) -> void:
 	if _in_hand():
 		GameState.import_into(_target(), state)
-		_reload()
+		reload_world()
 		return
 	if not GameState.slots.write(_target(), state):
 		_say("", Text.t("The save couldn't be written, so slot %d is as it was.") % _target())
@@ -547,8 +547,3 @@ static func _card_name(summary: Dictionary) -> String:
 		SaveSlots.OLDER:
 			return Text.t("Saved by an older version")
 	return summary["name"]
-
-
-func _reload() -> void:
-	get_tree().paused = false
-	get_tree().reload_current_scene()
