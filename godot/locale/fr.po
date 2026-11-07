@@ -2185,6 +2185,10 @@ msgid "A stun in the middle of a swing no longer freezes the hero: when it wears
 msgstr "Un étourdissement en plein coup ne fige plus le héros : une fois dissipé, vous pouvez de nouveau attaquer, esquiver, lancer vos sorts et marcher (playtest de Tom : entouré d'ennemis, le héros ne pouvait parfois plus rien faire)"
 
 #: assets/data/changelog.json
+msgid "A summoned wolf's, slime's or skeleton's bite no longer shields you from the boss's own bite right after it: Old Greymaw, the Tidecaller and the Bone Abbot hit as hard as they should with their pack out, and the pack itself still bites one at a time"
+msgstr "La morsure d'un loup, d'une gelée ou d'un squelette invoqué ne vous protège plus de celle du boss qui suit : Vieille-Gueule-Grise, l'Appelle-Marée et l'Abbé des Os frappent aussi fort qu'ils le doivent avec leur meute, et la meute, elle, mord toujours un à la fois"
+
+#: assets/data/changelog.json
 msgid "A third dream under Sela's roof, the first night after Aske comes home"
 msgstr "Un troisième rêve sous le toit de Sela, la première nuit après le retour d'Aske"
 
@@ -4687,6 +4691,10 @@ msgstr "DES BIENS QUI RAPPORTENT : un commerce que vous possédez remplit dés
 #: assets/data/changelog.json
 msgid "PUNCHING UP PAYS: a foe above your level pays 5% more XP for each level it stands above you, up to a quarter more, so a hero who has fallen behind catches up faster"
 msgstr "VISER PLUS HAUT, ÇA PAIE : un ennemi de niveau supérieur rapporte 5 % d'XP en plus par niveau d'écart, jusqu'à un quart de plus, si bien qu'un héros à la traîne rattrape son retard plus vite"
+
+#: assets/data/changelog.json
+msgid "Pack Rules"
+msgstr "La loi de la meute"
 
 #: assets/data/changelog.json
 msgid "Packs change at dusk and dawn only out of your sight, and every quest's quarry can be found at any hour"
