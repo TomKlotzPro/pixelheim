@@ -22,6 +22,32 @@ func test_every_elite_family_has_a_told_trick() -> void:
 			assert_gte(float(move["tell"]), 0.35, "%s's move gives time to react" % family)
 
 
+## PIX-422: since a hero's blade reaches only the cell in front (PIX-410),
+## the greenskins' and outlaws' cleave is told within a cell and a quarter,
+## not from two cells off: never started further, its band striking a hero
+## who stands where it began and sparing one who steps back out of it, and
+## the elite comes in rather than waiting in the ring where it never could.
+func test_the_cleave_is_told_up_close_and_spares_a_hero_who_steps_back() -> void:
+	var EliteBrain := preload("res://scripts/elite_brain.gd")
+	var at := Vector2(100, 100)
+	for family: String in ["greenskins", "outlaws"]:
+		var cleave: Dictionary = Bestiary.elite_moves(family)
+		assert_eq(String(cleave["move"]), "cleave")
+		assert_lte(float(cleave["range"][1]), 1.25, "%s: about a cell and a quarter" % family)
+		assert_false(EliteBrain.in_reach(cleave, at, at + Vector2(1.3 * 16.0, 0)), "%s: not started from further" % family)
+		assert_false(EliteBrain.in_reach(cleave, at, at + Vector2(2.0 * 16.0, 0)), "%s: never from two cells off" % family)
+		for way: Vector2 in [Vector2.RIGHT, Vector2(-0.6, 0.8)]:
+			# Just inside its reach (half a pixel: clear of float rounding).
+			var hero := at + way * (float(cleave["range"][1]) * 16.0 - 0.5)
+			assert_true(EliteBrain.in_reach(cleave, at, hero), "%s: started at its reach" % family)
+			var band := EliteBrain.cleave_band(cleave, at, hero)
+			assert_true(Geometry2D.is_point_in_polygon(hero, band), "%s: a hero who stands is struck" % family)
+			assert_false(Geometry2D.is_point_in_polygon(hero + way * 4.0, band), "%s: a hero who stepped back out is not" % family)
+		assert_false(Packs.waits_in_ring(cleave), "%s: it comes in, not waits in the ring" % family)
+	assert_true(Packs.waits_in_ring(Bestiary.elite_moves("beasts")), "a lunge starts from the ring's far place")
+	assert_true(Packs.waits_in_ring({}), "a foe with no trick waits its turn")
+
+
 func test_a_band_and_a_circle_catch_what_stands_in_them() -> void:
 	var band := Telegraph.band(Vector2.ZERO, Vector2(100, 0), 64, 16)
 	assert_true(Geometry2D.is_point_in_polygon(Vector2(40, 0), band))

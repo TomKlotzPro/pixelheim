@@ -17,6 +17,11 @@ ash-steads-cc0 | --map overworld --at 22,14 cc0 | map=overworld ashruins=floors 
 # Shade's CC0 art alone too).
 ash-steads-block | --map overworld --at 35,21 --walk d,d | map=overworld cell=\(35, 22\) | travel field
 # What a frame of the Ash costs at night among the steads (PIX-397), held
-# under 1.50 ms as the Reach's at night (cpu-night: CI's runners read the
-# Reach 1.2 to 1.6 ms where the laptop reads 0.5).
-cpu-ash | --map overworld --at 30,20 night cpu --wait 2 | map=overworld cpu=(?!1\.[5-9])[01]\.\d\d/\d+\.\d\d | field night
+# under 1.80 ms (PIX-419). The laptop reads it 0.5 ms; CI's runners, 36
+# readings from 2026-11-04 to 11-07 (pull requests and the nightly hunt on
+# main), 0.78, 1.01-1.06 or 1.18-1.55 by the runner's speed, typically
+# 1.39, about 5 % over cpu-night's on the same runner. cpu-night's 1.50
+# failed four of them (1.50-1.55) with no game change behind it; 1.80 is
+# the typical reading and 30 %, so a slow runner passes and a real slowdown
+# still fails on the runners most runs get (a fast runner hides it).
+cpu-ash | --map overworld --at 30,20 night cpu --wait 2 | map=overworld cpu=(?!1\.[89])[01]\.\d\d/\d+\.\d\d | field night

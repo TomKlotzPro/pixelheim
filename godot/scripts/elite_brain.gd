@@ -58,8 +58,7 @@ func _try(move: Dictionary) -> bool:
 	var hero: Vector2 = world.player.global_position
 	var at: Vector2 = enemy.global_position
 	var tiles := at.distance_to(hero) / TILE
-	var reach: Array = move["range"]
-	if tiles < float(reach[0]) or tiles > float(reach[1]):
+	if not in_reach(move, at, hero):
 		return false
 	if String(move["move"]) == "howl" and _calling() >= int(move["max"]):
 		return false
@@ -70,7 +69,7 @@ func _try(move: Dictionary) -> bool:
 			var length := minf(float(move["length"]), tiles + 1.0) * TILE
 			_tell(move, Telegraph.band(at, hero, length, float(move["width"]) * TILE), "lunge")
 		"cleave":
-			_tell(move, Telegraph.band(at, hero, float(move["length"]) * TILE, float(move["width"]) * TILE), "")
+			_tell(move, cleave_band(move, at, hero), "")
 		"stamp":
 			_tell(move, Telegraph.circle(at, float(move["radius"]) * TILE), "")
 		"guard":
@@ -96,6 +95,22 @@ func _try(move: Dictionary) -> bool:
 		"howl":
 			_flash(move, func() -> void: _howl(move))
 	return true
+
+
+## Whether a foe at `at` may start `move` on a hero at `hero`: within its
+## range, in cells (PIX-422: the cleave within a cell and a quarter, as a
+## hero's blade reaches only the cell in front since PIX-410).
+static func in_reach(move: Dictionary, at: Vector2, hero: Vector2) -> bool:
+	var tiles := at.distance_to(hero) / TILE
+	var reach: Array = move["range"]
+	return tiles >= float(reach[0]) and tiles <= float(reach[1])
+
+
+## The ground a cleave marks: a band from the foe toward the hero, its
+## `length` reaching a little past where it may start (a hero who stands is
+## struck) and no further (one who steps back is not).
+static func cleave_band(move: Dictionary, at: Vector2, hero: Vector2) -> PackedVector2Array:
+	return Telegraph.band(at, hero, float(move["length"]) * TILE, float(move["width"]) * TILE)
 
 
 ## Stands still while its mark pulses, then strikes it; a lunge first leaps

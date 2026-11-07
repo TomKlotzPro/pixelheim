@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.324.0",
+      "date": "2026-11-07",
+      "codename": "Close Quarters",
+      "notes": [
+        "Greenskin and outlaw elites now come right up to you before their ground-splitting cleave, and its marked band ends just past you: step back out of it during the warning and it misses"
+      ]
+    },
+    {
       "version": "0.323.0",
       "date": "2026-11-07",
       "codename": "Soft Doors",
