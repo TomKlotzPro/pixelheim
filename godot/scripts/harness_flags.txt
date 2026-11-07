@@ -13,6 +13,7 @@
 --screenshot |  | a harness run: a throwaway hero (no slot read or written), the steps below, then screenshot.png or --shot's file (not headless) and the report line, and quit | breath | 680
 --help |  | this table, then quit (nothing booted, no save touched)
 --batch | <file> | the flows in that file (name|harness arguments, a line each) one after another in this one Godot, each from a boot's state, each after a BATCH line with its name: tools/flows.sh --quiet runs the look-only ones so, a boot for several (PIX-360)
+play |  | a session tools/play.py drives on the web build, a command at a time, the page giving the engine no frames between commands (PlayBridge, PIX-423); with --screenshot its presets and steps start it, then no report, shot or quit
 touch |  | the phone's canvas: the screen's own shape, not letterboxed (PIX-162)
 cc0 |  | the paid Medieval Age pack, GegX's UI kit, ninth-jedi's farm animals and Leohpaz's sounds and music held back though they're here (PunyTown.available() false, UiStyle.withheld, FarmAnimals.available() false, Sound.withheld), as a build without the private art draws: no houses, props or signs, rooms from Shade's CC0 sheets (PIX-318), the menus' frames drawn in code (PIX-385), every sound and track the game's own (PIX-411, PIX-416)
 --lang | <xx> | the game in that language for the run (PIX-195)

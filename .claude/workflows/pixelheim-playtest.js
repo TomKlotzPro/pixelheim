@@ -50,20 +50,22 @@ const BUILD = {
     head: { type: 'string', description: 'main\'s head, 8 characters' },
     version: { type: 'string', description: 'the game version, from godot/assets/data/changelog.json' },
     export: { type: 'string', description: 'absolute path of the exported web folder' },
+    python: { type: 'string', description: 'absolute path of the python that has Playwright, to run play.py with' },
     note: { type: 'string', description: 'why not ok, or anything the players should know' },
   },
-  required: ['ok', 'head', 'version', 'export', 'note'],
+  required: ['ok', 'head', 'version', 'export', 'python', 'note'],
 }
 const build = await agent(
   `Prepare a Pixelheim playtest: one web export of main that every player will serve.\n\n` +
   `Work in the main checkout, ${REPO}. First check: it is on main, \`git status --porcelain\` is empty, and it is at origin/main after \`git fetch\` ` +
   `(if behind, \`git merge --ff-only origin/main\`; if anything else is off, change nothing and return ok=false saying what). ` +
   `Check that godot/tools/play.py and .claude/skills/pixelheim-godot/playtest.md exist (PIX-423); if not, return ok=false.\n\n` +
-  `Then export the web build the way playtest.md says (else: \`godot --headless --audio-driver Dummy --path godot --import\`, then ` +
+  `Then export the web build the way playtest.md says (\`godot --headless --audio-driver Dummy --path godot --import\`, \`mkdir -p godot/export/web\`, then ` +
   `\`godot --headless --audio-driver Dummy --path godot --export-release Web export/web/index.html\`). The private art is installed in this checkout; ` +
   `check the export has it (the paid packs under godot/assets/puny/ are present before exporting). Afterwards run \`git checkout -- godot/default_bus_layout.tres\` ` +
   `(the import rewrites its header) and check \`git status --porcelain\` is empty again.\n\n` +
-  `Then smoke-test it: one play.py session on port 8790, one look, stop. Create the run folder ${RUN_DIR}.\n\nRules:\n- ${SAFETY}`,
+  `Create the run folder ${RUN_DIR}, and in it the Playwright venv every player will use: \`python3 -m venv ${RUN_DIR}/pw && ${RUN_DIR}/pw/bin/pip install playwright==1.56.0\` ` +
+  `(the version playtest.md names, if it names another). Then smoke-test it: \`${RUN_DIR}/pw/bin/python godot/tools/play.py start --port 8790 --dir ${RUN_DIR}/smoke\`, one look, stop.\n\nRules:\n- ${SAFETY}`,
   { label: 'build the web export', phase: 'Build', schema: BUILD, model: 'sonnet' },
 )
 if (!build || !build.ok) return { run: a.run, error: 'build failed', build }
@@ -115,7 +117,8 @@ const reports = await parallel(sessions.map((s) => () =>
     `You are a playtester for Pixelheim: the ${s.id} player. Play the real game as a player would and report what you find.\n\n` +
     `Read first, in this order: ${SKILL}/SKILL.md, ${SKILL}/lessons.md, ${SKILL}/players/${s.id}.md, and ` +
     `${REPO}/.claude/skills/pixelheim-godot/playtest.md (play.py's commands and options). Run play.py from ${REPO}.\n\n` +
-    `The game: v${build.version}, exported at ${build.export}. Your session: port ${s.port}. Keep your screenshots and your log of commands in ${s.dir}. ` +
+    `The game: v${build.version}, exported at ${build.export}. Run play.py as \`${build.python} godot/tools/play.py\`, always with \`--port ${s.port}\`, and \`--dir\` under ${s.dir} on each start ` +
+    `(a new subfolder per session if your brief starts several). Keep your log of commands in ${s.dir} too. ` +
     `Your budget: ${LOOKS} looks. Look at each screenshot yourself with the Read tool.\n\nRules:\n- ${SAFETY}`,
     { label: s.label, phase: 'Play', schema: REPORT, model: s.model },
   ).then((r) => (r ? { ...s, ...r } : { ...s, looks: 0, reached: 'nothing', summary: 'the agent returned nothing', findings: [] })),
@@ -179,7 +182,8 @@ const toReplay = merged.kept.filter((f) => f.replay)
 const replayed = await parallel(toReplay.map((f, i) => () =>
   agent(
     `Replay one finding from a Pixelheim playtest, step 2 of ${SKILL}/triage.md. Read ${SKILL}/SKILL.md, triage.md and ` +
-    `${REPO}/.claude/skills/pixelheim-godot/playtest.md first.\n\nThe game is exported at ${build.export}. Use port ${8800 + i * 5} and keep your screenshots in ${RUN_DIR}/replay-${f.key}. ` +
+    `${REPO}/.claude/skills/pixelheim-godot/playtest.md first.\n\nThe game is exported at ${build.export}. Run play.py from ${REPO} as \`${build.python} godot/tools/play.py\`, always with \`--port ${8800 + i * 5}\`, ` +
+    `and \`--dir ${RUN_DIR}/replay-${f.key}\` (a new subfolder for the second try). ` +
     `Start a fresh session with the finding's start options and send its keys in order; look where the player saw it, and try twice. ` +
     `You may read the game's code to understand what you see. Re-rate the severity from what you saw yourself.\n\nThe finding:\n${JSON.stringify(f, null, 1)}\n\nRules:\n- ${SAFETY}`,
     { label: `replay ${f.key}`, phase: 'Triage', schema: VERDICT },

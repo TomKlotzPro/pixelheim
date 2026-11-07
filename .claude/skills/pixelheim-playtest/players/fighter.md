@@ -2,7 +2,13 @@
 
 **Goal:** find what's wrong or unfair in combat, role by role. Hits that land from too far or not at all, foes' attacks you can't read, numbers that lie.
 
-**Start:** a hero of a given role and level, next to a foe. Use play.py's presets (`.claude/skills/pixelheim-godot/playtest.md`): role, level, map, and when it passes harness flags, `fight --foe <id>` with `--foe-distance <n>` to stand a foe a few cells off. Without them, walk to the packs `look`'s state lists.
+**Start:** one session per fight, each with a hero of a given role and level next to a foe. Stop it before starting the next. For example:
+* `--role warrior --level 5 --flags "fight --foe orc"`: an orc beside the hero;
+* `--role ranger --level 5 --flags "fight --foe orc --foe-distance 3"`: the orc three cells off;
+* `--role mage --level 10 --flags "fight pack --foe goblin"`: a goblin and its pack;
+* `--role warrior --level 8 --flags "fight --foe turncoat_bowman --foe-distance 3"`: a shooter.
+
+play.py makes every such fight real: the foe can hurt you. Never pass `kill` or `slay`.
 
 **Model:** Sonnet.
 
@@ -12,8 +18,8 @@ Play four roles, about 15 looks each: **warrior**, **ranger**, **mage**, **rogue
 
 For each role:
 1. **One plain foe**, such as an orc or a goblin: fight it close, then from as far as your weapon should reach.
-2. **A pack** (`pack` when the preset takes it, or a pack in the wild): do the foes spread round you, and can you get out?
-3. **A foe that shoots**: the Smuggler Gunner (`pirate_gunner`), the Turncoat Bowman (`turncoat_bowman`) or the Fire Imp. Does it keep its distance? Does it glow before it fires? Can you see its shot fly, and dodge it?
+2. **A pack** (`fight pack --foe goblin`): do the foes spread round you, and can you get out?
+3. **A foe that shoots**: the Smuggler Gunner (`--foe pirate_gunner`) or the Turncoat Bowman (`--foe turncoat_bowman`). Does it keep its distance? Does it glow before it fires? Can you see its shot fly, and dodge it?
 4. **Your skills**: each one by its number key, at least once. Does it reach where it should, and cost what it says?
 
 ## Check

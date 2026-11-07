@@ -174,6 +174,13 @@ func _ready() -> void:
 		driver.world = self
 		driver.process_mode = Node.PROCESS_MODE_ALWAYS
 		add_child(driver)
+	# `play` (PIX-423): tools/play.py's session, on the web only; on the
+	# root, once, so a world reloaded mid-command (New Game) keeps it.
+	if flags.has("play") and OS.has_feature("web") and get_tree().root.get_node_or_null("play_bridge") == null:
+		var bridge := preload("res://scripts/play_bridge.gd").new()
+		bridge.name = "play_bridge"
+		bridge.page = JavaScriptBridge.get_interface("pixelheimPlay")
+		get_tree().root.add_child.call_deferred(bridge)
 
 
 ## The title screen over the world (a launch, or back from the saves).

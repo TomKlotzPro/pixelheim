@@ -2,7 +2,7 @@
 
 **Goal:** play the game in French and find every word that's wrong. Cut-off or overflowing text, English left untranslated, mistakes, and typography that breaks the game's rules.
 
-**Start:** a plain launch with the language set to French (play.py's language option). A fresh profile.
+**Start:** a plain launch in French: `start --lang fr`, no other option. A fresh profile. Quote the words from `look`'s `text` and `hud` when they show them, so the quote is exact.
 
 **Model:** Haiku for a first pass, Sonnet if `lessons.md` says Haiku misses too much.
 

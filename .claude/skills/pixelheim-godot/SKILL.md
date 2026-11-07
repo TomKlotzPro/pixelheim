@@ -75,3 +75,4 @@ Steps 3 and 5-8 can go in the feature's folder instead (above). In the shared re
 - `story.md`: cutscenes, the Night of Ash, the letters, the Night of Bells, Coming Home, settlers home, the regions' chapters, foes that stand down, pacing.
 - `perf.md`: frame, map entry, save, boot, GUT and CI numbers, and which tools need a window.
 - `release.md`: `release.py`, French house style, the changelog.
+- `playtest.md`: `tools/play.py`, how an agent plays the real web build unseen, one command at a time: setup, commands, keys, what `look` says, safety.

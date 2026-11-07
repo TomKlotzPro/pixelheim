@@ -2,7 +2,7 @@
 
 **Goal:** walk where few players look closely and find what's broken in the world itself. Seams, holes, wrong layering, places the hero walks through or gets stuck on. The bridge-foot glitch in front of the village (fixed in v0.319) is the kind of thing to find.
 
-**Start:** a hero at a given map and cell (play.py's map and cell presets, `.claude/skills/pixelheim-godot/playtest.md`). A level 10 hero, so the wild doesn't kill you while you look.
+**Start:** one session per place, each with a level 10 hero standing there, so the wild doesn't kill you while you look. For example `--role warrior --level 10 --map overworld --at 93,33`, or `--map town --at 40,4` for the village gate. Add `--flags night` for the night, or `--flags "--town-tier 0"` for the village in its ashes. Stop each session before starting the next.
 
 **Model:** Sonnet. A seam or a layering fault takes a careful eye on the picture.
 
@@ -21,7 +21,8 @@ Pick five or six of these and give each about 12 looks:
 - **Doors**: go into each of the village's houses and come back out (the inn, the shop, the smithy, the hall, the alchemist).
 - **Stairs down and back up** in a dungeon: the Blackiron shafts, the Greyhold cellars, the ice cave, the sea cave.
 - **The edges of a map**: walk to each one.
-- **Night**: one place at night, with its lights.
+- **Night**: one place at night (`--flags night`), with its lights.
+- **The village in its ashes** (`--map town --flags "--town-tier 0"`), as a new hero first sees it.
 
 ## Check
 

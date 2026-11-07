@@ -594,6 +594,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/pause_screen.gd` — The Escape menu (PauseMenu.tsx): resume, the saves (slots and codes), options, or back to the title.
 - `scripts/perf_probe.gd` — The perf guard (PIX-220): how long each stage of a frame takes, from the engine's own signals
 - `scripts/place_title.gd` — The card that names where the hero has come to (PIX-269, after Tom's "I still don't like the door between maps").
+- `scripts/play_bridge.gd` — The bridge tools/play.py plays the web build through (PIX-423): an agent's keys in, what the game knows out, one command at a time.
 - `scripts/player.gd` — The action hero, drawn from Shade's Puny sheet for the hero's role (PunyArt, PIX-130)
 - `scripts/postmark.gd` — The courier's book's postmarks (PIX-321)
 - `scripts/puny_art.gd` — Who wears which of Shade's CC0 sheets (assets/puny, PIX-130), and how each sheet family is laid out.
