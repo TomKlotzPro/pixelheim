@@ -2889,6 +2889,10 @@ msgid "Duplicate a hero into an empty slot, for instance to see both of Morvax's
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "During the Night of Ash, the map, the journal, the arrow and the gold \"!\" all point to whoever needs you next, and Elder Maren no longer plays her dawn scene before her turn, so a new player can't get stuck at the shrine"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
 msgstr ""
 
@@ -3442,6 +3446,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Follow the Cry"
 msgstr ""
 
 #: assets/data/changelog.json

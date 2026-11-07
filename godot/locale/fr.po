@@ -2889,6 +2889,10 @@ msgid "Duplicate a hero into an empty slot, for instance to see both of Morvax's
 msgstr "Dupliquez un héros dans un emplacement vide, par exemple pour voir les deux fins de Morvax"
 
 #: assets/data/changelog.json
+msgid "During the Night of Ash, the map, the journal, the arrow and the gold \"!\" all point to whoever needs you next, and Elder Maren no longer plays her dawn scene before her turn, so a new player can't get stuck at the shrine"
+msgstr "Pendant la Nuit des Cendres, la carte, le journal, la flèche et le « ! » doré désignent tous la personne qui a besoin de vous, et l'Ancienne Maren ne joue plus sa scène de l'aube avant son tour : un nouveau joueur ne reste plus coincé au sanctuaire"
+
+#: assets/data/changelog.json
 msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
 msgstr "La poussière flotte dans la lumière des torches, et deux étages ne s'ouvrent plus jamais sur la même salle"
 
@@ -3443,6 +3447,10 @@ msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la
 #: assets/data/changelog.json
 msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
 msgstr "Les ennemis côte à côte n'empilent plus leurs niveaux : le plus proche affiche le sien, et une étiquette qui le chevaucherait attend son tour"
+
+#: assets/data/changelog.json
+msgid "Follow the Cry"
+msgstr "Suivre l'appel"
 
 #: assets/data/changelog.json
 msgid "Footfalls"
