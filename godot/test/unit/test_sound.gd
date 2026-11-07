@@ -684,6 +684,45 @@ func test_a_map_built_without_a_door_waits_on_the_hush_too() -> void:
 	Sound.apply_volumes()
 
 
+## The world as the board's close asks it (Stage.after_board): its map, the
+## hero's cell, the hush (given or dropped) and the town drawn again.
+class BoardWorld extends Node:
+	var map := MapData.new()
+	var player_cell := Vector2i(43, 27)
+	var hush_given := true
+	var drawn: Array = []
+
+	func hushed_build() -> bool:
+		return hush_given
+
+	func load_map(id: String) -> MapData:
+		var next := MapData.new()
+		next.id = id
+		return next
+
+	func enter_map(next: MapData, at: Vector2i) -> void:
+		drawn.append([next.id, at])
+
+
+## PIX-420: back from the board with something built, the town is drawn
+## again only through the hush (World.hushed_build), and not at all while a
+## change of place already waits on it.
+func test_the_town_after_the_board_waits_on_the_hush() -> void:
+	var world: BoardWorld = autofree(BoardWorld.new())
+	world.map.id = "town"
+	var stage: Stage = autofree(Stage.new())
+	stage.world = world
+	var kept: Array[String] = GameState.reveals.duplicate()
+	GameState.reveals.assign(["the_inn"])
+	world.hush_given = false
+	await stage.after_board()
+	assert_eq(world.drawn, [], "not drawn while another change of place holds the hush")
+	world.hush_given = true
+	await stage.after_board()
+	GameState.reveals.assign(kept)
+	assert_eq(world.drawn, [["town", Vector2i(43, 27)]], "drawn once the hush is given")
+
+
 ## PIX-411: a place's music is taken up where it was left; a fight's starts
 ## from its top.
 func test_a_place_takes_its_music_up_where_it_left_it() -> void:

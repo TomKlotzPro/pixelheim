@@ -121,5 +121,4 @@ func _options() -> void:
 func _quit() -> void:
 	GameState.save_now()
 	GameState.title_seen = false
-	get_tree().paused = false
-	get_tree().reload_current_scene()
+	reload_world()

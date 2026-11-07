@@ -94,6 +94,21 @@ func close() -> void:
 	queue_free()
 
 
+## The world started over (the scene reloaded: another slot, a language, the
+## title, a new hero), the whole world built in the reload's one long frame.
+## Sound outlives it (an autoload), so on the web the music is hushed first,
+## as a door's build hushes it (PIX-420, world._hushed); at once elsewhere.
+## The screen takes nothing more meanwhile: a second press would act twice.
+func reload_world() -> void:
+	process_mode = Node.PROCESS_MODE_DISABLED
+	if Sound.hushes_builds:
+		Sound.hush()
+		await get_tree().create_timer(Sound.HUSH_S).timeout
+		await get_tree().process_frame
+	get_tree().paused = false
+	get_tree().reload_current_scene()
+
+
 ## The world behind, dimmed (fully hidden at 1.0), edge to edge whatever
 ## the screen's shape.
 func dim(alpha := UiStyle.BACKDROP.a) -> ColorRect:

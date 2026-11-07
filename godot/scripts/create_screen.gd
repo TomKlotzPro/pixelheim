@@ -520,5 +520,4 @@ func _begin() -> void:
 	Sound.play("ui_confirm")
 	GameState.new_hero_in(target, name, _role(), play_night)
 	GameState.title_seen = true
-	get_tree().paused = false
-	get_tree().reload_current_scene()
+	reload_world()
