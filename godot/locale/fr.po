@@ -10490,7 +10490,7 @@ msgstr "Quand la cloche sonne, tout le monde vient. C'est à ça que sert une cl
 
 #: assets/data/npcs.json
 msgid "When the fire's down, find Maren at the shrine. She's the elder - she'll want to know who you are, walking in out of it."
-msgstr "Quand le feu sera tombé, trouvez Maren au sanctuaire. C'est l'Ancienne - elle voudra savoir qui vous êtes, vous qui sortez des flammes."
+msgstr "Quand le feu sera retombé, trouvez Maren au sanctuaire. C'est l'Ancienne - elle voudra savoir qui vous êtes, vous qui sortez des flammes."
 
 #: assets/data/npcs.json
 msgid "Wren the Stablemaster"

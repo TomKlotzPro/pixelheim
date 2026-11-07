@@ -199,7 +199,7 @@ func _set_footer() -> void:
 ## grouped, and the chosen one's longer word under them.
 func _quests() -> void:
 	var progression := GameState.progression
-	rows = Journal.rows(progression, GameState.settlement, GameState.pack.items, GameState.world.discovered)
+	rows = Journal.rows(progression, GameState.settlement, GameState.pack.items, GameState.world.discovered, GameState.questing.first_skill_heals())
 	followed = Journal.followed(progression, GameState.settlement, GameState.pack.items)
 	var now := PanelContainer.new()
 	now.add_theme_stylebox_override("panel", UiStyle.window(PAD))

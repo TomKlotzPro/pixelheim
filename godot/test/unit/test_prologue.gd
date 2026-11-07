@@ -201,6 +201,8 @@ func test_every_guide_points_where_the_nights_step_is_done() -> void:
 		var row: Dictionary = Journal.rows(state.progression, state.settlement, state.pack.items)[0]
 		assert_eq([row["id"], row["title"], row["line"]], [Journal.STORY, "The Night of Ash", line], "beat %d: the journal's row" % step)
 		assert_eq(row["lead"], lead, "beat %d: leads where the line does" % step)
+		var healer: Dictionary = Journal.rows(state.progression, state.settlement, state.pack.items, {}, true)[0]
+		assert_eq(healer["line"], Prologue.objective(step, state.progression.prologue_doused.size(), true), "beat %d: a healer's row says a healer's line, as above the dock" % step)
 		assert_eq(goal["who"], people.get(step, ""), "beat %d: who it waits on" % step)
 		for survivor: Dictionary in Prologue.survivors():
 			assert_eq(Quests.mark_for(survivor["id"], state.progression.quests, state.pack.items, state.questing.quest_open), "", "beat %d: %s offers nothing" % [step, survivor["id"]])

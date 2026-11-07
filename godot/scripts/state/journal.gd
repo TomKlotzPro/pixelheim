@@ -37,14 +37,15 @@ static func is_main_line(quest: Dictionary) -> bool:
 ## (PIX-253 step 2: Maren's letters, those delivered with their answer),
 ## then the other quests that carry it. A thread whose place lies past a
 ## gate still shut says the gate's line and leads to what opens it
-## (PIX-254, Gates.detour; `discovered`: the save's fog of war).
-static func rows(progression: ProgressionState, settlement: SettlementState, items: Dictionary, discovered: Dictionary = {}) -> Array[Dictionary]:
+## (PIX-254, Gates.detour; `discovered`: the save's fog of war). `heals_first`:
+## the night's row as a healer's line says it (Bearing.of_night).
+static func rows(progression: ProgressionState, settlement: SettlementState, items: Dictionary, discovered: Dictionary = {}, heals_first := false) -> Array[Dictionary]:
 	var by_group := {"story": [], "people": [], "bounties": []}
 	var past_gates := func(lead: Dictionary) -> Dictionary: return Gates.detour(lead, progression, settlement, items, discovered)
 	var step := MainQuest.next_step(progression, settlement)
 	if progression.prologue != Prologue.DONE:
 		# The night's step while it runs, where the line above the dock is (PIX-426).
-		var night := Bearing.of_night(progression)
+		var night := Bearing.of_night(progression, heals_first)
 		by_group["story"].append(_row("story", STORY, String(night["title"]), night, ""))
 	elif not step.is_empty():
 		var lead: Dictionary = past_gates.call(Bearing.of_step(step, progression, settlement, items))

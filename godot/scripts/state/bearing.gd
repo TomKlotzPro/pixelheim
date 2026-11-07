@@ -69,8 +69,10 @@ static func behind(lead: Dictionary, progression: ProgressionState, settlement: 
 ## where that step is done (Prologue.goal), so the line above the dock, the
 ## journal, the map's goal, the arrow and the gold "!" send the hero to one
 ## person or place. The night's lines say where, so it names no place.
-static func of_night(progression: ProgressionState) -> Dictionary:
-	var lead := _blank(Text.t("The Night of Ash"), Prologue.objective(progression.prologue, progression.prologue_doused.size()))
+## `heals_first`: the hero's first skill heals (a cleric), whose line says
+## so, as the line above the dock does.
+static func of_night(progression: ProgressionState, heals_first := false) -> Dictionary:
+	var lead := _blank(Text.t("The Night of Ash"), Prologue.objective(progression.prologue, progression.prologue_doused.size(), heals_first))
 	lead["main"] = true
 	lead.merge(Prologue.goal(progression.prologue), true)
 	return lead
