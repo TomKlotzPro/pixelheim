@@ -373,9 +373,13 @@ func _open_stall(shop_id: String) -> void:
 
 func talk(npc: Dictionary) -> void:
 	var box := preload("res://scripts/dialogue_box.gd").new()
-	# On the night of the fire the survivors say only the night's lines, and
-	# on the Night of Bells everyone theirs (PIX-253 step 9).
+	# On the night of the fire the survivors say only the night's lines, their
+	# scene on their own step (PIX-426), and on the Night of Bells everyone
+	# theirs (PIX-253 step 9).
 	if GameState.progression.prologue != Prologue.DONE or GameState.progression.bells != Bells.NONE:
+		if GameState.progression.prologue != Prologue.DONE:
+			npc = npc.duplicate()
+			npc["lines"] = Prologue.lines_of(npc, GameState.progression.prologue)
 		box.npc = npc
 		world.add_child(box)
 		return

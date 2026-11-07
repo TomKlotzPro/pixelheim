@@ -200,7 +200,7 @@ func _set_footer() -> void:
 ## grouped, and the chosen one's longer word under them.
 func _quests() -> void:
 	var progression := GameState.progression
-	rows = Journal.rows(progression, GameState.settlement, GameState.pack.items, GameState.world.discovered)
+	rows = Journal.rows(progression, GameState.settlement, GameState.pack.items, GameState.world.discovered, GameState.questing.first_skill_heals())
 	followed = Journal.followed(progression, GameState.settlement, GameState.pack.items)
 	var now := PanelContainer.new()
 	now.add_theme_stylebox_override("panel", UiStyle.window(PAD))
@@ -459,7 +459,7 @@ func _fill_now() -> void:
 		tags.add_child(UiStyle.strong(progress, 18, UiStyle.INK))
 	now_box.add_child(tags)
 	var title := String(lead["title"])
-	if lead["main"]:
+	if lead["main"] and progression.prologue == Prologue.DONE:
 		title = Journal.chapter_title(MainQuest.next_step(progression, GameState.settlement))
 	now_box.add_child(Layout.wrapped(UiStyle.heading(title, 18, UiStyle.INK), TEXT_WIDTH))
 	now_step = Layout.wrapped(UiStyle.label(step, 18, UiStyle.INK), TEXT_WIDTH)
