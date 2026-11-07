@@ -107,7 +107,9 @@ static func key_label(key: int) -> String:
 	if key >= KEY_0 and key <= KEY_9:
 		return char(key)
 	var shown: int = learned.get(key, KEY_NONE)
-	if shown == KEY_NONE and DisplayServer.get_name() != "headless":
+	# The web's display server has no layouts to ask (it warns on every call):
+	# the keys a player pressed (learned), else the key's own name.
+	if shown == KEY_NONE and DisplayServer.get_name() not in ["headless", "web"]:
 		shown = DisplayServer.keyboard_get_label_from_physical(key)
 	if shown == KEY_NONE:
 		shown = key

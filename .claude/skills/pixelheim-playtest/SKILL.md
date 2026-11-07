@@ -25,32 +25,57 @@ The players run on cheaper models (Sonnet, Haiku). The orchestrator and the tria
 
 ## How to play
 
-Each turn is one command: `look`, then think, then `keys`. The game is paused between commands, so take the time you need. It only runs during `keys` (and the time a command asks for).
+Each turn is one command: `look`, then think, then `keys`. The game runs only during a command, so take the time you need between them. Pass `--port` (your session's) to every command; your brief gives it, and the python to run play.py with.
 
-- **Spend your looks.** Your brief gives a budget, about 60 to 80 looks. Look after every move that could change something: a door, a fight, a menu, a line of text. Chain several `keys` between looks only when nothing can happen, such as a long walk on an empty road.
-- **The state says where you are, the picture says how it looks.** Trust the state JSON for map, cell, health and quest. Trust the screenshot for what a player sees. When the two disagree, that is a finding.
-- **Walk with short holds** (0.2 to 0.5 s) near things, and longer holds to travel. If two holds don't move the hero, you are blocked: look at why before you push again.
-- **Keep a log as you go**: each command you sent, in order, from `start` on. A finding's steps come from it.
+```
+<python> godot/tools/play.py start --port N --dir <your folder> [your brief's start options]
+<python> godot/tools/play.py keys --port N "right:1.2, e, esc"
+<python> godot/tools/play.py look --port N
+<python> godot/tools/play.py stop --port N
+```
+
+- **`keys`**: keys separated by commas. A key alone is tapped; `right:1.2` holds it 1.2 s of game time; `up+left:0.5` holds both; `wait:2` presses nothing for 2 s. A one-letter key also types its letter (`R,o,b,i,n` types a name). `keys` prints the state after its last key, but no picture.
+- **`look`**: a screenshot (read it with the Read tool) and the state: `map`, `cell`, `hp`/`maxHp`, `mana`/`maxMana`, `level`, `gold`, `hour`, `night`, `paused`, `open` (the screens open), `text` (the words on the top screen), `hud` (the HUD's words: messages, hints, a door's nameplate), `quest` (the "Next" line), `foes` (within 12 cells, with their hp and cell), `seconds` (the game's clock) and `errors` (console errors since the last look).
+- **Spend your looks.** Your brief gives a budget, about 60 to 80 looks. Look after every move that could change something: a door, a fight, a menu, a line of text. Between looks, `keys`' own state is often enough to know you moved.
+- **The state says where you are, the picture says how it looks.** Trust the state for map, cell, health and quest, and quote `text` and `hud` for on-screen words. Trust the screenshot for what a player sees. When the two disagree, that is a finding.
+- **Walk with short holds** (0.2 to 0.5 s) near things, and longer ones to travel: `right:1` walks one second of the game. If two holds don't change `cell`, you are blocked: look at why before you push again.
+- **Keep a log as you go**: the `start` line and each `keys` you sent, in order. A finding's steps come from it, and triage replays them as they are.
+- **Anything in `errors` is worth a look**: an error a player never sees can still be a bug. Report it with what you were doing when it came.
 
 ### The keys
 
+The play.py name of each key is in brackets.
+
 | Action | Keys |
 |---|---|
-| Move | W A S D, or the arrows |
-| Attack | J or Space |
-| Dodge roll | Shift or L |
-| Talk, interact, confirm | E or Enter |
-| Skills | 1 to 6 |
-| Inventory | I |
-| World map | M or Tab |
-| Journal | Q |
-| Stats | C |
-| Skills screen | K |
-| Codex | B |
-| Pause menu, back | Esc |
-| Drop, drop all | X, Z |
+| Move | W A S D (`w` `a` `s` `d`), or the arrows (`up` `down` `left` `right`) |
+| Attack | J (`j`) or Space (`space`) |
+| Dodge roll | Shift (`shift`) or L (`l`) |
+| Talk, interact, confirm | E (`e`) or Enter (`enter`) |
+| Skills | 1 to 6 (`1`..`6`) |
+| Inventory | I (`i`) |
+| World map | M (`m`) or Tab (`tab`) |
+| Journal | Q (`q`) |
+| Stats | C (`c`) |
+| Skills screen | K (`k`) |
+| Codex | B (`b`) |
+| Pause menu, back | Esc (`esc`) |
+| Drop, drop all | X, Z (`x`, `z`) |
 
 In menus, W/S or the arrows choose, E or Enter confirms, and Esc goes back. A rebound key replaces the letter key; the arrows, Enter, Space and Tab always keep working.
+
+### Where a session starts
+
+- **No option**: a plain launch from the title, as a new player sees it. `--lang fr` sets the browser to French.
+- **`--role`, `--level`, `--map`, `--at x,y`**: a throwaway hero of that role and level, standing there. It skips the title and the Night of Ash, and starts in the Hamlet by day.
+- **`--flags "..."`**: more harness presets (`godot/scripts/harness_flags.txt`).
+  - `night`: the night;
+  - `--town-tier 0`: the village in its ashes;
+  - `fight --foe orc`: a foe beside the hero. play.py makes it a real fight: the foe can hurt you;
+  - `--foe-distance 3`: the foe that far off;
+  - `pack`: its pack with it.
+
+  Never pass `kill`, `slay` or `--keys`: they play the fight or the keys for you.
 
 ## What a finding is
 

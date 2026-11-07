@@ -2,7 +2,7 @@
 
 **Goal:** be a first-time player. Start from the title, make a hero, and play the first half hour. Find every moment a new player would be lost, bored or wrong-footed.
 
-**Start:** a plain launch, in English, with no other option. A fresh profile, so the game is new to you.
+**Start:** a plain launch: `start` with no option, in English. A fresh profile, so the game is new to you.
 
 **Model:** Sonnet. This player needs judgment more than anything else.
 

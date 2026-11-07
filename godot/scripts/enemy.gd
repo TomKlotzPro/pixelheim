@@ -163,6 +163,11 @@ var _sleep_mark: Label
 var resting := false
 ## A named monster's entry (Hunts, PIX-156), or {}.
 var named := {}
+## Called up by a named monster's howl (EliteBrain): its bite gives the hero
+## no grace after it (PIX-421), or a whelp's nip shielded them from its
+## caller's; only the other summons' bites wait out a half-second. Cleared
+## once the caller falls, stands down or goes home.
+var called := false
 ## The health bar's full width: a named monster's is longer.
 var bar_width := 16.0
 ## How much quicker than its kind it hunts (PIX-216: a swift depth).
@@ -946,7 +951,7 @@ func _bite(to_player: Vector2) -> void:
 		return
 	world.player.take_hit(
 		Bestiary.monster_attack_damage(fighter, GameState.hero, GameState.pack, GameState.roll),
-		global_position, fighter.get("inflicts")
+		global_position, fighter.get("inflicts"), not called
 	)
 	get_tree().create_timer(CONTACT_COOLDOWN).timeout.connect(func() -> void: can_bite = true)
 

@@ -115,8 +115,8 @@ func test_every_flag_the_tools_and_the_readme_pass_is_in_the_table() -> void:
 	for found in RegEx.create_from_string("extra\\+=\\(([^)]*)\\)").search_all(lookbook):
 		checked += _check(found.get_string(1).split(" ", false), "tools/lookbook.sh")
 	# Every Godot command line in the tools and the README (web_perf.py's
-	# runs, PIX-361, a line each).
-	for path in ["res://tools/flows.sh", "res://tools/lookbook.sh", "res://tools/web_perf.py", "res://README.md"]:
+	# runs, PIX-361, a line each; play.py's presets, PIX-423).
+	for path in ["res://tools/flows.sh", "res://tools/lookbook.sh", "res://tools/web_perf.py", "res://tools/play.py", "res://README.md"]:
 		for line in FileAccess.get_file_as_string(path).split("\n"):
 			var at := line.find(" -- --")
 			if at < 0:
