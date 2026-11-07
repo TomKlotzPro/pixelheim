@@ -257,6 +257,13 @@ static func can_see(map: MapData, from: Vector2i, to: Vector2i) -> bool:
 	return true
 
 
+## Whether a shot from `from` gets to `to` (PIX-410): it's seen, and the
+## shot (Firebolt) stops on any cell the hero couldn't walk, so across water
+## or rocks a shooter closes in rather than fire at them.
+static func shot_clear(map: MapData, from: Vector2i, to: Vector2i) -> bool:
+	return can_see(map, from, to) and _line(from, to).all(map.is_walkable)
+
+
 static func blocks_sight(map: MapData, cell: Vector2i) -> bool:
 	if map.covered.has(cell):
 		return true

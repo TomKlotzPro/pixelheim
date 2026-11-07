@@ -53,9 +53,9 @@ func test_a_swing_knows_when_it_was_a_crit() -> void:
 
 
 ## A blow shoves a common foe about 6 px, an elite half that, a boss not at
-## all; never so far that a foe telling its bite from CONTACT_RADIUS is out
-## of BITE_REACH (PIX-377: at 10 px a hero swinging every 0.45 s was hardly
-## ever bitten).
+## all; never so far that a foe telling its bite (Reach.bite_tell) is out of
+## its reach (Reach.bite_lands; PIX-377: at 10 px a hero swinging every
+## 0.45 s was hardly ever bitten).
 func test_a_blow_shoves_by_weight() -> void:
 	var EnemyScript := preload("res://scripts/enemy.gd")
 	var common := EnemyScript.knock_push(Bestiary.spawn("wolf"))
@@ -70,7 +70,7 @@ func test_a_blow_shoves_by_weight() -> void:
 		travelled += common * (left / EnemyScript.KNOCK_TIME) / 60.0
 		left -= 1.0 / 60.0
 	assert_between(travelled, 5.0, 8.0, "about 6 px")
-	assert_lt(EnemyScript.CONTACT_RADIUS + travelled, EnemyScript.BITE_REACH, "a foe telling its bite keeps it in reach")
+	assert_lt(Reach.bite_tell() + travelled, Reach.bite_lands(), "a foe telling its bite keeps it in reach")
 
 
 ## PIX-377: monsters last a real fight. A wild foe's health grows by a scale

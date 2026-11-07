@@ -3,17 +3,18 @@ extends CharacterBody2D
 ## The action hero, drawn from Shade's Puny sheet for the hero's role
 ## (PunyArt, PIX-130): idle/walk/hurt/death in four directions, and the attack
 ## of the weapon in hand (sword, staff or bow, PIX-172; the role's own when
-## bare-handed). The attack animation carries the weapon,
-## so the hitbox tracks facing while the striking frames play.
+## bare-handed). The attack animation carries the weapon; while its
+## striking frames play the blow lands on whoever its reach finds the way the
+## hero faces (Reach, PIX-410: a blade up close, a bow's arrow and a staff's
+## bolt from afar).
 
 const SPEED := 95.0
 const ATTACK_COOLDOWN := 0.45
 ## How long a hit hero can't be hit again (PIX-377: 0.8 s let a pack take
 ## turns at a hero who hardly felt the second bite).
 const INVULNERABLE_SECONDS := 0.5
-## How far a skill reaches for its target, and how long a cast takes: one
-## of the web's battle turns.
-const SKILL_RANGE := 88.0
+## How long a cast takes: one of the web's battle turns (how far it reaches
+## is its kind's, Reach.skill).
 const SKILL_TURN := 1.0
 ## Out of a fight, a little energy comes back this often (PIX-187).
 const REST_TICK := 2.0
@@ -44,7 +45,8 @@ var dead := false
 var hit_this_swing: Array[Node] = []
 var scripted_dir := Vector2.ZERO  # test-harness movement override
 var sprite: AnimatedSprite2D
-var hitbox: Area2D
+## The swing's striking frames are playing: its blow lands on what it reaches.
+var striking := false
 ## Poison, burn and stun on the hero (web turns run on a 1s clock).
 var ailments := Ailments.new()
 var ailment_icon: Sprite2D
@@ -87,17 +89,6 @@ func _ready() -> void:
 	shape.position = Vector2(0, 3)
 	add_child(shape)
 
-	hitbox = Area2D.new()
-	hitbox.collision_layer = 0
-	hitbox.collision_mask = 4  # mob hurtboxes
-	var hit_shape := CollisionShape2D.new()
-	var hit_rect := RectangleShape2D.new()
-	hit_rect.size = Vector2(26, 26)
-	hit_shape.shape = hit_rect
-	hitbox.add_child(hit_shape)
-	hitbox.monitoring = false
-	add_child(hitbox)
-
 	sprite.animation_finished.connect(_on_animation_finished)
 	sprite.frame_changed.connect(_on_frame_changed)
 	ailment_icon = Sprite2D.new()
@@ -137,13 +128,14 @@ func _physics_process(delta: float) -> void:
 		gait.walk(gait.drawn_way(dodge_dir, _dir_name()), (global_position - rolled_from).length(), delta)
 		return
 	if attacking:
-		if not hitbox.monitoring:
+		if not striking:
 			return
-		# Swings root the hero; damage lands on any body whose hurtbox the
-		# arc reaches during the swing frames.
-		for area in hitbox.get_overlapping_areas():
-			var body := area.get_parent()
-			if body.has_method("take_hit") and body not in hit_this_swing:
+		# Swings root the hero; damage lands on every foe the swing reaches
+		# during its striking frames (a shot's on the one it flew to, once).
+		if Reach.swing(art["attack"]).get("shot", false) and not hit_this_swing.is_empty():
+			return
+		for body: Node in _struck():
+			if body not in hit_this_swing:
 				hit_this_swing.append(body)
 				# A blow after a priming dodge is a sure crit, once (PIX-190).
 				var primed := GameClock.seconds() < crit_primed_until
@@ -231,7 +223,6 @@ func attack() -> void:
 	attacking = true
 	hit_this_swing = []
 	velocity = Vector2.ZERO
-	hitbox.position = facing * 16
 	_spring_from(Juice.SWING)
 	_play(art["attack"])
 	_loosed = false
@@ -344,8 +335,10 @@ static func _glow() -> Texture2D:
 
 
 ## A skill by its place in the hero's list (getHeroSkills): its price paid,
-## then a heal on the hero or a strike on the nearest foe in reach, through
-## the web's formulas; ailments and cleansing as the skill says.
+## then a heal on the hero or a strike on the nearest foe its kind reaches
+## (Reach.targets, PIX-410: a blow's up close, a spell's or an arrow's from
+## afar), through the web's formulas; ailments and cleansing as the skill
+## says.
 func cast(index: int) -> void:
 	if dead or attacking or not skill_ready or ailments.is_stunned():
 		return
@@ -361,14 +354,16 @@ func cast(index: int) -> void:
 		world.messages.flash(block)
 		Sound.play("skill_refused")
 		return
-	var target: Node = null
+	var targets: Array = []
 	if skill["kind"] == "damage":
-		target = _nearest_foe()
-		if target == null:
+		var foes := _living_foes()
+		for found in Reach.targets(global_position, facing, _spots(foes), _radii(foes), skill):
+			targets.append(foes[found])
+		if targets.is_empty():
 			world.messages.flash(Text.t("No foe in reach for %s.") % skill["name"])
 			Sound.play("skill_refused")
 			return
-		face(target.global_position - global_position)
+		face(targets[0].global_position - global_position)
 	GameState.training.pay_for_skill(skill)
 	skill_ready = false
 	get_tree().create_timer(SKILL_TURN).timeout.connect(func() -> void: skill_ready = true)
@@ -393,10 +388,10 @@ func cast(index: int) -> void:
 		world.fx.skill_flash(global_position, Color(light) if shown and light != "" else Color(0.5, 1.0, 0.6), not shown)
 		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6), false, self)
 		return
-	# An area skill (PIX-190) strikes every foe in reach, not just the nearest.
-	var targets: Array = _foes_in_reach() if skill.get("area", false) else [target]
-	# Its own strips on each, the soft glow without them, the ground lit
-	# either way; they are its impact, so a blow's small one stays off.
+	# An area skill (PIX-190) strikes every foe in its area, not just the
+	# nearest (Reach.targets). Its own strips on each, the soft glow without
+	# them, the ground lit either way; they are its impact, so a blow's small
+	# one stays off.
 	var glow: bool = not world.fx.skills.cast(skill, self, targets)
 	if not glow and light != "":
 		color = Color(light)
@@ -428,27 +423,34 @@ func _steal_life(damage: int) -> void:
 		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6), false, self)
 
 
-## Every living foe within a skill's reach.
-func _foes_in_reach() -> Array:
-	return get_tree().get_nodes_in_group("mobs").filter(func(enemy: Node) -> bool:
-		return not enemy.dying and (enemy.global_position - global_position).length() <= SKILL_RANGE)
+## Every foe still standing.
+func _living_foes() -> Array:
+	return get_tree().get_nodes_in_group("mobs").filter(func(enemy: Node) -> bool: return not enemy.dying)
 
 
-## The closest living foe within reach, those ahead of the hero first.
-func _nearest_foe() -> Node:
-	var best: Node = null
-	var best_score := INF
-	for enemy in get_tree().get_nodes_in_group("mobs"):
-		if enemy.dying:
-			continue
-		var offset: Vector2 = enemy.global_position - global_position
-		if offset.length() > SKILL_RANGE:
-			continue
-		var score := offset.length() - (12.0 if offset.normalized().dot(facing) > 0.5 else 0.0)
-		if score < best_score:
-			best_score = score
-			best = enemy
-	return best
+## Where they stand, and how wide either side of their feet their bodies
+## are (their boxes for blows), for Reach.
+static func _spots(foes: Array) -> Array[Vector2]:
+	var spots: Array[Vector2] = []
+	for foe: Node2D in foes:
+		spots.append(foe.global_position)
+	return spots
+
+
+static func _radii(foes: Array) -> Array[float]:
+	var radii: Array[float] = []
+	for foe: Node in foes:
+		radii.append(foe.body_of(foe.fighter).x / 2.0)
+	return radii
+
+
+## The foes this swing lands on now, the way the hero faces (Reach.struck).
+func _struck() -> Array:
+	var foes := _living_foes()
+	var hit: Array = []
+	for index in Reach.struck(global_position, facing, _spots(foes), _radii(foes), Reach.swing(art["attack"])):
+		hit.append(foes[index])
+	return hit
 
 
 ## Stamina comes back a turn's worth each second while a fight is on; out of
@@ -528,7 +530,7 @@ func _held_by_stun() -> bool:
 func _end_swing() -> void:
 	attacking = false
 	casting = false
-	hitbox.monitoring = false
+	striking = false
 
 func _on_animation_finished() -> void:
 	if attacking:
@@ -542,7 +544,7 @@ func _on_animation_finished() -> void:
 func _on_frame_changed() -> void:
 	if attacking and not casting:
 		var strike: Array = STRIKE_FRAMES.get(art["attack"], [1, 2])
-		hitbox.monitoring = sprite.frame >= strike[0] and sprite.frame <= strike[1]
+		striking = sprite.frame >= strike[0] and sprite.frame <= strike[1]
 		if sprite.frame == strike[0] - 1 and sprite.frame > 0:
 			_loose()
 		if sprite.frame == strike[0] and art["attack"] != "bow" and not _loosed:
@@ -555,22 +557,17 @@ var _loosed := false
 
 ## The bow's arrow, the staff's bolt (PIX-396): loosed a frame before the
 ## weapon bites and flying that frame, so it lands as the blow does, at the
-## foe the swing will reach (the nearest in its box, give or take a body) or
-## to the box's far edge, a miss. The blow is still the hitbox's; a staff
-## with no bolt to draw keeps its crescent.
+## foe the swing reaches (Reach.struck, PIX-410: the nearest a shot does) or
+## as far as it reaches, a miss. The blow is still the swing's; a staff with
+## no bolt drawn (motion reduced) keeps its crescent.
 func _loose() -> void:
 	# A blade looses nothing.
 	if not ItemIcons.skill_fx().get("swings", {}).has(art["attack"]):
 		return
 	var frame_seconds := 1.0 / (sprite.sprite_frames.get_animation_speed(sprite.animation) * maxf(absf(sprite.get_playing_speed()), 0.01))
-	var box := ((hitbox.get_child(0) as CollisionShape2D).shape as RectangleShape2D).get_rect()
-	var at := global_position + hitbox.position
-	var reach := Rect2(box.position + at, box.size).grow(8.0)
-	var foe: Node2D = null
-	for enemy in get_tree().get_nodes_in_group("mobs"):
-		if not enemy.dying and reach.has_point(enemy.global_position) and (foe == null or enemy.global_position.distance_to(global_position) < foe.global_position.distance_to(global_position)):
-			foe = enemy
-	var miss := at + facing * box.size.x / 2.0
+	var struck := _struck()
+	var foe: Node2D = null if struck.is_empty() else struck[0]
+	var miss := global_position + facing * Reach.px(Reach.swing(art["attack"]))
 	var tint := Juice.ARCANE if art["attack"] == "staff" else Color.WHITE
 	_loosed = world.fx.skills.swing(art["attack"], global_position, foe, miss if foe == null else foe.global_position, frame_seconds, tint)
 

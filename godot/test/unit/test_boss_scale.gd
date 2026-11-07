@@ -140,8 +140,11 @@ func test_a_bosses_box_for_blows_is_its_body() -> void:
 	for fighter in _bosses():
 		var foe := _foe(fighter)
 		var who := String(fighter["name"])
-		var shape := foe.hurtbox.get_child(0) as CollisionShape2D
-		var box := Rect2(shape.position - (shape.shape as RectangleShape2D).size / 2.0, (shape.shape as RectangleShape2D).size)
+		# Its body (Enemy.body_of, which a blow's reach measures to: PIX-410)
+		# stands from its feet, grown with its drawing from where its kind's
+		# does (PIX-314: a big foe's hung half below its feet).
+		var body_size := Enemy.body_of(fighter)
+		var box := Rect2(Vector2(0, -8 * Enemy.growth(fighter)) - body_size / 2.0, body_size)
 		var body := _drawn(foe)
 		assert_true(box.has_point(body.get_center()), "%s: its box over its body's middle" % who)
 		var covered := box.intersection(body)

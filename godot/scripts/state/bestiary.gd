@@ -61,6 +61,11 @@ static func dodge_rules() -> Dictionary:
 	return _data()["dodge"]
 
 
+## How far every blow reaches (PIX-410): Reach reads it.
+static func reach_rules() -> Dictionary:
+	return _data()["reach"]
+
+
 ## Family id -> the name its mastery reads.
 static func family_names() -> Dictionary:
 	return _data()["familyNames"]
