@@ -135,6 +135,10 @@ func step_fight() -> void:
 		opponent.guarding = false
 		opponent.take_hit(int(opponent.fighter["hp"]), opponent.global_position + Vector2.LEFT)
 		await _hear_out(opponent)
+	# A `play` session (PIX-435) fights with its own keys: handed over before
+	# the first swing, with no wait, the foe whole and where the flags stood it.
+	if flags.has("play"):
+		return
 	# `kill` swings until the foe (its pack) drops, KILL_SECONDS at most
 	# (PIX-379); plain `fight` swings once a foe and is caught mid-swing.
 	var swings := pack.size()

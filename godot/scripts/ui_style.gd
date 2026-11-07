@@ -286,7 +286,9 @@ static func bold_font() -> FontFile:
 ## - anything else is a card in its own fill and rim (a clear rim, no frame).
 static func box(fill: Color, rim: Color, padding := 8) -> StyleBoxTexture:
 	if rim == LAMP:
-		return _style(_card(fill, LAMP), 2, padding)
+		var lit := _style(_card(fill, LAMP), 2, padding)
+		lit.set_meta("chosen", true)  # what play.py's `focus` reads (PlayBridge.chosen)
+		return lit
 	if padding >= 12 and fill == CARD:
 		return window(padding)
 	return _style(_card(fill, rim), 2, padding)
@@ -571,6 +573,7 @@ static func button_keyed(node: Button, key: String, text: String) -> void:
 ## A button with focus (the chosen tab or menu line): the plank lit brass, its
 ## words in gold; the kit's chosen button, red, its words in rubric (PIX-385).
 static func focus(button: Button, on := true) -> void:
+	button.set_meta("chosen", on)  # what play.py's `focus` reads (PlayBridge.chosen)
 	var chosen := _kit("button_chosen", 6) if on else null
 	button.add_theme_stylebox_override("normal", chosen if chosen != null else plank(on, 6))
 	button.add_theme_color_override("font_color", plank_ink(on))

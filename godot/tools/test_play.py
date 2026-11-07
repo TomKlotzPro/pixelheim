@@ -1,5 +1,6 @@
 """Tests for play.py (PIX-423): the keys an agent types read as the
-bridge's steps, and `start`'s options as the game's command line.
+bridge's steps, `start`'s options as the game's command line, and the
+state's text kept short (PIX-435).
 
     python3 -m unittest discover -s godot/tools -p 'test_*.py'
 """
@@ -38,6 +39,22 @@ class KeysTest(unittest.TestCase):
         for text in ("", " , ", "right:soon", "right:-1", "wait", "up+:1", ":1"):
             with self.assertRaises(ValueError, msg=text):
                 play.parse_keys(text)
+
+
+class CapTest(unittest.TestCase):
+    def test_short_text_is_left_whole(self):
+        state = {"text": ["Options", "Glow"], "hp": 9}
+        self.assertEqual(play.capped(state), state)
+
+    def test_long_text_is_cut_saying_how_much(self):
+        # What's new open printed 340 KB (PIX-435).
+        state = {"text": ["What's new", "x" * 5000, "more"], "hp": 9}
+        text = play.capped(state)["text"]
+        self.assertEqual(sum(map(len, text[:-1])), play.TEXT_CAP)
+        self.assertEqual(text[0], "What's new")
+        self.assertEqual(text[-1], "[%d more characters cut]" % (5014 - play.TEXT_CAP))
+        self.assertEqual(play.capped(state)["hp"], 9)
+        self.assertEqual(len(state["text"][1]), 5000, "the state itself untouched")
 
 
 class StartTest(unittest.TestCase):

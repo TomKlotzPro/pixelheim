@@ -50,6 +50,8 @@ EXPORT = os.path.join(HERE, "..", "export", "web")
 FIRST_PORT = 8642
 # A session nobody has spoken to this long shuts itself, Chrome and all.
 IDLE_S = 30 * 60
+# The printed state's `text` keeps to about this many characters (PIX-435).
+TEXT_CAP = 2000
 # What the harness says of a few keys, as Godot names them.
 ALIASES = {"esc": "Escape", "pgup": "PageUp", "pgdn": "PageDown"}
 # Before the page's own scripts: the game's command line, the first command
@@ -209,16 +211,32 @@ def start(options):
     raise SystemExit("the session didn't start (its log: %s)" % log)
 
 
-def gone(pid, timeout_s=30):
-    """Until the daemon has closed Chrome and gone; its whole group killed past the timeout."""
+def gone(pid, timeout_s=30, what="the session"):
+    """Until the daemon (or Chrome) has gone; its whole group killed past the timeout."""
     for _ in range(timeout_s * 10):
         try:
             os.kill(pid, 0)
         except ProcessLookupError:
             return
         time.sleep(0.1)
-    sys.stderr.write("the session didn't close in %d s: killed\n" % timeout_s)
+    sys.stderr.write("%s didn't close in %d s: killed\n" % (what, timeout_s))
     os.killpg(pid, signal.SIGKILL)
+
+
+def capped(state):
+    """The state with `text` kept to about TEXT_CAP characters, saying what
+    was cut (What's new open once printed 340 KB)."""
+    text = state.get("text") or []
+    total = sum(map(len, text))
+    if total <= TEXT_CAP:
+        return state
+    kept, room = [], TEXT_CAP
+    for line in text:
+        if room <= 0:
+            break
+        kept.append(line[:room])
+        room -= len(line)
+    return {**state, "text": kept + ["[%d more characters cut]" % (total - TEXT_CAP)]}
 
 
 def forget(profile):
@@ -245,16 +263,28 @@ class Session:
         self.page = page
         self.folder = folder
         self.said = []
+        self.webgl = 0
         self.looks = 0
         self.done = False
-        page.on("console", lambda message: self.said.append("%s: %s" % (message.type, message.text))
+        page.on("console", lambda message: self.heard("%s: %s" % (message.type, message.text))
                 if message.type in ("error", "warning") else None)
         page.on("pageerror", lambda error: self.said.append("pageerror: %s" % error))
+
+    def heard(self, line):
+        # The headless Chrome's software WebGL complains of the engine's
+        # buffers, dozens a look in the burning village: counted apart.
+        if "WebGL" in line or "GL_INVALID" in line:
+            self.webgl += 1
+        else:
+            self.said.append(line)
+
+    def state(self):
+        return capped(json.loads(self.page.evaluate("window.pixelheimPlay.state")))
 
     def wait(self, timeout_s):
         """Until the bridge has answered the command and frozen the page."""
         self.page.wait_for_function("window.pixelheimPlay.frozen", polling=100, timeout=timeout_s * 1000)
-        return json.loads(self.page.evaluate("window.pixelheimPlay.state"))
+        return self.state()
 
     def answer(self, request):
         command = request["command"]
@@ -274,8 +304,9 @@ class Session:
             for line in self.said:
                 counted[line] = counted.get(line, 0) + 1
             self.said = []
-            state = json.loads(self.page.evaluate("window.pixelheimPlay.state"))
-            return {"shot": shot, **state, "errors": [line if n == 1 else "%s (x%d)" % (line, n) for line, n in counted.items()]}
+            webgl, self.webgl = self.webgl, 0
+            return {"shot": shot, **self.state(), "errors": [line if n == 1 else "%s (x%d)" % (line, n) for line, n in counted.items()],
+                    "webgl": webgl}
         if command == "hello":  # `start`'s: whose session it is (the pid every answer carries)
             return {}
         if command == "stop":
@@ -325,7 +356,9 @@ def serve(options):
                 args=["--mute-audio", "--disable-frame-rate-limit", "--disable-gpu-vsync", "--enable-unsafe-swiftshader"])
             page = context.pages[0] if context.pages else context.new_page()
             session = Session(page, options.dir)
-            boot = json.dumps([{"keys": [], "seconds": 1}])
+            # A plain launch boots a second; a harness run's first look is its
+            # hand-over itself (PIX-435: a second more and a fight's foe had closed in).
+            boot = json.dumps([] if "--screenshot" in json.loads(options.args) else [{"keys": [], "seconds": 1}])
             page.add_init_script(SHIM % (options.args, json.dumps(boot)))
             page.goto("http://127.0.0.1:%d/index.html" % files.server_address[1])
             try:
@@ -336,11 +369,20 @@ def serve(options):
             # The page's loading picture fades in its own time (web/shell.html), not the game's.
             page.wait_for_function("!document.getElementById('status')", polling=100, timeout=15000)
             print("ready on port %d" % options.port, flush=True)
+            # Chrome's pid, as the lock in its profile names it ("host-pid").
+            chrome = int(os.readlink(os.path.join(profile, "SingletonLock")).rpartition("-")[2])
             control.timeout = IDLE_S
             control.handle_timeout = lambda: setattr(session, "done", True)
             while not session.done:
                 control.handle_request()
-            context.close()
+            # Not context.close(), nor leaving Playwright: both wait for Chrome's
+            # output to close, and the GoogleUpdater Chrome wakes now and then
+            # holds it open long after Chrome has gone (PIX-435: `stop` took
+            # 30 s). Chrome closed, its profile gone, the driver goes with us.
+            os.kill(chrome, signal.SIGTERM)
+            gone(chrome, 10, "Chrome")
+            forget(profile)
+            os.killpg(0, signal.SIGKILL)
     finally:
         files.shutdown()
         control.server_close()

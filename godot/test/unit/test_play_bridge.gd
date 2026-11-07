@@ -3,8 +3,9 @@ extends GutTest
 ## as the game's actions for its time and let go, the game's clock spent by
 ## that time alone, the answer written and the page frozen; under the game's
 ## own pause too, never touching it; not before a harness run's steps are
-## done; a key Godot doesn't know plays nothing;
-## and the words read off a screen are the ones a player sees.
+## done; a key Godot doesn't know plays nothing; a name field takes letters
+## and Backspace; and the words read off a screen are the ones a player
+## sees, the chosen row's apart.
 
 const Bridge := preload("res://scripts/play_bridge.gd")
 const Harness := preload("res://scripts/harness.gd")
@@ -88,6 +89,49 @@ func test_a_key_godot_does_not_know_plays_nothing() -> void:
 	assert_eq(said.get("error"), "not a list of steps")
 
 
+## PIX-435: the newcomer's `e` stayed in the hero's name ("eTom"), as the
+## harness's keys matched none of Godot's ui_text_* actions.
+func test_a_name_typed_and_backspaced() -> void:
+	var field := LineEdit.new()
+	add_child_autofree(field)
+	field.grab_focus()
+	for typed: Array in [[["e", "T", "o", "m", "backspace"], "eTo"], [["home", "delete"], "To"], [["end", "left", "backspace"], "o"]]:
+		page.frozen = false
+		page.command = JSON.stringify(typed[0].map(func(key: String) -> Dictionary: return {"keys": [key], "seconds": null}))
+		await _answer()
+		assert_eq(field.text, typed[1], str(typed[0]))
+
+
+## PIX-435: the chosen row's words, as UiStyle draws it - a plank lit, or a
+## row in the gold rim - and none when nothing is chosen.
+func test_the_chosen_ones_words() -> void:
+	var root := VBoxContainer.new()
+	var rows: Array[PanelContainer] = []
+	for words: Array in [["Glow", "On"], ["Sound", "Off"]]:
+		var row := PanelContainer.new()
+		var line := HBoxContainer.new()
+		for word: String in words:
+			var label := Label.new()
+			label.text = word
+			line.add_child(label)
+		row.add_child(line)
+		root.add_child(row)
+		rows.append(row)
+	assert_eq(Bridge.chosen(root), PackedStringArray(), "nothing chosen")
+	rows[1].add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.LAMP))
+	assert_eq(Bridge.chosen(root), PackedStringArray(["Sound", "Off"]))
+	rows[0].add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM))
+	var plank := Button.new()
+	plank.text = "Saves"
+	root.add_child(plank)
+	UiStyle.focus(plank)
+	rows[1].visible = false
+	assert_eq(Bridge.chosen(root), PackedStringArray(["Saves"]), "the lit plank, the hidden row passed over")
+	UiStyle.focus(plank, false)
+	assert_eq(Bridge.chosen(root), PackedStringArray())
+	root.free()
+
+
 func test_the_words_are_those_shown_and_not_a_screen_under_it() -> void:
 	var root := VBoxContainer.new()
 	for text: String in ["Hello", "Hidden", "Faded", "Typing"]:
@@ -107,7 +151,7 @@ func test_the_words_are_those_shown_and_not_a_screen_under_it() -> void:
 	root.add_child(inside)
 	var out: PackedStringArray = []
 	Bridge.words(root, out)
-	assert_eq(out, PackedStringArray(["Hello", "Typ", "OK"]))
+	assert_eq(out, PackedStringArray(["Hello", "Typ [still typing]", "OK"]))
 	# As drawn: a French player's title plank says "Nouvelle partie".
 	button.text = "New Game"
 	Text.apply("fr")
