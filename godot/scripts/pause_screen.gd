@@ -4,6 +4,8 @@ extends Screen
 ## options, or back to the title. Progress saves itself. W/S choose, E or
 ## Enter takes it, Esc resumes. The world holds still.
 
+const Options := preload("res://scripts/options_screen.gd")
+
 var world: Node
 var options: Array[Dictionary] = []
 var selected := 0
@@ -12,14 +14,16 @@ var menu: VBoxContainer
 ## "Saved 12 s ago", kept to the second while the menu is open (the
 ## autosave runs under it).
 var saved_line: Label
-## Its keys, put aside while the options over it show theirs in their place.
+## Its card and keys, put aside while a screen over it (Saves, Options)
+## shows its own in their place.
+var card: PanelContainer
 var keys: Control
 
 
 func _open() -> void:
 	layer = 6
 	dim(0.85)
-	var card := PanelContainer.new()
+	card = PanelContainer.new()
 	card.position = Vector2(470, 170)
 	card.custom_minimum_size = Vector2(340, 340)
 	# Centred whatever its words (PIX-213: French ran it off-centre).
@@ -53,6 +57,10 @@ func _open() -> void:
 		{"label": "Options", "action": _options},
 		{"label": "Quit to title", "action": _quit},
 	]
+	# A language chosen in Options rebuilt the world in it (PIX-428):
+	# Options open again over the menu, on that row.
+	if Options.back_at >= 0:
+		_take(2)
 	_draw()
 
 
@@ -100,21 +108,18 @@ func _resume() -> void:
 	close()
 
 
+## The saves over the pause menu, as Options (PIX-427: it closed the menu
+## first, so Esc went back to play); playing the hero in hand is Resume.
 func _saves() -> void:
-	_resume()
-	world.open_saves()
+	var screen := preload("res://scripts/saves_screen.gd").new()
+	screen.on_play_current = _resume
+	open_over(screen, [card, keys])
 
 
-## Options open over the pause menu and hand back to it when closed.
 func _options() -> void:
-	var screen := preload("res://scripts/options_screen.gd").new()
+	var screen := Options.new()
 	screen.world = world
-	keys.visible = false
-	screen.tree_exited.connect(func() -> void:
-		if is_instance_valid(keys):
-			keys.visible = true
-	)
-	add_child(screen)
+	open_over(screen, [card, keys])
 
 
 ## Back to the title: the hero is saved first, then the world starts over.

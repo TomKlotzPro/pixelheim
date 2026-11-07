@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.329.0",
+      "date": "2026-11-07",
+      "codename": "One Step Back",
+      "notes": [
+        "Esc on Saves, opened from the pause menu, now takes you back to the pause menu, and choosing a language keeps Options open, in the new language, on the Language row"
+      ]
+    },
+    {
       "version": "0.328.0",
       "date": "2026-11-07",
       "codename": "Follow the Cry",

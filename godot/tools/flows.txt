@@ -846,6 +846,10 @@ fit-title | title overflow --lang fr | open=title_screen overflow=0 | screen lan
 title-options | title --keys s,s,e | top=options_screen | screen title
 title-saves | title --keys s,e | top=saves_screen | screen title
 title-whatsnew | title --keys s,s,s,e | top=changelog_screen | screen title
+# PIX-427, PIX-428: Esc on a screen the title opened goes back to the title, no further.
+title-options-back | title --keys s,s,e,esc | open=title_screen top= | screen title
+title-saves-back | title --keys s,e,esc | open=title_screen top= | screen title
+title-whatsnew-back | title --keys s,s,s,e,esc | open=title_screen top= | screen title
 # PIX-392: a launch's entrance (down from the stars, the dragon's pass, the
 # name forged, the menu last) settles into the menu; a key while it plays
 # skips it and does nothing else (the first S doesn't move the choice, so
@@ -881,8 +885,8 @@ fit-ledger-city-en | --map town --town-tier 4 --routes all --built odos_store,hi
 # The Saves screen (PIX-302 step 3), reached by Esc and Saves: one column,
 # each hero's card with the place, the chapter and the hours played; two
 # heroes and room for one more, in both languages.
-fit-saves | --map town --slots res://test/fixtures/slots_room --keys esc,s,e overflow --lang fr | open=saves_screen overflow=0 cards=hero,hero,empty | screen lang save
-fit-saves-en | --map town --slots res://test/fixtures/slots_room --keys esc,s,e overflow --lang en | open=saves_screen overflow=0 cards=hero,hero,empty | screen lang save
+fit-saves | --map town --slots res://test/fixtures/slots_room --keys esc,s,e overflow --lang fr | open=pause_screen top=saves_screen overflow=0 cards=hero,hero,empty | screen lang save
+fit-saves-en | --map town --slots res://test/fixtures/slots_room --keys esc,s,e overflow --lang en | open=pause_screen top=saves_screen overflow=0 cards=hero,hero,empty | screen lang save
 # Duplicate (D) copies the chosen hero into the first empty slot: Wolfram
 # into slot 3 (nothing written to the fixtures: a run's changes stay in
 # memory).
@@ -918,7 +922,7 @@ fit-launch-unread-en | title --slots res://test/fixtures/slots_unread launch ove
 # Tom (2026-10-11, PIX-316): a new hero starts from the title's New Game
 # alone. On the Saves screen an empty slot's E makes no one, and N is no
 # key there...
-saves-no-new | --map town --slots res://test/fixtures/slots_unread --keys esc,s,e,s,s,e,n | open=saves_screen cards=damaged,newer,empty | screen save
+saves-no-new | --map town --slots res://test/fixtures/slots_unread --keys esc,s,e,s,s,e,n | open=pause_screen top=saves_screen cards=damaged,newer,empty | screen save
 # ...and with every slot holding a save, New Game says so under the menu
 # and starts nothing, in both languages.
 newgame-full | title --slots res://test/fixtures/slots launch --keys s,e | open=title_screen titleline=full free=0 | title save
@@ -944,6 +948,11 @@ fit-launch-older | title --slots res://test/fixtures/slots_older launch overflow
 fit-launch-older-en | title --slots res://test/fixtures/slots_older launch overflow --lang en | open=title_screen overflow=0 titleline=slot free=3 | screen lang title save
 fit-pause | --map town --keys esc overflow --lang fr | open=pause_screen overflow=0 | screen lang
 fit-options | --map town --keys esc,s,s,e overflow --lang fr | overflow=0 | screen lang
+# PIX-427: Saves and Options stand over the pause menu, and Esc goes back
+# to it, not on to play; E on a row of Options (Sound) keeps them open.
+pause-saves-back | --map town --slots res://test/fixtures/slots_room --keys esc,s,e,esc | open=pause_screen top= paused=true | screen save
+pause-options-back | --map town --keys esc,s,s,e,esc | open=pause_screen top= paused=true | screen
+pause-options-toggle | --map town --keys esc,s,s,e,e | open=pause_screen top=options_screen | screen
 fit-map | --map town waypoints worldmap overflow --lang fr | open=map_screen overflow=0 | screen lang travel
 # The map's list with every waystation built, in French (PIX-322).
 fit-map-roads | --map town --routes all --built waystation_saltmere,waystation_blackiron,waystation_greyhold,waystation_frostgate waypoints worldmap overflow --lang fr | open=map_screen overflow=0 | screen lang travel

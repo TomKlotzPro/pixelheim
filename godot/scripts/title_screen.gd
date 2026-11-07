@@ -32,6 +32,7 @@ const MENU_GAP := 4.0
 const PLANK_WIDTH := 340.0
 const LIFT := 3.0
 const FOLLOW := 16.0
+const Options := preload("res://scripts/options_screen.gd")
 
 ## Whether this session's first title has risen: later ones (back from the
 ## saves) rise out of the night's colour.
@@ -97,6 +98,11 @@ func _open() -> void:
 	_logo()
 	_card()
 	_arrive()
+	# A language chosen in Options rebuilt the world in it (PIX-428):
+	# Options (the last plank but one) open again over the title, on that row.
+	if Options.back_at >= 0:
+		_take(options.size() - 2)
+		_show_choice()
 
 
 func _exit_tree() -> void:
@@ -477,13 +483,12 @@ func _create_hero() -> void:
 func _saves() -> void:
 	var screen := preload("res://scripts/saves_screen.gd").new()
 	screen.on_play_current = _continue
-	add_child(screen)
-	screen.layer = layer + 1
+	open_over(screen, _bottom())
 
 
 ## Every release's notes, over the title (Esc hands back).
 func _whats_new() -> void:
-	add_child(preload("res://scripts/changelog_screen.gd").new())
+	open_over(preload("res://scripts/changelog_screen.gd").new(), _bottom())
 	# Read, kept with the settings (the menu marks it no more: PIX-406).
 	if GameState.settings.seen_version != version:
 		GameState.settings.seen_version = version
@@ -493,11 +498,17 @@ func _whats_new() -> void:
 ## Options over the title, so sound and keys can be set before a hero
 ## exists; Esc hands back to the menu.
 func _options() -> void:
-	var screen := preload("res://scripts/options_screen.gd").new()
+	var screen := Options.new()
 	screen.world = world
-	add_child(screen)
 	# Over the title, which shares its layer (Tom: "Options does nothing").
-	screen.layer = layer + 1
+	open_over(screen, _bottom())
+
+
+## What stands at the title's foot (the version line, the slot's note),
+## hidden while a screen over the menu has its own keys there; only what
+## shows, as open_over shows it all again.
+func _bottom() -> Array:
+	return [footer, note].filter(func(item: Label) -> bool: return item != null and item.visible)
 
 
 func _leave() -> void:

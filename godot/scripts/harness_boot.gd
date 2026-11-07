@@ -112,6 +112,7 @@ static func _reboot(tree: SceneTree) -> void:
 	InventoryState._uid_counter = 0
 	Dissolve.held_at = -1.0
 	preload("res://scripts/title_screen.gd")._risen = false
+	preload("res://scripts/options_screen.gd").back_at = -1
 	Controls.pad = false
 	Controls.learned = {}
 	Screen._holds = 0

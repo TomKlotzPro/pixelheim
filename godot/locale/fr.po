@@ -3089,6 +3089,10 @@ msgid "Esc got manners: it closes the menu you are in, and only pauses when noth
 msgstr "Esc a appris la politesse : il ferme le menu où vous êtes, et ne met en pause que si rien d'autre n'est ouvert"
 
 #: assets/data/changelog.json
+msgid "Esc on Saves, opened from the pause menu, now takes you back to the pause menu, and choosing a language keeps Options open, in the new language, on the Language row"
+msgstr "Échap sur Sauvegardes, ouvert depuis le menu pause, vous ramène désormais au menu pause, et choisir une langue garde Options ouvert, dans la nouvelle langue, sur la ligne Langue"
+
+#: assets/data/changelog.json
 msgid "Escape pauses the game: copy your save code, open options, or quit to the title and resume in place"
 msgstr "Esc met le jeu en pause : copiez votre code de sauvegarde, ouvrez les options, ou revenez à l'écran titre et reprenez là où vous étiez"
 
@@ -4591,6 +4595,10 @@ msgstr "Un seul style"
 #: assets/data/changelog.json
 msgid "One Page"
 msgstr "Une seule page"
+
+#: assets/data/changelog.json
+msgid "One Step Back"
+msgstr "Un pas en arrière"
 
 #: assets/data/changelog.json
 msgid "One Voice"
