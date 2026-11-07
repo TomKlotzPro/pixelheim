@@ -684,16 +684,54 @@ func test_a_map_built_without_a_door_waits_on_the_hush_too() -> void:
 	Sound.apply_volumes()
 
 
-## The world as the board's close asks it (Stage.after_board): its map, the
-## hero's cell, the hush (given or dropped) and the town drawn again.
+## PIX-420 review: a story's build (the dawn, the ending, the morning after
+## the Night of Bells: World.hushed_build(true)) asked while a change of
+## place holds the hush isn't dropped, the story having moved on: it waits
+## for that change to end, then hushes and builds. Off the web too, behind a
+## dark fade (_through_dark holds _passing there).
+func test_a_story_build_waits_out_a_change_of_place() -> void:
+	var world: BareWorld = add_child_autofree(BareWorld.new())
+	var was: bool = Sound.hushes_builds
+	var built: Array[String] = []
+	var build := func(what: String, must: bool) -> void:
+		if await world.hushed_build(must):
+			built.append(what)
+	Sound.hushes_builds = true
+	build.call("door", false)
+	build.call("story", true)
+	assert_false(await world.hushed_build(), "a door's asked meanwhile is still dropped")
+	await wait_until(func() -> bool: return built.size() == 2, 2.0)
+	assert_eq(built, ["door", "story"] as Array[String], "the story's built after the change under way, not dropped")
+	Sound.hushes_builds = false
+	world._passing = true
+	build.call("dawn", true)
+	await wait_process_frames(3)
+	assert_eq(built.size(), 2, "not built while the dark fade runs")
+	world._passing = false
+	await wait_until(func() -> bool: return built.size() == 3, 1.0)
+	assert_eq(built[-1], "dawn", "built once it has")
+	Sound.hushes_builds = was
+	Sound.hushed = 0.0
+	Sound._hush_left = 0.0
+	Sound.apply_volumes()
+
+
+## The world as the board's and the post's close and the morning after the
+## Night of Bells ask it (Stage.after_board, Stage.after_post, Night._day):
+## its map, the hero's cell, the hushes asked (`must` or not), given or
+## dropped (a story's never is: World.hushed_build), and each place drawn.
 class BoardWorld extends Node:
 	var map := MapData.new()
 	var player_cell := Vector2i(43, 27)
 	var hush_given := true
+	var asked: Array[bool] = []
 	var drawn: Array = []
+	var camera_rig := Rig.new()
+	var messages := Said.new()
 
-	func hushed_build() -> bool:
-		return hush_given
+	func hushed_build(must := false) -> bool:
+		asked.append(must)
+		return hush_given or must
 
 	func load_map(id: String) -> MapData:
 		var next := MapData.new()
@@ -704,9 +742,21 @@ class BoardWorld extends Node:
 		drawn.append([next.id, at])
 
 
-## PIX-420: back from the board with something built, the town is drawn
-## again only through the hush (World.hushed_build), and not at all while a
-## change of place already waits on it.
+class Rig:
+	var follows := false
+
+
+class Said:
+	var lines: Array = []
+
+	func log_lines(more: Array, _later := false) -> void:
+		lines.append_array(more)
+
+
+## PIX-420: a place grown round the hero (back from the board with something
+## built, a piece of post that grew a hub) is drawn again only through the
+## hush (World.hushed_build), and not at all while a change of place already
+## waits on it.
 func test_the_town_after_the_board_waits_on_the_hush() -> void:
 	var world: BoardWorld = autofree(BoardWorld.new())
 	world.map.id = "town"
@@ -721,6 +771,45 @@ func test_the_town_after_the_board_waits_on_the_hush() -> void:
 	await stage.after_board()
 	GameState.reveals.assign(kept)
 	assert_eq(world.drawn, [["town", Vector2i(43, 27)]], "drawn once the hush is given")
+	var post: PostState = GameState.post
+	GameState.post = PostState.new()
+	Routes.tally(GameState.post, "saltmere", "bram", int(Hubs.marks()[0]))
+	world.map.id = "saltmere"
+	world.drawn.clear()
+	world.hush_given = false
+	await stage.after_post()
+	assert_eq(world.drawn, [], "a hub grown by the post: not drawn while the hush is held")
+	world.hush_given = true
+	await stage.after_post()
+	GameState.post = post
+	assert_eq(world.drawn, [["saltmere", Vector2i(43, 27)]], "drawn once it is given")
+	assert_eq(world.asked, [false, false, false, false], "neither is a story's")
+
+
+## PIX-420 review: the morning after the Night of Bells is the story's: its
+## day begun (questing.bells_day), the square is drawn whatever change of
+## place holds the hush, as a story's build (World.hushed_build(true)
+## waits it out), never dropped.
+func test_the_morning_after_the_night_of_bells_is_never_dropped() -> void:
+	var world: BoardWorld = autofree(BoardWorld.new())
+	world.hush_given = false
+	var night: Night = autofree(Night.new())
+	night.world = world
+	var kept := {}
+	for section: String in ["hero", "pack", "settlement", "progression", "world", "slot", "dirty"]:
+		kept[section] = GameState.get(section)
+	var lent: Node = autofree(preload("res://scripts/state/game_state.gd").new())
+	lent.new_game("Robin", "warrior")
+	for section: String in ["hero", "pack", "settlement", "progression", "world"]:
+		GameState.set(section, lent.get(section))
+	GameState.slot = GameState.NO_SLOT
+	await night._day()
+	for section: String in kept:
+		GameState.set(section, kept[section])
+	assert_eq(world.asked, [true], "the hush asked as a story's")
+	assert_eq(world.drawn, [["town", Town.square() + Vector2i(0, 4)]], "the square drawn though a change of place held the hush")
+	assert_eq(world.messages.lines.size(), 1, "the day's line said")
+	assert_true(world.camera_rig.follows)
 
 
 ## PIX-411: a place's music is taken up where it was left; a fight's starts

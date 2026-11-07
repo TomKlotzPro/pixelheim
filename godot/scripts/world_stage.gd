@@ -176,8 +176,7 @@ func play_dawn() -> void:
 	dawn.world = world
 	dawn.on_done = func() -> void:
 		GameState.questing.finish_prologue()
-		if not await world.hushed_build():
-			return
+		await world.hushed_build(true)
 		world.map = world.load_map("town")
 		# The day begins on the square, below the hall, whether the dawn
 		# was watched or skipped.
@@ -202,8 +201,7 @@ func ask_morvax() -> void:
 ## confetti for "Come home.", five lanterns for the five who climbed for
 ## "Stay with them.".
 func play_ending(choice := Homecoming.HOME) -> void:
-	if not await world.hushed_build():
-		return
+	await world.hushed_build(true)
 	var scene_id := Story.ending_scene(choice)
 	GameState.mark_seen(scene_id)
 	GameState.reveals.clear()
