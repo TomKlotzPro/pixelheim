@@ -36,11 +36,11 @@ Each turn is one command: `look`, then think, then `keys`. The game runs only du
 
 - **`keys`**: keys separated by commas. A key alone is tapped; `right:1.2` holds it 1.2 s of game time; `up+left:0.5` holds both; `wait:2` presses nothing for 2 s. A one-letter key also types its letter (`R,o,b,i,n` types a name). `keys` prints the state after its last key, but no picture.
 - **`look`**: a screenshot (read it with the Read tool) and the state: `map`, `cell`, `hp`/`maxHp`, `mana`/`maxMana`, `level`, `gold`, `hour`, `night`, `paused`, `open` (the screens open), `text` (the words on the top screen), `hud` (the HUD's words: messages, hints, a door's nameplate), `quest` (the "Next" line), `foes` (within 12 cells, with their hp and cell), `seconds` (the game's clock) and `errors` (console errors since the last look).
-- **Spend your looks.** Your brief gives a budget, about 60 to 80 looks. Look after every move that could change something: a door, a fight, a menu, a line of text. Between looks, `keys`' own state is often enough to know you moved.
+- **Spend your looks.** Your brief gives a budget, about 60 to 80 looks. Look after every move that could change something: a door, a fight, a menu, a line of text. Between looks, `keys`' own state is often enough to know you moved. Don't stop before your budget while your route or checklist has items left: few findings mean keep looking, not stop. When one step holds you more than six looks, report it and go past it the way your brief says, instead of trying it again.
 - **The state says where you are, the picture says how it looks.** Trust the state for map, cell, health and quest, and quote `text` and `hud` for on-screen words. Trust the screenshot for what a player sees. When the two disagree, that is a finding.
 - **Walk with short holds** (0.2 to 0.5 s) near things, and longer ones to travel: `right:1` walks one second of the game. If two holds don't change `cell`, you are blocked: look at why before you push again.
 - **Keep a log as you go**: the `start` line and each `keys` you sent, in order. A finding's steps come from it, and triage replays them as they are.
-- **Anything in `errors` is worth a look**: an error a player never sees can still be a bug. Report it with what you were doing when it came.
+- **Anything in `errors` is worth a look**: an error a player never sees can still be a bug. Report it with what you were doing when it came. The one exception is the headless Chrome's WebGL warnings (`WebGL: INVALID_OPERATION` on `bindBuffer` or `bufferSubData`, often dozens in the burning village): don't report those.
 
 ### The keys
 
@@ -64,6 +64,8 @@ The play.py name of each key is in brackets.
 
 In menus, W/S or the arrows choose, E or Enter confirms, and Esc goes back. A rebound key replaces the letter key; the arrows, Enter, Space and Tab always keep working.
 
+A text field (the hero's name) types every one-letter key, `e`, `w` and `s` too: confirm it with `enter`. To talk to someone, face them first: tap the arrow toward them (`left:0.1`), then `e`.
+
 ### Where a session starts
 
 - **No option**: a plain launch from the title, as a new player sees it. `--lang fr` sets the browser to French.
@@ -82,7 +84,7 @@ In menus, W/S or the arrows choose, E or Enter confirms, and Esc goes back. A re
 Every finding has a **kind**:
 
 - **bug**: the game does something wrong. A freeze, a crash, an error in `look`'s errors. A number on screen that disagrees with the state. A hero stuck on nothing, or walking through a wall, a house or water. A sprite drawn over or under the wrong thing. A seam, gap, flicker or black band in the world. Text cut off or spilling out of its frame. A key that doesn't do what its footer says. A quest step that never completes.
-- **confusing**: a player wouldn't know what to do or what just happened. You spent more than three looks unsure where to go. A message that doesn't say what it means. A foe's attack you couldn't read in time.
+- **confusing**: a player wouldn't know what to do or what just happened. You spent more than three looks unsure where to go. A message that doesn't say what it means. A foe's big attack that gives no warning before it lands (no glow, band, circle or drawn bow). How long the warning lasts is Tom's call: a player that moves in steps of a few tenths of a second can't time a human's reaction.
 - **polish**: it works, but it feels off. Text too long to read in a box, a moment that drags, a screen that looks unlike the others, a reward that goes unnoticed.
 
 And a **severity**:
@@ -103,7 +105,7 @@ A finding without proof is not reported.
 - **A screenshot** that shows it (the path `look` gave). For something that moves, two or three in a row.
 - **The state** at that moment (the JSON `look` printed, or the part that matters).
 - **The steps**: the `start` options and every `keys` from the start to the moment you saw it, from your log. Triage replays exactly these.
-- **For a bug, try it twice.** Say whether it happened again (`seen twice: yes/no`). If you could only guess at it, it is not a bug: report it as confusing or polish, or leave it out.
+- **For a bug, try it twice.** Say whether it happened again (`seen twice: yes/no`). If you could only guess at it, it is not a bug: report it as confusing or polish (S4 when unsure), with its screenshot. Don't leave something you saw only in your summary: triage judges a picture cheaply, and a line in a summary is lost.
 
 ## Don't report
 
@@ -115,6 +117,8 @@ A finding without proof is not reported.
   - The seven skills whose blow falls from the sky (thunder, a divine sword...) are ranged.
   - On the web, a door's fade starts about 0.17 s after the key.
   - The village starts as burnt ashes for a new hero (the Night of Ash) and rebuilds over the story.
+  - The day clock turns only while the hero walks (PIX-246): standing still or `wait` leaves the hour as it was, so waiting never brings the dawn.
+  - A greyed button or row is one you can't use yet (no name typed, no points to spend, not enough gold). Report it only when nothing on screen says why and a player would be stuck.
 - **What is already ticketed.** Triage checks Linear; you don't need to.
 
 Do report big message boxes with too much text: Tom dislikes them.
