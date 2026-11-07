@@ -279,6 +279,8 @@ func is_walkable(cell: Vector2i) -> bool:
 	return map.is_walkable(cell)
 
 func on_player_died() -> void:
+	# The web's music hushed under the inn's build (PIX-417, Sound.hush).
+	get_tree().create_timer(1.2 - Sound.HUSH_S).timeout.connect(Sound.hush)
 	await get_tree().create_timer(1.2).timeout
 	# A fall on the Night of Bells wakes in the inn's doorway, the beat set
 	# out again (PIX-253 step 9).
@@ -595,6 +597,8 @@ func _through_door(then: Callable, down := false) -> void:
 	if down or not _fades():
 		_through_dark(then)
 		return
+	if not await _hushed():
+		return
 	scene_change = "dissolve"
 	Dissolve.hold(self)
 	_dissolving = true
@@ -607,6 +611,8 @@ func _through_door(then: Callable, down := false) -> void:
 ## with no fades.
 func _through_dark(then: Callable) -> void:
 	if not _fades():
+		if not await _hushed():
+			return
 		scene_change = "cut"
 		then.call()
 		return
@@ -614,6 +620,9 @@ func _through_dark(then: Callable) -> void:
 		return
 	_passing = true
 	scene_change = "dark"
+	# The music hushes as the screen darkens (the web, PIX-417): the fade
+	# is the hush's HUSH_S.
+	Sound.hush()
 	var dark := _fade_rect(Color(UiStyle.NIGHT, 0.0))
 	var fade := dark.create_tween()
 	fade.tween_property(dark, "color:a", 1.0, DOOR_FADE).set_ease(Tween.EASE_OUT)
@@ -622,6 +631,25 @@ func _through_dark(then: Callable) -> void:
 		dark.queue_free()
 		_passing = false
 	)
+
+
+## On the web the music hushed before a map is built under a dissolve or a
+## cut (PIX-417, Sound.hush), the build waiting the hush's HUSH_S; at once
+## elsewhere. False while a change of place already waits on it.
+func _hushed() -> bool:
+	if not Sound.hushes_builds:
+		return true
+	if _passing:
+		return false
+	_passing = true
+	Sound.hush()
+	await get_tree().create_timer(Sound.HUSH_S).timeout
+	# Built as a frame begins, as a step onto a door builds: the camera
+	# follows into the new map before it is drawn (after the frame's nodes,
+	# the old place's view of the new map was drawn too, 50-70 ms more).
+	await get_tree().process_frame
+	_passing = false
+	return true
 
 
 ## A night's sleep (PIX-246): the screen goes dark, `then` lets the night

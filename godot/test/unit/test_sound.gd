@@ -598,6 +598,43 @@ func test_a_jingle_ducks_the_music_and_lets_it_back() -> void:
 	assert_false(Sound._duck.is_running(), "a blow doesn't duck")
 
 
+## PIX-417: on the web a change of place hushes the music before the map is
+## built, under its whole build, and lets it back gently after: the build's
+## long frame counts as one. The weather and the effects play on (samples,
+## which no long frame holds). Elsewhere nothing hushes.
+func test_the_web_hushes_the_music_around_a_build() -> void:
+	var level := func(bus: String) -> float: return AudioServer.get_bus_volume_db(AudioServer.get_bus_index(bus))
+	var was: bool = Sound.hushes_builds
+	Sound.hushes_builds = true
+	Sound.apply_volumes()
+	var music: float = level.call("Music")
+	var weather: float = level.call("Ambience")
+	Sound.hush()
+	var waited := 0.0
+	while waited < Sound.HUSH_S - 0.001:
+		Sound._ease_hush(1.0 / 60.0)
+		waited += 1.0 / 60.0
+		if waited >= Sound.HUSH_S - 0.055:
+			assert_almost_eq(level.call("Music"), music + Sound.HUSH_DB, 0.05, "all the web has queued hushed before the build")
+	assert_almost_eq(level.call("Ambience"), weather, 0.01, "the weather plays on")
+	Sound._ease_hush(1.0 / 30.0)  # the build begins a frame after the wait
+	assert_almost_eq(level.call("Music"), music + Sound.HUSH_DB, 0.05, "hushed as the build begins")
+	Sound._ease_hush(0.3)  # the build's frame
+	assert_lt(level.call("Music"), music + Sound.HUSH_DB / 2.0, "not back at once after it")
+	assert_gt(level.call("Music"), music + Sound.HUSH_DB, "but on its way back")
+	for i in 60:
+		Sound._ease_hush(1.0 / 60.0)
+	assert_almost_eq(level.call("Music"), music, 0.01, "back where the player set it")
+	assert_eq(Sound.hushed, 0.0)
+	assert_true(preload("res://scripts/world.gd").DOOR_FADE >= Sound.HUSH_S, "a dark fade is long enough to hush under")
+	Sound.hushes_builds = false
+	Sound.hush()
+	Sound._ease_hush(0.1)
+	assert_eq(Sound.hushed, 0.0, "the desktop mixes on its own thread: no hush")
+	Sound.hushes_builds = was
+	Sound.apply_volumes()
+
+
 ## PIX-411: a place's music is taken up where it was left; a fight's starts
 ## from its top.
 func test_a_place_takes_its_music_up_where_it_left_it() -> void:
