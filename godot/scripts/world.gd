@@ -653,26 +653,43 @@ func _through_dark(then: Callable) -> void:
 
 
 ## On the web the music hushed before a map is built under a dissolve or a
-## cut (PIX-417, Sound.hush), the build waiting the hush's HUSH_S; at once
-## elsewhere. False while a change of place already waits on it.
+## cut (PIX-417, Sound.hush_first); at once elsewhere. False while a change
+## of place already waits on it.
 func _hushed() -> bool:
 	if not Sound.hushes_builds:
 		return true
 	if _passing:
 		return false
 	_passing = true
-	Sound.hush()
 	# The hero waits on the door meanwhile, as on the desktop (PIX-425):
 	# walking on, they were over the town's wall when the place changed.
-	player.set_physics_process(false)
-	await get_tree().create_timer(Sound.HUSH_S).timeout
-	# Built as a frame begins, as a step onto a door builds: the camera
-	# follows into the new map before it is drawn (after the frame's nodes,
-	# the old place's view of the new map was drawn too, 50-70 ms more).
-	await get_tree().process_frame
-	player.set_physics_process(true)
+	# (A test's world may have no hero.)
+	if player != null:
+		player.set_physics_process(false)
+	await Sound.hush_first()
+	if player != null:
+		player.set_physics_process(true)
 	_passing = false
 	return true
+
+
+## Before a map built where no door is (PIX-420): a scene's place (the dawn,
+## the ending, the morning after the Night of Bells), Lantern Night's stalls,
+## a place grown round the hero. On the web it waits on the music's hush as
+## a door's build does (_hushed), in the dark the new map fades in from
+## (_fade_in), so the place left isn't seen again; at once elsewhere. False
+## while a change of place already waits on it, unless `must`: a story's
+## build, asked once the story has moved on, waits for that change to end
+## instead (a dark fade's too, off the web), then builds: never dropped.
+func hushed_build(must := false) -> bool:
+	while must and _passing:
+		await get_tree().process_frame
+	var dark: ColorRect = _fade_rect(UiStyle.NIGHT) if Sound.hushes_builds and _fades() else null
+	var go: bool = await _hushed()
+	if dark != null:
+		# Freed after this frame's build, under the fade-in's own dark.
+		dark.queue_free()
+	return go
 
 
 ## A night's sleep (PIX-246): the screen goes dark, `then` lets the night

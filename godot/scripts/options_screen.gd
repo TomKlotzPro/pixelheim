@@ -136,8 +136,7 @@ func _language(step: int) -> void:
 	Text.apply(settings.language)
 	GameState.save_now()
 	back_at = selected
-	get_tree().paused = false
-	get_tree().reload_current_scene()
+	reload_world()
 
 
 ## Row indices that can be chosen (not the headings).

@@ -11,9 +11,11 @@
 1. **The title.** Watch the entrance once without pressing anything: 2 or 3 looks. Then choose New Game.
 2. **Making a hero.** Read every choice before you pick. Pick a warrior unless your brief says otherwise.
 3. **The opening scene and the Night of Ash.** Follow what the game asks. Read every box and say whether you understood it.
-4. **The dawn and the village.** Find out what to do next from what the game shows you: the "Next" line on the dock, the arrow, the journal (Q). Don't guess from what you know of the game.
+4. **The dawn and the village.** Find out what to do next from what the game shows you: the "Next" line on the dock, the arrow, the journal (Q). Don't guess from what you know of the game. When the Next line, the map's Goal and the journal disagree, that is a finding: say which one points where, then follow the Next line's words.
 5. **The first quests.** Take them, do them, hand them in. Fight what the quests send you to.
 6. **If you fall**, see where you wake and whether you understand why.
+
+If one step holds you more than six looks, report it and go past it: `stop`, then `start --map town --at 11,8 --flags "--prologue 5"` and `keys "w, e"` (Maren, the night's last step) to play on from the dawn.
 
 Stop when your looks run out, or when you have handed in two quests outside the village.
 

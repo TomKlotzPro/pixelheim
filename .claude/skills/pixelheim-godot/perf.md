@@ -69,6 +69,18 @@ An export with the paid art installed measures that art too: keep its numbers, n
 | a fall on the Reach, waking at the inn | 99-129 ms | 72-99 ms | -31.4 to -31.7 / -71.3 to -71.8 | -28.3 to -28.9 / -64.2 to -66.7 |
 | the line into the Deepwood (streamed) | none to 54 ms | 0-13 ms | -27.2 to -27.7 (the same) | the same |
 
+**Maps built where no door is** (PIX-420, 2026-11-07, the same setup, five runs of each interleaved with main's): the scenes' builds and Lantern Night's held the music as a door's did, at full level, until they went through `world.hushed_build()`, and a reload of the whole world (a slot, a language, the title, a new hero) until it went through `Screen.reload_world()`. Lantern Night was measured on scratch exports whose clock started 2.5 steps before the night's day (in the harness it otherwise begins in the boot's first frame, before the music):
+
+| Build | Its long task | Music held | Level as it stopped (dBFS): main / hushed | As it came back |
+|---|---|---|---|---|
+| the ending (`ending`, from the Reach to the town) | 226-277 ms (a first page 1065) | 184-237 ms (1027) | -29.3 to -29.7 / -66.1 to -66.6 | -35.8 to -37.6 / -71.1 to -73.4 |
+| back from the board (`rebuilt`, the town redrawn) | 196-239 ms | 157-200 ms | -28.7 to -29.2 / -66.2 to -66.6 | -25.9 to -26.3 / -61.9 to -62.5 |
+| the Night of Bells' scenes skipped, the town for the day after (main's music already fading) | 167-217 ms | 128-179 ms | -41.2 to -44.3 / -69.8 to -80.3 | -42.0 to -44.7 / -66.3 to -69.3 |
+| Lantern Night begun in town (the town rebuilt round the hero) | 76-86 ms | 32-45 ms | -19.9 to -21.2 / -63.7 to -65.1 | -23.5 to -23.7 / -63.8 to -64.3 |
+| a slot switch (the saves screen's E: the scene reloaded, the town built in its first frame) | 221-274 ms | 184-243 ms | -23.8 to -25.5 / -63.9 to -66.5 | -24.7 to -27.9 / -61.0 to -63.7 |
+
+On the Night of Bells one hushed run of five had a 19 ms stall at -41.7 as the scene closed, before the hush; the Esc that starts the collar scene holds the music too (211 ms at -29.0 in one run), a scene's start, not a build. The slot switch was measured on scratch exports carrying the fixture slots (`--map town --at 40,30 --walk` four seconds `saves --slots res://test/fixtures/slots --keys e`), one reload a run; its unhushed side is this code with the `Sound.hush()` line taken out (the same wait), as main's reload, pressed by the harness's own key push, tore the harness down with the world and the web run never built it again.
+
 The music's own level is about -23 to -34 dBFS. A hushed door or gate begins 0.15 s and a frame later on the web; the long tasks are the same. A first page in a fresh browser now and then ran far longer (the cave 1023 ms, the line 920, the door 467): a build's under the hush now, the line's not. In a fresh browser the line's frame was 66-68 ms and held the music 29 ms, at full level. The web download (90.7 MiB as files, 56.7 MiB gzipped) is mostly the bundle's music: 38.5 MiB of Ogg in the 52.5 MiB pck (gzip takes nothing off it), the engine's wasm 37.7 MiB (9.6 gzipped), the effects' and beds' takes 7.4 MiB (imported as QOA), all the rest some 6 MiB.
 
 ## Entering a map (`reentry`, ms)

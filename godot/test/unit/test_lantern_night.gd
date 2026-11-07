@@ -8,13 +8,19 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 
 
 ## The world as the watch asks it (LanternPass.watch): a map, the hero's
-## cell, and the map drawn again round them.
+## cell, and the map drawn again round them, after the music's hush.
 class FakeWorld extends Node:
 	var harness := false
 	var map := MapData.new()
 	var player_cell := Vector2i(43, 27)
 	## Each drawing: the map, where the hero stands, whether the festival's on.
 	var drawn: Array = []
+	## The hushes asked before a drawing (World.hushed_build, PIX-420).
+	var hushes := 0
+
+	func hushed_build() -> bool:
+		hushes += 1
+		return true
 
 	func load_map(id: String) -> MapData:
 		var next := MapData.new()
@@ -160,6 +166,7 @@ func test_begun_with_the_hero_in_town_its_stalls_go_up_round_them() -> void:
 	GameState.settlement = kept[1]
 	GameState.world.steps = kept[2]
 	assert_eq(world.drawn, [["town", Vector2i(43, 27), true]], "drawn again where the hero stands, the festival on, once")
+	assert_eq(world.hushes, 1, "after the music's hush, as a door's (PIX-420)")
 
 
 ## PIX-367: an age finished on Lantern Night replaced the night's record, so
