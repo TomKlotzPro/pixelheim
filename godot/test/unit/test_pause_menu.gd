@@ -7,6 +7,7 @@ extends GutTest
 
 const PauseScreen := preload("res://scripts/pause_screen.gd")
 const OptionsScreen := preload("res://scripts/options_screen.gd")
+const TitleScreen := preload("res://scripts/title_screen.gd")
 const DIR := "user://test_pause_menu"
 
 var _kept: SaveSlots
@@ -66,11 +67,12 @@ func test_esc_on_saves_or_options_goes_back_to_the_menu() -> void:
 		assert_not_null(screen, "%s opens over the menu" % menu.options[index]["label"])
 		assert_true(screen.on_top(), "and takes the keys")
 		assert_false(menu.keys.visible, "its keys stand in the menu's")
+		assert_false(menu.card.visible, "and nothing of the menu shows round it")
 		_key(&"ui_cancel")
 		await wait_physics_frames(1)
 		assert_true(is_instance_valid(menu) and menu.on_top(), "Esc on %s goes back to the menu" % menu.options[index]["label"])
 		assert_null(_over(menu))
-		assert_true(menu.keys.visible)
+		assert_true(menu.keys.visible and menu.card.visible, "the menu shows again")
 		assert_true(get_tree().paused, "the world still waits")
 		menu.close()
 		await wait_physics_frames(1)
@@ -94,3 +96,18 @@ func test_a_language_chosen_in_options_opens_them_again_on_its_row() -> void:
 	assert_eq(menu.selected, 2, "the menu's choice is Options")
 	assert_true(options.on_top())
 	assert_eq(OptionsScreen.back_at, -1, "once: the next Options open on their first row")
+
+
+## The same from the title: the world rebuilt in the language opens on the
+## title, and its _open puts Options over it again on that row.
+func test_a_language_chosen_over_the_title_opens_options_again_there() -> void:
+	OptionsScreen.back_at = 7
+	_menu = TitleScreen.new()
+	add_child(_menu)
+	var options := _over(_menu)
+	assert_not_null(options, "Options open again over the rebuilt title")
+	assert_eq(options.get_script(), OptionsScreen)
+	assert_eq(options.rows[options._choosable()[options.selected]]["label"], "Language", "on the row left")
+	assert_eq(_menu.options[_menu.selected]["label"], "Options", "the title's choice is Options")
+	assert_true(options.on_top())
+	assert_eq(OptionsScreen.back_at, -1, "once")

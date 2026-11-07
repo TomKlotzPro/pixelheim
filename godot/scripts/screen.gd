@@ -88,6 +88,22 @@ func _closes_on(event: InputEvent) -> bool:
 	return closing_actions.any(func(action: StringName) -> bool: return event.is_action_pressed(action))
 
 
+## `screen` opened from this one: its child a layer over it, so the keys are
+## its and Esc hands back here, one level (PIX-427). `aside` (this screen's
+## own card and keys) hides meanwhile, so nothing of it shows round a
+## smaller screen (Saves over the pause menu), and comes back as it goes.
+func open_over(screen: Screen, aside: Array = []) -> void:
+	for item: CanvasItem in aside:
+		item.visible = false
+	screen.tree_exited.connect(func() -> void:
+		for item: CanvasItem in aside:
+			if is_instance_valid(item):
+				item.visible = true
+	)
+	add_child(screen)
+	screen.layer = layer + 1
+
+
 ## Leaves; the world runs again unless another screen still holds it.
 func close() -> void:
 	_let_go()

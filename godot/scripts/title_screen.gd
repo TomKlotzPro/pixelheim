@@ -483,13 +483,12 @@ func _create_hero() -> void:
 func _saves() -> void:
 	var screen := preload("res://scripts/saves_screen.gd").new()
 	screen.on_play_current = _continue
-	add_child(screen)
-	screen.layer = layer + 1
+	open_over(screen)
 
 
 ## Every release's notes, over the title (Esc hands back).
 func _whats_new() -> void:
-	add_child(preload("res://scripts/changelog_screen.gd").new())
+	open_over(preload("res://scripts/changelog_screen.gd").new())
 	# Read, kept with the settings (the menu marks it no more: PIX-406).
 	if GameState.settings.seen_version != version:
 		GameState.settings.seen_version = version
@@ -501,9 +500,8 @@ func _whats_new() -> void:
 func _options() -> void:
 	var screen := Options.new()
 	screen.world = world
-	add_child(screen)
 	# Over the title, which shares its layer (Tom: "Options does nothing").
-	screen.layer = layer + 1
+	open_over(screen)
 
 
 func _leave() -> void:

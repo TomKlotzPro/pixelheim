@@ -14,14 +14,16 @@ var menu: VBoxContainer
 ## "Saved 12 s ago", kept to the second while the menu is open (the
 ## autosave runs under it).
 var saved_line: Label
-## Its keys, put aside while the options over it show theirs in their place.
+## Its card and keys, put aside while a screen over it (Saves, Options)
+## shows its own in their place.
+var card: PanelContainer
 var keys: Control
 
 
 func _open() -> void:
 	layer = 6
 	dim(0.85)
-	var card := PanelContainer.new()
+	card = PanelContainer.new()
 	card.position = Vector2(470, 170)
 	card.custom_minimum_size = Vector2(340, 340)
 	# Centred whatever its words (PIX-213: French ran it off-centre).
@@ -111,25 +113,13 @@ func _resume() -> void:
 func _saves() -> void:
 	var screen := preload("res://scripts/saves_screen.gd").new()
 	screen.on_play_current = _resume
-	_over(screen)
+	open_over(screen, [card, keys])
 
 
 func _options() -> void:
 	var screen := Options.new()
 	screen.world = world
-	_over(screen)
-
-
-## `screen` over the pause menu, its keys in place of the menu's: Esc hands
-## back here.
-func _over(screen: Screen) -> void:
-	keys.visible = false
-	screen.tree_exited.connect(func() -> void:
-		if is_instance_valid(keys):
-			keys.visible = true
-	)
-	add_child(screen)
-	screen.layer = layer + 1
+	open_over(screen, [card, keys])
 
 
 ## Back to the title: the hero is saved first, then the world starts over.
