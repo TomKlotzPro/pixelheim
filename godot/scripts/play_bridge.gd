@@ -153,19 +153,23 @@ func state() -> Dictionary:
 
 ## The words a player reads under `node`, in order: its labels, buttons and
 ## fields as far as they're shown (not hidden, faded out or still typing),
-## leaving out `skip`'s and another screen's opened inside it.
+## in the language they're shown in (a label's text is its English, which
+## it translates as it draws), leaving out `skip`'s and another screen's
+## opened inside it.
 static func words(node: Node, out: PackedStringArray, skip: Array = []) -> void:
 	if node == null or node in skip:
 		return
 	if (node is CanvasItem and (not node.visible or node.modulate.a < 0.05)) or (node is CanvasLayer and not node.visible):
 		return
 	var text := ""
-	if node is Label or node is RichTextLabel:
-		text = node.text if node is Label else node.get_parsed_text()
-		if node.visible_characters >= 0:
-			text = text.left(node.visible_characters)
-	elif node is Button or node is LineEdit:
+	if node is Label or node is Button:
+		text = node.atr(node.text)
+	elif node is RichTextLabel:
+		text = node.get_parsed_text()
+	elif node is LineEdit:
 		text = node.text
+	if (node is Label or node is RichTextLabel) and node.visible_characters >= 0:
+		text = text.left(node.visible_characters)
 	text = text.strip_edges()
 	if text != "" and (out.is_empty() or out[-1] != text):
 		out.append(text)

@@ -96,4 +96,11 @@ func test_the_words_are_those_shown_and_not_a_screen_under_it() -> void:
 	var out: PackedStringArray = []
 	Bridge.words(root, out)
 	assert_eq(out, PackedStringArray(["Hello", "Typ", "OK"]))
+	# As drawn: a French player's title plank says "Nouvelle partie".
+	button.text = "New Game"
+	Text.apply("fr")
+	out.clear()
+	Bridge.words(button, out)
+	Text.apply("en")
+	assert_eq(out, PackedStringArray(["Nouvelle partie"]))
 	root.free()
