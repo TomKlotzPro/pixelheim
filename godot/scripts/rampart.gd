@@ -38,6 +38,14 @@ const WALL := {
 }
 ## The gate: the portcullis raised, banners over the arch.
 const GATE := 1501
+## How deep the stone over a gate's passage is, from the top of its piece
+## (GATE; Shade's CC0 archway without the pack): that much of it stands
+## among the actors again, sorted on the gate's foot, so whoever walks
+## through goes under the arch, the passage's dark floor under their feet,
+## never over the wall (PIX-425, Tom: « on a l'impression de marcher sur le
+## mur du rempart »).
+const ARCH := 11
+const ARCH_FALLBACK := 13
 ## A gatehouse tower, west and east: its stone in the wall, its face to the
 ## road; its cone roof on the cell above; the roof burnt off.
 const TOWER := [1268, 1270]
@@ -131,6 +139,15 @@ static func on_road(grid: Dictionary, cell: Vector2i) -> bool:
 	if not (walled.call(Vector2i.LEFT) and walled.call(Vector2i.RIGHT)):
 		return false
 	return grid.get(cell + Vector2i.UP, "") == "path" or grid.get(cell + Vector2i.DOWN, "") == "path"
+
+
+## Whether a hero whose feet are at `feet` (map pixels) on `cell` has gone
+## into it far enough for its door to open (PIX-425): a gate in a wall
+## across, from behind the wall (its back to the north) only once they stand
+## in it, half under its arch, never on the wall's back between its towers'
+## tops; from the front, and on any other cell, at once.
+static func entered(grid: Dictionary, cell: Vector2i, feet: Vector2) -> bool:
+	return not on_road(grid, cell) or feet.y >= MapView.center(cell).y
 
 
 ## Whether the town's gate stands as the fire left it: while any of the

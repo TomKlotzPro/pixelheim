@@ -250,6 +250,9 @@ func _process(delta: float) -> void:
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return
+	# A gatehouse's door opens once the hero is in under its arch (PIX-425).
+	if map.portals.has(cell) and not Rampart.entered(map.grid, cell, player.position):
+		return
 	player_cell = cell
 	# A step by the ground under it and what's laid over it, a street's
 	# paving or a cave's rock (PIX-411), and dust off dry ground, a splash in
@@ -650,11 +653,15 @@ func _hushed() -> bool:
 		return false
 	_passing = true
 	Sound.hush()
+	# The hero waits on the door meanwhile, as on the desktop (PIX-425):
+	# walking on, they were over the town's wall when the place changed.
+	player.set_physics_process(false)
 	await get_tree().create_timer(Sound.HUSH_S).timeout
 	# Built as a frame begins, as a step onto a door builds: the camera
 	# follows into the new map before it is drawn (after the frame's nodes,
 	# the old place's view of the new map was drawn too, 50-70 ms more).
 	await get_tree().process_frame
+	player.set_physics_process(true)
 	_passing = false
 	return true
 

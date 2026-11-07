@@ -70,6 +70,35 @@ static func _ground_units(view: MapView, slices: Slicer) -> void:
 	slices.add_each("ground_objects", ceili(view.data.size.y / float(MapView.BLOCK)), func(i: int) -> void: _object_rows(view, i))
 	slices.add_each("ground_detail", ceili(view.data.size.y / float(MapView.BLOCK)), func(i: int) -> void: _detail_rows(view, i))
 	slices.add("ground_pieces", func() -> void: _ground_pieces(view))
+	slices.add("ground_arches", func() -> void: _gate_arches(view))
+
+
+## The stone over each gate's passage (Rampart.ARCH) standing among the
+## actors on the gate's foot (PIX-425): a hero whose feet are in the gate is
+## drawn under it, going through the arch rather than over the wall; one
+## before or past it stands in front. Where the gate is open (Greyhold's
+## without the pack), nothing.
+static func _gate_arches(view: MapView) -> void:
+	var paid := PunyTown.available()
+	for gate: Dictionary in view.rampart.get("gates", []):
+		for cell: Vector2i in gate["cells"]:
+			var sprite := Sprite2D.new()
+			sprite.centered = false
+			sprite.region_enabled = true
+			sprite.modulate = view.data.tint
+			if paid:
+				var piece: int = view.rampart["pieces"][cell]
+				sprite.texture = load(PunyTown.SHEET)
+				sprite.region_rect = Rect2(piece % PunyTown.COLUMNS * TILE, piece / PunyTown.COLUMNS * TILE, TILE, Rampart.ARCH)
+				if view.rampart["scorched"].has(cell):
+					sprite.modulate *= Rampart.SCORCHED
+			elif view.rampart["fallback"].has(cell):
+				sprite.texture = load(PunyTerrain.SHEET)
+				sprite.region_rect = PunyTerrain.region(view.rampart["fallback"][cell])
+				sprite.region_rect.size.y = Rampart.ARCH_FALLBACK
+			else:
+				continue
+			stand_on(view, sprite, cell, Vector2.ZERO)
 
 
 ## The units of a tile layer (BLOCK square) that `rect` (of its cells)
