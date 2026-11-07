@@ -2717,6 +2717,10 @@ msgid "Cliffs now stand in the sea, the sand and the roads instead of on a squar
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Close Quarters"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Closed Roads"
 msgstr ""
 
@@ -3558,6 +3562,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Green Thumbs"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Greenskin and outlaw elites now come right up to you before their ground-splitting cleave, and its marked band ends just past you: step back out of it during the warning and it misses"
 msgstr ""
 
 #: assets/data/changelog.json
