@@ -652,6 +652,21 @@ func _hushed() -> bool:
 	return true
 
 
+## Before a map built where no door is (PIX-420): a scene's place (the dawn,
+## the ending, the morning after the Night of Bells), Lantern Night's stalls,
+## a place grown round the hero. On the web it waits on the music's hush as
+## a door's build does (_hushed), in the dark the new map fades in from
+## (_fade_in), so the place left isn't seen again; at once elsewhere. False
+## while a change of place already waits on it.
+func hushed_build() -> bool:
+	var dark: ColorRect = _fade_rect(UiStyle.NIGHT) if Sound.hushes_builds and _fades() else null
+	var go: bool = await _hushed()
+	if dark != null:
+		# Freed after this frame's build, under the fade-in's own dark.
+		dark.queue_free()
+	return go
+
+
 ## A night's sleep (PIX-246): the screen goes dark, `then` lets the night
 ## pass (the clock runs on to the morning), and the world wakes to it - its
 ## folk where the morning puts them - fading in. With no fades (reduced

@@ -176,6 +176,8 @@ func play_dawn() -> void:
 	dawn.world = world
 	dawn.on_done = func() -> void:
 		GameState.questing.finish_prologue()
+		if not await world.hushed_build():
+			return
 		world.map = world.load_map("town")
 		# The day begins on the square, below the hall, whether the dawn
 		# was watched or skipped.
@@ -200,6 +202,8 @@ func ask_morvax() -> void:
 ## confetti for "Come home.", five lanterns for the five who climbed for
 ## "Stay with them.".
 func play_ending(choice := Homecoming.HOME) -> void:
+	if not await world.hushed_build():
+		return
 	var scene_id := Story.ending_scene(choice)
 	GameState.mark_seen(scene_id)
 	GameState.reveals.clear()
@@ -335,7 +339,7 @@ func festival() -> void:
 ## Back from the board with something built: the town redraws around the
 ## hero, then shows it.
 func after_board() -> void:
-	if GameState.reveals.is_empty() or world.map.id != "town":
+	if GameState.reveals.is_empty() or world.map.id != "town" or not await world.hushed_build():
 		return
 	world.map = world.load_map("town")
 	world.enter_map(world.map, world.player_cell)
@@ -344,7 +348,7 @@ func after_board() -> void:
 ## A piece of post handed over at a hub that it made grow (PIX-324): the
 ## place redraws around the hero, then has its tour.
 func after_post() -> void:
-	if world.map == null or Hubs.news(GameState.post, world.map.id).is_empty():
+	if world.map == null or Hubs.news(GameState.post, world.map.id).is_empty() or not await world.hushed_build():
 		return
 	world.map = world.load_map(world.map.id)
 	world.enter_map(world.map, world.player_cell)

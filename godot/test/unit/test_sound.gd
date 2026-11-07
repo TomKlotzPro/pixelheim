@@ -635,6 +635,55 @@ func test_the_web_hushes_the_music_around_a_build() -> void:
 	Sound.apply_volumes()
 
 
+## world.gd with nothing of the world built: what a build's hush asks of it.
+class BareWorld extends "res://scripts/world.gd":
+	func _ready() -> void:
+		hud = Hud.new()
+		hud.root = CanvasLayer.new()
+		add_child(hud)
+		add_child(hud.root)
+
+	func _process(_delta: float) -> void:
+		pass
+
+	func _unhandled_input(_event: InputEvent) -> void:
+		pass
+
+
+## PIX-420: a map built where no door is (a scene's place, Lantern Night's
+## stalls, a place grown round the hero: World.hushed_build) waits on the
+## same hush on the web, the screen held in the dark the new map fades in
+## from; a second asked meanwhile is dropped, as a door's. Elsewhere it is
+## built at once.
+func test_a_map_built_without_a_door_waits_on_the_hush_too() -> void:
+	var world: BareWorld = add_child_autofree(BareWorld.new())
+	var dark := func() -> int: return world.hud.root.get_children().filter(func(node: Node) -> bool: return node.has_meta("fade")).size()
+	var was: bool = Sound.hushes_builds
+	Sound.hushes_builds = false
+	assert_true(await world.hushed_build(), "built at once off the web")
+	assert_eq(Sound.hushed, 0.0, "nothing hushed there")
+	assert_eq(dark.call(), 0, "nor darkened")
+	Sound.hushes_builds = true
+	var built: Array = []
+	var build := func() -> void:
+		if await world.hushed_build():
+			built.append([Sound.hushed, dark.call()])
+	build.call()
+	assert_eq(built, [], "on the web not at once")
+	assert_eq(dark.call(), 1, "the screen dark while it waits")
+	assert_false(await world.hushed_build(), "a second asked meanwhile is dropped")
+	await wait_until(func() -> bool: return not built.is_empty(), 2.0)
+	assert_eq(built.size(), 1, "built once")
+	assert_lt(built[0][0], 0.0, "under the music's hush")
+	assert_eq(built[0][1], 1, "in the dark")
+	await wait_process_frames(1)
+	assert_eq(dark.call(), 0, "gone after the build's frame, under the new map's fade-in")
+	Sound.hushes_builds = was
+	Sound.hushed = 0.0
+	Sound._hush_left = 0.0
+	Sound.apply_volumes()
+
+
 ## PIX-411: a place's music is taken up where it was left; a fight's starts
 ## from its top.
 func test_a_place_takes_its_music_up_where_it_left_it() -> void:
