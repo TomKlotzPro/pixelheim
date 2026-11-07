@@ -652,20 +652,14 @@ func _hushed() -> bool:
 	if _passing:
 		return false
 	_passing = true
-<<<<<<< HEAD
-	await Sound.hush_first()
-=======
-	Sound.hush()
 	# The hero waits on the door meanwhile, as on the desktop (PIX-425):
 	# walking on, they were over the town's wall when the place changed.
-	player.set_physics_process(false)
-	await get_tree().create_timer(Sound.HUSH_S).timeout
-	# Built as a frame begins, as a step onto a door builds: the camera
-	# follows into the new map before it is drawn (after the frame's nodes,
-	# the old place's view of the new map was drawn too, 50-70 ms more).
-	await get_tree().process_frame
-	player.set_physics_process(true)
->>>>>>> origin/main
+	# (A test's world may have no hero.)
+	if player != null:
+		player.set_physics_process(false)
+	await Sound.hush_first()
+	if player != null:
+		player.set_physics_process(true)
 	_passing = false
 	return true
 
