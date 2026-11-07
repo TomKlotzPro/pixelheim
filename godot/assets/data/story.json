@@ -288,8 +288,7 @@
       },
       {
         "kind": "actor",
-        "sheet": "mini/Okomo.png",
-        "family": "mini",
+        "villager": "morvax",
         "anim": "idle",
         "dir": "down",
         "scale": 6,
@@ -337,8 +336,7 @@
       },
       {
         "kind": "actor",
-        "sheet": "mini/Okomo.png",
-        "family": "mini",
+        "villager": "morvax",
         "anim": "idle",
         "dir": "down",
         "scale": 6,
@@ -502,8 +500,7 @@
       },
       {
         "kind": "actor",
-        "sheet": "mini/Okomo.png",
-        "family": "mini",
+        "villager": "morvax",
         "anim": "walk",
         "dir": "left",
         "scale": 4,
@@ -558,8 +555,7 @@
       },
       {
         "kind": "actor",
-        "sheet": "mini/Okomo.png",
-        "family": "mini",
+        "villager": "morvax",
         "anim": "idle",
         "dir": "right",
         "scale": 1,

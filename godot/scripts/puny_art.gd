@@ -225,24 +225,31 @@ const VILLAGERS := {
 	"villager": {"sheet": "mini/FarmerRed.png", "family": "mini"},
 	# A living village (PIX-149): Shade's cat and dog, retouched (RESTYLED)
 	# and drawn at the farm animals' size, an art pixel two screen pixels
-	# at the play zoom (Herd.SCALE), and the farmers drawn small as children.
+	# at the play zoom (Herd.SCALE), and Pip and Nell, dyed workers cut
+	# down to a child's size (PIX-409: CHILD, at 1x on the grid).
 	"cat": {"sheet": "beasts/Orange-Cat-32x32.png", "family": "beast", "scale": 2.0 / 3.0},
 	"dog": {"sheet": "beasts/Blonde-Dog-32x32.png", "family": "beast", "scale": 2.0 / 3.0},
-	"child": {"sheet": "mini/FarmerRed.png", "family": "mini", "scale": 0.75},
-	"child_alt": {"sheet": "mini/FarmerPurple.png", "family": "mini", "scale": 0.75},
+	"child": {"sheet": WORKER, "family": "puny", "child": true, "dye": {"hair": "ginger", "cloth": "sky", "dress": "navy"}},
+	"child_alt": {"sheet": WORKER, "family": "puny", "child": true, "dye": {"hair": "blonde", "cloth": "pink", "dress": "plum"}},
 	# The keepers Shade drew whole: Hilda, Vex, the mayor, Old Hessa in a
-	# silk-grey robe (PIX-331), and Morvax, the old man of the cutscenes.
+	# silk-grey robe (PIX-331).
 	"smith": {"sheet": "characters/aligned/Human-Soldier-Red.png", "family": "puny"},
 	"alchemist": {"sheet": "characters/Mage-Cyan.png", "family": "puny"},
 	"mayor": {"sheet": "characters/aligned/Human-Soldier-Cyan.png", "family": "puny"},
 	"keeper": {"sheet": "characters/Mage-Silk.png", "family": "puny"},
-	"morvax": {"sheet": "mini/Okomo.png", "family": "mini"},
-	# Rook, the smuggler who talks (PIX-165), Greyhold's old guard at their
-	# posts and its chapel's monk (PIX-168), the Frostgate's hermit (PIX-169).
-	"smuggler": {"sheet": "mini/PirateGrunt.png", "family": "mini"},
+	# Morvax, the old man of the cutscenes (they dress him by this id): white
+	# hair, a forge's soot and rust, weathered (PIX-409).
+	"morvax": {"sheet": WORKER, "family": "puny", "paid": MAN, "dye": {"hair": "white", "cloth": "soot", "dress": "rust", "skin": "tan"}},
+	# Rook, the smuggler who talks (PIX-165), in the shadow cloak; Greyhold's
+	# old guard at their posts, and its chapel's monk (PIX-168), the bare
+	# template's shaven head over the Greymaw's grey cloak (a head and
+	# body as the hero's outfits join them; the amber traveller's cloak ran
+	# into his skin); the Frostgate's hermit (PIX-169)
+	# in the frost robe and its big hat. PIX-409: in both builds.
+	"smuggler": {"sheet": "characters/Archer-Shadow.png", "family": "puny"},
 	"guard": {"sheet": "mini/SwordsmanCyan.png", "family": "mini"},
-	"monk": {"sheet": "mini/MagePurple.png", "family": "mini"},
-	"hermit": {"sheet": "mini/Gangblanc.png", "family": "mini"},
+	"monk": {"sheet": "outfit|monk", "head": BASE, "body": "characters/Archer-Greymaw.png", "family": "puny"},
+	"hermit": {"sheet": "characters/Mage-Frost.png", "family": "puny"},
 	# Loras the bard in plum, Wren in the ranger's greens, Ulla in Greyhold's
 	# slate (with the pack a villager in it: the Iron Guard's closed helmet
 	# showed no face).
@@ -316,6 +323,14 @@ const SHADES := {
 	"pink": "cf7898", "sky": "6fa8d8", "forest": "2f5a34", "gold": "c09030", "maroon": "6e2030",
 	"cream": "e3d2a2", "mustard": "a8902a", "plum": "6e2e5e",
 }
+## A child (PIX-409): a Puny figure made smaller on the world's grid at 1x,
+## never drawn at a fraction (the farmers at 0.75 drew uneven pixels). Out
+## of each figure go these rows from its top (a row of hair, one of cheek
+## and the arms' middle) and this column (its middle), the rest closing up
+## over the feet: 11 rows by 13 where a grown-up is 14 by 14, the face
+## whole. Shade drew every human on one template, so they fit any of its
+## sheets; only the stand and walk (`columns`), all a child does.
+const CHILD := {"rows": [3, 5, 10], "column": 15, "columns": 4}
 
 ## Sheets retouched as they load (PIX-393: Tom found the dog didn't match
 ## ninth-jedi's farm animals, chunky, flat and outlined in black beside
@@ -640,14 +655,42 @@ static func villager(sprite: String) -> Dictionary:
 	return entry
 
 
-## What a spec looks like, as one string: its sheet and the dye its sheet
-## takes (DYED), so two looks are the same only where they draw the same.
+## What a spec looks like, as one string: its sheet, the dye its sheet
+## takes (DYED) and a child's cut (CHILD), so two looks are the same only
+## where they draw the same.
 static func look_of(spec: Dictionary) -> String:
 	var parts: Dictionary = DYED.get(spec["sheet"], {})
 	var dye: Dictionary = spec.get("dye", {})
 	var worn := dye.keys().filter(func(part: String) -> bool: return parts.has(part))
 	worn.sort()
-	return "%s|%s" % [spec["sheet"], ",".join(worn.map(func(part: String) -> String: return "%s=%s" % [part, dye[part]]))]
+	var look := "%s|%s" % [spec["sheet"], ",".join(worn.map(func(part: String) -> String: return "%s=%s" % [part, dye[part]]))]
+	return look + "|child" if spec.get("child", false) else look
+
+
+## `image`, a sheet of 32 px Puny figures, each cut down to a child's size
+## (CHILD) in its first columns: what was over a row cut out moves down a
+## pixel, what was left of the column a pixel right. Whole rows are copied
+## (two blits a row): a fifth of a millisecond a sheet, once a session.
+static func child(image: Image) -> Image:
+	var source := image.duplicate() as Image
+	source.convert(Image.FORMAT_RGBA8)
+	var out := source.duplicate() as Image
+	var column: int = CHILD["column"]
+	for top in range(0, out.get_height(), 32):
+		for left in range(0, mini(out.get_width(), int(CHILD["columns"]) * 32), 32):
+			var used := source.get_region(Rect2i(left, top, 32, 32)).get_used_rect()
+			if not used.has_area():
+				continue
+			out.fill_rect(Rect2i(left, top, 32, 32), Color.TRANSPARENT)
+			# From the feet up, each row kept moved down by the cuts below it.
+			var drop := 0
+			for y in range(used.end.y - 1, used.position.y - 1, -1):
+				if (y - used.position.y) in CHILD["rows"]:
+					drop += 1
+					continue
+				out.blit_rect(source, Rect2i(left, top + y, column, 1), Vector2i(left + 1, top + y + drop))
+				out.blit_rect(source, Rect2i(left + column + 1, top + y, 31 - column, 1), Vector2i(left + column + 1, top + y + drop))
+	return out
 
 
 ## `image`, a sheet of `size` px frames, dyed (DYED's `parts`, `dye`'s
@@ -702,16 +745,20 @@ static func frame_size(spec: Dictionary) -> int:
 
 
 ## A spec's whole sheet: the dressed outfit's, the drawn one's, or that
-## retouched (RESTYLED).
+## retouched (RESTYLED), dyed (DYED) or cut to a child's size (CHILD).
 static func sheet_texture(spec: Dictionary) -> Texture2D:
 	if spec.has("head"):
 		return outfit_texture(spec["head"], spec["body"], spec.get("weapon_tint", Color.WHITE), spec.get("gear", {}))
 	var drawn: Texture2D = load(path(spec["sheet"]))
 	if RESTYLED.has(spec["sheet"]):
 		return ImageTexture.create_from_image(restyle(drawn.get_image(), frame_size(spec), RESTYLED[spec["sheet"]]))
+	var image: Image = null
 	if spec.has("dye") and DYED.has(spec["sheet"]):
-		return ImageTexture.create_from_image(dyed(drawn.get_image(), frame_size(spec), DYED[spec["sheet"]], spec["dye"]))
-	return drawn
+		image = dyed(drawn.get_image(), frame_size(spec), DYED[spec["sheet"]], spec["dye"])
+	# Dyed first: the dye tells hair from trousers by the grown-up's rows.
+	if spec.get("child", false):
+		image = child(image if image != null else drawn.get_image())
+	return drawn if image == null else ImageTexture.create_from_image(image)
 
 
 ## `image`, a sheet of `size` px frames, retouched (RESTYLED): each opaque

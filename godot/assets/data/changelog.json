@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.320.0",
+      "date": "2026-11-07",
+      "codename": "Every Face",
+      "notes": [
+        "Pip and Nell have faces of their own at a child's size, and Morvax, Rook, Brother Teo and Aske the Hermit now stand as tall and as detailed as everyone else, Morvax beside Maren in every scene of his"
+      ]
+    },
+    {
       "version": "0.319.0",
       "date": "2026-11-05",
       "codename": "The Bridge's Foot",
