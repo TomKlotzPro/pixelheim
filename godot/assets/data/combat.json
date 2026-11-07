@@ -220,7 +220,8 @@
         "chance": 0.4,
         "turns": 2,
         "power": 9
-      }
+      },
+      "shoots": "flame"
     },
     "crab": {
       "id": "crab",
@@ -259,7 +260,8 @@
       "defense": 1,
       "xp": 26,
       "gold": 18,
-      "level": 5
+      "level": 5,
+      "shoots": "ball"
     },
     "pirate_captain": {
       "id": "pirate_captain",
@@ -348,7 +350,8 @@
       "defense": 3,
       "xp": 42,
       "gold": 36,
-      "level": 8
+      "level": 8,
+      "shoots": "arrow"
     },
     "cutthroat": {
       "id": "cutthroat",
@@ -1526,6 +1529,65 @@
     "iframes": 0.3,
     "cooldown": 0.7
   },
+  "reach": {
+    "about": "PIX-410 (Tom: « je peux toucher les ennemis de loin mais ça fait pas sens si je suis un guerrier »): how far every blow reaches, in cells (16 px) on the ground, read by Reach. The hero's reach runs from their feet to the near edge of a foe's body (a common foe's is half a cell either side of its feet, an elite's or a boss's wider), within `arc` degrees about the way they face (widened by the body's own breadth: a body half in the arc is in it). Melee is contact, the cell in front and its corners, never two cells off; a bow, a staff, a spell or a foe's shot reaches from afar and is seen flying there.",
+    "swings": {
+      "about": "The hero's swing by the swing drawn (PunyArt.WEAPON_ATTACKS: a sword, an axe, a hammer, a dagger and a bare hand swing the sword's; the bow; the staff and the wand the staff's). A blade lands on every foe it reaches; a shot (the bow's arrow, the staff's bolt) on the nearest it reaches, flying to it, a little further than a foe's shot.",
+      "sword": {
+        "cells": 1.0,
+        "arc": 90
+      },
+      "bow": {
+        "cells": 3.0,
+        "arc": 60,
+        "shot": true
+      },
+      "staff": {
+        "cells": 3.0,
+        "arc": 60,
+        "shot": true
+      }
+    },
+    "skills": {
+      "about": "A damage skill's reach by its kind (each names its `reach`): the hero turns to the nearest foe it reaches (those ahead first) and strikes it. An area skill strikes every foe in its area: a melee one every foe its blow reaches, a burst every foe within its cells round the hero, a ranged one every foe within `around` cells of the foe it flies to.",
+      "melee": {
+        "cells": 1.0
+      },
+      "ranged": {
+        "cells": 5.0,
+        "around": 2.0
+      },
+      "burst": {
+        "cells": 2.5
+      }
+    },
+    "bite": {
+      "about": "A foe's bite, from its feet to the hero's: told once the hero is within `tell` cells (PIX-377: the ring's nearest close in to 11 px), landing if they're still within `cells` when the tell is done (a blow's shove, some 7 px, never takes a telling foe out of it: test_combat_feel).",
+      "tell": 0.8,
+      "cells": 1.25
+    },
+    "shots": {
+      "about": "A foe that shoots (its kind's `shoots`): it holds where it has the hero within `cells` (feet to feet: never past a bow's or a staff's reach, so the hero can answer it) and in sight, out of the ring round them, and every `every` seconds tells a shot for `tell` seconds (a glow, and its line on the ground under clear warnings) and looses it at where the hero stands then: it flies at `speed` px a second, as far as its cells and two more, and strikes the hero it meets (Firebolt); closer than a bite it bites.",
+      "arrow": {
+        "cells": 3.0,
+        "every": 2.6,
+        "tell": 0.5,
+        "speed": 150
+      },
+      "ball": {
+        "cells": 3.0,
+        "every": 3.0,
+        "tell": 0.6,
+        "speed": 190
+      },
+      "flame": {
+        "cells": 3.0,
+        "every": 2.8,
+        "tell": 0.5,
+        "speed": 120
+      }
+    }
+  },
   "eliteMoves": {
     "beasts": {
       "move": "lunge",
@@ -1839,7 +1901,8 @@
           "kind": "damage",
           "multiplier": 1.9,
           "stat": "strength",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -1886,7 +1949,8 @@
             "turns": 1,
             "power": 0
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -1928,7 +1992,8 @@
           "kind": "damage",
           "multiplier": 2.7,
           "stat": "strength",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -1970,7 +2035,8 @@
           "kind": "damage",
           "multiplier": 3.4,
           "stat": "strength",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -2016,7 +2082,8 @@
           "multiplier": 2.2,
           "stat": "strength",
           "area": true,
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -2106,7 +2173,8 @@
           "kind": "damage",
           "multiplier": 2.2,
           "stat": "intelligence",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -2158,7 +2226,8 @@
             "turns": 3,
             "power": 6
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -2206,7 +2275,8 @@
             "turns": 1,
             "power": 0
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -2253,7 +2323,8 @@
           "kind": "damage",
           "multiplier": 3.6,
           "stat": "intelligence",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -2306,7 +2377,8 @@
             "turns": 2,
             "power": 6
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -2365,7 +2437,8 @@
           "kind": "damage",
           "multiplier": 4.0,
           "stat": "intelligence",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -2399,7 +2472,8 @@
           "kind": "damage",
           "multiplier": 2,
           "stat": "dexterity",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -2446,7 +2520,8 @@
             "turns": 3,
             "power": 5
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -2492,7 +2567,8 @@
           "kind": "damage",
           "multiplier": 3,
           "stat": "dexterity",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -2534,7 +2610,8 @@
           "kind": "damage",
           "multiplier": 3.5,
           "stat": "dexterity",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -2583,7 +2660,8 @@
           "multiplier": 2.0,
           "stat": "dexterity",
           "area": true,
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "burst"
         }
       },
       {
@@ -2649,7 +2727,8 @@
             "turns": 1,
             "power": 0
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -2723,7 +2802,8 @@
           "kind": "damage",
           "multiplier": 1.8,
           "stat": "intelligence",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -2826,7 +2906,8 @@
           "kind": "damage",
           "multiplier": 3.2,
           "stat": "intelligence",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -2873,7 +2954,8 @@
           "multiplier": 1.9,
           "stat": "intelligence",
           "area": true,
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "burst"
         }
       },
       {
@@ -2937,7 +3019,8 @@
             "turns": 3,
             "power": 8
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       }
     ],
@@ -2956,7 +3039,8 @@
           "kind": "damage",
           "multiplier": 1.9,
           "stat": "dexterity",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3003,7 +3087,8 @@
             "turns": 3,
             "power": 5
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3044,7 +3129,8 @@
           "kind": "damage",
           "multiplier": 2.7,
           "stat": "dexterity",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3086,7 +3172,8 @@
           "kind": "damage",
           "multiplier": 3.3,
           "stat": "dexterity",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3157,7 +3244,8 @@
           "multiplier": 2.2,
           "stat": "dexterity",
           "area": true,
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3175,7 +3263,8 @@
           "kind": "damage",
           "multiplier": 4.0,
           "stat": "dexterity",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3220,7 +3309,8 @@
           "kind": "damage",
           "multiplier": 1.7,
           "stat": "strength",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -3308,7 +3398,8 @@
             "turns": 3,
             "power": 5
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -3355,7 +3446,8 @@
           "kind": "damage",
           "multiplier": 3.2,
           "stat": "strength",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3408,7 +3500,8 @@
           "multiplier": 2.1,
           "stat": "strength",
           "area": true,
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -3469,7 +3562,8 @@
             "turns": 1,
             "power": 0
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "melee"
         }
       },
       {
@@ -3501,7 +3595,8 @@
           "kind": "damage",
           "multiplier": 2,
           "stat": "intelligence",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3553,7 +3648,8 @@
             "turns": 4,
             "power": 6
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3601,7 +3697,8 @@
             "turns": 1,
             "power": 0
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3643,7 +3740,8 @@
           "kind": "damage",
           "multiplier": 3.3,
           "stat": "intelligence",
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3667,7 +3765,8 @@
             "turns": 5,
             "power": 8
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3718,7 +3817,8 @@
             "turns": 3,
             "power": 7
           },
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3752,7 +3852,8 @@
           "multiplier": 2.8,
           "stat": "intelligence",
           "drain": 0.5,
-          "unlockLevel": 1
+          "unlockLevel": 1,
+          "reach": "ranged"
         }
       },
       {
@@ -3799,7 +3900,8 @@
         "kind": "damage",
         "multiplier": 2.2,
         "stat": "strength",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       },
       "tier": 1,
       "branch": "a",
@@ -3827,7 +3929,8 @@
           "turns": 1,
           "power": 0
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       },
       "tier": 1,
       "branch": "b",
@@ -3859,7 +3962,8 @@
           "turns": 3,
           "power": 7
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       },
       "tier": 1,
       "branch": "a",
@@ -3886,7 +3990,8 @@
           "turns": 1,
           "power": 0
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       },
       "tier": 1,
       "branch": "b",
@@ -3907,7 +4012,8 @@
         "kind": "damage",
         "multiplier": 2.6,
         "stat": "dexterity",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       },
       "tier": 1,
       "branch": "a",
@@ -3935,7 +4041,8 @@
           "turns": 1,
           "power": 0
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       },
       "tier": 1,
       "branch": "b",
@@ -3956,7 +4063,8 @@
         "kind": "damage",
         "multiplier": 2.2,
         "stat": "intelligence",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       },
       "tier": 1,
       "branch": "a",
@@ -3998,7 +4106,8 @@
         "kind": "damage",
         "multiplier": 2.4,
         "stat": "dexterity",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       },
       "tier": 1,
       "branch": "a",
@@ -4026,7 +4135,8 @@
           "turns": 3,
           "power": 6
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       },
       "tier": 1,
       "branch": "b",
@@ -4048,7 +4158,8 @@
         "kind": "damage",
         "multiplier": 2.3,
         "stat": "strength",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       },
       "tier": 1,
       "branch": "a",
@@ -4070,7 +4181,8 @@
         "kind": "damage",
         "multiplier": 1.9,
         "stat": "strength",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       },
       "tier": 1,
       "branch": "b",
@@ -4102,7 +4214,8 @@
           "turns": 5,
           "power": 7
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       },
       "tier": 1,
       "branch": "a",
@@ -4125,7 +4238,8 @@
         "kind": "damage",
         "multiplier": 1.9,
         "stat": "intelligence",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       },
       "tier": 1,
       "branch": "b",
@@ -4154,7 +4268,8 @@
         "kind": "damage",
         "multiplier": 2.6,
         "stat": "strength",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       }
     },
     {
@@ -4185,7 +4300,8 @@
           "turns": 1,
           "power": 0
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       }
     },
     {
@@ -4211,7 +4327,8 @@
         "kind": "damage",
         "multiplier": 3.2,
         "stat": "strength",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       }
     },
     {
@@ -4242,7 +4359,8 @@
           "turns": 1,
           "power": 0
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       }
     },
     {
@@ -4277,7 +4395,8 @@
           "turns": 3,
           "power": 8
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4308,7 +4427,8 @@
           "turns": 1,
           "power": 0
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4343,7 +4463,8 @@
           "turns": 3,
           "power": 10
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4374,7 +4495,8 @@
           "turns": 1,
           "power": 0
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4398,7 +4520,8 @@
         "kind": "damage",
         "multiplier": 3,
         "stat": "dexterity",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       }
     },
     {
@@ -4431,7 +4554,8 @@
           "turns": 1,
           "power": 0
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       }
     },
     {
@@ -4460,7 +4584,8 @@
         "kind": "damage",
         "multiplier": 3.4,
         "stat": "dexterity",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       }
     },
     {
@@ -4494,7 +4619,8 @@
           "turns": 1,
           "power": 0
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       }
     },
     {
@@ -4519,7 +4645,8 @@
         "kind": "damage",
         "multiplier": 2.6,
         "stat": "intelligence",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4568,7 +4695,8 @@
         "kind": "damage",
         "multiplier": 3,
         "stat": "intelligence",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4617,7 +4745,8 @@
         "kind": "damage",
         "multiplier": 2.8,
         "stat": "dexterity",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4654,7 +4783,8 @@
           "turns": 3,
           "power": 7
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4678,7 +4808,8 @@
         "kind": "damage",
         "multiplier": 3.3,
         "stat": "dexterity",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4715,7 +4846,8 @@
           "turns": 4,
           "power": 8
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4740,7 +4872,8 @@
         "kind": "damage",
         "multiplier": 2.7,
         "stat": "strength",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4765,7 +4898,8 @@
         "kind": "damage",
         "multiplier": 2.2,
         "stat": "strength",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       }
     },
     {
@@ -4790,7 +4924,8 @@
         "kind": "damage",
         "multiplier": 3.2,
         "stat": "strength",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4822,7 +4957,8 @@
           "turns": 1,
           "power": 0
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "melee"
       }
     },
     {
@@ -4857,7 +4993,8 @@
           "turns": 5,
           "power": 8
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4883,7 +5020,8 @@
         "kind": "damage",
         "multiplier": 2.3,
         "stat": "intelligence",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4918,7 +5056,8 @@
           "turns": 6,
           "power": 10
         },
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     },
     {
@@ -4944,7 +5083,8 @@
         "kind": "damage",
         "multiplier": 2.8,
         "stat": "intelligence",
-        "unlockLevel": 1
+        "unlockLevel": 1,
+        "reach": "ranged"
       }
     }
   ],

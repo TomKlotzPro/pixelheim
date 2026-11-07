@@ -61,13 +61,17 @@ func step_die() -> void:
 
 
 func step_cast() -> void:
-	# A foe two steps away, then the first skill: the strike, the flash, the log.
+	# A foe where the skill reaches - two steps away, a step for a blow
+	# (PIX-410) - then the first skill: the strike, the flash, the log.
+	# `--skill N` (PIX-396): the dock's Nth skill.
+	var index := int(flags.value("--skill", "1")) - 1
+	var docked: Array = Skills.docked(GameState.hero)
+	var at: Vector2i = world.player_cell + Vector2i(1 if index < docked.size() and docked[index].get("reach", "") == "melee" else 2, 0)
 	world.player.invulnerable = true
-	world.foes.spawn_enemy("orc", world.player_cell + Vector2i(2, 0), world.map.region_at(world.player_cell + Vector2i(2, 0)))
+	world.foes.spawn_enemy("orc", at, world.map.region_at(at))
 	world.player.face(Vector2.RIGHT)
 	await h.get_tree().create_timer(0.2).timeout
-	# `--skill N` (PIX-396): the dock's Nth skill.
-	world.player.cast(int(flags.value("--skill", "1")) - 1)
+	world.player.cast(index)
 	await h.get_tree().create_timer(0.15).timeout
 
 
@@ -75,8 +79,12 @@ func step_fight() -> void:
 	# `--foe <species>` picks the opponent (default orc); `hurt` lets it bite.
 	var foe := flags.value("--foe", "orc")
 	world.player.invulnerable = not flags.has("hurt")
-	# `--foe-distance N` stands it N cells off (an elite's opener from range).
-	var foe_distance := int(flags.value("--foe-distance", "2"))
+	# `--foe-distance N` stands it N cells off (an elite's opener from range);
+	# by default where the hero's swing reaches it (PIX-410): a step off for
+	# a blade, two for a bow or a staff (two for every swing until the
+	# blade's reach was cut to the cell in front).
+	var shot: bool = Reach.swing(world.player.art["attack"]).get("shot", false)
+	var foe_distance := int(flags.value("--foe-distance", "2" if shot else "1"))
 	# A named monster's id (`--foe greymaw`) brings it out of its lair (PIX-156):
 	# the one in its lair on this map when it's here (PIX-255: no twin
 	# beside it in the shot).
@@ -132,12 +140,25 @@ func step_fight() -> void:
 	var swings := pack.size()
 	var kills_before: int = world.foes.kills
 	var since := GameClock.seconds()
+	# What the fight costs (PIX-410): every blow's health (a level-up's heal
+	# gives none back) until the foe falls, or the hero does.
+	var cost := {"lost": 0, "at": GameState.hero.hp, "fell": -1.0}
+	var count := func(hp: int, _max_hp: int) -> void:
+		if float(cost["fell"]) >= 0.0:
+			return
+		cost["lost"] += maxi(0, int(cost["at"]) - hp)
+		cost["at"] = hp
+		if hp == 0:
+			cost["fell"] = GameClock.seconds() - since
+	GameState.hp_changed.connect(count)
 	var i := 0
 	while flags.has("kill") or i < swings:
-		# A pack's: at the nearest of it still standing. A Variant, as a
-		# freed foe can't be passed as a Node to be checked (PIX-372).
+		# At the nearest of the pack still standing (a lone foe's a pack of
+		# one: PIX-410, a blade reaches only the way the hero faces). A
+		# Variant, as a freed foe can't be passed as a Node to be checked
+		# (PIX-372).
 		var standing := pack.filter(func(member: Variant) -> bool: return is_instance_valid(member) and not member.dying)
-		if flags.has("pack") and not standing.is_empty():
+		if not standing.is_empty():
 			var hero: Vector2 = world.player.global_position
 			standing.sort_custom(func(a: Node2D, b: Node2D) -> bool: return a.global_position.distance_to(hero) < b.global_position.distance_to(hero))
 			world.player.face(standing[0].global_position - hero)
@@ -153,7 +174,11 @@ func step_fight() -> void:
 		# at each kill, not held to the fight's end).
 		if world.foes.kills > kills_before and report.noted("rising") == "":
 			report.note("rising", str(world.fx.rising_now()))
+	GameState.hp_changed.disconnect(count)
 	if flags.has("kill"):
+		# How long it took and what it cost (PIX-410: the reaches' balance).
+		var fell := float(cost["fell"]) >= 0.0
+		report.note("fought", "%.1fs -%d%s" % [float(cost["fell"]) if fell else GameClock.seconds() - since, cost["lost"], " fell" if fell else ""])
 		await _hear_out(opponent)
 	await h.get_tree().create_timer(0.4 if flags.has("kill") else 0.1).timeout
 	if flags.has("die"):

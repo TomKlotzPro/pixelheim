@@ -537,7 +537,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/waysides/feature.gd` — The Reach's wayside lanterns in the harness (PIX-397, step 4)
 - `scripts/features/waysides/waysides.gd` — Wayside lanterns on the Reach's main roads (PIX-397, step 4; the v0.307 world audit: « at night the Reach is unlit beyond the town »)
 - `scripts/fire_art.gd` — The fires of a burning house (PIX-327): the Night of Ash's ruins and the Night of Bells' roofs.
-- `scripts/firebolt.gd` — A fireborn elite's firebolt (PIX-155): flies straight, burns the hero it meets, and gutters out against a wall or after eight tiles.
+- `scripts/firebolt.gd` — A foe's shot in flight: a fireborn elite's firebolt (PIX-155), or a shooter's arrow, ball or flame (PIX-410, Reach.shot).
 - `scripts/gait.gd` — How the cast walks (PIX-243): the hero, the villagers, the monsters and the wagon all step through their sheet's walk (PunyArt.WALKS) by the ground they cover, not by the clock, so their feet keep pace with the ground at any speed
 - `scripts/game_clock.gd` — The game's own clock (PIX-276): the time the world has lived, counted in its physics ticks, sixty a second.
 - `scripts/gate_art.gd` — What a shut gate looks like (PIX-254, Gates), in art already in the game
@@ -661,6 +661,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/state/questing.gd` — Quests, conversations and the Night of Ash (PIX-261, out of game_state.gd)
 - `scripts/state/quests.gd` — The villagers' quests (src/game/quests.ts): talking to a giver accepts their quest, talking again with the objective met turns it in.
 - `scripts/state/ranks.gd` — Rank evolution (src/game/hero/ranks.ts): every 5 levels the hero ascends to a new title and banks a bonus skill point (HeroRules.apply_level_ups).
+- `scripts/state/reach.gd` — How far every blow reaches (PIX-410, Tom: « je peux toucher les ennemis de loin mais ça fait pas sens si je suis un guerrier »)
 - `scripts/state/relics.gd` — The five relics (PIX-170): what the five climbers left in the Reach
 - `scripts/state/routes.gd` — The Post's routes (PIX-322, Something to Come Back To's step 3): the roads the courier carries the post along, and what they grow.
 - `scripts/state/save_codec.gd` — Pixelheim's own save format, v5 (PIX-302)

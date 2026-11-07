@@ -17,7 +17,7 @@ func test_a_stun_mid_swing_ends_the_swing() -> void:
 	assert_true(hero._held_by_stun(), "the stun holds the hero")
 	assert_false(hero.attacking, "and ends the swing")
 	assert_false(hero.casting, "a cast too")
-	assert_false(hero.hitbox.monitoring, "the blade no longer bites")
+	assert_false(hero.striking, "the blade no longer bites")
 	hero.ailments.clear()
 	assert_false(hero._held_by_stun(), "the stun worn off")
 	hero.attack_ready = true
