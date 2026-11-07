@@ -2717,6 +2717,10 @@ msgid "Cliffs now stand in the sea, the sand and the roads instead of on a squar
 msgstr "Les falaises se dressent désormais dans la mer, le sable et les routes au lieu d'un carré d'herbe, et la neige, l'écume et les teintes continuent d'une région à l'autre"
 
 #: assets/data/changelog.json
+msgid "Close Quarters"
+msgstr "Au corps à corps"
+
+#: assets/data/changelog.json
 msgid "Closed Roads"
 msgstr "Routes coupées"
 
@@ -3559,6 +3563,10 @@ msgstr "Cercles verts"
 #: assets/data/changelog.json
 msgid "Green Thumbs"
 msgstr "La main verte"
+
+#: assets/data/changelog.json
+msgid "Greenskin and outlaw elites now come right up to you before their ground-splitting cleave, and its marked band ends just past you: step back out of it during the warning and it misses"
+msgstr "Les élites peaux-vertes et hors-la-loi viennent désormais tout près de vous avant de fendre le sol, et la bande marquée s'arrête juste derrière vous : reculez hors de la bande pendant l'avertissement et le coup vous manque"
 
 #: assets/data/changelog.json
 msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate's road is cobbled up to a flagged yard before the observatory"

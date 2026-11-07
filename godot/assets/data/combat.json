@@ -1402,7 +1402,7 @@
     "windUpSeconds": 0.4,
     "biteTellSeconds": 0.4,
     "ring": {
-      "about": "PIX-377: foes hunting the hero within `reachTiles` of them, bosses and named monsters aside, stand round them evenly spaced rather than on one spot (Packs.ring), so one sweep doesn't catch them all: the `press` nearest close in to `near` pixels and bite, the rest wait their turn at `far` (out of a sweep's reach but in front of it).",
+      "about": "PIX-377: foes hunting the hero within `reachTiles` of them, bosses and named monsters aside, stand round them evenly spaced rather than on one spot (Packs.ring), so one sweep doesn't catch them all: the `press` nearest close in to `near` pixels and bite, the rest wait their turn at `far` (out of a sweep's reach but in front of it). An elite whose trick it could never start from `far` (the cleave, told within a cell and a quarter: PIX-422) keeps out of the ring and comes in, as one alone does (Packs.waits_in_ring).",
       "reachTiles": 4,
       "press": 1,
       "near": 11,
@@ -1607,9 +1607,9 @@
       "tell": 0.6,
       "range": [
         0,
-        2.2
+        1.2
       ],
-      "length": 2.0,
+      "length": 1.25,
       "width": 2.6,
       "power": 1.4
     },
@@ -1651,9 +1651,9 @@
       "tell": 0.6,
       "range": [
         0,
-        2.2
+        1.2
       ],
-      "length": 2.0,
+      "length": 1.25,
       "width": 2.6,
       "power": 1.4
     }
