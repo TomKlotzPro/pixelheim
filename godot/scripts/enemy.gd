@@ -164,7 +164,9 @@ var resting := false
 ## A named monster's entry (Hunts, PIX-156), or {}.
 var named := {}
 ## Called up by a named monster's howl (EliteBrain): its bite gives the hero
-## no grace after it (PIX-421), or a whelp's nip shielded them from its caller's.
+## no grace after it (PIX-421), or a whelp's nip shielded them from its
+## caller's; only the other summons' bites wait out a half-second. Cleared
+## once the caller falls, stands down or goes home.
 var called := false
 ## The health bar's full width: a named monster's is longer.
 var bar_width := 16.0
