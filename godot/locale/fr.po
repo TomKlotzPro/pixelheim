@@ -3189,6 +3189,10 @@ msgid "Every skill has its own look now, from Shade's Puny Skills: fireballs fly
 msgstr "Chaque compétence a désormais son propre effet, tiré des Puny Skills de Shade : les boules de feu volent et explosent, les novas de givre éclosent, la foudre frappe, les soins s'élèvent et chaque coup porté fait jaillir des étincelles ; les arcs tirent des flèches et le bâton lance un orbe arcanique ; et la nuit, les sorts éclairent toujours le sol où ils tombent"
 
 #: assets/data/changelog.json
+msgid "Every skill reaches as its kind should: up close for a blow, from afar for a spell or an arrow, all around you for a burst, and the hero turns to the nearest foe in reach"
+msgstr "Chaque compétence porte selon son genre : au contact pour un coup, de loin pour un sort ou une flèche, tout autour de vous pour une explosion, et le héros se tourne vers l'ennemi le plus proche à portée"
+
+#: assets/data/changelog.json
 msgid "Every spawn belongs to its terrain: ash beasts in the ash, bog things in the Mirefen - the beast you see is the beast you fight"
 msgstr "Chaque apparition appartient à son terrain : bêtes de cendre dans la cendre, créatures des tourbières dans les Marais de Fange - la bête que vous voyez est celle que vous combattez"
 
@@ -5353,6 +5357,10 @@ msgid "Swap the rusty sword for Dragonbane and WATCH the swap - appearance is de
 msgstr "Échangez l'épée rouillée contre le Fléau des dragons et VOYEZ le changement - l'apparence découle en direct de ce que vous portez"
 
 #: assets/data/changelog.json
+msgid "Swords, axes, hammers, daggers and fists now land only on a foe right in front of you, never two cells away; the bow and the staff reach three cells, and their arrow or bolt flies to the nearest foe where you can see it"
+msgstr "Épées, haches, marteaux, dagues et poings ne touchent plus qu'un ennemi juste devant vous, jamais à deux cases ; l'arc et le bâton portent à trois cases, et leur flèche ou leur trait vole sous vos yeux jusqu'à l'ennemi le plus proche"
+
+#: assets/data/changelog.json
 msgid "TEXT YOU CAN READ: every word is now set in Pixeloid, a clear pixel type, at twice its size - the small thin print in the pack, the skills, the stats and the options is gone"
 msgstr "DU TEXTE LISIBLE : chaque mot est désormais composé en Pixeloid, une police pixel claire, deux fois plus grand - fini les petits caractères fins dans le sac, les compétences, les caractéristiques et les options"
 
@@ -6015,6 +6023,10 @@ msgstr "Le panneau des compétences affiche tout le graphe : nœuds, liens d'a
 #: assets/data/changelog.json
 msgid "The Slayer's Ledger"
 msgstr "Le Registre du tueur"
+
+#: assets/data/changelog.json
+msgid "The Smuggler Gunner, the Turncoat Bowman and the Fire Imp keep their distance and shoot: they glow before firing, their shot flies where you can see it, and with water or rocks in the way they come closer instead"
+msgstr "Le canonnier contrebandier, l'archer renégat et le diablotin de feu gardent leurs distances et tirent : ils brillent avant de tirer, leur tir vole sous vos yeux, et si de l'eau ou des rochers les séparent de vous, ils se rapprochent plutôt"
 
 #: assets/data/changelog.json
 msgid "The Third Dimension"
@@ -7011,6 +7023,10 @@ msgstr "Avec les quatre souvenirs rapportés, Maren dit tout au sanctuaire et vo
 #: assets/data/changelog.json
 msgid "With two keepsakes home and a settler, the board offers Pixelheim's way to a Village"
 msgstr "Avec deux souvenirs rapportés et un nouvel habitant, le tableau d'avis propose à Pixelheim de devenir un village"
+
+#: assets/data/changelog.json
+msgid "Within Reach"
+msgstr "À portée"
 
 #: assets/data/changelog.json
 msgid "Without the paid art pack, rooms are built from the free art: walls, floors, doors, windows with the sky in them, stairs, rugs, hearths and lanterns, instead of a hero standing on grass"

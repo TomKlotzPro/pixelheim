@@ -3189,6 +3189,10 @@ msgid "Every skill has its own look now, from Shade's Puny Skills: fireballs fly
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every skill reaches as its kind should: up close for a blow, from afar for a spell or an arrow, all around you for a burst, and the hero turns to the nearest foe in reach"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every spawn belongs to its terrain: ash beasts in the ash, bog things in the Mirefen - the beast you see is the beast you fight"
 msgstr ""
 
@@ -5353,6 +5357,10 @@ msgid "Swap the rusty sword for Dragonbane and WATCH the swap - appearance is de
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Swords, axes, hammers, daggers and fists now land only on a foe right in front of you, never two cells away; the bow and the staff reach three cells, and their arrow or bolt flies to the nearest foe where you can see it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "TEXT YOU CAN READ: every word is now set in Pixeloid, a clear pixel type, at twice its size - the small thin print in the pack, the skills, the stats and the options is gone"
 msgstr ""
 
@@ -6014,6 +6022,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Slayer's Ledger"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Smuggler Gunner, the Turncoat Bowman and the Fire Imp keep their distance and shoot: they glow before firing, their shot flies where you can see it, and with water or rocks in the way they come closer instead"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7010,6 +7022,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "With two keepsakes home and a settler, the board offers Pixelheim's way to a Village"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Within Reach"
 msgstr ""
 
 #: assets/data/changelog.json
