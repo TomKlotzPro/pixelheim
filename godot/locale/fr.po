@@ -3529,6 +3529,10 @@ msgid "Goals to Chase"
 msgstr "Des buts à poursuivre"
 
 #: assets/data/changelog.json
+msgid "Going out of the village or coming back in, you now pass under the gate's arch instead of seeming to walk along the top of the rampart, and Greyhold's gate works the same way"
+msgstr "En sortant du village ou en y revenant, vous passez désormais sous l'arche de la porte au lieu de sembler marcher sur le haut du rempart, et la porte de Greyhold fait de même"
+
+#: assets/data/changelog.json
 msgid "Going underground still goes dark for a moment, and coming back up melts into the daylight"
 msgstr "Descendre sous terre plonge toujours un instant dans le noir, et remonter se fond dans la lumière du jour"
 
@@ -3751,6 +3755,10 @@ msgstr "Grand ménage"
 #: assets/data/changelog.json
 msgid "How It Ends"
 msgstr "Comment tout finit"
+
+#: assets/data/changelog.json
+msgid "Hush Before Dawn"
+msgstr "Silence avant l'aube"
 
 #: assets/data/changelog.json
 msgid "ICE FISHING: stand at the hole cut in the lake's ice, face the water and press E for icefin"
@@ -4507,6 +4515,10 @@ msgstr "La première nuit, les maisons en feu éclairent la place en halos doux�
 #: assets/data/changelog.json
 msgid "On the town's tour, a rebuilt building rises at its stop: the ruin gives way in a cloud of dust, the walls go up row by row, and it lands under confetti"
 msgstr "Pendant la visite du bourg, un bâtiment reconstruit s'élève à son arrêt : la ruine cède dans un nuage de poussière, les murs montent rang par rang, et il se pose sous les confettis"
+
+#: assets/data/changelog.json
+msgid "On the web, the music now also fades out softly when a scene takes you somewhere new (the dawn after the Night of Ash, the morning after the Night of Bells, the ending) and when Lantern Night or a new building redraws the village, instead of stopping dead"
+msgstr "Sur le web, la musique s'efface désormais aussi en douceur quand une scène vous emmène ailleurs (l'aube après la Nuit des Cendres, le matin après la Nuit des Cloches, la fin) et quand la Nuit des Lanternes ou un nouveau bâtiment redessine le village, au lieu de s'arrêter net"
 
 #: assets/data/changelog.json
 msgid "On the web, the music now fades out softly as you go through a door or a gate and comes back after, instead of stopping dead mid-note while the new place is built"
@@ -6827,6 +6839,10 @@ msgstr "Ulla et la vieille garde rentrent garder la porte de Pixelheim, et Frèr
 #: assets/data/changelog.json
 msgid "Under its name, what it brings: who is back at work, the new perk, or who has moved into town"
 msgstr "Sous son nom, ce qu'il apporte : qui reprend le travail, le nouvel avantage, ou qui s'est installé au bourg"
+
+#: assets/data/changelog.json
+msgid "Under the Arch"
+msgstr "Sous l'arche"
 
 #: assets/data/changelog.json
 msgid "Under the Ashen Mountain"
