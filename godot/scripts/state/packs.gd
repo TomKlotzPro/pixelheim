@@ -128,6 +128,14 @@ static func ring(hero: Vector2, at: Array[Vector2]) -> Array[Vector2]:
 	return spots
 
 
+## Whether a foe with this elite trick (combat.json's eliteMoves; {} for
+## none) takes its turn in the ring: only if it can start the trick from the
+## ring's `far`. PIX-422: the cleave, told within a cell and a quarter,
+## would wait there forever unused, so that elite comes in, as one alone does.
+static func waits_in_ring(trick: Dictionary) -> bool:
+	return trick.is_empty() or float(trick["range"][1]) * TILE >= float(rules()["ring"]["far"])
+
+
 ## The cell a point of the world is in.
 static func cell_of(at: Vector2) -> Vector2i:
 	return Vector2i((at / TILE).floor())
