@@ -4,6 +4,8 @@ extends GutTest
 ## was the hero's twin. With the paid pack's sample folk and without it (a
 ## `cc0` build), no two people who can meet look alike, none wears the
 ## hero's starting clothes, and the conversation's portrait holds the face.
+## PIX-409 gave the last six theirs: Pip and Nell child-sized on the grid,
+## Morvax, Rook, Teo and Aske in 32 px beside the rest.
 
 const DialogueBoxScript := preload("res://scripts/dialogue_box.gd")
 
@@ -31,6 +33,33 @@ func test_no_two_people_who_meet_look_alike() -> void:
 				var key := "%s|%s@%s" % [map_id, PunyArt.look_of(art), art.get("scale", 1.0)]
 				assert_false(seen.has(key), "%s and %s look alike on %s (paid art: %s)" % [person["id"], seen.get(key, ""), map_id, paid])
 				seen[key] = person["id"]
+
+
+## PIX-409: Morvax in 16 px stood beside a 32 px Maren in the collar's scene.
+func test_everyone_who_talks_is_drawn_in_32_px_at_1x() -> void:
+	for paid: bool in [true, false]:
+		PunyTown.withheld = not paid
+		for person: Dictionary in Npcs.people():
+			var art := PunyArt.villager(person["sprite"])
+			if art["family"] == "beast":
+				continue
+			assert_eq(PunyArt.frame_size(art), 32, "%s in 32 px (paid art: %s)" % [person["id"], paid])
+			assert_eq(float(art.get("scale", 1.0)), 1.0, "%s on the world's grid" % person["id"])
+
+
+## Pip and Nell: a grown-up's figure with CHILD's rows and column cut out,
+## their feet where everyone's stand.
+func test_the_children_are_child_sized_on_the_grid() -> void:
+	var grown := _drawn({"sheet": PunyArt.WORKER, "family": "puny"})
+	for sprite: String in ["child", "child_alt"]:
+		var drawn := _drawn(PunyArt.villager(sprite))
+		assert_eq(drawn.size.y, grown.size.y - PunyArt.CHILD["rows"].size(), "%s a few rows shorter" % sprite)
+		assert_eq(drawn.size.x, grown.size.x - 1, "%s a column narrower" % sprite)
+		assert_eq(drawn.end.y, grown.end.y, "%s stands where a grown-up does" % sprite)
+
+
+func _drawn(art: Dictionary) -> Rect2i:
+	return PunyArt.frames(art).get_frame_texture("idle_down", 0).get_image().get_used_rect()
 
 
 func test_no_one_wears_the_heros_starting_clothes() -> void:
