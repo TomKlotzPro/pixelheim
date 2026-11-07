@@ -4,8 +4,11 @@
 // mire's reeds are y-sorted on their foot, so a hero north of a foot is
 // drawn under all of it: there, and only there, an oval about the hero's
 // body lets them show through, the art pixel a step, and the same about the
-// nearest foe hunting them so a fight under the trees can be read. `foot` is the y the piece is sorted on, in the
-// canvas: its sprite's own origin (MapLayer.see_through puts it there).
+// nearest foe hunting them so a fight under the trees can be read. `foot` is
+// the y the piece is sorted on, in the canvas: its sprite's own origin
+// (MapLayer.see_through puts it there). A swaying bush's sprite stands at its
+// cell's top, 16 px over the root it sorts on, so beside one the hero can
+// lose a few pixels to it: never the hero whole (test_hero_seen).
 // world.gd sets `hero_at` each frame, world_foes.gd `foe_at` (their feet, as
 // they are sorted); both lie far off when there is no one to see.
 
