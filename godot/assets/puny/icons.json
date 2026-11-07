@@ -317,7 +317,7 @@
     "haste": "puny-skills/Animation Spritesheets/Time/Haste-Anim.png"
   },
   "skill_fx": {
-    "about": "PIX-396: what each skill plays, from the Puny Skills pack's animated strips (the effects above, by name): 'fly' a bolt from the hero to the foe, 'hit' what lands on the foe, 'self' what rises round the hero for a heal, 'light' the colour the ground is lit where it lands (the stat's colour without the strips). A skill takes its icon's theme's, its own entry over it ('' for none). 'swings' are the weapons' own (the bow's arrow, the staff's bolt), 'impact' every landed blow's, and 'glow' the strips added onto the world as light (the others are drawn as Shade drew them, their dark afterimages too).",
+    "about": "PIX-396: what each skill plays, from the Puny Skills pack's animated strips (the effects above, by name): 'fly' a bolt from the hero to the foe, 'hit' what lands on the foe, 'self' what rises round the hero for a heal, 'light' the colour the ground is lit where it lands (the stat's colour without the strips). Every skill that reaches from afar (combat.json's reach 'ranged', PIX-410) flies something to its foe, a ring, an arrow, a paw racing there, unless its blow falls from the sky (thunder, a divine sword); a melee one flies nothing. A skill takes its icon's theme's, its own entry over it ('' for none). 'swings' are the weapons' own (the bow's arrow, the staff's bolt), 'impact' every landed blow's, and 'glow' the strips added onto the world as light (the others are drawn as Shade drew them, their dark afterimages too).",
     "themes": {
       "Melee": {
         "hit": "slash",
@@ -334,6 +334,7 @@
         "light": "ff8c3a"
       },
       "Ice": {
+        "fly": "ice_arrow",
         "hit": "ice_crystals",
         "light": "8fd0ff"
       },
@@ -369,6 +370,7 @@
         "light": "c070ff"
       },
       "Poison": {
+        "fly": "dark_ring",
         "hit": "poison_skull",
         "light": "9de35a"
       },
@@ -378,6 +380,7 @@
         "light": "ff5a6e"
       },
       "Monster": {
+        "fly": "stomp",
         "hit": "claw",
         "light": "ffa040"
       },
@@ -390,6 +393,7 @@
         "light": "ff4d4d"
       },
       "Flora": {
+        "fly": "dark_ring",
         "hit": "rose_burst",
         "light": "ff7a9a"
       }
@@ -457,6 +461,7 @@
         "hit": "dark_claws"
       },
       "Poison Blade": {
+        "fly": "",
         "hit": "poison_slash"
       },
       "Death Cloud": {
@@ -494,7 +499,11 @@
         "hit": "divine_fire"
       },
       "Sunfire": {
+        "fly": "light_ring",
         "hit": "divine_fire"
+      },
+      "Judgement Sun": {
+        "fly": "light_ring"
       },
       "Sanctuary": {
         "self": "light_barrier"
@@ -511,9 +520,10 @@
         "light": "9de35a"
       },
       "Stampede": {
-        "hit": "stomp"
+        "hit": "rock_shards"
       },
       "Rallying Roar": {
+        "fly": "",
         "hit": "fear",
         "light": "c070ff"
       },

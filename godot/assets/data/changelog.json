@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.322.0",
+      "date": "2026-11-07",
+      "codename": "Within Reach",
+      "notes": [
+        "Swords, axes, hammers, daggers and fists now land only on a foe right in front of you, never two cells away; the bow and the staff reach three cells, and their arrow or bolt flies to the nearest foe where you can see it",
+        "Every skill reaches as its kind should: up close for a blow, from afar for a spell or an arrow, all around you for a burst, and the hero turns to the nearest foe in reach",
+        "The Smuggler Gunner, the Turncoat Bowman and the Fire Imp keep their distance and shoot: they glow before firing, their shot flies where you can see it, and with water or rocks in the way they come closer instead"
+      ]
+    },
+    {
       "version": "0.321.0",
       "date": "2026-11-07",
       "codename": "Longer Breath",

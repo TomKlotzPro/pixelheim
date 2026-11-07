@@ -116,11 +116,11 @@ choice |  | Morvax's choice, asked outright: the courier's last word (PIX-253 st
 mimic |  | with --map mirefen: its mimic chest opened (--wait for the ambush) | mimic | 630
 portal |  | walk into the map's nearest doorway, as a player would | portal | 640
 die |  | a blow no hero survives: the fall, then waking at the inn (with fight, after it: felled mid-fight, PIX-288) | die | 650
-cast |  | a foe two steps off, then the first skill: the strike, the flash, the log | cast | 660
+cast |  | a foe where the skill reaches (two steps off, a step for a blow: PIX-410), then the first skill: the strike, the flash, the log | cast | 660
 --skill | <n> | with cast: the dock's nth skill (1 to 6) rather than the first (PIX-396)
-fight |  | a foe two steps off and one swing, caught mid-swing | fight | 670
+fight |  | a foe where the swing reaches (a step off for a blade, two for a bow or a staff: PIX-410) and one swing, caught mid-swing | fight | 670
 --foe | <species> | with fight: the foe (default orc; a named monster's id brings it out of its lair)
---foe-distance | <n> | with fight: the foe n cells off (an elite's opener from range)
+--foe-distance | <n> | with fight: the foe n cells off (an elite's opener from range), not where the swing reaches
 --foe-at | <x,y> | with fight: the foe on that cell, its home there (PIX-288: a boss across water from the hero)
 --foe-left | <share> | with fight: the foe already hunting the hero, its bar up, then struck down to that share of its health before the swings (PIX-288)
 --foe-ail | <kind> | with fight: the foe afflicted (poison, burn), sure to take, its next tick as strong as the health it has left (PIX-288)
