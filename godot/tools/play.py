@@ -55,7 +55,7 @@ TEXT_CAP = 2000
 # What the harness says of a few keys, as Godot names them.
 ALIASES = {"esc": "Escape", "pgup": "PageUp", "pgdn": "PageDown"}
 # Before the page's own scripts: the game's command line, the first command
-# (a second to boot into) and the frames held back while a command isn't running.
+# (a plain launch's second to boot into) and the frames held back while a command isn't running.
 SHIM = """
 window.pixelheimArgs = %s;
 (() => {
