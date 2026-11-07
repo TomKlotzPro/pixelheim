@@ -180,8 +180,10 @@ skillfx-still | --role ranger fight --wait 0.12 still | skillfx=arrow,impact dra
 # and the band's staff in hand, healed whole.
 hero-mage-10 | --map town --role mage --level 10 | hp=91 hero=mage:10:91/140:3,28,4,12:skills12:arch_staff | combat rank
 # A kill takes the map's region (PIX-379: every harness kill was the Ash
-# Fields', an Ember Shard): on the Mirefen, its Grave Moss.
-loot-mirefen | --map mirefen fight kill --wait 1 --lang en | map=mirefen floats=.*Grave Moss.* | combat field
+# Fields', an Ember Shard): on the Mirefen, its Grave Moss. A pack of three
+# (PIX-415): the moss is a 60% roll each kill, and one orc's fell short once
+# the birds stopped rolling the game's dice.
+loot-mirefen | --map mirefen fight pack kill --wait 1 --lang en | map=mirefen floats=.*Grave Moss.* | combat field
 # A feat done mid-walk, in French (PIX-343: two lines of it stood over the
 # screen, the quest arrow on them): one box, one line, on the screen, clear
 # of the objective's line and the dock, over the arrow, no plate beside it.
