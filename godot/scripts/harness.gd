@@ -119,14 +119,20 @@ func _press(keycode: Key, pressed: bool, button := JOY_BUTTON_INVALID) -> void:
 		key.keycode = keycode
 		key.pressed = pressed
 		event = key
+	land(get_viewport(), event)
+
+
+## `event` landing as a player's would, pressed or let go by its own flag
+## (tools/play.py's keys too, PIX-423: PlayBridge).
+static func land(viewport: Viewport, event: InputEvent) -> void:
 	event.device = DEVICE
 	for action: StringName in InputMap.get_actions():
 		if InputMap.event_is_action(event, action, true):
-			if pressed:
+			if event.is_pressed():
 				Input.action_press(action)
 			else:
 				Input.action_release(action)
-	get_viewport().push_input(event)
+	viewport.push_input(event)
 
 
 ## How far the building rising on the town's tour had got when last seen
@@ -204,6 +210,10 @@ func _run_test_harness() -> void:
 			await row["feature"].call(step, self)
 		else:
 			await areas.filter(func(area: Object) -> bool: return area.has_method(step))[0].call(step)
+	# `play` (PIX-423): the presets and steps were the start of a session
+	# tools/play.py goes on driving (PlayBridge): no report, shot or quit.
+	if flags.has("play"):
+		return
 	# What the run left: every field the report has (HarnessReport.TABLE),
 	# read at the same step whether the run has a window or not (PIX-276):
 	# a windowed run read it after its picture, which takes frames of its

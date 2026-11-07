@@ -106,8 +106,8 @@ def from_scripts(out):
     for path in sorted(glob.glob(os.path.join(ROOT, "scripts", "**", "*.gd"), recursive=True)):
         name = os.path.relpath(path, ROOT)
         # The harness, its flags' table (PIX-262), its report's (PIX-273),
-        # its boot and its steps (PIX-357) speak to developers only.
-        if name.endswith(("harness.gd", "harness_flags.gd", "harness_report.gd", "harness_boot.gd")) or "harness_steps" in name:
+        # its boot and its steps (PIX-357) and play.py's bridge (PIX-423) speak to developers only.
+        if name.endswith(("harness.gd", "harness_flags.gd", "harness_report.gd", "harness_boot.gd", "play_bridge.gd")) or "harness_steps" in name:
             continue
         # The file, not the line: see the top.
         where = name
