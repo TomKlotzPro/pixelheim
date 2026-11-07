@@ -157,6 +157,44 @@ func test_ulla_keeps_the_gate_beside_it_not_in_it() -> void:
 		assert_true(Ways._walked_from(town, town.spawn).has(cell), "age %d: a walk reaches her" % age)
 
 
+func test_through_the_gate_never_over_the_wall() -> void:
+	# PIX-425 (Tom: « on a l'impression de marcher sur le mur du rempart »):
+	# from the Reach the door opens once the hero stands in the gate, not
+	# with their feet on the wall's back between the towers' tops; from the
+	# village at once, their feet at the arch's foot.
+	var overworld := MapData.load_by_id("overworld")
+	var town := MapData.load_by_id("town")
+	for cell: Vector2i in REACH_GATE:
+		var top := Vector2(cell * 16)
+		assert_false(Rampart.entered(overworld.grid, cell, top + Vector2(8, 1)), "from the Reach, not on the wall at %s" % cell)
+		assert_false(Rampart.entered(overworld.grid, cell, top + Vector2(8, 7.9)), "nor half in at %s" % cell)
+		assert_true(Rampart.entered(overworld.grid, cell, MapView.center(cell)), "but standing in it at %s" % cell)
+	for cell: Vector2i in GATE:
+		assert_true(Rampart.entered(town.grid, cell, Vector2(cell * 16) + Vector2(8, 15.9)), "from the village at once at %s" % cell)
+	assert_true(Rampart.entered(town.grid, Vector2i(30, 10), Vector2(30 * 16 + 8, 160.5)), "a house's door at once")
+	# The arch's stone stands among the actors on the gate's foot, so a hero
+	# whose feet are in the gate is drawn under it: the pack's, or Shade's
+	# CC0 archway without it.
+	var was := PunyTown.withheld
+	for withheld: bool in [false, true]:
+		PunyTown.withheld = withheld
+		var root := Node2D.new()
+		add_child_autofree(root)
+		var actors := Node2D.new()
+		root.add_child(actors)
+		var map := _town()
+		var view := MapView.new(map, actors)
+		view.plan(map.spawn)
+		view.build(root)
+		var arches := {}
+		for sprite: Sprite2D in view.actors.find_children("*", "Sprite2D", true, false):
+			if sprite.region_enabled and int(sprite.region_rect.size.y) in [Rampart.ARCH, Rampart.ARCH_FALLBACK]:
+				arches[Vector2i((sprite.get_parent() as Node2D).position / 16.0) - Vector2i.DOWN] = sprite
+		for cell: Vector2i in GATE:
+			assert_true(arches.has(cell), "the arch over %s, sorted on its foot (withheld: %s)" % [cell, withheld])
+	PunyTown.withheld = was
+
+
 func test_the_towers_tops_block_where_they_stand() -> void:
 	var town := _planned(_town())
 	for cell: Vector2i in [Vector2i(38, 1), Vector2i(42, 1)]:
