@@ -63,6 +63,20 @@ const CEILING_DB := -1.0
 const DUCK_DB := -7.0
 const DUCK_DOWN_S := 0.05
 const DUCK_UP_S := 0.4
+## A change of place on the web hushes the music before the map is built
+## (PIX-417, `hush`): this far, this fast, and back this slowly after.
+const HUSH_DB := -40.0
+const HUSH_DOWN_S := 0.08
+const HUSH_UP_S := 0.5
+## How long a build waits on the hush: its fade, then what the web had
+## mixed before it (a 2048-frame ring, audio/driver/output_latency.web's
+## 50 ms, and a 512-frame mix step: some 55 ms). A dark fade's length.
+const HUSH_S := 0.15
+## How long the hush holds: HUSH_S and a few frames for the build to begin
+## in; a first visit's long frame has passed it on by the time it ends.
+const HUSH_HOLD_S := 0.25
+## The longest frame the hush's return counts, as Dissolve's: the build's.
+const HUSH_FRAME := 1.0 / 30.0
 ## Every bus Sound plays on, each in default_bus_layout.tres (PIX-412; UI
 ## and Jingle, PIX-411).
 const BUSES: Array[String] = ["Music", "SFX", "Ambience", "UI", "Jingle"]
@@ -129,6 +143,11 @@ var _resume_at := {}
 ## The dB the music and the weather are stepped back by now (a duck).
 var ducked := 0.0
 var _duck: Tween
+## Whether a change of place hushes the music first (`hush`): the web's.
+var hushes_builds := OS.has_feature("web")
+## The dB the music is hushed by now, and how long it stays hushed.
+var hushed := 0.0
+var _hush_left := 0.0
 ## How many sounds have been asked for, so a screen can tell whether what
 ## it just did made one of its own.
 var asked := 0
@@ -219,7 +238,7 @@ func _voices() -> Array[AudioStreamPlayer]:
 ## and the weather stepped back while a duck lasts.
 func apply_volumes() -> void:
 	var settings: GameSettings = GameState.settings
-	_bus_db("Music", bus_db(settings.music_volume) + ducked)
+	_bus_db("Music", bus_db(settings.music_volume) + ducked + hushed)
 	_bus_db("Ambience", bus_db(settings.ambience_volume * AMBIENCE_SHARE) + ducked)
 	for bus: String in ["SFX", "UI", "Jingle"]:
 		_bus_db(bus, bus_db(settings.sfx_volume))
@@ -542,6 +561,32 @@ func _set_ducked(db: float) -> void:
 	apply_volumes()
 
 
+## The music hushed for a map about to be built, on the web (PIX-417):
+## there the single-threaded build mixes the streamed music on the main
+## thread 50 ms ahead, so a build's long frame held it mid-phrase at full
+## level (a gate's first visit about 290 ms, a room's door 75) and then let
+## it go on where it stopped. The world builds HUSH_S after asking, the
+## hold then silence under the change of place; the music comes back up on
+## its own once HUSH_HOLD_S has passed, a first visit's long frame passing
+## it at once (so a change of place cut short never leaves it hushed).
+## The desktop mixes on its own thread: nothing to hush there.
+func hush() -> void:
+	if hushes_builds and not released:
+		_hush_left = HUSH_HOLD_S
+
+
+## The hush eased toward where it's going, a build's long frame counted as
+## one ordinary frame so the music comes back gently after it.
+func _ease_hush(delta: float) -> void:
+	_hush_left = maxf(_hush_left - delta, 0.0)
+	var to := HUSH_DB if _hush_left > 0.0 else 0.0
+	if hushed == to:
+		return
+	var rate := -HUSH_DB / (HUSH_DOWN_S if to < hushed else HUSH_UP_S)
+	hushed = move_toward(hushed, to, rate * minf(delta, HUSH_FRAME))
+	apply_volumes()
+
+
 ## A track loaded ahead, not yet played (One Reach, PIX-269: the theme of a
 ## map the hero may walk into over a line, so the walk doesn't load it in
 ## the frame the line is crossed in).
@@ -745,6 +790,7 @@ func set_ambience(name: String) -> void:
 
 
 func _process(delta: float) -> void:
+	_ease_hush(delta)
 	if ambience == "" and extras.is_empty():
 		return
 	_ambience_clock += delta

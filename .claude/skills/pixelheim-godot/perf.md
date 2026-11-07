@@ -59,6 +59,18 @@ An export with the paid art installed measures that art too: keep its numbers, n
 
 **The music on the web** (PIX-416 review, 2026-11-05, the export with the paid pack, headless Chrome muted, two or three runs each). As samples (the web's default) each of the bundle's tracks was decoded whole on the main thread at its first play and kept as float PCM for good: the line's crossing (the Deepwood's track first heard) took 135-146 ms, the town's gate out 414-423 ms, and the page made 152-156 MB of AudioBuffers in one short walk. Streamed (`Sound`'s two music players, `PLAYBACK_TYPE_STREAM`): the crossing 13-15 ms, the gate 310-369 ms (the Reach's first visit alone), 19-24 MB of AudioBuffers (the effects' and beds' samples, the largest 4.4 MB). The cost: the single-threaded build mixes a stream on the main thread into a 2048-frame ring (`audio/driver/output_latency.web`, 50 ms), so a task longer than that holds the music with it. Steady frames never ran it dry; the gate's first visit held it some 340-400 ms, a 140 ms task (the harness's shot) about 130. A longer latency would bridge more, but the music would answer a duck or a crossfade that much late.
 
+**A change of place on the web** (PIX-417, 2026-11-07, the export with the packs, headless Chrome with no audio output (`--disable-audio-output --mute-audio`), the worklet patched in the scratch export to count the render quanta it found its ring empty for and to keep its output's level, six runs of each walk interleaved with main's (the inn three), real time). Every map built in one frame (`enter_map`) held the music for that frame less the ring's 43 ms, at full level on both sides: the track change only begins after the build (`soundscape.refresh` at its end), and the crossfade holds its power (no dip). Since PIX-417 the hold falls in the hush, 40 dB under:
+
+| Walk | Its long task | Music held | Level as it stopped (dBFS): main / hushed | As it came back |
+|---|---|---|---|---|
+| the town's gate to the Reach (dissolve, first visit) | 303-364 ms | 285-349 ms | -23.8 to -25.6 / -66.1 to -66.5 | -26.3 to -26.4 / -58.0 to -59.0 |
+| a door into the town hall (dissolve) | 94-120 ms | 72-104 ms | -23.8 to -26.5 / -63.8 to -64.6 | -23.4 to -24.8 / -60.2 to -63.4 |
+| Saltmere down into the sea cave (dark) | 133-169 ms | 93-131 ms | -36.5 to -38.8 (ducked by the stairs) / -76.5 to -78.7 | -36.7 to -37.7 / -72.2 to -74.0 |
+| a fall on the Reach, waking at the inn | 99-129 ms | 72-99 ms | -31.4 to -31.7 / -71.3 to -71.8 | -28.3 to -28.9 / -64.2 to -66.7 |
+| the line into the Deepwood (streamed) | none to 54 ms | 0-13 ms | -27.2 to -27.7 (the same) | the same |
+
+The music's own level is about -23 to -34 dBFS. A hushed door or gate begins 0.15 s and a frame later on the web; the long tasks are the same. A first page in a fresh browser now and then ran far longer (the cave 1023 ms, the line 920, the door 467): a build's under the hush now, the line's not. In a fresh browser the line's frame was 66-68 ms and held the music 29 ms, at full level. The web download (90.7 MiB as files, 56.7 MiB gzipped) is mostly the bundle's music: 38.5 MiB of Ogg in the 52.5 MiB pck (gzip takes nothing off it), the engine's wasm 37.7 MiB (9.6 gzipped), the effects' and beds' takes 7.4 MiB (imported as QOA), all the rest some 6 MiB.
+
 ## Entering a map (`reentry`, ms)
 
 | Map | First visit | Again | Drawn beside (BESIDE total) | Nodes | of which decor |
