@@ -602,6 +602,7 @@ func _day() -> void:
 	dragon = null
 	_show_clock(false)
 	world.camera_rig.follows = true
+	await world.hushed_build(true)
 	world.map = world.load_map("town")
 	world.enter_map(world.map, Town.square() + Vector2i(0, 4))
 	world.messages.log_lines([said] + ([_built] if _built != "" else []))

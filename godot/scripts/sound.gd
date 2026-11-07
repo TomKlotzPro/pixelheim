@@ -575,6 +575,19 @@ func hush() -> void:
 		_hush_left = HUSH_HOLD_S
 
 
+## The music hushed and waited on before a long frame (a map's build, the
+## whole world's reload; PIX-417, PIX-420): HUSH_S, then the next frame's
+## start, as a step onto a door builds, so the camera follows into the new
+## map before it is drawn (after the frame's nodes, the old place's view of
+## the new map was drawn too, 50-70 ms more). At once off the web.
+func hush_first() -> void:
+	if not hushes_builds:
+		return
+	hush()
+	await get_tree().create_timer(HUSH_S).timeout
+	await get_tree().process_frame
+
+
 ## The hush eased toward where it's going, a build's long frame counted as
 ## one ordinary frame so the music comes back gently after it.
 func _ease_hush(delta: float) -> void:

@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.327.0",
+      "date": "2026-11-07",
+      "codename": "Hush Before Dawn",
+      "notes": [
+        "On the web, the music now also fades out softly when a scene takes you somewhere new (the dawn after the Night of Ash, the morning after the Night of Bells, the ending) and when Lantern Night or a new building redraws the village, instead of stopping dead"
+      ]
+    },
+    {
       "version": "0.326.0",
       "date": "2026-11-07",
       "codename": "Under the Arch",
