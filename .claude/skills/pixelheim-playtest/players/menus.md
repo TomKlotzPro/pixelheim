@@ -2,7 +2,7 @@
 
 **Goal:** go through every screen and every setting with the keyboard only, and find what doesn't open, doesn't close, loses its focus or lies about its keys.
 
-**Start:** a plain launch: `start` with no option, in English. A fresh profile. The title's intro runs about 8 s before its menu shows: send `wait:8` before the first look. The state doesn't say which row is chosen, so look before each E on a setting rather than counting presses.
+**Start:** a plain launch: `start` with no option, in English. A fresh profile. The title's intro runs about 8 s before its menu shows: send `wait:8` before the first look. The state's `focus` says which row is chosen: read it before each E on a setting rather than counting presses.
 
 **Model:** Haiku (`lessons.md`, 2026-11-07).
 
