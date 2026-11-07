@@ -20,7 +20,8 @@ const NOWHERE := Vector2i(-1, -1)
 ## words (Gates.detour; `discovered`, the save's fog of war, says whether the
 ## hero is already past it).
 static func active(progression: ProgressionState, settlement: SettlementState, items: Dictionary, discovered: Dictionary = {}) -> Dictionary:
-	if progression.tracked != "":
+	# The Night of Ash leads while it runs, whatever is followed (PIX-426).
+	if progression.tracked != "" and progression.prologue == Prologue.DONE:
 		var quest := Quests.by_id(progression.tracked)
 		var entry: Dictionary = progression.quests.get(progression.tracked, {})
 		if not quest.is_empty() and not entry.is_empty() and not entry.get("done", false):
@@ -35,8 +36,11 @@ static func active(progression: ProgressionState, settlement: SettlementState, i
 ## The main story's lead, whatever is followed: its next step's, or {} once
 ## it's told. While a side quest or a bounty leads, the map keeps this one
 ## as a hollow gold diamond, so the main goal is never lost (PIX-253 step 2).
-## Past a gate still shut, what opens it (PIX-254).
+## Past a gate still shut, what opens it (PIX-254). On the Night of Ash, the
+## night's step (PIX-426).
 static func main(progression: ProgressionState, settlement: SettlementState, items: Dictionary, discovered: Dictionary = {}) -> Dictionary:
+	if progression.prologue != Prologue.DONE:
+		return of_night(progression)
 	var step := MainQuest.next_step(progression, settlement)
 	return {} if step.is_empty() else Gates.detour(of_step(step, progression, settlement, items), progression, settlement, items, discovered)
 
@@ -59,6 +63,19 @@ static func behind(lead: Dictionary, progression: ProgressionState, settlement: 
 	if lead.is_empty() or lead["main"]:
 		return {}
 	return main(progression, settlement, items, discovered)
+
+
+## The Night of Ash's lead while it runs (PIX-426): its step's line and
+## where that step is done (Prologue.goal), so the line above the dock, the
+## journal, the map's goal, the arrow and the gold "!" send the hero to one
+## person or place. The night's lines say where, so it names no place.
+## `heals_first`: the hero's first skill heals (a cleric), whose line says
+## so, as the line above the dock does.
+static func of_night(progression: ProgressionState, heals_first := false) -> Dictionary:
+	var lead := _blank(Text.t("The Night of Ash"), Prologue.objective(progression.prologue, progression.prologue_doused.size(), heals_first))
+	lead["main"] = true
+	lead.merge(Prologue.goal(progression.prologue), true)
+	return lead
 
 
 ## A main story step's lead: its chapter, its line, and where it is - the
