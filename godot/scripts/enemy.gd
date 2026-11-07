@@ -206,6 +206,9 @@ var bound_until := -100.0
 ## wilds that keeps to its ground (Hunts.of_the_wilds): known from the start.
 var boss_like := false
 var of_the_wilds := false
+## Whether it takes its turn in the ring round the hero (Packs.waits_in_ring,
+## PIX-422: an elite whose trick is told up close comes in instead).
+var waits_in_ring := true
 ## Its way (PIX-288): the cells to walk and the next one it heads for, the
 ## cell the way leads to, seconds till it looks again, whether the straight
 ## line is open, and the grid it routes over (kept while the map and the
@@ -251,6 +254,7 @@ func _ready() -> void:
 	sprite.self_modulate = tint * ELITE_TINT if fighter["elite"] else tint
 	boss_like = Bestiary.fights_like_boss(fighter)
 	shot = Reach.shot(String(fighter["id"]))
+	waits_in_ring = not fighter["elite"] or Packs.waits_in_ring(Bestiary.elite_moves(Bestiary.family_of(fighter["id"])))
 	if fighter.has("named"):
 		named = Hunts.named(fighter["named"])
 		of_the_wilds = Hunts.of_the_wilds(fighter["named"])
@@ -909,9 +913,10 @@ func _tell_bite(toward: Vector2) -> void:
 
 ## Whether it takes a place in the ring round the hero (PIX-377,
 ## Foes.ring_spot): hunting them, never a boss or a named monster, nor one
-## sent at a wagon, nor one that shoots (PIX-410: it keeps its distance).
+## sent at a wagon, nor one that shoots (PIX-410: it keeps its distance),
+## nor an elite whose trick is told nearer than the ring waits (PIX-422).
 func in_ring() -> bool:
-	return hunting and not dying and mode in ["chase", "cast"] and not boss_like and not _hunts_wagon() and shot.is_empty()
+	return hunting and not dying and mode in ["chase", "cast"] and not boss_like and not _hunts_wagon() and shot.is_empty() and waits_in_ring
 
 
 ## Where the chase goes: the hero, or the wagon when it's the nearer.
