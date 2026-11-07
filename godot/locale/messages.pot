@@ -2889,6 +2889,10 @@ msgid "Duplicate a hero into an empty slot, for instance to see both of Morvax's
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "During the Night of Ash, the map, the journal, the arrow and the gold \"!\" all point to whoever needs you next, and Elder Maren no longer plays her dawn scene before her turn, so a new player can't get stuck at the shrine"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
 msgstr ""
 
@@ -3082,6 +3086,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Esc got manners: it closes the menu you are in, and only pauses when nothing else is open"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Esc on Saves, opened from the pause menu, now takes you back to the pause menu, and choosing a language keeps Options open, in the new language, on the Language row"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3442,6 +3450,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Follow the Cry"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4582,6 +4594,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "One Page"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "One Step Back"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -9693,11 +9709,19 @@ msgid "'The Ballad of the Ashen Patron', verse nine: the fountain. It rhymes wit
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "(A man lies pinned under a burning beam. You can't lift it with hounds snapping at your heels.)"
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "(A man lies pinned under a burning beam. You put your shoulder to it. It shifts - then rolls away.)"
 msgstr ""
 
 #: assets/data/npcs.json
 msgid "(He doesn't look up from the cold anvil.) If Maren wants something, Maren can climb. ...She won't. Neither will I."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "(She doesn't look round.) Not now, whoever you are. There are still people out in this fire - see to them. I'll be here. I'm always here."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -9901,6 +9925,10 @@ msgid "Frost lilies only open in the snow. Vex in Pixelheim swears by them."
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Go on, go on. I'll follow when my legs remember how. They're thinking about it."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Greyhold was Oskar's fort before it was anyone's ruin. We keep this camp because somebody has to."
 msgstr ""
 
@@ -10013,6 +10041,10 @@ msgid "Iva the Healer"
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Keep that cap on. Embers like the top of a head best."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Lamps all the way to the mountain gate. I ride the night shift for fun now."
 msgstr ""
 
@@ -10054,10 +10086,6 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Maren comes in most nights for a bowl. We don't talk about the mountain. We talk about everything else."
-msgstr ""
-
-#: assets/data/npcs.json
-msgid "Maren's at the shrine. She's the elder - she'll want to know who you are, walking in out of the fire."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -10118,6 +10146,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "New roofs going up everywhere. My grandson has a TRADE now. A trade!"
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Not me - I've more cuts than cloth already. Somebody's still out there calling. Go!"
 msgstr ""
 
 #: assets/data/npcs.json
@@ -10470,6 +10502,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "When the bell rings, everyone comes. That's what a bell is for. Remember that, if the mountain ever wakes."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "When the fire's down, find Maren at the shrine. She's the elder - she'll want to know who you are, walking in out of it."
 msgstr ""
 
 #: assets/data/npcs.json

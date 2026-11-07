@@ -2889,6 +2889,10 @@ msgid "Duplicate a hero into an empty slot, for instance to see both of Morvax's
 msgstr "Dupliquez un héros dans un emplacement vide, par exemple pour voir les deux fins de Morvax"
 
 #: assets/data/changelog.json
+msgid "During the Night of Ash, the map, the journal, the arrow and the gold \"!\" all point to whoever needs you next, and Elder Maren no longer plays her dawn scene before her turn, so a new player can't get stuck at the shrine"
+msgstr "Pendant la Nuit des Cendres, la carte, le journal, la flèche et le « ! » doré désignent tous la personne qui a besoin de vous, et l'Ancienne Maren ne joue plus sa scène de l'aube avant son tour : un nouveau joueur ne reste plus coincé au sanctuaire"
+
+#: assets/data/changelog.json
 msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
 msgstr "La poussière flotte dans la lumière des torches, et deux étages ne s'ouvrent plus jamais sur la même salle"
 
@@ -3083,6 +3087,10 @@ msgstr "Commissions"
 #: assets/data/changelog.json
 msgid "Esc got manners: it closes the menu you are in, and only pauses when nothing else is open"
 msgstr "Esc a appris la politesse : il ferme le menu où vous êtes, et ne met en pause que si rien d'autre n'est ouvert"
+
+#: assets/data/changelog.json
+msgid "Esc on Saves, opened from the pause menu, now takes you back to the pause menu, and choosing a language keeps Options open, in the new language, on the Language row"
+msgstr "Échap sur Sauvegardes, ouvert depuis le menu pause, vous ramène désormais au menu pause, et choisir une langue garde Options ouvert, dans la nouvelle langue, sur la ligne Langue"
 
 #: assets/data/changelog.json
 msgid "Escape pauses the game: copy your save code, open options, or quit to the title and resume in place"
@@ -3443,6 +3451,10 @@ msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la
 #: assets/data/changelog.json
 msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
 msgstr "Les ennemis côte à côte n'empilent plus leurs niveaux : le plus proche affiche le sien, et une étiquette qui le chevaucherait attend son tour"
+
+#: assets/data/changelog.json
+msgid "Follow the Cry"
+msgstr "Suivre l'appel"
 
 #: assets/data/changelog.json
 msgid "Footfalls"
@@ -4583,6 +4595,10 @@ msgstr "Un seul style"
 #: assets/data/changelog.json
 msgid "One Page"
 msgstr "Une seule page"
+
+#: assets/data/changelog.json
+msgid "One Step Back"
+msgstr "Un pas en arrière"
 
 #: assets/data/changelog.json
 msgid "One Voice"
@@ -9693,12 +9709,20 @@ msgid "'The Ballad of the Ashen Patron', verse nine: the fountain. It rhymes wit
 msgstr "« La Ballade du Mécène des cendres », neuvième couplet : la fontaine. Ça rime avec « aubaine », ce qui en est une."
 
 #: assets/data/npcs.json
+msgid "(A man lies pinned under a burning beam. You can't lift it with hounds snapping at your heels.)"
+msgstr "(Un homme est coincé sous une poutre en feu. Impossible de la soulever avec des chiens qui vous mordent les talons.)"
+
+#: assets/data/npcs.json
 msgid "(A man lies pinned under a burning beam. You put your shoulder to it. It shifts - then rolls away.)"
 msgstr "(Un homme gît, coincé sous une poutre en flammes. Vous y mettez l'épaule. Elle bouge - puis roule de côté.)"
 
 #: assets/data/npcs.json
 msgid "(He doesn't look up from the cold anvil.) If Maren wants something, Maren can climb. ...She won't. Neither will I."
 msgstr "(Il ne lève pas les yeux de l'enclume froide.) Si Maren veut quelque chose, Maren n'a qu'à monter. ...Elle ne montera pas. Et je ne descendrai pas."
+
+#: assets/data/npcs.json
+msgid "(She doesn't look round.) Not now, whoever you are. There are still people out in this fire - see to them. I'll be here. I'm always here."
+msgstr "(Elle ne se retourne pas.) Pas maintenant, qui que vous soyez. Il reste des gens dans ce feu - occupez-vous d'eux. Je serai là. Je suis toujours là."
 
 #: assets/data/npcs.json
 msgid "(She looks up at the mountain for a long time.) Rest. We'll talk at dawn."
@@ -9901,6 +9925,10 @@ msgid "Frost lilies only open in the snow. Vex in Pixelheim swears by them."
 msgstr "Les lys de givre ne s'ouvrent que dans la neige. Vex, à Pixelheim, ne jure que par eux."
 
 #: assets/data/npcs.json
+msgid "Go on, go on. I'll follow when my legs remember how. They're thinking about it."
+msgstr "Vas-y, vas-y. Je te suis dès que mes jambes s'en souviennent. Elles y réfléchissent."
+
+#: assets/data/npcs.json
 msgid "Greyhold was Oskar's fort before it was anyone's ruin. We keep this camp because somebody has to."
 msgstr "Greyhold était le fort d'Oskar avant d'être la ruine de qui que ce soit. Nous tenons ce camp parce qu'il faut bien que quelqu'un le fasse."
 
@@ -10013,6 +10041,10 @@ msgid "Iva the Healer"
 msgstr "Iva la guérisseuse"
 
 #: assets/data/npcs.json
+msgid "Keep that cap on. Embers like the top of a head best."
+msgstr "Gardez ce casque. Les braises adorent le sommet des crânes."
+
+#: assets/data/npcs.json
 msgid "Lamps all the way to the mountain gate. I ride the night shift for fun now."
 msgstr "Des réverbères jusqu'à la porte de la montagne. Je fais la tournée de nuit pour le plaisir, maintenant."
 
@@ -10055,10 +10087,6 @@ msgstr "Mabel la cantinière"
 #: assets/data/npcs.json
 msgid "Maren comes in most nights for a bowl. We don't talk about the mountain. We talk about everything else."
 msgstr "Maren passe presque tous les soirs pour un bol. On ne parle pas de la montagne. On parle de tout le reste."
-
-#: assets/data/npcs.json
-msgid "Maren's at the shrine. She's the elder - she'll want to know who you are, walking in out of the fire."
-msgstr "Maren est au sanctuaire. C'est l'Ancienne - elle voudra savoir qui vous êtes, vous qui sortez du feu."
 
 #: assets/data/npcs.json
 msgid "Marta the Chandler"
@@ -10119,6 +10147,10 @@ msgstr "Nell"
 #: assets/data/npcs.json
 msgid "New roofs going up everywhere. My grandson has a TRADE now. A trade!"
 msgstr "Des toits neufs partout. Mon petit-fils a un MÉTIER maintenant. Un métier !"
+
+#: assets/data/npcs.json
+msgid "Not me - I've more cuts than cloth already. Somebody's still out there calling. Go!"
+msgstr "Pas moi - j'ai déjà plus de plaies que de linge. Quelqu'un appelle encore, là-dehors. Allez !"
 
 #: assets/data/npcs.json
 msgid "Odo, Hilda and Vex trade from the square until they have roofs again. Sela keeps a tent for anyone who needs a bed."
@@ -10471,6 +10503,10 @@ msgstr "Que voulez-vous déposer, messager ? La première fois, c'est le sanct
 #: assets/data/npcs.json
 msgid "When the bell rings, everyone comes. That's what a bell is for. Remember that, if the mountain ever wakes."
 msgstr "Quand la cloche sonne, tout le monde vient. C'est à ça que sert une cloche. Souvenez-vous-en, si la montagne se réveille un jour."
+
+#: assets/data/npcs.json
+msgid "When the fire's down, find Maren at the shrine. She's the elder - she'll want to know who you are, walking in out of it."
+msgstr "Quand le feu sera retombé, trouvez Maren au sanctuaire. C'est l'Ancienne - elle voudra savoir qui vous êtes, vous qui sortez des flammes."
 
 #: assets/data/npcs.json
 msgid "Wren the Stablemaster"
