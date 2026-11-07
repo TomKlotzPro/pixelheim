@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.321.0",
+      "date": "2026-11-07",
+      "codename": "Longer Breath",
+      "notes": [
+        "Every place's bed of sound is back at full quality, and the rain, the river, the coast, the marsh and the woods by day loop over 35 to 45 seconds, so you no longer hear them repeat every 12",
+        "The hero's fall plays at its full quality again"
+      ]
+    },
+    {
       "version": "0.320.0",
       "date": "2026-11-07",
       "codename": "Every Face",
