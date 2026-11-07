@@ -2,20 +2,21 @@
 
 **Goal:** go through every screen and every setting with the keyboard only, and find what doesn't open, doesn't close, loses its focus or lies about its keys.
 
-**Start:** a plain launch: `start` with no option, in English. A fresh profile.
+**Start:** a plain launch: `start` with no option, in English. A fresh profile. The title's intro runs about 8 s before its menu shows: send `wait:8` before the first look. The state doesn't say which row is chosen, so look before each E on a setting rather than counting presses.
 
-**Model:** Haiku. This is the most mechanical player; `lessons.md` says whether Haiku is enough.
+**Model:** Haiku (`lessons.md`, 2026-11-07).
 
 ## Route
 
 1. **The title's menu**: every entry. Go in and come back out with Esc.
-2. **Options**: change every setting and change it back. Rebind one key, use the new key in the game, then set it back. Try Reduce motion on, then off.
+2. **Options**: change every setting and change it back, Language too (it reloads the game). Skip Fullscreen, since the headless browser shows nothing of it. Rebind one key, use the new key in the game, then set it back. Try Reduce motion on, then off.
 3. **The saves screen**, if the title has one.
 4. **In the game**, open each screen by its key and close it with the same key, then again with Esc: inventory (I), world map (M, then Tab), journal (Q), stats (C), skills (K), codex (B).
 5. **The pause menu** (Esc) and every entry in it.
-6. **The dock's menu**: open it and go to each screen from it.
-7. **A conversation** (E next to someone) and a shop: choose, buy one cheap thing, leave.
-8. **Back to the title** from the pause menu, then into the game again.
+6. **A conversation** (E next to someone) and a shop: choose, buy one cheap thing, leave. For the shop's Sell and Craft tabs, a second session at a counter: `start --role warrior --map town_shop --flags shop` (500 g and a pack to sell). Check each tab by picture.
+7. **Back to the title** from the pause menu, then into the game again.
+
+The dock's Menu opens only with the mouse or a pad's Back button, which play.py can't press. Each of its screens has its own key (step 4).
 
 ## Check
 
