@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.323.0",
+      "date": "2026-11-07",
+      "codename": "Soft Doors",
+      "notes": [
+        "On the web, the music now fades out softly as you go through a door or a gate and comes back after, instead of stopping dead mid-note while the new place is built"
+      ]
+    },
+    {
       "version": "0.322.0",
       "date": "2026-11-07",
       "codename": "Within Reach",

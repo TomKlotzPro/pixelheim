@@ -4497,6 +4497,10 @@ msgid "On the town's tour, a rebuilt building rises at its stop: the ruin gives 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On the web, the music now fades out softly as you go through a door or a gate and comes back after, instead of stopping dead mid-note while the new place is built"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Once Rimefang falls, an ice slide takes you back down to the foot of Liane's stair"
 msgstr ""
 
@@ -5242,6 +5246,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Snow lies in drifts with blue shadows, and the Mirefen is murk, sedge and puddles instead of camouflage dots"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Soft Doors"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -4497,6 +4497,10 @@ msgid "On the town's tour, a rebuilt building rises at its stop: the ruin gives 
 msgstr "Pendant la visite du bourg, un bâtiment reconstruit s'élève à son arrêt : la ruine cède dans un nuage de poussière, les murs montent rang par rang, et il se pose sous les confettis"
 
 #: assets/data/changelog.json
+msgid "On the web, the music now fades out softly as you go through a door or a gate and comes back after, instead of stopping dead mid-note while the new place is built"
+msgstr "Sur le web, la musique s'efface désormais en douceur quand on passe une porte ou une grille, puis revient, au lieu de s'arrêter net au milieu d'une note pendant que le nouveau lieu se construit"
+
+#: assets/data/changelog.json
 msgid "Once Rimefang falls, an ice slide takes you back down to the foot of Liane's stair"
 msgstr "Une fois Crocgivre tombé, une glissade de glace vous ramène au pied de l'escalier de Liane"
 
@@ -5243,6 +5247,10 @@ msgstr "Le métier de Forge fait baisser les prix de la forge et, au niveau 5, d
 #: assets/data/changelog.json
 msgid "Snow lies in drifts with blue shadows, and the Mirefen is murk, sedge and puddles instead of camouflage dots"
 msgstr "La neige s'amoncelle en congères aux ombres bleues, et les Marais de Fange sont faits de vase, de laîches et de flaques au lieu de points de camouflage"
+
+#: assets/data/changelog.json
+msgid "Soft Doors"
+msgstr "Portes en douceur"
 
 #: assets/data/changelog.json
 msgid "Soft Edges"
