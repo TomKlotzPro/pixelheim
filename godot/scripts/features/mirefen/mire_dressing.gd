@@ -178,7 +178,9 @@ func build(view: MapView, slices: Slicer) -> void:
 			var bed := _sprite(MireArt.texture("reeds_%d" % laid["reeds"][cell]))
 			var h := absi(hash(cell))
 			bed.flip_h = (h >> 18) % 2 == 1
-			stand_on(view, bed, cell, Vector2((h >> 9) % 7 - 3, TILE - MireArt.REED_SIZE.y)))
+			stand_on(view, bed, cell, Vector2((h >> 9) % 7 - 3, TILE - MireArt.REED_SIZE.y))
+			# Walked through, as tall as the hero (PIX-429).
+			see_through(bed))
 	slices.add("decor_mire_wisps", func() -> void:
 		var wisps: Array[Node2D] = []
 		for at: Vector2i in WISPS:

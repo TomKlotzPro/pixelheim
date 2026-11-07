@@ -43,6 +43,22 @@ static func stand_on(view: MapView, sprite: Node2D, cell: Vector2i, at: Vector2)
 	return root
 
 
+static var _see_through: ShaderMaterial
+
+## `sprite` (on its root, the root on its foot) turned see-through round the
+## hero while it stands over them (PIX-429, shaders/see_through.gdshader):
+## drawn where it was, its origin moved down onto the foot the root is
+## sorted on, which the shader compares with the hero's. Trees see through
+## in their own material (region_tint).
+static func see_through(sprite: Sprite2D) -> void:
+	if _see_through == null:
+		_see_through = ShaderMaterial.new()
+		_see_through.shader = preload("res://shaders/see_through.gdshader")
+	sprite.offset.y += sprite.position.y
+	sprite.position.y = 0.0
+	sprite.material = _see_through
+
+
 ## A box on `cell` (PIX-313's dressing): covering the middle of the bottom
 ## of the cell, as every prop's foot does (MapView.HAMLET_FOOT).
 static func block(view: MapView, cell: Vector2i) -> void:

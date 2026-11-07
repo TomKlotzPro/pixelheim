@@ -21,6 +21,9 @@ const COMBAT_LINGER_S := 3.0
 ## count, a level's words, the Post) waits this long after the last hunter,
 ## not the music's three seconds.
 const CALM_S := 0.6
+## Where nobody stands, for the see-through's globals (PIX-429,
+## shaders/see_through.gdshaderinc): the hero's and the hunter's.
+const NOBODY := Vector2(-100000, -100000)
 ## In a fight a pack shows one level tag (PIX-340): foes this close to one
 ## another (a chain of them) are one pack, and tags stand this far apart.
 ## As far as the ring round the hero reaches (PIX-377: its waiting foes
@@ -204,11 +207,17 @@ func _process(_delta: float) -> void:
 	# the whole screen, the world showing beside the dock too.
 	var rig: CameraRig = world.camera_rig
 	var view := Rect2() if rig.camera == null else rig.view_rect().grow_side(SIDE_BOTTOM, (720.0 - rig.dock_top()) / rig.camera.zoom.y)
+	var hero: Vector2 = world.player.global_position
+	# The nearest foe hunting the hero: what stands over it turns see-through
+	# round it too (PIX-429), so a fight under the trees can be read.
+	var hunter := NOBODY
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		enemy.rest(view)
 		if enemy.level_tag != null and enemy.level_tag.visible and not enemy.dying:
 			shown.append(enemy)
-	var hero: Vector2 = world.player.global_position
+		if enemy.hunting and not enemy.dying and enemy.global_position.distance_squared_to(hero) < hunter.distance_squared_to(hero):
+			hunter = enemy.global_position
+	RenderingServer.global_shader_parameter_set("foe_at", hunter)
 	shown.sort_custom(func(a: Node2D, b: Node2D) -> bool:
 		return a.global_position.distance_squared_to(hero) < b.global_position.distance_squared_to(hero))
 	var fighting := in_fight()

@@ -215,6 +215,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	camera_rig.update(delta)
+	# What stands over the hero turns see-through round them (PIX-429,
+	# shaders/see_through.gdshaderinc).
+	RenderingServer.global_shader_parameter_set("hero_at", player.global_position if player != null and player.visible else Foes.NOBODY)
 	if player == null or player.dead:
 		return
 	interaction.update_prompt()
