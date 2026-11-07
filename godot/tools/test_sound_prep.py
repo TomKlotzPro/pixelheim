@@ -40,7 +40,7 @@ class SoundPrepTest(unittest.TestCase):
                 self.assertRegex(member.lower(), r"\.(wav|ogg)$", event)
                 self.assertNotIn("..", member, event)
                 options = source[2] if len(source) > 2 else {}
-                self.assertLessEqual(set(options), {"keep", "loop", "pitch", "lowpass", "db", "rate"}, event)
+                self.assertLessEqual(set(options), {"keep", "loop", "pitch", "lowpass", "db"}, event)
             self.assertEqual(len({tuple(s[:2]) for s in sources}), len(sources), "%s: a take twice" % event)
 
     def test_every_take_is_in_its_zip(self):
@@ -99,14 +99,15 @@ class SoundPrepTest(unittest.TestCase):
                     self.assertIn("loop", options, "%s: a bed loops" % event)
 
     def test_the_takes_stay_small(self):
-        # PIX-413: some 15 MB of 16-bit mono, each family at its own rate.
+        # PIX-413: 16-bit mono, each family at its own rate; PIX-415: some
+        # 24 MiB of the 32 since every bed is at its family's.
         size = 0
         for event, _, _, _, options in sound_prep.takes(self.manifest):
-            rate = options.get("rate", self.audio["families"][self.audio["events"][event]["family"]].get("rate", sound_prep.RATE))
+            rate = self.audio["families"][self.audio["events"][event]["family"]].get("rate", sound_prep.RATE)
             # PIX-414: the web's AudioBuffer takes 8 kHz and up, everywhere.
             self.assertGreaterEqual(rate, 8000, event)
             size += float(options.get("keep", options.get("loop", 1.0))) * rate * 2
-        self.assertLess(size, 16 * 1024 * 1024)
+        self.assertLess(size, sound_prep.BUDGET)
 
     def test_a_take_comes_to_its_familys_loudness_never_past_its_peak(self):
         family = {"loudness": -37, "peak": -18}

@@ -3149,6 +3149,10 @@ msgid "Every place has its own music now: a warm folk tune in town, old minor wa
 msgstr "Chaque lieu a désormais sa musique : un air folk chaleureux en ville, de vieilles errances en mineur dans les Bois-Profonds, des cloches noyées sur les Marais de Fange, une berceuse douillette à l'intérieur, une pulsation avant la plongée dans le donjon - et les boss ont leur propre menace"
 
 #: assets/data/changelog.json
+msgid "Every place's bed of sound is back at full quality, and the rain, the river, the coast, the marsh and the woods by day loop over 35 to 45 seconds, so you no longer hear them repeat every 12"
+msgstr "Chaque fond sonore retrouve sa pleine qualité, et la pluie, la rivière, la côte, le marais et les bois le jour bouclent sur 35 à 45 secondes, on ne les entend plus se répéter toutes les 12"
+
+#: assets/data/changelog.json
 msgid "Every price, tag and stat abbreviation on the screens goes through the translation, so nothing is left in English in the corners"
 msgstr "Chaque prix, étiquette et abréviation de caractéristique passe par la traduction : plus rien ne traîne en anglais dans les recoins"
 
@@ -4007,6 +4011,10 @@ msgstr "Murs porteurs"
 #: assets/data/changelog.json
 msgid "Long messages now grow upward instead of running under the dock"
 msgstr "Les longs messages s'agrandissent désormais vers le haut au lieu de passer sous la barre"
+
+#: assets/data/changelog.json
+msgid "Longer Breath"
+msgstr "Second souffle"
 
 #: assets/data/changelog.json
 msgid "Longer Days"
@@ -6215,6 +6223,10 @@ msgstr "Le héros marche en quatre temps, se soulevant quand les pieds se croise
 #: assets/data/changelog.json
 msgid "The hero's fall has its own sound now, and stairs and cave mouths ring with steps in the stone"
 msgstr "La chute du héros a désormais son propre son, et les escaliers et les entrées de grotte résonnent de pas dans la pierre"
+
+#: assets/data/changelog.json
+msgid "The hero's fall plays at its full quality again"
+msgstr "La chute du héros retrouve sa pleine qualité"
 
 #: assets/data/changelog.json
 msgid "The hub screen retires with honor. It served well."

@@ -8,8 +8,7 @@ of the zip, makes it mono at its family's rate (audio.json's "families":
 44.1 kHz unless the budget asks for less, PIX-413), trims the silence before
 it, cuts it (PIX-413: "keep" its first seconds, the tail faded out; "loop" a
 bed's first seconds, its end crossfaded into its start so it loops without
-a seam; "pitch", "lowpass" in Hz; PIX-414: "rate", a take's own lower rate
-than its family's: a bed with nothing up high, the hero's fall), and brings it to its family's loudness in
+a seam; "pitch", "lowpass" in Hz), and brings it to its family's loudness in
 godot/assets/data/audio.json's "families" (the 400 ms max, as the audio pass
 measured the game's own), never past the family's peak, then "db" more: the
 packs sit near -1 dBFS, and every bus plays 14 dB over its renders
@@ -17,6 +16,7 @@ packs sit near -1 dBFS, and every bus plays 14 dB over its renders
 list the game reads them by (each event's takes, each take's peak, loudness,
 length and source; an event the manifest names another for shares that
 one's). Godot compresses them on import as it does the game's own sounds.
+The lot keeps within BUDGET (PIX-415: 32 MiB, every bed at its family's rate).
 
 The packs are paid and may not be redistributed, modified or not: write the
 takes outside this repo, into the private pixelheim-assets repo
@@ -49,6 +49,8 @@ FADE_SHARE = 0.3
 LOOP_FADE_S = 1.5
 # A member bigger than this is no sound effect (a zip bomb, a whole album).
 LARGEST = 64 * 1024 * 1024
+# What the takes may weigh together, as WAVs (PIX-415, 16 MiB before).
+BUDGET = 32 * 1024 * 1024
 # Silence: under this, before the take starts and after it has rung out.
 LEAD_DB = -60
 TAIL_DB = -70
@@ -170,8 +172,7 @@ def prepare(zips, out):
     with tempfile.TemporaryDirectory() as work:
         for event, name, zip_name, member, options in takes(manifest):
             family = families[events[event]["family"]]
-            # PIX-414: a bed with nothing up high kept at less, its own "rate".
-            rate = str(options.get("rate", family.get("rate", RATE)))
+            rate = str(family.get("rate", RATE))
             source = os.path.join(work, "source" + os.path.splitext(member)[1].lower())
             read_member(zips, zip_name, member, source)
             mono = os.path.join(work, "mono.wav")
@@ -200,6 +201,10 @@ def prepare(zips, out):
     with open(os.path.join(out, "takes.json"), "w", encoding="utf-8") as file:
         json.dump(listed, file, indent=1)
         file.write("\n")
+    total = sum(os.path.getsize(path) for path in glob.glob(os.path.join(out, "*.wav")))
+    print("%.2f MiB of %d" % (total / 2 ** 20, BUDGET // 2 ** 20))
+    if total > BUDGET:
+        raise ValueError("the takes weigh %.2f MiB, over the %d MiB budget" % (total / 2 ** 20, BUDGET // 2 ** 20))
     return listed
 
 

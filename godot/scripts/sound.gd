@@ -752,10 +752,13 @@ func _process(delta: float) -> void:
 	while _ambience_clock >= tick:
 		_ambience_clock -= tick
 		_sprinkle()
+		# PIX-415: on Sound's dice, as the sprinkle is: on the game's they moved
+		# what a fight rolled, and the chatter (only without the packs' crowd)
+		# moved it one way with the packs and another without.
 		for name in extras:
 			var extra: Dictionary = _doc["ambienceExtras"][name]
-			if randf() < float(extra["chance"]):
-				_ambient_file("res://assets/audio/ambience/%s_%d.wav" % [name, randi() % int(extra["variants"])], level_of("ambience/" + name))
+			if _dice.randf() < float(extra["chance"]):
+				_ambient_file("res://assets/audio/ambience/%s_%d.wav" % [name, _dice.randi() % int(extra["variants"])], level_of("ambience/" + name))
 
 
 ## One tick of the place's one-shots, each by its chance: a render of the
