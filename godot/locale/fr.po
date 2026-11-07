@@ -3529,6 +3529,10 @@ msgid "Goals to Chase"
 msgstr "Des buts à poursuivre"
 
 #: assets/data/changelog.json
+msgid "Going out of the village or coming back in, you now pass under the gate's arch instead of seeming to walk along the top of the rampart, and Greyhold's gate works the same way"
+msgstr "En sortant du village ou en y revenant, vous passez désormais sous l'arche de la porte au lieu de sembler marcher sur le haut du rempart, et la porte de Greyhold fait de même"
+
+#: assets/data/changelog.json
 msgid "Going underground still goes dark for a moment, and coming back up melts into the daylight"
 msgstr "Descendre sous terre plonge toujours un instant dans le noir, et remonter se fond dans la lumière du jour"
 
@@ -6827,6 +6831,10 @@ msgstr "Ulla et la vieille garde rentrent garder la porte de Pixelheim, et Frèr
 #: assets/data/changelog.json
 msgid "Under its name, what it brings: who is back at work, the new perk, or who has moved into town"
 msgstr "Sous son nom, ce qu'il apporte : qui reprend le travail, le nouvel avantage, ou qui s'est installé au bourg"
+
+#: assets/data/changelog.json
+msgid "Under the Arch"
+msgstr "Sous l'arche"
 
 #: assets/data/changelog.json
 msgid "Under the Ashen Mountain"

@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.326.0",
+      "date": "2026-11-07",
+      "codename": "Under the Arch",
+      "notes": [
+        "Going out of the village or coming back in, you now pass under the gate's arch instead of seeming to walk along the top of the rampart, and Greyhold's gate works the same way"
+      ]
+    },
+    {
       "version": "0.325.0",
       "date": "2026-11-07",
       "codename": "Pack Rules",

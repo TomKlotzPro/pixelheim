@@ -3529,6 +3529,10 @@ msgid "Goals to Chase"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Going out of the village or coming back in, you now pass under the gate's arch instead of seeming to walk along the top of the rampart, and Greyhold's gate works the same way"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Going underground still goes dark for a moment, and coming back up melts into the daylight"
 msgstr ""
 
@@ -6826,6 +6830,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Under its name, what it brings: who is back at work, the new perk, or who has moved into town"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Under the Arch"
 msgstr ""
 
 #: assets/data/changelog.json
