@@ -33,6 +33,9 @@ const SNAGS := 34
 const BOULDER := 702
 ## How many of the queue's cells a slice of the burn's spread takes.
 const SPREAD_A_SLICE := 400
+## A rock cell is held back up to one less than this many turns as the burn
+## spreads.
+const HELD_BACK := 4
 
 ## Each map's workings: the rock face (an outcrop's bottom row, open ground
 ## below it) and the rails laid from its foot, as the corners of a line;
@@ -84,6 +87,7 @@ class Burning:
 	var _queue: Array[Vector2i] = []
 	var _burn := {}
 	var _at := 0
+	var _held := {}
 
 	func _init(grid: Dictionary, size: Vector2i, regions: Dictionary) -> void:
 		_grid = grid
@@ -121,6 +125,14 @@ class Burning:
 		while _at < stop and _at < _queue.size():
 			var cell := _queue[_at]
 			_at += 1
+			# Held back a few turns on its own hash, so the line between burnt
+			# and green rock wanders (PIX-431): spreading in step, it ran
+			# ruler straight into the rock from where the ground beside it
+			# changed.
+			if _held.get(cell, 0) < absi(hash(Vector3i(cell.x, cell.y, 431))) % HELD_BACK:
+				_held[cell] = _held.get(cell, 0) + 1
+				_queue.append(cell)
+				continue
 			var hot: bool = _burn[cell]
 			if hot:
 				out[cell] = true

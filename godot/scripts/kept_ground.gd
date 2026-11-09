@@ -167,10 +167,11 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 	var ring_slices := ceili(ring_rows / float(ROWS_A_SLICE))
 	# The rock that burns, before the crowns and the tint read it (PIX-308):
 	# its edge a few rows a slice, then spread through the rock a few
-	# hundred cells a slice (at most every cell of the map's, often fewer).
+	# hundred cells a slice (each held back at most HELD_BACK turns, so at most
+	# that many times every cell of the map's, often far fewer).
 	var burning := AshLand.Burning.new(look, data.size, data.regions)
 	slices.add_each("kept_burnt", cell_slices, func(i: int) -> void: burning.rows(i * ROWS_A_SLICE, (i + 1) * ROWS_A_SLICE))
-	slices.add_each("kept_burnt_spread", ceili(data.size.x * data.size.y / float(AshLand.SPREAD_A_SLICE)), func(_i: int) -> void:
+	slices.add_each("kept_burnt_spread", ceili(data.size.x * data.size.y * AshLand.HELD_BACK / float(AshLand.SPREAD_A_SLICE)), func(_i: int) -> void:
 		burning.spread(AshLand.SPREAD_A_SLICE)
 		kept.burnt = burning.out)
 	slices.add_each("kept_terrain", cell_slices, func(i: int) -> void: kept._terrain_rows(i * ROWS_A_SLICE))

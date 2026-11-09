@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.333.0",
+      "date": "2026-11-09",
+      "codename": "Ragged Edge",
+      "notes": [
+        "The Ash Fields no longer meet the green land on a ruler-straight line that cut the walled enclosures in half: the border now wanders, and burnt rock gives way to green rock unevenly",
+        "The ground healed around a lamp now frays where it meets the ash instead of ending in a clean disc"
+      ]
+    },
+    {
       "version": "0.332.0",
       "date": "2026-11-09",
       "codename": "Small Print",

@@ -142,9 +142,18 @@ static func healed(grid: Dictionary, rings: Array[Dictionary]) -> Dictionary:
 				var cell := Vector2i(x, y)
 				if grid.get(cell, "") == "ash" and not out.has(cell):
 					var grown := stage(cell, rings)
-					if grown > 0:
+					if grown > EARTH or (grown == EARTH and not _frayed(cell)):
 						out[cell] = LOOKS[grown]
 	return out
+
+
+## Whether the ash holds out at `cell` of a ring's bare-earth front, two cells
+## in five (PIX-431): a disc's sides run flat for 5 cells at every reach. By
+## this lattice rather than a hash, since any five cells along a row or a
+## column lose some, and a hash can leave a whole flat standing. Only the
+## look: the ring still shelters these cells (`inside`).
+static func _frayed(cell: Vector2i) -> bool:
+	return posmod(2 * cell.x + 3 * cell.y, 5) < 2
 
 
 ## What the map calls a wild region as the land round the lamps heals

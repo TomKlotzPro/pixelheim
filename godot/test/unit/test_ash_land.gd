@@ -8,6 +8,13 @@ extends GutTest
 ## blocks; and the mines and the mountain road breathe the Ash's air.
 
 
+## How many cells at most the Ash's edge runs straight (PIX-431): it ran 14
+## along Greyhold's line, its rock burnt to the line and green past it.
+const LONGEST_EDGE := 6
+## How many cells a plain disc's flat sides run, at every reach from 4 up.
+const RING_FLAT := 5
+
+
 func before_all() -> void:
 	KeptGround.forget()
 
@@ -167,3 +174,71 @@ func test_the_mines_and_the_mountain_road_breathe_the_ashs_air() -> void:
 	var road := MapData.load_by_id("mountain_road")
 	assert_eq(Weather.air_at(road, road.spawn), "ash")
 	assert_false(Weather.rains_in(mines, "ash"), "no shower over the Ash's heat")
+
+
+## What lies at each cell of the Reach's plane, as it's drawn: "ash", "green",
+## burnt rock or green rock; anything else (a road, water, snow) is left out.
+func _plane_ground() -> Dictionary:
+	var kinds := {}
+	for map_id: String in ReachPlane.maps():
+		var map := MapData.load_by_id(map_id)
+		var burnt := AshLand.burnt(map.grid, map.size, map.regions)
+		for cell: Vector2i in map.grid:
+			var tile: String = map.grid[cell]
+			var tone := PunyTerrain.toned_as(tile, map.regions.get(cell, ""))
+			var plane: Vector2i = cell + ReachPlane.origin(map_id)
+			if tile == "mountain" and tone == "":
+				kinds[plane] = "burnt" if burnt.has(cell) else "rock"
+			elif tile != "mountain" and tone == "ash":
+				kinds[plane] = "ash"
+			elif tile in ["grass", "flowers", "forest"] and tone == "":
+				kinds[plane] = "green"
+	return kinds
+
+
+## The longest straight run, in cells, of the line between `a` and `b` in
+## `kinds`, down a column's side or along a row's.
+func _longest_run(kinds: Dictionary, a: String, b: String) -> int:
+	var longest := 0
+	for step: Vector2i in [Vector2i.RIGHT, Vector2i.DOWN]:
+		var along := Vector2i(step.y, step.x)
+		var line := {}
+		for cell: Vector2i in kinds:
+			var pair := [kinds[cell], kinds.get(cell + step, "")]
+			if (pair[0] == a and pair[1] == b) or (pair[0] == b and pair[1] == a):
+				line[cell] = true
+		for cell: Vector2i in line:
+			if line.has(cell - along):
+				continue
+			var run := 1
+			while line.has(cell + along * run):
+				run += 1
+			longest = maxi(longest, run)
+	return longest
+
+
+func test_the_ash_meets_the_green_land_on_no_straight_line() -> void:
+	var kinds := _plane_ground()
+	assert_lte(_longest_run(kinds, "ash", "green"), LONGEST_EDGE, "the ash's edge wanders")
+	assert_lte(_longest_run(kinds, "burnt", "rock"), LONGEST_EDGE, "and burnt rock's edge with green rock, across a map's line too")
+
+
+## Every radius a ring has as it grows or with Aske's third (a sea-glass lamp's
+## 8 the widest), round every lamp on open ash: a plain disc's sides run 5.
+func test_a_healed_ring_meets_the_ash_on_no_straight_line() -> void:
+	for place: String in Routes.places():
+		var lamp := Routes.lamp_of(place)
+		if lamp.is_empty():
+			continue
+		var at: Vector2i = lamp["cell"]
+		for radius in range(1, 9):
+			var grid := {}
+			for y in range(at.y - radius - 2, at.y + radius + 3):
+				for x in range(at.x - radius - 2, at.x + radius + 3):
+					grid[Vector2i(x, y)] = "ash"
+			var rings: Array[Dictionary] = [{"cell": at, "reach": radius, "mornings": radius}]
+			var healed := Lamps.healed(grid, rings)
+			var kinds := {}
+			for cell: Vector2i in grid:
+				kinds[cell] = "green" if healed.has(cell) else "ash"
+			assert_lt(_longest_run(kinds, "ash", "green"), RING_FLAT, "%s's ring at %d cells" % [place, radius])

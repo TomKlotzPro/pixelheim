@@ -516,7 +516,7 @@
       "name": "the Ash Fields",
       "renamed": [
         {"healed": 50, "name": "the Greening"},
-        {"healed": 180, "name": "the Lantern Meadows"}
+        {"healed": 160, "name": "the Lantern Meadows"}
       ],
       "dropFloor": 7,
       "eliteChance": 0.15,

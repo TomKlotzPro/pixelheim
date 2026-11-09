@@ -4941,6 +4941,10 @@ msgid "RUN AHEAD IF YOU LIKE: a hero who goes deeper early is never sent back fo
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Ragged Edge"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Rain and Stone"
 msgstr ""
 
@@ -5833,6 +5837,10 @@ msgid "The Aegis rings when it turns a blow, treasure picked off the ground clin
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Ash Fields no longer meet the green land on a ruler-straight line that cut the walled enclosures in half: the border now wanders, and burnt rock gives way to green rock unevenly"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Ashen Mountain"
 msgstr ""
 
@@ -6294,6 +6302,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The gate opens the first depth of every five you've reached, so a long descent no longer starts from the top"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The ground healed around a lamp now frays where it meets the ash instead of ending in a clean disc"
 msgstr ""
 
 #: assets/data/changelog.json
