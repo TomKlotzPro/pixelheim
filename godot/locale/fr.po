@@ -4525,6 +4525,10 @@ msgid "On a phone the controls are sized for a thumb on any screen, the attack, 
 msgstr "Sur téléphone, les commandes ont la taille d'un pouce sur tous les écrans, les boutons attaquer, rouler et utiliser montrent une épée, une flèche et une main dessinées au lieu de mots, et les six touches de compétence sont à l'écran, chacune avec son icône"
 
 #: assets/data/changelog.json
+msgid "On a phone, first-time tips now name what you can touch on screen instead of a keyboard key"
+msgstr "Sur téléphone, les astuces de découverte nomment désormais ce que vous pouvez toucher à l'écran plutôt qu'une touche du clavier"
+
+#: assets/data/changelog.json
 msgid "On the Night of Bells, Sela brings a bowl of broth to whoever holds the square, so every class can see the dawn; the cleric starts sturdier, and the first fields ease in more gently"
 msgstr "Pendant la Nuit des Cloches, Sela apporte un bol de bouillon à qui tient la place, pour que chaque classe voie l'aube ; le clerc commence plus solide, et les premiers champs s'adoucissent encore"
 
@@ -6453,6 +6457,10 @@ msgid "The north pays its way: Frostgate, the ice cave and Greyhold's foes now c
 msgstr "Le nord paie enfin : les monstres de la Porte-Givre, de la grotte de glace et de Greyhold portent environ deux fois plus d'or, et les mimiques des Marais de Fange un peu moins"
 
 #: assets/data/changelog.json
+msgid "The note on placed furniture now names your own key for taking it back, even after you rebind it"
+msgstr "La note sur les meubles posés indique désormais votre propre touche pour les reprendre, même si vous l'avez réassignée"
+
+#: assets/data/changelog.json
 msgid "The old shrine in the Mirefen and the courtyard in the Deepwood are real ruins now: low broken walls of grey stone with moss, cracks and fallen heaps, rubble at their feet and worn slabs inside, and the stone knight stands on his plinth again"
 msgstr "Le vieux sanctuaire des Marais de Fange et la cour des Bois-Profonds sont désormais de vraies ruines : des murets brisés de pierre grise, avec mousse, fissures et éboulis, des gravats à leur pied et des dalles usées au-dedans, et le chevalier de pierre se dresse de nouveau sur son socle"
 
@@ -6783,6 +6791,10 @@ msgstr "À travers les feuilles"
 #: assets/data/changelog.json
 msgid "Thumb-Sized"
 msgstr "À portée de pouce"
+
+#: assets/data/changelog.json
+msgid "Thumbs Up"
+msgstr "Pouce levé"
 
 #: assets/data/changelog.json
 msgid "Tidy Up"

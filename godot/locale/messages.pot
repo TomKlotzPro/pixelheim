@@ -4525,6 +4525,10 @@ msgid "On a phone the controls are sized for a thumb on any screen, the attack, 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On a phone, first-time tips now name what you can touch on screen instead of a keyboard key"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "On the Night of Bells, Sela brings a bowl of broth to whoever holds the square, so every class can see the dawn; the cleric starts sturdier, and the first fields ease in more gently"
 msgstr ""
 
@@ -6453,6 +6457,10 @@ msgid "The north pays its way: Frostgate, the ice cave and Greyhold's foes now c
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The note on placed furniture now names your own key for taking it back, even after you rebind it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The old shrine in the Mirefen and the courtyard in the Deepwood are real ruins now: low broken walls of grey stone with moss, cracks and fallen heaps, rubble at their feet and worn slabs inside, and the stone knight stands on his plinth again"
 msgstr ""
 
@@ -6782,6 +6790,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Thumb-Sized"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Thumbs Up"
 msgstr ""
 
 #: assets/data/changelog.json
