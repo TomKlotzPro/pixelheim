@@ -5269,6 +5269,10 @@ msgid "Seven new waypoints reach every region: Saltmere Hamlet, the Sea Cave, th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Seven silent chests in the wilds now say who left them"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Shadows became a tone, not a hole: half-strength and shorter under a higher sun - the long black smears are gone"
 msgstr ""
 
@@ -6533,6 +6537,10 @@ msgid "The passes are fast-travel waypoints the moment you lay eyes on them"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The people of the Reach now answer what you've done: a letter delivered, a lamp lit, a hunt finished, the dragon home"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The places you carry post to grow in three steps as their road fills, each shown with a little tour of its own: Saltmere's lighthouse mended, glazed in sea glass, then lit; a stall at the miners' camp; Mabel's tent at Greyhold become a market; a lodge with its fire lit at Gunnar's camp"
 msgstr ""
 
@@ -7198,6 +7206,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Word Gets Round"
 msgstr ""
 
 #: assets/data/changelog.json

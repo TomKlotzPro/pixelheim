@@ -5269,6 +5269,10 @@ msgid "Seven new waypoints reach every region: Saltmere Hamlet, the Sea Cave, th
 msgstr "Sept nouveaux relais desservent chaque région : le hameau de Saltmere, la Grotte marine, le camp des mineurs, le camp de Gunnar, l'observatoire de Liane, le camp de l'ancienne garde et la cour du donjon"
 
 #: assets/data/changelog.json
+msgid "Seven silent chests in the wilds now say who left them"
+msgstr "Sept coffres muets des contrées sauvages disent désormais qui les a laissés"
+
+#: assets/data/changelog.json
 msgid "Shadows became a tone, not a hole: half-strength and shorter under a higher sun - the long black smears are gone"
 msgstr "Les ombres deviennent une teinte, plus un trou : moitié moins fortes et plus courtes sous un soleil plus haut - fini les longues traînées noires"
 
@@ -6533,6 +6537,10 @@ msgid "The passes are fast-travel waypoints the moment you lay eyes on them"
 msgstr "Les cols deviennent des relais de voyage rapide dès que vous les apercevez"
 
 #: assets/data/changelog.json
+msgid "The people of the Reach now answer what you've done: a letter delivered, a lamp lit, a hunt finished, the dragon home"
+msgstr "Les habitants de la Marche réagissent désormais à ce que vous avez fait : une lettre remise, une lanterne allumée, une chasse achevée, le dragon rentré chez lui"
+
+#: assets/data/changelog.json
 msgid "The places you carry post to grow in three steps as their road fills, each shown with a little tour of its own: Saltmere's lighthouse mended, glazed in sea glass, then lit; a stall at the miners' camp; Mabel's tent at Greyhold become a market; a lodge with its fire lit at Gunnar's camp"
 msgstr "Les lieux où vous portez le courrier grandissent en trois étapes à mesure que leur route se remplit, chacune montrée par une petite visite : le phare de Saltmere réparé, vitré de verre de mer, puis allumé ; un étal au camp des mineurs ; la tente de Mabel à Greyhold devenue un marché ; un refuge au feu allumé au camp de Gunnar"
 
@@ -7199,6 +7207,10 @@ msgstr "Sans le pack graphique payant, les pièces sont bâties avec l'art libre
 #: assets/data/changelog.json
 msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"
 msgstr "Les loups, les araignées, les chats, les mammouths et bien des villageois ne marchent plus à reculons vers la gauche ou la droite"
+
+#: assets/data/changelog.json
+msgid "Word Gets Round"
+msgstr "Le bouche-à-oreille"
 
 #: assets/data/changelog.json
 msgid "Worn gear got a fitting: the helm sits on the crown instead of floating, and equipped BODY ARMOR finally shows on the torso"
