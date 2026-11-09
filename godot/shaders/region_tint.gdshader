@@ -41,6 +41,7 @@ shader_type canvas_item;
 
 #include "res://shaders/wind.gdshaderinc"
 #include "res://shaders/linear.gdshaderinc"
+#include "res://shaders/see_through.gdshaderinc"
 
 uniform sampler2D tint_map : filter_linear, repeat_disable;
 uniform vec2 map_pixels;
@@ -71,6 +72,10 @@ const vec3 OPEN_ICE = vec3(0.82, 0.88, 0.95);
 
 // Where the pixel lies in the plane (see above).
 varying vec2 world_pos;
+// A sprite standing alone (a tree): the y it is sorted on (its foot), in
+// the canvas, so it turns see-through round the hero while it stands over
+// them (PIX-430, see_through.gdshaderinc).
+varying float sorted_on;
 
 const float BAYER[16] = float[16](
 	0.0, 8.0, 2.0, 10.0,
@@ -109,6 +114,7 @@ bool is_water(vec3 c) {
 
 void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 0.0, 1.0)).xy + plane_origin;
+	sorted_on = MODEL_MATRIX[3].y;
 	float lean = canopy * wind_lean(world_pos - plane_origin, 0.0);
 	if (sway > 0.0 && top_corner(VERTEX_ID)) {
 		if (sway_alone) {
@@ -244,6 +250,9 @@ void fragment() {
 			float middle = mod(px.x, 3.0) == 1.0 ? 0.7 : 0.4;
 			base.rgb = mix(base.rgb, vec3(0.9, 1.0, 1.0), middle);
 		}
+	}
+	if (sway_alone) {
+		base.a *= see_through(world_pos - plane_origin, sorted_on);
 	}
 	COLOR = vec4(to_canvas(base.rgb), base.a);
 }

@@ -71,6 +71,8 @@ static func add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
 			still.texture = PunyDungeon.sheet().tile_texture(piece[1]) if prop["sheet"] == "dungeon" else PunyProps.texture(piece[1])
 			still.centered = false
 			still.position = Vector2(piece[0] * TILE) - Vector2(0, sort_y + lift)
+			# The well's roof stood over the cells behind it (PIX-429).
+			see_through(still)
 			root.add_child(still)
 	if foot.has_area():
 		var body := StaticBody2D.new()

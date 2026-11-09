@@ -19,6 +19,7 @@ town rooms +town-age* +town_house*: assets/data/town.json
 rooms +town_house*: assets/data/interiors.json
 travel field: assets/puny/world/*
 travel field: shaders/canopy_shade.*
+town travel field night +deepwood* +mirefen*: shaders/see_through.*
 travel: assets/data/plane.json
 travel story +overworld*: assets/data/gates.json
 town travel field +blackiron* +saltmere* +greyhold* +frostgate* +mountain_road*: shaders/snowed_roof.*

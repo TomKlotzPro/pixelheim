@@ -73,6 +73,18 @@ world_linear={
 "type": "float",
 "value": 0.0
 }
+; Where the hero and the nearest foe hunting them stand, in the canvas, so
+; what stands over them turns see-through round them (PIX-429, PIX-430,
+; shaders/see_through.gdshaderinc): set each frame by scripts/world.gd and
+; scripts/world_foes.gd, far off when there is no one.
+hero_at={
+"type": "vec2",
+"value": Vector2(-100000, -100000)
+}
+foe_at={
+"type": "vec2",
+"value": Vector2(-100000, -100000)
+}
 
 [rendering]
 
