@@ -67,6 +67,15 @@ static func key_for(action: String, bindings: Dictionary) -> int:
 	return int(bindings.get(action, BINDABLE[action][1]))
 
 
+## The action holding `key` that a rebinding of `action` would swap with (it
+## takes `action`'s old key), "" when no other holds it (PIX-434: Options name it).
+static func taken_from(bindings: Dictionary, action: String, key: int) -> String:
+	for other: String in BINDABLE:
+		if other != action and key_for(other, bindings) == key:
+			return other
+	return ""
+
+
 ## Binds `key` to `action`; an action already holding that key takes the
 ## old key in exchange, so no two actions ever share one.
 static func rebind(bindings: Dictionary, action: String, key: int) -> Dictionary:

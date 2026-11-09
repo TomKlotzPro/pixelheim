@@ -2825,6 +2825,10 @@ msgid "Delete asks first and can be undone with R until another hero takes the s
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Door Ajar"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Doors got a carpenter: beam posts and lintel, a plank door with a brass knob, a little shingled awning, a stone doorstep"
 msgstr ""
 
@@ -4981,6 +4985,10 @@ msgid "Real Heroes"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Rebinding a key already in use now says which action takes the other key, and the message stays inside the Options page"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Recipes now demand skill: Smithing forges gear, Alchemy brews, and locked recipes show what level they ask"
 msgstr ""
 
@@ -5989,6 +5997,10 @@ msgid "The Letters"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Letters tab no longer claims your satchel is empty while you carry the Chancellor's letter"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Lookout"
 msgstr ""
 
@@ -6966,6 +6978,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Walk up to a closed road and it tells you what opens it; the journal, the arrow and the map then lead you there"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Walking into a wall with a shoulder over a door now eases you across to it, so a door no longer turns you away by a few pixels"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -16893,6 +16909,10 @@ msgid "Nothing to deliver just now."
 msgstr ""
 
 #: scripts/journal_screen.gd
+msgid "Only the Chancellor's letter so far, and it isn't yours to read."
+msgstr ""
+
+#: scripts/journal_screen.gd
 msgid "Post"
 msgstr ""
 
@@ -17061,6 +17081,10 @@ msgid "%s already does %s. Choose another key."
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "%s is now %s, and %s takes %s."
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "%s is now %s."
 msgstr ""
 
@@ -17129,7 +17153,7 @@ msgid "Press a key..."
 msgstr ""
 
 #: scripts/options_screen.gd
-msgid "Press the new key for %s (Esc keeps the old one)."
+msgid "Press the new key"
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -17162,6 +17186,10 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "adjust"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "keep the old one"
 msgstr ""
 
 #: scripts/options_screen.gd

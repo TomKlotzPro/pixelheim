@@ -30,6 +30,21 @@ const ROCK_GATE := 802
 const ROCK_GATE_BARRED := 803
 
 
+## The door a hero at `at`, walking a straight `way` into the wall, has a
+## shoulder over (PIX-434: a door is a cell wide and the hero's body nearly
+## so; a few pixels to the side the wall caught them, the nameplate up and
+## nothing happening), or NOWHERE: a way on, or the house's shut door.
+static func door_by_shoulder(map: MapData, at: Vector2, way: Vector2i, half_body: float) -> Vector2i:
+	var across := Vector2i(absi(way.y), absi(way.x))
+	var ahead := Vector2i((at / MapView.TILE).floor()) + way
+	for side: int in [0, -1, 1]:
+		var door := ahead + across * side
+		var is_door := map.portals.has(door) or (map.id == "town" and door == Town.house_door())
+		if is_door and absf((at - MapView.center(door)).dot(Vector2(across))) < MapView.TILE / 2.0 + half_body:
+			return door
+	return NOWHERE
+
+
 ## Every way on from `map`, in the map's own order (its portals list a way's
 ## road cell first): [{"cells": [Vector2i], "at": Vector2i, "kind": "edge" |
 ## "cave" | "gate" | "door" | "stairs" | "down" (a room's stair), "rock":

@@ -2825,6 +2825,10 @@ msgid "Delete asks first and can be undone with R until another hero takes the s
 msgstr "Supprimer demande d'abord confirmation et s'annule avec R tant qu'un autre héros n'a pas pris la place, et Copier et Coller emmènent un héros sur un autre ordinateur sous forme de code"
 
 #: assets/data/changelog.json
+msgid "Door Ajar"
+msgstr "Porte entrebâillée"
+
+#: assets/data/changelog.json
 msgid "Doors got a carpenter: beam posts and lintel, a plank door with a brass knob, a little shingled awning, a stone doorstep"
 msgstr "Les portes ont eu leur menuisier : poteaux et linteau, une porte en planches avec un bouton en laiton, un petit auvent en bardeaux, un seuil en pierre"
 
@@ -4981,6 +4985,10 @@ msgid "Real Heroes"
 msgstr "De vrais héros"
 
 #: assets/data/changelog.json
+msgid "Rebinding a key already in use now says which action takes the other key, and the message stays inside the Options page"
+msgstr "Réassigner une touche déjà prise indique maintenant quelle action récupère l'autre, et le message reste à l'intérieur de la page Options"
+
+#: assets/data/changelog.json
 msgid "Recipes now demand skill: Smithing forges gear, Alchemy brews, and locked recipes show what level they ask"
 msgstr "Les recettes exigent désormais du savoir-faire : la Forge façonne l'équipement, l'Alchimie prépare les potions, et les recettes verrouillées indiquent le niveau requis"
 
@@ -5989,6 +5997,10 @@ msgid "The Letters"
 msgstr "Les lettres"
 
 #: assets/data/changelog.json
+msgid "The Letters tab no longer claims your satchel is empty while you carry the Chancellor's letter"
+msgstr "L'onglet Lettres ne prétend plus que votre sacoche est vide quand vous portez la lettre du chancelier"
+
+#: assets/data/changelog.json
 msgid "The Lookout"
 msgstr "Le Belvédère"
 
@@ -6967,6 +6979,10 @@ msgstr "Marchez en armure : les calques suivent le balancement de la marche, e
 #: assets/data/changelog.json
 msgid "Walk up to a closed road and it tells you what opens it; the journal, the arrow and the map then lead you there"
 msgstr "Approchez d'une route coupée et elle vous dit ce qui l'ouvrira ; le journal, la flèche et la carte vous y mènent ensuite"
+
+#: assets/data/changelog.json
+msgid "Walking into a wall with a shoulder over a door now eases you across to it, so a door no longer turns you away by a few pixels"
+msgstr "Marcher contre un mur avec une épaule devant une porte vous glisse désormais jusqu'à elle : une porte ne vous refuse plus pour quelques pixels"
 
 #: assets/data/changelog.json
 msgid "Wanted"
@@ -16893,6 +16909,10 @@ msgid "Nothing to deliver just now."
 msgstr "Rien à remettre pour l'instant."
 
 #: scripts/journal_screen.gd
+msgid "Only the Chancellor's letter so far, and it isn't yours to read."
+msgstr "Seulement la lettre du chancelier pour l'instant, et elle n'est pas pour vous."
+
+#: scripts/journal_screen.gd
 msgid "Post"
 msgstr "Courrier"
 
@@ -17061,6 +17081,10 @@ msgid "%s already does %s. Choose another key."
 msgstr "%s sert déjà à : %s. Choisissez une autre touche."
 
 #: scripts/options_screen.gd
+msgid "%s is now %s, and %s takes %s."
+msgstr "%s : désormais %s, %s prend %s."
+
+#: scripts/options_screen.gd
 msgid "%s is now %s."
 msgstr "%s : désormais %s."
 
@@ -17129,8 +17153,8 @@ msgid "Press a key..."
 msgstr "Appuyez sur une touche..."
 
 #: scripts/options_screen.gd
-msgid "Press the new key for %s (Esc keeps the old one)."
-msgstr "Appuyez sur la nouvelle touche pour %s (Esc garde l'ancienne)."
+msgid "Press the new key"
+msgstr "Appuyez sur la nouvelle touche"
 
 #: scripts/options_screen.gd
 msgid "Quest markers"
@@ -17163,6 +17187,10 @@ msgstr "Vidéo"
 #: scripts/options_screen.gd
 msgid "adjust"
 msgstr "régler"
+
+#: scripts/options_screen.gd
+msgid "keep the old one"
+msgstr "garder l'ancienne"
 
 #: scripts/options_screen.gd
 msgid "rebind / toggle"
