@@ -36,6 +36,9 @@ const DROP_RUN := 3.0
 ## height over the health bar.
 const MARK_CLEAR := 1.0
 const TAG_HEIGHT := 9.0
+const TAG_HALF_WIDTH := 10.0
+## Between the level tag and an ailment's icon, and from one to the next.
+const AILMENT_GAP := 1.0
 ## A bite is told once the hero is within Reach.bite_tell(), and lands if
 ## they're still within Reach.bite_lands() (PIX-410: combat.json's reach).
 const CONTACT_COOLDOWN := 0.9
@@ -129,6 +132,12 @@ var health_bar_back: ColorRect
 var level_tag: PanelContainer
 ## Poison, burn and stun from the hero's afflicting passives.
 var ailments := Ailments.new()
+## An icon for each of them beside the tag (PIX-440), built at the first:
+## a foe nothing ails has no nodes for it.
+var _ailment_row: Node2D
+var _ailing: Array[String] = []
+## Its boss or elite brain, if it has one: what it tells a stun can break.
+var brain: Node
 ## PunyArt.monster spec, and the way it last faced.
 var art: Dictionary
 var facing := "down"
@@ -238,6 +247,10 @@ var _over_head := BAR_Y
 var shot := {}
 var shot_left := 0.0
 var aim_left := -1.0
+## The bite's or the shot's tell as it shows (a stun breaks them, PIX-440):
+## the sprite's tween, and its band on the ground under clear warnings.
+var _tell_tween: Tween
+var _tell_mark: Node2D
 var _shadow: Sprite2D
 var _aura: PointLight2D
 static var _shadows := {}
@@ -294,9 +307,11 @@ func _ready() -> void:
 	var guards: Dictionary = Bestiary.stun_guard()
 	ailments.stun_guard = float(guards["boss"]) if Bestiary.is_boss(fighter["id"]) else (float(guards["elite"]) if fighter["elite"] or not named.is_empty() else 0.0)
 	if not Bestiary.boss_pattern(fighter["id"]).is_empty():
-		add_child(preload("res://scripts/boss_brain.gd").new())
+		brain = preload("res://scripts/boss_brain.gd").new()
+		add_child(brain)
 	elif not named.is_empty() or (fighter["elite"] and not Bestiary.elite_moves(Bestiary.family_of(fighter["id"])).is_empty()):
-		add_child(preload("res://scripts/elite_brain.gd").new())
+		brain = preload("res://scripts/elite_brain.gd").new()
+		add_child(brain)
 
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
@@ -371,6 +386,7 @@ func _physics_process(delta: float) -> void:
 	# and as the nearest kept the pack's living tags hidden).
 	if level_tag != null:
 		level_tag.visible = not dying and (hunting or health_bar.visible or Packs.within_notice(global_position, world.player.global_position))
+		_show_ailments()
 	if dying:
 		return
 	for tick in ailments.tick(delta):
@@ -449,6 +465,56 @@ func _physics_process(delta: float) -> void:
 		gait.walk(facing, (global_position - from).length(), delta)
 	elif gait.rest(delta) or not gait.walking:
 		_play("idle")
+
+
+## An icon for each thing ailing it, beside its level tag (PIX-440), gone
+## with the ailment or the foe. Nothing to do for a foe with none, and the
+## icons are made again only when the list changes, so a big pack pays only
+## for those ailing.
+func _show_ailments() -> void:
+	if ailments.effects.is_empty() and _ailing.is_empty():
+		return
+	var kinds := ailments.kinds()
+	# A fixed order: a refreshed ailment moves to the end of the list.
+	kinds.sort()
+	if dying:
+		kinds.clear()
+	if _ailment_row == null:
+		_ailment_row = Node2D.new()
+		# Over every actor, as the tag.
+		_ailment_row.z_as_relative = false
+		_ailment_row.z_index = 20
+		add_child(_ailment_row)
+	_ailment_row.position = _beside_tag()
+	if kinds == _ailing:
+		return
+	_ailing = kinds
+	for icon in _ailment_row.get_children():
+		icon.free()
+	var x := 0.0
+	for kind in kinds:
+		var art := ItemIcons.ailment(kind)
+		# Each is a few art pixels in the corner of a blank 16x16: cut to its
+		# ink, or the row would stand a full tile apart and off the tag's line.
+		var ink := Rect2i() if art == null else Ink.used(art)
+		var icon := Sprite2D.new()
+		icon.texture = art
+		icon.centered = false
+		icon.region_enabled = true
+		icon.region_rect = ink
+		icon.position = Vector2(x, -floorf(ink.size.y / 2.0))
+		# Reads in the dark, as the tag does.
+		icon.material = Lights.unshaded()
+		_ailment_row.add_child(icon)
+		x += ink.size.x + AILMENT_GAP
+
+
+## The middle of the level tag's right side, or where it would be while the
+## tag has never been laid out (hidden from the start in a pack's fight).
+func _beside_tag() -> Vector2:
+	if level_tag.size.x <= 0.0:
+		return Vector2(TAG_HALF_WIDTH + AILMENT_GAP, _over_head - TAG_HEIGHT / 2.0)
+	return level_tag.position + Vector2(level_tag.size.x * CameraRig.LABEL_SCALE + AILMENT_GAP, level_tag.size.y * CameraRig.LABEL_SCALE / 2.0)
 
 
 ## How many times its kind's size it is grown (PIX-314): as the story sizes
@@ -862,11 +928,11 @@ func _shoots(to_player: Vector2, delta: float) -> bool:
 	if shot_left <= 0.0:
 		aim_left = float(shot["tell"])
 		Sound.play("tell")
-		var glow := sprite.create_tween()
-		glow.tween_property(sprite, "modulate", Color(1.6, 1.1, 0.6), aim_left)
-		glow.tween_property(sprite, "modulate", Color.WHITE, 0.1)
+		_tell_tween = sprite.create_tween()
+		_tell_tween.tween_property(sprite, "modulate", Color(1.6, 1.1, 0.6), aim_left)
+		_tell_tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
 		if GameState.settings.clear_warnings:
-			Telegraph.mark(world, Telegraph.band(global_position, global_position + to_player, _flies(), Firebolt.REACH * 2.0), aim_left, Callable(), false)
+			_tell_mark = Telegraph.mark(world, Telegraph.band(global_position, global_position + to_player, _flies(), Firebolt.REACH * 2.0), aim_left, Callable(), false)
 	return true
 
 
@@ -903,6 +969,7 @@ func _tell_bite(toward: Vector2) -> void:
 	var at := sprite.position
 	var back := -toward.normalized() * LEAN_BACK
 	var tell := sprite.create_tween().set_parallel()
+	_tell_tween = tell
 	tell.tween_property(sprite, "modulate", Color(1.8, 0.75, 0.6), tell_left * 0.6)
 	tell.tween_property(sprite, "scale", rest * Vector2(1.12, 0.88), tell_left * 0.6)
 	tell.tween_property(sprite, "position", at + back, tell_left * 0.6).set_ease(Tween.EASE_OUT)
@@ -914,7 +981,7 @@ func _tell_bite(toward: Vector2) -> void:
 	tell.tween_property(sprite, "skew", 0.0, tell_left * 0.4)
 	Sound.play("tell")
 	if GameState.settings.clear_warnings:
-		Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, Reach.bite_lands(), 12.0), tell_left, Callable(), false)
+		_tell_mark = Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, Reach.bite_lands(), 12.0), tell_left, Callable(), false)
 
 
 ## Whether it takes a place in the ring round the hero (PIX-377,
@@ -1284,6 +1351,30 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	if not dying and ailments.inflict(infliction, GameState.roll):
 		Sound.play("foe_afflicted")
 		world.messages.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])])
+		if infliction["kind"] == "stun":
+			_interrupt()
+
+
+## A stun that took hold breaks what it was telling (PIX-440): its bite's or
+## shot's, and whatever its brain has marked or raised. The blow never comes
+## and it stands dazed for its turns, then chases again. The guard on stuns
+## (Ailments.stun_guard) keeps this to one a window on a boss or an elite.
+func _interrupt() -> void:
+	var broke := tell_left >= 0.0 or aim_left >= 0.0
+	tell_left = -1.0
+	aim_left = -1.0
+	Telegraph.cancel(_tell_mark)
+	if _tell_tween != null and _tell_tween.is_running():
+		_tell_tween.kill()
+		sprite.modulate = Color.WHITE
+		sprite.scale = _rest_scale
+		sprite.position = _rest_at
+		sprite.skew = 0.0
+	if brain != null and brain.interrupt():
+		broke = true
+	if broke:
+		# In "dodged" and "blocked"'s blue: gold is lost on sand and straw.
+		world.fx.float_text(Text.t("Interrupted!"), global_position + Vector2(0, minf(-26.0, _over_head)), Color(0.75, 0.9, 1.0), true)
 
 
 ## A blow from someone else's hand (PIX-253 step 9: Ulla's old guard on the

@@ -2157,6 +2157,10 @@ msgid "A real sun wheels over the world: dawn light, long dusk shadows, and true
 msgstr "Un vrai soleil tourne au-dessus du monde : lumière de l'aube, longues ombres du crépuscule, et une vraie nuit à laquelle répondent lampes, lueurs des portes et feux de l'âtre"
 
 #: assets/data/changelog.json
+msgid "A roll can now cut short the end of a swing or a cast, once the blow has landed"
+msgstr "Une roulade peut maintenant écourter la fin d'un coup ou d'un sort, une fois le coup porté"
+
+#: assets/data/changelog.json
 msgid "A save on a dungeon floor wakes you at the top of that floor instead of back at the entrance, and sleeping saves with your well-rested bonus kept"
 msgstr "Une sauvegarde à un étage de donjon vous réveille en haut de cet étage au lieu de l'entrée, et dormir sauvegarde en gardant votre bonus de repos"
 
@@ -2185,8 +2189,16 @@ msgid "A stun in the middle of a swing no longer freezes the hero: when it wears
 msgstr "Un étourdissement en plein coup ne fige plus le héros : une fois dissipé, vous pouvez de nouveau attaquer, esquiver, lancer vos sorts et marcher (playtest de Tom : entouré d'ennemis, le héros ne pouvait parfois plus rien faire)"
 
 #: assets/data/changelog.json
+msgid "A stun that lands while a foe is winding up now breaks its attack: the mark vanishes and “Interrupted!” rises, so a told attack can be stopped as well as dodged"
+msgstr "Un étourdissement qui touche un ennemi en train de préparer son attaque l'interrompt désormais : la marque disparaît et « Interrompu ! » s'affiche. Une attaque annoncée peut donc être arrêtée autant qu'esquivée"
+
+#: assets/data/changelog.json
 msgid "A summoned wolf's, slime's or skeleton's bite no longer shields you from the boss's own bite right after it: Old Greymaw, the Tidecaller and the Bone Abbot hit as hard as they should with their pack out, and the pack itself still bites one at a time"
 msgstr "La morsure d'un loup, d'une gelée ou d'un squelette invoqué ne vous protège plus de celle du boss qui suit : Vieille-Gueule-Grise, l'Appelle-Marée et l'Abbé des Os frappent aussi fort qu'ils le doivent avec leur meute, et la meute, elle, mord toujours un à la fois"
+
+#: assets/data/changelog.json
+msgid "A swing, roll or skill pressed while your hero is busy is now kept for a moment and fires as soon as they can act, instead of being lost"
+msgstr "Un coup, une roulade ou une compétence pressés pendant que votre héros est occupé sont désormais gardés un instant et partent dès qu'il peut agir, au lieu d'être perdus"
 
 #: assets/data/changelog.json
 msgid "A third dream under Sela's roof, the first night after Aske comes home"
@@ -3409,6 +3421,10 @@ msgid "Five new floors beneath the mountain, for those who beat the dragon"
 msgstr "Cinq nouveaux étages sous la montagne, pour ceux qui ont vaincu le dragon"
 
 #: assets/data/changelog.json
+msgid "Fixed a lock where swinging during a roll could leave your hero unable to move"
+msgstr "Corrige un blocage : frapper pendant une roulade pouvait empêcher votre héros de bouger"
+
+#: assets/data/changelog.json
 msgid "Fixed: a flaky load could leave the world pitch black until a reload - the renderer retries on its own"
 msgstr "Corrigé : un chargement capricieux pouvait laisser le monde plongé dans le noir jusqu'au rechargement - le rendu réessaie désormais tout seul"
 
@@ -3735,6 +3751,10 @@ msgstr "Des coups qui portent"
 #: assets/data/changelog.json
 msgid "Hoarfrost"
 msgstr "Givre blanc"
+
+#: assets/data/changelog.json
+msgid "Hold That Thought"
+msgstr "Minute, papillon"
 
 #: assets/data/changelog.json
 msgid "Hold the square against Fafnyr until dawn, with everyone you brought home: Teo's bell, Ulla's archers, Bram's cheese wheels, Loras's song, Iva's care and Sela's inn"
@@ -4857,6 +4877,10 @@ msgid "Points to spend live in a gold chip in the header of both menus"
 msgstr "Les points à dépenser s'affichent dans une pastille dorée en tête des deux menus"
 
 #: assets/data/changelog.json
+msgid "Poison, burns and stuns now show as small icons beside a foe's level"
+msgstr "Le poison, les brûlures et les étourdissements s'affichent désormais en petites icônes à côté du niveau de l'ennemi"
+
+#: assets/data/changelog.json
 msgid "Polish and Knobs"
 msgstr "Finitions et réglages"
 
@@ -4895,6 +4919,10 @@ msgstr "Des QUÊTES sur la côte : l'histoire des contrebandiers et l'Appelle-
 #: assets/data/changelog.json
 msgid "QUESTS! Five promises around the village: slimes for Sela, cheese for Bram (of course), wolves for Ana, a troll for the elder, herbs for Vex - talk to accept, deliver or slay, talk again to collect"
 msgstr "DES QUÊTES ! Cinq promesses dans le village : des gelées pour Sela, du fromage pour Bram (évidemment), des loups pour Ana, un troll pour l'Ancienne, des herbes pour Vex - parlez pour accepter, livrez ou tuez, puis reparlez pour être récompensé"
+
+#: assets/data/changelog.json
+msgid "Quick Hands"
+msgstr "Mains vives"
 
 #: assets/data/changelog.json
 msgid "Quick wins stack: a pack's kills rise as one float that counts up, not a pile of lines"
@@ -16411,6 +16439,10 @@ msgstr "%s hurle - la forêt répond !"
 #: scripts/enemy.gd
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
+
+#: scripts/enemy.gd
+msgid "Interrupted!"
+msgstr "Interrompu !"
 
 #: scripts/enemy.gd
 msgid "Lv %d"

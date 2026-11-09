@@ -26,6 +26,9 @@ const SKILL_COLORS := {
 }
 ## Frames of each attack where the weapon bites; wind-up and follow-through are safe.
 const STRIKE_FRAMES := {"sword": [1, 2], "staff": [1, 2], "bow": [2, 3]}
+## How long a roll, swing or skill pressed while the hero can't act yet stays
+## waiting for them (PIX-439); only the last press does.
+const PRESS_KEPT_SECONDS := 0.15
 
 var world: Node2D
 ## Mirrors GameState.hero.hp, the web hero's real health (PIX-126).
@@ -137,6 +140,8 @@ func _physics_process(delta: float) -> void:
 	_regen(delta)
 	if _held_by_stun():
 		return
+	# Before the blow's check, so a roll that cuts a swing has already ended it.
+	_fire_kept()
 	if dodging:
 		velocity = dodge_dir * float(Bestiary.dodge_rules()["speed"])
 		var rolled_from := global_position
@@ -210,18 +215,78 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("attack"):
 		get_viewport().set_input_as_handled()
-		if not ailments.is_stunned():
-			attack()
+		_press(_can_attack, attack)
 		return
 	if event.is_action_pressed("dodge"):
 		get_viewport().set_input_as_handled()
-		dodge()
+		_press(_can_dodge, dodge.bind(_heading()))
 		return
 	for index in Controls.SKILL_KEYS.size():
 		if event.is_action_pressed("skill_%d" % (index + 1)):
 			get_viewport().set_input_as_handled()
-			cast(index)
+			press_skill(index)
 			return
+
+
+## A skill's key or its slot on the dock pressed.
+func press_skill(index: int) -> void:
+	_press(_can_cast, cast.bind(index))
+
+
+## A press (PIX-439): done now if the hero can, else kept a moment in place
+## of any press before it, so a roll pressed mid-swing isn't lost.
+func _press(can: Callable, act: Callable) -> void:
+	_kept_can = can
+	_kept_act = act
+	_kept_until = GameClock.seconds() + PRESS_KEPT_SECONDS
+	_fire_kept()
+
+
+## The kept press, the moment the hero can act on it.
+func _fire_kept() -> void:
+	if GameClock.seconds() <= _kept_until and _kept_can.call():
+		_kept_until = -1.0
+		_kept_act.call()
+
+
+## A screen opening holds the world still: the press kept goes, or it would
+## fire behind the screen as it closes.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PAUSED:
+		_kept_until = -1.0
+
+
+## Neither down, stunned nor mid-roll: a blow must never land after a roll
+## has started, and a swing begun in one never ended (the roll's walk holds
+## the sprite, so its animation never finished).
+func _can_act() -> bool:
+	return not dead and not dodging and not ailments.is_stunned()
+
+
+func _can_attack() -> bool:
+	return _can_act() and attack_ready and not attacking
+
+
+func _can_cast() -> bool:
+	return _can_act() and skill_ready and not attacking
+
+
+func _can_dodge() -> bool:
+	return _can_act() and dodge_ready and (not attacking or _past_strike())
+
+
+## The swing or cast has done what it came to do: only its follow-through is
+## left (a bow's or staff's strike runs to its last frame, so it has none).
+func _past_strike() -> bool:
+	return sprite.frame > int(STRIKE_FRAMES.get(art["attack"], [1, 2])[1])
+
+
+## The way the keys (or the harness) head right now.
+func _heading() -> Vector2:
+	if scripted_dir != Vector2.ZERO:
+		return scripted_dir
+	return Input.get_vector("move_left", "move_right", "move_up", "move_down")
+
 
 ## Turned to face `direction` (a word with someone, an arrival, a stage):
 ## drawn that way at once, not on a diagonal a walk left (PIX-293).
@@ -239,7 +304,7 @@ func _face(direction: Vector2) -> void:
 		facing = Vector2.DOWN if direction.y >= 0 else Vector2.UP
 
 func attack() -> void:
-	if not attack_ready or attacking or dead:
+	if not _can_attack():
 		return
 	attack_ready = false
 	attacking = true
@@ -257,14 +322,17 @@ func attack() -> void:
 	)
 
 ## A quick roll the way the hero is heading (or facing): a burst of speed and
-## a moment nothing can touch them (PIX-155), then a cooldown.
-func dodge() -> void:
-	if not dodge_ready or dodging or attacking or dead or ailments.is_stunned():
+## a moment nothing can touch them (PIX-155), then a cooldown. Kept a moment
+## (PIX-439), it still goes the way it was pressed if the key is up by then.
+func dodge(pressed_heading := Vector2.ZERO) -> void:
+	if not _can_dodge():
 		return
+	if attacking:
+		_cut_swing()
 	var rules: Dictionary = Bestiary.dodge_rules()
-	var heading := Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	if scripted_dir != Vector2.ZERO:
-		heading = scripted_dir
+	var heading := _heading()
+	if heading == Vector2.ZERO:
+		heading = pressed_heading
 	dodge_dir = heading.normalized() if heading != Vector2.ZERO else facing
 	_face(dodge_dir)
 	dodging = true
@@ -373,7 +441,7 @@ static func _glow() -> Texture2D:
 ## afar), through the web's formulas; ailments and cleansing as the skill
 ## says.
 func cast(index: int) -> void:
-	if dead or attacking or not skill_ready or ailments.is_stunned():
+	if not _can_cast():
 		return
 	# The skill on that key of the dock (PIX-190), not the Nth one known.
 	var skills := Skills.docked(GameState.hero)
@@ -544,6 +612,7 @@ func respawn(at: Vector2) -> void:
 func _die() -> void:
 	dead = true
 	_shadow.visible = false
+	_kept_until = -1.0
 	Sound.play("defeat")
 	Sound.play("hero_death")
 	_end_swing()
@@ -556,6 +625,7 @@ func _die() -> void:
 func _held_by_stun() -> bool:
 	if not ailments.is_stunned():
 		return false
+	_kept_until = -1.0
 	_end_swing()
 	velocity = Vector2.ZERO
 	_play("idle")
@@ -566,6 +636,15 @@ func _end_swing() -> void:
 	attacking = false
 	casting = false
 	striking = false
+
+## A roll taking over from a swing or cast (PIX-439): nothing of it stays on
+## the hero, not its squash either.
+func _cut_swing() -> void:
+	_end_swing()
+	hit_this_swing = []
+	if _spring != null:
+		_spring.kill()
+	squash = Vector2.ONE
 
 func _on_animation_finished() -> void:
 	if attacking:
@@ -645,6 +724,13 @@ func _shape() -> void:
 		return
 	sprite.scale = squash
 	sprite.position.y = PunyArt.lift(art) + Juice.FEET * (1.0 - squash.y)
+
+
+## The press waiting for the hero (PIX-439): whether it can happen yet, what
+## it does, and until when it waits (-1: none waits).
+var _kept_can := Callable()
+var _kept_act := Callable()
+var _kept_until := -1.0
 
 
 ## The way the hero faces, by name.
