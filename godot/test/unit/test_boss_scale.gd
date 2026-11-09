@@ -37,7 +37,7 @@ func _bosses() -> Array[Dictionary]:
 ## The pixels the frame `foe` rests on draws, from its feet, in world pixels.
 static func _drawn(foe: Node) -> Rect2:
 	var frame: Texture2D = foe.sprite.sprite_frames.get_frame_texture(foe.sprite.animation, 0)
-	var ink: Rect2i = Enemy._ink(frame)
+	var ink: Rect2i = Ink.used(frame)
 	var size: float = foe.sprite.scale.x
 	var corner: Vector2 = foe.sprite.position - frame.get_size() * size / 2.0
 	return Rect2(corner + Vector2(ink.position) * size, Vector2(ink.size) * size)
@@ -237,10 +237,12 @@ func test_only_the_floor_answers_to_a_bosses_glow() -> void:
 			assert_eq((node as CanvasItem).light_mask & Lights.FLOOR, 0, "%s: %s stands untinted" % [map_id, node.name])
 
 
-func test_a_common_foe_has_no_shadow_or_glow() -> void:
+func test_a_common_foe_has_a_shadow_but_no_glow() -> void:
 	var foe := _foe(Bestiary.spawn("orc", true))
-	assert_null(foe._shadow, "an elite's weight is its gold")
-	assert_null(foe._aura)
+	assert_not_null(foe._shadow, "on the ground like everyone (PIX-441)")
+	assert_true(foe._shadow.get_index() < foe.sprite.get_index(), "drawn under it")
+	assert_eq(foe.find_children("*", "Sprite2D", false, false).filter(func(node: Node) -> bool: return (node as Sprite2D).texture == foe._shadow.texture).size(), 1, "one shadow, no double")
+	assert_null(foe._aura, "an elite's weight is its gold")
 
 
 func test_a_bosses_glow_is_its_own_colour() -> void:

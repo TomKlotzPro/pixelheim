@@ -54,6 +54,7 @@ func _ready() -> void:
 	sprite.play(PunyArt.pick(sprite.sprite_frames, "idle", "down"))
 	# Offset the idle phase per villager so the square doesn't breathe in unison.
 	sprite.frame = Npcs.id_hash(data["id"]) % 2
+	add_child(preload("res://scripts/enemy.gd").ground_shadow(sprite, size, sprite.position.y))
 	# Morvax's bench by the fountain (PIX-253 step 10): Shade's Medieval Age
 	# bench behind him and on to the next cell east, when the pack is here.
 	if data.get("bench", false) and PunyTown.available():

@@ -229,8 +229,8 @@ var _grid_map: MapData
 ## answer holds (a boss watching a hero it can't reach asks twice a second).
 var _reaches := false
 var _reach_until := -100.0
-## Where its bar stands, from its feet (over_head, PIX-314); a boss's
-## shadow and glow (_weigh).
+## Where its bar stands, from its feet (over_head, PIX-314); its shadow
+## on the ground (ground_shadow, PIX-441) and a boss's glow (_weigh).
 var _over_head := BAR_Y
 ## Its shot (Reach.shot, PIX-410), {} for a foe that only bites; seconds
 ## till it may loose the next, and till the one it is telling flies
@@ -279,6 +279,8 @@ func _ready() -> void:
 	sprite.material = Juice.fighter_material()
 	gait = Gait.new(sprite, art, size)
 	_play("idle")
+	_shadow = ground_shadow(sprite, size, _rest_at.y)
+	add_child(_shadow)
 	if boss_like:
 		_weigh(size)
 	add_child(sprite)
@@ -498,28 +500,14 @@ static func aura_color(fighter: Dictionary) -> Color:
 	return Color(tint.r / top, tint.g / top, tint.b / top).lerp(Color.WHITE, AURA_WHITE)
 
 
-## A boss's weight besides its size (PIX-314): its shadow on the ground
-## under its feet, on its own pixels, before its sprite so it lies under it;
-## and a glow of its own colour on the floor round its feet that breathes in
-## the dark, a light on the floor alone (Lights.FLOOR): drawn with the
-## ground, under every actor and pickup, so a hero standing in it looks as
-## without it.
+## A boss's weight besides its size (PIX-314): a glow of its own colour on
+## the floor round its feet that breathes in the dark, a light on the floor
+## alone (Lights.FLOOR): drawn with the ground, under every actor and
+## pickup, so a hero standing in it looks as without it.
 func _weigh(size: int) -> void:
-	var frame := sprite.sprite_frames.get_frame_texture(sprite.animation, 0)
-	var ink := _ink(frame)
-	var half := Vector2i(frame.get_size()) / 2
-	var wide := ink.size.x + ink.size.x % 2
-	_shadow = Sprite2D.new()
-	_shadow.texture = shadow_texture(wide)
-	_shadow.scale = Vector2.ONE * size
-	# Under the middle of its body, reaching a pixel past its feet: whole
-	# art pixels from the frame's corner, on the foe's own grid.
-	var tall := _shadow.texture.get_height()
-	_shadow.position = Vector2(ink.position.x + ink.size.x / 2 - half.x, ink.end.y + 1 - tall / 2 - half.y) * size + Vector2(0, _rest_at.y)
-	add_child(_shadow)
 	# Round its feet, a little past its body either side, on whole pixels.
 	_aura = Lights.make(_shadow.position, 0.0, aura_color(fighter), AURA_ENERGY)
-	_aura.texture = aura_texture(wide * size / 2 + AURA_PAST)
+	_aura.texture = aura_texture(_shadow.texture.get_width() * size / 2 + AURA_PAST)
 	_aura.texture_scale = 1.0
 	_aura.range_item_cull_mask = Lights.FLOOR
 	_aura.set_meta("pulse", true)
@@ -546,7 +534,7 @@ static func aura_texture(reach: int) -> Texture2D:
 	return _auras[reach]
 
 
-## A boss's shadow `wide` art pixels across: an oval a quarter as tall (two
+## A contact shadow `wide` art pixels across: an oval a quarter as tall (two
 ## pixels at least, even), dark and see-through, its edge on whole pixels.
 static func shadow_texture(wide: int) -> Texture2D:
 	if _shadows.has(wide):
@@ -563,12 +551,25 @@ static func shadow_texture(wide: int) -> Texture2D:
 	return _shadows[wide]
 
 
-## The pixels a frame draws, in the frame.
-static func _ink(frame: Texture2D) -> Rect2i:
-	if frame is AtlasTexture:
-		var cut := frame as AtlasTexture
-		return cut.atlas.get_image().get_region(Rect2i(cut.region)).get_used_rect()
-	return frame.get_image().get_used_rect()
+## A figure's shadow on the ground (PIX-314; PIX-441: the hero, villagers and
+## every foe), measured on the frame it stands in facing the player, whatever
+## it is playing, on its own pixels: under the middle of its body, reaching a
+## pixel past its feet, whole art pixels from the frame's corner. A child of
+## the figure beside its sprite, so the squash and the walk leave it planted:
+## add it before the sprite. Never raised with its figure: a villager drawn
+## over the hero (Npc.stands_over) would lay it across the hero's head.
+static func ground_shadow(sprite: AnimatedSprite2D, size: float, rest_y: float) -> Sprite2D:
+	var frames := sprite.sprite_frames
+	var frame := frames.get_frame_texture(PunyArt.pick(frames, "idle", "down"), 0)
+	var ink := Ink.used(frame)
+	var half := Vector2i(frame.get_size()) / 2
+	var shadow := Sprite2D.new()
+	shadow.texture = shadow_texture(ink.size.x + ink.size.x % 2)
+	shadow.scale = Vector2.ONE * size
+	shadow.z_as_relative = false
+	var tall := shadow.texture.get_height()
+	shadow.position = Vector2(ink.position.x + ink.size.x / 2 - half.x, ink.end.y + 1 - tall / 2 - half.y) * size + Vector2(0, rest_y)
+	return shadow
 
 
 ## The hero is seen: the danger mark over the head and a hop, then the
@@ -1351,6 +1352,9 @@ func lie_down() -> void:
 	health_bar.visible = false
 	health_bar_back.visible = false
 	gait.halt()
+	# A common foe's shadow goes as it falls; a boss's with its body (_dissolve).
+	if not boss_like:
+		_shadow.visible = false
 	var death := "death_" + facing
 	if not sprite.sprite_frames.has_animation(death):
 		death = "death"
@@ -1369,8 +1373,7 @@ func _dissolve() -> void:
 	if world.get("atmosphere") != null:
 		world.atmosphere.remains(global_position + Vector2(0, -8), color)
 	# A boss's shadow and glow go with it (PIX-314).
-	if _shadow != null:
-		_shadow.create_tween().tween_property(_shadow, "modulate:a", 0.0, Juice.DISSOLVE_SECONDS)
+	_shadow.create_tween().tween_property(_shadow, "modulate:a", 0.0, Juice.DISSOLVE_SECONDS)
 	if _aura != null:
 		var light := _aura
 		light.create_tween().tween_method(func(energy: float) -> void: light.set_meta("energy", energy), AURA_ENERGY, 0.0, Juice.DISSOLVE_SECONDS)

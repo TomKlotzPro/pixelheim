@@ -65,6 +65,8 @@ var squash := Vector2.ONE:
 var _spring: Tween
 ## The walk (PIX-243): its frames step with the ground the hero covers.
 var gait: Gait
+## On the ground under their feet (PIX-441): stays there through the squash.
+var _shadow: Sprite2D
 
 func _ready() -> void:
 	# Top-down: no floor, no walls by angle, just slide along what blocks.
@@ -82,6 +84,7 @@ func _ready() -> void:
 	add_child(sprite)
 	gait = Gait.new(sprite, art)
 	_play("idle")
+	_lay_shadow()
 	GameState.inventory_changed.connect(dress)
 
 	var shape := CollisionShape2D.new()
@@ -113,6 +116,17 @@ func dress() -> void:
 	sprite.sprite_frames = PunyArt.frames(art)
 	sprite.play(playing if sprite.sprite_frames.has_animation(playing) else PunyArt.pick(sprite.sprite_frames, "idle", "down"))
 	sprite.frame = at
+	_lay_shadow()
+
+
+## The shadow for the sheet worn now, under the sprite.
+func _lay_shadow() -> void:
+	if _shadow != null:
+		_shadow.free()
+	_shadow = preload("res://scripts/enemy.gd").ground_shadow(sprite, 1.0, PunyArt.lift(art))
+	_shadow.visible = not dead
+	add_child(_shadow)
+	move_child(_shadow, sprite.get_index())
 
 func _physics_process(delta: float) -> void:
 	if dead:
@@ -521,6 +535,7 @@ func respawn(at: Vector2) -> void:
 	reset_physics_interpolation()
 	hp = GameState.hero.hp
 	dead = false
+	_shadow.visible = true
 	sprite.modulate = Color.WHITE
 	_end_swing()
 	face(Vector2.DOWN)
@@ -528,6 +543,7 @@ func respawn(at: Vector2) -> void:
 
 func _die() -> void:
 	dead = true
+	_shadow.visible = false
 	Sound.play("defeat")
 	Sound.play("hero_death")
 	_end_swing()
