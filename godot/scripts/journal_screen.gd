@@ -498,7 +498,10 @@ func _letters() -> void:
 	scroll.add_child(list)
 	var satchel := Letters.satchel(GameState.progression)
 	if satchel.is_empty():
-		list.add_child(Layout.wrapped(UiStyle.label("Nothing in your satchel yet but the dust of the road.", 16, UiStyle.FADED), TEXT_WIDTH))
+		# The Chancellor's letter rides in the pack till Maren has it (PIX-434):
+		# "nothing" was untrue with it listed there.
+		var empty := Text.t("Only the Chancellor's letter so far, and it isn't yours to read.") if GameState.pack.items.has("chancellors_letter") else Text.t("Nothing in your satchel yet but the dust of the road.")
+		list.add_child(Layout.wrapped(UiStyle.label(empty, 16, UiStyle.FADED), TEXT_WIDTH))
 	else:
 		var delivered := satchel.filter(func(carried: Dictionary) -> bool: return carried["delivered"]).size()
 		list.add_child(UiStyle.strong(Text.t("Maren's letters - %d of %d delivered") % [delivered, satchel.size()], 18, UiStyle.LAMP))

@@ -38,6 +38,10 @@ lamps-day | --map town --at 40,13 | lamplight=posts 0/[1-9]\d* panes 0 flames 0 
 lamps-night | --map town --at 40,13 night | lamplight=posts ([1-9]\d*)/\1 panes \d+ flames 0 beams 0 | town night
 # Through the nearest door into one of its rooms (PIX-129).
 portal | --map town portal | map=town_.* | town travel
+# A shoulder over a door (PIX-434): two steps along the wall stop the hero
+# 6 px off the Inn's door, the wall catching a shoulder; Up eases across
+# to it and goes in.
+door-shoulder | --map town --at 52,11 --walk l,l,u,u,u --wait 0.4 | map=town_inn | town travel rooms
 # The streets by the town's age (PIX-307): Upper Street trodden and rutted
 # in the Ashes and the Hamlet, in gravel in the Village, cobbled in the
 # Town; the City's square in sandstone, brick round its fountain.

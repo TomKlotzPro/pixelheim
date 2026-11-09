@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.331.0",
+      "date": "2026-11-09",
+      "codename": "Door Ajar",
+      "notes": [
+        "Walking into a wall with a shoulder over a door now eases you across to it, so a door no longer turns you away by a few pixels",
+        "The Letters tab no longer claims your satchel is empty while you carry the Chancellor's letter",
+        "Rebinding a key already in use now says which action takes the other key, and the message stays inside the Options page"
+      ]
+    },
+    {
       "version": "0.330.0",
       "date": "2026-11-07",
       "codename": "Through the Leaves",

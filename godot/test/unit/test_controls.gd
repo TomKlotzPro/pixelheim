@@ -26,6 +26,12 @@ func test_a_taken_key_swaps_rather_than_doubles() -> void:
 	assert_eq(again.size(), 3, "a free key moves nobody else")
 
 
+func test_a_swap_names_the_action_it_takes_the_key_from() -> void:
+	assert_eq(Controls.taken_from({}, "move_left", KEY_D), "move_right", "D moves the other way")
+	assert_eq(Controls.taken_from({}, "move_left", KEY_L), "", "a free key moves nobody")
+	assert_eq(Controls.taken_from({}, "move_left", KEY_A), "", "its own key is no swap")
+
+
 func test_the_input_map_holds_primaries_alternates_and_the_pad() -> void:
 	Controls.apply({"move_up": KEY_Z})
 	var keys := InputMap.action_get_events("move_up").filter(func(e: InputEvent) -> bool: return e is InputEventKey).map(
