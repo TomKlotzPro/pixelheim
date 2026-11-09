@@ -2357,6 +2357,10 @@ msgid "Aske waits by Liane's door at the observatory; deliver Maren's letter and
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "At a Glance"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "At dawn Morvax comes down the mountain road, the collar comes off, and the dragon leaves a scale in the fountain and flies home, free"
 msgstr ""
 
@@ -3030,6 +3034,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Each region's road now waits for its chapter: a rockfall on the cliff road to Saltmere, the burnt river bridge north of town, Ulla's barricade before Greyhold and an avalanche on the Frostgate road"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Each skill on the skill bar now shows its cost, in red when you can't pay it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5306,6 +5314,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Sixteen new pieces across the tiers: shops stock the basics, the best drop deep or come off the bench (Scaled Greaves, Wolfstooth Collar)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Skill cards now wear their icons, and the Stats screen opens on the stat your weapon uses"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -18213,10 +18225,6 @@ msgid "forget"
 msgstr ""
 
 #: scripts/skills_screen.gd
-msgid "key %d"
-msgstr ""
-
-#: scripts/skills_screen.gd
 msgid "learn / walk"
 msgstr ""
 
@@ -18225,7 +18233,7 @@ msgid "locked"
 msgstr ""
 
 #: scripts/skills_screen.gd
-msgid "put on a key"
+msgid "set key"
 msgstr ""
 
 #: scripts/sound.gd

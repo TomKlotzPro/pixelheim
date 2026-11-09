@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.341.0",
+      "date": "2026-11-09",
+      "codename": "At a Glance",
+      "notes": [
+        "Each skill on the skill bar now shows its cost, in red when you can't pay it",
+        "Skill cards now wear their icons, and the Stats screen opens on the stat your weapon uses"
+      ]
+    },
+    {
       "version": "0.340.0",
       "date": "2026-11-09",
       "codename": "Word Gets Round",

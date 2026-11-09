@@ -1000,6 +1000,10 @@ fit-journal-post | --map town --post read journal --tab post overflow --lang fr 
 fit-journal-book | --map town --post book journal --tab book overflow --lang fr | open=journal_screen overflow=0 stamps=town,saltmere,overworld | screen lang quest
 fit-skills | --map town --keys k overflow --lang fr | open=skills_screen overflow=0 | screen lang rank
 fit-stats | --map town --keys c overflow --lang fr | open=stats_screen overflow=0 | screen lang
+# The sheet with its icons, opened on the weapon's stat, and the tree's icons (PIX-442).
+fit-stats-mage | --map town stats --role mage --level 20 overflow --lang fr | open=stats_screen overflow=0 | screen lang
+fit-stats-pseudo | --map town stats --role mage --level 20 overflow --pseudo | open=stats_screen overflow=0 | screen lang
+fit-skills-pseudo | --map town skills --level 20 overflow --pseudo | open=skills_screen overflow=0 | screen lang rank
 fit-codex | --map town --keys b overflow --lang fr | open=codex_screen overflow=0 | screen lang
 fit-shop | --map town_shop shop overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
 # The City's showpieces at their counters in French, the last row of

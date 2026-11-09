@@ -2357,6 +2357,10 @@ msgid "Aske waits by Liane's door at the observatory; deliver Maren's letter and
 msgstr "Aske attend près de la porte de Liane, à l'observatoire ; remettez-lui la lettre de Maren et il l'ouvre, et les calculs de Liane vous attendent sur son bureau"
 
 #: assets/data/changelog.json
+msgid "At a Glance"
+msgstr "En un coup d'œil"
+
+#: assets/data/changelog.json
 msgid "At dawn Morvax comes down the mountain road, the collar comes off, and the dragon leaves a scale in the fountain and flies home, free"
 msgstr "À l'aube, Morvax descend la route de la montagne, le collier tombe, et le dragon laisse une écaille dans la fontaine avant de rentrer chez lui, libre"
 
@@ -3031,6 +3035,10 @@ msgstr "Le dernier étage de chaque région cache un coffre au trésor avec sa m
 #: assets/data/changelog.json
 msgid "Each region's road now waits for its chapter: a rockfall on the cliff road to Saltmere, the burnt river bridge north of town, Ulla's barricade before Greyhold and an avalanche on the Frostgate road"
 msgstr "La route de chaque région attend désormais son chapitre : un éboulement sur la route des falaises vers Saltmere, le pont brûlé sur la rivière au nord du village, la barricade d'Ulla devant Greyhold et une avalanche sur la route de la Porte-Givre"
+
+#: assets/data/changelog.json
+msgid "Each skill on the skill bar now shows its cost, in red when you can't pay it"
+msgstr "Chaque compétence de la barre affiche désormais son coût, en rouge si vous ne pouvez pas le payer"
 
 #: assets/data/changelog.json
 msgid "Each village has its own look: Saltmere's whitewashed cottages with boats, nets, a fish stall and washing on the line, Greyhold's stone and vegetable beds, Blackiron's plank huts with ore heaps and lanterns"
@@ -5307,6 +5315,10 @@ msgstr "Six recettes, de l'humble potion de soin à l'élixir complet"
 #: assets/data/changelog.json
 msgid "Sixteen new pieces across the tiers: shops stock the basics, the best drop deep or come off the bench (Scaled Greaves, Wolfstooth Collar)"
 msgstr "Seize nouvelles pièces à tous les paliers : les boutiques vendent l'essentiel, les meilleures tombent en profondeur ou sortent de l'établi (Grèves d'écailles, Collier de crocs de loup)"
+
+#: assets/data/changelog.json
+msgid "Skill cards now wear their icons, and the Stats screen opens on the stat your weapon uses"
+msgstr "Les cartes de compétences portent désormais leur icône, et l'écran des statistiques s'ouvre sur celle qu'utilise votre arme"
 
 #: assets/data/changelog.json
 msgid "Skill points stop lighting the menu once there's nothing left to learn"
@@ -18213,10 +18225,6 @@ msgid "forget"
 msgstr "oublier"
 
 #: scripts/skills_screen.gd
-msgid "key %d"
-msgstr "touche %d"
-
-#: scripts/skills_screen.gd
 msgid "learn / walk"
 msgstr "apprendre / suivre"
 
@@ -18225,8 +18233,8 @@ msgid "locked"
 msgstr "bloqué"
 
 #: scripts/skills_screen.gd
-msgid "put on a key"
-msgstr "mettre sur une touche"
+msgid "set key"
+msgstr "assigner"
 
 #: scripts/sound.gd
 msgid "Ambience"

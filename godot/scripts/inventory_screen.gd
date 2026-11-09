@@ -537,8 +537,7 @@ func _build_doll() -> void:
 			y += 62.0
 	var pack := GameState.pack
 	var weapon := HeroRules.weapon(pack)
-	var scaling: String = Catalog.item(weapon["itemId"]).get("scaling", "strength") if not weapon.is_empty() else "strength"
-	var attack := HeroRules.effective_stat(hero, pack, scaling) + (HeroRules.gear_damage(weapon) if not weapon.is_empty() else 2)
+	var attack := HeroRules.effective_stat(hero, pack, HeroRules.weapon_stat(pack)) + (HeroRules.gear_damage(weapon) if not weapon.is_empty() else 2)
 	var lines: Array[String] = [Text.t("ATK %d") % attack, Text.t("DEF %d") % HeroRules.total_defense(hero, pack)]
 	for stat: String in ["strength", "intelligence", "dexterity"]:
 		var granted := pack.granted_stat(stat)
