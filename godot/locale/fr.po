@@ -9805,12 +9805,24 @@ msgid "A city under the Ashen Mountain. My mother would not believe the streetli
 msgstr "Une cité au pied de la Montagne des Cendres. Ma mère n'en croirait pas ses yeux, avec ces réverbères."
 
 #: assets/data/npcs.json
+msgid "A dragon flew over with somebody's letter in his teeth. The gulls have never been so polite."
+msgstr "Un dragon est passé avec la lettre de quelqu'un entre les dents. Les mouettes n'ont jamais été aussi polies."
+
+#: assets/data/npcs.json
+msgid "A dragon on her chimney and Hilda's smiled twice this year. Twice! I've sent ore to celebrate."
+msgstr "Un dragon sur sa cheminée, et Hilda a souri deux fois cette année. Deux fois ! J'ai envoyé du minerai pour fêter ça."
+
+#: assets/data/npcs.json
 msgid "A fountain by the square and clean water at last. Half my work was the water."
 msgstr "Une fontaine près de la place et enfin de l'eau propre. La moitié de mon travail, c'était l'eau."
 
 #: assets/data/npcs.json
 msgid "A fountain! I hauled water forty years and now it leaps out of the ground on its own."
 msgstr "Une fontaine ! J'ai porté de l'eau pendant quarante ans, et voilà qu'elle jaillit du sol toute seule."
+
+#: assets/data/npcs.json
+msgid "A lodge with a fire in it, on the Frostgate! The horses chose well, and I'll hear no more about it."
+msgstr "Un refuge avec un feu dedans, sur la Porte-Givre ! Les chevaux ont bien choisi, et je ne veux plus en entendre parler."
 
 #: assets/data/npcs.json
 msgid "A patron! Pixelheim gains its first verse tonight."
@@ -9865,6 +9877,10 @@ msgid "Aske keeps your lantern and the Reach's ember lamps trimmed: they light t
 msgstr "Aske entretient la mèche de votre lanterne et des lampes de braise de la Marche : elles percent l'obscurité un tiers plus loin"
 
 #: assets/data/npcs.json
+msgid "Aske opened Liane's door for your letter. Fifty years shut, and he's complaining about the draught."
+msgstr "Aske a ouvert la porte de Liane pour votre lettre. Cinquante ans fermée, et il se plaint du courant d'air."
+
+#: assets/data/npcs.json
 msgid "Aske the Hermit"
 msgstr "Aske l'ermite"
 
@@ -9883,6 +9899,10 @@ msgstr "Le fer de Fernoir est le meilleur de la Marche, et c'est le pire endroit
 #: assets/data/npcs.json
 msgid "Bram"
 msgstr "Bram"
+
+#: assets/data/npcs.json
+msgid "Brann's shop is a table. I've told him. He's put a price on the table."
+msgstr "La boutique de Brann, c'est une table. Je le lui ai dit. Il a mis un prix sur la table."
 
 #: assets/data/npcs.json
 msgid "Brother Teo"
@@ -10049,12 +10069,20 @@ msgid "I sell what keeps soldiers alive."
 msgstr "Je vends ce qui garde les soldats en vie."
 
 #: assets/data/npcs.json
+msgid "I still sell what keeps soldiers alive. Now there's a queue for it."
+msgstr "Je vends toujours ce qui garde les soldats en vie. Maintenant, on fait la queue."
+
+#: assets/data/npcs.json
 msgid "I wore the red cloak, once. Then they threw me in the cells for asking where the pay went."
 msgstr "J'ai porté la cape rouge, autrefois. Puis on m'a jeté au cachot pour avoir demandé où passait la solde."
 
 #: assets/data/npcs.json
 msgid "I'm Sela. I kept the inn, when there was an inn. Now I keep a tent and more hurt than I have cloth for."
 msgstr "Je suis Sela. Je tenais l'auberge, quand il y avait une auberge. Maintenant je tiens une tente, et j'ai plus de blessés que de linge."
+
+#: assets/data/npcs.json
+msgid "I'm in charge of the awning now. Water and awning. It's practically a rank."
+msgstr "Je suis responsable de l'auvent, maintenant. L'eau et l'auvent. C'est presque un grade."
 
 #: assets/data/npcs.json
 msgid "I'm the caravan's herbalist. Up here that mostly means rubbing snow on frostbite."
@@ -10077,6 +10105,10 @@ msgid "It was the stew or the poultice. Probably the stew."
 msgstr "C'était le ragoût ou le cataplasme. Sans doute le ragoût."
 
 #: assets/data/npcs.json
+msgid "It's only a tower until it's lit. I say so every morning, in case it's listening."
+msgstr "Ce n'est qu'une tour tant qu'il n'est pas allumé. Je le répète tous les matins, au cas où il écouterait."
+
+#: assets/data/npcs.json
 msgid "Iva heals you whole, free, whenever you're in town"
 msgstr "Iva vous soigne entièrement, gratuitement, chaque fois que vous êtes en ville"
 
@@ -10091,6 +10123,10 @@ msgstr "Iva la guérisseuse"
 #: assets/data/npcs.json
 msgid "Keep that cap on. Embers like the top of a head best."
 msgstr "Gardez ce casque. Les braises adorent le sommet des crânes."
+
+#: assets/data/npcs.json
+msgid "Lamp oil by the barrel, now, for the lighthouse. Still mostly fish."
+msgstr "De l'huile à lampe au tonneau, maintenant, pour le phare. Et toujours surtout du poisson."
 
 #: assets/data/npcs.json
 msgid "Lamps all the way to the mountain gate. I ride the night shift for fun now."
@@ -10179,6 +10215,10 @@ msgstr "Mon frère Tam est monté sur cette montagne il y a cinquante ans, une l
 #: assets/data/npcs.json
 msgid "My canary's down there. She tells us when the air goes bad. Without her we're digging blind."
 msgstr "Mon canari est là-dessous. Il nous prévient quand l'air devient mauvais. Sans lui, on creuse à l'aveugle."
+
+#: assets/data/npcs.json
+msgid "My frost lilies, in the road's lamp, and the ash heals twice as fast. Vex says it was her idea."
+msgstr "Mes lys de givre dans la lanterne de la route, et la cendre guérit deux fois plus vite. Vex dit que c'était son idée."
 
 #: assets/data/npcs.json
 msgid "My grandson has a trade AND a house. A house!"
@@ -10285,6 +10325,10 @@ msgid "Rebuild us, bring the relics home, and then we talk about the mountain. I
 msgstr "Rebâtissez-nous, ramenez les reliques, et ensuite nous parlerons de la montagne. Dans cet ordre, messager."
 
 #: assets/data/npcs.json
+msgid "Rimefang's gone and the down wagon's still stuck. I'd really hoped that was Rimefang."
+msgstr "Crocgivre n'est plus là et le chariot qui descend est toujours coincé. J'espérais vraiment que c'était lui."
+
+#: assets/data/npcs.json
 msgid "Roll up, roll up! Three rings, three pegs - land two and the prize is yours!"
 msgstr "Approchez, approchez ! Trois anneaux, trois piquets - accrochez-en deux et le lot est à vous !"
 
@@ -10333,6 +10377,14 @@ msgid "She built the observatory over the old ice cave. Said the cold kept her g
 msgstr "Elle a bâti l'observatoire au-dessus de la vieille grotte de glace. Elle disait que le froid gardait ses lentilles justes."
 
 #: assets/data/npcs.json
+msgid "She's lit. Every boat in the bay came home last night, and two that aren't ours. We kept those."
+msgstr "Il brille. Tous les bateaux de la baie sont rentrés cette nuit, et deux qui ne sont pas à nous. On les garde."
+
+#: assets/data/npcs.json
+msgid "Since your letter Old Pell tells the one about the flat cage to anyone with ears. It gets flatter."
+msgstr "Depuis votre lettre, le vieux Pell raconte la cage aplatie à qui a des oreilles. Elle s'aplatit encore."
+
+#: assets/data/npcs.json
 msgid "Sing for a hamlet? Darling, no. Light some lamps first - make Pixelheim a village, then we talk."
 msgstr "Chanter pour un hameau ? Mon chou, non. Allumez d'abord quelques réverbères - faites de Pixelheim un village, et on en reparle."
 
@@ -10351,6 +10403,10 @@ msgstr "Asseyez-vous. Vous saignez et vous ne l'avez même pas remarqué. ... Vo
 #: assets/data/npcs.json
 msgid "Smith Hilda"
 msgstr "Hilda la forgeronne"
+
+#: assets/data/npcs.json
+msgid "Something worse below, I said. Turns out you were worse. The lads have named a cart after you."
+msgstr "Quelque chose de pire en bas, je disais. Finalement, c'était vous. Les gars ont donné votre nom à un wagonnet."
 
 #: assets/data/npcs.json
 msgid "Stay on the roads if you value your ankles. The packs in the fields don't wait for introductions."
@@ -10373,6 +10429,10 @@ msgid "Ten gold for a bed and no questions. The bards say my stew brought a man 
 msgstr "Dix pièces d'or pour un lit, et pas de questions. Les bardes disent que mon ragoût a ramené un homme du seuil de la mort."
 
 #: assets/data/npcs.json
+msgid "That lamp on the road has cost me a good dark night's work. I've written to complain."
+msgstr "Cette lanterne sur la route m'a coûté une bonne nuit noire de travail. J'ai écrit pour me plaindre."
+
+#: assets/data/npcs.json
 msgid "The beam - you got it off - thank you. Thank you. I'm Bram. I'll live, I think. Probably."
 msgstr "La poutre - tu me l'as enlevée - merci. Merci. Moi, c'est Bram. Je vais m'en tirer, je crois. Sans doute."
 
@@ -10383,6 +10443,14 @@ msgstr "Le tableau d'avis de la place liste ce qu'il faut pour reconstruire. De 
 #: assets/data/npcs.json
 msgid "The canary and the cat have reached an understanding. The understanding is shouting."
 msgstr "Le canari et le chat sont parvenus à une entente. L'entente consiste à hurler."
+
+#: assets/data/npcs.json
+msgid "The captain's finally lying down, they say. He still owes me four months' pay."
+msgstr "Le capitaine s'est enfin couché, à ce qu'on dit. Il me doit toujours quatre mois de solde."
+
+#: assets/data/npcs.json
+msgid "The captain's gone, and nobody's counting what isn't his. I've taken that up. Honest work."
+msgstr "Le capitaine est parti, et plus personne ne compte ce qui n'est pas à lui. Je m'en charge. Travail honnête."
 
 #: assets/data/npcs.json
 msgid "The cat"
@@ -10465,8 +10533,16 @@ msgid "The mine pays in iron, I sell in iron."
 msgstr "La mine paie en fer, je vends en fer."
 
 #: assets/data/npcs.json
+msgid "The mine pays in iron, I sell in iron. I also have an awning now."
+msgstr "La mine paie en fer, je vends en fer. J'ai aussi un auvent, maintenant."
+
+#: assets/data/npcs.json
 msgid "The post runs like a dream. Fast travel drops you right at the square now - no gate queue."
 msgstr "Le relais tourne comme sur des roulettes. Le voyage rapide vous dépose directement sur la place, maintenant - fini la file à la porte."
+
+#: assets/data/npcs.json
+msgid "The sea's in a better mood since you went down that cave. Three fish this morning, and only the one boot."
+msgstr "La mer est de meilleure humeur depuis votre passage dans la grotte. Trois poissons ce matin, et une seule botte."
 
 #: assets/data/npcs.json
 msgid "The shrine hums some nights. Good company for a healer."
@@ -15825,12 +15901,36 @@ msgid "A pair of fur boots, frozen into the lake's edge. Whoever wore them cross
 msgstr "Une paire de bottes fourrées, prises dans la glace au bord du lac. Qui les portait a traversé le reste pieds nus. Courageux, ou très en retard pour quelque chose."
 
 #: assets/maps/interactables.json
+msgid "A shield a shepherd bought against Greymaw, left here so it wouldn't get scratched."
+msgstr "Un bouclier qu'un berger avait acheté contre Vieille-Gueule-Grise, laissé là pour ne pas l'érafler."
+
+#: assets/maps/interactables.json
 msgid "A staff with a star caught in its head, packed in straw against the damp by somebody very careful, a hundred years ago."
 msgstr "Un bâton avec une étoile prise dans sa tête, rangé dans la paille contre l'humidité par quelqu'un de très soigneux, il y a cent ans."
 
 #: assets/maps/interactables.json
 msgid "A sword with a dragon etched down the blade, made for a fight up the mountain that nobody came back to have."
 msgstr "Une épée avec un dragon gravé sur la lame, forgée pour un combat là-haut dont personne n'est revenu."
+
+#: assets/maps/interactables.json
+msgid "A thief's cloak, folded on the moss. Nobody has seen its owner since, which was rather the point of it."
+msgstr "Une cape de voleur, pliée sur la mousse. Personne n'a revu son propriétaire depuis, et c'était un peu le but."
+
+#: assets/maps/interactables.json
+msgid "A woodcutter's axe, left by someone who heard Mossback sigh and remembered an appointment."
+msgstr "Une hache de bûcheron, laissée par quelqu'un qui a entendu soupirer Dos-de-Mousse et s'est souvenu d'un rendez-vous."
+
+#: assets/maps/interactables.json
+msgid "An apprentice's staff in the reeds, and a note for her master: \"I quit. The frogs are nicer.\""
+msgstr "Un bâton d'apprentie dans les roseaux, et un mot pour son maître : « Je démissionne. Les grenouilles sont plus aimables. »"
+
+#: assets/maps/interactables.json
+msgid "An axe left by the crew who came to cut a road through the Mirefen. The road got this far."
+msgstr "Une hache laissée par l'équipe venue tracer une route à travers les Marais de Fange. La route est arrivée jusqu'ici."
+
+#: assets/maps/interactables.json
+msgid "An iron sword in oiled cloth, and a note: \"Back by supper.\" The note's gone yellow waiting."
+msgstr "Une épée de fer dans un linge huilé, et un mot : « De retour pour le souper. » Le mot a jauni à force d'attendre."
 
 #: assets/maps/interactables.json
 msgid "BREWS"
@@ -15851,6 +15951,10 @@ msgstr "FORGE"
 #: assets/maps/interactables.json
 msgid "GOODS"
 msgstr "BAZAR"
+
+#: assets/maps/interactables.json
+msgid "Greyhold mail, folded neatly, with a note on top: \"Tell the captain I resign.\""
+msgstr "Une cotte de Greyhold, soigneusement pliée, un mot posé dessus : « Dites au capitaine que je m'en vais. »"
 
 #: assets/maps/interactables.json
 msgid "Gunnar's Camp"

@@ -32,7 +32,8 @@
       "loot": {
         "kind": "gear",
         "itemId": "iron_sword"
-      }
+      },
+      "said": "An iron sword in oiled cloth, and a note: \"Back by supper.\" The note's gone yellow waiting."
     },
     {
       "id": "ash_east",
@@ -43,7 +44,8 @@
       "loot": {
         "kind": "gear",
         "itemId": "iron_armor"
-      }
+      },
+      "said": "Greyhold mail, folded neatly, with a note on top: \"Tell the captain I resign.\""
     },
     {
       "id": "forest_corner",
@@ -54,7 +56,8 @@
       "loot": {
         "kind": "gear",
         "itemId": "steel_shield"
-      }
+      },
+      "said": "A shield a shepherd bought against Greymaw, left here so it wouldn't get scratched."
     },
     {
       "id": "marsh_corner",
@@ -65,7 +68,8 @@
       "loot": {
         "kind": "gear",
         "itemId": "apprentice_staff"
-      }
+      },
+      "said": "An apprentice's staff in the reeds, and a note for her master: \"I quit. The frogs are nicer.\""
     },
     {
       "id": "road_glint",
@@ -99,7 +103,8 @@
       "loot": {
         "kind": "gear",
         "itemId": "steel_axe"
-      }
+      },
+      "said": "A woodcutter's axe, left by someone who heard Mossback sigh and remembered an appointment."
     },
     {
       "id": "deep_corner",
@@ -110,7 +115,8 @@
       "loot": {
         "kind": "gear",
         "itemId": "shadow_cloak"
-      }
+      },
+      "said": "A thief's cloak, folded on the moss. Nobody has seen its owner since, which was rather the point of it."
     },
     {
       "id": "mire_maze",
@@ -121,7 +127,8 @@
       "loot": {
         "kind": "gear",
         "itemId": "steel_axe"
-      }
+      },
+      "said": "An axe left by the crew who came to cut a road through the Mirefen. The road got this far."
     },
     {
       "id": "mire_mimic",

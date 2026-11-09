@@ -45,8 +45,9 @@ static func festival_barker() -> Dictionary:
 ## inn rebuilt first left her nowhere until the whole Hamlet stood); in the
 ## Ashes the elder and the mayor say their Ashes lines. While her tin waits
 ## (`tin_waits`, PIX-253) and her house is still ash, Maren stands digging
-## in front of it rather than at the shrine.
-static func on_map(map_id: String, town_tier: int, settlers: Array, done: Variant = null, gate_open := true, tin_waits := false) -> Array[Dictionary]:
+## in front of it rather than at the shrine. `met` (Folk.beats) says which of
+## a villager's `linesWhen` hold now (PIX-443); without it, their `lines`.
+static func on_map(map_id: String, town_tier: int, settlers: Array, done: Variant = null, gate_open := true, tin_waits := false, met := Callable()) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for npc: Dictionary in _data()["npcs"]:
 		if at_stall(npc, done):
@@ -61,6 +62,9 @@ static func on_map(map_id: String, town_tier: int, settlers: Array, done: Varian
 				# Maren keeps the barred gate's lines till it opens (PIX-204).
 				npc = npc.duplicate()
 				npc["lines"] = npc["gateLines"]
+			elif npc.has("linesWhen") and met.is_valid():
+				npc = npc.duplicate()
+				npc["lines"] = lines_when(npc["linesWhen"], npc["lines"], met)
 			elif npc.has("linesByTier"):
 				npc = npc.duplicate()
 				npc["lines"] = lines_for_tier(npc["linesByTier"], town_tier, npc["lines"])
@@ -157,6 +161,23 @@ static func lines_for_tier(by_tier: Dictionary, town_tier: int, fallback: Array)
 		if int(key) <= town_tier and int(key) > best:
 			best = int(key)
 	return by_tier[str(best)] if best >= 0 else fallback
+
+
+## What a villager says now (PIX-443): the lines of the first `linesWhen`
+## entry whose `when` is `met`, else `fallback`.
+static func lines_when(entries: Array, fallback: Array, met: Callable) -> Array:
+	for entry: Dictionary in entries:
+		if met.call(entry["when"]):
+			return entry["lines"]
+	return fallback
+
+
+## Whether a `linesWhen` condition holds: a main quest step's kinds
+## (MainQuest.holds), or `hub`, a place grown to `step` (Hubs.step).
+static func beat_met(when: Dictionary, progression: ProgressionState, settlement: SettlementState, post: PostState) -> bool:
+	if when["kind"] == "hub":
+		return Hubs.step(post, String(when["place"])) >= int(when["step"])
+	return MainQuest.holds(when, progression, settlement)
 
 
 ## Everyone who talks: their name, sprite and look (PunyArt.look_of), and

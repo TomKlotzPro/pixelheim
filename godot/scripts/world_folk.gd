@@ -12,7 +12,7 @@ var world: Node
 ## Villagers who live on this map now: tier-gated townsfolk and recruits.
 func spawn_for(data: MapData) -> void:
 	var settlers := GameState.settlement.settlers
-	var folk := Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), Letters.tin_waits(GameState.progression))
+	var folk := Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), Letters.tin_waits(GameState.progression), beats())
 	# Morvax where the story has him (PIX-253 step 10): by the fountain
 	# once the collar is off, on his bench there once he's home, and up at
 	# his forge staying but for festival days.
@@ -44,6 +44,11 @@ func spawn_for(data: MapData) -> void:
 		villager.add_to_group("decor")
 		villager.add_to_group("npcs")
 		world.actors.add_child(villager)
+
+
+## Whether a villager's `linesWhen` condition holds for this hero (PIX-443).
+func beats() -> Callable:
+	return Npcs.beat_met.bind(GameState.progression, GameState.settlement, GameState.post)
 
 
 ## The folk of a map walked into over a line (One Reach, PIX-269): where

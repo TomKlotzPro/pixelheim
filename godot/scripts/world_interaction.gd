@@ -478,6 +478,11 @@ func talk(npc: Dictionary) -> void:
 		box.npc = npc
 		world.add_child(box)
 		return
+	# Word gets round while you stand there (PIX-443): a beat met since they
+	# came out on this map, Wenna's letter just read with Brin beside her.
+	if npc.has("linesWhen"):
+		npc = npc.duplicate()
+		npc["lines"] = Npcs.lines_when(npc["linesWhen"], npc["lines"], world.folk.beats())
 	# A choice made stays with the one who asked it (PIX-192).
 	var remembered := Quests.after_choice(npc["id"], GameState.progression.quests)
 	if remembered != "":
