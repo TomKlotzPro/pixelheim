@@ -4941,6 +4941,10 @@ msgid "RUN AHEAD IF YOU LIKE: a hero who goes deeper early is never sent back fo
 msgstr "PRENEZ DE L'AVANCE SI VOUS VOULEZ : un héros qui s'enfonce tôt n'est jamais renvoyé en arrière pour une course"
 
 #: assets/data/changelog.json
+msgid "Ragged Edge"
+msgstr "Lisière déchirée"
+
+#: assets/data/changelog.json
 msgid "Rain and Stone"
 msgstr "Pluie et pierre"
 
@@ -5833,6 +5837,10 @@ msgid "The Aegis rings when it turns a blow, treasure picked off the ground clin
 msgstr "L'Égide résonne quand elle pare un coup, un trésor ramassé au sol tinte, et les sauvegardes, la banque, les étagères et le tableau des primes répondent à vos choix"
 
 #: assets/data/changelog.json
+msgid "The Ash Fields no longer meet the green land on a ruler-straight line that cut the walled enclosures in half: the border now wanders, and burnt rock gives way to green rock unevenly"
+msgstr "Les Champs de Cendres ne rejoignent plus la terre verte sur une ligne tirée à la règle qui coupait les enclos en deux : la frontière serpente désormais, et la roche brûlée cède la place à la roche verte de façon irrégulière"
+
+#: assets/data/changelog.json
 msgid "The Ashen Mountain"
 msgstr "La Montagne des Cendres"
 
@@ -6295,6 +6303,10 @@ msgstr "Le jeu joue désormais à un volume normal, environ 14 dB plus fort, l'�
 #: assets/data/changelog.json
 msgid "The gate opens the first depth of every five you've reached, so a long descent no longer starts from the top"
 msgstr "La porte ouvre la première profondeur de chaque tranche de cinq atteinte, et une longue descente ne repart plus d'en haut"
+
+#: assets/data/changelog.json
+msgid "The ground healed around a lamp now frays where it meets the ash instead of ending in a clean disc"
+msgstr "La terre guérie autour d'une lanterne s'effiloche désormais au contact de la cendre, au lieu de s'arrêter en un disque net"
 
 #: assets/data/changelog.json
 msgid "The hero no longer grows a little with each rank"
