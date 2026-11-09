@@ -18,13 +18,13 @@
     "text": "All six keys are taken: put {skill} on one in Skills ({key:skills})."
   },
   "board": {
-    "text": "Press {key:interact} to fund the village's projects."
+    "text": "Face the notice board and press {key:interact} to fund the village's projects."
   },
   "bounty": {
     "text": "Kill a named monster and its bounty is yours."
   },
   "post": {
-    "text": "Press {key:interact} for the post; the journal says who it's for."
+    "text": "Face the post box and press {key:interact} for the post."
   },
   "turn": {
     "text": "Turn your phone sideways for more room."

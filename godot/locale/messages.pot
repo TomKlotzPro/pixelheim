@@ -9605,6 +9605,14 @@ msgid "Banked gold earns a little daily and is safe when you fall."
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Face the notice board and press {key:interact} to fund the village's projects."
+msgstr ""
+
+#: assets/data/hints.json
+msgid "Face the post box and press {key:interact} for the post."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Home: the barrel keeps your things, the bed gives more XP."
 msgstr ""
 
@@ -9626,14 +9634,6 @@ msgstr ""
 
 #: assets/data/hints.json
 msgid "Press {key:dodge} to roll out of the way."
-msgstr ""
-
-#: assets/data/hints.json
-msgid "Press {key:interact} for the post; the journal says who it's for."
-msgstr ""
-
-#: assets/data/hints.json
-msgid "Press {key:interact} to fund the village's projects."
 msgstr ""
 
 #: assets/data/hints.json
