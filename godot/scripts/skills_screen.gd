@@ -188,7 +188,10 @@ func _node_card(entry: Dictionary, chosen: bool) -> Control:
 	panel.add_child(head)
 	# The icon of a skill one can cast (PIX-442); upgrades and passives keep
 	# the room empty, so every name stands on one edge.
-	head.add_child(UiStyle.row_icon(ItemIcons.skill(entry["skill"]["name"]) if entry.has("skill") else null))
+	var icon := UiStyle.row_icon(ItemIcons.skill(entry["skill"]["name"]) if entry.has("skill") else null)
+	# Out of reach, faded as its name is and as the dock fades a slot.
+	icon.modulate.a = 1.0 if owned or buyable else 0.55
+	head.add_child(icon)
 	var name := UiStyle.label(
 		"%s %s" % [TIER_BADGES[int(entry["tier"])], entry["name"]], 15,
 		UiStyle.LAMP if owned else (UiStyle.INK if buyable else UiStyle.FADED)
