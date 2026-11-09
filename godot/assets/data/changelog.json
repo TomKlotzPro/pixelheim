@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.338.0",
+      "date": "2026-11-09",
+      "codename": "Hold That Thought",
+      "notes": [
+        "A stun that lands while a foe is winding up now breaks its attack: the mark vanishes and “Interrupted!” rises, so a told attack can be stopped as well as dodged",
+        "Poison, burns and stuns now show as small icons beside a foe's level"
+      ]
+    },
+    {
       "version": "0.337.0",
       "date": "2026-11-09",
       "codename": "Quick Hands",
