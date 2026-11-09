@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.332.0",
+      "date": "2026-11-09",
+      "codename": "Small Print",
+      "notes": [
+        "First-time tips are now one short line at the bottom left, where the battle log speaks, instead of a big box over the view, and they wait behind other messages so two never show at once",
+        "The slime's pouch now says to press I to open your pack instead of “I opens your pack”, and the other messages that name a key read right whatever the key is"
+      ]
+    },
+    {
       "version": "0.331.0",
       "date": "2026-11-09",
       "codename": "Door Ajar",

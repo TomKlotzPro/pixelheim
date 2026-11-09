@@ -1,58 +1,44 @@
 {
   "dodge": {
-    "title": "Dodge",
-    "text": "Monsters will charge at you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
+    "text": "Press {key:dodge} to roll out of the way."
   },
   "fright": {
-    "title": "Too strong for them",
-    "text": "Monsters far below your level run when they see you. Corner one or strike it and it fights back - bosses and named monsters never run."
+    "text": "Monsters far below your level run from you."
   },
   "skill": {
-    "title": "{skill}",
-    "text": "{what} It's on key {slot} of your dock: press it to use it. Energy comes back as you walk."
+    "text": "{skill}: press {slot} to use it."
   },
   "journal": {
-    "title": "Your journal",
-    "text": "Every quest you take is written down: {key:journal} opens the journal, with where to go and what's still to do."
+    "text": "Press {key:journal} to open your journal."
   },
   "forget": {
-    "title": "Second thoughts?",
-    "text": "Old Hessa keeps the shrine in Pixelheim. She can make you forget your skills or your training, every point back to spend again - the first time is free."
+    "text": "Old Hessa at the shrine gives your points back, free the first time."
   },
   "skill_full": {
-    "title": "{skill}",
-    "text": "{what} All six keys are taken: in Skills ({key:skills}), choose it and press a number to put it on that key."
+    "text": "All six keys are taken: put {skill} on one in Skills ({key:skills})."
   },
   "board": {
-    "title": "The notice board",
-    "text": "Face it and press {key:interact}: fund the village's projects here, and Pixelheim grows the moment you step outside."
+    "text": "Face the notice board and press {key:interact} to fund the village's projects."
   },
   "bounty": {
-    "title": "The bounty board",
-    "text": "Named monsters, where they lair (marked on your map) and what they pay. Kill one and the bounty is yours on the spot."
+    "text": "Kill a named monster and its bounty is yours."
   },
   "post": {
-    "title": "The post box",
-    "text": "Face it and press {key:interact} for the day's post. Who each piece is for is in the journal's Post tab, and faintly on your map. Nothing in it ever spoils, so take your time."
+    "text": "Face the post box and press {key:interact} for the post."
   },
   "turn": {
-    "title": "Turn sideways",
-    "text": "Pixelheim plays best in landscape: turn your phone sideways for bigger text and more room to fight."
+    "text": "Turn your phone sideways for more room."
   },
   "potion": {
-    "title": "A potion",
-    "text": "Hurt? Open your pack ({key:inventory}), pick the health potion and press {key:interact} to drink it."
+    "text": "Hurt? Open your pack ({key:inventory}) and drink a potion ({key:interact})."
   },
   "house": {
-    "title": "Your house",
-    "text": "Home: the barrel keeps what you carry, your bed leaves you well rested (more XP for a while), and furniture from Odo helps where it stands. The shelf takes a workbench."
+    "text": "Home: the barrel keeps your things, the bed gives more XP."
   },
   "deed": {
-    "title": "Deeds",
-    "text": "A business you own fills its till with rent every day - its keeper hands it over when you walk in - and you pay a tenth less there."
+    "text": "A business you own pays rent daily, and you pay a tenth less there."
   },
   "bank": {
-    "title": "Mirelle's bank",
-    "text": "Savings earn a little each day, up to a tenth of the pot - and a hero who falls loses a tenth of the gold they carry, never what's banked. A caravan is a gamble that usually pays. Expansions make your businesses' rent richer."
+    "text": "Banked gold earns a little daily and is safe when you fall."
   }
 }

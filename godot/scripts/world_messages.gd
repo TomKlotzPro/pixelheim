@@ -24,6 +24,9 @@ var message_fade: Tween
 ## (UiStyle.reading_seconds).
 const LOG_LINES := 1
 const LOG_WIDTH := 700.0
+## A first-time hint shows once, often in a fight: this long at least, or a
+## short one is gone before it is read.
+const HINT_SECONDS := 5.0
 ## Tags a message may open with, set in gold on its plate.
 const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"]
 ## A plain message gives way to the next after this long; a tagged one
@@ -86,6 +89,22 @@ func clear() -> void:
 func log_line(line: String) -> void:
 	log_lines([line])
 
+## A first-time hint as a line of the log (PIX-433), by the id it's seen
+## by: one short line at a time, stepping aside for the plate and coming
+## back in full (one box at a time).
+func hint_line(id: String, text: String) -> void:
+	_log.add(text)["hint"] = id
+	update()
+
+
+## The hint on the log, showing or waiting its turn, by its id, or "".
+func hint_up() -> String:
+	for entry: Dictionary in _log.showing + _log.waiting:
+		if entry.has("hint"):
+			return entry["hint"]
+	return ""
+
+
 ## The battle log: a line at a time, bottom-left, fading. Only what the
 ## world doesn't show comes here (PIX-245): story beats, quests, levels, the
 ## boss slayer's edge, a pack scattered; what's won floats up where it was
@@ -111,8 +130,9 @@ func log_lines(lines: Array, later := false) -> void:
 func _say(entry: Dictionary) -> void:
 	var chip: PanelContainer = entry.get("chip")
 	if chip == null:
-		# Counted once, though it may show again after the plate (_step_aside).
-		if not entry.has("logged"):
+		# Counted once, though it may show again after the plate (_step_aside);
+		# a first-time hint is no line of the fight's.
+		if not entry.has("logged") and not entry.has("hint"):
 			logged += 1
 			entry["logged"] = true
 		chip = PanelContainer.new()
@@ -136,7 +156,8 @@ func _say(entry: Dictionary) -> void:
 	if chip.has_meta("fade") and (chip.get_meta("fade") as Tween).is_valid():
 		(chip.get_meta("fade") as Tween).kill()
 	var fade := chip.create_tween()
-	fade.tween_interval(UiStyle.reading_seconds(text))
+	var seconds := UiStyle.reading_seconds(text)
+	fade.tween_interval(maxf(seconds, HINT_SECONDS) if entry.has("hint") else seconds)
 	fade.tween_property(chip, "modulate:a", 0.0, 0.6)
 	fade.tween_callback(func() -> void:
 		_log.gone(entry)
@@ -153,7 +174,11 @@ func _say(entry: Dictionary) -> void:
 func _fighting() -> bool:
 	if world == null or world.get("foes") == null:
 		return false
-	return world.foes.in_fight(Foes.CALM_S) or (world.get("hud") != null and world.hud.card_up())
+	return world.foes.in_fight(Foes.CALM_S) or _card_up()
+
+
+func _card_up() -> bool:
+	return world != null and world.get("hud") != null and world.hud.card_up()
 
 
 ## The message's plate, shrunk round its words (a container only grows).
@@ -221,6 +246,7 @@ static func tag_of(text: String, tags: Array) -> String:
 ## qui pop d'un coup »): the plate goes first, the log's line stepping
 ## aside for it, and the log's next waits until the plate has faded.
 func update() -> void:
+	_hold_hint_for_card()
 	var fighting := _fighting()
 	if _message_now != "" and not _message_tagged and GameClock.seconds() - _message_since >= PLAIN_MESSAGE_S:
 		# A plain message gives way to whatever comes next.
@@ -252,10 +278,22 @@ func make_way() -> void:
 	message_box.modulate.a = 0.0
 
 
-## The log's line showing goes back to the head of the queue, to show again
-## in full once the plate is done.
-func _step_aside() -> void:
-	for entry: Dictionary in _log.showing.duplicate():
+## A title card up: a first-time hint's line waits it out, one box at a time
+## (PIX-433; `later` is what waits while a card is up, _fighting), and one
+## already up steps aside to come back in full.
+func _hold_hint_for_card() -> void:
+	var card := _card_up()
+	for entry: Dictionary in _log.showing + _log.waiting:
+		if entry.has("hint"):
+			entry["later"] = card
+			if card and entry.has("chip"):
+				_step_aside([entry])
+
+
+## The log's lines showing, or just those given, go back to the head of the
+## queue, to show again in full once the plate or the card is done.
+func _step_aside(entries := _log.showing.duplicate()) -> void:
+	for entry: Dictionary in entries:
 		var chip: Node = entry.get("chip")
 		entry.erase("chip")
 		if is_instance_valid(chip):

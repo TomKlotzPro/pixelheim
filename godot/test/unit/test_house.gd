@@ -88,7 +88,7 @@ func test_furniture_places_on_floor_and_comes_back_with_a_touch() -> void:
 	state.pack.items["furn_plant"] = 1
 	var spot := Vector2i(5, 5)
 	assert_eq(state.household.place_furniture("furn_plant", spot, "wall"), "It needs open floor. Face a free tile and try again.")
-	assert_eq(state.household.place_furniture("furn_plant", spot, "floor"), "Potted Fern placed. E takes it back.")
+	assert_eq(state.household.place_furniture("furn_plant", spot, "floor"), "Potted Fern placed. Press E to take it back.")
 	assert_eq(state.household.furniture(), [{"itemId": "furn_plant", "x": 5, "y": 5}])
 	assert_false(state.pack.items.has("furn_plant"))
 	state.pack.items["furn_plant"] = 1

@@ -1651,7 +1651,7 @@
       "y": 37
     },
     "arrival": "The letter was for Elder Maren of Pixelheim. You could see the fire from the last hill.",
-    "pouch": "The slime was carrying a traveller's pouch: a health potion. {key:inventory} opens your pack.",
+    "pouch": "The slime was carrying a traveller's pouch: a health potion. Press {key:inventory} to open your pack.",
     "steps": [
       {
         "id": "scavenger",
@@ -1679,7 +1679,7 @@
       },
       {
         "id": "cap",
-        "text": "Wear the cap Sela gave you ({key:inventory} opens your pack)"
+        "text": "Wear the cap Sela gave you (press {key:inventory} to open your pack)"
       },
       {
         "id": "fires",
@@ -1688,7 +1688,7 @@
       {
         "id": "embers",
         "text": "Embers swarm the square: drive them off ({key:skill_1} for your skill)",
-        "textHeal": "Embers swarm the square: strike them down ({key:attack}) - {key:skill_1} mends you between blows"
+        "textHeal": "Embers swarm the square: strike them down ({key:attack}) and mend between blows ({key:skill_1})"
       }
     ],
     "dawn": [

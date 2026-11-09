@@ -3393,6 +3393,10 @@ msgid "First look at the open world: walk the Ashenreach from town (beta)"
 msgstr "Premier aperçu du monde ouvert : parcourez la Marche des Cendres depuis la ville (bêta)"
 
 #: assets/data/changelog.json
+msgid "First-time tips are now one short line at the bottom left, where the battle log speaks, instead of a big box over the view, and they wait behind other messages so two never show at once"
+msgstr "Les astuces de découverte tiennent désormais en une courte ligne en bas à gauche, à la place du journal de combat, au lieu d'une grande boîte par-dessus la vue, et elles attendent derrière les autres messages pour ne jamais s'afficher à deux"
+
+#: assets/data/changelog.json
 msgid "Five Halls"
 msgstr "Cinq demeures"
 
@@ -5281,6 +5285,10 @@ msgid "Small Mercies"
 msgstr "Petites attentions"
 
 #: assets/data/changelog.json
+msgid "Small Print"
+msgstr "En petits caractères"
+
+#: assets/data/changelog.json
 msgid "Small Things"
 msgstr "Petites choses"
 
@@ -6539,6 +6547,10 @@ msgstr "L'arbre de compétences ressemble à un arbre : trois voies nommées, 
 #: assets/data/changelog.json
 msgid "The skills screen fits on narrow and tall screens too"
 msgstr "L'écran des compétences tient aussi sur les écrans étroits ou hauts"
+
+#: assets/data/changelog.json
+msgid "The slime's pouch now says to press I to open your pack instead of “I opens your pack”, and the other messages that name a key read right whatever the key is"
+msgstr "La bourse de la gelée vous dit maintenant d'appuyer sur I pour ouvrir votre sac, au lieu de « I ouvre votre sac », et les autres messages qui nomment une touche se lisent bien, quelle que soit la touche"
 
 #: assets/data/changelog.json
 msgid "The sound and settings buttons got proper glyphs, and loading is a big honest LOADING with marching dots"
@@ -9609,108 +9621,60 @@ msgid "Ulla's sentry, kindly: \"Greyhold's shut, courier. Sorry. Sort out whatev
 msgstr "La sentinelle d'Ulla, gentiment : « Greyhold est fermé, messager. Pardon. Réglez ce qui se terre au fond de la mine de Pell, et il répondra de vous. »"
 
 #: assets/data/hints.json
-msgid "A business you own fills its till with rent every day - its keeper hands it over when you walk in - and you pay a tenth less there."
-msgstr "Un commerce qui vous appartient remplit sa caisse de loyers chaque jour - son tenancier vous la remet quand vous entrez - et vous y payez un dixième de moins."
+msgid "A business you own pays rent daily, and you pay a tenth less there."
+msgstr "Votre commerce rapporte un loyer par jour, et 10 % de remise."
 
 #: assets/data/hints.json
-msgid "A potion"
-msgstr "Une potion"
+msgid "All six keys are taken: put {skill} on one in Skills ({key:skills})."
+msgstr "Six touches prises : placez {skill} dans Compétences ({key:skills})."
 
 #: assets/data/hints.json
-msgid "Deeds"
-msgstr "Titres de propriété"
+msgid "Banked gold earns a little daily and is safe when you fall."
+msgstr "L'or en banque rapporte chaque jour et reste à l'abri si vous tombez."
 
 #: assets/data/hints.json
-msgid "Dodge"
-msgstr "Roulade"
+msgid "Face the notice board and press {key:interact} to fund the village's projects."
+msgstr "Face au tableau d'avis, appuyez sur {key:interact} pour financer les chantiers."
 
 #: assets/data/hints.json
-msgid "Every quest you take is written down: {key:journal} opens the journal, with where to go and what's still to do."
-msgstr "Chaque quête acceptée y est notée : {key:journal} ouvre le journal, avec où aller et ce qu'il reste à faire."
+msgid "Face the post box and press {key:interact} for the post."
+msgstr "Face à la boîte aux lettres, appuyez sur {key:interact} pour le courrier."
 
 #: assets/data/hints.json
-msgid "Face it and press {key:interact} for the day's post. Who each piece is for is in the journal's Post tab, and faintly on your map. Nothing in it ever spoils, so take your time."
-msgstr "Faites-lui face et appuyez sur {key:interact} pour le courrier du jour. Le destinataire de chaque pli est dans l'onglet Courrier du journal, et discrètement sur votre carte. Rien ne s'y abîme jamais : prenez votre temps."
+msgid "Home: the barrel keeps your things, the bed gives more XP."
+msgstr "Chez vous : le tonneau garde vos affaires, le lit donne plus d'XP."
 
 #: assets/data/hints.json
-msgid "Face it and press {key:interact}: fund the village's projects here, and Pixelheim grows the moment you step outside."
-msgstr "Faites-lui face et appuyez sur {key:interact} : financez ici les chantiers du village, et Pixelheim grandit dès que vous sortez."
+msgid "Hurt? Open your pack ({key:inventory}) and drink a potion ({key:interact})."
+msgstr "Mal en point ? Ouvrez votre sac ({key:inventory}) et buvez une potion ({key:interact})."
 
 #: assets/data/hints.json
-msgid "Home: the barrel keeps what you carry, your bed leaves you well rested (more XP for a while), and furniture from Odo helps where it stands. The shelf takes a workbench."
-msgstr "Chez vous : le tonneau garde ce que vous portez, votre lit vous offre un vrai repos (plus d'XP pendant un temps), et les meubles d'Odo aident là où ils sont posés. L'étagère accueille un établi."
+msgid "Kill a named monster and its bounty is yours."
+msgstr "Tuez un monstre nommé et sa prime est à vous."
 
 #: assets/data/hints.json
-msgid "Hurt? Open your pack ({key:inventory}), pick the health potion and press {key:interact} to drink it."
-msgstr "Mal en point ? Ouvrez votre sac ({key:inventory}), choisissez la potion de soin et appuyez sur {key:interact} pour la boire."
+msgid "Monsters far below your level run from you."
+msgstr "Les monstres bien en dessous de votre niveau vous fuient."
 
 #: assets/data/hints.json
-msgid "Mirelle's bank"
-msgstr "La banque de Mirelle"
+msgid "Old Hessa at the shrine gives your points back, free the first time."
+msgstr "Au sanctuaire, Hessa rend vos points : gratuit la première fois."
 
 #: assets/data/hints.json
-msgid "Monsters far below your level run when they see you. Corner one or strike it and it fights back - bosses and named monsters never run."
-msgstr "Les monstres bien en dessous de votre niveau fuient en vous voyant. Acculez-en un ou frappez-le et il se défend - les boss et les monstres nommés ne fuient jamais."
+msgid "Press {key:dodge} to roll out of the way."
+msgstr "Appuyez sur {key:dodge} pour rouler hors de portée."
 
 #: assets/data/hints.json
-msgid "Monsters will charge at you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
-msgstr "Des monstres vont vous foncer dessus. Appuyez sur {key:dodge} pour rouler hors de portée - un instant, rien ne peut vous toucher, et il vaut toujours mieux quitter une zone marquée pour un coup."
+msgid "Press {key:journal} to open your journal."
+msgstr "Appuyez sur {key:journal} pour ouvrir votre journal."
 
 #: assets/data/hints.json
-msgid "Named monsters, where they lair (marked on your map) and what they pay. Kill one and the bounty is yours on the spot."
-msgstr "Les monstres nommés, leur repaire (marqué sur votre carte) et ce qu'ils rapportent. Tuez-en un et la prime est à vous sur-le-champ."
+msgid "Turn your phone sideways for more room."
+msgstr "Tournez votre téléphone pour plus de place."
 
 #: assets/data/hints.json
-msgid "Old Hessa keeps the shrine in Pixelheim. She can make you forget your skills or your training, every point back to spend again - the first time is free."
-msgstr "La vieille Hessa tient le sanctuaire de Pixelheim. Elle peut vous faire oublier vos compétences ou votre entraînement, chaque point rendu à dépenser de nouveau - la première fois est gratuite."
-
-#: assets/data/hints.json
-msgid "Pixelheim plays best in landscape: turn your phone sideways for bigger text and more room to fight."
-msgstr "Pixelheim se joue mieux en paysage : tournez votre téléphone pour un texte plus grand et plus de place pour combattre."
-
-#: assets/data/hints.json
-msgid "Savings earn a little each day, up to a tenth of the pot - and a hero who falls loses a tenth of the gold they carry, never what's banked. A caravan is a gamble that usually pays. Expansions make your businesses' rent richer."
-msgstr "L'épargne rapporte un peu chaque jour, jusqu'à un dixième de la cagnotte - et un héros qui tombe perd un dixième de l'or qu'il porte, jamais ce qui est à la banque. Une caravane est un pari qui paie souvent. Les agrandissements font grossir les loyers de vos commerces."
-
-#: assets/data/hints.json
-msgid "Second thoughts?"
-msgstr "Des regrets ?"
-
-#: assets/data/hints.json
-msgid "The bounty board"
-msgstr "Le tableau des primes"
-
-#: assets/data/hints.json
-msgid "The notice board"
-msgstr "Le tableau d'avis"
-
-#: assets/data/hints.json
-msgid "The post box"
-msgstr "La boîte aux lettres"
-
-#: assets/data/hints.json
-msgid "Too strong for them"
-msgstr "Ils ne font pas le poids"
-
-#: assets/data/hints.json
-msgid "Turn sideways"
-msgstr "Tournez l'écran"
-
-#: assets/data/hints.json
-msgid "Your house"
-msgstr "Votre maison"
-
-#: assets/data/hints.json
-msgid "Your journal"
-msgstr "Votre journal"
-
-#: assets/data/hints.json
-msgid "{what} All six keys are taken: in Skills ({key:skills}), choose it and press a number to put it on that key."
-msgstr "{what} Les six touches sont prises : dans Compétences ({key:skills}), choisissez-la et appuyez sur un chiffre pour la placer sur cette touche."
-
-#: assets/data/hints.json
-msgid "{what} It's on key {slot} of your dock: press it to use it. Energy comes back as you walk."
-msgstr "{what} Elle est sur la touche {slot} de votre barre : appuyez sur cette touche pour l'utiliser. L'énergie revient en marchant."
+msgid "{skill}: press {slot} to use it."
+msgstr "{skill} : appuyez sur {slot} pour l'utiliser."
 
 #: assets/data/npcs.json
 msgid "\"It rings a little flat. So did the garrison. They'd have liked it here.\""
@@ -12806,7 +12770,7 @@ msgstr "Chien de cendre"
 
 #: assets/data/progression.json
 msgid "Ash hounds come out of the fire: roll through a lunge ({key:dodge} to roll)"
-msgstr "Des chiens de cendre sortent du feu : esquiver un assaut d'une roulade ({key:dodge} pour rouler)"
+msgstr "Des chiens de cendre sortent du feu : esquiver d'une roulade ({key:dodge})"
 
 #: assets/data/progression.json
 msgid "Ask Maren about the barred mountain gate"
@@ -13165,8 +13129,8 @@ msgid "Embers swarm the square: drive them off ({key:skill_1} for your skill)"
 msgstr "Des braises envahissent la place : les repousser ({key:skill_1} pour votre compétence)"
 
 #: assets/data/progression.json
-msgid "Embers swarm the square: strike them down ({key:attack}) - {key:skill_1} mends you between blows"
-msgstr "Les braises envahissent la place : frappez-les ({key:attack}) - {key:skill_1} vous soigne entre deux coups"
+msgid "Embers swarm the square: strike them down ({key:attack}) and mend between blows ({key:skill_1})"
+msgstr "Les braises envahissent la place : frappez-les ({key:attack}) et soignez-vous ({key:skill_1})"
 
 #: assets/data/progression.json
 msgid "Every Bounty Paid"
@@ -14749,8 +14713,8 @@ msgid "The sky turns grey behind the mountain, and Fafnyr folds onto the square.
 msgstr "Le ciel grisaille derrière la montagne, et Fafnyr s'affaisse sur la place. Pixelheim a tenu."
 
 #: assets/data/progression.json
-msgid "The slime was carrying a traveller's pouch: a health potion. {key:inventory} opens your pack."
-msgstr "La gelée transportait une bourse de voyageur : une potion de soin. {key:inventory} ouvre votre sac."
+msgid "The slime was carrying a traveller's pouch: a health potion. Press {key:inventory} to open your pack."
+msgstr "La gelée transportait une bourse de voyageur : une potion de soin. Appuyez sur {key:inventory} pour ouvrir votre sac."
 
 #: assets/data/progression.json
 msgid "The stair in Liane's floor goes down into the old ice cave, three floors deep. At the bottom, in the glass hall, something white has curled up on her lantern."
@@ -14981,8 +14945,8 @@ msgid "Wear a whole armour set at once."
 msgstr "Porter un ensemble d'armure complet à la fois."
 
 #: assets/data/progression.json
-msgid "Wear the cap Sela gave you ({key:inventory} opens your pack)"
-msgstr "Mettre le bonnet que Sela vous a donné ({key:inventory} ouvre votre sac)"
+msgid "Wear the cap Sela gave you (press {key:inventory} to open your pack)"
+msgstr "Mettre le bonnet que Sela vous a donné ({key:inventory} pour ouvrir le sac)"
 
 #: assets/data/progression.json
 msgid "Wenna answered, with Tam's last postcard."
@@ -15955,6 +15919,10 @@ msgstr "L'or qui dort est un or paresseux. Épargne, caravane, agrandissement 
 #: scripts/bank_screen.gd
 msgid "It is still on the road."
 msgstr "Elle est encore en route."
+
+#: scripts/bank_screen.gd
+msgid "Mirelle's bank"
+msgstr "La banque de Mirelle"
 
 #: scripts/bank_screen.gd
 msgid "No caravan on the road. Stake %dg: two roads in three come home heavy."
@@ -17313,16 +17281,16 @@ msgid "The path forks      {key:move_left}/{key:move_right}  choose      {key:in
 msgstr "La voie bifurque      {key:move_left}/{key:move_right}  choisir      {key:interact}  suivre cette voie      Esc  choisir plus tard, dans Compétences"
 
 #: scripts/ring_toss_screen.gd
-msgid " {key:interact} to throw again."
-msgstr " {key:interact} pour relancer."
+msgid " Press {key:interact} to throw again."
+msgstr " Appuyez sur {key:interact} pour relancer."
 
 #: scripts/ring_toss_screen.gd
-msgid "Not this time. {key:interact} to throw again."
-msgstr "Pas cette fois. {key:interact} pour relancer."
+msgid "Not this time. Press {key:interact} to throw again."
+msgstr "Pas cette fois. Appuyez sur {key:interact} pour relancer."
 
 #: scripts/ring_toss_screen.gd
-msgid "On the peg again! The prize is already yours this festival. {key:interact} to throw again."
-msgstr "Encore sur le piquet ! Le prix est déjà à vous pour cette fête. {key:interact} pour relancer."
+msgid "On the peg again! The prize is already yours this festival. Press {key:interact} to throw again."
+msgstr "Encore sur le piquet ! Le prix est déjà à vous pour cette fête. Appuyez sur {key:interact} pour relancer."
 
 #: scripts/ring_toss_screen.gd
 msgid "On the peg: %d of %d"
@@ -17873,6 +17841,10 @@ msgid "Town Hall"
 msgstr "Mairie"
 
 #: scripts/shop_sign.gd
+msgid "Your house"
+msgstr "Votre maison"
+
+#: scripts/shop_sign.gd
 msgid "a bed and a stew"
 msgstr "un lit et un ragoût"
 
@@ -18253,8 +18225,8 @@ msgid "%s back in the pack."
 msgstr "%s : de retour dans le sac."
 
 #: scripts/state/household.gd
-msgid "%s placed. {key:interact} takes it back."
-msgstr "Objet posé : %s. {key:interact} pour le reprendre."
+msgid "%s placed. Press {key:interact} to take it back."
+msgstr "Objet posé : %s. Appuyez sur {key:interact} pour le reprendre."
 
 #: scripts/state/household.gd
 msgid "A proper workbench would fit this shelf. Tools and parts cost %d gold."
@@ -19001,8 +18973,8 @@ msgid "1 skill"
 msgstr "1 compétence"
 
 #: scripts/world_interaction.gd
-msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
-msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
+msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. Press {key:interact} again to buy it."
+msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. Appuyez à nouveau sur {key:interact} pour l'acheter."
 
 #: scripts/world_interaction.gd
 msgid "Forget my skills: %s, %s, %s"
@@ -19053,8 +19025,8 @@ msgid "Sela's stew simmers over the fire. Hunter's Stew is brewed at Vex's cauld
 msgstr "Le ragoût de Sela mijote sur le feu. Le Ragoût du chasseur se prépare au chaudron de Vex, derrière la porte POTIONS."
 
 #: scripts/world_interaction.gd
-msgid "The deed costs %d gold. {key:interact} again to sign it."
-msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
+msgid "The deed costs %d gold. Press {key:interact} again to sign it."
+msgstr "Le titre de propriété coûte %d or. Appuyez à nouveau sur {key:interact} pour le signer."
 
 #: scripts/world_interaction.gd
 msgid "free"

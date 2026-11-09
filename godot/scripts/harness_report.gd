@@ -508,11 +508,10 @@ func field_hero() -> String:
 
 
 func field_hint() -> String:
-	var hud: Hud = world.hud
-	if is_instance_valid(hud.hint_card) and not hud.hint_card.is_queued_for_deletion():
-		# Held unseen under a title card (PIX-345).
-		return ("" if hud.hint_card.visible else "held:") + String(hud.hint_card.get_meta("id", ""))
-	var held := hud.hint_held()
+	var up: String = world.messages.hint_up()
+	if up != "":
+		return up
+	var held: String = world.hud.hint_held()
 	return "held:" + held if held != "" else ""
 
 
@@ -568,8 +567,6 @@ func field_hudclash() -> String:
 	var shown: Array = []
 	if hud.card_up():
 		shown.append(["card", hud._card.get_global_rect()])
-	if is_instance_valid(hud.hint_card) and hud.hint_card.visible and not hud.hint_card.is_queued_for_deletion():
-		shown.append(["hint", hud.hint_card.get_global_rect()])
 	for rect: Rect2 in world.fx.shown():
 		shown.append(["float", hud.to_screen(rect)])
 	for chip: Control in messages.log_box.get_children():
@@ -591,10 +588,10 @@ func field_hudclash() -> String:
 	for i in shown.size():
 		for j in range(i + 1, shown.size()):
 			var pair: Array = [shown[i][0], shown[j][0]]
-			# The hero counts under a card or a hint, the plates the HUD
-			# places: the rest stands where it stands, the hero wherever the
-			# camera has them at a map's edge.
-			if pair.has("hero") and not (pair.has("card") or pair.has("hint")):
+			# The hero counts under a card, the plate the HUD places: the
+			# rest stands where it stands, the hero wherever the camera has
+			# them at a map's edge.
+			if pair.has("hero") and not pair.has("card"):
 				continue
 			pair.sort()
 			var said := "%s/%s" % pair
