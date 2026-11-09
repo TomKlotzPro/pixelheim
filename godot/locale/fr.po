@@ -3393,6 +3393,10 @@ msgid "First look at the open world: walk the Ashenreach from town (beta)"
 msgstr "Premier aperçu du monde ouvert : parcourez la Marche des Cendres depuis la ville (bêta)"
 
 #: assets/data/changelog.json
+msgid "First-time tips are now one short line at the bottom left, where the battle log speaks, instead of a big box over the view, and they wait behind other messages so two never show at once"
+msgstr "Les astuces de découverte tiennent désormais en une courte ligne en bas à gauche, à la place du journal de combat, au lieu d'une grande boîte par-dessus la vue, et elles attendent derrière les autres messages pour ne jamais s'afficher à deux"
+
+#: assets/data/changelog.json
 msgid "Five Halls"
 msgstr "Cinq demeures"
 
@@ -5281,6 +5285,10 @@ msgid "Small Mercies"
 msgstr "Petites attentions"
 
 #: assets/data/changelog.json
+msgid "Small Print"
+msgstr "En petits caractères"
+
+#: assets/data/changelog.json
 msgid "Small Things"
 msgstr "Petites choses"
 
@@ -6539,6 +6547,10 @@ msgstr "L'arbre de compétences ressemble à un arbre : trois voies nommées, 
 #: assets/data/changelog.json
 msgid "The skills screen fits on narrow and tall screens too"
 msgstr "L'écran des compétences tient aussi sur les écrans étroits ou hauts"
+
+#: assets/data/changelog.json
+msgid "The slime's pouch now says to press I to open your pack instead of “I opens your pack”, and the other messages that name a key read right whatever the key is"
+msgstr "La bourse de la gelée vous dit maintenant d'appuyer sur I pour ouvrir votre sac, au lieu de « I ouvre votre sac », et les autres messages qui nomment une touche se lisent bien, quelle que soit la touche"
 
 #: assets/data/changelog.json
 msgid "The sound and settings buttons got proper glyphs, and loading is a big honest LOADING with marching dots"

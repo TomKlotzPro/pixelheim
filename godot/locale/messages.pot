@@ -3393,6 +3393,10 @@ msgid "First look at the open world: walk the Ashenreach from town (beta)"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "First-time tips are now one short line at the bottom left, where the battle log speaks, instead of a big box over the view, and they wait behind other messages so two never show at once"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Five Halls"
 msgstr ""
 
@@ -5281,6 +5285,10 @@ msgid "Small Mercies"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Small Print"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Small Things"
 msgstr ""
 
@@ -6538,6 +6546,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The skills screen fits on narrow and tall screens too"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The slime's pouch now says to press I to open your pack instead of “I opens your pack”, and the other messages that name a key read right whatever the key is"
 msgstr ""
 
 #: assets/data/changelog.json
