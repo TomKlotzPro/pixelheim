@@ -465,6 +465,11 @@ func _physics_process(delta: float) -> void:
 		_play("idle")
 
 
+## Each ailment icon's ink: reading it back from the texture is dear, and a
+## Frost Nova can stun a whole pack in one frame.
+static var _ailment_inks := {}
+
+
 ## An icon for each thing ailing it, beside its level tag (PIX-440), gone
 ## with the ailment or the foe. Nothing to do for a foe with none, and the
 ## icons are made again only when the list changes, so a big pack pays only
@@ -473,6 +478,8 @@ func _show_ailments() -> void:
 	if ailments.effects.is_empty() and _ailing.is_empty():
 		return
 	var kinds := ailments.kinds()
+	# A fixed order: a refreshed ailment moves to the end of the list.
+	kinds.sort()
 	if dying:
 		kinds.clear()
 	if _ailment_row == null:
@@ -492,7 +499,9 @@ func _show_ailments() -> void:
 		var art := ItemIcons.ailment(kind)
 		# Each is a few art pixels in the corner of a blank 16x16: cut to its
 		# ink, or the row would stand a full tile apart and off the tag's line.
-		var ink := Rect2i() if art == null else _ink(art)
+		if art != null and not _ailment_inks.has(kind):
+			_ailment_inks[kind] = _ink(art)
+		var ink: Rect2i = _ailment_inks.get(kind, Rect2i())
 		var icon := Sprite2D.new()
 		icon.texture = art
 		icon.centered = false
@@ -1369,8 +1378,6 @@ func _interrupt() -> void:
 		sprite.skew = 0.0
 	if brain != null and brain.interrupt():
 		broke = true
-	if mode == "cast":
-		mode = "chase"
 	if broke:
 		# In "dodged" and "blocked"'s blue: gold is lost on sand and straw.
 		world.fx.float_text(Text.t("Interrupted!"), global_position + Vector2(0, minf(-26.0, _over_head)), Color(0.75, 0.9, 1.0), true)
