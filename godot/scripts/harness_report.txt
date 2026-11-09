@@ -59,13 +59,13 @@ frozen | on a map with ice: what draws it frozen (frozen.gdshaderinc) - the grou
 gate | the gate the story keeps shut that said its line on this run (PIX-254)
 hamlet | on a settlement beyond Pixelheim: its look and its dressing counted by how each piece stands: fishing:line1,moored2,stand4,wall3 (PIX-313)
 hero | with --role or --level: the hero as built, role:level, health/mana, strength, intelligence, dexterity, endurance, skills learned and the weapon in hand: mage:10:91/140:3,28,4,12:skills12:arch_staff (PIX-379)
-hint | the first-time hint on the screen, by the id it's seen by, or held:<id> while one waits its turn (PIX-341: never over a boss's entrance)
+hint | the first-time hint on the battle log's line, showing or waiting there, by the id it's seen by, or held:<id> while one is held back (PIX-341: never over a boss's entrance)
 home | who the story brought home to live in town, by first name: wenna (PIX-255)
 homes | on a settlement beyond Pixelheim: its houses, how many looks (roof and walls) they wear between them and the lamps by its doors and on its street (a lantern, a lamp post, a fire under a door; not the lighthouse, a stall or a lodge lit): 3:looks3:lamps3 (PIX-400)
 hour | at the Night of Ash's dawn: the HUD's clock as it reads, its dial a sun or a moon: 04:48 sun (PIX-346)
 houses | on the town: its age and the houses standing on it, ruins not counted (the same with or without the paid art): 4:17 (PIX-382 step 3)
 hub | on a hub's map: its place, the step it has grown to and what of it stands, drawn: saltmere:3:lighthouse (PIX-324)
-hudclash | while a title card, a hint, the battle log, the arrow or anything rising over the world shows: the words on the screen that overlap, as pairs (card, hint, float, log, arrow, bar, next, plate, and the hero under a plate), or none (PIX-345: the Victory card on a boss's win, a hint pushed over the hero, the arrow on a floor's name): none
+hudclash | while a title card, the battle log (a hint is one of its lines), the arrow or anything rising over the world shows: the words on the screen that overlap, as pairs (card, float, log, arrow, bar, next, plate, and the hero under a plate), or none (PIX-345: the Victory card on a boss's win, a hint pushed over the hero, the arrow on a floor's name): none
 jobs | on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)
 jumps | with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)
 lamplight | on a map with lamps or lit windows, and in every room: its street lamps lit of all, its windows' lit glass, a room's candles burning and the day through its windows: posts 6/6 panes 12 flames 0 beams 0 (PIX-311)

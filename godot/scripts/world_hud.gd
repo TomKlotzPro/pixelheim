@@ -17,9 +17,8 @@ var sky_overlay: ColorRect
 ## The hero panel: health, resource, xp, gold, the screens (HudPanel).
 var dock: Control
 var boss_bar: Control
-## The first-time hint on it now (PIX-160), and those waiting their turn
-## ([id, values, the id it's seen by], PIX-341: hints_wait).
-var hint_card: PanelContainer
+## The first-time hints waiting their turn ([id, values, the id it's seen
+## by], PIX-341: hints_wait).
 var _held_hints: Array[Array] = []
 static var _hint_doc := {}
 static var _hint_generation := 0
@@ -148,13 +147,20 @@ func place() -> void:
 	root.offset = Touch.hud_offset(world)
 	sky_overlay.position = -root.offset
 	sky_overlay.size = Touch.view_size(world)
+	# On a phone the log's line, a tip among them, starts past the thumbstick
+	# (PIX-433: it ran under it).
+	if Touch.enabled():
+		var pad := Touch.pad_plan(Touch.view_size(world), Touch.css(world, 1.0))
+		world.messages.log_box.position.x = pad["stick_center"].x + pad["stick_radius"] + UiStyle.GAP - root.offset.x
 
 
-## A first-time hint (PIX-160): a card under the top of the screen that
-## says what something is, once per player (GameSettings.hints_seen, `key`
-## when one hint has many, a skill each) and never with hints off. It doesn't
-## stop the game, and fades by itself. One at a time, and never over a
-## boss's entrance or a title card: it waits its turn (hints_wait).
+## A first-time hint (PIX-160): one short line on the battle log's place
+## (PIX-433: a big box over the view is what Tom can't stand, and two boxes
+## at once still less), saying what something is, once per player
+## (GameSettings.hints_seen, `key` when one hint has many, a skill each) and
+## never with hints off. It waits its turn among the log's lines and behind
+## the plate (Messages.hint_line), and never comes over a boss's entrance or
+## a title card (hints_wait).
 func hint(id: String, values := {}, key := "") -> void:
 	var settings := GameState.settings
 	var seen_id := key if key != "" else id
@@ -170,54 +176,17 @@ func hint(id: String, values := {}, key := "") -> void:
 	if _hint_doc.is_empty() or _hint_generation != Text.generation:
 		_hint_doc = Text.localize(JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json")))
 		_hint_generation = Text.generation
-	var title := String(_hint_doc[id]["title"])
 	var text := Controls.say(String(_hint_doc[id]["text"]))
 	for name: String in values:
-		title = title.replace("{%s}" % name, str(values[name]))
 		text = text.replace("{%s}" % name, str(values[name]))
-	hint_card = PanelContainer.new()
-	hint_card.set_meta("id", seen_id)
-	hint_card.add_theme_stylebox_override("panel", UiStyle.window(12))
-	hint_card.position = Vector2(340, _hint_top())
-	hint_card.custom_minimum_size = Vector2(600, 0)
-	hint_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var lines := VBoxContainer.new()
-	lines.add_theme_constant_override("separation", 4)
-	hint_card.add_child(lines)
-	lines.add_child(UiStyle.strong(title, 16, UiStyle.LAMP))
-	var body := UiStyle.label(text, UiStyle.reading(14), UiStyle.INK)
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	body.custom_minimum_size = Vector2(570, 0)
-	lines.add_child(body)
-	root.add_child(hint_card)
-	hint_card.modulate.a = 0.0
-	var show := hint_card.create_tween()
-	show.tween_property(hint_card, "modulate:a", 1.0, 0.3)
-	show.tween_interval(10.0 if settings.large_text else 7.0)
-	show.tween_property(hint_card, "modulate:a", 0.0, 0.6)
-	show.tween_callback(hint_card.queue_free)
-	hint_card.set_meta("show", show)
+	world.messages.hint_line(seen_id, text)
 
 
-## A first-time hint stands under the boss bar while one is up (PIX-210);
-## a title card that comes after it holds it, unseen and its time stopped,
-## until the card has gone (PIX-345: pushed under a place's name, it stood
-## over the hero for seconds). One waiting its turn shows once nothing
-## holds it.
-func keep_hint_clear() -> void:
+## A hint held back shows once nothing holds it.
+func next_hint() -> void:
 	if not _held_hints.is_empty() and not hints_wait():
 		var held: Array = _held_hints.pop_front()
 		hint(held[0], held[1], held[2])
-	if is_instance_valid(hint_card) and not hint_card.is_queued_for_deletion():
-		hint_card.position.y = _hint_top()
-		var hold := card_up()
-		if hint_card.visible == hold:
-			hint_card.visible = not hold
-			var show: Tween = hint_card.get_meta("show")
-			if hold:
-				show.pause()
-			else:
-				show.play()
 
 
 ## Whether a first-time hint waits its turn (PIX-341: the dodge's card
@@ -227,9 +196,7 @@ func keep_hint_clear() -> void:
 ## as long as it hunts them. Once it falls, the hero gets away or the fight
 ## has gone on a while, the hint shows.
 func hints_wait() -> bool:
-	if is_instance_valid(hint_card) and not hint_card.is_queued_for_deletion():
-		return true
-	if card_up():
+	if world.messages.hint_up() != "" or card_up():
 		return true
 	return world.foes.boss_hunting() != null and GameClock.seconds() - world.foes.boss_noticed_at < BOSS_HINT_S
 
@@ -243,11 +210,6 @@ func card_up() -> bool:
 ## `hint`).
 func hint_held() -> String:
 	return String(_held_hints[0][2]) if not _held_hints.is_empty() else ""
-
-
-## Where a hint's card stands: under the boss bar while it's up.
-func _hint_top() -> float:
-	return boss_bar.bottom() + 6 if boss_bar.following() else 18.0
 
 
 ## A title over the world for a moment (PIX-232: a boss's fall): the big
@@ -306,7 +268,7 @@ func _card_clear_of() -> Array[Rect2]:
 
 ## The HUD's plates at the top where they stand over the world, for what
 ## rises there to stay under (WorldFx.keep_clear, PIX-345): the boss bar
-## while it shows, a title card, a hint.
+## while it shows, a title card.
 func plates_over() -> Array[Rect2]:
 	var plates: Array[Rect2] = []
 	if root == null:
@@ -315,8 +277,6 @@ func plates_over() -> Array[Rect2]:
 		plates.append(to_world(boss_bar.plate.get_global_rect()))
 	if card_up():
 		plates.append(to_world(_card.get_global_rect()))
-	if is_instance_valid(hint_card) and hint_card.visible and not hint_card.is_queued_for_deletion():
-		plates.append(to_world(hint_card.get_global_rect()))
 	return plates
 
 

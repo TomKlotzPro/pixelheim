@@ -86,6 +86,22 @@ func clear() -> void:
 func log_line(line: String) -> void:
 	log_lines([line])
 
+## A first-time hint as a line of the log (PIX-433), by the id it's seen
+## by: one short line at a time, stepping aside for the plate and coming
+## back in full (one box at a time).
+func hint_line(id: String, text: String) -> void:
+	_log.add(text)["hint"] = id
+	update()
+
+
+## The hint on the log, showing or waiting its turn, by its id, or "".
+func hint_up() -> String:
+	for entry: Dictionary in _log.showing + _log.waiting:
+		if entry.has("hint"):
+			return entry["hint"]
+	return ""
+
+
 ## The battle log: a line at a time, bottom-left, fading. Only what the
 ## world doesn't show comes here (PIX-245): story beats, quests, levels, the
 ## boss slayer's edge, a pack scattered; what's won floats up where it was
@@ -111,8 +127,9 @@ func log_lines(lines: Array, later := false) -> void:
 func _say(entry: Dictionary) -> void:
 	var chip: PanelContainer = entry.get("chip")
 	if chip == null:
-		# Counted once, though it may show again after the plate (_step_aside).
-		if not entry.has("logged"):
+		# Counted once, though it may show again after the plate (_step_aside);
+		# a first-time hint is no line of the fight's.
+		if not entry.has("logged") and not entry.has("hint"):
 			logged += 1
 			entry["logged"] = true
 		chip = PanelContainer.new()

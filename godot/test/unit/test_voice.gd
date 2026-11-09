@@ -30,7 +30,7 @@ func _guidance() -> Array[String]:
 	out.append_array(letters["tin"] + letters["late"] + [letters["taken"], letters["takenSome"], letters["answered"], letters["road"], letters["room"]])
 	var hints: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json"))
 	for id: String in hints:
-		out.append_array([String(hints[id]["title"]), String(hints[id]["text"])])
+		out.append(String(hints[id]["text"]))
 	return out
 
 
@@ -58,6 +58,16 @@ func test_no_line_names_a_key_the_player_may_have_moved() -> void:
 	for line in _guidance():
 		for found in token.search_all(line):
 			assert_true(Controls.BINDABLE.has(found.get_string(1)), "a key for an action that exists: %s" % line)
+
+
+## PIX-432: « I ouvre votre sac. » A key is called what it's called: a
+## sentence presses it, never stands it up as its subject.
+func test_no_clause_opens_on_a_key() -> void:
+	var opens := RegEx.create_from_string("(?:^|[.!?:;)] )\\{key:[a-z_0-9]+\\} \\p{L}")
+	for path: String in ["res://locale/messages.pot", "res://locale/fr.po"]:
+		for line: String in FileAccess.get_file_as_string(path).split("\n"):
+			if line.begins_with("msgid ") or line.begins_with("msgstr "):
+				assert_null(opens.search(line.get_slice("\"", 1)), "a key as the subject: %s" % line)
 
 
 func test_a_key_token_reads_the_binding() -> void:

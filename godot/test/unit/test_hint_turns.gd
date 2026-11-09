@@ -3,9 +3,9 @@ extends GutTest
 ## his bar, his name and his first words. A first-time hint waits while a
 ## boss makes its entrance, and shows once it falls (or the hero gets away,
 ## or the fight has gone on a while); and one hint at a time, the next in
-## its turn, nothing lost. PIX-345: a title card over a hint already up held
-## it pushed down over the hero; now it holds it unseen until it goes, and a
-## title card stands clear of what rises over the world.
+## its turn, nothing lost. PIX-433: a hint is one short line on the battle
+## log's place, never a box over the view, never two boxes at once. PIX-345:
+## a title card stands clear of what rises over the world.
 
 
 ## Foes as the HUD asks them: the boss hunting the hero, and since when.
@@ -15,6 +15,9 @@ class FakeFoes extends RefCounted:
 
 	func boss_hunting() -> Node:
 		return boss
+
+	func in_fight(_calm := 0.0) -> bool:
+		return false
 
 
 ## What rises over the world, as far as it may yet go (WorldFx.reach).
@@ -29,6 +32,7 @@ class FakeWorld extends Node:
 	var foes := FakeFoes.new()
 	var fx := FakeFx.new()
 	var messages: Messages = null
+	var hud: Hud = null
 
 
 var world: FakeWorld
@@ -49,6 +53,12 @@ func before_each() -> void:
 	world.add_child(hud.root)
 	hud.boss_bar = preload("res://scripts/boss_bar.gd").new()
 	hud.root.add_child(hud.boss_bar)
+	world.hud = hud
+	world.messages = Messages.new()
+	world.messages.world = world
+	world.add_child(world.messages)
+	world.messages.build_log(hud.root)
+	world.messages.build_plate(hud.root)
 
 
 func after_each() -> void:
@@ -56,7 +66,7 @@ func after_each() -> void:
 
 
 func _up() -> String:
-	return String(hud.hint_card.get_meta("id")) if is_instance_valid(hud.hint_card) else ""
+	return world.messages.hint_up()
 
 
 func test_a_hint_waits_out_a_boss_entrance_and_shows_once_it_falls() -> void:
@@ -64,11 +74,11 @@ func test_a_hint_waits_out_a_boss_entrance_and_shows_once_it_falls() -> void:
 	world.foes.boss_noticed_at = GameClock.seconds()
 	hud.hint("dodge")
 	assert_eq([_up(), hud.hint_held()], ["", "dodge"], "held, not over the entrance")
-	hud.keep_hint_clear()
+	hud.next_hint()
 	assert_eq(hud.hint_held(), "dodge", "still held while the entrance plays")
 	assert_false("dodge" in GameState.settings.hints_seen, "not seen until it shows")
 	world.foes.boss = null
-	hud.keep_hint_clear()
+	hud.next_hint()
 	assert_eq([_up(), hud.hint_held()], ["dodge", ""], "the boss down: it shows")
 	assert_true("dodge" in GameState.settings.hints_seen)
 
@@ -85,8 +95,8 @@ func test_one_hint_at_a_time_the_next_in_its_turn() -> void:
 	hud.hint("fright")
 	hud.hint("fright")
 	assert_eq([_up(), hud.hint_held()], ["dodge", "fright"], "the second waits, once")
-	hud.hint_card.free()
-	hud.keep_hint_clear()
+	world.messages.clear()
+	hud.next_hint()
 	assert_eq(_up(), "fright", "its turn")
 
 
@@ -95,28 +105,73 @@ func test_a_hint_waits_for_a_title_card() -> void:
 	hud.hint("dodge")
 	assert_eq(hud.hint_held(), "dodge", "not over the place's name")
 	card.free()
-	hud.keep_hint_clear()
+	hud.next_hint()
 	assert_eq(_up(), "dodge")
 
 
-## PIX-345: walking out of the sea cave, Saltmere's name came over the dodge
-## already up and pushed it down over the hero for seconds. The card holds
-## it unseen, its time stopped; it comes back where it stood as the card
-## goes.
-func test_a_title_card_holds_a_hint_already_up() -> void:
-	hud.hint("dodge")
-	var top := hud.hint_card.position.y
-	var show: Tween = hud.hint_card.get_meta("show")
-	var card := hud.title_card("Saltmere", "")
-	hud.keep_hint_clear()
-	assert_false(hud.hint_card.visible, "held under the card")
-	assert_false(show.is_running(), "its time stopped")
-	assert_eq(hud.hint_card.position.y, top, "never pushed down")
-	card.free()
-	hud.keep_hint_clear()
-	assert_true(hud.hint_card.visible, "back as the card goes")
-	assert_true(show.is_running(), "its time running again")
-	assert_eq(hud.hint_card.position.y, top, "where it stood")
+## PIX-433: "Quest accepted" and the journal's hint stood as two boxes at
+## once. The plate goes first and the hint's line waits until it has gone.
+func test_a_hint_is_a_line_of_the_log_and_waits_behind_the_plate() -> void:
+	var chips := world.messages.log_box
+	world.messages.flash(Text.t("Quest accepted") + ": A letter.")
+	assert_eq(_up(), "journal", "the first quest brings the journal's hint")
+	assert_eq(chips.get_child_count(), 0, "not beside the plate")
+	world.messages.message_fade.custom_step(30.0)
+	assert_eq(chips.get_child_count(), 1, "its turn, the plate gone")
+	var line: String = (chips.get_child(0).get_child(0) as Label).text
+	assert_string_contains(line, Controls.say("{key:journal}"), "the player's own key")
+
+
+## PIX-433: on a phone the log's line ran under the thumbstick.
+func test_on_a_phone_the_log_starts_past_the_stick() -> void:
+	hud.sky_overlay = ColorRect.new()
+	hud.root.add_child(hud.sky_overlay)
+	Touch.forced = true
+	hud.place()
+	Touch.forced = false
+	var pad := Touch.pad_plan(Touch.view_size(world), Touch.css(world, 1.0))
+	assert_gt(world.messages.log_box.position.x + hud.root.offset.x, pad["stick_center"].x + pad["stick_radius"])
+
+
+func _wide(line: String, font_size: int) -> float:
+	return UiStyle.body_font().get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+
+
+## Every hint as the game says it, a skill's by the longest name there is.
+func _hints() -> Array[String]:
+	var trees: Dictionary = Text.localize(JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/combat.json")))["skillTrees"]
+	var longest := ""
+	for tree: Array in trees.values():
+		for node: Dictionary in tree:
+			if String(node.get("name", "")).length() > longest.length():
+				longest = node["name"]
+	var doc: Dictionary = Text.localize(JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json")))
+	var out: Array[String] = []
+	for id: String in doc:
+		out.append(Controls.say(String(doc[id]["text"])).replace("{skill}", longest).replace("{slot}", "1"))
+	return out
+
+
+## PIX-433: one short line. English and French fit the log's width at the
+## game's size; a phone's large type and a language a third longer than
+## English (--pseudo) wrap to two lines at most (the log's chip wraps).
+func test_every_hint_is_one_short_line() -> void:
+	var locale := TranslationServer.get_locale()
+	for lang: String in ["en", "fr"]:
+		TranslationServer.set_locale(lang)
+		for line: String in _hints():
+			assert_lte(_wide(line, UiStyle.TEXT), Messages.LOG_WIDTH, "one line: %s" % line)
+			assert_lte(_wide(line, UiStyle.BIG), Messages.LOG_WIDTH * 2.0, "two in large type: %s" % line)
+	TranslationServer.set_locale("en")
+	var ratio := "internationalization/pseudolocalization/expansion_ratio"
+	var kept_ratio: Variant = ProjectSettings.get_setting(ratio)
+	ProjectSettings.set_setting(ratio, 0.35)
+	TranslationServer.pseudolocalization_enabled = true
+	for line: String in _hints():
+		assert_lte(_wide(line, UiStyle.TEXT), Messages.LOG_WIDTH * 2.0, "two stretched: %s" % line)
+	TranslationServer.pseudolocalization_enabled = false
+	ProjectSettings.set_setting(ratio, kept_ratio)
+	TranslationServer.set_locale(locale)
 
 
 ## PIX-345: at a boss's fall the Victory card stood where its gold, its
@@ -139,10 +194,6 @@ func test_a_title_card_stands_clear_of_what_rises() -> void:
 ## screen, and the arrow's area under it came out of a negative height. Only
 ## a plate on the screen counts, and the area is never negative.
 func test_a_plate_not_laid_out_leaves_the_arrow_room() -> void:
-	world.messages = Messages.new()
-	world.add_child(world.messages)
-	world.messages.build_log(hud.root)
-	world.messages.build_plate(hud.root)
 	world.messages.message_label.text = "Le Roi Creux se dresse sur son trône et tire son épée de cendre."
 	world.messages.message_label.size = Vector2.ZERO
 	world.messages.message_box.modulate.a = 1.0
