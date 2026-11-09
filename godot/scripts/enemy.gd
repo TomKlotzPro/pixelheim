@@ -36,6 +36,9 @@ const DROP_RUN := 3.0
 ## height over the health bar.
 const MARK_CLEAR := 1.0
 const TAG_HEIGHT := 9.0
+const TAG_HALF_WIDTH := 10.0
+## Between the level tag and an ailment's icon, and from one to the next.
+const AILMENT_GAP := 1.0
 ## A bite is told once the hero is within Reach.bite_tell(), and lands if
 ## they're still within Reach.bite_lands() (PIX-410: combat.json's reach).
 const CONTACT_COOLDOWN := 0.9
@@ -129,6 +132,12 @@ var health_bar_back: ColorRect
 var level_tag: PanelContainer
 ## Poison, burn and stun from the hero's afflicting passives.
 var ailments := Ailments.new()
+## An icon for each of them beside the tag (PIX-440), built at the first:
+## a foe nothing ails has no nodes for it.
+var _ailment_row: Node2D
+var _ailing: Array[String] = []
+## Its boss or elite brain, if it has one: what it tells a stun can break.
+var brain: Node
 ## PunyArt.monster spec, and the way it last faced.
 var art: Dictionary
 var facing := "down"
@@ -229,8 +238,8 @@ var _grid_map: MapData
 ## answer holds (a boss watching a hero it can't reach asks twice a second).
 var _reaches := false
 var _reach_until := -100.0
-## Where its bar stands, from its feet (over_head, PIX-314); a boss's
-## shadow and glow (_weigh).
+## Where its bar stands, from its feet (over_head, PIX-314); its shadow
+## on the ground (ground_shadow, PIX-441) and a boss's glow (_weigh).
 var _over_head := BAR_Y
 ## Its shot (Reach.shot, PIX-410), {} for a foe that only bites; seconds
 ## till it may loose the next, and till the one it is telling flies
@@ -238,6 +247,10 @@ var _over_head := BAR_Y
 var shot := {}
 var shot_left := 0.0
 var aim_left := -1.0
+## The bite's or the shot's tell as it shows (a stun breaks them, PIX-440):
+## the sprite's tween, and its band on the ground under clear warnings.
+var _tell_tween: Tween
+var _tell_mark: Node2D
 var _shadow: Sprite2D
 var _aura: PointLight2D
 static var _shadows := {}
@@ -279,6 +292,8 @@ func _ready() -> void:
 	sprite.material = Juice.fighter_material()
 	gait = Gait.new(sprite, art, size)
 	_play("idle")
+	_shadow = ground_shadow(sprite, size, _rest_at.y)
+	add_child(_shadow)
 	if boss_like:
 		_weigh(size)
 	add_child(sprite)
@@ -292,9 +307,11 @@ func _ready() -> void:
 	var guards: Dictionary = Bestiary.stun_guard()
 	ailments.stun_guard = float(guards["boss"]) if Bestiary.is_boss(fighter["id"]) else (float(guards["elite"]) if fighter["elite"] or not named.is_empty() else 0.0)
 	if not Bestiary.boss_pattern(fighter["id"]).is_empty():
-		add_child(preload("res://scripts/boss_brain.gd").new())
+		brain = preload("res://scripts/boss_brain.gd").new()
+		add_child(brain)
 	elif not named.is_empty() or (fighter["elite"] and not Bestiary.elite_moves(Bestiary.family_of(fighter["id"])).is_empty()):
-		add_child(preload("res://scripts/elite_brain.gd").new())
+		brain = preload("res://scripts/elite_brain.gd").new()
+		add_child(brain)
 
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
@@ -369,6 +386,7 @@ func _physics_process(delta: float) -> void:
 	# and as the nearest kept the pack's living tags hidden).
 	if level_tag != null:
 		level_tag.visible = not dying and (hunting or health_bar.visible or Packs.within_notice(global_position, world.player.global_position))
+		_show_ailments()
 	if dying:
 		return
 	for tick in ailments.tick(delta):
@@ -449,6 +467,56 @@ func _physics_process(delta: float) -> void:
 		_play("idle")
 
 
+## An icon for each thing ailing it, beside its level tag (PIX-440), gone
+## with the ailment or the foe. Nothing to do for a foe with none, and the
+## icons are made again only when the list changes, so a big pack pays only
+## for those ailing.
+func _show_ailments() -> void:
+	if ailments.effects.is_empty() and _ailing.is_empty():
+		return
+	var kinds := ailments.kinds()
+	# A fixed order: a refreshed ailment moves to the end of the list.
+	kinds.sort()
+	if dying:
+		kinds.clear()
+	if _ailment_row == null:
+		_ailment_row = Node2D.new()
+		# Over every actor, as the tag.
+		_ailment_row.z_as_relative = false
+		_ailment_row.z_index = 20
+		add_child(_ailment_row)
+	_ailment_row.position = _beside_tag()
+	if kinds == _ailing:
+		return
+	_ailing = kinds
+	for icon in _ailment_row.get_children():
+		icon.free()
+	var x := 0.0
+	for kind in kinds:
+		var art := ItemIcons.ailment(kind)
+		# Each is a few art pixels in the corner of a blank 16x16: cut to its
+		# ink, or the row would stand a full tile apart and off the tag's line.
+		var ink := Rect2i() if art == null else Ink.used(art)
+		var icon := Sprite2D.new()
+		icon.texture = art
+		icon.centered = false
+		icon.region_enabled = true
+		icon.region_rect = ink
+		icon.position = Vector2(x, -floorf(ink.size.y / 2.0))
+		# Reads in the dark, as the tag does.
+		icon.material = Lights.unshaded()
+		_ailment_row.add_child(icon)
+		x += ink.size.x + AILMENT_GAP
+
+
+## The middle of the level tag's right side, or where it would be while the
+## tag has never been laid out (hidden from the start in a pack's fight).
+func _beside_tag() -> Vector2:
+	if level_tag.size.x <= 0.0:
+		return Vector2(TAG_HALF_WIDTH + AILMENT_GAP, _over_head - TAG_HEIGHT / 2.0)
+	return level_tag.position + Vector2(level_tag.size.x * CameraRig.LABEL_SCALE + AILMENT_GAP, level_tag.size.y * CameraRig.LABEL_SCALE / 2.0)
+
+
 ## How many times its kind's size it is grown (PIX-314): as the story sizes
 ## it (the Night of Bells' Fafnyr, `size`), as a named monster (its own
 ## `scale`), or not at all. Whole: twice its kind, not one and a half.
@@ -498,28 +566,14 @@ static func aura_color(fighter: Dictionary) -> Color:
 	return Color(tint.r / top, tint.g / top, tint.b / top).lerp(Color.WHITE, AURA_WHITE)
 
 
-## A boss's weight besides its size (PIX-314): its shadow on the ground
-## under its feet, on its own pixels, before its sprite so it lies under it;
-## and a glow of its own colour on the floor round its feet that breathes in
-## the dark, a light on the floor alone (Lights.FLOOR): drawn with the
-## ground, under every actor and pickup, so a hero standing in it looks as
-## without it.
+## A boss's weight besides its size (PIX-314): a glow of its own colour on
+## the floor round its feet that breathes in the dark, a light on the floor
+## alone (Lights.FLOOR): drawn with the ground, under every actor and
+## pickup, so a hero standing in it looks as without it.
 func _weigh(size: int) -> void:
-	var frame := sprite.sprite_frames.get_frame_texture(sprite.animation, 0)
-	var ink := _ink(frame)
-	var half := Vector2i(frame.get_size()) / 2
-	var wide := ink.size.x + ink.size.x % 2
-	_shadow = Sprite2D.new()
-	_shadow.texture = shadow_texture(wide)
-	_shadow.scale = Vector2.ONE * size
-	# Under the middle of its body, reaching a pixel past its feet: whole
-	# art pixels from the frame's corner, on the foe's own grid.
-	var tall := _shadow.texture.get_height()
-	_shadow.position = Vector2(ink.position.x + ink.size.x / 2 - half.x, ink.end.y + 1 - tall / 2 - half.y) * size + Vector2(0, _rest_at.y)
-	add_child(_shadow)
 	# Round its feet, a little past its body either side, on whole pixels.
 	_aura = Lights.make(_shadow.position, 0.0, aura_color(fighter), AURA_ENERGY)
-	_aura.texture = aura_texture(wide * size / 2 + AURA_PAST)
+	_aura.texture = aura_texture(_shadow.texture.get_width() * size / 2 + AURA_PAST)
 	_aura.texture_scale = 1.0
 	_aura.range_item_cull_mask = Lights.FLOOR
 	_aura.set_meta("pulse", true)
@@ -546,7 +600,7 @@ static func aura_texture(reach: int) -> Texture2D:
 	return _auras[reach]
 
 
-## A boss's shadow `wide` art pixels across: an oval a quarter as tall (two
+## A contact shadow `wide` art pixels across: an oval a quarter as tall (two
 ## pixels at least, even), dark and see-through, its edge on whole pixels.
 static func shadow_texture(wide: int) -> Texture2D:
 	if _shadows.has(wide):
@@ -563,12 +617,25 @@ static func shadow_texture(wide: int) -> Texture2D:
 	return _shadows[wide]
 
 
-## The pixels a frame draws, in the frame.
-static func _ink(frame: Texture2D) -> Rect2i:
-	if frame is AtlasTexture:
-		var cut := frame as AtlasTexture
-		return cut.atlas.get_image().get_region(Rect2i(cut.region)).get_used_rect()
-	return frame.get_image().get_used_rect()
+## A figure's shadow on the ground (PIX-314; PIX-441: the hero, villagers and
+## every foe), measured on the frame it stands in facing the player, whatever
+## it is playing, on its own pixels: under the middle of its body, reaching a
+## pixel past its feet, whole art pixels from the frame's corner. A child of
+## the figure beside its sprite, so the squash and the walk leave it planted:
+## add it before the sprite. Never raised with its figure: a villager drawn
+## over the hero (Npc.stands_over) would lay it across the hero's head.
+static func ground_shadow(sprite: AnimatedSprite2D, size: float, rest_y: float) -> Sprite2D:
+	var frames := sprite.sprite_frames
+	var frame := frames.get_frame_texture(PunyArt.pick(frames, "idle", "down"), 0)
+	var ink := Ink.used(frame)
+	var half := Vector2i(frame.get_size()) / 2
+	var shadow := Sprite2D.new()
+	shadow.texture = shadow_texture(ink.size.x + ink.size.x % 2)
+	shadow.scale = Vector2.ONE * size
+	shadow.z_as_relative = false
+	var tall := shadow.texture.get_height()
+	shadow.position = Vector2(ink.position.x + ink.size.x / 2 - half.x, ink.end.y + 1 - tall / 2 - half.y) * size + Vector2(0, rest_y)
+	return shadow
 
 
 ## The hero is seen: the danger mark over the head and a hop, then the
@@ -861,11 +928,11 @@ func _shoots(to_player: Vector2, delta: float) -> bool:
 	if shot_left <= 0.0:
 		aim_left = float(shot["tell"])
 		Sound.play("tell")
-		var glow := sprite.create_tween()
-		glow.tween_property(sprite, "modulate", Color(1.6, 1.1, 0.6), aim_left)
-		glow.tween_property(sprite, "modulate", Color.WHITE, 0.1)
+		_tell_tween = sprite.create_tween()
+		_tell_tween.tween_property(sprite, "modulate", Color(1.6, 1.1, 0.6), aim_left)
+		_tell_tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
 		if GameState.settings.clear_warnings:
-			Telegraph.mark(world, Telegraph.band(global_position, global_position + to_player, _flies(), Firebolt.REACH * 2.0), aim_left, Callable(), false)
+			_tell_mark = Telegraph.mark(world, Telegraph.band(global_position, global_position + to_player, _flies(), Firebolt.REACH * 2.0), aim_left, Callable(), false)
 	return true
 
 
@@ -902,6 +969,7 @@ func _tell_bite(toward: Vector2) -> void:
 	var at := sprite.position
 	var back := -toward.normalized() * LEAN_BACK
 	var tell := sprite.create_tween().set_parallel()
+	_tell_tween = tell
 	tell.tween_property(sprite, "modulate", Color(1.8, 0.75, 0.6), tell_left * 0.6)
 	tell.tween_property(sprite, "scale", rest * Vector2(1.12, 0.88), tell_left * 0.6)
 	tell.tween_property(sprite, "position", at + back, tell_left * 0.6).set_ease(Tween.EASE_OUT)
@@ -913,7 +981,7 @@ func _tell_bite(toward: Vector2) -> void:
 	tell.tween_property(sprite, "skew", 0.0, tell_left * 0.4)
 	Sound.play("tell")
 	if GameState.settings.clear_warnings:
-		Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, Reach.bite_lands(), 12.0), tell_left, Callable(), false)
+		_tell_mark = Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, Reach.bite_lands(), 12.0), tell_left, Callable(), false)
 
 
 ## Whether it takes a place in the ring round the hero (PIX-377,
@@ -1283,6 +1351,30 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	if not dying and ailments.inflict(infliction, GameState.roll):
 		Sound.play("foe_afflicted")
 		world.messages.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])])
+		if infliction["kind"] == "stun":
+			_interrupt()
+
+
+## A stun that took hold breaks what it was telling (PIX-440): its bite's or
+## shot's, and whatever its brain has marked or raised. The blow never comes
+## and it stands dazed for its turns, then chases again. The guard on stuns
+## (Ailments.stun_guard) keeps this to one a window on a boss or an elite.
+func _interrupt() -> void:
+	var broke := tell_left >= 0.0 or aim_left >= 0.0
+	tell_left = -1.0
+	aim_left = -1.0
+	Telegraph.cancel(_tell_mark)
+	if _tell_tween != null and _tell_tween.is_running():
+		_tell_tween.kill()
+		sprite.modulate = Color.WHITE
+		sprite.scale = _rest_scale
+		sprite.position = _rest_at
+		sprite.skew = 0.0
+	if brain != null and brain.interrupt():
+		broke = true
+	if broke:
+		# In "dodged" and "blocked"'s blue: gold is lost on sand and straw.
+		world.fx.float_text(Text.t("Interrupted!"), global_position + Vector2(0, minf(-26.0, _over_head)), Color(0.75, 0.9, 1.0), true)
 
 
 ## A blow from someone else's hand (PIX-253 step 9: Ulla's old guard on the
@@ -1351,6 +1443,9 @@ func lie_down() -> void:
 	health_bar.visible = false
 	health_bar_back.visible = false
 	gait.halt()
+	# A common foe's shadow goes as it falls; a boss's with its body (_dissolve).
+	if not boss_like:
+		_shadow.visible = false
 	var death := "death_" + facing
 	if not sprite.sprite_frames.has_animation(death):
 		death = "death"
@@ -1369,8 +1464,7 @@ func _dissolve() -> void:
 	if world.get("atmosphere") != null:
 		world.atmosphere.remains(global_position + Vector2(0, -8), color)
 	# A boss's shadow and glow go with it (PIX-314).
-	if _shadow != null:
-		_shadow.create_tween().tween_property(_shadow, "modulate:a", 0.0, Juice.DISSOLVE_SECONDS)
+	_shadow.create_tween().tween_property(_shadow, "modulate:a", 0.0, Juice.DISSOLVE_SECONDS)
 	if _aura != null:
 		var light := _aura
 		light.create_tween().tween_method(func(energy: float) -> void: light.set_meta("energy", energy), AURA_ENERGY, 0.0, Juice.DISSOLVE_SECONDS)

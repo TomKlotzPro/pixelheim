@@ -190,7 +190,8 @@ func interact() -> void:
 		# A trader out in the Reach (PIX-176) sells from their own pack.
 		var trader: String = beside["npc"].get("shop", "")
 		if trader != "" and not quest_word:
-			_open_stall(trader)
+			# They never reach talk(), so a beat met is said over the counter (PIX-443).
+			_open_stall(trader, Npcs.lines_when(beside["npc"].get("linesWhen", []), [""], world.folk.beats())[0])
 		elif at_stall and not quest_word:
 			# A keeper on the burnt square (PIX-146): Sela's tent takes a
 			# guest for the night, the others trade from their stalls.
@@ -364,9 +365,10 @@ func _open_shop(tab := "") -> void:
 
 
 ## A stall's counter: the shop as if in its building, until the screen closes.
-func _open_stall(shop_id: String) -> void:
+func _open_stall(shop_id: String, greeting := "") -> void:
 	GameState.trade.stall_shop = shop_id
 	var screen := preload("res://scripts/shop_screen.gd").new()
+	screen.greeting = greeting
 	screen.tree_exited.connect(func() -> void: GameState.trade.stall_shop = "")
 	world.add_child(screen)
 
@@ -478,6 +480,11 @@ func talk(npc: Dictionary) -> void:
 		box.npc = npc
 		world.add_child(box)
 		return
+	# Word gets round while you stand there (PIX-443): a beat met since they
+	# came out on this map, Pell's letter just read with Garrick standing by.
+	if npc.has("linesWhen"):
+		npc = npc.duplicate()
+		npc["lines"] = Npcs.lines_when(npc["linesWhen"], npc["lines"], world.folk.beats())
 	# A choice made stays with the one who asked it (PIX-192).
 	var remembered := Quests.after_choice(npc["id"], GameState.progression.quests)
 	if remembered != "":

@@ -20,6 +20,11 @@ var world: Node2D
 var moves: Array[Dictionary] = []
 ## Wolves a howl called that still live.
 var called: Array[Node] = []
+## What it is telling now, for a stun to break (interrupt, PIX-440): its
+## marks on the ground, its glow, its raised guard.
+var marks: Array[Node2D] = []
+var _glow: Tween
+var _shine: Tween
 
 
 func _ready() -> void:
@@ -83,7 +88,7 @@ func _try(move: Dictionary) -> bool:
 			var ways: Array[Vector2] = []
 			for i in count:
 				ways.append(ahead.rotated(float(move.get("spread", 0.0)) * (i - (count - 1) / 2.0)))
-				Telegraph.mark(world, Telegraph.band(at, at + ways[i], Firebolt.RANGE, Firebolt.REACH * 2.0), float(move["tell"]), Callable(), i == 0)
+				_keep(Telegraph.mark(world, Telegraph.band(at, at + ways[i], Firebolt.RANGE, Firebolt.REACH * 2.0), float(move["tell"]), Callable(), i == 0))
 			_flash(move, func() -> void:
 				for way in ways:
 					_bolt(move, way)
@@ -118,7 +123,7 @@ static func cleave_band(move: Dictionary, at: Vector2, hero: Vector2) -> PackedV
 func _tell(move: Dictionary, shape: PackedVector2Array, jump: String) -> void:
 	enemy.mode = "cast"
 	enemy.velocity = Vector2.ZERO
-	Telegraph.mark(world, shape, float(move["tell"]), _strike.bind(move, jump))
+	_keep(Telegraph.mark(world, shape, float(move["tell"]), _strike.bind(move, jump)))
 
 
 func _strike(shape: PackedVector2Array, move: Dictionary, jump: String) -> void:
@@ -151,26 +156,51 @@ func _strike(shape: PackedVector2Array, move: Dictionary, jump: String) -> void:
 func _guard(move: Dictionary) -> void:
 	enemy.guarding = true
 	Sound.play("guard_raise")
-	var shine: Tween = enemy.sprite.create_tween()
-	shine.tween_property(enemy.sprite, "modulate", Color(0.7, 0.85, 1.4), 0.12)
-	shine.tween_interval(float(move["seconds"]))
-	shine.tween_property(enemy.sprite, "modulate", Color.WHITE, 0.15)
-	shine.tween_callback(func() -> void: enemy.guarding = false)
+	_shine = enemy.sprite.create_tween()
+	_shine.tween_property(enemy.sprite, "modulate", Color(0.7, 0.85, 1.4), 0.12)
+	_shine.tween_interval(float(move["seconds"]))
+	_shine.tween_property(enemy.sprite, "modulate", Color.WHITE, 0.15)
+	_shine.tween_callback(func() -> void: enemy.guarding = false)
 
 
 ## Stands still and glows for the tell, then does `then`.
 func _flash(move: Dictionary, then: Callable) -> void:
 	enemy.mode = "cast"
 	enemy.velocity = Vector2.ZERO
-	var flash: Tween = enemy.sprite.create_tween()
-	flash.tween_property(enemy.sprite, "modulate", Color(1.8, 1.0, 0.5), float(move["tell"]))
-	flash.tween_callback(func() -> void:
+	_glow = enemy.sprite.create_tween()
+	_glow.tween_property(enemy.sprite, "modulate", Color(1.8, 1.0, 0.5), float(move["tell"]))
+	_glow.tween_callback(func() -> void:
 		enemy.sprite.modulate = Color.WHITE
 		if enemy.dying:
 			return
 		then.call()
 		enemy.mode = "chase"
 	)
+
+
+## Holds on to a mark till it goes, for a stun to take back.
+func _keep(shown: Node2D) -> void:
+	marks.append(shown)
+	shown.tree_exiting.connect(func() -> void: marks.erase(shown))
+
+
+## A stun broke what it was telling (PIX-440): marks taken back, the glow and
+## the raised guard let go, the blow or the bolts never come. True if there
+## was anything to break; the enemy goes back to chasing when its stun ends.
+func interrupt() -> bool:
+	var broke := false
+	for shown: Variant in marks:
+		broke = Telegraph.cancel(shown) or broke
+	if _glow != null and _glow.is_running():
+		_glow.kill()
+		enemy.sprite.modulate = Color.WHITE
+		broke = true
+	if enemy.guarding:
+		_shine.kill()
+		enemy.sprite.modulate = Color.WHITE
+		enemy.guarding = false
+		broke = true
+	return broke
 
 
 ## A bolt of fire flying `heading` from the caster; a move's "tint" turns

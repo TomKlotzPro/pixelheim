@@ -46,6 +46,9 @@ var tab := 0
 ## The tab it opens on, by name: E at a forge or a cauldron opens the
 ## counter on its Craft tab (PIX-234). The first tab when it has none such.
 var start_tab := ""
+## Over the counter: a trader's word on what you've done (PIX-443), else the
+## shop's own greeting.
+var greeting := ""
 var selected := 0
 ## Where each tab's choice stood: Buy and Sell keep theirs across A/D.
 var _chosen := {}
@@ -108,7 +111,9 @@ func _open() -> void:
 
 	dim()
 	add_child(UiStyle.title(shop["keeper"]))
-	add_child(UiStyle.label(shop["greeting"], 14, UiStyle.DUSK, Vector2(80, 66)))
+	if greeting == "":
+		greeting = shop["greeting"]
+	add_child(UiStyle.label(greeting, 14, UiStyle.DUSK, Vector2(80, 66)))
 	purse = UiStyle.purse(0, 18)
 	purse.position = Vector2(1060, 20)
 	add_child(purse)

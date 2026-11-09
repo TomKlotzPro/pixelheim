@@ -94,6 +94,7 @@ rising | with fight kill pack: the wins rising over the world once the first of 
 rooms | with rooms: what the rooms are drawn from (paid, free or none), how many of them have walls and a floor, and those with a stair down: free walled 9/9 stairs keep,observatory (PIX-318)
 rose | a chapter card's title, how far it rose coming in (PIX-253)
 routes | once the Post has carried anything along a road: each route by place, the pieces it has carried, and signs once its signposts stand, offered while its waystation is on the board, built once it stands: saltmere:6:signs:offered,blackiron:2 (PIX-322)
+said | what a villager is saying: the open conversation's page, or the greeting over a counter (PIX-443)
 saves | with seamless: the saves crossing lines made (once for crossing back and forth, PIX-269)
 scene | the story scene playing over the world, by id: bells_dawn (PIX-253 step 9), vault_door (PIX-257)
 scorch | on a map with burnt land: its burnt rock's cells, the dead trees on it, the cinders glowing, and a mining country's rails, spoil and pieces standing at its workings: burnt120,snags40,cinders30,rails50,spoil9,standing14 (PIX-308)

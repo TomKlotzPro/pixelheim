@@ -288,6 +288,14 @@ ledger-desk | --map town_hall --at 12,5 --keys w,e | map=town_hall open=town_hal
 bank-desk | --map town --settlers mirelle --at 47,15 --keys a,e | map=town open=bank_screen | town trade screen
 # A market stall in the Ashes (PIX-129).
 stall | --map town --town-tier 0 --at 35,25 --keys a,e | open=shop_screen | town trade screen
+# Word gets round (PIX-443), by E: a trader says a beat met over the counter,
+# their shop's greeting before it, and the longest line fits in French; and
+# Pell's letter read while Garrick stands by is heard from Garrick.
+word-counter-before | --map saltmere --at 26,18 --keys w,e --lang en | open=shop_screen said=Rope, tar.* | trade story
+word-counter | --map saltmere --at 26,18 --routes saltmere:7 --keys w,e --lang en | hub=saltmere:3.* open=shop_screen said=Lamp oil by the barrel.* | trade story
+word-counter-fr | --map saltmere --at 26,18 --routes saltmere:7 --keys w,e --lang fr | open=shop_screen said=De l'huile à lampe.* | trade story lang
+word-counter-longest-fr | --map frostgate --at 37,42 --routes frostgate:7 --keys w,e overflow --lang fr | open=shop_screen said=Un refuge avec un feu.* overflow=0 | trade story lang
+word-since | --ready letter_pell --map blackiron --at 20,19 --talk-to mines_pell --keys e,e,e,e,w,e --lang en | open=dialogue_box delivered=1 said=Since your letter.* | story quest
 # The prologue's road out of the village (PIX-164).
 road | --prologue 1 | map=overworld cell=\(48, 34\) | story travel
 # A dodge roll with Shift (PIX-129).

@@ -49,6 +49,10 @@ static func mark(world: Node, shape: PackedVector2Array, tell: float, strike: Ca
 	pulse.tween_property(shown, "color:a", 0.6, tell * 0.5)
 	pulse.tween_property(shown, "color:a", 0.35, tell * 0.5)
 	pulse.tween_callback(func() -> void:
+		# Taken back this very frame (cancel), and not gone yet.
+		if shown.is_queued_for_deletion():
+			return
+		shown.set_meta("struck", true)
 		if strike.is_valid():
 			strike.call(shown.polygon)
 		if heard:
@@ -59,6 +63,16 @@ static func mark(world: Node, shape: PackedVector2Array, tell: float, strike: Ca
 		flash.tween_callback(shown.queue_free)
 	)
 	return shown
+
+
+## Takes back a mark that hasn't struck yet (PIX-440: a stun broke the attack
+## it told), so it never does; true if it hadn't. One that has struck is left
+## its flash. A Variant: a freed mark can't be passed as a node to be checked.
+static func cancel(shown: Variant) -> bool:
+	if not is_instance_valid(shown) or shown.is_queued_for_deletion() or shown.has_meta("struck"):
+		return false
+	shown.queue_free()
+	return true
 
 
 static var _hazard: ImageTexture

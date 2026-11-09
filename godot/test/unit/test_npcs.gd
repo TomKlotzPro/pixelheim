@@ -125,6 +125,58 @@ func test_every_villager_stands_and_paces_on_dry_ground() -> void:
 					assert_false(npc["wander"] and map.portals.has(cell), "%s paces onto a doorway" % where)
 
 
+func test_the_first_beat_met_speaks_else_their_own_lines() -> void:
+	var entries := [{"when": "late", "lines": ["late"]}, {"when": "early", "lines": ["early"]}]
+	assert_eq(Npcs.lines_when(entries, ["own"], func(_when: Variant) -> bool: return false), ["own"], "none met: their own lines")
+	assert_eq(Npcs.lines_when(entries, ["own"], func(when: Variant) -> bool: return when == "early"), ["early"], "the one met")
+	assert_eq(Npcs.lines_when(entries, ["own"], func(_when: Variant) -> bool: return true), ["late"], "both met: the first written wins")
+
+
+func test_brin_answers_the_lighthouse() -> void:
+	var progression := ProgressionState.new()
+	var settlement := SettlementState.new()
+	var post := PostState.new()
+	var brin := func() -> Array:
+		var met := Npcs.beat_met.bind(progression, settlement, post)
+		return Npcs.on_map("saltmere", 1, [], null, true, false, met).filter(func(npc: Dictionary) -> bool: return npc["id"] == "saltmere_brin")[0]["lines"]
+	var own: Array = Npcs.by_id("saltmere_brin", [])["lines"]
+	var said: Array = Npcs.by_id("saltmere_brin", [])["linesWhen"]
+	assert_eq(brin.call(), own, "the lighthouse dark: what he always said")
+	Routes.tally(post, "saltmere", "bram", int(Hubs.marks()[0]))
+	assert_eq(brin.call(), said[1]["lines"], "mended: only a tower")
+	Routes.tally(post, "saltmere", "bram", int(Hubs.marks()[2]))
+	assert_eq(brin.call(), said[0]["lines"], "lit")
+	assert_eq(Npcs.on_map("saltmere", 1, []).filter(func(npc: Dictionary) -> bool: return npc["id"] == "saltmere_brin")[0]["lines"], own, "no one to ask: their own lines")
+
+
+## PIX-443: a beat names something the game has, and a line stays short.
+func test_every_beat_is_real_and_every_line_short() -> void:
+	var count := 0
+	for npc: Dictionary in Npcs.townsfolk():
+		for entry: Dictionary in npc.get("linesWhen", []):
+			count += 1
+			var when: Dictionary = entry["when"]
+			match String(when["kind"]):
+				"hub":
+					assert_between(int(when["step"]), 1, Hubs.steps(String(when["place"])).size(), "%s: a hub's step" % npc["id"])
+				"hunted":
+					assert_false(Hunts.named(String(when["named"])).is_empty(), "%s: %s" % [npc["id"], when["named"]])
+				"delivered", "questDone":
+					assert_false(Quests.by_id(String(when["questId"])).is_empty(), "%s: %s" % [npc["id"], when["questId"]])
+				"project":
+					assert_true(Routes.places().any(func(place: String) -> bool: return Routes.station(place).get("work", "") == when["projectId"]), "%s: a waystation" % npc["id"])
+				"seen":
+					assert_eq(String(when["sceneId"]), Bells.collar_id(), "%s: the dragon freed" % npc["id"])
+				"chosen":
+					pass
+				_:
+					fail_test("%s: a beat of no kind we know: %s" % [npc["id"], when["kind"]])
+			assert_false(entry["lines"].is_empty(), "%s says something" % npc["id"])
+			for line: String in entry["lines"]:
+				assert_lte(line.length(), 125, "short: %s" % line)
+	assert_gte(count, 11, "the Reach's people each answer something")
+
+
 func test_the_faced_villager_wins_then_any_neighbor() -> void:
 	var occupied := {Vector2i(5, 4): {"id": "north"}, Vector2i(6, 5): {"id": "east"}}
 	var hero := Vector2i(5, 5)
