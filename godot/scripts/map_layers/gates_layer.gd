@@ -103,7 +103,7 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 		var post := Node2D.new()
 		post.position = Vector2(cell * TILE) + Vector2(TILE / 2.0 + at.x, TILE)
 		post.add_to_group("decor")
-		post.add_child(Enemy.ground_shadow(guard, 1.0, guard.position.y))
+		post.add_child(preload("res://scripts/enemy.gd").ground_shadow(guard, 1.0, guard.position.y))
 		post.add_child(guard)
 		view.actors.add_child(post)
 		return
