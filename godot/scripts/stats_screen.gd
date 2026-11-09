@@ -43,10 +43,10 @@ func _info() -> String:
 			"%s %d" % [Text.t(Skills.ABBR[stat]), hero.stats[stat]], String(info["blurb"]),
 			Text.t("Now: %s") % info["now"], Text.t("With a point: %s") % info["next"],
 		]
-		# Large text holds the chosen stat's words alone (PIX-442): with who
-		# the hero is above them they ran off the card, under the keys.
+		# Large text keeps one line of who the hero is over the chosen stat's
+		# words (PIX-442): with the whole sheet they ran under the keys.
 		if GameState.settings.large_text:
-			return "\n".join(about)
+			return "\n".join(["%s, %s" % [hero.hero_name, Text.t("Lv %d") % hero.level]] + about)
 		lines.append("")
 		lines.append_array(about)
 	return "\n".join(lines)

@@ -18057,10 +18057,6 @@ msgid "forget"
 msgstr ""
 
 #: scripts/skills_screen.gd
-msgid "key %d"
-msgstr ""
-
-#: scripts/skills_screen.gd
 msgid "learn / walk"
 msgstr ""
 

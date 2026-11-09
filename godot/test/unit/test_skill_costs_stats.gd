@@ -6,6 +6,7 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 const HudDockScript := preload("res://scripts/hud_dock.gd")
 const StatsScreen := preload("res://scripts/stats_screen.gd")
 const SkillsScreen := preload("res://scripts/skills_screen.gd")
+const CreateScreen := preload("res://scripts/create_screen.gd")
 
 var _kept: Array = []
 
@@ -115,6 +116,57 @@ func test_the_trees_cards_wear_icons_and_keep_one_edge() -> void:
 			assert_not_null(art.texture, "%s: its own icon" % entry["id"])
 
 
+## The names the tree's cards cut in this hero's state, each as what it needs
+## over what it has. A clipped label reports no overflow, so no fit-* flow or
+## test_fit sees this.
+func _cut_names(screen: Screen, nodes: Array) -> Array[String]:
+	var cards: Array[Control] = []
+	for entry: Dictionary in nodes:
+		var card: Control = screen._node_card(entry, false)
+		add_child_autofree(card)
+		cards.append(card)
+	await wait_process_frames(2)
+	var cut: Array[String] = []
+	for card: Control in cards:
+		for node: Node in card.get_child(0).get_children():
+			if node is Label and node.clip_text:
+				var font: Font = node.get_theme_font("font")
+				var needs := font.get_string_size(node.text, HORIZONTAL_ALIGNMENT_LEFT, -1, node.get_theme_font_size("font_size")).x
+				if needs > node.size.x:
+					cut.append("%s %s %s: %d over %d" % [GameState.hero.role_id, TranslationServer.get_locale(), node.text, needs, node.size.x])
+	return cut
+
+
+func test_every_name_on_the_tree_fits_its_card() -> void:
+	var screen: Screen = autofree(SkillsScreen.new())
+	var cut: Array[String] = []
+	for language: String in ["en", "fr"]:
+		Text.apply(language)
+		for role: String in CreateScreen.ROLES:
+			_lend(role)
+			var hero := GameState.hero
+			var nodes := Skills.tree(role)
+			# Not owned: a level away, then in reach (one point, or locked).
+			hero.level = 1
+			cut.append_array(await _cut_names(screen, nodes))
+			hero.level = 99
+			hero.skill_points = 9
+			cut.append_array(await _cut_names(screen, nodes))
+			# Owned: on no key (its kind), then each active on a key.
+			for entry: Dictionary in nodes:
+				if entry["id"] not in hero.skill_nodes:
+					hero.skill_nodes.append(entry["id"])
+			hero.skill_dock = [""]
+			cut.append_array(await _cut_names(screen, nodes))
+			var actives := nodes.filter(func(entry: Dictionary) -> bool: return entry["kind"] == "active")
+			hero.skill_dock.assign(actives.map(func(entry: Dictionary) -> String: return entry["id"]))
+			for from in range(0, actives.size(), Skills.DOCK_SIZE):
+				hero.skill_dock = hero.skill_dock.slice(from) + hero.skill_dock.slice(0, from)
+				cut.append_array(await _cut_names(screen, actives.slice(from, from + Skills.DOCK_SIZE)))
+	Text.apply("en")
+	assert_eq(cut.size(), 0, "\n".join(cut))
+
+
 func _sheet() -> Screen:
 	var screen: Screen = StatsScreen.new()
 	add_child_autofree(screen)
@@ -147,6 +199,37 @@ func test_bare_hands_open_on_strength_with_no_tag() -> void:
 	var screen: Screen = await _sheet()
 	assert_eq(Skills.STATS[screen.selected], "strength")
 	assert_false(screen.rows.any(func(row: Dictionary) -> bool: return row.get("tag", "") != ""), "no weapon to name")
+
+
+## Large text keeps who the hero is above the chosen stat's words, the
+## longest name a hero can have, every role and stat, and still fits.
+func test_large_text_keeps_the_heros_line_and_fits() -> void:
+	var before: bool = GameState.settings.large_text
+	GameState.settings.large_text = true
+	var out: Array[String] = []
+	var view := SubViewport.new()
+	view.size = Vector2i(1280, 720)
+	view.disable_3d = true
+	add_child_autofree(view)
+	for language: String in ["en", "fr"]:
+		Text.apply(language)
+		for role: String in CreateScreen.ROLES:
+			_lend(role)
+			GameState.hero.hero_name = "M".repeat(16)
+			var screen: Screen = StatsScreen.new()
+			view.add_child(screen)
+			for index in Skills.STATS.size():
+				screen.selected = index
+				screen._refresh()
+				await wait_process_frames(2)
+				assert_string_contains(screen.info.text, GameState.hero.hero_name)
+				for line in Layout.overflows(view, Vector2(view.size)):
+					out.append("%s %s %s: %s" % [language, role, Skills.STATS[index], line])
+			screen.close()
+			await get_tree().process_frame
+	Text.apply("en")
+	GameState.settings.large_text = before
+	assert_eq(out.size(), 0, "\n".join(out))
 
 
 func test_every_stat_row_has_its_icon() -> void:

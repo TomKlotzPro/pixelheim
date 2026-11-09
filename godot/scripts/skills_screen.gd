@@ -14,9 +14,9 @@ const TIER_BADGES := ["I", "II", "III", "IV", "V", "VI"]
 ## inset in, three columns a gap apart.
 const PAGE := Rect2(80, 92, 1120, 556)
 const TOP := PAGE.position.y + UiStyle.INSET
-const COLUMN_X := [104, 472, 840]
-const PATH_CARD := Vector2(336, 56)
-const NODE_CARD := Vector2(336, 40)
+const COLUMN_X := [104, 467, 830]
+const PATH_CARD := Vector2(346, 56)
+const NODE_CARD := Vector2(346, 40)
 
 ## Grid cell -> {kind: "path"|"node", entry}; cells (col, row): the path
 ## graph on rows 0-1 (branch a, b), the tree's tiers on rows 2-7.
@@ -179,9 +179,12 @@ func _node_card(entry: Dictionary, chosen: bool) -> Control:
 	var owned: bool = entry["id"] in hero.skill_nodes
 	var buyable := Skills.can_buy(hero, entry)
 	var panel := _panel(NODE_CARD, chosen, owned or buyable)
+	# Two pixels of the right margin, for French's longest names (the left's
+	# holds the icon's overhang).
+	panel.get_theme_stylebox("panel").content_margin_right = 6
 	var head := HBoxContainer.new()
 	# A clear gap: a longer language's name clips before it meets the tag.
-	head.add_theme_constant_override("separation", 8)
+	head.add_theme_constant_override("separation", 6)
 	panel.add_child(head)
 	# The icon of a skill one can cast (PIX-442); upgrades and passives keep
 	# the room empty, so every name stands on one edge.
@@ -193,10 +196,15 @@ func _node_card(entry: Dictionary, chosen: bool) -> Control:
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name.clip_text = true
 	head.add_child(name)
-	var tag := _kind_label(entry["kind"])
 	if owned and _key_of(entry["id"]) > 0:
-		tag = Text.t("key %d") % _key_of(entry["id"])
-	elif not owned:
+		# The key as the dock shows it, a digit on a tag: the word cut French names.
+		var key := UiStyle.tag(str(_key_of(entry["id"])))
+		key.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		head.add_child(key)
+		return panel
+	# In lower case like the card's other tags, and narrower for it.
+	var tag := _kind_label(entry["kind"]).to_lower()
+	if not owned:
 		tag = Text.t("1 pt") if buyable else (Text.t("Lv %d") % Skills.tier_level(entry) if hero.level < Skills.tier_level(entry) else Text.t("locked"))
 	head.add_child(UiStyle.label(tag, 12, UiStyle.LAMP if owned or buyable else UiStyle.FADED))
 	return panel
