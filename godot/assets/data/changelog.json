@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.336.0",
+      "date": "2026-11-09",
+      "codename": "Step Inside",
+      "notes": [
+        "Going through a door, your hero now fades into it instead of standing over it while the place changes"
+      ]
+    },
+    {
       "version": "0.335.0",
       "date": "2026-11-09",
       "codename": "Water's Edge",

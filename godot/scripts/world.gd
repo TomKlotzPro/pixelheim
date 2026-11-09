@@ -619,13 +619,29 @@ func _through_door(then: Callable, down := false) -> void:
 	if down or not _fades():
 		_through_dark(then)
 		return
-	if not await _hushed():
+	if not _passing:
+		_hero_goes_in()
+	if not await _hushed(true):
 		return
 	scene_change = "dissolve"
 	Dissolve.hold(self)
 	_dissolving = true
 	then.call()
 	_dissolving = false
+	if player != null:
+		player.modulate.a = 1.0
+
+
+## The hero out of the picture the dissolve holds (PIX-438: seen standing
+## in the door as the place changed): faded over the web's hush, gone in a
+## frame elsewhere. (A test's world may have no hero.)
+func _hero_goes_in() -> void:
+	if player == null:
+		return
+	if Sound.hushes_builds:
+		player.create_tween().tween_property(player, "modulate:a", 0.0, Sound.HUSH_S)
+	else:
+		player.modulate.a = 0.0
 
 
 ## Through the dark: the screen fades to it, `then` changes the scene, and
@@ -657,9 +673,10 @@ func _through_dark(then: Callable) -> void:
 
 ## On the web the music hushed before a map is built under a dissolve or a
 ## cut (PIX-417, Sound.hush_first); at once elsewhere. False while a change
-## of place already waits on it.
-func _hushed() -> bool:
-	if not Sound.hushes_builds:
+## of place already waits on it. `draw_first`: a dissolve's picture wants a
+## frame drawn first, off the web too.
+func _hushed(draw_first := false) -> bool:
+	if not Sound.hushes_builds and not draw_first:
 		return true
 	if _passing:
 		return false
@@ -670,6 +687,11 @@ func _hushed() -> bool:
 	if player != null:
 		player.set_physics_process(false)
 	await Sound.hush_first()
+	# With no hush to wait on, a frame drawn as things now stand, for the
+	# dissolve's picture (a quiet run draws none).
+	if draw_first and not Sound.hushes_builds and DisplayServer.get_name() != "headless":
+		await get_tree().process_frame
+		await get_tree().process_frame
 	if player != null:
 		player.set_physics_process(true)
 	_passing = false
