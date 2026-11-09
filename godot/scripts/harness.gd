@@ -51,9 +51,11 @@ func _draw_every_frame() -> void:
 ## would walk the hero or close a conversation mid-shot. (The world used to
 ## filter, but a paused world hears nothing, so a conversation took them.)
 ## The Input singleton has already counted the key, so its actions are let
-## go too, or movement, which reads them, would still walk.
+## go too, or movement, which reads them, would still walk. A `play` run's
+## keys are all PlayBridge's (PIX-435), the keyboard's: nobody else types
+## into its headless Chrome.
 func _input(event: InputEvent) -> void:
-	if event.device == DEVICE:
+	if event.device == DEVICE or (flags != null and flags.has("play")):
 		return
 	get_viewport().set_input_as_handled()
 	for action: StringName in InputMap.get_actions():
@@ -122,10 +124,11 @@ func _press(keycode: Key, pressed: bool, button := JOY_BUTTON_INVALID) -> void:
 	land(get_viewport(), event)
 
 
-## `event` landing as a player's would, pressed or let go by its own flag
-## (tools/play.py's keys too, PIX-423: PlayBridge).
-static func land(viewport: Viewport, event: InputEvent) -> void:
-	event.device = DEVICE
+## `event` landing as a player's would, pressed or let go by its own flag,
+## from `device` (tools/play.py's keys too, PIX-423: PlayBridge's are the
+## keyboard's).
+static func land(viewport: Viewport, event: InputEvent, device := DEVICE) -> void:
+	event.device = device
 	for action: StringName in InputMap.get_actions():
 		if InputMap.event_is_action(event, action, true):
 			if event.is_pressed():

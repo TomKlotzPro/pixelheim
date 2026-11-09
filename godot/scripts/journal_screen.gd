@@ -156,6 +156,7 @@ func _show() -> void:
 	for id: String in _tabs():
 		var chip := PanelContainer.new()
 		chip.add_theme_stylebox_override("panel", UiStyle.tab(id == tab))
+		chip.set_meta("chosen", id == tab)  # what play.py's `focus` reads (PlayBridge.chosen)
 		chip.add_child(UiStyle.label(TAB_NAMES[id], 16, UiStyle.plank_ink(id == tab)))
 		chip.gui_input.connect(_on_tab_input.bind(id))
 		tabs_row.add_child(chip)

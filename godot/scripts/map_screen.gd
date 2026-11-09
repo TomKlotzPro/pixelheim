@@ -788,7 +788,10 @@ class Painting extends Control:
 			return
 		tag = PanelContainer.new()
 		tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		tag.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.LAMP, 6))
+		var frame := UiStyle.box(UiStyle.CARD, UiStyle.LAMP, 6)
+		# A label on the map, not a choice: play.py's `focus` passes it over.
+		frame.set_meta("chosen", false)
+		tag.add_theme_stylebox_override("panel", frame)
 		var lines := VBoxContainer.new()
 		lines.add_theme_constant_override("separation", 0)
 		lines.mouse_filter = Control.MOUSE_FILTER_IGNORE

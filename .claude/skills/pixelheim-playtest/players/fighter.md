@@ -9,7 +9,7 @@
 * `--role warrior --level 8 --flags "fight --foe turncoat_bowman --foe-distance 3"`: a shooter;
 * `--role warrior --level 10 --flags "fight elite --foe orc"`: an elite, for its cleave.
 
-The `fight` preset swings once before your first look, and the foe moves during the setup: it starts hurt, a weak one may already be down (its gold picked up), and with `--foe-distance` it has already closed in. Read `foes` at the first look, and step back to the distance yourself for the reach check.
+The `fight` preset hands the fight over before its first swing (PIX-435): at the first look the foe is whole and where the flags put it, `--foe-distance 3` three cells off. Read `foes` at the first look: the first blow is yours.
 
 play.py makes every such fight real: the foe can hurt you. Never pass `kill` or `slay`.
 

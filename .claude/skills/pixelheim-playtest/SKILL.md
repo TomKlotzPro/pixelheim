@@ -34,13 +34,13 @@ Each turn is one command: `look`, then think, then `keys`. The game runs only du
 <python> godot/tools/play.py stop --port N
 ```
 
-- **`keys`**: keys separated by commas. A key alone is tapped; `right:1.2` holds it 1.2 s of game time; `up+left:0.5` holds both; `wait:2` presses nothing for 2 s. A one-letter key also types its letter (`R,o,b,i,n` types a name). `keys` prints the state after its last key, but no picture.
-- **`look`**: a screenshot (read it with the Read tool) and the state: `map`, `cell`, `hp`/`maxHp`, `mana`/`maxMana`, `level`, `gold`, `hour`, `night`, `paused`, `open` (the screens open), `text` (the words on the top screen), `hud` (the HUD's words: messages, hints, a door's nameplate), `quest` (the "Next" line), `foes` (within 12 cells, with their hp and cell), `seconds` (the game's clock) and `errors` (console errors since the last look).
+- **`keys`**: keys separated by commas. A key alone is tapped; `right:1.2` holds it 1.2 s of game time; `up+left:0.5` holds both; `wait:2` presses nothing for 2 s. A one-letter key also types its letter (`R,o,b,i,n` types a name), and `backspace` deletes one. `keys` prints the state after its last key, but no picture.
+- **`look`**: a screenshot (read it with the Read tool) and the state: `map`, `cell`, `hp`/`maxHp`, `mana`/`maxMana`, `level`, `gold`, `hour`, `night`, `paused`, `open` (the screens open), `text` (the words on the top screen, cut near 2000 characters with a line saying how many more; a caption still typing out ends in `[still typing]`), `focus` (the words of each chosen thing, one list apiece: in the pack and at a counter the lit tab, then the chosen row, the one E would take), `hud` (the HUD's words: messages, hints, a door's nameplate), `quest` (the "Next" line), `foes` (within 12 cells, with their hp and cell), `npcs` (the villagers within 12 cells: name and cell), `doors` (the ways in and out within 12 cells: cell and the map they lead to), `seconds` (the game's clock), `errors` (console errors since the last look) and `webgl` (a count of the headless Chrome's own WebGL warnings).
 - **Spend your looks.** Your brief gives a budget, about 60 to 80 looks. Look after every move that could change something: a door, a fight, a menu, a line of text. Between looks, `keys`' own state is often enough to know you moved. Don't stop before your budget while your route or checklist has items left: few findings mean keep looking, not stop. When one step holds you more than six looks, report it and go past it the way your brief says, instead of trying it again.
 - **The state says where you are, the picture says how it looks.** Trust the state for map, cell, health and quest, and quote `text` and `hud` for on-screen words. Trust the screenshot for what a player sees. When the two disagree, that is a finding.
 - **Walk with short holds** (0.2 to 0.5 s) near things, and longer ones to travel: `right:1` walks one second of the game. If two holds don't change `cell`, you are blocked: look at why before you push again.
 - **Keep a log as you go**: the `start` line and each `keys` you sent, in order. A finding's steps come from it, and triage replays them as they are.
-- **Anything in `errors` is worth a look**: an error a player never sees can still be a bug. Report it with what you were doing when it came. The one exception is the headless Chrome's WebGL warnings (`WebGL: INVALID_OPERATION` on `bindBuffer` or `bufferSubData`, often dozens in the burning village): don't report those.
+- **Anything in `errors` is worth a look**: an error a player never sees can still be a bug. Report it with what you were doing when it came. The headless Chrome's WebGL warnings (`WebGL: INVALID_OPERATION` on `bindBuffer` or `bufferSubData`, often dozens in the burning village) are not in `errors` but counted in `webgl`: don't report those.
 
 ### The keys
 
@@ -64,7 +64,7 @@ The play.py name of each key is in brackets.
 
 In menus, W/S or the arrows choose, E or Enter confirms, and Esc goes back. A rebound key replaces the letter key; the arrows, Enter, Space and Tab always keep working.
 
-A text field (the hero's name) types every one-letter key, `e`, `w` and `s` too: confirm it with `enter`. To talk to someone, face them first: tap the arrow toward them (`left:0.1`), then `e`.
+A text field (the hero's name) types every one-letter key, `e`, `w` and `s` too: `backspace` takes a letter out, and `enter` confirms it. To talk to someone, face them first: tap the arrow toward them (`left:0.1`), then `e`.
 
 ### Where a session starts
 

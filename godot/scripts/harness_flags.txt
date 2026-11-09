@@ -119,7 +119,7 @@ portal |  | walk into the map's nearest doorway, as a player would | portal | 64
 die |  | a blow no hero survives: the fall, then waking at the inn (with fight, after it: felled mid-fight, PIX-288) | die | 650
 cast |  | a foe where the skill reaches (two steps off, a step for a blow: PIX-410), then the first skill: the strike, the flash, the log | cast | 660
 --skill | <n> | with cast: the dock's nth skill (1 to 6) rather than the first (PIX-396)
-fight |  | a foe where the swing reaches (a step off for a blade, two for a bow or a staff: PIX-410) and one swing, caught mid-swing | fight | 670
+fight |  | a foe where the swing reaches (a step off for a blade, two for a bow or a staff: PIX-410) and one swing, caught mid-swing (with play none: the fight handed over before it, PIX-435) | fight | 670
 --foe | <species> | with fight: the foe (default orc; a named monster's id brings it out of its lair)
 --foe-distance | <n> | with fight: the foe n cells off (an elite's opener from range), not where the swing reaches
 --foe-at | <x,y> | with fight: the foe on that cell, its home there (PIX-288: a boss across water from the hero)

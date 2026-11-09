@@ -47,6 +47,7 @@ func _show() -> void:
 	for index in TABS.size():
 		var chip := PanelContainer.new()
 		chip.add_theme_stylebox_override("panel", UiStyle.tab(index == tab))
+		chip.set_meta("chosen", index == tab)  # what play.py's `focus` reads (PlayBridge.chosen)
 		chip.add_child(UiStyle.label(TABS[index], 16, UiStyle.plank_ink(index == tab)))
 		tabs_row.add_child(chip)
 	if tab == 0:

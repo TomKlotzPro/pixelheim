@@ -24,7 +24,7 @@ const Harness := preload("res://scripts/harness.gd")
 ## that opened it would miss the next.
 const TAP_TICKS := 3
 const AFTER_TICKS := 5
-## Foes this many cells from the hero, either way, are listed.
+## Foes, folk and doors this many cells from the hero, either way, are listed.
 const NEAR := 12
 
 ## window.pixelheimPlay, or a stand-in in the tests: `command` (a JSON
@@ -97,7 +97,9 @@ func _step(step: Dictionary) -> void:
 func _land(key: InputEventKey, pressed: bool) -> void:
 	var event := key.duplicate() as InputEventKey
 	event.pressed = pressed
-	Harness.land(get_viewport(), event)
+	# The keyboard's own (PIX-435): Godot's ui_text_* actions take no other
+	# device, so the harness's left a name field's Backspace doing nothing.
+	Harness.land(get_viewport(), event, InputEvent.DEVICE_ID_KEYBOARD)
 
 
 func _ticks(count: int) -> void:
@@ -106,8 +108,9 @@ func _ticks(count: int) -> void:
 
 
 ## What the game knows now, for play.py's look: the hero, the hour, and on
-## a world its place, the screens open and the words on them, the HUD's
-## words, the quest it leads to and the foes near.
+## a world its place, the screens open, the words on them and the chosen
+## one's, the HUD's words, the quest it leads to, and the foes, folk and
+## doors near.
 func state() -> Dictionary:
 	var hero := GameState.hero
 	var steps := GameState.world.steps
@@ -127,6 +130,7 @@ func state() -> Dictionary:
 	said["cell"] = [cell.x, cell.y]
 	var open: PackedStringArray = []
 	var text: PackedStringArray = []
+	var focus: Array = []
 	# The screens open, in the order they opened; the words of the one on
 	# top, as the one taking the keys (a cutscene covers the title under it).
 	for screen: Screen in Screen._shown:
@@ -134,8 +138,10 @@ func state() -> Dictionary:
 			open.append(screen.get_script().resource_path.get_file().get_basename())
 			if screen.on_top():
 				words(screen, text)
+				chosen(screen, focus)
 	said["open"] = open
 	said["text"] = text
+	said["focus"] = focus
 	var on_hud: PackedStringArray = []
 	words(hud.root, on_hud, [hud.dock, hud.clock_plate, hud.objective_box, hud.quill])
 	said["hud"] = on_hud
@@ -150,6 +156,19 @@ func state() -> Dictionary:
 		foes.append({"name": fighter.get("name", ""), "id": fighter.get("named", fighter["id"]), "level": Bestiary.level_of(fighter),
 			"hp": int(fighter["hp"]), "maxHp": int(fighter["maxHp"]), "cell": [at.x, at.y], "mode": mob.mode})
 	said["foes"] = foes
+	# Who to talk to (PIX-435: finding a villager took 40 calls) and the
+	# ways in and out, as near as the foes.
+	var folk: Array = []
+	for npc in get_tree().get_nodes_in_group("npcs"):
+		var at := Vector2i((npc.global_position / MapView.TILE).floor())
+		if not npc.away and npc.visible and maxi(absi(at.x - cell.x), absi(at.y - cell.y)) <= NEAR:
+			folk.append({"name": tr(String(npc.data.get("name", ""))), "cell": [at.x, at.y]})
+	said["npcs"] = folk
+	var doors: Array = []
+	for door: Vector2i in world.map.portals:
+		if maxi(absi(door.x - cell.x), absi(door.y - cell.y)) <= NEAR:
+			doors.append({"cell": [door.x, door.y], "to": world.map.portals[door].get("mapId", "")})
+	said["doors"] = doors
 	return said
 
 
@@ -159,9 +178,7 @@ func state() -> Dictionary:
 ## it translates as it draws), leaving out `skip`'s and another screen's
 ## opened inside it.
 static func words(node: Node, out: PackedStringArray, skip: Array = []) -> void:
-	if node == null or node in skip:
-		return
-	if (node is CanvasItem and (not node.visible or node.modulate.a < 0.05)) or (node is CanvasLayer and not node.visible):
+	if node == null or node in skip or not _shown(node):
 		return
 	var text := ""
 	if node is Label or node is Button:
@@ -170,11 +187,38 @@ static func words(node: Node, out: PackedStringArray, skip: Array = []) -> void:
 		text = node.get_parsed_text()
 	elif node is LineEdit:
 		text = node.text
-	if (node is Label or node is RichTextLabel) and node.visible_characters >= 0:
-		text = text.left(node.visible_characters)
+	# Still typing out (a cutscene's caption): said so, or it reads as cut (PIX-435).
+	if (node is Label or node is RichTextLabel) and node.visible_characters >= 0 and node.visible_characters < text.length():
+		text = text.left(node.visible_characters).strip_edges()
+		text += " [still typing]" if text != "" else ""
 	text = text.strip_edges()
 	if text != "" and (out.is_empty() or out[-1] != text):
 		out.append(text)
 	for child in node.get_children():
 		if not child is Screen:
 			words(child, out, skip)
+
+
+## The words of each thing under `node` drawn as chosen, in order, one list
+## apiece, into `out` (PIX-435: a menu tester counted key presses blind): a
+## plank `UiStyle.focus` lit, or a row framed in `UiStyle.box`'s gold rim.
+## All of them, as the pack's and the counter's lit tab comes before their
+## chosen row; one with no words is passed over.
+static func chosen(node: Node, out: Array) -> void:
+	if not _shown(node):
+		return
+	if node.get_meta("chosen", false) or (node is Control and node.has_theme_stylebox_override("panel")
+			and node.get_theme_stylebox("panel").get_meta("chosen", false)):
+		var said: PackedStringArray = []
+		words(node, said)
+		if not said.is_empty():
+			out.append(said)
+			return
+	for child in node.get_children():
+		if not child is Screen:
+			chosen(child, out)
+
+
+## Shown: not hidden or faded out.
+static func _shown(node: Node) -> bool:
+	return not ((node is CanvasItem and (not node.visible or node.modulate.a < 0.05)) or (node is CanvasLayer and not node.visible))
