@@ -73,6 +73,14 @@ static func pad_plan(size: Vector2, unit: float) -> Dictionary:
 
 
 ## The canvas as the screen shows it now (1280x720 on a desktop).
+## Where the battle log's line starts on a phone's canvas (PIX-433): past the
+## thumbstick, and never so far along that a whole line runs off the edge
+## (a chip is LOG_WIDTH and its padding).
+static func log_left(size: Vector2, unit: float) -> float:
+	var pad := pad_plan(size, unit)
+	return minf(pad["stick_center"].x + pad["stick_radius"] + UiStyle.GAP, size.x - Messages.LOG_WIDTH - 24.0)
+
+
 static func view_size(node: Node) -> Vector2:
 	return node.get_viewport().get_visible_rect().size
 

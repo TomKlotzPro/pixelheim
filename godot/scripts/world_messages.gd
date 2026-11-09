@@ -170,7 +170,11 @@ func _say(entry: Dictionary) -> void:
 func _fighting() -> bool:
 	if world == null or world.get("foes") == null:
 		return false
-	return world.foes.in_fight(Foes.CALM_S) or (world.get("hud") != null and world.hud.card_up())
+	return world.foes.in_fight(Foes.CALM_S) or _card_up()
+
+
+func _card_up() -> bool:
+	return world != null and world.get("hud") != null and world.hud.card_up()
 
 
 ## The message's plate, shrunk round its words (a container only grows).
@@ -238,6 +242,7 @@ static func tag_of(text: String, tags: Array) -> String:
 ## qui pop d'un coup »): the plate goes first, the log's line stepping
 ## aside for it, and the log's next waits until the plate has faded.
 func update() -> void:
+	_hold_hint_for_card()
 	var fighting := _fighting()
 	if _message_now != "" and not _message_tagged and GameClock.seconds() - _message_since >= PLAIN_MESSAGE_S:
 		# A plain message gives way to whatever comes next.
@@ -269,10 +274,22 @@ func make_way() -> void:
 	message_box.modulate.a = 0.0
 
 
-## The log's line showing goes back to the head of the queue, to show again
-## in full once the plate is done.
-func _step_aside() -> void:
-	for entry: Dictionary in _log.showing.duplicate():
+## A title card up: a first-time hint's line waits it out, one box at a time
+## (PIX-433; `later` is what waits while a card is up, _fighting), and one
+## already up steps aside to come back in full.
+func _hold_hint_for_card() -> void:
+	var card := _card_up()
+	for entry: Dictionary in _log.showing + _log.waiting:
+		if entry.has("hint"):
+			entry["later"] = card
+			if card and entry.has("chip"):
+				_step_aside([entry])
+
+
+## The log's lines showing, or just those given, go back to the head of the
+## queue, to show again in full once the plate or the card is done.
+func _step_aside(entries := _log.showing.duplicate()) -> void:
+	for entry: Dictionary in entries:
 		var chip: Node = entry.get("chip")
 		entry.erase("chip")
 		if is_instance_valid(chip):

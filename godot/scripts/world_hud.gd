@@ -150,8 +150,7 @@ func place() -> void:
 	# On a phone the log's line, a tip among them, starts past the thumbstick
 	# (PIX-433: it ran under it).
 	if Touch.enabled():
-		var pad := Touch.pad_plan(Touch.view_size(world), Touch.css(world, 1.0))
-		world.messages.log_box.position.x = pad["stick_center"].x + pad["stick_radius"] + UiStyle.GAP - root.offset.x
+		world.messages.log_box.position.x = Touch.log_left(Touch.view_size(world), Touch.css(world, 1.0)) - root.offset.x
 
 
 ## A first-time hint (PIX-160): one short line on the battle log's place

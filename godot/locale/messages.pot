@@ -13101,7 +13101,7 @@ msgid "Embers swarm the square: drive them off ({key:skill_1} for your skill)"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Embers swarm the square: strike them down ({key:attack}) and press {key:skill_1} to mend between blows"
+msgid "Embers swarm the square: strike them down ({key:attack}) and mend between blows ({key:skill_1})"
 msgstr ""
 
 #: assets/data/progression.json

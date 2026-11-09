@@ -63,11 +63,31 @@ func test_no_line_names_a_key_the_player_may_have_moved() -> void:
 ## PIX-432: « I ouvre votre sac. » A key is called what it's called: a
 ## sentence presses it, never stands it up as its subject.
 func test_no_clause_opens_on_a_key() -> void:
-	var opens := RegEx.create_from_string("(?:^|[.!?:;)] )\\{key:[a-z_0-9]+\\} \\p{L}")
+	# After ( or a dash a gloss may follow: "({key:dodge} to roll)".
+	var opens := RegEx.create_from_string("(?:^|[.!?:;)] )\\{key:[a-z_0-9]+\\} \\p{L}|(?:\\(| - )\\{key:[a-z_0-9]+\\} (?!to |for |pour )\\p{L}")
 	for path: String in ["res://locale/messages.pot", "res://locale/fr.po"]:
 		for line: String in FileAccess.get_file_as_string(path).split("\n"):
 			if line.begins_with("msgid ") or line.begins_with("msgstr "):
 				assert_null(opens.search(line.get_slice("\"", 1)), "a key as the subject: %s" % line)
+
+
+## PIX-432: the step's line is centred and never wraps, so in a phone's large
+## type a long one is cut at both edges. Only the steps that name a key: the
+## rest are as they were.
+func test_a_step_naming_a_key_fits_in_large_type() -> void:
+	var font := UiStyle.body_font()
+	var room := 1280.0 - 24.0 - font.get_string_size(Text.t("Next"), HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BIG).x - 8.0
+	var locale := TranslationServer.get_locale()
+	var steps: Array = []
+	for step: Dictionary in Quests._data()["prologue"]["steps"]:
+		steps.append_array([step["text"], step.get("textHeal", step["text"])])
+	for lang: String in ["en", "fr"]:
+		TranslationServer.set_locale(lang)
+		for step: String in steps:
+			if "{key:" in step:
+				var said := Controls.say(Text.t(step))
+				assert_lte(font.get_string_size(said, HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BIG).x, room, said)
+	TranslationServer.set_locale(locale)
 
 
 func test_a_key_token_reads_the_binding() -> void:

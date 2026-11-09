@@ -109,6 +109,20 @@ func test_a_hint_waits_for_a_title_card() -> void:
 	assert_eq(_up(), "dodge")
 
 
+func test_a_title_card_holds_a_hint_already_up() -> void:
+	var chips := world.messages.log_box
+	hud.hint("dodge")
+	var first: Node = chips.get_child(0)
+	var card := hud.title_card("Saltmere", "")
+	world.messages.update()
+	assert_true(first.is_queued_for_deletion(), "not beside the card")
+	assert_eq(_up(), "dodge", "waiting, not lost")
+	card.free()
+	world.messages.update()
+	var back := chips.get_children().filter(func(chip: Node) -> bool: return not chip.is_queued_for_deletion())
+	assert_eq(back.size(), 1, "back as the card goes")
+
+
 ## PIX-433: "Quest accepted" and the journal's hint stood as two boxes at
 ## once. The plate goes first and the hint's line waits until it has gone.
 func test_a_hint_is_a_line_of_the_log_and_waits_behind_the_plate() -> void:
@@ -129,8 +143,12 @@ func test_on_a_phone_the_log_starts_past_the_stick() -> void:
 	Touch.forced = true
 	hud.place()
 	Touch.forced = false
-	var pad := Touch.pad_plan(Touch.view_size(world), Touch.css(world, 1.0))
-	assert_gt(world.messages.log_box.position.x + hud.root.offset.x, pad["stick_center"].x + pad["stick_radius"])
+	assert_eq(world.messages.log_box.position.x + hud.root.offset.x, Touch.log_left(Touch.view_size(world), Touch.css(world, 1.0)))
+	var size := Vector2(1280, 720)
+	var pad := Touch.pad_plan(size, 1.0)
+	assert_gt(Touch.log_left(size, 1.0), pad["stick_center"].x + pad["stick_radius"], "past the stick")
+	# A headless window's unit is 5: the stick's edge alone is past the middle.
+	assert_lte(Touch.log_left(size, 5.0) + Messages.LOG_WIDTH + 16.0, size.x, "a whole line on the canvas")
 
 
 func _wide(line: String, font_size: int) -> float:

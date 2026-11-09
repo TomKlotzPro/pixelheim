@@ -12742,7 +12742,7 @@ msgstr "Chien de cendre"
 
 #: assets/data/progression.json
 msgid "Ash hounds come out of the fire: roll through a lunge ({key:dodge} to roll)"
-msgstr "Des chiens de cendre sortent du feu : esquiver un assaut d'une roulade ({key:dodge} pour rouler)"
+msgstr "Des chiens de cendre sortent du feu : esquiver d'une roulade ({key:dodge})"
 
 #: assets/data/progression.json
 msgid "Ask Maren about the barred mountain gate"
@@ -13101,8 +13101,8 @@ msgid "Embers swarm the square: drive them off ({key:skill_1} for your skill)"
 msgstr "Des braises envahissent la place : les repousser ({key:skill_1} pour votre compétence)"
 
 #: assets/data/progression.json
-msgid "Embers swarm the square: strike them down ({key:attack}) and press {key:skill_1} to mend between blows"
-msgstr "Les braises envahissent la place : frappez-les ({key:attack}) et appuyez sur {key:skill_1} pour vous soigner entre deux coups"
+msgid "Embers swarm the square: strike them down ({key:attack}) and mend between blows ({key:skill_1})"
+msgstr "Les braises envahissent la place : frappez-les ({key:attack}) et soignez-vous ({key:skill_1})"
 
 #: assets/data/progression.json
 msgid "Every Bounty Paid"
@@ -14918,7 +14918,7 @@ msgstr "Porter un ensemble d'armure complet à la fois."
 
 #: assets/data/progression.json
 msgid "Wear the cap Sela gave you (press {key:inventory} to open your pack)"
-msgstr "Mettre le bonnet que Sela vous a donné (appuyez sur {key:inventory} pour ouvrir votre sac)"
+msgstr "Mettre le bonnet que Sela vous a donné ({key:inventory} pour ouvrir le sac)"
 
 #: assets/data/progression.json
 msgid "Wenna answered, with Tam's last postcard."

@@ -93,9 +93,9 @@ gate-side | --map town --at 41,4 --walk u,u --wait 0.4 | map=overworld cell=\(48
 gate-dodge | --map town --at 40,4 hints --walk u,u --wait 4 | map=overworld hint=dodge hudclash=none | town travel
 # The tips are one short line, in the log's place (PIX-433): French, a third
 # longer, and on a phone's canvas, clear of what else is on the screen.
-fit-hint-fr | --map town --at 40,4 hints --walk u,u --wait 4 --lang fr | map=overworld hint=dodge hudclash=none | town travel lang
-fit-hint-pseudo | --map town --at 40,4 hints --walk u,u --wait 4 --pseudo | map=overworld hint=dodge hudclash=none | town travel lang
-fit-hint-touch | --map town --at 40,4 hints touch --walk u,u --wait 4 --lang fr | map=overworld hint=dodge hudclash=none | town travel lang
+fit-hint-fr | --map town --at 40,4 hints --walk u,u --wait 4 --lang fr | map=overworld hint=dodge toast=1 box, 1 line, fits hudclash=none | town travel lang
+fit-hint-pseudo | --map town --at 40,4 hints --walk u,u --wait 4 --pseudo | map=overworld hint=dodge toast=1 box, 2 line, fits hudclash=none | town travel lang
+fit-hint-touch | --map town --at 40,4 hints touch --walk u,u --wait 4 --lang fr | map=overworld hint=dodge toast=1 box, 1 line, fits hudclash=none | town travel lang
 gate-in | --map overworld --at 48,39 --walk d,d,d fades --wait 0.4 | map=town cell=\(40, [34]\) change=dissolve dark=0 | town travel
 # The nook chest's gold floats up over the chest and the log says nothing of it (PIX-245).
 chest | --map town chest | map=town cell=\(79, 4\) gold=90 floats=\+60 [a-z]+ logged=0 | town
@@ -476,11 +476,11 @@ tidecaller-hint-after | --map seacave_grotto --at 23,12 hints fight kill --foe t
 # stood on the gold, the drops and LEVEL UP rising, LEVEL UP rose under the
 # boss bar, and the dodge, up as Saltmere's name came, was pushed down over
 # the hero): the card stands clear of what rises, the bar goes as the boss
-# falls, a hint's line up stays clear of a title card (PIX-433), and the arrow
-# keeps off a dungeon floor's name. At the play zoom, as a window has it.
+# falls, a title card holds a hint already up (its line waits, PIX-433), and the
+# arrow keeps off a dungeon floor's name. At the play zoom, as a window has it.
 boss-fall-words | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.05 --wait 0.6 --zoom play | map=seacave_grotto fell=1 bossbar=none hudclash=none | dungeon combat
 warden-fall-words | --map shafts_blackseam --at 24,11 fight kill --foe seam_warden --foe-left 0.05 --wait 0.6 --zoom play | map=shafts_blackseam fell=1 bossbar=none hudclash=none | dungeon combat
-place-beside-hint | --map seacave_grotto --at 23,12 hints fight kill --foe tidecaller --foe-left 0.007 --then-walk r,r --wait 0.6 --zoom play | map=saltmere card=Saltmere hint=dodge hudclash=none | dungeon travel combat
+place-holds-hint | --map seacave_grotto --at 23,12 hints fight kill --foe tidecaller --foe-left 0.007 --then-walk r,r --wait 0.6 --zoom play | map=saltmere card=Saltmere hint=dodge toast= hudclash=none | dungeon travel combat
 floor-name-arrow | --map saltmere --at 6,24 --walk u fades --wait 0.6 --zoom play | map=seacave toast=1 box, 1 line, fits hudclash=none | dungeon travel
 # The Hollow King's fall in French (PIX-378: « NIVEAU SUPÉRIEUR » rising,
 # the win, the Victory card and the level's plate all at once, the win on a
