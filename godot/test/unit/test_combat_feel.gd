@@ -120,3 +120,147 @@ func test_the_fight_has_its_own_blips() -> void:
 	for name: String in ["swing", "cast", "kill"]:
 		assert_true(SoundScript.UI_SOUNDS.has(name), name)
 		assert_gt(SoundScript._synth(SoundScript.UI_SOUNDS[name]).data.size(), 0, name)
+
+
+class FakeFx extends RefCounted:
+	func dust(_at: Vector2) -> void:
+		pass
+
+
+class FakeWorld extends Node2D:
+	var fx := FakeFx.new()
+
+	func on_player_died() -> void:
+		pass
+
+
+## A hero with a sword (strikes on frames 1 and 2 of 0..3), stepped by hand.
+func _hero() -> CharacterBody2D:
+	Controls.apply({})
+	var hero: CharacterBody2D = preload("res://scripts/player.gd").new()
+	hero.process_mode = Node.PROCESS_MODE_DISABLED
+	add_child_autofree(hero)
+	hero.world = autofree(FakeWorld.new())
+	hero.art = hero.art.merged({"attack": "sword"}, true)
+	return hero
+
+
+## PIX-439: a press the hero can't honour yet waits for them.
+func test_a_press_during_a_swing_fires_when_the_hero_is_free() -> void:
+	var hero := _hero()
+	hero.attack()
+	hero._press(hero._can_attack, hero.attack)
+	assert_gt(hero._kept_until, 0.0, "the press waits")
+	hero._end_swing()
+	hero._fire_kept()
+	assert_false(hero.attacking, "the swing's cooldown still counts")
+	hero.attack_ready = true
+	hero._fire_kept()
+	assert_true(hero.attacking, "it fires as soon as the hero can")
+	assert_eq(hero._kept_until, -1.0, "once")
+
+
+func test_a_kept_press_goes_stale_and_only_the_last_is_kept() -> void:
+	var hero := _hero()
+	var fired := []
+	var open := [false]
+	hero._press(func() -> bool: return open[0], func() -> void: fired.append("first"))
+	hero._press(func() -> bool: return open[0], func() -> void: fired.append("last"))
+	open[0] = true
+	hero._kept_until = GameClock.seconds() - 0.01
+	hero._fire_kept()
+	assert_eq(fired.size(), 0, "too late: forgotten")
+	hero._kept_until = GameClock.seconds() + 0.1
+	hero._fire_kept()
+	assert_eq(fired.size(), 1, "fired once")
+	assert_eq(fired[0], "last", "the last press is the one kept")
+
+
+## PIX-439: a roll never costs a swing its blow.
+func test_a_roll_waits_for_the_end_of_the_strike() -> void:
+	var hero := _hero()
+	hero.attack()
+	for frame in [0, 1, 2]:
+		hero.sprite.frame = frame
+		hero.dodge()
+		assert_false(hero.dodging, "no roll on frame %d" % frame)
+		assert_true(hero.attacking, "the swing stands on frame %d" % frame)
+	assert_true(hero.striking, "the blade still bites on the last strike frame")
+
+
+## PIX-439: and nothing of the swing outlives the roll that cut it.
+func test_a_roll_past_the_strike_clears_the_swing() -> void:
+	var hero := _hero()
+	hero.attack()
+	hero.sprite.frame = 3
+	hero.casting = true
+	hero.hit_this_swing.append(hero)
+	hero.squash = Vector2(1.3, 0.7)
+	assert_true(hero._can_dodge(), "the follow-through gives way")
+	hero.dodge(Vector2.LEFT)
+	assert_true(hero.dodging, "the roll starts")
+	assert_false(hero.attacking, "the swing is over")
+	assert_false(hero.casting, "a cast too")
+	assert_false(hero.striking, "it can't bite")
+	assert_eq(hero.hit_this_swing.size(), 0, "nothing held from it")
+	assert_eq(hero.squash, Vector2.ONE, "not its squash either")
+	assert_eq(hero.dodge_dir, Vector2.LEFT, "the way it was pressed, the key since let go")
+	hero.sprite.frame = 1
+	assert_false(hero.striking, "a blow never lands after the roll has started")
+
+
+## Before PIX-439 a swing begun in a roll locked the hero for good: the
+## roll's walk paused the sprite, so the swing's animation never finished.
+func test_no_swing_or_cast_starts_during_a_roll() -> void:
+	var hero := _hero()
+	hero.dodging = true
+	hero.attack()
+	assert_false(hero.attacking, "no swing")
+	assert_false(hero._can_cast(), "no cast")
+	hero._press(hero._can_attack, hero.attack)
+	assert_gt(hero._kept_until, 0.0, "kept for when the roll ends")
+	hero.dodging = false
+	hero._fire_kept()
+	assert_true(hero.attacking, "and it fires then")
+
+
+func test_a_stun_a_death_or_a_screen_drops_the_kept_press() -> void:
+	var hero := _hero()
+	var fired := [false]
+	var open := [false]
+	var keep := func() -> void:
+		open[0] = false
+		hero._press(func() -> bool: return open[0], func() -> void: fired[0] = true)
+		open[0] = true
+	keep.call()
+	hero.ailments.inflict({"kind": "stun", "chance": 1.0, "turns": 1, "power": 0}, func() -> float: return 0.0)
+	assert_true(hero._held_by_stun(), "stunned")
+	hero.ailments.clear()
+	hero._fire_kept()
+	assert_false(fired[0], "a stun landing drops it")
+	keep.call()
+	hero._die()
+	hero.dead = false
+	hero._fire_kept()
+	assert_false(fired[0], "a death drops it")
+	keep.call()
+	# The tree's real pause, which is how a screen holds the world.
+	hero.process_mode = Node.PROCESS_MODE_PAUSABLE
+	get_tree().paused = true
+	get_tree().paused = false
+	hero.process_mode = Node.PROCESS_MODE_DISABLED
+	hero._fire_kept()
+	assert_false(fired[0], "a screen opening drops it")
+
+
+func test_holding_the_attack_key_keeps_no_press() -> void:
+	var hero := _hero()
+	hero.attack()
+	var press := InputMap.action_get_events("attack")[0].duplicate() as InputEventKey
+	press.pressed = true
+	press.echo = true
+	hero._unhandled_input(press)
+	assert_eq(hero._kept_until, -1.0, "a held key's repeats are no press")
+	press.echo = false
+	hero._unhandled_input(press)
+	assert_gt(hero._kept_until, 0.0, "a real press is")
