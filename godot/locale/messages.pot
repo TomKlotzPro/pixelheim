@@ -7029,6 +7029,10 @@ msgid "Water comes alive: it swells with light, glints here and there, foam laps
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Water's Edge"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Way Up"
 msgstr ""
 
@@ -7090,6 +7094,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Where regions meet, the ground no longer changes along straight lines and square corners: the edge bends and wanders, still dithered pixel by pixel, and the land's tone runs right to the shore"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Where the Ash Fields reach the river, the burnt ground now ends as raggedly as it does elsewhere, without a grey square or strip on the bank"
 msgstr ""
 
 #: assets/data/changelog.json

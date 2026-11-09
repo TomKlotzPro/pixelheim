@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.335.0",
+      "date": "2026-11-09",
+      "codename": "Water's Edge",
+      "notes": [
+        "Where the Ash Fields reach the river, the burnt ground now ends as raggedly as it does elsewhere, without a grey square or strip on the bank"
+      ]
+    },
+    {
       "version": "0.334.0",
       "date": "2026-11-09",
       "codename": "Thumbs Up",

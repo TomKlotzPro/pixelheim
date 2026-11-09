@@ -7029,6 +7029,10 @@ msgid "Water comes alive: it swells with light, glints here and there, foam laps
 msgstr "L'eau prend vie : elle ondule de lumière, scintille çà et là, l'écume vient lécher chaque rive, et ce qui se dresse sur la berge s'y reflète"
 
 #: assets/data/changelog.json
+msgid "Water's Edge"
+msgstr "Au bord de l'eau"
+
+#: assets/data/changelog.json
 msgid "Way Up"
 msgstr "Vers le jour"
 
@@ -7091,6 +7095,10 @@ msgstr "Là où un monstre ne se trouve qu'après la tombée de la nuit, les lie
 #: assets/data/changelog.json
 msgid "Where regions meet, the ground no longer changes along straight lines and square corners: the edge bends and wanders, still dithered pixel by pixel, and the land's tone runs right to the shore"
 msgstr "Là où les régions se rejoignent, le sol ne change plus le long de lignes droites et d'angles carrés : la limite ondule et serpente, toujours tramée pixel par pixel, et la teinte de la terre va jusqu'au rivage"
+
+#: assets/data/changelog.json
+msgid "Where the Ash Fields reach the river, the burnt ground now ends as raggedly as it does elsewhere, without a grey square or strip on the bank"
+msgstr "Là où les Champs de Cendres atteignent la rivière, la terre brûlée s'arrête désormais aussi irrégulièrement qu'ailleurs, sans carré ni bande grise sur la berge"
 
 #: assets/data/changelog.json
 msgid "While Pixelheim still lies in ashes, the other villages' people are home: Saltmere, Blackiron, Greyhold and the Frostgate no longer wait for Pixelheim to become a hamlet, so you can talk to them, take their quests and carry their post from the start"

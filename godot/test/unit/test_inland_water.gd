@@ -107,6 +107,22 @@ func test_the_land_by_a_bank_carries_the_tone_and_its_ground() -> void:
 	assert_eq(_code(mask, Vector2i(0, 4)), tone + PunyTerrain.BANK_GROUNDS["grass"], "the rock's foot: grass, as its top (PIX-431)")
 
 
+func test_the_ash_and_the_grass_reach_the_river_each_on_its_own_ground() -> void:
+	# PIX-437: the shader lays each pixel of the bank by the land cell its
+	# tone is read from, so at the Ash's border the two cells must say which
+	# is the toned dirt and which the grass.
+	var data := MapData.load_by_id("overworld")
+	var mask := _mask(data.grid, data.size, "overworld")
+	var tint := PunyTerrain.tint_map(data.grid, data.size, data.regions).get_image()
+	var tone := PunyTerrain.WATER_CLEAR * PunyTerrain.TONE_BIT
+	assert_eq(_code(mask, Vector2i(87, 27)) - tone, PunyTerrain.BANK_GROUNDS["dirt"], "the Ash's last cell: dirt")
+	assert_eq(PunyTerrain.tone_at(tint, Vector2i(87, 27)), "tone", "wholly toned")
+	assert_eq(_code(mask, Vector2i(88, 27)) - tone, PunyTerrain.BANK_GROUNDS["grass"], "the first of the green: grass")
+	assert_eq(PunyTerrain.tone_at(tint, Vector2i(88, 27)), "fringe", "its own dirt alone")
+	var shader := (load("res://shaders/inland_water.gdshaderinc") as ShaderInclude).code
+	assert_string_contains(shader, "tone_read(at)", "the bank's land reads where the tone does")
+
+
 func test_land_away_from_the_water_and_the_sea_carry_nothing() -> void:
 	var grid := _river(12, 3)
 	grid[Vector2i(3, 5)] = "grass"
