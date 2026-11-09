@@ -143,18 +143,25 @@ float value_noise(vec2 p) {
 #include "res://shaders/frozen.gdshaderinc"
 #include "res://shaders/road_shape.gdshaderinc"
 
+// Where in the masks (their pixels) the tone over the art pixel at `at` is
+// read: where a slow noise bends the grid and the pixel's Bayer step jitters
+// it by up to EDGE_SEAM pixels. The bank's land follows it (bank_land).
+vec2 tone_read(vec2 at) {
+	vec2 px = floor(at);
+	vec2 cells = px / CELL;
+	vec2 bend = vec2(value_noise(cells / EDGE_BENDS), value_noise(cells / EDGE_BENDS + 17.3)) - 0.5;
+	vec2 jitter = vec2(art_dither(px), art_dither(px.yx + vec2(1.0, 2.0))) - 0.5;
+	// The masks are the map's own, from its corner in the plane.
+	return px + 0.5 + bend * 2.0 * EDGE_WANDER * CELL + jitter * 2.0 * EDGE_SEAM - map_origin - mask_origin;
+}
+
 // The tone over the art pixel at `at`: the mask's texel (hue, and the kind
 // in its alpha) of the one cell it's read from, where a slow noise bends the
 // grid and the pixel's Bayer step jitters it by up to EDGE_SEAM pixels.
 // Where a country road meets open ground, the road's own shape decides
 // which (PIX-404, road_toned).
 vec4 region_tone(vec2 at) {
-	vec2 px = floor(at);
-	vec2 cells = px / CELL;
-	vec2 bend = vec2(value_noise(cells / EDGE_BENDS), value_noise(cells / EDGE_BENDS + 17.3)) - 0.5;
-	vec2 jitter = vec2(art_dither(px), art_dither(px.yx + vec2(1.0, 2.0))) - 0.5;
-	// The masks are the map's own, from its corner in the plane.
-	vec2 read = px + 0.5 + bend * 2.0 * EDGE_WANDER * CELL + jitter * 2.0 * EDGE_SEAM - map_origin - mask_origin;
+	vec2 read = tone_read(at);
 	vec2 texel = road_toned(floor(read / CELL) + 0.5, read + mask_origin);
 	return texture(tint_map, texel * CELL / map_pixels);
 }

@@ -203,15 +203,32 @@ int water_code_near(ivec2 cell) {
 // tile layer's sheet (`sheet_pixel` its texel's size), in its pixels: the
 // fragment reads it (a function can't be handed the TEXTURE built-in).
 // `fallback`: the ground where no land cell is that near (a meandering
-// river's bank drawn a cell in, river_swung).
-vec2 bank_land(vec2 local_px, vec2 map_px, vec2 sheet_pixel, int fallback) {
+// river's bank drawn a cell in, river_swung). Where a region's toned dirt
+// and another ground reach the bank together (the Ash's border, PIX-437),
+// each pixel takes the ground of the land cell nearest where its tone is
+// read (`toned_at`, tone_read), so the two end on the tone's ragged edge: one
+// ground for the whole tile drew Shade's grass under the ash, a grey square.
+vec2 bank_land(vec2 local_px, vec2 map_px, vec2 sheet_pixel, int fallback, vec2 toned_at) {
 	ivec2 corner = ivec2(floor((local_px - CELL * 0.5) / CELL));
 	int ground = fallback;
+	bool border = false;
+	float nearest = CELL * 4.0;
+	int nearest_ground = 0;
 	for (int i = 0; i < 4; i++) {
-		vec4 texel = mask_texel(corner + ivec2(i % 2, i / 2));
+		ivec2 land = corner + ivec2(i % 2, i / 2);
+		vec4 texel = mask_texel(land);
 		if (texel.r < 0.5 && texel.a > 0.0) {
 			ground = int(round(texel.a * 255.0)) % 16;
+			border = border || (ground == 1 && tone_kind(texelFetch(tint_map, land, 0).a) == KIND_TONE);
+			float away = distance(toned_at, (vec2(land) + 0.5) * CELL);
+			if (away < nearest) {
+				nearest = away;
+				nearest_ground = ground;
+			}
 		}
+	}
+	if (border) {
+		ground = nearest_ground;
 	}
 	// The ground layer lies half a tile up-left of the cells.
 	vec2 dual = floor((map_px + CELL * 0.5) / CELL);
@@ -454,7 +471,7 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 		// The land's own ground where the bank draws back over Shade's water
 		// and his rim.
 		if ((plain.r - 0.5) * CELL >= -SHADE_BANK) {
-			base = vec3(bank_land(local_px, px - map_origin, sheet_pixel, bank_ground), 0.0);
+			base = vec3(bank_land(local_px, px - map_origin, sheet_pixel, bank_ground, tone_read(at)), 0.0);
 			return INLAND_LAND;
 		}
 		return INLAND_NONE;
