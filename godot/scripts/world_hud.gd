@@ -175,7 +175,8 @@ func hint(id: String, values := {}, key := "") -> void:
 	if _hint_doc.is_empty() or _hint_generation != Text.generation:
 		_hint_doc = Text.localize(JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json")))
 		_hint_generation = Text.generation
-	var text := Controls.say(String(_hint_doc[id]["text"]))
+	# A phone has no keys to name (PIX-436): the line for what it has on screen.
+	var text := Controls.say(String(_hint_doc[id].get("touch", _hint_doc[id]["text"]) if Touch.enabled() else _hint_doc[id]["text"]))
 	for name: String in values:
 		text = text.replace("{%s}" % name, str(values[name]))
 	world.messages.hint_line(seen_id, text)

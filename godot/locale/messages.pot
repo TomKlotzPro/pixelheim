@@ -9637,6 +9637,10 @@ msgid "A business you own pays rent daily, and you pay a tenth less there."
 msgstr ""
 
 #: assets/data/hints.json
+msgid "All six buttons are taken: put {skill} on one in Skills (Menu)."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "All six keys are taken: put {skill} on one in Skills ({key:skills})."
 msgstr ""
 
@@ -9649,7 +9653,15 @@ msgid "Face the notice board and press {key:interact} to fund the village's proj
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Face the notice board and tap the hand to fund the village's projects."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Face the post box and press {key:interact} for the post."
+msgstr ""
+
+#: assets/data/hints.json
+msgid "Face the post box and tap the hand for the post."
 msgstr ""
 
 #: assets/data/hints.json
@@ -9658,6 +9670,10 @@ msgstr ""
 
 #: assets/data/hints.json
 msgid "Hurt? Open your pack ({key:inventory}) and drink a potion ({key:interact})."
+msgstr ""
+
+#: assets/data/hints.json
+msgid "Hurt? Open your pack from the Menu and drink a potion."
 msgstr ""
 
 #: assets/data/hints.json
@@ -9673,6 +9689,10 @@ msgid "Old Hessa at the shrine gives your points back, free the first time."
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Open your journal from the Menu."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Press {key:dodge} to roll out of the way."
 msgstr ""
 
@@ -9681,11 +9701,19 @@ msgid "Press {key:journal} to open your journal."
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Tap the arrow to roll out of the way."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Turn your phone sideways for more room."
 msgstr ""
 
 #: assets/data/hints.json
 msgid "{skill}: press {slot} to use it."
+msgstr ""
+
+#: assets/data/hints.json
+msgid "{skill}: tap its button to use it."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -16453,7 +16481,7 @@ msgid "On the shelf:"
 msgstr ""
 
 #: scripts/home_screen.gd
-msgid "Pick a piece for this spot. E on it later takes it back."
+msgid "Pick a piece for this spot. Press {key:interact} on it later to take it back."
 msgstr ""
 
 #: scripts/home_screen.gd

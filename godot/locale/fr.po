@@ -9637,6 +9637,10 @@ msgid "A business you own pays rent daily, and you pay a tenth less there."
 msgstr "Votre commerce rapporte un loyer par jour, et 10 % de remise."
 
 #: assets/data/hints.json
+msgid "All six buttons are taken: put {skill} on one in Skills (Menu)."
+msgstr "Boutons pris : placez {skill} dans Compétences (Menu)."
+
+#: assets/data/hints.json
 msgid "All six keys are taken: put {skill} on one in Skills ({key:skills})."
 msgstr "Six touches prises : placez {skill} dans Compétences ({key:skills})."
 
@@ -9649,8 +9653,16 @@ msgid "Face the notice board and press {key:interact} to fund the village's proj
 msgstr "Face au tableau d'avis, appuyez sur {key:interact} pour financer les chantiers."
 
 #: assets/data/hints.json
+msgid "Face the notice board and tap the hand to fund the village's projects."
+msgstr "Face au tableau d'avis, touchez la main pour financer les chantiers."
+
+#: assets/data/hints.json
 msgid "Face the post box and press {key:interact} for the post."
 msgstr "Face à la boîte aux lettres, appuyez sur {key:interact} pour le courrier."
+
+#: assets/data/hints.json
+msgid "Face the post box and tap the hand for the post."
+msgstr "Face à la boîte aux lettres, touchez la main pour le courrier."
 
 #: assets/data/hints.json
 msgid "Home: the barrel keeps your things, the bed gives more XP."
@@ -9659,6 +9671,10 @@ msgstr "Chez vous : le tonneau garde vos affaires, le lit donne plus d'XP."
 #: assets/data/hints.json
 msgid "Hurt? Open your pack ({key:inventory}) and drink a potion ({key:interact})."
 msgstr "Mal en point ? Ouvrez votre sac ({key:inventory}) et buvez une potion ({key:interact})."
+
+#: assets/data/hints.json
+msgid "Hurt? Open your pack from the Menu and drink a potion."
+msgstr "Mal en point ? Ouvrez votre sac depuis le Menu et buvez une potion."
 
 #: assets/data/hints.json
 msgid "Kill a named monster and its bounty is yours."
@@ -9673,6 +9689,10 @@ msgid "Old Hessa at the shrine gives your points back, free the first time."
 msgstr "Au sanctuaire, Hessa rend vos points : gratuit la première fois."
 
 #: assets/data/hints.json
+msgid "Open your journal from the Menu."
+msgstr "Ouvrez votre journal depuis le Menu."
+
+#: assets/data/hints.json
 msgid "Press {key:dodge} to roll out of the way."
 msgstr "Appuyez sur {key:dodge} pour rouler hors de portée."
 
@@ -9681,12 +9701,20 @@ msgid "Press {key:journal} to open your journal."
 msgstr "Appuyez sur {key:journal} pour ouvrir votre journal."
 
 #: assets/data/hints.json
+msgid "Tap the arrow to roll out of the way."
+msgstr "Touchez la flèche pour rouler hors de portée."
+
+#: assets/data/hints.json
 msgid "Turn your phone sideways for more room."
 msgstr "Tournez votre téléphone pour plus de place."
 
 #: assets/data/hints.json
 msgid "{skill}: press {slot} to use it."
 msgstr "{skill} : appuyez sur {slot} pour l'utiliser."
+
+#: assets/data/hints.json
+msgid "{skill}: tap its button to use it."
+msgstr "{skill} : touchez son bouton pour l'utiliser."
 
 #: assets/data/npcs.json
 msgid "\"It rings a little flat. So did the garrison. They'd have liked it here.\""
@@ -16453,8 +16481,8 @@ msgid "On the shelf:"
 msgstr "Sur l'étagère :"
 
 #: scripts/home_screen.gd
-msgid "Pick a piece for this spot. E on it later takes it back."
-msgstr "Choisissez un meuble pour cet endroit. Plus tard, E dessus pour le reprendre."
+msgid "Pick a piece for this spot. Press {key:interact} on it later to take it back."
+msgstr "Choisissez un meuble pour cet endroit. Plus tard, appuyez sur {key:interact} dessus pour le reprendre."
 
 #: scripts/home_screen.gd
 msgid "Place %s here"

@@ -166,7 +166,8 @@ func _hints() -> Array[String]:
 	var doc: Dictionary = Text.localize(JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json")))
 	var out: Array[String] = []
 	for id: String in doc:
-		out.append(Controls.say(String(doc[id]["text"])).replace("{skill}", longest).replace("{slot}", "1"))
+		for line: String in doc[id].values():
+			out.append(Controls.say(line).replace("{skill}", longest).replace("{slot}", "1"))
 	return out
 
 
@@ -190,6 +191,21 @@ func test_every_hint_is_one_short_line() -> void:
 	TranslationServer.pseudolocalization_enabled = false
 	ProjectSettings.set_setting(ratio, kept_ratio)
 	TranslationServer.set_locale(locale)
+
+
+## PIX-436: « Appuyez sur Shift » on a phone, which has no Shift. Every hint
+## that names a key has a line for what the phone has on screen, naming none.
+func test_on_a_phone_a_hint_names_what_is_on_the_screen() -> void:
+	var doc: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json"))
+	for id: String in doc:
+		if "{key:" in String(doc[id]["text"]) or "{slot}" in String(doc[id]["text"]):
+			assert_true(doc[id].has("touch"), "a phone's line: %s" % id)
+			assert_false("{key:" in String(doc[id].get("touch", "")) or "{slot}" in String(doc[id].get("touch", "")), "names no key: %s" % id)
+	Touch.forced = true
+	hud.hint("dodge")
+	Touch.forced = false
+	var words: String = (world.messages.log_box.get_child(0).get_child(0) as Label).text
+	assert_eq(words, Text.t(doc["dodge"]["touch"]))
 
 
 ## PIX-345: at a boss's fall the Victory card stood where its gold, its
