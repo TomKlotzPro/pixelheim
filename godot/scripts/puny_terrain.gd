@@ -343,9 +343,11 @@ const TONE_BIT := 16
 const SPAN_BIT := 8
 ## On the land by a bank the code's low bits say which ground it is, so
 ## where the bank bends back the shader draws Shade's own tile of it there:
-## grass (the mire's, the snow's and the ice's too, toned), dirt (a road,
-## the ash, the rock's foot), sand (the beach).
-const BANK_GROUNDS := {"grass": 0, "dirt": 1, "cliff": 1, "sand": 2}
+## grass (the mire's, the snow's and the ice's too, toned; and the rock's
+## foot, as the rock's own top is his grass: PIX-431, his dirt there drew a
+## ruled yellow strip round green rock by the water), dirt (a road, the
+## ash), sand (the beach).
+const BANK_GROUNDS := {"grass": 0, "dirt": 1, "cliff": 0, "sand": 2}
 
 static var _wet := {}
 

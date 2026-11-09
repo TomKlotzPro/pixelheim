@@ -104,7 +104,7 @@ func test_the_land_by_a_bank_carries_the_tone_and_its_ground() -> void:
 	assert_eq(_code(mask, Vector2i(3, 0)), tone + PunyTerrain.BANK_GROUNDS["dirt"], "a road by the water: dirt")
 	assert_eq(_code(mask, Vector2i(9, 0)), tone + PunyTerrain.BANK_GROUNDS["grass"], "grass")
 	assert_eq(_code(mask, Vector2i(6, 4)), tone + PunyTerrain.BANK_GROUNDS["sand"], "a beach: sand")
-	assert_eq(_code(mask, Vector2i(0, 4)), tone + PunyTerrain.BANK_GROUNDS["cliff"], "the rock's foot: dirt")
+	assert_eq(_code(mask, Vector2i(0, 4)), tone + PunyTerrain.BANK_GROUNDS["grass"], "the rock's foot: grass, as its top (PIX-431)")
 
 
 func test_land_away_from_the_water_and_the_sea_carry_nothing() -> void:
