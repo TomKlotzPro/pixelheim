@@ -3553,6 +3553,10 @@ msgid "Going out of the village or coming back in, you now pass under the gate's
 msgstr "En sortant du village ou en y revenant, vous passez désormais sous l'arche de la porte au lieu de sembler marcher sur le haut du rempart, et la porte de Greyhold fait de même"
 
 #: assets/data/changelog.json
+msgid "Going through a door, your hero now fades into it instead of standing over it while the place changes"
+msgstr "En passant une porte, votre héros s'y efface désormais au lieu de rester planté devant pendant le changement de lieu"
+
+#: assets/data/changelog.json
 msgid "Going underground still goes dark for a moment, and coming back up melts into the daylight"
 msgstr "Descendre sous terre plonge toujours un instant dans le noir, et remonter se fond dans la lumière du jour"
 
@@ -5391,6 +5395,10 @@ msgstr "Mains sûres"
 #: assets/data/changelog.json
 msgid "Steady Steps"
 msgstr "Pas assurés"
+
+#: assets/data/changelog.json
+msgid "Step Inside"
+msgstr "Entrez donc"
 
 #: assets/data/changelog.json
 msgid "Stepping onto a herb patch or a glint on the road no longer trips the game when its picture is missing"
