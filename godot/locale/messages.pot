@@ -2189,6 +2189,10 @@ msgid "A stun in the middle of a swing no longer freezes the hero: when it wears
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A stun that lands while a foe is winding up now breaks its attack: the mark vanishes and “Interrupted!” rises, so a told attack can be stopped as well as dodged"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A summoned wolf's, slime's or skeleton's bite no longer shields you from the boss's own bite right after it: Old Greymaw, the Tidecaller and the Bone Abbot hit as hard as they should with their pack out, and the pack itself still bites one at a time"
 msgstr ""
 
@@ -3749,6 +3753,10 @@ msgid "Hoarfrost"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Hold That Thought"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Hold the square against Fafnyr until dawn, with everyone you brought home: Teo's bell, Ulla's archers, Bram's cheese wheels, Loras's song, Iva's care and Sela's inn"
 msgstr ""
 
@@ -4866,6 +4874,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Points to spend live in a gold chip in the header of both menus"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Poison, burns and stuns now show as small icons beside a foe's level"
 msgstr ""
 
 #: assets/data/changelog.json
