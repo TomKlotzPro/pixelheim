@@ -3553,6 +3553,10 @@ msgid "Going out of the village or coming back in, you now pass under the gate's
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Going through a door, your hero now fades into it instead of standing over it while the place changes"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Going underground still goes dark for a moment, and coming back up melts into the daylight"
 msgstr ""
 
@@ -5390,6 +5394,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Steady Steps"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Step Inside"
 msgstr ""
 
 #: assets/data/changelog.json

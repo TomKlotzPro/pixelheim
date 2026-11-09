@@ -650,6 +650,25 @@ class BareWorld extends "res://scripts/world.gd":
 		pass
 
 
+## PIX-438: the hero has gone into the door before the place changes, so the
+## dissolve's picture doesn't show them standing in it, and is back after.
+func test_the_hero_is_gone_into_the_door_before_the_place_changes() -> void:
+	var world: BareWorld = add_child_autofree(BareWorld.new())
+	world.player = add_child_autofree(CharacterBody2D.new())
+	var was: bool = Sound.hushes_builds
+	for web: bool in [false, true]:
+		Sound.hushes_builds = web
+		var seen: Array = []
+		world._through_door(func() -> void: seen.append(world.player.modulate.a))
+		await wait_until(func() -> bool: return not seen.is_empty(), 2.0)
+		assert_almost_eq(seen[0], 0.0, 0.1, "gone as the place changes, web: %s" % web)
+		assert_eq(world.player.modulate.a, 1.0, "back in the new place, web: %s" % web)
+	Sound.hushes_builds = was
+	Sound.hushed = 0.0
+	Sound._hush_left = 0.0
+	Sound.apply_volumes()
+
+
 ## PIX-420: a map built where no door is (a scene's place, Lantern Night's
 ## stalls, a place grown round the hero: World.hushed_build) waits on the
 ## same hush on the web, the screen held in the dark the new map fades in
