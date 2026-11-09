@@ -1,36 +1,43 @@
 {
   "dodge": {
-    "text": "Press {key:dodge} to roll out of the way."
+    "text": "Press {key:dodge} to roll out of the way.",
+    "touch": "Tap the arrow to roll out of the way."
   },
   "fright": {
     "text": "Monsters far below your level run from you."
   },
   "skill": {
-    "text": "{skill}: press {slot} to use it."
+    "text": "{skill}: press {slot} to use it.",
+    "touch": "{skill}: tap its button to use it."
   },
   "journal": {
-    "text": "Press {key:journal} to open your journal."
+    "text": "Press {key:journal} to open your journal.",
+    "touch": "Open your journal from the Menu."
   },
   "forget": {
     "text": "Old Hessa at the shrine gives your points back, free the first time."
   },
   "skill_full": {
-    "text": "All six keys are taken: put {skill} on one in Skills ({key:skills})."
+    "text": "All six keys are taken: put {skill} on one in Skills ({key:skills}).",
+    "touch": "All six buttons are taken: put {skill} on one in Skills (Menu)."
   },
   "board": {
-    "text": "Face the notice board and press {key:interact} to fund the village's projects."
+    "text": "Face the notice board and press {key:interact} to fund the village's projects.",
+    "touch": "Face the notice board and tap the hand to fund the village's projects."
   },
   "bounty": {
     "text": "Kill a named monster and its bounty is yours."
   },
   "post": {
-    "text": "Face the post box and press {key:interact} for the post."
+    "text": "Face the post box and press {key:interact} for the post.",
+    "touch": "Face the post box and tap the hand for the post."
   },
   "turn": {
     "text": "Turn your phone sideways for more room."
   },
   "potion": {
-    "text": "Hurt? Open your pack ({key:inventory}) and drink a potion ({key:interact})."
+    "text": "Hurt? Open your pack ({key:inventory}) and drink a potion ({key:interact}).",
+    "touch": "Hurt? Open your pack from the Menu and drink a potion."
   },
   "house": {
     "text": "Home: the barrel keeps your things, the bed gives more XP."

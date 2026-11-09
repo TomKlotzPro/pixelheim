@@ -4525,6 +4525,10 @@ msgid "On a phone the controls are sized for a thumb on any screen, the attack, 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On a phone, first-time tips now name what you can touch on screen instead of a keyboard key"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "On the Night of Bells, Sela brings a bowl of broth to whoever holds the square, so every class can see the dawn; the cleric starts sturdier, and the first fields ease in more gently"
 msgstr ""
 
@@ -6453,6 +6457,10 @@ msgid "The north pays its way: Frostgate, the ice cave and Greyhold's foes now c
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The note on placed furniture now names your own key for taking it back, even after you rebind it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The old shrine in the Mirefen and the courtyard in the Deepwood are real ruins now: low broken walls of grey stone with moss, cracks and fallen heaps, rubble at their feet and worn slabs inside, and the stone knight stands on his plinth again"
 msgstr ""
 
@@ -6782,6 +6790,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Thumb-Sized"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Thumbs Up"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -9637,6 +9649,10 @@ msgid "A business you own pays rent daily, and you pay a tenth less there."
 msgstr ""
 
 #: assets/data/hints.json
+msgid "All six buttons are taken: put {skill} on one in Skills (Menu)."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "All six keys are taken: put {skill} on one in Skills ({key:skills})."
 msgstr ""
 
@@ -9649,7 +9665,15 @@ msgid "Face the notice board and press {key:interact} to fund the village's proj
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Face the notice board and tap the hand to fund the village's projects."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Face the post box and press {key:interact} for the post."
+msgstr ""
+
+#: assets/data/hints.json
+msgid "Face the post box and tap the hand for the post."
 msgstr ""
 
 #: assets/data/hints.json
@@ -9658,6 +9682,10 @@ msgstr ""
 
 #: assets/data/hints.json
 msgid "Hurt? Open your pack ({key:inventory}) and drink a potion ({key:interact})."
+msgstr ""
+
+#: assets/data/hints.json
+msgid "Hurt? Open your pack from the Menu and drink a potion."
 msgstr ""
 
 #: assets/data/hints.json
@@ -9673,6 +9701,10 @@ msgid "Old Hessa at the shrine gives your points back, free the first time."
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Open your journal from the Menu."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Press {key:dodge} to roll out of the way."
 msgstr ""
 
@@ -9681,11 +9713,19 @@ msgid "Press {key:journal} to open your journal."
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Tap the arrow to roll out of the way."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Turn your phone sideways for more room."
 msgstr ""
 
 #: assets/data/hints.json
 msgid "{skill}: press {slot} to use it."
+msgstr ""
+
+#: assets/data/hints.json
+msgid "{skill}: tap its button to use it."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -16453,7 +16493,7 @@ msgid "On the shelf:"
 msgstr ""
 
 #: scripts/home_screen.gd
-msgid "Pick a piece for this spot. E on it later takes it back."
+msgid "Pick a piece for this spot. Press {key:interact} on it later to take it back."
 msgstr ""
 
 #: scripts/home_screen.gd

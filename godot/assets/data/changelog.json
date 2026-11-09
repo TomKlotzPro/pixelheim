@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.334.0",
+      "date": "2026-11-09",
+      "codename": "Thumbs Up",
+      "notes": [
+        "On a phone, first-time tips now name what you can touch on screen instead of a keyboard key",
+        "The note on placed furniture now names your own key for taking it back, even after you rebind it"
+      ]
+    },
+    {
       "version": "0.333.0",
       "date": "2026-11-09",
       "codename": "Ragged Edge",
