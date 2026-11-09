@@ -3369,6 +3369,10 @@ msgid "Fast travel: any waypoint you have laid eyes on is one click away - seen 
 msgstr "Voyage rapide : tout relais que vous avez aperçu est à un clic - vu une fois, accessible pour toujours"
 
 #: assets/data/changelog.json
+msgid "Feet on the Ground"
+msgstr "Les pieds sur terre"
+
+#: assets/data/changelog.json
 msgid "Field Alchemy"
 msgstr "Alchimie de campagne"
 
@@ -7319,6 +7323,10 @@ msgstr "Votre héros entre dans la lumière : les personnages portent leur pro
 #: assets/data/changelog.json
 msgid "Your hero walks in eight directions and turns through the diagonal, instead of snapping a quarter turn at once"
 msgstr "Votre héros marche dans huit directions et tourne en passant par la diagonale, au lieu de pivoter d'un quart de tour d'un coup"
+
+#: assets/data/changelog.json
+msgid "Your hero, the villagers and every foe now stand on a soft shadow at their feet, instead of looking pasted onto the ground"
+msgstr "Votre héros, les villageois et tous les ennemis ont désormais une ombre douce à leurs pieds, au lieu de sembler collés sur le sol"
 
 #: assets/data/changelog.json
 msgid "Your house announces itself: a FOR SALE sign hangs over the door, and turns to HOME once the deed is yours"
