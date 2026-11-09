@@ -3369,6 +3369,10 @@ msgid "Fast travel: any waypoint you have laid eyes on is one click away - seen 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Feet on the Ground"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Field Alchemy"
 msgstr ""
 
@@ -7318,6 +7322,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Your hero walks in eight directions and turns through the diagonal, instead of snapping a quarter turn at once"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Your hero, the villagers and every foe now stand on a soft shadow at their feet, instead of looking pasted onto the ground"
 msgstr ""
 
 #: assets/data/changelog.json
