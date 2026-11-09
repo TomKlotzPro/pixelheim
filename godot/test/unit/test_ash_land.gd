@@ -11,6 +11,8 @@ extends GutTest
 ## How many cells at most the Ash's edge runs straight (PIX-431): it ran 14
 ## along Greyhold's line, its rock burnt to the line and green past it.
 const LONGEST_EDGE := 6
+## How many cells a plain disc's flat sides run, at every reach from 4 up.
+const RING_FLAT := 5
 
 
 func before_all() -> void:
@@ -219,3 +221,24 @@ func test_the_ash_meets_the_green_land_on_no_straight_line() -> void:
 	var kinds := _plane_ground()
 	assert_lte(_longest_run(kinds, "ash", "green"), LONGEST_EDGE, "the ash's edge wanders")
 	assert_lte(_longest_run(kinds, "burnt", "rock"), LONGEST_EDGE, "and burnt rock's edge with green rock, across a map's line too")
+
+
+## Every radius a ring has as it grows or with Aske's third (a sea-glass lamp's
+## 8 the widest), round every lamp on open ash: a plain disc's sides run 5.
+func test_a_healed_ring_meets_the_ash_on_no_straight_line() -> void:
+	for place: String in Routes.places():
+		var lamp := Routes.lamp_of(place)
+		if lamp.is_empty():
+			continue
+		var at: Vector2i = lamp["cell"]
+		for radius in range(1, 9):
+			var grid := {}
+			for y in range(at.y - radius - 2, at.y + radius + 3):
+				for x in range(at.x - radius - 2, at.x + radius + 3):
+					grid[Vector2i(x, y)] = "ash"
+			var rings: Array[Dictionary] = [{"cell": at, "reach": radius, "mornings": radius}]
+			var healed := Lamps.healed(grid, rings)
+			var kinds := {}
+			for cell: Vector2i in grid:
+				kinds[cell] = "green" if healed.has(cell) else "ash"
+			assert_lt(_longest_run(kinds, "ash", "green"), RING_FLAT, "%s's ring at %d cells" % [place, radius])

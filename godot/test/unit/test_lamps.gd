@@ -94,8 +94,10 @@ func test_only_the_ash_heals() -> void:
 	assert_eq(healed[Vector2i(11, 10)], "grove")
 	assert_eq(healed[Vector2i(13, 10)], "meadow")
 	assert_eq(healed[Vector2i(14, 10)], "grass")
-	assert_eq(healed[Vector2i(15, 10)], "earth")
-	assert_false(healed.has(Vector2i(16, 10)), "the ash past it")
+	assert_eq(healed[Vector2i(15, 9)], "earth")
+	assert_false(healed.has(Vector2i(15, 10)), "the ash holds out on some of the front (PIX-431)")
+	assert_true(Lamps.shelters(Vector2i(15, 10), _ring(40)), "though the ring still shelters it")
+	assert_false(healed.has(Vector2i(16, 9)), "the ash past it")
 	assert_true(Lamps.healed(grid, _ring(0)).is_empty(), "nothing the day it's lit")
 
 

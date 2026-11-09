@@ -186,7 +186,7 @@ func test_after_the_story_he_says_his_count() -> void:
 func test_the_map_renames_the_fields_as_they_heal() -> void:
 	var ash := Bestiary.region("ash")
 	var names: Array[String] = []
-	for healed in [0, 49, 50, 179, 180, 1400]:
+	for healed in [0, 49, 50, 159, 160, 1400]:
 		names.append(Lamps.region_name(ash, healed))
 	assert_eq(names, ["the Ash Fields", "the Ash Fields", "the Greening", "the Greening", "the Lantern Meadows", "the Lantern Meadows"] as Array[String])
 	assert_eq(Lamps.region_name(Bestiary.region("forest"), 1400), String(Bestiary.region("forest")["name"]), "only the ash is renamed")
@@ -210,7 +210,7 @@ func test_the_reach_is_named_by_its_healed_ground() -> void:
 	assert_eq(Atlas.region_title("ash", reach), "The Greening", "new rings, barely begun")
 	GameState.post.lit["greyhold"] = today - Lamps.REACH
 	GameState.post.lit["frostgate"] = today - Lamps.REACH
-	assert_gte(Lamps.healed_on(reach), 180)
+	assert_gte(Lamps.healed_on(reach), 160)
 	assert_eq(Atlas.region_title("ash", reach), "The Lantern Meadows", "every ring on the ash whole")
 	var cell := Routes.spot("blackiron", "lamp") + Vector2i.DOWN
 	assert_eq(reach.region_at(cell), "ash")
