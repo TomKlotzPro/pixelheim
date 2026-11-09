@@ -792,6 +792,17 @@ func field_routes() -> String:
 	return ",".join(parts)
 
 
+## What a villager is saying (PIX-443): the conversation's page, or the
+## greeting over a counter, in the run's language.
+func field_said() -> String:
+	for node in world.get_children():
+		if "greeting" in node:
+			return Text.t(node.greeting)
+		if "npc" in node and "text" in node:
+			return Text.t(node.text.text)
+	return ""
+
+
 func field_saves() -> String:
 	return str(world.neighbours.saves) if flags.has("seamless") else ""
 

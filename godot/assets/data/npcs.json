@@ -340,6 +340,10 @@
       "lines": [
         "Saltmere's small, but she's honest. Mostly. The crabs aren't, and neither are the smugglers.",
         "The lighthouse on the point went dark years ago. A town that can't see the sea shouldn't live by it."
+      ],
+      "linesWhen": [
+        {"when": {"kind": "hub", "place": "saltmere", "step": 3}, "lines": ["She's lit. Every boat in the bay came home last night, and two that aren't ours. We kept those."]},
+        {"when": {"kind": "hub", "place": "saltmere", "step": 1}, "lines": ["It's only a tower until it's lit. I say so every morning, in case it's listening."]}
       ]
     },
     {
@@ -353,6 +357,10 @@
       "lines": [
         "Fishing? Stand at the end of the jetty, face the water, press E. The fish come back every little while.",
         "The lagoon's good, and the rocks out east. Every so often the sea gives you a pearl. Or a boot."
+      ],
+      "linesWhen": [
+        {"when": {"kind": "chosen"}, "lines": ["A dragon flew over with somebody's letter in his teeth. The gulls have never been so polite.", "Fishing? Stand at the end of the jetty, face the water, press E. The fish come back every little while."]},
+        {"when": {"kind": "hunted", "named": "tidecaller"}, "lines": ["The sea's in a better mood since you went down that cave. Three fish this morning, and only the one boot.", "Fishing? Stand at the end of the jetty, face the water, press E. The fish come back every little while."]}
       ]
     },
     {
@@ -366,6 +374,10 @@
       "lines": [
         "Don't look at me like that. I'm the honest kind of smuggler. I only rob other smugglers.",
         "Their captain sits on the north-east beach counting what isn't his. Someone ought to send him on his way."
+      ],
+      "linesWhen": [
+        {"when": {"kind": "project", "projectId": "waystation_saltmere"}, "lines": ["That lamp on the road has cost me a good dark night's work. I've written to complain."]},
+        {"when": {"kind": "questDone", "questId": "rook_captain"}, "lines": ["The captain's gone, and nobody's counting what isn't his. I've taken that up. Honest work."]}
       ]
     },
     {
@@ -379,6 +391,10 @@
       "lines": [
         "Blackiron's the best iron in the Reach and the worst place to dig it. Goblins in the upper shafts, something worse below.",
         "Fifty years back five strangers came up this road for a cartload of black iron. Said it was for a seal. Paid in gold, too."
+      ],
+      "linesWhen": [
+        {"when": {"kind": "hunted", "named": "seam_warden"}, "lines": ["Something worse below, I said. Turns out you were worse. The lads have named a cart after you."]},
+        {"when": {"kind": "delivered", "questId": "letter_pell"}, "lines": ["Since your letter Old Pell tells the one about the flat cage to anyone with ears. It gets flatter."]}
       ]
     },
     {
@@ -392,6 +408,10 @@
       "lines": [
         "Hilda in Pixelheim would kill for this ore. Bring her some and see her smile. Once a year, she smiles.",
         "The stone golems have taken to the cart hall. Rails don't run themselves."
+      ],
+      "linesWhen": [
+        {"when": {"kind": "seen", "sceneId": "bells_collar"}, "lines": ["A dragon on her chimney and Hilda's smiled twice this year. Twice! I've sent ore to celebrate."]},
+        {"when": {"kind": "hub", "place": "blackiron", "step": 2}, "lines": ["Brann's shop is a table. I've told him. He's put a price on the table."]}
       ]
     },
     {
@@ -405,6 +425,10 @@
       "lines": [
         "I wore the red cloak, once. Then they threw me in the cells for asking where the pay went.",
         "Ulla let me stay. I fetch the water. It's a living."
+      ],
+      "linesWhen": [
+        {"when": {"kind": "hunted", "named": "hollow_captain"}, "lines": ["The captain's finally lying down, they say. He still owes me four months' pay."]},
+        {"when": {"kind": "hub", "place": "greyhold", "step": 2}, "lines": ["I'm in charge of the awning now. Water and awning. It's practically a rank."]}
       ]
     },
     {
@@ -419,6 +443,10 @@
         "Three wagons up, one wagon down, and the down one's stuck. That's the Frostgate for you.",
         "The yetis took the strongbox and left the furs. Even they know what's worth stealing."
       ],
+      "linesWhen": [
+        {"when": {"kind": "hub", "place": "frostgate", "step": 3}, "lines": ["A lodge with a fire in it, on the Frostgate! The horses chose well, and I'll hear no more about it."]},
+        {"when": {"kind": "hunted", "named": "rimefang"}, "lines": ["Rimefang's gone and the down wagon's still stuck. I'd really hoped that was Rimefang."]}
+      ],
       "shop": "caravan"
     },
     {
@@ -432,6 +460,10 @@
       "lines": [
         "I'm the caravan's herbalist. Up here that mostly means rubbing snow on frostbite.",
         "Frost lilies only open in the snow. Vex in Pixelheim swears by them."
+      ],
+      "linesWhen": [
+        {"when": {"kind": "project", "projectId": "waystation_frostgate"}, "lines": ["My frost lilies, in the road's lamp, and the ash heals twice as fast. Vex says it was her idea."]},
+        {"when": {"kind": "delivered", "questId": "letter_aske"}, "lines": ["Aske opened Liane's door for your letter. Fifty years shut, and he's complaining about the draught."]}
       ]
     },
     {
@@ -445,6 +477,9 @@
       "shop": "chandler",
       "lines": [
         "Rope, tar and lamp oil. And fish. Mostly fish."
+      ],
+      "linesWhen": [
+        {"when": {"kind": "hub", "place": "saltmere", "step": 3}, "lines": ["Lamp oil by the barrel, now, for the lighthouse. Still mostly fish."]}
       ]
     },
     {
@@ -458,6 +493,9 @@
       "shop": "quartermaster",
       "lines": [
         "The mine pays in iron, I sell in iron."
+      ],
+      "linesWhen": [
+        {"when": {"kind": "hub", "place": "blackiron", "step": 3}, "lines": ["The mine pays in iron, I sell in iron. I also have an awning now."]}
       ]
     },
     {
@@ -471,6 +509,9 @@
       "shop": "sutler",
       "lines": [
         "I sell what keeps soldiers alive."
+      ],
+      "linesWhen": [
+        {"when": {"kind": "hub", "place": "greyhold", "step": 3}, "lines": ["I still sell what keeps soldiers alive. Now there's a queue for it."]}
       ]
     },
     {

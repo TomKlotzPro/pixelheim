@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.340.0",
+      "date": "2026-11-09",
+      "codename": "Word Gets Round",
+      "notes": [
+        "The people of the Reach now answer what you've done: a letter delivered, a lamp lit, a hunt finished, the dragon home",
+        "Seven silent chests in the wilds now say who left them"
+      ]
+    },
+    {
       "version": "0.339.0",
       "date": "2026-11-09",
       "codename": "Feet on the Ground",

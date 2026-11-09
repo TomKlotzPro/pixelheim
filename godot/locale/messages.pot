@@ -5269,6 +5269,10 @@ msgid "Seven new waypoints reach every region: Saltmere Hamlet, the Sea Cave, th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Seven silent chests in the wilds now say who left them"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Shadows became a tone, not a hole: half-strength and shorter under a higher sun - the long black smears are gone"
 msgstr ""
 
@@ -6533,6 +6537,10 @@ msgid "The passes are fast-travel waypoints the moment you lay eyes on them"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The people of the Reach now answer what you've done: a letter delivered, a lamp lit, a hunt finished, the dragon home"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The places you carry post to grow in three steps as their road fills, each shown with a little tour of its own: Saltmere's lighthouse mended, glazed in sea glass, then lit; a stall at the miners' camp; Mabel's tent at Greyhold become a market; a lodge with its fire lit at Gunnar's camp"
 msgstr ""
 
@@ -7198,6 +7206,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Word Gets Round"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -9849,11 +9861,23 @@ msgid "A city under the Ashen Mountain. My mother would not believe the streetli
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "A dragon flew over with somebody's letter in his teeth. The gulls have never been so polite."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "A dragon on her chimney and Hilda's smiled twice this year. Twice! I've sent ore to celebrate."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "A fountain by the square and clean water at last. Half my work was the water."
 msgstr ""
 
 #: assets/data/npcs.json
 msgid "A fountain! I hauled water forty years and now it leaps out of the ground on its own."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "A lodge with a fire in it, on the Frostgate! The horses chose well, and I'll hear no more about it."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -9909,6 +9933,10 @@ msgid "Aske keeps your lantern and the Reach's ember lamps trimmed: they light t
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Aske opened Liane's door for your letter. Fifty years shut, and he's complaining about the draught."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Aske the Hermit"
 msgstr ""
 
@@ -9926,6 +9954,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Bram"
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Brann's shop is a table. I've told him. He's put a price on the table."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -10093,11 +10125,19 @@ msgid "I sell what keeps soldiers alive."
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "I still sell what keeps soldiers alive. Now there's a queue for it."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "I wore the red cloak, once. Then they threw me in the cells for asking where the pay went."
 msgstr ""
 
 #: assets/data/npcs.json
 msgid "I'm Sela. I kept the inn, when there was an inn. Now I keep a tent and more hurt than I have cloth for."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "I'm in charge of the awning now. Water and awning. It's practically a rank."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -10121,6 +10161,10 @@ msgid "It was the stew or the poultice. Probably the stew."
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "It's only a tower until it's lit. I say so every morning, in case it's listening."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Iva heals you whole, free, whenever you're in town"
 msgstr ""
 
@@ -10134,6 +10178,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Keep that cap on. Embers like the top of a head best."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Lamp oil by the barrel, now, for the lighthouse. Still mostly fish."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -10222,6 +10270,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "My canary's down there. She tells us when the air goes bad. Without her we're digging blind."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "My frost lilies, in the road's lamp, and the ash heals twice as fast. Vex says it was her idea."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -10329,6 +10381,10 @@ msgid "Rebuild us, bring the relics home, and then we talk about the mountain. I
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Rimefang's gone and the down wagon's still stuck. I'd really hoped that was Rimefang."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Roll up, roll up! Three rings, three pegs - land two and the prize is yours!"
 msgstr ""
 
@@ -10377,6 +10433,14 @@ msgid "She built the observatory over the old ice cave. Said the cold kept her g
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "She's lit. Every boat in the bay came home last night, and two that aren't ours. We kept those."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Since your letter Old Pell tells the one about the flat cage to anyone with ears. It gets flatter."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Sing for a hamlet? Darling, no. Light some lamps first - make Pixelheim a village, then we talk."
 msgstr ""
 
@@ -10394,6 +10458,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Smith Hilda"
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Something worse below, I said. Turns out you were worse. The lads have named a cart after you."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -10417,6 +10485,10 @@ msgid "Ten gold for a bed and no questions. The bards say my stew brought a man 
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "That lamp on the road has cost me a good dark night's work. I've written to complain."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "The beam - you got it off - thank you. Thank you. I'm Bram. I'll live, I think. Probably."
 msgstr ""
 
@@ -10426,6 +10498,14 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "The canary and the cat have reached an understanding. The understanding is shouting."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "The captain's finally lying down, they say. He still owes me four months' pay."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "The captain's gone, and nobody's counting what isn't his. I've taken that up. Honest work."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -10509,7 +10589,15 @@ msgid "The mine pays in iron, I sell in iron."
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "The mine pays in iron, I sell in iron. I also have an awning now."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "The post runs like a dream. Fast travel drops you right at the square now - no gate queue."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "The sea's in a better mood since you went down that cave. Three fish this morning, and only the one boot."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -15869,11 +15957,35 @@ msgid "A pair of fur boots, frozen into the lake's edge. Whoever wore them cross
 msgstr ""
 
 #: assets/maps/interactables.json
+msgid "A shield a shepherd bought against Greymaw, left here so it wouldn't get scratched."
+msgstr ""
+
+#: assets/maps/interactables.json
 msgid "A staff with a star caught in its head, packed in straw against the damp by somebody very careful, a hundred years ago."
 msgstr ""
 
 #: assets/maps/interactables.json
 msgid "A sword with a dragon etched down the blade, made for a fight up the mountain that nobody came back to have."
+msgstr ""
+
+#: assets/maps/interactables.json
+msgid "A thief's cloak, folded on the moss. Nobody has seen its owner since, which was rather the point of it."
+msgstr ""
+
+#: assets/maps/interactables.json
+msgid "A woodcutter's axe, left by someone who heard Mossback sigh and remembered an appointment."
+msgstr ""
+
+#: assets/maps/interactables.json
+msgid "An apprentice's staff in the reeds, and a note for her master: \"I quit. The frogs are nicer.\""
+msgstr ""
+
+#: assets/maps/interactables.json
+msgid "An axe left by the crew who came to cut a road through the Mirefen. The road got this far."
+msgstr ""
+
+#: assets/maps/interactables.json
+msgid "An iron sword in oiled cloth, and a note: \"Back by supper.\" The note's gone yellow waiting."
 msgstr ""
 
 #: assets/maps/interactables.json
@@ -15894,6 +16006,10 @@ msgstr ""
 
 #: assets/maps/interactables.json
 msgid "GOODS"
+msgstr ""
+
+#: assets/maps/interactables.json
+msgid "Greyhold mail, folded neatly, with a note on top: \"Tell the captain I resign.\""
 msgstr ""
 
 #: assets/maps/interactables.json
