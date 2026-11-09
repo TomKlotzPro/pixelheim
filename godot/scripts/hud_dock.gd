@@ -261,7 +261,7 @@ func _skills() -> Control:
 		slot.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		slot.gui_input.connect(func(event: InputEvent) -> void:
 			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-				world.player.cast(index)
+				world.player.press_skill(index)
 		)
 		var face := Control.new()
 		face.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -364,7 +364,7 @@ func _build_menu() -> void:
 	for index in [3, 4, 5]:
 		var cast := func() -> void:
 			_close_menu()
-			world.player.cast(index)
+			world.player.press_skill(index)
 		var row := _menu_line(lines, cast, null)
 		row["skill"] = index
 		row["id"] = "skill%d" % (index + 1)

@@ -16,6 +16,7 @@ class_name Ink
 static var _glyphs := {}
 static var _heads := {}
 static var _sheets := {}
+static var _used := {}
 
 
 ## The pixels `text` draws in `font` at `size`, from where a Label draws it:
@@ -100,14 +101,7 @@ static func crown(frames: SpriteFrames, anims: Array, at := Vector2.ZERO, scale 
 static func _head(frame: Texture2D) -> Rect2:
 	if _heads.has(frame):
 		return _heads[frame]
-	var image: Image
-	if frame is AtlasTexture:
-		var cut := frame as AtlasTexture
-		if not _sheets.has(cut.atlas):
-			_sheets[cut.atlas] = cut.atlas.get_image()
-		image = (_sheets[cut.atlas] as Image).get_region(Rect2i(cut.region))
-	else:
-		image = frame.get_image()
+	var image := _image(frame)
 	var used := image.get_used_rect()
 	var drawn := Rect2()
 	if used.has_area():
@@ -116,6 +110,24 @@ static func _head(frame: Texture2D) -> Rect2:
 		drawn = Rect2(Vector2(top.position.x, used.position.y + top.position.y) - frame.get_size() / 2.0, top.size)
 	_heads[frame] = drawn
 	return drawn
+
+
+## The pixels `frame` draws, in the frame, measured once: a pack of twelve
+## or a town of villagers spawns on one read.
+static func used(frame: Texture2D) -> Rect2i:
+	if not _used.has(frame):
+		_used[frame] = _image(frame).get_used_rect()
+	return _used[frame]
+
+
+## The frame's own pixels, its sheet fetched once.
+static func _image(frame: Texture2D) -> Image:
+	if not frame is AtlasTexture:
+		return frame.get_image()
+	var cut := frame as AtlasTexture
+	if not _sheets.has(cut.atlas):
+		_sheets[cut.atlas] = cut.atlas.get_image()
+	return (_sheets[cut.atlas] as Image).get_region(Rect2i(cut.region))
 
 
 ## The idle pose facing the way `anim` faces (a walk's frames bob and lean;

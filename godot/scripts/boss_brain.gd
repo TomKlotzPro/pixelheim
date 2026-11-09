@@ -32,7 +32,8 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# Stunned, it casts nothing (PIX-186); marks already told still strike.
+	# Stunned, it casts nothing (PIX-186); a blow's stun broke what it was
+	# telling (interrupt, PIX-440), a bell's lets it land (Ailments.stun_for).
 	if enemy.dying or enemy.mode not in ["chase", "cast"] or enemy.ailments.is_stunned():
 		return
 	_check_phase()
@@ -109,6 +110,17 @@ func _strike(shape: PackedVector2Array, attack: Dictionary) -> void:
 	# The last mark of a cast lets the boss move again.
 	if pending <= 0:
 		enemy.mode = "chase"
+
+
+## A stun broke the cast (PIX-440): the marks still to strike are taken back
+## and none is waited for. True if there was one; the enemy goes back to
+## chasing when its stun ends.
+func interrupt() -> bool:
+	for shown: Variant in marks:
+		Telegraph.cancel(shown)
+	var broke := pending > 0
+	pending = 0
+	return broke
 
 
 func _exit_tree() -> void:
