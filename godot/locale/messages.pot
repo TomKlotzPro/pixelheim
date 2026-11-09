@@ -16937,6 +16937,10 @@ msgid "Nothing to deliver just now."
 msgstr ""
 
 #: scripts/journal_screen.gd
+msgid "Only the Chancellor's letter so far, and it isn't yours to read."
+msgstr ""
+
+#: scripts/journal_screen.gd
 msgid "Post"
 msgstr ""
 
@@ -17105,6 +17109,10 @@ msgid "%s already does %s. Choose another key."
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "%s is now %s, and %s takes %s."
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "%s is now %s."
 msgstr ""
 
@@ -17173,7 +17181,7 @@ msgid "Press a key..."
 msgstr ""
 
 #: scripts/options_screen.gd
-msgid "Press the new key for %s (Esc keeps the old one)."
+msgid "Press the new key"
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -17206,6 +17214,10 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "adjust"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "keep the old one"
 msgstr ""
 
 #: scripts/options_screen.gd

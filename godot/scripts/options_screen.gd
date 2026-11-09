@@ -19,6 +19,9 @@ var listening := ""
 ## Sound and video on the left, the keys on the right.
 var columns: Array[VBoxContainer] = []
 var status: Label
+## The keys' footer, and the one shown while a key is awaited (PIX-434).
+var footer: Control
+var waiting_footer: Control
 
 
 func _open() -> void:
@@ -41,9 +44,14 @@ func _open() -> void:
 		column.add_theme_constant_override("separation", 0)
 		halves.add_child(column)
 		columns.append(column)
-	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 640))
+	# In the Controls column's free foot (PIX-434: under the card it ran over
+	# the frame).
+	status = Layout.wrapped(UiStyle.label("", 14, UiStyle.LAMP, Vector2(660, 590)), 516)
 	add_child(status)
-	add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  adjust      {key:interact}  rebind / toggle      Esc  close"))
+	footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  adjust      {key:interact}  rebind / toggle      Esc  close")
+	add_child(footer)
+	waiting_footer = UiStyle.screen_footer(Text.t("Press the new key") + "      Esc  " + Text.t("keep the old one"))
+	add_child(waiting_footer)
 	if back_at >= 0:
 		selected = back_at
 		back_at = -1
@@ -85,6 +93,8 @@ func _build() -> Array[Dictionary]:
 
 
 func _refresh() -> void:
+	footer.visible = listening == ""
+	waiting_footer.visible = listening != ""
 	rows = _build()
 	var choosable := _choosable()
 	selected = clampi(selected, 0, choosable.size() - 1)
@@ -167,10 +177,15 @@ func _input(event: InputEvent) -> void:
 		status.text = Text.t("%s already does %s. Choose another key.") % [Controls.key_label(key), taken]
 	elif key != KEY_ESCAPE:
 		var settings := GameState.settings
+		var named := Text.t(Controls.BINDABLE[listening][0])
+		var swapped := Controls.taken_from(settings.bindings, listening, key)
+		var old_key := Controls.key_for(listening, settings.bindings)
 		settings.bindings = Controls.rebind(settings.bindings, listening, key)
 		settings.save_file()
 		Controls.apply(settings.bindings)
-		status.text = Text.t("%s is now %s.") % [Text.t(Controls.BINDABLE[listening][0]), Controls.key_label(key)]
+		status.text = Text.t("%s is now %s.") % [named, Controls.key_label(key)]
+		if swapped != "":
+			status.text = Text.t("%s is now %s, and %s takes %s.") % [named, Controls.key_label(key), Text.t(Controls.BINDABLE[swapped][0]), Controls.key_label(old_key)]
 	listening = ""
 	_refresh()
 
@@ -201,7 +216,7 @@ func _act(direction: int) -> void:
 		row["adjust"].call(direction)
 	elif row.has("rebind"):
 		listening = row["rebind"]
-		status.text = Text.t("Press the new key for %s (Esc keeps the old one).") % Text.t(row["label"])
+		status.text = ""
 	elif row.has("act"):
 		row["act"].call()
 	_refresh()

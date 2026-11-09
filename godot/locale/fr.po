@@ -16937,6 +16937,10 @@ msgid "Nothing to deliver just now."
 msgstr "Rien à remettre pour l'instant."
 
 #: scripts/journal_screen.gd
+msgid "Only the Chancellor's letter so far, and it isn't yours to read."
+msgstr "Seulement la lettre du chancelier pour l'instant, et elle n'est pas pour vous."
+
+#: scripts/journal_screen.gd
 msgid "Post"
 msgstr "Courrier"
 
@@ -17105,6 +17109,10 @@ msgid "%s already does %s. Choose another key."
 msgstr "%s sert déjà à : %s. Choisissez une autre touche."
 
 #: scripts/options_screen.gd
+msgid "%s is now %s, and %s takes %s."
+msgstr "%s : désormais %s, %s prend %s."
+
+#: scripts/options_screen.gd
 msgid "%s is now %s."
 msgstr "%s : désormais %s."
 
@@ -17173,8 +17181,8 @@ msgid "Press a key..."
 msgstr "Appuyez sur une touche..."
 
 #: scripts/options_screen.gd
-msgid "Press the new key for %s (Esc keeps the old one)."
-msgstr "Appuyez sur la nouvelle touche pour %s (Esc garde l'ancienne)."
+msgid "Press the new key"
+msgstr "Appuyez sur la nouvelle touche"
 
 #: scripts/options_screen.gd
 msgid "Quest markers"
@@ -17207,6 +17215,10 @@ msgstr "Vidéo"
 #: scripts/options_screen.gd
 msgid "adjust"
 msgstr "régler"
+
+#: scripts/options_screen.gd
+msgid "keep the old one"
+msgstr "garder l'ancienne"
 
 #: scripts/options_screen.gd
 msgid "rebind / toggle"
