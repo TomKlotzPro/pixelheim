@@ -45,8 +45,11 @@ func _open() -> void:
 		halves.add_child(column)
 		columns.append(column)
 	# In the Controls column's free foot (PIX-434: under the card it ran over
-	# the frame).
+	# the frame), two lines tall and read from the bottom: one line stays
+	# clear of the lit Reset row's rim, and two still end above the frame.
 	status = Layout.wrapped(UiStyle.label("", 14, UiStyle.LAMP, Vector2(660, 590)), 516)
+	status.custom_minimum_size.y = 47
+	status.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	add_child(status)
 	footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  adjust      {key:interact}  rebind / toggle      Esc  close")
 	add_child(footer)

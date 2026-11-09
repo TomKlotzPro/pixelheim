@@ -260,6 +260,13 @@ func test_the_main_story_is_the_satchel() -> void:
 	assert_eq(_lead()["quest_id"], "letter_pell", "Old Pell's (past the burnt bridge, what mends it first)")
 
 
+func test_the_letters_tab_owns_up_to_the_chancellors_letter() -> void:
+	GameState.pack.add_item("chancellors_letter")
+	_open("letters")
+	assert_true(_says("Only the Chancellor's letter so far"), "it's in the pack, so the satchel isn't \"nothing\" (PIX-434)")
+	assert_false(_says("Nothing in your satchel yet"))
+
+
 func test_the_letters_tab_reads_a_letter_only_once_it_is_delivered() -> void:
 	_open("letters")
 	assert_true(_says("Nothing in your satchel yet"), "before the tin")
