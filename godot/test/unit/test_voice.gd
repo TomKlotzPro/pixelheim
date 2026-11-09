@@ -30,7 +30,8 @@ func _guidance() -> Array[String]:
 	out.append_array(letters["tin"] + letters["late"] + [letters["taken"], letters["takenSome"], letters["answered"], letters["road"], letters["room"]])
 	var hints: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json"))
 	for id: String in hints:
-		out.append(String(hints[id]["text"]))
+		for line: String in hints[id].values():
+			out.append(line)
 	return out
 
 

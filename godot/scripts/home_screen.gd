@@ -26,7 +26,7 @@ func _intro() -> String:
 		"workbench": "Both trades, at home: forge and brew without walking to town.",
 		"trophies": "Shelve a trophy for power; take it back down any time.",
 		"nook": "Two of a brew distill into one better one.",
-		"furniture": "Pick a piece for this spot. E on it later takes it back.",
+		"furniture": Controls.say(Text.t("Pick a piece for this spot. Press {key:interact} on it later to take it back.")),
 	}[mode]
 
 
