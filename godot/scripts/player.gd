@@ -9,6 +9,8 @@ extends CharacterBody2D
 ## bolt from afar).
 
 const SPEED := 95.0
+## The body that meets walls: a cell wide, less a few pixels.
+const BODY := Vector2(10, 8)
 const ATTACK_COOLDOWN := 0.45
 ## How long a hit hero can't be hit again (PIX-377: 0.8 s let a pack take
 ## turns at a hero who hardly felt the second bite).
@@ -84,7 +86,7 @@ func _ready() -> void:
 
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
-	rect.size = Vector2(10, 8)
+	rect.size = BODY
 	shape.shape = rect
 	shape.position = Vector2(0, 3)
 	add_child(shape)
@@ -162,6 +164,12 @@ func _physics_process(delta: float) -> void:
 	velocity = input * pace
 	var from := global_position
 	move_and_slide()
+	# Straight into the wall with a shoulder over a door (PIX-434): across
+	# to it, and the next step goes in.
+	if input != Vector2.ZERO and (input.x == 0.0 or input.y == 0.0) and global_position.is_equal_approx(from):
+		var door := Ways.door_by_shoulder(world.map, global_position, Vector2i(input.round()), BODY.x / 2.0)
+		if door != Ways.NOWHERE:
+			move_and_collide(((MapView.center(door) - global_position) * Vector2(absf(input.y), absf(input.x))).limit_length(pace * delta))
 	if input != Vector2.ZERO:
 		# Setting off (PIX-243): the stretch lands with the walk's first
 		# frame, the rise off the back foot.

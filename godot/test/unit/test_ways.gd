@@ -321,3 +321,14 @@ func test_a_cave_mouth_is_the_rock_s_own() -> void:
 	# Shade's plain mound with its dark mouth (tile 128), not the mine
 	# entrance in its timber frame (127) that looked stuck on.
 	assert_eq(PunyTerrain.object_at({Vector2i.ZERO: "cave"}, Vector2i.ZERO), 128, "a dark mouth in the rock, unframed")
+
+
+## A shoulder over a door counts (PIX-434): the Inn's door is cell (50, 10),
+## the row under it the street.
+func test_a_door_under_the_shoulder_is_found() -> void:
+	var town := MapData.load_by_id("town")
+	var row := MapView.center(Vector2i(50, 11)).y
+	assert_eq(Ways.door_by_shoulder(town, Vector2(803, row), Vector2i.UP, 5.0), Vector2i(50, 10), "a shoulder on the wall, in the door's column")
+	assert_eq(Ways.door_by_shoulder(town, Vector2(798, row), Vector2i.UP, 5.0), Vector2i(50, 10), "the next column over, a shoulder on the door")
+	assert_eq(Ways.door_by_shoulder(town, Vector2(790, row), Vector2i.UP, 5.0), Ways.NOWHERE, "clear of the door")
+	assert_eq(Ways.door_by_shoulder(town, Vector2(803, row), Vector2i.DOWN, 5.0), Ways.NOWHERE, "walking away")

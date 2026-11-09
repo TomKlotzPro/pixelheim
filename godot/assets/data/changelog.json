@@ -1,6 +1,25 @@
 {
   "releases": [
     {
+      "version": "0.332.0",
+      "date": "2026-11-09",
+      "codename": "Small Print",
+      "notes": [
+        "First-time tips are now one short line at the bottom left, where the battle log speaks, instead of a big box over the view, and they wait behind other messages so two never show at once",
+        "The slime's pouch now says to press I to open your pack instead of “I opens your pack”, and the other messages that name a key read right whatever the key is"
+      ]
+    },
+    {
+      "version": "0.331.0",
+      "date": "2026-11-09",
+      "codename": "Door Ajar",
+      "notes": [
+        "Walking into a wall with a shoulder over a door now eases you across to it, so a door no longer turns you away by a few pixels",
+        "The Letters tab no longer claims your satchel is empty while you carry the Chancellor's letter",
+        "Rebinding a key already in use now says which action takes the other key, and the message stays inside the Options page"
+      ]
+    },
+    {
       "version": "0.330.0",
       "date": "2026-11-07",
       "codename": "Through the Leaves",

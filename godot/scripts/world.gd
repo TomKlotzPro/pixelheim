@@ -233,7 +233,7 @@ func _process(delta: float) -> void:
 	hud.update_nameplate()
 	stage.run_clocks(delta)
 	messages.update()
-	hud.keep_hint_clear()
+	hud.next_hint()
 	# The boss slayer's edge (PIX-232) wears down while the world runs.
 	GameState.spoils.tick_slayer(delta)
 	hud.update_edge()
@@ -822,7 +822,7 @@ func _build_hud() -> void:
 	GameState.ranked_up.connect(stage.ascend)
 	GameState.prologue_dawn.connect(stage.play_dawn)
 	GameState.skill_learned.connect(func(entry: Dictionary, key: int) -> void:
-		var values := {"skill": entry["name"], "what": entry.get("description", ""), "slot": Controls.say("{key:skill_%d}" % key)}
+		var values := {"skill": entry["name"], "slot": Controls.say("{key:skill_%d}" % key)}
 		hud.hint("skill" if key > 0 else "skill_full", values, "skill:" + String(entry["id"]))
 	)
 	# Thumbs instead of keys on a phone (PIX-162), and a word for whoever

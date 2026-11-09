@@ -101,11 +101,6 @@ static func percent(at: float) -> int:
 	return maxi(1, roundi(at * 100.0)) if at > 0.0 else 0
 
 
-## Where the bar ends, for what stands under it (a first-time hint).
-func bottom() -> float:
-	return plate.position.y + plate.size.y
-
-
 ## Whether a foe has the bar now (alive and hunting, or the bar still
 ## fading out after it).
 func following() -> bool:

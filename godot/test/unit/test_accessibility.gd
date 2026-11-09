@@ -38,11 +38,10 @@ func test_reading_text_takes_the_big_type() -> void:
 	GameState.settings.large_text = before
 
 
-func test_every_hint_has_a_title_and_words() -> void:
+func test_every_hint_has_words() -> void:
 	var hints: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json"))
 	for id: String in ["dodge", "skill", "board", "bounty"]:
 		assert_true(hints.has(id), id)
-		assert_ne(String(hints[id]["title"]), "")
 		assert_gt(String(hints[id]["text"]).length(), 20)
 	assert_string_contains(hints["dodge"]["text"], "{key:dodge}", "names the player's own key")
 

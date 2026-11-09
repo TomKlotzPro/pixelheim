@@ -98,7 +98,7 @@ func interact() -> void:
 			world.enter_house()
 		elif GameState.pack.gold >= Town.deed_cost() and not _asked_twice("deed"):
 			# A big buy asks first (PIX-179).
-			world.messages.flash(Controls.say(Text.t("The deed costs %d gold. {key:interact} again to sign it.") % Town.deed_cost()))
+			world.messages.flash(Controls.say(Text.t("The deed costs %d gold. Press {key:interact} again to sign it.") % Town.deed_cost()))
 		else:
 			world.messages.flash(GameState.household.buy_house())
 		return
@@ -255,7 +255,7 @@ func _house_interact(cell: Vector2i) -> bool:
 	var cost := Town.workbench_cost()
 	if _tile_in_hand(cell) == "shelf" and GameState.household.furniture_at(cell).is_empty() and not GameState.settlement.house.get("workbench", false) \
 			and GameState.pack.gold >= cost and not _asked_twice("workbench"):
-		world.messages.flash(Controls.say(Text.t("A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it.") % cost))
+		world.messages.flash(Controls.say(Text.t("A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. Press {key:interact} again to buy it.") % cost))
 		return true
 	var result := GameState.household.house_interact(cell, _tile_in_hand(cell))
 	if result.is_empty():

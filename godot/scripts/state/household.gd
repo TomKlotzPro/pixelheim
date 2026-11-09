@@ -175,7 +175,7 @@ func place_furniture(item_id: String, cell: Vector2i, tile: String) -> String:
 	owner.pack.remove_item(item_id)
 	owner.settlement.house["furniture"] = furniture() + [{"itemId": item_id, "x": cell.x, "y": cell.y}]
 	owner.pack_changed()
-	return Controls.say(Text.t("%s placed. {key:interact} takes it back.") % Catalog.item_name(item_id))
+	return Controls.say(Text.t("%s placed. Press {key:interact} to take it back.") % Catalog.item_name(item_id))
 
 
 ## What E does to a home tile (handleHouseInteract): returns {text, panel}.
