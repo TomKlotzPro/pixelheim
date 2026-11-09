@@ -24,6 +24,9 @@ var message_fade: Tween
 ## (UiStyle.reading_seconds).
 const LOG_LINES := 1
 const LOG_WIDTH := 700.0
+## A first-time hint shows once, often in a fight: this long at least, or a
+## short one is gone before it is read.
+const HINT_SECONDS := 5.0
 ## Tags a message may open with, set in gold on its plate.
 const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"]
 ## A plain message gives way to the next after this long; a tagged one
@@ -153,7 +156,8 @@ func _say(entry: Dictionary) -> void:
 	if chip.has_meta("fade") and (chip.get_meta("fade") as Tween).is_valid():
 		(chip.get_meta("fade") as Tween).kill()
 	var fade := chip.create_tween()
-	fade.tween_interval(UiStyle.reading_seconds(text))
+	var seconds := UiStyle.reading_seconds(text)
+	fade.tween_interval(maxf(seconds, HINT_SECONDS) if entry.has("hint") else seconds)
 	fade.tween_property(chip, "modulate:a", 0.0, 0.6)
 	fade.tween_callback(func() -> void:
 		_log.gone(entry)
