@@ -289,6 +289,11 @@ static func cast_block(hero: HeroState, skill: Dictionary) -> String:
 	return ""
 
 
+## Whether the hero can't pay `skill` now, its mana or the health it takes.
+static func cant_pay(hero: HeroState, skill: Dictionary) -> bool:
+	return hero.mp < int(skill["mpCost"]) or (int(skill.get("hpCost", 0)) > 0 and hero.hp <= int(skill["hpCost"]))
+
+
 static func skill_power(hero: HeroState, pack: InventoryState, skill: Dictionary) -> int:
 	return roundi(HeroRules.effective_stat(hero, pack, skill["stat"]) * float(skill["multiplier"]))
 
@@ -305,7 +310,7 @@ static func carry_capacity(hero: HeroState, pack: InventoryState) -> int:
 ## The numbers a stat drives right now (statInfo's readout).
 static func readout(stat: String, hero: HeroState, pack: InventoryState) -> String:
 	var weapon := HeroRules.weapon(pack)
-	var scaling: String = Catalog.item(weapon["itemId"]).get("scaling", "strength") if not weapon.is_empty() else "strength"
+	var scaling := HeroRules.weapon_stat(pack)
 	var parts: Array[String] = []
 	match stat:
 		"strength":

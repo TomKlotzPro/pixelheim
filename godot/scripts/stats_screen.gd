@@ -39,10 +39,16 @@ func _info() -> String:
 	if selected < Skills.STATS.size():
 		var stat: String = Skills.STATS[selected]
 		var info := Skills.info(stat, hero, pack)
-		lines.append_array([
-			"", "%s %d" % [Text.t(Skills.ABBR[stat]), hero.stats[stat]], String(info["blurb"]),
+		var about: Array[String] = [
+			"%s %d" % [Text.t(Skills.ABBR[stat]), hero.stats[stat]], String(info["blurb"]),
 			Text.t("Now: %s") % info["now"], Text.t("With a point: %s") % info["next"],
-		])
+		]
+		# Large text holds the chosen stat's words alone (PIX-442): with who
+		# the hero is above them they ran off the card, under the keys.
+		if GameState.settings.large_text:
+			return "\n".join(about)
+		lines.append("")
+		lines.append_array(about)
 	return "\n".join(lines)
 
 
@@ -54,8 +60,12 @@ func _footer() -> String:
 func _rows() -> Array[Dictionary]:
 	var hero := GameState.hero
 	var rows_out: Array[Dictionary] = []
+	# The stat the weapon in hand scales with is tagged; bare hands have none.
+	var held := HeroRules.weapon_stat(GameState.pack) if not HeroRules.weapon(GameState.pack).is_empty() else ""
 	for stat: String in Skills.STATS:
 		rows_out.append({
+			"icon": ItemIcons.stat(stat),
+			"tag": Text.t("Weapon") if stat == held else "",
 			"label": "%s  %d" % [Text.t(Skills.ABBR[stat]), hero.stats[stat]],
 			"note": "+1" if hero.stat_points > 0 else "",
 			"enabled": hero.stat_points > 0,
@@ -90,4 +100,6 @@ func _spend(stat: String) -> String:
 
 func _open() -> void:
 	closing_actions = [&"stats"]
+	# On the stat the weapon asks for, whatever the role (PIX-442).
+	selected = maxi(0, Skills.STATS.find(HeroRules.weapon_stat(GameState.pack)))
 	super()

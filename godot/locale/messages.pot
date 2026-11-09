@@ -18061,7 +18061,7 @@ msgid "locked"
 msgstr ""
 
 #: scripts/skills_screen.gd
-msgid "put on a key"
+msgid "set key"
 msgstr ""
 
 #: scripts/sound.gd

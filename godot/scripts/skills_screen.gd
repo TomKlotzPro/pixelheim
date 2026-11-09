@@ -50,7 +50,7 @@ func _open() -> void:
 	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(330, 30))
 	status.custom_minimum_size = Vector2(650, 0)
 	add_child(status)
-	add_child(UiStyle.screen_footer("Arrows  choose      {key:interact}  learn / walk      1-6  put on a key      F  forget      {key:skills} / Esc  close"))
+	add_child(UiStyle.screen_footer("Arrows  choose      {key:interact}  learn / walk      1-6  set key      F  forget      {key:skills} / Esc  close"))
 	var rule := UiStyle.label("A point each level, one more each rank.", 13, UiStyle.DUSK, Vector2(PAGE.end.x - 416, 6))
 	rule.custom_minimum_size = Vector2(416, 0)
 	rule.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -181,10 +181,13 @@ func _node_card(entry: Dictionary, chosen: bool) -> Control:
 	var panel := _panel(NODE_CARD, chosen, owned or buyable)
 	var head := HBoxContainer.new()
 	# A clear gap: a longer language's name clips before it meets the tag.
-	head.add_theme_constant_override("separation", 12)
+	head.add_theme_constant_override("separation", 8)
 	panel.add_child(head)
+	# The icon of a skill one can cast (PIX-442); upgrades and passives keep
+	# the room empty, so every name stands on one edge.
+	head.add_child(UiStyle.row_icon(ItemIcons.skill(entry["skill"]["name"]) if entry.has("skill") else null))
 	var name := UiStyle.label(
-		"%s  %s" % [TIER_BADGES[int(entry["tier"])], entry["name"]], 15,
+		"%s %s" % [TIER_BADGES[int(entry["tier"])], entry["name"]], 15,
 		UiStyle.LAMP if owned else (UiStyle.INK if buyable else UiStyle.FADED)
 	)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL

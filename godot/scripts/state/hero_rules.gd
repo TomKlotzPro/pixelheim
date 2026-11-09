@@ -63,6 +63,12 @@ static func weapon(pack: InventoryState) -> Dictionary:
 	return pack.gear_by_uid(pack.equipped.get("weapon", ""))
 
 
+## The stat the weapon in hand scales with; bare hands hit with strength.
+static func weapon_stat(pack: InventoryState) -> String:
+	var held := weapon(pack)
+	return Catalog.item(held["itemId"]).get("scaling", "strength") if not held.is_empty() else "strength"
+
+
 ## The path walked so far; pre-graph saves walk their spec (heroPath).
 static func walked(hero: HeroState) -> Array:
 	if hero.path is Array and not hero.path.is_empty():

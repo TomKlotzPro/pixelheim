@@ -297,8 +297,20 @@ func _skills() -> Control:
 		key.offset_top = -inset - TAG_RISE
 		key.offset_bottom = key.offset_top + key.custom_minimum_size.y
 		face.add_child(key)
+		# What it costs on a tag at the slot's foot corner, the key's rise
+		# below its outer edge, clear of the icon (PIX-442); a dearer number
+		# grows leftwards, inside the slot.
+		var cost := UiStyle.tag("")
+		cost.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+		cost.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+		cost.grow_vertical = Control.GROW_DIRECTION_BEGIN
+		cost.offset_left = inset
+		cost.offset_right = inset
+		cost.offset_top = inset + TAG_RISE
+		cost.offset_bottom = inset + TAG_RISE
+		face.add_child(cost)
 		row.add_child(slot)
-		slots.append({"slot": slot, "mark": mark, "art": art, "veil": veil, "key": key})
+		slots.append({"slot": slot, "mark": mark, "art": art, "veil": veil, "key": key, "cost": cost})
 		_key_tag(index)
 	return row
 
@@ -471,8 +483,12 @@ func _process(delta: float) -> void:
 	var states := skills.map(func(skill: Dictionary) -> bool:
 		return not skill.is_empty() and Skills.cast_block(hero, skill) == "" and world.player.skill_ready
 	)
+	# Each cost and whether the hero is short of it, on its tag.
+	var costs := skills.map(func(skill: Dictionary) -> Array:
+		return [] if skill.is_empty() else [str(int(skill["mpCost"])), Skills.cant_pay(hero, skill)]
+	)
 	# The turn too: its end dims what still can't be cast (slot alpha below).
-	var shown := [skills.map(func(skill: Dictionary) -> String: return skill.get("name", "")), states, _turn_from >= 0.0]
+	var shown := [skills.map(func(skill: Dictionary) -> String: return skill.get("name", "")), states, _turn_from >= 0.0, costs]
 	if shown == _shown:
 		return
 	_shown = shown
@@ -487,12 +503,21 @@ func _process(delta: float) -> void:
 			UiStyle.box(UiStyle.WINDOW if has else UiStyle.CARD, UiStyle.BRASS if ready else UiStyle.RIM, 4)
 		))
 		# The turn's veil says it while it runs; dimmed, a skill can't be cast for itself.
-		slot.modulate.a = 1.0 if ready or not has or _turn_from >= 0.0 else 0.55
+		var alpha := 1.0 if ready or not has or _turn_from >= 0.0 else 0.55
+		slot.self_modulate.a = alpha
 		var icon := ItemIcons.skill(skills[index]["name"]) if has else null
 		var art: TextureRect = slots[index]["art"]
 		art.texture = icon
+		# All but the cost, which must read most when it's too dear (PIX-442).
+		for piece: CanvasItem in [art, mark, slots[index]["key"]]:
+			piece.modulate.a = alpha
 		mark.text = _initials(skills[index]["name"]) if has and icon == null else ""
 		slot.tooltip_text = _describe(skills[index]) if has else ""
+		var cost: Panel = slots[index]["cost"]
+		cost.visible = has
+		if has:
+			UiStyle.tag_text(cost, costs[index][0])
+			(cost.get_node("words") as Label).add_theme_color_override("font_color", BARS["hp"][1] if costs[index][1] else UiStyle.CREAM)
 
 
 ## The skills' shared turn after a cast (Player.SKILL_TURN): a veil over

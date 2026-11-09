@@ -184,6 +184,16 @@ func test_every_screen_fits_every_view() -> void:
 	assert_eq(out.size(), 0, "\n".join(out))
 
 
+## PIX-442: the stat sheet's and the skill tree's icons and tag in large text.
+func test_stats_and_skills_fit_in_large_text() -> void:
+	var before: bool = GameState.settings.large_text
+	GameState.settings.large_text = true
+	var kinds: Array[String] = ["stats", "skills"]
+	var out := await _fits(kinds)
+	GameState.settings.large_text = before
+	assert_eq(out.size(), 0, "\n".join(out))
+
+
 ## PIX-298: Tom's level-15 mage in Frostweave, with the longest names a
 ## piece can carry (deep-forged, two affixes: "Grande hache d'acier cendré
 ## des forges profondes de perspicacité") worn: no row is wider than its

@@ -474,6 +474,8 @@ static func tag(text: String) -> Panel:
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var words := strong("", 12, CREAM)
 	words.name = "words"
+	# Already the player's: a key, a number, a word put through Text.t.
+	words.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	words.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	words.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	words.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -488,6 +490,25 @@ static func tag_text(node: Panel, text: String) -> void:
 	var words := node.get_node("words") as Label
 	words.text = text
 	node.custom_minimum_size = Vector2(maxf(20.0, words.get_minimum_size().x + 8.0), 18.0)
+
+
+## One of Shade's 16 px icons at 2x in a row too low for it (PIX-442): a
+## square of `room` the row's height keeps to, the icon over the row's
+## padding; the room empty for a row with none, so names keep one edge.
+static func row_icon(texture: Texture2D, room := 24.0) -> Control:
+	var cell := Control.new()
+	cell.custom_minimum_size = Vector2(room, room)
+	cell.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var art := TextureRect.new()
+	art.texture = texture
+	art.size = Vector2(32, 32)
+	art.position = (Vector2(room, room) - art.size) / 2.0
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cell.add_child(art)
+	return cell
 
 
 ## A slot that holds an icon (PIX-385: the dock's skills, what's worn): the

@@ -99,7 +99,8 @@ func _footer() -> String:
 	return Text.t("{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close") % _verb()
 
 
-## Each row: {label, note, enabled, action: Callable returning a status line}.
+## Each row: {label, note, enabled, action: Callable returning a status line},
+## and if it has them an icon (its Texture2D) before the label and a tag after.
 func _rows() -> Array[Dictionary]:
 	return []
 
@@ -176,10 +177,16 @@ func _row(index: int) -> Control:
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	line.add_theme_constant_override("separation", 10)
 	panel.add_child(line)
+	if row.get("icon") != null:
+		line.add_child(UiStyle.row_icon(row["icon"]))
 	var color := UiStyle.INK if row["enabled"] else UiStyle.FADED
 	var name := UiStyle.label(row["label"], 16, color)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	line.add_child(Layout.ellipsis(name))
+	if row.get("tag", "") != "":
+		var mark := UiStyle.tag(row["tag"])
+		mark.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		line.add_child(mark)
 	var note := Layout.narrowed(UiStyle.label(row.get("note", ""), 16, UiStyle.LAMP if row["enabled"] else UiStyle.FADED), NOTE_SHARE * LIST.size.x)
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	line.add_child(note)

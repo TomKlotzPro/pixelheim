@@ -469,8 +469,7 @@ static func hero_attack_damage(hero: HeroState, pack: InventoryState, fighter: D
 ## The same swing as {damage, crit} (PIX-209), so a crit can look like one.
 static func hero_attack(hero: HeroState, pack: InventoryState, fighter: Dictionary, inspired: bool, roll: Callable, song_crit := 0.12, extra_crit := 0.0) -> Dictionary:
 	var held := HeroRules.weapon(pack)
-	var scaling: String = Catalog.item(held["itemId"]).get("scaling", "strength") if not held.is_empty() else "strength"
-	var raw := float(HeroRules.effective_stat(hero, pack, scaling) + (HeroRules.gear_damage(held) if not held.is_empty() else 2))
+	var raw := float(HeroRules.effective_stat(hero, pack, HeroRules.weapon_stat(pack)) + (HeroRules.gear_damage(held) if not held.is_empty() else 2))
 	var passives := HeroRules.passives(hero)
 	var chance: float = passives["critChance"] + (song_crit if inspired else 0.0) + extra_crit
 	var crit: bool = chance > 0 and roll.call() < chance
