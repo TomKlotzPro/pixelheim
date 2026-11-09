@@ -16405,6 +16405,10 @@ msgid "%s is afflicted by %s!"
 msgstr ""
 
 #: scripts/enemy.gd
+msgid "Interrupted!"
+msgstr ""
+
+#: scripts/enemy.gd
 msgid "Lv %d"
 msgstr ""
 
