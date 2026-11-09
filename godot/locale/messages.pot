@@ -2157,6 +2157,10 @@ msgid "A real sun wheels over the world: dawn light, long dusk shadows, and true
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A roll can now cut short the end of a swing or a cast, once the blow has landed"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A save on a dungeon floor wakes you at the top of that floor instead of back at the entrance, and sleeping saves with your well-rested bonus kept"
 msgstr ""
 
@@ -2186,6 +2190,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A summoned wolf's, slime's or skeleton's bite no longer shields you from the boss's own bite right after it: Old Greymaw, the Tidecaller and the Bone Abbot hit as hard as they should with their pack out, and the pack itself still bites one at a time"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A swing, roll or skill pressed while your hero is busy is now kept for a moment and fires as soon as they can act, instead of being lost"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3406,6 +3414,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Five new floors beneath the mountain, for those who beat the dragon"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Fixed a lock where swinging during a roll could leave your hero unable to move"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4894,6 +4906,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "QUESTS! Five promises around the village: slimes for Sela, cheese for Bram (of course), wolves for Ana, a troll for the elder, herbs for Vex - talk to accept, deliver or slay, talk again to collect"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Quick Hands"
 msgstr ""
 
 #: assets/data/changelog.json

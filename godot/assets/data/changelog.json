@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.337.0",
+      "date": "2026-11-09",
+      "codename": "Quick Hands",
+      "notes": [
+        "A swing, roll or skill pressed while your hero is busy is now kept for a moment and fires as soon as they can act, instead of being lost",
+        "A roll can now cut short the end of a swing or a cast, once the blow has landed",
+        "Fixed a lock where swinging during a roll could leave your hero unable to move"
+      ]
+    },
+    {
       "version": "0.336.0",
       "date": "2026-11-09",
       "codename": "Step Inside",
