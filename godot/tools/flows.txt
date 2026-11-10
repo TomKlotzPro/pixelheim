@@ -640,9 +640,10 @@ line-motion | --map overworld --at 94,33 seamless motion --fps 144 | map=deepwoo
 # change while the fastest let a frame twice as dear through. In paces the
 # AMDs read within 4 % of each other and the Intels some 10 % over (twelve
 # runners, 2026-11-10: night 5.46-6.42, Deepwood 2.49-2.85, line 2.85-3.20),
-# so each budget is about the AMDs' reading and 25 %: a real slowdown of a
-# fifth fails on every runner. cpu= keeps a loose ceiling in ms beside it,
-# for what slows the pace too (a Godot upgrade).
+# so each budget is about the AMDs' reading and 25 %: a frame a third
+# dearer failed on every runner, a quarter dearer on the Intels first
+# (perf.md). cpu= keeps a loose ceiling in ms beside it, for what slows the
+# pace too (a Godot upgrade).
 cpu-night | --map overworld night cpu --wait 2 | map=overworld cpu=(?!2\.[5-9])[0-2]\.\d\d/\d+\.\d\d paced=(?!7\.[2-9])[0-7]\.\d\d | field night
 cpu-wood | --map deepwood cpu --wait 2 | map=deepwood cpu=(?!1\.[5-9])[01]\.\d\d/\d+\.\d\d paced=(?!3\.[3-9])[0-3]\.\d\d | field
 cpu-line | --map overworld --at 93,33 seamless --walk r,r,r cpu --wait 1 | map=deepwood cpu=(?!1\.[5-9])[01]\.\d\d/\d+\.\d\d paced=(?!3\.[7-9])[0-3]\.\d\d | field travel
