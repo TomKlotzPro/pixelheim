@@ -150,7 +150,9 @@ class Pace:
 		return (Time.get_ticks_usec() - start) / 1000.0
 
 	func done() -> void:
-		_node.free()
+		# Deferred: stopped while process_frame is still being emitted (GUT's
+		# await resumes inside it), the clock is called once more that frame.
+		_node.queue_free()
 
 
 ## One of the pace's crowd: a foe's tick, more or less.
