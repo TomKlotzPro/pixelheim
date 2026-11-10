@@ -58,53 +58,108 @@ static func sample(node: Node, frames := 300, warmup := 30) -> String:
 ## The CPU clock (PIX-355), which needs no renderer: each frame's time from
 ## one process_frame to the next. Stepped (--fixed-fps) and headless, the
 ## frames run back to back, so that is what a frame costs on one core:
-## physics, process, the scripts. Read it with `cpu`.
+## physics, process, the scripts. Read it with `cpu`, and in the machine's
+## pace with `paced`: between each frame and the next the clock times a
+## round of the pace (Pace), left out of the frame's time, so the two are
+## read side by side through the same seconds (a runner slowed for a second
+## or two by its neighbours slows both alike).
 static func clock(tree: SceneTree) -> Dictionary:
-	var ticks: Array[int] = []
-	var on_frame := func() -> void: ticks.append(Time.get_ticks_usec())
-	# The machine's pace before the frames, and again after (`paced`).
-	var paces := pace()
-	var kinds := pace_kinds()
+	var ends := []
+	var paces := []
+	var starts := []
+	var pace := Pace.new()
+	# Its own lists, not the dictionary: a lambda holding what holds it leaks.
+	var on_frame := func() -> void:
+		ends.append(Time.get_ticks_usec())
+		paces.append(pace.once())
+		starts.append(Time.get_ticks_usec())
 	tree.process_frame.connect(on_frame)
-	return {"ticks": ticks, "on_frame": on_frame, "paces": paces, "kinds": kinds}
+	return {"starts": starts, "ends": ends, "paces": paces, "pace": pace, "on_frame": on_frame}
 
 
 ## The clock stopped: "median/95th percentile" ms of its frames.
 static func cpu(tree: SceneTree, clock: Dictionary) -> String:
 	tree.process_frame.disconnect(clock["on_frame"])
+	clock["pace"].done()
 	return spread(_spans(clock))
 
 
-## The stopped clock's median frame in paces (PIX-445), "3.10": what a frame
-## costs whatever the machine's speed. CI's runners come in speeds about 1.8
-## times apart (the nightly hunt read cpu-night 0.74-0.77, 0.93-1.01 or
-## 1.25-1.45 ms on one build, steady within each runner), so a budget in ms
-## failed slow runners with no change to the game and let fast ones hide a
-## real slowdown; told in the same run's pace, the frame reads the same on each.
+## The stopped clock's median frame in paces (PIX-445), "1.97": what a frame
+## costs whatever the machine's speed. CI's runners are four kinds of
+## machine, 1.8 times apart in speed (cpu-night 0.78 to 1.43 ms on one
+## build, steady on each), so a budget in ms failed the slow ones with no
+## change to the game and let the fast ones hide a real slowdown; in paces,
+## the frame reads within 9 % on all four.
 static func paced(clock: Dictionary) -> String:
 	var spans := _spans(clock)
-	if spans.is_empty():
+	var paces: Array = clock["paces"].duplicate()
+	if spans.is_empty() or paces.is_empty():
 		return "-"
 	spans.sort()
-	var frame := float(spans[spans.size() / 2])
-	var after := pace_kinds()
-	var parts: Array[String] = []
-	var total := 0.0
-	for kind: String in after:
-		var paces: Array = clock["kinds"][kind] + after[kind]
-		paces.sort()
-		var median := float(paces[paces.size() / 2])
-		total += median
-		parts.append("%s%.2f" % [kind, frame / maxf(median, 0.001)])
-	parts.append("s%.2f" % (frame / maxf(total, 0.001)))
-	return ":".join(parts)
+	paces.sort()
+	return "%.2f" % (float(spans[spans.size() / 2]) / maxf(float(paces[paces.size() / 2]), 0.001))
 
 
-class _Ticker:
-	var at := Vector2.ZERO
+## The clock's frames, ms each, from the end of one round of the pace to the
+## start of the next.
+static func _spans(clock: Dictionary) -> Array:
+	var starts: Array = clock["starts"]
+	var ends: Array = clock["ends"]
+	var spans: Array = []
+	for i in range(1, ends.size()):
+		spans.append((int(ends[i]) - int(starts[i - 1])) / 1000.0)
+	return spans
+
+
+## The machine's pace (PIX-445): a fixed piece of work, the same in every
+## build of the game, a round of which `once` times in ms. A frame's own mix,
+## in three parts about as long as each other on CI: GDScript's loops and
+## maths with calls into the engine, a crowd of script objects each ticked
+## in turn (the foes and the folk), and reads scattered over 4 MB (a frame's
+## nodes lie all over memory). Each part alone followed the frame on some of
+## CI's machines and not others (the Intel ran tight loops 25 % faster than
+## the AMDs, and the game's frames no faster); the three together held on all.
+class Pace:
+	var _node := Node2D.new()
+	var _kept := {}
+	var _crowd: Array[Walker] = []
+	var _table := {&"foe": 3}
+	var _far := PackedInt32Array()
+	var _sink := 0.0
+
+	func _init() -> void:
+		for i in 140:
+			_crowd.append(Walker.new(Vector2(i % 9, i % 7)))
+		_far.resize(1 << 20)
+
+	## One round, in ms.
+	func once() -> float:
+		var start := Time.get_ticks_usec()
+		for i in 200:
+			var at := Vector2(i % 31, i % 17) * 0.5
+			_node.position = at.rotated(i * 0.01)
+			_kept[i % 64] = _node.position.length() + float(_kept.get(i % 64, 0.0))
+		for walker in _crowd:
+			_sink += walker.tick(0.016, _table)
+		var hop := 1
+		for i in 1300:
+			hop = (hop * 1103515245 + 12345) & 0xFFFFF
+			_sink += _far[hop]
+		return (Time.get_ticks_usec() - start) / 1000.0
+
+	func done() -> void:
+		_node.free()
+
+
+## One of the pace's crowd: a foe's tick, more or less.
+class Walker:
+	var at: Vector2
 	var heading := Vector2.RIGHT
 	var hp := 10
 	var tag := &"foe"
+
+	func _init(from: Vector2) -> void:
+		at = from
 
 	func tick(dt: float, table: Dictionary) -> float:
 		at += heading * dt
@@ -112,80 +167,6 @@ class _Ticker:
 			heading = -heading
 			hp -= 1
 		return float(table.get(tag, 0)) + at.length_squared()
-
-
-## Experiment: several kinds of fixed work, each timed `rounds` times.
-static func pace_kinds(rounds := 15) -> Dictionary:
-	var out := {"a": [], "b": [], "c": [], "e": []}
-	var node := Node2D.new()
-	var kept := {}
-	var pool: Array[Node2D] = []
-	for i in 2000:
-		pool.append(Node2D.new())
-	var tickers: Array = []
-	for i in 400:
-		var t := _Ticker.new()
-		t.at = Vector2(i % 9, i % 7)
-		tickers.append(t)
-	var table := {&"foe": 3, &"boss": 9}
-	var far := PackedInt32Array()
-	far.resize(1 << 20)
-	var sink := 0.0
-	for _try in rounds:
-		var start := Time.get_ticks_usec()
-		for i in 600:
-			var at := Vector2(i % 31, i % 17) * 0.5
-			node.position = at.rotated(i * 0.01)
-			kept[i % 64] = node.position.length() + float(kept.get(i % 64, 0.0))
-		out["a"].append((Time.get_ticks_usec() - start) / 1000.0)
-		start = Time.get_ticks_usec()
-		for n in pool:
-			n.position = n.position + Vector2(0.5, 0.25)
-			sink += n.position.x
-		out["b"].append((Time.get_ticks_usec() - start) / 1000.0)
-		start = Time.get_ticks_usec()
-		for t: _Ticker in tickers:
-			sink += t.tick(0.016, table)
-		out["c"].append((Time.get_ticks_usec() - start) / 1000.0)
-		start = Time.get_ticks_usec()
-		var j := 1
-		for i in 4000:
-			j = (j * 1103515245 + 12345) & 0xFFFFF
-			sink += far[j]
-		out["e"].append((Time.get_ticks_usec() - start) / 1000.0)
-	node.free()
-	for n in pool:
-		n.free()
-	if sink == -1.0:
-		print(sink)
-	return out
-
-
-## The machine's pace (PIX-445): a fixed piece of work, the same in every
-## build of the game, timed `rounds` times (ms each). A frame's own mix:
-## GDScript's loops, maths and dictionaries, and calls into the engine.
-static func pace(rounds := 15) -> Array:
-	var node := Node2D.new()
-	var kept := {}
-	var times: Array = []
-	for _try in rounds:
-		var start := Time.get_ticks_usec()
-		for i in 600:
-			var at := Vector2(i % 31, i % 17) * 0.5
-			node.position = at.rotated(i * 0.01)
-			kept[i % 64] = node.position.length() + float(kept.get(i % 64, 0.0))
-		times.append((Time.get_ticks_usec() - start) / 1000.0)
-	node.free()
-	return times
-
-
-## The clock's frames, ms each, from one to the next.
-static func _spans(clock: Dictionary) -> Array:
-	var ticks: Array[int] = clock["ticks"]
-	var spans: Array = []
-	for i in range(1, ticks.size()):
-		spans.append((ticks[i] - ticks[i - 1]) / 1000.0)
-	return spans
 
 
 ## How many particles the emitting systems under `node` hold.

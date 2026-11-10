@@ -77,12 +77,10 @@ func test_the_cpu_clock_times_frames_headless() -> void:
 
 
 func test_a_frame_in_paces_is_its_ms_over_the_pace() -> void:
-	# Frames of 30, 10 and 20 ms, a pace of 5 ms (paced() times 15 more
-	# tries, far quicker, which the median of the 45 passes over): the median
-	# frame is 4 paces, however fast the machine read them both.
-	var ticks: Array[int] = [0, 30000, 40000, 60000]
-	var paces: Array = []
-	paces.resize(30)
-	paces.fill(5.0)
-	assert_eq(PerfProbe.paced({"ticks": ticks, "paces": paces}), "4.00", "on a machine twice as fast, both halve")
-	assert_eq(PerfProbe.pace(3).size(), 3, "a time for each try")
+	# Frames of 30, 10 and 20 ms between rounds of a pace of 5, 4 and 6 ms:
+	# the median frame is 4 paces, however fast the machine read them both.
+	var clock := {"ends": [0, 35000, 45000, 70000], "starts": [5000, 35000, 50000, 70000], "paces": [5.0, 4.0, 6.0, 5.0]}
+	assert_eq(PerfProbe.paced(clock), "4.00", "on a machine twice as fast, both halve")
+	var pace := PerfProbe.Pace.new()
+	assert_gt(pace.once(), 0.0, "a round of the pace takes time")
+	pace.done()
