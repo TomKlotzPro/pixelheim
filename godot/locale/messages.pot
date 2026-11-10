@@ -2057,6 +2057,10 @@ msgid "A hero saved out on the open ash near the old mountain cave now wakes whe
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A hit now reddens the edges of the screen for a moment, more for a heavier blow, and at low health in a fight the edges breathe with your heartbeat"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A keeper stands in their building the day it is rebuilt: Sela in her inn, Vex at her brews, whatever the village's age"
 msgstr ""
 
@@ -2158,6 +2162,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A roll can now cut short the end of a swing or a cast, once the blow has landed"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A roll leaves a short trail of fading ghosts along its path"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5254,6 +5262,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Second Thoughts"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Seeing Red"
 msgstr ""
 
 #: assets/data/changelog.json

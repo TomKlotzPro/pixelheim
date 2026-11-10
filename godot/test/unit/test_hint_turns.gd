@@ -168,6 +168,8 @@ func _plate_lines(text: String) -> int:
 func test_on_a_phone_the_log_starts_past_the_stick() -> void:
 	hud.sky_overlay = ColorRect.new()
 	hud.root.add_child(hud.sky_overlay)
+	hud.hurt_edge = TextureRect.new()
+	hud.root.add_child(hud.hurt_edge)
 	Touch.forced = true
 	hud.place()
 	Touch.forced = false

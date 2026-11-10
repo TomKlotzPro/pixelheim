@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.342.0",
+      "date": "2026-11-10",
+      "codename": "Seeing Red",
+      "notes": [
+        "A hit now reddens the edges of the screen for a moment, more for a heavier blow, and at low health in a fight the edges breathe with your heartbeat",
+        "A roll leaves a short trail of fading ghosts along its path"
+      ]
+    },
+    {
       "version": "0.341.0",
       "date": "2026-11-09",
       "codename": "At a Glance",
