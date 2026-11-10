@@ -2,17 +2,23 @@ extends Screen
 ## areas: title
 ## What's new (the web's Changelog page): every release, newest first, its
 ## version, codename and date over its notes, in one scrolling window. Opened
-## from the version line on the title. W/S or the wheel scroll; Esc closes.
-## The notes come from assets/data/changelog.json, whose newest release is
-## the game's version.
+## from the version line on the title. W/S or the wheel scroll, A/D or the
+## page keys turn a page; Esc closes. The notes come from
+## assets/data/changelog.json, whose newest release is the game's version;
+## the "Behind the scenes" ones, nothing a player sees, are left out
+## (PIX-444), and so is a release with no other note.
 
 const SCROLL_STEP := 48
+const BEHIND := "Behind the scenes"
 
 var scroll: ScrollContainer
 
 
 static func releases() -> Array:
-	return Text.localize(SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/changelog.json")))["releases"]
+	var doc: Dictionary = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/changelog.json"))
+	for release: Dictionary in doc["releases"]:
+		release["notes"] = release["notes"].filter(func(note: String) -> bool: return not note.begins_with(BEHIND))
+	return Text.localize(doc)["releases"]
 
 
 func _open() -> void:
@@ -37,9 +43,10 @@ func _open() -> void:
 	column.add_theme_constant_override("separation", 14)
 	scroll.add_child(column)
 	for release: Dictionary in releases():
-		column.add_child(_release(release))
+		if not release["notes"].is_empty():
+			column.add_child(_release(release))
 
-	add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  scroll      Esc  close"))
+	add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  scroll      {key:move_left}/{key:move_right}  page      Esc  close"))
 
 
 ## One release: "v0.70.0  Timber and Plaster" with its date, then its notes.
@@ -68,4 +75,10 @@ func _command(event: InputEvent) -> Callable:
 		command = func() -> void: scroll.scroll_vertical += SCROLL_STEP
 	elif event.is_action_pressed("move_up") or event.is_action_pressed("ui_up"):
 		command = func() -> void: scroll.scroll_vertical -= SCROLL_STEP
+	# A page: the window's height less a line, so the last line read stays
+	# in sight at the top.
+	elif event.is_action_pressed("move_right") or event.is_action_pressed("ui_page_down"):
+		command = func() -> void: scroll.scroll_vertical += int(scroll.size.y) - SCROLL_STEP
+	elif event.is_action_pressed("move_left") or event.is_action_pressed("ui_page_up"):
+		command = func() -> void: scroll.scroll_vertical -= int(scroll.size.y) - SCROLL_STEP
 	return command

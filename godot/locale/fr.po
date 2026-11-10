@@ -16305,12 +16305,20 @@ msgid "where"
 msgstr "situer"
 
 #: scripts/changelog_screen.gd
+msgid "Behind the scenes"
+msgstr "En coulisses"
+
+#: scripts/changelog_screen.gd
 msgid "What's new"
 msgstr "Quoi de neuf"
 
 #: scripts/changelog_screen.gd
 msgid "close"
 msgstr "fermer"
+
+#: scripts/changelog_screen.gd
+msgid "page"
+msgstr "page"
 
 #: scripts/changelog_screen.gd
 msgid "scroll"
@@ -16367,10 +16375,6 @@ msgstr "Page %d sur %d"
 #: scripts/codex_screen.gd
 msgid "Unmet. The wilds keep their secrets."
 msgstr "Jamais croisé. Les terres sauvages gardent leurs secrets."
-
-#: scripts/codex_screen.gd
-msgid "page"
-msgstr "page"
 
 #: scripts/codex_screen.gd
 msgid "tabs"

@@ -16305,11 +16305,19 @@ msgid "where"
 msgstr ""
 
 #: scripts/changelog_screen.gd
+msgid "Behind the scenes"
+msgstr ""
+
+#: scripts/changelog_screen.gd
 msgid "What's new"
 msgstr ""
 
 #: scripts/changelog_screen.gd
 msgid "close"
+msgstr ""
+
+#: scripts/changelog_screen.gd
+msgid "page"
 msgstr ""
 
 #: scripts/changelog_screen.gd
@@ -16366,10 +16374,6 @@ msgstr ""
 
 #: scripts/codex_screen.gd
 msgid "Unmet. The wilds keep their secrets."
-msgstr ""
-
-#: scripts/codex_screen.gd
-msgid "page"
 msgstr ""
 
 #: scripts/codex_screen.gd
