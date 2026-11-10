@@ -64,8 +64,9 @@ static func clock(tree: SceneTree) -> Dictionary:
 	var on_frame := func() -> void: ticks.append(Time.get_ticks_usec())
 	# The machine's pace before the frames, and again after (`paced`).
 	var paces := pace()
+	var kinds := pace_kinds()
 	tree.process_frame.connect(on_frame)
-	return {"ticks": ticks, "on_frame": on_frame, "paces": paces}
+	return {"ticks": ticks, "on_frame": on_frame, "paces": paces, "kinds": kinds}
 
 
 ## The clock stopped: "median/95th percentile" ms of its frames.
@@ -82,12 +83,82 @@ static func cpu(tree: SceneTree, clock: Dictionary) -> String:
 ## real slowdown; told in the same run's pace, the frame reads the same on each.
 static func paced(clock: Dictionary) -> String:
 	var spans := _spans(clock)
-	var paces: Array = clock["paces"] + pace()
 	if spans.is_empty():
 		return "-"
 	spans.sort()
-	paces.sort()
-	return "%.2f" % (float(spans[spans.size() / 2]) / maxf(float(paces[paces.size() / 2]), 0.001))
+	var frame := float(spans[spans.size() / 2])
+	var after := pace_kinds()
+	var parts: Array[String] = []
+	var total := 0.0
+	for kind: String in after:
+		var paces: Array = clock["kinds"][kind] + after[kind]
+		paces.sort()
+		var median := float(paces[paces.size() / 2])
+		total += median
+		parts.append("%s%.2f" % [kind, frame / maxf(median, 0.001)])
+	parts.append("s%.2f" % (frame / maxf(total, 0.001)))
+	return ":".join(parts)
+
+
+class _Ticker:
+	var at := Vector2.ZERO
+	var heading := Vector2.RIGHT
+	var hp := 10
+	var tag := &"foe"
+
+	func tick(dt: float, table: Dictionary) -> float:
+		at += heading * dt
+		if at.x > 8.0:
+			heading = -heading
+			hp -= 1
+		return float(table.get(tag, 0)) + at.length_squared()
+
+
+## Experiment: several kinds of fixed work, each timed `rounds` times.
+static func pace_kinds(rounds := 15) -> Dictionary:
+	var out := {"a": [], "b": [], "c": [], "e": []}
+	var node := Node2D.new()
+	var kept := {}
+	var pool: Array[Node2D] = []
+	for i in 2000:
+		pool.append(Node2D.new())
+	var tickers: Array = []
+	for i in 400:
+		var t := _Ticker.new()
+		t.at = Vector2(i % 9, i % 7)
+		tickers.append(t)
+	var table := {&"foe": 3, &"boss": 9}
+	var far := PackedInt32Array()
+	far.resize(1 << 20)
+	var sink := 0.0
+	for _try in rounds:
+		var start := Time.get_ticks_usec()
+		for i in 600:
+			var at := Vector2(i % 31, i % 17) * 0.5
+			node.position = at.rotated(i * 0.01)
+			kept[i % 64] = node.position.length() + float(kept.get(i % 64, 0.0))
+		out["a"].append((Time.get_ticks_usec() - start) / 1000.0)
+		start = Time.get_ticks_usec()
+		for n in pool:
+			n.position = n.position + Vector2(0.5, 0.25)
+			sink += n.position.x
+		out["b"].append((Time.get_ticks_usec() - start) / 1000.0)
+		start = Time.get_ticks_usec()
+		for t: _Ticker in tickers:
+			sink += t.tick(0.016, table)
+		out["c"].append((Time.get_ticks_usec() - start) / 1000.0)
+		start = Time.get_ticks_usec()
+		var j := 1
+		for i in 4000:
+			j = (j * 1103515245 + 12345) & 0xFFFFF
+			sink += far[j]
+		out["e"].append((Time.get_ticks_usec() - start) / 1000.0)
+	node.free()
+	for n in pool:
+		n.free()
+	if sink == -1.0:
+		print(sink)
+	return out
 
 
 ## The machine's pace (PIX-445): a fixed piece of work, the same in every
