@@ -136,6 +136,27 @@ func test_a_hint_is_a_line_of_the_log_and_waits_behind_the_plate() -> void:
 	assert_string_contains(line, Controls.say("{key:journal}"), "the player's own key")
 
 
+## PIX-446: what a quest pays, on the "Quest accepted" plate, made a third
+## of them a line taller. It stands where "It's in your journal (Q)." stood,
+## and no plate is a line taller than it was then, in English or French.
+func test_what_a_quest_pays_adds_no_line_to_its_plate() -> void:
+	var then := {"en": "It's in your journal (Q).", "fr": "Elle est dans votre journal (Q)."}
+	for lang: String in then:
+		Text.apply(lang)
+		for quest: Dictionary in Quests.all():
+			if quest["objective"]["kind"] != "deliverTo":
+				var before := _plate_lines(Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]] + " " + then[lang])
+				assert_lte(_plate_lines(Quests.accepted(quest)), before, "%s (%s): %s" % [quest["id"], lang, Quests.accepted(quest)])
+	Text.apply("en")
+
+
+## How many lines a message takes on the plate.
+func _plate_lines(text: String) -> int:
+	world.messages.clear()
+	world.messages.flash(text)
+	return world.messages.message_label.get_line_count()
+
+
 ## PIX-433: on a phone the log's line ran under the thumbstick.
 func test_on_a_phone_the_log_starts_past_the_stick() -> void:
 	hud.sky_overlay = ColorRect.new()

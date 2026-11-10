@@ -13569,7 +13569,7 @@ msgid "Fund the street lamps at the board on the square"
 msgstr "Financer les réverbères au tableau d'avis de la place"
 
 #: assets/data/progression.json
-msgid "Garrick wants proof a smith can work Blackiron ore: a helm, forged from his seam."
+msgid "Garrick wants proof a smith can work Blackiron ore: a helm from his seam."
 msgstr "Garrick veut la preuve qu'un forgeron sait travailler le minerai de Fernoir : un casque, forgé avec le fer de son filon."
 
 #: assets/data/progression.json
@@ -18589,20 +18589,12 @@ msgid "Feat: %s"
 msgstr "Haut fait : %s"
 
 #: scripts/state/questing.gd
-msgid "It's in your journal ({key:journal})."
-msgstr "Elle est dans votre journal ({key:journal})."
-
-#: scripts/state/questing.gd
 msgid "Level up: you are now level %d."
 msgstr "Niveau supérieur : vous êtes maintenant niveau %d."
 
 #: scripts/state/questing.gd
 msgid "Pixelheim held: +%d XP."
 msgstr "Pixelheim a tenu : +%d XP."
-
-#: scripts/state/questing.gd
-msgid "Quest accepted: %s. %s"
-msgstr "Quête acceptée : %s. %s"
 
 #: scripts/state/questing.gd
 msgid "Quest complete: %s. %s. “%s”"
@@ -18651,6 +18643,10 @@ msgstr "Rapporte %s"
 #: scripts/state/quests.gd
 msgid "Pays as you choose"
 msgstr "Rapporte selon votre choix"
+
+#: scripts/state/quests.gd
+msgid "Quest accepted: %s. %s"
+msgstr "Quête acceptée : %s. %s"
 
 #: scripts/state/quests.gd
 msgid "The five left them in %s."

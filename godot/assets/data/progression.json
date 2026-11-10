@@ -1241,7 +1241,7 @@
       "id": "garrick_helm",
       "giver": "mines_garrick",
       "name": "Iron for the Foreman",
-      "brief": "Garrick wants proof a smith can work Blackiron ore: a helm, forged from his seam.",
+      "brief": "Garrick wants proof a smith can work Blackiron ore: a helm from his seam.",
       "objective": {
         "kind": "craft",
         "itemId": "blackiron_helm",
