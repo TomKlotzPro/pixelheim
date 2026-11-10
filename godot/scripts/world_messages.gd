@@ -278,6 +278,23 @@ func make_way() -> void:
 	message_box.modulate.a = 0.0
 
 
+## Words the hero has just proved wrong leave the plate at once, or never
+## show if they still wait (PIX-444: « No foe in reach for Shadowstep. »
+## held on over the next cast, which struck).
+func withdraw(text: String) -> void:
+	for entry: Dictionary in _plate.waiting.duplicate():
+		if entry["text"] == text:
+			_plate.waiting.erase(entry)
+	if text == "" or _message_now != text:
+		return
+	_plate.gone(_shown)
+	_shown = {}
+	_message_now = ""
+	message_fade.kill()
+	message_box.modulate.a = 0.0
+	update()
+
+
 ## A title card up: a first-time hint's line waits it out, one box at a time
 ## (PIX-433; `later` is what waits while a card is up, _fighting), and one
 ## already up steps aside to come back in full.

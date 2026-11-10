@@ -376,33 +376,6 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 					"piece": piece, "tag": Text.t("sold"), "verb": "Buy back", "enabled": pack.gold >= cost,
 					"action": func() -> void: _after(trade.buy_back(index), Text.t("Bought back %s.") % name, "Not enough gold."),
 				})
-			# The business itself is for sale too (BUY_PROPERTY): rent after every victory.
-			var map_id := GameState.world.map_id
-			var deed: Dictionary = Town.deeds().get(map_id, {})
-			if not deed.is_empty():
-				var owned := map_id in GameState.settlement.properties
-				var row := {
-					"label": Text.t("Deed: %s") % deed["name"],
-					"detail": Text.t("%s\nOwn this business: its till fills with %dg a day, and you pay a tenth less here.") % [deed["name"], Town.daily_rent(map_id, false, GameState.town_tier())],
-					"verb": "Buy the deed", "enabled": not owned and pack.gold >= int(deed["cost"]),
-					"action": func() -> void: _after(GameState.holdings.buy_property(map_id), "The deed is yours.", "Not enough gold."),
-				}
-				if owned:
-					row["price"] = Text.t("owned")
-				else:
-					row["cost"] = int(deed["cost"])
-				out.append(row)
-			# Odo also sells the bigger house deeds (BUY_HOUSE_UPGRADE).
-			var bigger := Town.next_house_tier(GameState.household.owns_house(), int(GameState.settlement.house.get("tier", 1)))
-			if shop_id == "odo" and not bigger.is_empty():
-				out.append({
-					"label": Text.t("Deed: %s") % bigger["name"], "cost": int(bigger["cost"]),
-					"detail": Text.t("%s\nA bigger house: its new rooms wait the next time you walk in.") % bigger["name"],
-					"verb": "Sign the deed", "enabled": pack.gold >= int(bigger["cost"]),
-					"action": func() -> void:
-						var text := GameState.household.buy_house_upgrade()
-						status.text = text if text != "" else "Not enough gold.",
-				})
 			var picked_here := trade.owned_shop_map(shop_id) != ""
 			var stock: Array = Economy.shop_stock(shop_id, trade.stock_stage(), GameState.town_tier())
 			for item_id in trade.shop_wares(shop_id):
@@ -422,6 +395,35 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 					"tag": "Pixelheim's own" if signature else ("Owner's pick" if picked_here and item_id not in stock else ""),
 					"words": words, "verb": "Buy", "enabled": pack.gold >= price,
 					"action": func() -> void: _after(trade.buy_item(item_id), Text.t("Bought %s.") % Catalog.item_name(item_id), "Not enough gold."),
+				})
+			# The business itself is for sale too (BUY_PROPERTY): rent after every victory.
+			# After the goods, so the counter opens on something to buy, not a deed
+			# few can pay yet (PIX-444).
+			var map_id := GameState.world.map_id
+			var deed: Dictionary = Town.deeds().get(map_id, {})
+			if not deed.is_empty():
+				var owned := map_id in GameState.settlement.properties
+				var row := {
+					"label": Text.t("Deed: %s") % deed["name"], "icon": "deed",
+					"detail": Text.t("%s\nOwn this business: its till fills with %dg a day, and you pay a tenth less here.") % [deed["name"], Town.daily_rent(map_id, false, GameState.town_tier())],
+					"verb": "Buy the deed", "enabled": not owned and pack.gold >= int(deed["cost"]),
+					"action": func() -> void: _after(GameState.holdings.buy_property(map_id), "The deed is yours.", "Not enough gold."),
+				}
+				if owned:
+					row["price"] = Text.t("owned")
+				else:
+					row["cost"] = int(deed["cost"])
+				out.append(row)
+			# Odo also sells the bigger house deeds (BUY_HOUSE_UPGRADE).
+			var bigger := Town.next_house_tier(GameState.household.owns_house(), int(GameState.settlement.house.get("tier", 1)))
+			if shop_id == "odo" and not bigger.is_empty():
+				out.append({
+					"label": Text.t("Deed: %s") % bigger["name"], "icon": "deed", "cost": int(bigger["cost"]),
+					"detail": Text.t("%s\nA bigger house: its new rooms wait the next time you walk in.") % bigger["name"],
+					"verb": "Sign the deed", "enabled": pack.gold >= int(bigger["cost"]),
+					"action": func() -> void:
+						var text := GameState.household.buy_house_upgrade()
+						status.text = text if text != "" else "Not enough gold.",
 				})
 		"Sell":
 			# All the junk at once (PIX-336), asked once with its sum.
@@ -624,7 +626,7 @@ func _row(row: Dictionary, chosen: bool, tab_name: String, index: int) -> Contro
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	line.add_theme_constant_override("separation", 10)
 	panel.add_child(line)
-	# The item's own icon, as in the pack (deeds have none).
+	# The item's own icon, as in the pack; a deed's is a paper (PIX-444).
 	if row.has("icon"):
 		var icon := TextureRect.new()
 		icon.texture = ItemIcons.texture(row["icon"])
@@ -703,10 +705,11 @@ func _show(row: Dictionary) -> void:
 	var paired := _paired()
 	var gold := GameState.pack.gold
 	var item_id: String = row.get("item_id", "")
+	var icon: String = row.get("icon", "")
 	var piece: Dictionary = row.get("piece", {})
 	card_head.visible = paired and not row.is_empty()
-	card_icon.texture = ItemIcons.texture(item_id) if item_id != "" else null
-	card_icon.visible = item_id != ""
+	card_icon.texture = ItemIcons.texture(icon) if icon != "" else null
+	card_icon.visible = icon != ""
 	card_name.text = String(row.get("label", ""))
 	card_name.add_theme_color_override("font_color", _ink(row))
 	card_body.visible = paired and not piece.is_empty()

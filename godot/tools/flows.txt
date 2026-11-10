@@ -106,11 +106,12 @@ chest | --map town chest | map=town cell=\(79, 4\) gold=90 floats=\+60 [a-z]+ lo
 # A keeper's counter, and the alchemist's craft tab (PIX-129).
 shop | --map town_shop shop | map=town_shop | rooms trade screen
 craft | --map town_alchemist shop --tab 2 | map=town_alchemist | rooms trade screen
-# The counter's goods beside the pack (PIX-336): bread bought past the deed;
+# The counter's goods beside the pack (PIX-336): bread bought at once, the
+# goods before the deed the hero can't pay yet (PIX-444);
 # three pelts sold, the counter asking how many; all the junk sold at once
 # (herbs past what crafting keeps, the old boots, the rusty sword under an
 # iron one); three pelts sold whole (Z) and bought back at what they fetched.
-shop-buy | --map town_shop shop --keys s,e | map=town_shop open=shop_screen gold=496 | rooms trade screen
+shop-buy | --map town_shop shop --keys e | map=town_shop open=shop_screen gold=496 | rooms trade screen
 shop-sell-stack | --map town_shop shop --tab 1 --keys s,s,s,s,e,d,d,e | map=town_shop open=shop_screen gold=566 | rooms trade screen
 shop-sell-junk | --map town_shop --wear iron_sword shop --tab 1 --keys e,e | map=town_shop open=shop_screen gold=521 | rooms trade screen
 shop-buy-back | --map town_shop shop --tab 1 --keys s,s,s,s,z,e,a,e | map=town_shop open=shop_screen gold=500 | rooms trade screen
@@ -1015,11 +1016,12 @@ fit-stats-pseudo | --map town stats --role mage --level 20 overflow --pseudo | o
 fit-skills-pseudo | --map town skills --level 20 overflow --pseudo | open=skills_screen overflow=0 | screen lang rank
 fit-codex | --map town --keys b overflow --lang fr | open=codex_screen overflow=0 | screen lang
 fit-shop | --map town_shop shop overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
-# The City's showpieces at their counters in French, the last row of
-# each Buy list, their rules said on the card (PIX-376).
-fit-signet | --map town_shop --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
-fit-aegis | --map town_smith --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
-fit-everflask | --map town_alchemist --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
+# The City's showpieces at their counters in French, the last ware of
+# each Buy list (the deed under it since PIX-444), their rules said on the
+# card (PIX-376).
+fit-signet | --map town_shop --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,w overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
+fit-aegis | --map town_smith --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,w overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
+fit-everflask | --map town_alchemist --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,w overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
 fit-craft | --map town_alchemist shop --tab 2 overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
 fit-refusal | --map town_alchemist station --keys e overflow --lang fr | open=shop_screen tab=Craft overflow=0 | screen lang trade
 fit-rankup | --map town rankup --rank-beat unlocks overflow --lang fr | open=rankup_screen overflow=0 | screen lang rank

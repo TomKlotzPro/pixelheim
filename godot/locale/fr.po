@@ -2557,6 +2557,10 @@ msgid "Bosses hit a little softer and the fire-breathers mark their bolts on the
 msgstr "Les boss frappent un peu moins fort et les cracheurs de feu marquent le chemin de leurs traits au sol : l'esquive devient l'art, et les potions le recours"
 
 #: assets/data/changelog.json
+msgid "Bram no longer paces behind the well's roof with only his head showing"
+msgstr "Bram ne fait plus les cent pas derrière le toit du puits, la tête seule dépassant"
+
+#: assets/data/changelog.json
 msgid "Branches of Power"
 msgstr "Les branches du pouvoir"
 
@@ -4109,6 +4113,10 @@ msgid "Longer Days"
 msgstr "Des jours plus longs"
 
 #: assets/data/changelog.json
+msgid "Loose Ends"
+msgstr "Petites retouches"
+
+#: assets/data/changelog.json
 msgid "Loot That Fits"
 msgstr "Un butin à sa place"
 
@@ -5307,6 +5315,10 @@ msgstr "Des rangs de bardeaux posés sur chaque pan de toit - les grands toits o
 #: assets/data/changelog.json
 msgid "Shop signs are part of the building now - a proper facade with the placard hung high, no more floating planks"
 msgstr "Les enseignes font désormais partie du bâtiment - une vraie façade avec l'écriteau accroché en hauteur, fini les planches flottantes"
+
+#: assets/data/changelog.json
+msgid "Shops now open on their wares, with house deeds last and drawn as a parchment"
+msgstr "Les boutiques s'ouvrent désormais sur leurs marchandises, les titres de maison en dernier, avec une icône de parchemin"
 
 #: assets/data/changelog.json
 msgid "Signposted"
@@ -7145,6 +7157,10 @@ msgid "What's new is on the title menu now, keys and gamepads included, with a N
 msgstr "« Quoi de neuf » est désormais dans le menu titre, au clavier comme à la manette, avec un badge NOUVEAU tant que vous n'avez pas lu les dernières notes"
 
 #: assets/data/changelog.json
+msgid "What's new turns a page at a time with A and D, and leaves out the behind-the-scenes notes"
+msgstr "« Quoi de neuf » se feuillette désormais page par page avec A et D, et laisse de côté les notes des coulisses"
+
+#: assets/data/changelog.json
 msgid "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it"
 msgstr "Quand un boss tombe loin de sa porte, une sortie s'ouvre juste là où il est tombé, éclairée et facile à repérer, et la flèche la montre"
 
@@ -7155,6 +7171,10 @@ msgstr "Quand un boss tombe, la carte Victoire reste à l'écart du butin et de 
 #: assets/data/changelog.json
 msgid "When a boss falls, the level-up rises once and its plate waits until the Victory card has gone, and a boss's bar never reads 0% while it still stands"
 msgstr "Quand un boss tombe, la montée de niveau s'élève une seule fois et son panneau attend que la carte de victoire soit partie, et la barre d'un boss n'affiche jamais 0 % tant qu'il tient debout"
+
+#: assets/data/changelog.json
+msgid "When a skill is refused, its message now clears as soon as your next cast works"
+msgstr "Quand une compétence est refusée, son message disparaît désormais dès que le lancer suivant réussit"
 
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
@@ -16329,12 +16349,20 @@ msgid "where"
 msgstr "situer"
 
 #: scripts/changelog_screen.gd
+msgid "Behind the scenes"
+msgstr "En coulisses"
+
+#: scripts/changelog_screen.gd
 msgid "What's new"
 msgstr "Quoi de neuf"
 
 #: scripts/changelog_screen.gd
 msgid "close"
 msgstr "fermer"
+
+#: scripts/changelog_screen.gd
+msgid "page"
+msgstr "page"
 
 #: scripts/changelog_screen.gd
 msgid "scroll"
@@ -16391,10 +16419,6 @@ msgstr "Page %d sur %d"
 #: scripts/codex_screen.gd
 msgid "Unmet. The wilds keep their secrets."
 msgstr "Jamais croisé. Les terres sauvages gardent leurs secrets."
-
-#: scripts/codex_screen.gd
-msgid "page"
-msgstr "page"
 
 #: scripts/codex_screen.gd
 msgid "tabs"

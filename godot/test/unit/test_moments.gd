@@ -108,3 +108,28 @@ func test_a_level_waits_out_a_victory_card() -> void:
 	world.hud.card = false
 	messages.update()
 	assert_eq(messages._message_now, level, "said in full after the card")
+
+
+## PIX-444: « No foe in reach for Shadowstep. » held on over the next cast,
+## which struck. Words withdrawn leave the plate at once, and never show if
+## they still wait; other words stay.
+func test_a_refusal_proved_wrong_leaves_the_plate() -> void:
+	var world: FellWorld = add_child_autofree(FellWorld.new())
+	world.hud.card = false
+	var hud: CanvasLayer = add_child_autofree(CanvasLayer.new())
+	var messages: Messages = add_child_autofree(Messages.new())
+	messages.world = world
+	messages.build_log(hud)
+	messages.build_plate(hud)
+	var refused := "No foe in reach for Shadowstep."
+	messages.flash(refused)
+	assert_eq(messages._message_now, refused)
+	messages.withdraw("The gate is barred.")
+	assert_eq(messages._message_now, refused, "other words stay")
+	messages.withdraw(refused)
+	assert_eq([messages._message_now, messages.message_box.modulate.a], ["", 0.0], "gone at once")
+	messages.flash("The gate is barred.")
+	messages.flash(refused)
+	messages.withdraw(refused)
+	messages.message_fade.custom_step(30.0)
+	assert_eq(messages._message_now, "", "withdrawn while it waited: never said")
