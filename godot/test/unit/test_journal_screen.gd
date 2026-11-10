@@ -183,6 +183,20 @@ func test_ready_says_so_at_the_top_and_on_its_row() -> void:
 	assert_true(Quests.pay(Quests.by_id("cheese_run")) in on_row, "with what it pays (PIX-446)")
 
 
+## PIX-446: the top is one line that cuts what runs past it; the story told,
+## "The story is told" and its last hint fit it whole, in English and French.
+func test_a_told_story_fits_the_top_line() -> void:
+	_open()
+	await get_tree().process_frame
+	var room: float = screen.now_box.size.x - screen.now_box.get_theme_constant("separation")
+	for lang: String in ["en", "fr"]:
+		Text.apply(lang)
+		var told: Label = autofree(UiStyle.strong("The story is told", 18, UiStyle.LAMP))
+		var hint: Label = autofree(UiStyle.label(String(MainQuest._doc()["done"]), 18, UiStyle.INK))
+		assert_false(Layout.shortened(hint, room - Layout.words_width(told)), "%s: %s" % [lang, hint.tr(hint.text)])
+	Text.apply("en")
+
+
 func test_the_tabs_turn_and_hold_the_letters_and_feats() -> void:
 	_open()
 	_key(KEY_D)
