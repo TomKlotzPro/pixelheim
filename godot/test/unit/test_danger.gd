@@ -126,7 +126,7 @@ func test_a_hit_reddens_the_edges_faintly() -> void:
 ## PIX-447: the flash fades on its own; low health breathes at the edges in
 ## a fight only, held still under reduced motion.
 func test_the_edges_flash_then_breathe_at_low_health() -> void:
-	var kept := [GameState.hero, GameState.settings.reduce_motion]
+	var kept := [GameState.hero, GameState.settings.reduce_motion, DesktopLook.linear]
 	var lent: Node = autofree(GameStateScript.new())
 	lent.new_game("Aldegonde", "mage")
 	GameState.hero = lent.hero
@@ -147,8 +147,13 @@ func test_the_edges_flash_then_breathe_at_low_health() -> void:
 	GameState.settings.reduce_motion = true
 	edge._process(0.0)
 	assert_almost_eq(edge.modulate.a, (HurtEdgeScript.BREATH.x + HurtEdgeScript.BREATH.y) / 2.0, 0.0001, "still, under reduced motion")
+	assert_null(edge.material, "the browser's canvas blends it as it is")
+	DesktopLook.linear = true
+	edge._process(0.0)
+	assert_eq(edge.material, edge._screen_mix, "the app's linear canvas mixes it in the screen's colours")
 	edge.world.foes.on = false
 	edge._process(0.0)
 	assert_false(edge.visible, "out of a fight, the edges rest")
 	GameState.hero = kept[0]
 	GameState.settings.reduce_motion = kept[1]
+	DesktopLook.linear = kept[2]

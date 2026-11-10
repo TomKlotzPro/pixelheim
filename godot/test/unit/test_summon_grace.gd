@@ -166,6 +166,27 @@ func test_two_summons_in_one_half_second_count_once() -> void:
 	assert_lt(GameState.hero.hp, after_first, "the caller's still lands through the summons' guard")
 
 
+## PIX-447: a roll leaves a faint ghost of the hero's frame beside them,
+## without the white flash, gone once faded; none under reduced motion.
+func test_a_roll_leaves_ghosts_that_go_but_not_with_reduced_motion() -> void:
+	var kept_motion := GameState.settings.reduce_motion
+	GameState.settings.reduce_motion = false
+	var hero: CharacterBody2D = _world.player
+	var before := _world.get_child_count()
+	hero._ghost()
+	assert_eq(_world.get_child_count(), before + 1, "a ghost beside the hero")
+	var ghost: Sprite2D = _world.get_child(-1)
+	assert_not_null(ghost.texture, "the hero's frame")
+	assert_null(ghost.material, "no white flash on it")
+	assert_almost_eq(ghost.modulate.a, PlayerScript.GHOST_ALPHA, 0.0001)
+	await wait_seconds(PlayerScript.GHOST_S + 0.1)
+	assert_freed(ghost, "the ghost")
+	GameState.settings.reduce_motion = true
+	hero._ghost()
+	assert_eq(_world.get_child_count(), before, "no ghost under reduced motion")
+	GameState.settings.reduce_motion = kept_motion
+
+
 func test_a_howl_calls_its_wolves_and_lets_them_go_when_it_falls() -> void:
 	var caller := _foe("wolf")
 	var brain: Node = autofree(EliteBrainScript.new())

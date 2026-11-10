@@ -25,6 +25,9 @@ var world: Node
 ## What's left of the last hit's flash.
 var flash := 0.0
 var _fade: Tween
+## On the app's linear canvas, mixed into the screen in its own colours, so
+## it reads there as in the browser (shaders/hurt_edge.gdshader).
+var _screen_mix := ShaderMaterial.new()
 
 
 func _ready() -> void:
@@ -41,6 +44,7 @@ func _ready() -> void:
 	shade.fill_from = Vector2(0.5, 0.5)
 	shade.fill_to = Vector2(1.0, 0.5)
 	texture = shade
+	_screen_mix.shader = preload("res://shaders/hurt_edge.gdshader")
 	visible = false
 
 
@@ -66,3 +70,5 @@ func _process(_delta: float) -> void:
 	# Nothing drawn while there's nothing to show.
 	visible = shown > 0.0
 	modulate.a = shown
+	# Read each frame: the look book changes looks in a run.
+	material = _screen_mix if DesktopLook.linear else null
