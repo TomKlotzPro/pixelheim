@@ -167,6 +167,8 @@ jobs:
             echo "::notice title=No paid art::This run has no deploy key for the paid art (a fork's pull request): the flows run on Shade's CC0 art alone."
             echo "_No paid art on this run (a fork's pull request): the flows ran on Shade's CC0 art alone._" >> "$GITHUB_STEP_SUMMARY"
           fi
+          # Which machine (PIX-445): CI's runners differ in speed, and cpu= with them.
+          grep -m1 "model name" /proc/cpuinfo
           bash godot/tools/flows.sh --quiet -j "$(nproc)"
 
       - name: Keep the failed runs' output

@@ -62,18 +62,59 @@ static func sample(node: Node, frames := 300, warmup := 30) -> String:
 static func clock(tree: SceneTree) -> Dictionary:
 	var ticks: Array[int] = []
 	var on_frame := func() -> void: ticks.append(Time.get_ticks_usec())
+	# The machine's pace before the frames, and again after (`paced`).
+	var paces := pace()
 	tree.process_frame.connect(on_frame)
-	return {"ticks": ticks, "on_frame": on_frame}
+	return {"ticks": ticks, "on_frame": on_frame, "paces": paces}
 
 
 ## The clock stopped: "median/95th percentile" ms of its frames.
 static func cpu(tree: SceneTree, clock: Dictionary) -> String:
 	tree.process_frame.disconnect(clock["on_frame"])
+	return spread(_spans(clock))
+
+
+## The stopped clock's median frame in paces (PIX-445), "3.10": what a frame
+## costs whatever the machine's speed. CI's runners come in speeds about 1.8
+## times apart (the nightly hunt read cpu-night 0.74-0.77, 0.93-1.01 or
+## 1.25-1.45 ms on one build, steady within each runner), so a budget in ms
+## failed slow runners with no change to the game and let fast ones hide a
+## real slowdown; told in the same run's pace, the frame reads the same on each.
+static func paced(clock: Dictionary) -> String:
+	var spans := _spans(clock)
+	var paces: Array = clock["paces"] + pace()
+	if spans.is_empty():
+		return "-"
+	spans.sort()
+	paces.sort()
+	return "%.2f" % (float(spans[spans.size() / 2]) / maxf(float(paces[paces.size() / 2]), 0.001))
+
+
+## The machine's pace (PIX-445): a fixed piece of work, the same in every
+## build of the game, timed `rounds` times (ms each). A frame's own mix:
+## GDScript's loops, maths and dictionaries, and calls into the engine.
+static func pace(rounds := 15) -> Array:
+	var node := Node2D.new()
+	var kept := {}
+	var times: Array = []
+	for _try in rounds:
+		var start := Time.get_ticks_usec()
+		for i in 600:
+			var at := Vector2(i % 31, i % 17) * 0.5
+			node.position = at.rotated(i * 0.01)
+			kept[i % 64] = node.position.length() + float(kept.get(i % 64, 0.0))
+		times.append((Time.get_ticks_usec() - start) / 1000.0)
+	node.free()
+	return times
+
+
+## The clock's frames, ms each, from one to the next.
+static func _spans(clock: Dictionary) -> Array:
 	var ticks: Array[int] = clock["ticks"]
 	var spans: Array = []
 	for i in range(1, ticks.size()):
 		spans.append((ticks[i] - ticks[i - 1]) / 1000.0)
-	return spread(spans)
+	return spans
 
 
 ## How many particles the emitting systems under `node` hold.

@@ -30,8 +30,9 @@ from flows import REPORT_HEAD, report_fields
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 RUNS = os.path.join(os.path.dirname(TOOLS), "flows", "runs")
 # The fields a run may differ in without being unsteady: draw calls are the
-# renderer's (0 headless), and cpu= the machine's time (PIX-355).
-IGNORED = {"draws", "cpu"}
+# renderer's (0 headless), cpu= the machine's time (PIX-355) and paced= that
+# time in the machine's own pace (PIX-445), close but never the same twice.
+IGNORED = {"draws", "cpu", "paced"}
 # How much of a failed run's output the summary keeps.
 TAIL = 30
 ANSI = re.compile(r"\x1b\[[0-9;]*m")

@@ -138,6 +138,8 @@ jobs:
           RUNNER: ${{ matrix.runner }}
         run: |
           mkdir -p results
+          # Which machine (PIX-445): CI's runners differ in speed, and cpu= with them.
+          grep -m1 "model name" /proc/cpuinfo | tee results/cpu.txt
           jobs=$(($(nproc) * LOAD))
           for round in $(seq 1 "$ROUNDS"); do
             # shellcheck disable=SC2086 # the names are meant to split

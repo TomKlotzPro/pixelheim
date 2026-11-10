@@ -236,6 +236,7 @@ func _run_test_harness() -> void:
 	await get_tree().process_frame
 	if not cpu.is_empty():
 		report.note("cpu", PerfProbe.cpu(get_tree(), cpu))
+		report.note("paced", PerfProbe.paced(cpu))
 	var line := report.line()
 	# A quiet run (--headless: no window, nothing drawn) has no picture.
 	if DisplayServer.get_name() != "headless":

@@ -697,6 +697,10 @@ func field_overflow() -> String:
 	return noted("overflow")
 
 
+func field_paced() -> String:
+	return noted("paced")
+
+
 func field_packs() -> String:
 	if Bestiary.spawns_on(world.map.id).is_empty():
 		return ""
