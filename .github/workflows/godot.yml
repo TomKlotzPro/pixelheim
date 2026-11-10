@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     # A stuck run is killed by flows.sh's watchdog; this is the backstop, for
     # a stuck job, never a speed check (the cpu-* flows are that). CI's
-    # runners differ about 1.8 times in speed, and on the slowest the job
+    # runners differ about twice in speed, and on the slowest the job
     # took up to 17.9 minutes by 2026-11-09 (PIX-445), growing with the flows:
     # 20 would have stopped a healthy job soon.
     timeout-minutes: 30
