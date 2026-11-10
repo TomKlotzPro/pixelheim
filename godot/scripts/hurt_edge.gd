@@ -20,10 +20,14 @@ const FADE_S := 0.35
 ## Low health's breath in a fight, low to high with the bar's beat; its
 ## middle, held, under reduced motion.
 const BREATH := Vector2(0.06, 0.18)
+## The breath comes and goes over this, at a fight's start and end, not at once.
+const BREATH_IN_S := 0.4
 
 var world: Node
 ## What's left of the last hit's flash.
 var flash := 0.0
+## How far low health's breath is in, 0 to 1.
+var _low := 0.0
 var _fade: Tween
 ## On the app's linear canvas, mixed into the screen in its own colours, so
 ## it reads there as in the browser (shaders/hurt_edge.gdshader).
@@ -50,7 +54,8 @@ func _ready() -> void:
 
 ## A hit that took `share` of the hero's most health.
 func struck(share: float) -> void:
-	flash = flash_alpha(share)
+	# A scratch on the heels of a big bite doesn't dim it.
+	flash = maxf(flash, flash_alpha(share))
 	if _fade != null:
 		_fade.kill()
 	_fade = create_tween().set_ignore_time_scale(true)
@@ -61,11 +66,11 @@ static func flash_alpha(share: float) -> float:
 	return lerpf(LEAST, MOST, clampf(share * 5.0, 0.0, 1.0))
 
 
-func _process(_delta: float) -> void:
-	var breath := 0.0
+func _process(delta: float) -> void:
 	var hero := GameState.hero
-	if Dock.low_hp(hero.hp, int(hero.stats["maxHp"])) and world != null and world.foes.in_fight():
-		breath = lerpf(BREATH.x, BREATH.y, 0.5 if GameState.settings.reduce_motion else Dock.beat())
+	var low: bool = Dock.low_hp(hero.hp, int(hero.stats["maxHp"])) and world != null and world.foes.in_fight()
+	_low = move_toward(_low, 1.0 if low else 0.0, delta / BREATH_IN_S)
+	var breath := _low * lerpf(BREATH.x, BREATH.y, 0.5 if GameState.settings.reduce_motion else Dock.beat())
 	var shown := maxf(flash, breath)
 	# Nothing drawn while there's nothing to show.
 	visible = shown > 0.0

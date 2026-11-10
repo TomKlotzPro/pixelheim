@@ -138,11 +138,16 @@ func test_the_edges_flash_then_breathe_at_low_health() -> void:
 	edge.struck(0.5)
 	edge._process(0.0)
 	assert_almost_eq(edge.modulate.a, HurtEdgeScript.MOST, 0.0001)
+	edge.struck(0.0)
+	edge._process(0.0)
+	assert_almost_eq(edge.modulate.a, HurtEdgeScript.MOST, 0.0001, "a scratch on the heels of a big bite doesn't dim it")
 	edge._fade.custom_step(HurtEdgeScript.FADE_S)
 	edge._process(0.0)
 	assert_false(edge.visible, "the flash is gone")
 	GameState.hero.hp = 1
-	edge._process(0.0)
+	edge._process(HurtEdgeScript.BREATH_IN_S / 4.0)
+	assert_lt(edge.modulate.a, HurtEdgeScript.BREATH.x, "the breath comes in, not at once")
+	edge._process(HurtEdgeScript.BREATH_IN_S)
 	assert_between(edge.modulate.a, HurtEdgeScript.BREATH.x, HurtEdgeScript.BREATH.y, "breathing with the bar")
 	GameState.settings.reduce_motion = true
 	edge._process(0.0)
@@ -152,7 +157,9 @@ func test_the_edges_flash_then_breathe_at_low_health() -> void:
 	edge._process(0.0)
 	assert_eq(edge.material, edge._screen_mix, "the app's linear canvas mixes it in the screen's colours")
 	edge.world.foes.on = false
-	edge._process(0.0)
+	edge._process(HurtEdgeScript.BREATH_IN_S / 4.0)
+	assert_true(edge.visible, "the breath goes out, not at once")
+	edge._process(HurtEdgeScript.BREATH_IN_S)
 	assert_false(edge.visible, "out of a fight, the edges rest")
 	GameState.hero = kept[0]
 	GameState.settings.reduce_motion = kept[1]
