@@ -18637,6 +18637,10 @@ msgid "In a chest somewhere in %s."
 msgstr ""
 
 #: scripts/state/quests.gd
+msgid "It's in your journal ({key:journal})."
+msgstr ""
+
+#: scripts/state/quests.gd
 msgid "Pays %s"
 msgstr ""
 

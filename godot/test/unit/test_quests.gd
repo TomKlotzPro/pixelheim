@@ -23,8 +23,8 @@ func _slay(monster_id: String) -> Array[String]:
 func test_a_givers_first_word_accepts_their_quest() -> void:
 	assert_eq(
 		state.questing.resolve_quests("innkeeper"),
-		"Quest accepted: Slime Trouble. Slimes have crept into what's left of Sela's stores. Thin the forest's supply of them. 60g, 20 XP.",
-		"PIX-194: the task, not the words just said; PIX-446: and what it pays, short"
+		"Quest accepted: Slime Trouble. Slimes have crept into what's left of Sela's stores. Thin the forest's supply of them. Pays 60 gold, 20 XP. It's in your journal (Q).",
+		"PIX-194: the task, not the words just said; PIX-446: what it pays, and the journal's key while its hint is unseen"
 	)
 	assert_eq(state.progression.quests["slime_trouble"], {"progress": 0, "done": false})
 	assert_eq(state.questing.resolve_quests("innkeeper"), "Slime Trouble: 0/3 slimes flattened.")
@@ -38,7 +38,6 @@ func test_a_quest_says_what_it_pays() -> void:
 	assert_eq(Quests.pay(Quests.by_id("letter_wenna")), "Pays 15 gold", "no XP, none said")
 	assert_eq(Quests.pay(Quests.by_id("maren_relics")), "Pays 300 XP", "no gold, none said")
 	assert_eq(Quests.pay(Quests.by_id("rook_captain")), "Pays as you choose", "a choice pays the option chosen (PIX-192)")
-	assert_eq(Quests.pay(Quests.by_id("herbs_for_vex"), true), "70g, 25 XP, %s" % Catalog.item_name("greater_potion"), "short, as a bounty's 100g")
 	for quest: Dictionary in Quests.all():
 		assert_ne(Quests.pay(quest), "", "%s pays something" % quest["id"])
 

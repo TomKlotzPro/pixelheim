@@ -8,6 +8,11 @@ extends GutTest
 ## a title card stands clear of what rises over the world.
 
 
+## The tallest a "Quest accepted" plate may stand: past that it is the big
+## box over the view Tom can't stand (PIX-446).
+const PLATE_LINES := 4
+
+
 ## Foes as the HUD asks them: the boss hunting the hero, and since when.
 class FakeFoes extends RefCounted:
 	var boss: Node = null
@@ -136,17 +141,19 @@ func test_a_hint_is_a_line_of_the_log_and_waits_behind_the_plate() -> void:
 	assert_string_contains(line, Controls.say("{key:journal}"), "the player's own key")
 
 
-## PIX-446: what a quest pays, on the "Quest accepted" plate, made a third
-## of them a line taller. It stands where "It's in your journal (Q)." stood,
-## and no plate is a line taller than it was then, in English or French.
-func test_what_a_quest_pays_adds_no_line_to_its_plate() -> void:
-	var then := {"en": "It's in your journal (Q).", "fr": "Elle est dans votre journal (Q)."}
-	for lang: String in then:
+## PIX-446: the "Quest accepted" plate says what a quest pays in full, and
+## the journal's key until its hint was seen (Tom: no need to be short). The
+## longest still fits the plate, in English and French.
+func test_every_quest_accepted_plate_fits() -> void:
+	for lang: String in ["en", "fr"]:
 		Text.apply(lang)
+		var most := 0
 		for quest: Dictionary in Quests.all():
 			if quest["objective"]["kind"] != "deliverTo":
-				var before := _plate_lines(Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]] + " " + then[lang])
-				assert_lte(_plate_lines(Quests.accepted(quest)), before, "%s (%s): %s" % [quest["id"], lang, Quests.accepted(quest)])
+				var lines := _plate_lines(Quests.accepted(quest, true))
+				assert_lte(lines, PLATE_LINES, "%s (%s): %s" % [quest["id"], lang, Quests.accepted(quest, true)])
+				most = maxi(most, lines)
+		gut.p("%s: the longest plate %d lines" % [lang, most])
 	Text.apply("en")
 
 
