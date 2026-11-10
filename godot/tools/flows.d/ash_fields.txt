@@ -20,12 +20,9 @@ ash-edge-green | --map overworld --at 93,20 | map=overworld tone=none | field
 # handcart by the frame below Blackiron's waystation (the cart stands on
 # Shade's CC0 art alone too).
 ash-steads-block | --map overworld --at 35,21 --walk d,d | map=overworld cell=\(35, 22\) | travel field
-# What a frame of the Ash costs at night among the steads (PIX-397), held
-# under 1.80 ms (PIX-419). The laptop reads it 0.5 ms; CI's runners, 36
-# readings from 2026-11-04 to 11-07 (pull requests and the nightly hunt on
-# main), 0.78, 1.01-1.06 or 1.18-1.55 by the runner's speed, typically
-# 1.39, about 5 % over cpu-night's on the same runner. cpu-night's 1.50
-# failed four of them (1.50-1.55) with no game change behind it; 1.80 is
-# the typical reading and 30 %, so a slow runner passes and a real slowdown
-# still fails on the runners most runs get (a fast runner hides it).
-cpu-ash | --map overworld --at 30,20 night cpu --wait 2 | map=overworld cpu=(?!1\.[89])[01]\.\d\d/\d+\.\d\d | field night
+# What a frame of the Ash costs at night among the steads (PIX-397), about
+# 5 % over cpu-night's on the same runner. Held under 1.80 ms (PIX-419) after
+# cpu-night's 1.50 failed four of its first 36 readings on slow runners with
+# no game change; now in paces (PIX-445, as cpu-night): CI 5.96-6.65, held
+# under 7.50, and under 2.50 ms.
+cpu-ash | --map overworld --at 30,20 night cpu --wait 2 | map=overworld cpu=(?!2\.[5-9])[0-2]\.\d\d/\d+\.\d\d paced=(?!7\.[5-9])[0-7]\.\d\d | field night

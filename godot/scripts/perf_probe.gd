@@ -58,22 +58,117 @@ static func sample(node: Node, frames := 300, warmup := 30) -> String:
 ## The CPU clock (PIX-355), which needs no renderer: each frame's time from
 ## one process_frame to the next. Stepped (--fixed-fps) and headless, the
 ## frames run back to back, so that is what a frame costs on one core:
-## physics, process, the scripts. Read it with `cpu`.
+## physics, process, the scripts. Read it with `cpu`, and in the machine's
+## pace with `paced`: between each frame and the next the clock times a
+## round of the pace (Pace), left out of the frame's time, so the two are
+## read side by side through the same seconds (a runner slowed for a second
+## or two by its neighbours slows both alike).
 static func clock(tree: SceneTree) -> Dictionary:
-	var ticks: Array[int] = []
-	var on_frame := func() -> void: ticks.append(Time.get_ticks_usec())
+	var ends := []
+	var paces := []
+	var starts := []
+	var pace := Pace.new()
+	# Its own lists, not the dictionary: a lambda holding what holds it leaks.
+	var on_frame := func() -> void:
+		ends.append(Time.get_ticks_usec())
+		paces.append(pace.once())
+		starts.append(Time.get_ticks_usec())
 	tree.process_frame.connect(on_frame)
-	return {"ticks": ticks, "on_frame": on_frame}
+	return {"starts": starts, "ends": ends, "paces": paces, "pace": pace, "on_frame": on_frame}
 
 
 ## The clock stopped: "median/95th percentile" ms of its frames.
 static func cpu(tree: SceneTree, clock: Dictionary) -> String:
 	tree.process_frame.disconnect(clock["on_frame"])
-	var ticks: Array[int] = clock["ticks"]
+	clock["pace"].done()
+	return spread(_spans(clock))
+
+
+## The stopped clock's median frame in paces (PIX-445), "5.80": what a frame
+## costs whatever the machine's speed. CI's runners are several kinds of
+## machine, up to 2.1 times apart in speed (cpu-night 0.73 to 1.56 ms on one
+## build, steady on each), so a budget in ms failed the slow ones with no
+## change to the game and let the fast ones hide a real slowdown; in paces,
+## the AMDs read within 4 % of each other and the Intels about 10 % over.
+static func paced(clock: Dictionary) -> String:
+	var spans := _spans(clock)
+	var paces: Array = clock["paces"].duplicate()
+	if spans.is_empty() or paces.is_empty():
+		return "-"
+	spans.sort()
+	paces.sort()
+	return "%.2f" % (float(spans[spans.size() / 2]) / maxf(float(paces[paces.size() / 2]), 0.001))
+
+
+## The clock's frames, ms each, from the end of one round of the pace to the
+## start of the next.
+static func _spans(clock: Dictionary) -> Array:
+	var starts: Array = clock["starts"]
+	var ends: Array = clock["ends"]
 	var spans: Array = []
-	for i in range(1, ticks.size()):
-		spans.append((ticks[i] - ticks[i - 1]) / 1000.0)
-	return spread(spans)
+	for i in range(1, ends.size()):
+		spans.append((int(ends[i]) - int(starts[i - 1])) / 1000.0)
+	return spans
+
+
+## The machine's pace (PIX-445): a fixed piece of work, the same in every
+## build of the game (the cpu-* flows' budgets are in its rounds: change it
+## and measure them all again), a round of which `once` times in ms. A
+## frame's own mix, in three parts about as long as each other on CI:
+## GDScript's loops and maths with calls into the engine, a crowd of script
+## objects each ticked in turn (the foes and the folk), and reads scattered
+## over 4 MB (a frame's nodes lie all over memory). Each part alone followed
+## the frame on some of CI's machines and not others (the Intel ran tight
+## loops 25 % faster than the AMDs, and the game's frames no faster); the
+## three together held on all.
+class Pace:
+	var _node := Node2D.new()
+	var _kept := {}
+	var _crowd: Array[Walker] = []
+	var _table := {&"foe": 3}
+	var _far := PackedInt32Array()
+	var _sink := 0.0
+
+	func _init() -> void:
+		for i in 140:
+			_crowd.append(Walker.new(Vector2(i % 9, i % 7)))
+		_far.resize(1 << 20)
+
+	## One round, in ms.
+	func once() -> float:
+		var start := Time.get_ticks_usec()
+		for i in 200:
+			var at := Vector2(i % 31, i % 17) * 0.5
+			_node.position = at.rotated(i * 0.01)
+			_kept[i % 64] = _node.position.length() + float(_kept.get(i % 64, 0.0))
+		for walker in _crowd:
+			_sink += walker.tick(0.016, _table)
+		var hop := 1
+		for i in 1300:
+			hop = (hop * 1103515245 + 12345) & 0xFFFFF
+			_sink += _far[hop]
+		return (Time.get_ticks_usec() - start) / 1000.0
+
+	func done() -> void:
+		_node.free()
+
+
+## One of the pace's crowd: a foe's tick, more or less.
+class Walker:
+	var at: Vector2
+	var heading := Vector2.RIGHT
+	var hp := 10
+	var tag := &"foe"
+
+	func _init(from: Vector2) -> void:
+		at = from
+
+	func tick(dt: float, table: Dictionary) -> float:
+		at += heading * dt
+		if at.x > 8.0:
+			heading = -heading
+			hp -= 1
+		return float(table.get(tag, 0)) + at.length_squared()
 
 
 ## How many particles the emitting systems under `node` hold.

@@ -19,8 +19,12 @@ env:
 jobs:
   godot:
     runs-on: ubuntu-latest
-    # A stuck run is killed by flows.sh's watchdog; this is the backstop.
-    timeout-minutes: 20
+    # A stuck run is killed by flows.sh's watchdog; this is the backstop, for
+    # a stuck job, never a speed check (the cpu-* flows are that). CI's
+    # runners differ about twice in speed, and on the slowest the job
+    # took up to 17.9 minutes by 2026-11-09 (PIX-445), growing with the flows:
+    # 20 would have stopped a healthy job soon.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -159,7 +163,12 @@ jobs:
       # request gets no deploy key: its flows run on Shade's CC0 art alone,
       # which every flow passes too (what blocks the way comes from the
       # maps, not the art), and the summary says so.
+      #
+      # Stopped short of the job's limit (PIX-445; it took up to 14.8 minutes
+      # on the slowest runners), so a stall fails here, its "still running"
+      # lines in the log, and the failed runs' output is kept below.
       - name: Release flows
+        timeout-minutes: 22
         env:
           ART: ${{ steps.art.outcome }}
         run: |
@@ -167,6 +176,8 @@ jobs:
             echo "::notice title=No paid art::This run has no deploy key for the paid art (a fork's pull request): the flows run on Shade's CC0 art alone."
             echo "_No paid art on this run (a fork's pull request): the flows ran on Shade's CC0 art alone._" >> "$GITHUB_STEP_SUMMARY"
           fi
+          # Which machine (PIX-445): CI's runners differ in speed, and cpu= with them.
+          grep -m1 "model name" /proc/cpuinfo
           bash godot/tools/flows.sh --quiet -j "$(nproc)"
 
       - name: Keep the failed runs' output
@@ -195,8 +206,13 @@ jobs:
     env:
       SCREEN: "-screen 0 2560x1440x24"
       # Software rendering on a slow runner: the watchdog, a backstop for a
-      # run that never quits, waits longer than on a machine with a GPU.
-      FLOWS_WATCHDOG: "150"
+      # run that never quits, waits longer than on a machine with a GPU. A
+      # backstop, not a speed check (PIX-445): dawn, the burning town drawn
+      # beside three other software renderers, took 70 to 146 s in 83 runs
+      # to 2026-11-09 (49-61 s with two beside it), and 150 would soon have
+      # failed it on a slow runner for nothing. A run that never quits fails
+      # headless in the godot job's 60 s anyway.
+      FLOWS_WATCHDOG: "300"
       SHARE: ${{ matrix.share }}
     steps:
       - uses: actions/checkout@v4
@@ -241,13 +257,20 @@ jobs:
       # rendering live the same seconds as the godot job's headless runs, so
       # every report must show what its flow expects here too: a flow that
       # differs in a window fails the job, the motion flow's steps back too.
+      #
+      # Into the log as it goes, not after (PIX-445), and stopped short of
+      # the job's limit: #504's share 3 ran out the job's 25 minutes (its
+      # fellows took 7-14) and was cancelled with its output still in a file,
+      # so no one could say where it stalled. Stopped here, the step fails,
+      # flows.sh's "still running" lines name what was running, and the
+      # upload below keeps every run's output.
       - name: Release flows, windowed
         if: matrix.share != 'look'
+        timeout-minutes: 20
         run: |
           set +e
-          GITHUB_ACTIONS= GITHUB_STEP_SUMMARY= xvfb-run -a -s "$SCREEN" bash godot/tools/flows.sh --shard "$SHARE/4" -j "$(nproc)" > "windowed-$SHARE.txt" 2>&1
-          status=$?
-          cat "windowed-$SHARE.txt"
+          GITHUB_ACTIONS= GITHUB_STEP_SUMMARY= xvfb-run -a -s "$SCREEN" bash godot/tools/flows.sh --shard "$SHARE/4" -j "$(nproc)" 2>&1 | tee "windowed-$SHARE.txt"
+          status=${PIPESTATUS[0]}
           ran=$(grep -E "^Release flows:" "windowed-$SHARE.txt" | sed -E 's/^Release flows: //')
           echo "**Release flows, windowed, share $SHARE of 4:** ${ran:-no result}" >> "$GITHUB_STEP_SUMMARY"
           grep -E "^FAIL " "windowed-$SHARE.txt" | while read -r _ name _ why; do

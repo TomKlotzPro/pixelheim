@@ -73,3 +73,14 @@ func test_the_cpu_clock_times_frames_headless() -> void:
 	var read := PerfProbe.cpu(get_tree(), clock)
 	assert_not_null(RegEx.create_from_string("^\\d+\\.\\d\\d/\\d+\\.\\d\\d$").search(read), "frames timed with no renderer: %s" % read)
 	assert_false(get_tree().process_frame.is_connected(clock["on_frame"]), "read, the clock stops")
+	assert_not_null(RegEx.create_from_string("^\\d+\\.\\d\\d$").search(PerfProbe.paced(clock)), "the frame in the machine's pace (PIX-445)")
+
+
+func test_a_frame_in_paces_is_its_ms_over_the_pace() -> void:
+	# Frames of 30, 10 and 20 ms between rounds of a pace of 5, 4 and 6 ms:
+	# the median frame is 4 paces, however fast the machine read them both.
+	var clock := {"ends": [0, 35000, 45000, 70000], "starts": [5000, 35000, 50000, 70000], "paces": [5.0, 4.0, 6.0, 5.0]}
+	assert_eq(PerfProbe.paced(clock), "4.00", "on a machine twice as fast, both halve")
+	var pace := PerfProbe.Pace.new()
+	assert_gt(pace.once(), 0.0, "a round of the pace takes time")
+	pace.done()

@@ -309,6 +309,10 @@ started=$(now)
 rows=""
 pid_of=()
 slot_pid=()
+# What each slot runs and since when, for `still`.
+slot_what=()
+slot_at=()
+heard=$SECONDS
 
 # Prints the results that are in, in the flows' order: each waits for the
 # ones before it.
@@ -328,6 +332,7 @@ flush() {
 		fi
 		IFS="|" read -r status name took line <"$dir/result"
 		printed=$((printed + 1))
+		heard=$SECONDS
 		if [[ $status == skip ]]; then
 			printf "skip  %-7s %s\n" "$name" "$line"
 			continue
@@ -344,6 +349,23 @@ flush() {
 	done
 }
 
+# A line after a minute with none printed (PIX-445): what each slot runs,
+# for how long, and how loaded the machine is. The results print in the
+# flows' order, so one slow flow held back every line after it, and a run
+# that stalled past its job's limit left no word of where (#504's windowed
+# share 3, its log lost).
+still() {
+	local s running=""
+	((SECONDS - heard < 60)) && return
+	heard=$SECONDS
+	for ((s = 0; s < jobs; s++)); do
+		if [[ -n ${slot_pid[s]:-} ]] && kill -0 "${slot_pid[s]}" 2>/dev/null; then
+			running+=" ${slot_what[s]} $((SECONDS - slot_at[s]))s,"
+		fi
+	done
+	echo "... still running:${running%,}; load$(uptime | sed 's/.*load average[s]*://')$(command -v free >/dev/null && free -m | awk '/^Mem:/ {printf "; %d MB free", $7}')"
+}
+
 # The first free job slot, in $slot, printing what finished while it waits.
 free_slot() {
 	local s
@@ -355,6 +377,7 @@ free_slot() {
 			fi
 		done
 		flush
+		still
 		sleep 0.1
 	done
 }
@@ -364,6 +387,7 @@ drain() {
 	local s busy=1
 	while [[ $busy == 1 ]]; do
 		flush
+		still
 		busy=0
 		for ((s = 0; s < jobs; s++)); do
 			if [[ -n ${slot_pid[s]:-} ]] && kill -0 "${slot_pid[s]}" 2>/dev/null; then
@@ -383,6 +407,8 @@ launch() {
 	run_flow "${picked[$1]}" "$slot" &
 	slot_pid[slot]=$!
 	pid_of[$1]=$!
+	slot_what[slot]=${FLOWS[${picked[$1]}]%%|*}
+	slot_at[slot]=$SECONDS
 }
 
 # Starts the flows at positions $@ of the picked ones as a batch in a free slot.
@@ -397,6 +423,8 @@ launch_batch() {
 	for k in "$@"; do
 		pid_of[k]=$!
 	done
+	slot_what[slot]="batch-${FLOWS[${picked[$1]}]%%|*}"
+	slot_at[slot]=$SECONDS
 }
 
 # The look-only flows, headless, in batches (PIX-360), started first: each
