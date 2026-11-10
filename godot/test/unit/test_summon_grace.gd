@@ -15,8 +15,8 @@ var _kept := {}
 var _world: StubWorld
 
 
-## What a blow on the hero asks of the world: its floats, its flash and the
-## camera's shake.
+## What a blow on the hero asks of the world: its floats, its flash, the
+## camera's shake and the screen's red edges.
 class StubSkills extends RefCounted:
 	func impact(_on: Node) -> void:
 		pass
@@ -41,6 +41,16 @@ class StubCamera extends RefCounted:
 
 	func hit_stop(_seconds: float) -> void:
 		pass
+
+
+## The red at the screen's edges (PIX-447).
+class StubEdge extends RefCounted:
+	func struck(_share: float) -> void:
+		pass
+
+
+class StubHud extends RefCounted:
+	var hurt_edge := StubEdge.new()
 
 
 ## What a howl asks of the world besides: its line, the ground and the
@@ -73,6 +83,7 @@ class StubFoes extends Node:
 class StubWorld extends Node2D:
 	var fx := StubFx.new()
 	var camera_rig := StubCamera.new()
+	var hud := StubHud.new()
 	var messages := StubMessages.new()
 	var map := StubMap.new()
 	var foes := StubFoes.new()

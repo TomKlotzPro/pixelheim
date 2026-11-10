@@ -6,6 +6,8 @@ extends GutTest
 const BossBarScript := preload("res://scripts/boss_bar.gd")
 const HudDockScript := preload("res://scripts/hud_dock.gd")
 const SoundScript := preload("res://scripts/sound.gd")
+const HurtEdgeScript := preload("res://scripts/hurt_edge.gd")
+const GameStateScript := preload("res://scripts/state/game_state.gd")
 
 
 ## Just enough of a foe for the bar to follow.
@@ -96,3 +98,57 @@ func test_the_menu_lists_skills_only_for_a_pad_and_once_learned() -> void:
 	assert_true(HudDockScript.menu_skill_shown(true, docked, 3))
 	assert_false(HudDockScript.menu_skill_shown(true, docked, 4), "nothing on 5 yet")
 	assert_false(HudDockScript.menu_skill_shown(true, docked, 5), "past the dock's skills")
+
+
+## Just enough of a world for the hurt edge: in a fight or not.
+class Fight:
+	extends Node
+	var foes := FightFoes.new()
+
+
+class FightFoes:
+	var on := true
+
+	func in_fight() -> bool:
+		return on
+
+
+## PIX-447: a hit reddens the screen's edges, stronger for a bigger bite and
+## never past faint.
+func test_a_hit_reddens_the_edges_faintly() -> void:
+	assert_eq(HurtEdgeScript.flash_alpha(0.0), HurtEdgeScript.LEAST, "a scratch still shows")
+	assert_almost_eq(HurtEdgeScript.flash_alpha(0.2), HurtEdgeScript.MOST, 0.0001, "a fifth of health at once: the most")
+	assert_almost_eq(HurtEdgeScript.flash_alpha(1.0), HurtEdgeScript.MOST, 0.0001, "never past faint")
+	assert_lt(HurtEdgeScript.flash_alpha(0.05), HurtEdgeScript.flash_alpha(0.15), "a bigger bite, a stronger red")
+	assert_lte(HurtEdgeScript.MOST, 0.25)
+
+
+## PIX-447: the flash fades on its own; low health breathes at the edges in
+## a fight only, held still under reduced motion.
+func test_the_edges_flash_then_breathe_at_low_health() -> void:
+	var kept := [GameState.hero, GameState.settings.reduce_motion]
+	var lent: Node = autofree(GameStateScript.new())
+	lent.new_game("Aldegonde", "mage")
+	GameState.hero = lent.hero
+	var edge: TextureRect = HurtEdgeScript.new()
+	edge.world = autofree(Fight.new())
+	add_child_autofree(edge)
+	edge._process(0.0)
+	assert_false(edge.visible, "calm at full health: nothing drawn")
+	edge.struck(0.5)
+	edge._process(0.0)
+	assert_almost_eq(edge.modulate.a, HurtEdgeScript.MOST, 0.0001)
+	edge._fade.custom_step(HurtEdgeScript.FADE_S)
+	edge._process(0.0)
+	assert_false(edge.visible, "the flash is gone")
+	GameState.hero.hp = 1
+	edge._process(0.0)
+	assert_between(edge.modulate.a, HurtEdgeScript.BREATH.x, HurtEdgeScript.BREATH.y, "breathing with the bar")
+	GameState.settings.reduce_motion = true
+	edge._process(0.0)
+	assert_almost_eq(edge.modulate.a, (HurtEdgeScript.BREATH.x + HurtEdgeScript.BREATH.y) / 2.0, 0.0001, "still, under reduced motion")
+	edge.world.foes.on = false
+	edge._process(0.0)
+	assert_false(edge.visible, "out of a fight, the edges rest")
+	GameState.hero = kept[0]
+	GameState.settings.reduce_motion = kept[1]

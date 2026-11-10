@@ -140,6 +140,8 @@ func test_a_hint_is_a_line_of_the_log_and_waits_behind_the_plate() -> void:
 func test_on_a_phone_the_log_starts_past_the_stick() -> void:
 	hud.sky_overlay = ColorRect.new()
 	hud.root.add_child(hud.sky_overlay)
+	hud.hurt_edge = TextureRect.new()
+	hud.root.add_child(hud.hurt_edge)
 	Touch.forced = true
 	hud.place()
 	Touch.forced = false

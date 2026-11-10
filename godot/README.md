@@ -557,6 +557,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/home_screen.gd` — The house's fixtures, one screen per `mode` (HouseStorage, Trophies, Nook and the pack's Craft/Place in the web game)
 - `scripts/hub_art.gd` — What the hubs grow as their post roads fill (PIX-324, Hubs)
 - `scripts/hud_dock.gd` — The hero's dock along the bottom of the screen (PIX-138): one wooden plate in the windows' carved frame, centred, so the rest of the screen is world.
+- `scripts/hurt_edge.gd` — The faint red at the screen's edges when the hero is hurt (PIX-447)
 - `scripts/ink.gd` — Where the pixels are (PIX-268): the ink a word draws in a pixel font and the head a figure's frame draws, measured on the pixels themselves, so a mark over a head is centred on the one by the other.
 - `scripts/interactables.gd` — Treasure chests, door signs and waypoints (assets/maps/interactables.json, edited by hand).
 - `scripts/inventory_screen.gd` — The pack and the paperdoll (Inventory.tsx)

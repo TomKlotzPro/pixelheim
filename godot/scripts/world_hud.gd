@@ -14,6 +14,8 @@ var world: Node
 var root: CanvasLayer
 ## Day/night tint, under the HUD widgets and over the world.
 var sky_overlay: ColorRect
+## A hurt's faint red at the screen's edges (PIX-447), over the tint.
+var hurt_edge: TextureRect
 ## The hero panel: health, resource, xp, gold, the screens (HudPanel).
 var dock: Control
 var boss_bar: Control
@@ -81,9 +83,10 @@ var quill: Quill
 const ARROW_INSET := 26.0
 
 
-## The layer and its widgets, in the order they stand: the sky's tint, the
-## dock, the boss bar, the battle log, the nameplate, the message plate and
-## the objective line. Placed at once, and again as the window changes.
+## The layer and its widgets, in the order they stand: the sky's tint, a
+## hurt's red at the edges, the dock, the boss bar, the battle log, the
+## nameplate, the message plate and the objective line. Placed at once, and
+## again as the window changes.
 func build() -> void:
 	var hud := CanvasLayer.new()
 	# Over the glow's layer (PIX-222: LightRig.GLOW_LAYER), so it never blooms.
@@ -94,6 +97,9 @@ func build() -> void:
 	sky_overlay.color = Color(0, 0, 0, 0)
 	sky_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(sky_overlay)
+	hurt_edge = preload("res://scripts/hurt_edge.gd").new()
+	hurt_edge.world = world
+	hud.add_child(hurt_edge)
 	# The hero's dock along the bottom; the battle log floats above its left.
 	dock = preload("res://scripts/hud_dock.gd").new()
 	dock.world = world
@@ -147,6 +153,8 @@ func place() -> void:
 	root.offset = Touch.hud_offset(world)
 	sky_overlay.position = -root.offset
 	sky_overlay.size = Touch.view_size(world)
+	hurt_edge.position = sky_overlay.position
+	hurt_edge.size = sky_overlay.size
 	# On a phone the log's line, a tip among them, starts past the thumbstick
 	# (PIX-433: it ran under it).
 	if Touch.enabled():
@@ -512,9 +520,9 @@ func update_arrow() -> void:
 	if arrow == null:
 		arrow = Arrow.new()
 		root.add_child(arrow)
-		# Under the HUD's words, just over the sky's tint (PIX-343: it stood
-		# on the battle log's line).
-		root.move_child(arrow, sky_overlay.get_index() + 1)
+		# Under the HUD's words, just over the sky's tint and a hurt's red
+		# (PIX-343: it stood on the battle log's line).
+		root.move_child(arrow, hurt_edge.get_index() + 1)
 	arrow.main = leads_story
 	var target := _bearing_point()
 	# Above the words over the dock too (the objective's plate, a message,
