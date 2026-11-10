@@ -145,6 +145,8 @@ func _physics_process(delta: float) -> void:
 	if dodging:
 		velocity = dodge_dir * float(Bestiary.dodge_rules()["speed"])
 		var rolled_from := global_position
+		if rolled_from.distance_to(_ghost_at) >= GHOST_GAP:
+			_ghost()
 		move_and_slide()
 		gait.walk(gait.drawn_way(dodge_dir, _dir_name()), (global_position - rolled_from).length(), delta)
 		return
@@ -344,6 +346,7 @@ func dodge(pressed_heading := Vector2.ZERO) -> void:
 	blur.tween_interval(float(rules["seconds"]))
 	blur.tween_property(sprite, "modulate:a", 1.0, 0.08)
 	world.fx.dust(global_position)
+	_ghost()
 	get_tree().create_timer(float(rules["seconds"])).timeout.connect(func() -> void:
 		dodging = false
 		_spring_from(Juice.LAND)
@@ -359,6 +362,12 @@ func dodge(pressed_heading := Vector2.ZERO) -> void:
 
 
 var _dodge_iframes := false
+## The roll's trail (PIX-447): a ghost of the hero every GHOST_GAP pixels
+## along it, three in a roll, each fading in GHOST_S; where the last was left.
+const GHOST_GAP := 15.0
+const GHOST_S := 0.2
+const GHOST_ALPHA := 0.4
+var _ghost_at := Vector2.ZERO
 ## A dodge that primes the next blow to crit (PIX-190's dodgeCrit): until when.
 var crit_primed_until := 0.0
 const PRIMED_SECONDS := 2.0
@@ -387,9 +396,11 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, grace := t
 		Sound.play("ward")
 		world.fx.float_text(Text.t("warded"), global_position + Vector2(0, -22), Color(1.0, 0.72, 0.45))
 		return
+	var was := GameState.hero.hp
 	GameState.upkeep.hurt(damage)
 	hp = GameState.hero.hp
 	Juice.flash(sprite)
+	world.hud.hurt_edge.struck(float(was - hp) / float(GameState.hero.stats["maxHp"]))
 	world.fx.skills.impact(self)
 	world.fx.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35), false, self)
 	world.camera_rig.shake(3.0, 0.2)
@@ -418,6 +429,28 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, grace := t
 	get_tree().create_timer(INVULNERABLE_SECONDS).timeout.connect(
 		func() -> void: invulnerable = false
 	)
+
+## A ghost of the hero's frame now where they stand, fading behind the roll
+## (PIX-447): its feet where the hero's are, sorted among the actors as the
+## hero is, without the hero's white flash, gone once faded. Not with
+## reduced motion.
+func _ghost() -> void:
+	_ghost_at = global_position
+	if GameState.settings.reduce_motion:
+		return
+	var ghost := Sprite2D.new()
+	ghost.texture = sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame)
+	ghost.offset = sprite.position
+	ghost.position = position
+	ghost.self_modulate = sprite.self_modulate
+	ghost.modulate.a = GHOST_ALPHA
+	# It stays put: nothing to smooth between physics ticks.
+	ghost.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
+	get_parent().add_child(ghost)
+	var fade := ghost.create_tween()
+	fade.tween_property(ghost, "modulate:a", 0.0, GHOST_S)
+	fade.tween_callback(ghost.queue_free)
+
 
 ## A soft oval of light, wider than tall: a skill's flash where it lands,
 ## the pool under the hero's feet at an ascension.

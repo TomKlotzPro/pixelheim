@@ -2057,6 +2057,10 @@ msgid "A hero saved out on the open ash near the old mountain cave now wakes whe
 msgstr "Un héros sauvegardé en pleine cendre près de l'ancienne grotte de la montagne se réveille désormais là où il était, au lieu de revenir au village"
 
 #: assets/data/changelog.json
+msgid "A hit now reddens the edges of the screen for a moment, more for a heavier blow, and at low health in a fight the edges breathe with your heartbeat"
+msgstr "Un coup reçu rougit désormais un instant les bords de l'écran, d'autant plus que le coup est rude, et à faible santé en combat les bords battent avec votre cœur"
+
+#: assets/data/changelog.json
 msgid "A keeper stands in their building the day it is rebuilt: Sela in her inn, Vex at her brews, whatever the village's age"
 msgstr "Un commerçant s'installe dans son bâtiment le jour où il est reconstruit : Sela dans son auberge, Vex à ses breuvages, quel que soit l'âge du village"
 
@@ -2159,6 +2163,10 @@ msgstr "Un vrai soleil tourne au-dessus du monde : lumière de l'aube, longues
 #: assets/data/changelog.json
 msgid "A roll can now cut short the end of a swing or a cast, once the blow has landed"
 msgstr "Une roulade peut maintenant écourter la fin d'un coup ou d'un sort, une fois le coup porté"
+
+#: assets/data/changelog.json
+msgid "A roll leaves a short trail of fading ghosts along its path"
+msgstr "Une roulade laisse derrière elle une courte traînée de silhouettes qui s'effacent"
 
 #: assets/data/changelog.json
 msgid "A save on a dungeon floor wakes you at the top of that floor instead of back at the entrance, and sleeping saves with your well-rested bonus kept"
@@ -5255,6 +5263,10 @@ msgstr "Les écrans ne passent plus par-dessus l'interface : un écran qui ass
 #: assets/data/changelog.json
 msgid "Second Thoughts"
 msgstr "Réflexion faite"
+
+#: assets/data/changelog.json
+msgid "Seeing Red"
+msgstr "Voir rouge"
 
 #: assets/data/changelog.json
 msgid "Seen whole, the river now winds in gentle bends, and the roads across the Ash and the marsh wander off the grid, while every turn and fork keeps its rounded corners"

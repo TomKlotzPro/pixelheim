@@ -544,6 +544,12 @@ static func low_hp(hp: int, most: int) -> bool:
 	return hp > 0 and hp < most * LOW_HP
 
 
+## Low health's beat, 0 to 1 and back every HEARTBEAT_S: the bar's, and the
+## screen's edges breathing with it (hurt_edge.gd, PIX-447).
+static func beat() -> float:
+	return 0.5 + 0.5 * sin(GameClock.seconds() * TAU / HEARTBEAT_S)
+
+
 func _warn_low_hp(delta: float) -> void:
 	var hero := GameState.hero
 	var fill: ColorRect = bars["hp"]["fill"]
@@ -560,8 +566,7 @@ func _warn_low_hp(delta: float) -> void:
 	if GameState.settings.reduce_motion:
 		fill.modulate = bright
 	else:
-		var beat := 0.5 + 0.5 * sin(GameClock.seconds() * TAU / HEARTBEAT_S)
-		fill.modulate = Color.WHITE.lerp(bright, beat)
+		fill.modulate = Color.WHITE.lerp(bright, beat())
 	if world != null and world.foes.in_fight():
 		_beat_left -= delta
 		if _beat_left <= 0.0:
