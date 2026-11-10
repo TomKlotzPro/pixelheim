@@ -6413,12 +6413,20 @@ msgid "The inventory grew a mirror: a paper doll of your hero with every worn pi
 msgstr "L'inventaire a gagné un miroir : un mannequin de votre héros, chaque pièce portée posée sur le corps - cliquez sur une pièce pour l'enlever"
 
 #: assets/data/changelog.json
+msgid "The journal now shows what each quest pays, and so does the message when you take one"
+msgstr "Le journal indique désormais ce que rapporte chaque quête, tout comme le message quand vous en acceptez une"
+
+#: assets/data/changelog.json
 msgid "The journal opens on what you're doing now: the quest you follow, its step, where to go and how far along you are. Under it, every open thread in one list, the main story, the town's quests and the board's bounties, each with its next step and its place"
 msgstr "Le journal s'ouvre sur ce que vous faites en ce moment : la quête suivie, son étape, où aller et où vous en êtes. En dessous, tous les fils en cours dans une seule liste, l'histoire principale, les quêtes du bourg et les primes du tableau, chacun avec sa prochaine étape et son lieu"
 
 #: assets/data/changelog.json
 msgid "The journal says where an escort starts"
 msgstr "Le journal indique où commence une escorte"
+
+#: assets/data/changelog.json
+msgid "The journal's Next line now takes a single line, so the quest list shows about five quests instead of three, with a scroll bar when there are more"
+msgstr "La ligne « À suivre » du journal tient désormais sur une seule ligne : la liste montre environ cinq quêtes au lieu de trois, avec une barre de défilement quand il y en a davantage"
 
 #: assets/data/changelog.json
 msgid "The keepers keep working. They just work for you now."
@@ -7259,6 +7267,10 @@ msgstr "Ça vaut l'ouvrage"
 #: assets/data/changelog.json
 msgid "Worth the Gold"
 msgstr "À la hauteur de leur prix"
+
+#: assets/data/changelog.json
+msgid "Worth the Walk"
+msgstr "Ça vaut le détour"
 
 #: assets/data/changelog.json
 msgid "Wren the Stablemaster walks horses by the gate - two wolf pelts for saddle leather and fast travel drops you straight at Pixelheim Square, no gate queue"
@@ -13581,7 +13593,7 @@ msgid "Fund the street lamps at the board on the square"
 msgstr "Financer les réverbères au tableau d'avis de la place"
 
 #: assets/data/progression.json
-msgid "Garrick wants proof a smith can work Blackiron ore: a helm, forged from his seam."
+msgid "Garrick wants proof a smith can work Blackiron ore: a helm from his seam."
 msgstr "Garrick veut la preuve qu'un forgeron sait travailler le minerai de Fernoir : un casque, forgé avec le fer de son filon."
 
 #: assets/data/progression.json
@@ -18601,20 +18613,12 @@ msgid "Feat: %s"
 msgstr "Haut fait : %s"
 
 #: scripts/state/questing.gd
-msgid "It's in your journal ({key:journal})."
-msgstr "Elle est dans votre journal ({key:journal})."
-
-#: scripts/state/questing.gd
 msgid "Level up: you are now level %d."
 msgstr "Niveau supérieur : vous êtes maintenant niveau %d."
 
 #: scripts/state/questing.gd
 msgid "Pixelheim held: +%d XP."
 msgstr "Pixelheim a tenu : +%d XP."
-
-#: scripts/state/questing.gd
-msgid "Quest accepted: %s. %s"
-msgstr "Quête acceptée : %s. %s"
 
 #: scripts/state/questing.gd
 msgid "Quest complete: %s. %s. “%s”"
@@ -18627,6 +18631,14 @@ msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer
 #: scripts/state/questing.gd
 msgid "Your satchel is in the journal ({key:journal})."
 msgstr "Votre sacoche est dans le journal ({key:journal})."
+
+#: scripts/state/quests.gd
+msgid "%d XP"
+msgstr "%d XP"
+
+#: scripts/state/quests.gd
+msgid "%d gold"
+msgstr "%d or"
 
 #: scripts/state/quests.gd
 msgid "%s, from %s."
@@ -18647,6 +18659,22 @@ msgstr "Repaire : %s."
 #: scripts/state/quests.gd
 msgid "In a chest somewhere in %s."
 msgstr "Dans un coffre, quelque part (%s)."
+
+#: scripts/state/quests.gd
+msgid "It's in your journal ({key:journal})."
+msgstr "Elle est dans votre journal ({key:journal})."
+
+#: scripts/state/quests.gd
+msgid "Pays %s"
+msgstr "Rapporte %s"
+
+#: scripts/state/quests.gd
+msgid "Pays as you choose"
+msgstr "Rapporte selon votre choix"
+
+#: scripts/state/quests.gd
+msgid "Quest accepted: %s. %s"
+msgstr "Quête acceptée : %s. %s"
 
 #: scripts/state/quests.gd
 msgid "The five left them in %s."

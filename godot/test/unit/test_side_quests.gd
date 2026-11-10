@@ -86,7 +86,10 @@ func test_a_giver_speaks_their_ask() -> void:
 	assert_eq(offer.get("id"), "slime_trouble")
 	assert_ne(String(offer.get("accepted", "")), "", "Sela's own words")
 	var said: String = state.questing.resolve_quests("innkeeper")
-	assert_string_contains(said, "journal", "the accept points at the journal")
+	assert_string_contains(said, Quests.pay(Quests.by_id("slime_trouble")), "the accept says what it pays (PIX-446)")
+	var where := Controls.say(Text.t("It's in your journal ({key:journal})."))
+	assert_string_contains(said, where, "and where it went, the journal's hint not seen yet")
+	assert_false(where in Quests.accepted(Quests.by_id("slime_trouble")), "once it was, the hint has said it")
 	assert_true(state.questing.quest_on_offer("innkeeper").is_empty(), "taken: nothing more to ask")
 	for quest: Dictionary in Quests.all():
 		# Maren's letters (PIX-253) aren't asked in talk: the tin gives them,
