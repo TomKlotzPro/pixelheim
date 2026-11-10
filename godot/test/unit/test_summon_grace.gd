@@ -15,8 +15,8 @@ var _kept := {}
 var _world: StubWorld
 
 
-## What a blow on the hero asks of the world: its floats, its flash and the
-## camera's shake.
+## What a blow on the hero asks of the world: its floats, its flash, the
+## camera's shake and the screen's red edges.
 class StubSkills extends RefCounted:
 	func impact(_on: Node) -> void:
 		pass
@@ -41,6 +41,16 @@ class StubCamera extends RefCounted:
 
 	func hit_stop(_seconds: float) -> void:
 		pass
+
+
+## The red at the screen's edges (PIX-447).
+class StubEdge extends RefCounted:
+	func struck(_share: float) -> void:
+		pass
+
+
+class StubHud extends RefCounted:
+	var hurt_edge := StubEdge.new()
 
 
 ## What a howl asks of the world besides: its line, the ground and the
@@ -73,6 +83,7 @@ class StubFoes extends Node:
 class StubWorld extends Node2D:
 	var fx := StubFx.new()
 	var camera_rig := StubCamera.new()
+	var hud := StubHud.new()
 	var messages := StubMessages.new()
 	var map := StubMap.new()
 	var foes := StubFoes.new()
@@ -153,6 +164,27 @@ func test_two_summons_in_one_half_second_count_once() -> void:
 	assert_eq(GameState.hero.hp, after_first, "the second's, in the same half-second, does nothing")
 	_foe("wolf")._bite(Vector2.ZERO)
 	assert_lt(GameState.hero.hp, after_first, "the caller's still lands through the summons' guard")
+
+
+## PIX-447: a roll leaves a faint ghost of the hero's frame beside them,
+## without the white flash, gone once faded; none under reduced motion.
+func test_a_roll_leaves_ghosts_that_go_but_not_with_reduced_motion() -> void:
+	var kept_motion := GameState.settings.reduce_motion
+	GameState.settings.reduce_motion = false
+	var hero: CharacterBody2D = _world.player
+	var before := _world.get_child_count()
+	hero._ghost()
+	assert_eq(_world.get_child_count(), before + 1, "a ghost beside the hero")
+	var ghost: Sprite2D = _world.get_child(-1)
+	assert_not_null(ghost.texture, "the hero's frame")
+	assert_null(ghost.material, "no white flash on it")
+	assert_almost_eq(ghost.modulate.a, PlayerScript.GHOST_ALPHA, 0.0001)
+	await wait_seconds(PlayerScript.GHOST_S + 0.1)
+	assert_freed(ghost, "the ghost")
+	GameState.settings.reduce_motion = true
+	hero._ghost()
+	assert_eq(_world.get_child_count(), before, "no ghost under reduced motion")
+	GameState.settings.reduce_motion = kept_motion
 
 
 func test_a_howl_calls_its_wolves_and_lets_them_go_when_it_falls() -> void:
