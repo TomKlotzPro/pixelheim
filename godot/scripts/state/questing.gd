@@ -146,7 +146,7 @@ func resolve_quests(giver_id: String) -> String:
 			note_deliveries(false)
 			owner.save_now()
 			# The giver's words were just said; the line names the task (PIX-194).
-			return Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]] + " " + Controls.say(Text.t("It's in your journal ({key:journal})."))
+			return Quests.accepted(quest, "journal" not in owner.settings.hints_seen)
 		var objective: Dictionary = quest["objective"]
 		# A quest that ends in a choice waits for the hero's answer (PIX-192).
 		if quest.has("choice") and Quests.is_ready(quest, entries, owner.pack.items):

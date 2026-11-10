@@ -8,6 +8,11 @@ extends GutTest
 ## a title card stands clear of what rises over the world.
 
 
+## The tallest a "Quest accepted" plate may stand: past that it is the big
+## box over the view Tom can't stand (PIX-446).
+const PLATE_LINES := 4
+
+
 ## Foes as the HUD asks them: the boss hunting the hero, and since when.
 class FakeFoes extends RefCounted:
 	var boss: Node = null
@@ -134,6 +139,29 @@ func test_a_hint_is_a_line_of_the_log_and_waits_behind_the_plate() -> void:
 	assert_eq(chips.get_child_count(), 1, "its turn, the plate gone")
 	var line: String = (chips.get_child(0).get_child(0) as Label).text
 	assert_string_contains(line, Controls.say("{key:journal}"), "the player's own key")
+
+
+## PIX-446: the "Quest accepted" plate says what a quest pays in full, and
+## the journal's key until its hint was seen (Tom: no need to be short). The
+## longest still fits the plate, in English and French.
+func test_every_quest_accepted_plate_fits() -> void:
+	for lang: String in ["en", "fr"]:
+		Text.apply(lang)
+		var most := 0
+		for quest: Dictionary in Quests.all():
+			if quest["objective"]["kind"] != "deliverTo":
+				var lines := _plate_lines(Quests.accepted(quest, true))
+				assert_lte(lines, PLATE_LINES, "%s (%s): %s" % [quest["id"], lang, Quests.accepted(quest, true)])
+				most = maxi(most, lines)
+		gut.p("%s: the longest plate %d lines" % [lang, most])
+	Text.apply("en")
+
+
+## How many lines a message takes on the plate.
+func _plate_lines(text: String) -> int:
+	world.messages.clear()
+	world.messages.flash(text)
+	return world.messages.message_label.get_line_count()
 
 
 ## PIX-433: on a phone the log's line ran under the thumbstick.

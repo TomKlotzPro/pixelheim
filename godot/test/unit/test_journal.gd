@@ -80,6 +80,18 @@ func test_a_row_says_its_step_its_count_and_when_it_is_ready() -> void:
 	assert_true(cheese["ready"], "the wheel is in the pack")
 	assert_string_starts_with(cheese["line"], "Hand it in to Bram", "and to whom")
 	assert_ne(slimes["detail"], "", "what was asked, for the strip under the list")
+	assert_eq(slimes["pay"], Quests.pay(Quests.by_id("slime_trouble")), "what it pays (PIX-446)")
+	assert_eq(by_id[Journal.STORY]["pay"], "", "the story's chapter pays nothing of its own")
+
+
+func test_a_letter_says_its_pay_until_it_is_delivered() -> void:
+	state.questing.open_tin()
+	state.questing.deliver("saltmere_wenna")
+	var by_id := {}
+	for row in _rows():
+		by_id[row["id"]] = row
+	assert_eq(by_id["letter_pell"]["pay"], Quests.pay(Quests.by_id("letter_pell")), "to deliver: what it pays (PIX-446)")
+	assert_eq(by_id["letter_wenna"]["pay"], "", "delivered: paid already")
 
 
 func test_following_a_quest_and_the_story_again() -> void:

@@ -31,7 +31,8 @@ static func is_main_line(quest: Dictionary) -> bool:
 ## count), progress ("2/3", "" for a single thing), ready (it can be handed
 ## in), bounty (a notice's gold, 0 otherwise), lead (Bearing's), detail
 ## (the longer word: the elder's hint, what the giver asked, the lair),
-## letter (one of Maren's, in the satchel), delivered (a letter handed
+## pay (what a quest pays, Quests.pay; "" for the story's chapter, a
+## bounty and a letter delivered: PIX-446), letter (one of Maren's, in the satchel), delivered (a letter handed
 ## over and answered), follows (whether E can follow it: not a letter
 ## delivered)}. The main story is its chapter, then the courier's satchel
 ## (PIX-253 step 2: Maren's letters, those delivered with their answer),
@@ -59,6 +60,7 @@ static func rows(progression: ProgressionState, settlement: SettlementState, ite
 		var group := "story" if is_main_line(quest) else "people"
 		var row := _row(group, quest["id"], quest["name"], past_gates.call(Bearing.of_quest(quest, progression, settlement, items)), _asked(quest, progression, settlement))
 		row["ready"] = Quests.is_ready(quest, progression.quests, items)
+		row["pay"] = Quests.pay(quest)
 		by_group[group].append(row)
 	for notice: Dictionary in Hunts.notices(Bearing.board_floors(progression, settlement), progression.hunted):
 		if notice["id"] in progression.hunted:
@@ -115,7 +117,7 @@ static func _row(group: String, id: String, title: String, lead: Dictionary, det
 	bare["progress"] = ""
 	return {
 		"group": group, "id": id, "title": title, "line": Bearing.line(bare), "progress": String(lead["progress"]),
-		"ready": false, "bounty": 0, "lead": lead, "detail": detail, "letter": false, "delivered": false, "follows": true,
+		"ready": false, "bounty": 0, "pay": "", "lead": lead, "detail": detail, "letter": false, "delivered": false, "follows": true,
 	}
 
 
@@ -128,8 +130,9 @@ static func _letter(quest: Dictionary, delivered: bool, progression: Progression
 	var lead := Gates.detour(Bearing.of_quest(quest, progression, settlement, items), progression, settlement, items, discovered)
 	var row := _row("story", quest["id"], String(quest["addressed"]), lead, Catalog.item(quest["objective"]["itemId"]).get("description", ""))
 	row["letter"] = true
+	row["pay"] = Quests.pay(quest)
 	if delivered:
-		row.merge({"line": Homecoming.answered(quest, progression), "detail": String(quest["gist"]), "delivered": true, "follows": false}, true)
+		row.merge({"line": Homecoming.answered(quest, progression), "detail": String(quest["gist"]), "pay": "", "delivered": true, "follows": false}, true)
 	return row
 
 

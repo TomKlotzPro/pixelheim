@@ -149,6 +149,38 @@ static func is_open(quest: Dictionary, progression: ProgressionState, settlement
 	return progression.quests.get(after, {}).get("done", false)
 
 
+## What a quest pays (PIX-446), one short line for its journal row and the
+## word that takes it: "Pays 60 gold, 20 XP, Greater Potion". One that ends
+## in a choice pays the option chosen (PIX-192), so it says that.
+static func pay(quest: Dictionary) -> String:
+	if quest.has("choice"):
+		return Text.t("Pays as you choose")
+	var reward: Dictionary = quest["reward"]
+	var parts: Array[String] = []
+	if int(reward.get("gold", 0)) > 0:
+		parts.append(Text.t("%d gold") % int(reward["gold"]))
+	if int(reward.get("xp", 0)) > 0:
+		parts.append(Text.t("%d XP") % int(reward["xp"]))
+	if reward.has("itemId"):
+		parts.append(Catalog.item_name(reward["itemId"]))
+	if parts.is_empty():
+		return ""
+	return Text.t("Pays %s") % ", ".join(parts)
+
+
+## The word that takes a quest (PIX-194: the task, not the giver's words just
+## said) and what it pays (PIX-446). `journal`: the journal's key too, until
+## its hint was seen, so a player with hints off is still told where it went.
+static func accepted(quest: Dictionary, journal := false) -> String:
+	var line: String = Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]]
+	var paid := pay(quest)
+	if paid != "":
+		line += " " + paid + "."
+	if journal:
+		line += " " + Controls.say(Text.t("It's in your journal ({key:journal})."))
+	return line
+
+
 ## Where a quest sends the hero (PIX-171), one line for the journal: the
 ## named monster's lair, the regions a quarry roams (never the old
 ## mountain's floors, which left play: PIX-257), the chest that holds
