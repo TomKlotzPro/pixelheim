@@ -145,8 +145,10 @@ func resolve_quests(giver_id: String) -> String:
 			entries[quest["id"]] = {"progress": progress, "done": false}
 			note_deliveries(false)
 			owner.save_now()
-			# The giver's words were just said; the line names the task (PIX-194).
-			return Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]] + " " + Controls.say(Text.t("It's in your journal ({key:journal})."))
+			# The giver's words were just said; the line names the task (PIX-194)
+			# and what it pays (PIX-446).
+			var pays := Quests.pay(quest)
+			return Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]] + (" " + pays + "." if pays != "" else "") + " " + Controls.say(Text.t("It's in your journal ({key:journal})."))
 		var objective: Dictionary = quest["objective"]
 		# A quest that ends in a choice waits for the hero's answer (PIX-192).
 		if quest.has("choice") and Quests.is_ready(quest, entries, owner.pack.items):

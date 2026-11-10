@@ -3,17 +3,20 @@ extends Screen
 ## The journal (Journal.tsx; PIX-171, redone for PIX-239 after Tom's
 ## playtest: « le journal c'est pas clair »). One page says what you're
 ## doing and lets you choose:
-## - at the top, always, the quest you're on now - the main story's next
+## - at the top, always, on one line (PIX-446: it was a window of its own, a
+##   third of the page), the quest you're on now - the main story's next
 ##   step, or a quest or bounty you chose to follow - in the words of the
-##   line above the dock (Bearing): its title, the step, where to go, how far
-##   along, and plainly which of the two it is;
+##   line above the dock (Bearing): plainly which of the two it is, the step,
+##   where to go and how far along (its title is on its row, marked);
 ## - below, every open thread, grouped: the main story (its chapter, then the
 ##   quests that carry it), the town and its people, the bounty board. Each
-##   row says its next step in one line, its count, and READY once it can be
-##   handed in. Choose a row (the arrows, the pad's D-pad, pointing) and E,
-##   the pad's A or a click follows it: the top, the line above the dock, the
-##   arrow at the view's edge and the map's goal all turn to it. Following
-##   the main story follows nothing else.
+##   row says its next step in one line, its count, READY once it can be
+##   handed in, and what it pays (a bounty its gold); a slim rail beside
+##   the list once it runs past the page. Choose a row (the arrows, the
+##   pad's D-pad, pointing) and E, the pad's A or a click follows it: the
+##   top, the line above the dock, the arrow at the view's edge and the
+##   map's goal all turn to it. Following the main story follows nothing
+##   else.
 ## The main story's rows are the courier's satchel (PIX-253 step 2): Maren's
 ## letters by their address, each to deliver or delivered and answered (a
 ## delivered one's answer under the list when it's chosen).
@@ -48,11 +51,16 @@ const KINDS := {"main": "Main story", "quest": "Quest you follow", "bounty": "Bo
 ## (PIX-388).
 const AT := Vector2(80, 96)
 const SIZE := Vector2(1120, 552)
-## A window's margin inside its frame, the screens' inset (PIX-388); how
-## wide words run inside it, and in a row, its own margin and mark off too.
+## A window's margin inside its frame, the screens' inset (PIX-388); the
+## room the quests' list leaves its scrollbar, as the shop's do (PIX-446);
+## how wide words run inside it, and in a row, its own margin, mark and the
+## bar's room off too.
 const PAD := UiStyle.INSET
+const BAR := 16.0
 const TEXT_WIDTH := SIZE.x - 2 * PAD
-const ROW_TEXT := TEXT_WIDTH - 46
+const ROW_TEXT := TEXT_WIDTH - 46 - BAR
+## The most the top's place takes of its line before it gives way.
+const PLACE_ROOM := 400.0
 
 var tab := "quests"
 var tabs_row: HBoxContainer
@@ -68,7 +76,7 @@ var cards: Array[Dictionary] = []
 var scroll: ScrollContainer
 ## Whether the scroll to the chosen row shows its group's heading too.
 var _reveal_heading := false
-var now_box: VBoxContainer
+var now_box: HBoxContainer
 ## The top's step - the words of the line above the dock - and where to go
 ## (null once the story is told and nothing is followed).
 var now_step: Label
@@ -202,30 +210,22 @@ func _quests() -> void:
 	var progression := GameState.progression
 	rows = Journal.rows(progression, GameState.settlement, GameState.pack.items, GameState.world.discovered, GameState.questing.first_skill_heals())
 	followed = Journal.followed(progression, GameState.settlement, GameState.pack.items)
-	var now := PanelContainer.new()
-	now.add_theme_stylebox_override("panel", UiStyle.window(PAD))
-	now_box = VBoxContainer.new()
-	now_box.add_theme_constant_override("separation", 4)
-	now.add_child(now_box)
-	content.add_child(now)
+	var column := _sheet()
+	# The top: a line over the list, as the chosen row's word is under it.
+	now_box = HBoxContainer.new()
+	now_box.add_theme_constant_override("separation", 20)
+	column.add_child(now_box)
 	_fill_now()
-
-	var sheet := PanelContainer.new()
-	sheet.add_theme_stylebox_override("panel", UiStyle.window(PAD))
-	sheet.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	content.add_child(sheet)
-	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 8)
-	sheet.add_child(column)
-	# The list scrolls (the wheel, or the choice moving); its window fits.
+	column.add_child(_rule())
+	# The list scrolls (the wheel, the choice moving, its rail); its window
+	# fits, its rows clear of the rail (Layout.spills).
 	scroll = ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	column.add_child(scroll)
 	var list := VBoxContainer.new()
 	list.add_theme_constant_override("separation", 6)
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.custom_minimum_size.x = TEXT_WIDTH - BAR
 	scroll.add_child(list)
 	var index := 0
 	for group: String in Journal.GROUPS:
@@ -289,7 +289,8 @@ func _notes(group: String, empty: bool) -> Array[String]:
 
 
 ## One thread: the gold diamond when it's followed, its title, FOLLOWING,
-## READY or its count (a bounty's gold), and its next step and where.
+## READY or its count (a bounty's gold), its next step and where, and under
+## the count what it pays (PIX-446).
 func _card(index: int, heading: Control) -> Control:
 	var row: Dictionary = rows[index]
 	var card := PanelContainer.new()
@@ -328,7 +329,18 @@ func _card(index: int, heading: Control) -> Control:
 		status = Text.coins(int(row["bounty"]))
 	if status != "":
 		top.add_child(UiStyle.strong(status, 18, UiStyle.LAMP if row["ready"] else UiStyle.INK))
-	words.add_child(Layout.wrapped(UiStyle.label(row["line"], 14, UiStyle.FADED), ROW_TEXT))
+	var under := HBoxContainer.new()
+	under.add_theme_constant_override("separation", 16)
+	under.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	words.add_child(under)
+	var step := Layout.wrapped(UiStyle.label(row["line"], 14, UiStyle.FADED), ROW_TEXT)
+	step.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	under.add_child(step)
+	if row["pay"] != "":
+		var pay := UiStyle.label(row["pay"], 14, UiStyle.INK)
+		pay.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		step.custom_minimum_size.x -= Layout.words_width(pay) + 16.0
+		under.add_child(pay)
 	cards.append({"card": card, "mark": mark, "tag": tag, "heading": heading})
 	return card
 
@@ -358,10 +370,9 @@ func _choose(index: int, reveal := true) -> void:
 
 
 ## Scrolls the list to the chosen row (and its group's heading, `heading`)
-## once the page is laid out again: containers sort at the frame's end, after
-## a change of size above (a longer step at the top) has moved the list. So
-## again just before the frame is drawn; at once too, for a run that draws
-## nothing.
+## once the page is laid out again: containers sort at the frame's end, so
+## the rows have no place yet as the page opens. So again just before the
+## frame is drawn; at once too, for a run that draws nothing.
 func _reveal(heading: bool) -> void:
 	_reveal_heading = heading
 	_reveal_now.call_deferred()
@@ -390,8 +401,6 @@ func _follow(index: int) -> void:
 	followed = Journal.followed(GameState.progression, GameState.settlement, GameState.pack.items)
 	_fill_now()
 	_mark_rows()
-	# A longer step at the top moves the list down: the row stays in view.
-	_reveal(false)
 	_tell_hud()
 	Sound.play("ui_open")
 
@@ -420,7 +429,9 @@ func _hud() -> Variant:
 	return hud if hud is Object and (hud as Object).get("bearing") is Dictionary else null
 
 
-## The top: what you're on now, as the line above the dock says it.
+## The top: what you're on now, as the line above the dock says it, on one
+## line (PIX-446): "Next - Main story", the step, where, and how far along.
+## The step gives way to the rest; the row followed says it whole.
 func _fill_now() -> void:
 	Layout.clear(now_box)
 	var progression := GameState.progression
@@ -429,8 +440,10 @@ func _fill_now() -> void:
 	if lead.is_empty():
 		now_step = null
 		now_place = null
-		now_box.add_child(UiStyle.heading("The story is told", 18, UiStyle.LAMP))
-		now_box.add_child(Layout.wrapped(UiStyle.label(MainQuest.hint(progression, GameState.settlement), 16, UiStyle.INK), TEXT_WIDTH))
+		now_box.add_child(UiStyle.strong("The story is told", 18, UiStyle.LAMP))
+		var hint := Layout.ellipsis(UiStyle.label(MainQuest.hint(progression, GameState.settlement), 18, UiStyle.INK))
+		hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		now_box.add_child(hint)
 		return
 	# A thread that carries the story (a letter in the satchel, Maren's
 	# relics) is the main story's too, as the arrow's gold says (PIX-253).
@@ -450,23 +463,13 @@ func _fill_now() -> void:
 	# "Next", as the line above the dock is tagged, and whose thread it is.
 	tags.add_child(UiStyle.strong("Next", 18, UiStyle.LAMP))
 	tags.add_child(UiStyle.label("-", 18, UiStyle.FADED))
-	var which := UiStyle.label(KINDS[kind], 18, UiStyle.FADED)
-	which.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	tags.add_child(which)
-	if ready:
-		tags.add_child(UiStyle.strong(Text.t("READY"), 18, UiStyle.LAMP))
-	elif progress != "":
-		tags.add_child(UiStyle.strong(progress, 18, UiStyle.INK))
+	tags.add_child(UiStyle.label(KINDS[kind], 18, UiStyle.FADED))
 	now_box.add_child(tags)
-	var title := String(lead["title"])
-	if lead["main"] and progression.prologue == Prologue.DONE:
-		title = Journal.chapter_title(MainQuest.next_step(progression, GameState.settlement))
-	now_box.add_child(Layout.wrapped(UiStyle.heading(title, 18, UiStyle.INK), TEXT_WIDTH))
-	now_step = Layout.wrapped(UiStyle.label(step, 18, UiStyle.INK), TEXT_WIDTH)
+	now_step = Layout.ellipsis(UiStyle.label(step, 18, UiStyle.INK))
+	now_step.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	now_box.add_child(now_step)
-	# Where to go: the place, or for a quest that roams, where it's found. The
-	# line stays, empty, when there's no saying: the top keeps its height,
-	# and the list under it its place, whatever is followed.
+	# Where to go: the place, or for a quest that roams, where it's found,
+	# after the gold diamond the map marks it with; a long one gives way too.
 	if place == "" and not quest.is_empty() and progression.prologue == Prologue.DONE:
 		place = Quests.where(quest, Town.done_projects(GameState.settlement))
 	var where := HBoxContainer.new()
@@ -476,9 +479,14 @@ func _fill_now() -> void:
 	mark.custom_minimum_size = Vector2(16, 22)
 	mark.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	where.add_child(mark)
-	now_place = Layout.wrapped(UiStyle.label(place, 18, UiStyle.FADED), TEXT_WIDTH - 26)
-	where.add_child(now_place)
+	now_place = UiStyle.label(place, 18, UiStyle.FADED)
+	now_place.custom_minimum_size.x = minf(Layout.words_width(now_place), PLACE_ROOM)
+	where.add_child(Layout.ellipsis(now_place))
 	now_box.add_child(where)
+	if ready:
+		now_box.add_child(UiStyle.strong(Text.t("READY"), 18, UiStyle.LAMP))
+	elif progress != "":
+		now_box.add_child(UiStyle.strong(progress, 18, UiStyle.INK))
 
 
 ## The Letters page (PIX-253 step 2): Maren's letters in the satchel's

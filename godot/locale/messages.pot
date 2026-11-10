@@ -18617,6 +18617,14 @@ msgid "Your satchel is in the journal ({key:journal})."
 msgstr ""
 
 #: scripts/state/quests.gd
+msgid "%d XP"
+msgstr ""
+
+#: scripts/state/quests.gd
+msgid "%d gold"
+msgstr ""
+
+#: scripts/state/quests.gd
 msgid "%s, from %s."
 msgstr ""
 
@@ -18634,6 +18642,14 @@ msgstr ""
 
 #: scripts/state/quests.gd
 msgid "In a chest somewhere in %s."
+msgstr ""
+
+#: scripts/state/quests.gd
+msgid "Pays %s"
+msgstr ""
+
+#: scripts/state/quests.gd
+msgid "Pays as you choose"
 msgstr ""
 
 #: scripts/state/quests.gd

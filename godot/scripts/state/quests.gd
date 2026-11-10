@@ -149,6 +149,23 @@ static func is_open(quest: Dictionary, progression: ProgressionState, settlement
 	return progression.quests.get(after, {}).get("done", false)
 
 
+## What a quest pays (PIX-446), in one short line for its journal row and
+## the word that takes it: "Pays 60 gold, 20 XP, Greater Potion". One that
+## ends in a choice pays the option chosen (PIX-192), so it says that.
+static func pay(quest: Dictionary) -> String:
+	if quest.has("choice"):
+		return Text.t("Pays as you choose")
+	var reward: Dictionary = quest["reward"]
+	var parts: Array[String] = []
+	if int(reward.get("gold", 0)) > 0:
+		parts.append(Text.t("%d gold") % int(reward["gold"]))
+	if int(reward.get("xp", 0)) > 0:
+		parts.append(Text.t("%d XP") % int(reward["xp"]))
+	if reward.has("itemId"):
+		parts.append(Catalog.item_name(reward["itemId"]))
+	return Text.t("Pays %s") % ", ".join(parts) if not parts.is_empty() else ""
+
+
 ## Where a quest sends the hero (PIX-171), one line for the journal: the
 ## named monster's lair, the regions a quarry roams (never the old
 ## mountain's floors, which left play: PIX-257), the chest that holds

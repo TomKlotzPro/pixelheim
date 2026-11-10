@@ -180,6 +180,7 @@ func test_ready_says_so_at_the_top_and_on_its_row() -> void:
 	var row: Control = screen.cards[_row_of("cheese_run")]["card"]
 	var on_row: Array = row.find_children("*", "Label", true, false).map(func(label: Label) -> String: return label.text)
 	assert_true(Text.t("READY") in on_row, "and on its row")
+	assert_true(Quests.pay(Quests.by_id("cheese_run")) in on_row, "with what it pays (PIX-446)")
 
 
 func test_the_tabs_turn_and_hold_the_letters_and_feats() -> void:

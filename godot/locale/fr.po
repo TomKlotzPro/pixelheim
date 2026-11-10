@@ -18617,6 +18617,14 @@ msgid "Your satchel is in the journal ({key:journal})."
 msgstr "Votre sacoche est dans le journal ({key:journal})."
 
 #: scripts/state/quests.gd
+msgid "%d XP"
+msgstr "%d XP"
+
+#: scripts/state/quests.gd
+msgid "%d gold"
+msgstr "%d or"
+
+#: scripts/state/quests.gd
 msgid "%s, from %s."
 msgstr "%s, avec %s."
 
@@ -18635,6 +18643,14 @@ msgstr "Repaire : %s."
 #: scripts/state/quests.gd
 msgid "In a chest somewhere in %s."
 msgstr "Dans un coffre, quelque part (%s)."
+
+#: scripts/state/quests.gd
+msgid "Pays %s"
+msgstr "Rapporte %s"
+
+#: scripts/state/quests.gd
+msgid "Pays as you choose"
+msgstr "Rapporte selon votre choix"
 
 #: scripts/state/quests.gd
 msgid "The five left them in %s."
