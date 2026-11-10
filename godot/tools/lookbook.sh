@@ -35,4 +35,6 @@ while [ $# -gt 0 ]; do
   shift
 done
 # -NSAppSleepDisabled: macOS mustn't nap the run while its window is hidden.
-godot --rendering-method "$method" --audio-driver Dummy --path . -- --screenshot lookbook --out "res://$out" "${extra[@]+"${extra[@]}"}" -NSAppSleepDisabled YES 2>&1 | grep -E "^LOOK|SCRIPT ERROR|SHADER ERROR|Parse Error"
+# A crash keeps its backtrace in the log (PIX-445: CI's look book once died
+# of a segfault mid-run with nothing to say where).
+godot --rendering-method "$method" --audio-driver Dummy --path . -- --screenshot lookbook --out "res://$out" "${extra[@]+"${extra[@]}"}" -NSAppSleepDisabled YES 2>&1 | grep -E "^LOOK|SCRIPT ERROR|SHADER ERROR|Parse Error|handle_crash|^Engine version|^\[[0-9]+\] |END OF BACKTRACE"
