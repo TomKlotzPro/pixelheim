@@ -40,6 +40,8 @@ var attacking := false
 ## A skill's cast: the attack animation plays, the blade stays still.
 var casting := false
 var skill_ready := true
+## The last cast refused, said on the plate until a cast goes (PIX-444).
+var refused := ""
 var regen_clock := 0.0
 var invulnerable := false
 ## The dodge roll (PIX-155): rolling now, and ready to roll again.
@@ -446,14 +448,12 @@ func cast(index: int) -> void:
 	# The skill on that key of the dock (PIX-190), not the Nth one known.
 	var skills := Skills.docked(GameState.hero)
 	if index >= skills.size() or skills[index].is_empty():
-		world.messages.flash("No skill on that key yet. Learn more, or set the keys, in Skills.")
-		Sound.play("skill_refused")
+		_refuse("No skill on that key yet. Learn more, or set the keys, in Skills.")
 		return
 	var skill: Dictionary = skills[index]
 	var block := Skills.cast_block(GameState.hero, skill)
 	if block != "":
-		world.messages.flash(block)
-		Sound.play("skill_refused")
+		_refuse(block)
 		return
 	var targets: Array = []
 	if skill["kind"] == "damage":
@@ -461,10 +461,12 @@ func cast(index: int) -> void:
 		for found in Reach.targets(global_position, facing, _spots(foes), _radii(foes), skill):
 			targets.append(foes[found])
 		if targets.is_empty():
-			world.messages.flash(Text.t("No foe in reach for %s.") % skill["name"])
-			Sound.play("skill_refused")
+			_refuse(Text.t("No foe in reach for %s.") % skill["name"])
 			return
 		face(targets[0].global_position - global_position)
+	# It went: the last refusal no longer holds.
+	world.messages.withdraw(refused)
+	refused = ""
 	GameState.training.pay_for_skill(skill)
 	skill_ready = false
 	get_tree().create_timer(SKILL_TURN).timeout.connect(func() -> void: skill_ready = true)
@@ -512,6 +514,13 @@ func cast(index: int) -> void:
 		var restored := GameState.upkeep.heal_hero(drained)
 		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6), false, self)
 	_steal_life(dealt)
+
+
+## A cast refused: said on the plate, and heard.
+func _refuse(text: String) -> void:
+	refused = text
+	world.messages.flash(text)
+	Sound.play("skill_refused")
 
 
 ## Some passives heal the hero a share of the damage they deal (PIX-190).
