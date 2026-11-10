@@ -73,7 +73,7 @@
     {
       "id": "villager_bram",
       "mapId": "town",
-      "x": 34,
+      "x": 36,
       "y": 28,
       "sprite": "bram",
       "name": "Bram",

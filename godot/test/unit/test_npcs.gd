@@ -85,6 +85,30 @@ func test_pacing_skips_walls_and_portals() -> void:
 			assert_false(map.portals.has(cell), "%s paces onto a portal" % npc["id"])
 
 
+## PIX-444: Bram paced behind the well's roof, only his head and his "!"
+## showing. No wanderer paces onto a cell a prop's art stands over (drawn
+## in front of them), the town at every age, the Ashes too.
+func test_no_wanderer_paces_behind_a_prop() -> void:
+	var everyone: Array[Dictionary] = []
+	everyone.assign(Npcs._data()["npcs"])
+	for recruit: Dictionary in Npcs._data()["recruits"]:
+		everyone.append(Npcs.as_npc(recruit, true))
+	for npc in everyone.filter(func(npc: Dictionary) -> bool: return npc["wander"]):
+		var maps: Array[MapData] = [MapData.load_by_id(npc["mapId"])]
+		if npc["mapId"] == "town":
+			for tier in range(-1, Town.MAX_TIER + 1):
+				maps.append(MapData.load_tiered("town", Town.projects_through(tier), 1))
+		for map in maps:
+			var over := {}
+			for prop: Dictionary in PunyProps.plan(map.grid)["props"]:
+				for tile: Array in prop["tiles"]:
+					if tile[0].y < 0:
+						over[prop["cell"] + tile[0]] = true
+			for offset in Npcs.offsets_for(npc, map):
+				var cell := Vector2i(npc["x"], npc["y"]) + offset
+				assert_false(over.has(cell), "%s paces behind a prop at %s" % [npc["id"], cell])
+
+
 func test_every_villager_stands_on_walkable_ground_with_a_sprite() -> void:
 	var everyone: Array[Dictionary] = []
 	everyone.assign(Npcs._data()["npcs"])
