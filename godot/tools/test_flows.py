@@ -19,7 +19,7 @@ FLOWS_SH = os.path.join(TOOLS, "flows.sh")
 ## The tickets flows.sh may name: the runner's own (the release flows, the
 ## French run, side by side, the job summary, the tags, this, the stepped
 ## runs). A flow's ticket goes beside it in flows.txt.
-RUNNER_TICKETS = {"PIX-129", "PIX-196", "PIX-270", "PIX-271", "PIX-272", "PIX-273", "PIX-276", "PIX-360"}
+RUNNER_TICKETS = {"PIX-129", "PIX-196", "PIX-270", "PIX-271", "PIX-272", "PIX-273", "PIX-276", "PIX-360", "PIX-445"}
 
 REPORT = ("screenshot saved; map=town cell=(79, 4) hp=120 gold=90 save=town(79, 4) draws=212 paused=false"
           " open=none night=0 mobs=3 card=The Mirefen floats=+60 gold logged=0 packs=slime,goblin:asleep")

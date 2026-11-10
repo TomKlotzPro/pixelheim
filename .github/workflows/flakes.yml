@@ -167,8 +167,9 @@ jobs:
     env:
       SCREEN: "-screen 0 2560x1440x24"
       # Software rendering on a slow runner: the watchdog, a backstop for a
-      # run that never quits, waits longer than on a machine with a GPU.
-      FLOWS_WATCHDOG: "150"
+      # run that never quits, waits longer than on a machine with a GPU (as
+      # godot.yml's windowed jobs: dawn takes up to 146 s, PIX-445).
+      FLOWS_WATCHDOG: "300"
     steps:
       - uses: actions/checkout@v4
 

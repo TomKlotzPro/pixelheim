@@ -84,12 +84,12 @@ static func cpu(tree: SceneTree, clock: Dictionary) -> String:
 	return spread(_spans(clock))
 
 
-## The stopped clock's median frame in paces (PIX-445), "1.97": what a frame
-## costs whatever the machine's speed. CI's runners are four kinds of
-## machine, 1.8 times apart in speed (cpu-night 0.78 to 1.43 ms on one
+## The stopped clock's median frame in paces (PIX-445), "5.80": what a frame
+## costs whatever the machine's speed. CI's runners are several kinds of
+## machine, up to 2.1 times apart in speed (cpu-night 0.73 to 1.56 ms on one
 ## build, steady on each), so a budget in ms failed the slow ones with no
 ## change to the game and let the fast ones hide a real slowdown; in paces,
-## the frame reads within 9 % on all four.
+## the AMDs read within 4 % of each other and the Intels about 10 % over.
 static func paced(clock: Dictionary) -> String:
 	var spans := _spans(clock)
 	var paces: Array = clock["paces"].duplicate()
@@ -112,13 +112,15 @@ static func _spans(clock: Dictionary) -> Array:
 
 
 ## The machine's pace (PIX-445): a fixed piece of work, the same in every
-## build of the game, a round of which `once` times in ms. A frame's own mix,
-## in three parts about as long as each other on CI: GDScript's loops and
-## maths with calls into the engine, a crowd of script objects each ticked
-## in turn (the foes and the folk), and reads scattered over 4 MB (a frame's
-## nodes lie all over memory). Each part alone followed the frame on some of
-## CI's machines and not others (the Intel ran tight loops 25 % faster than
-## the AMDs, and the game's frames no faster); the three together held on all.
+## build of the game (the cpu-* flows' budgets are in its rounds: change it
+## and measure them all again), a round of which `once` times in ms. A
+## frame's own mix, in three parts about as long as each other on CI:
+## GDScript's loops and maths with calls into the engine, a crowd of script
+## objects each ticked in turn (the foes and the folk), and reads scattered
+## over 4 MB (a frame's nodes lie all over memory). Each part alone followed
+## the frame on some of CI's machines and not others (the Intel ran tight
+## loops 25 % faster than the AMDs, and the game's frames no faster); the
+## three together held on all.
 class Pace:
 	var _node := Node2D.new()
 	var _kept := {}
