@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.343.0",
+      "date": "2026-11-11",
+      "codename": "Worth the Walk",
+      "notes": [
+        "The journal now shows what each quest pays, and so does the message when you take one",
+        "The journal's Next line now takes a single line, so the quest list shows about five quests instead of three, with a scroll bar when there are more"
+      ]
+    },
+    {
       "version": "0.342.0",
       "date": "2026-11-10",
       "codename": "Seeing Red",
