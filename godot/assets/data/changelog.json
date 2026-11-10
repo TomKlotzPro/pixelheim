@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.344.0",
+      "date": "2026-11-11",
+      "codename": "Loose Ends",
+      "notes": [
+        "Bram no longer paces behind the well's roof with only his head showing",
+        "Shops now open on their wares, with house deeds last and drawn as a parchment",
+        "When a skill is refused, its message now clears as soon as your next cast works",
+        "What's new turns a page at a time with A and D, and leaves out the behind-the-scenes notes"
+      ]
+    },
+    {
       "version": "0.343.0",
       "date": "2026-11-11",
       "codename": "Worth the Walk",

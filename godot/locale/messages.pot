@@ -2557,6 +2557,10 @@ msgid "Bosses hit a little softer and the fire-breathers mark their bolts on the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Bram no longer paces behind the well's roof with only his head showing"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Branches of Power"
 msgstr ""
 
@@ -4109,6 +4113,10 @@ msgid "Longer Days"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Loose Ends"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Loot That Fits"
 msgstr ""
 
@@ -5306,6 +5314,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Shop signs are part of the building now - a proper facade with the placard hung high, no more floating planks"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Shops now open on their wares, with house deeds last and drawn as a parchment"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7145,6 +7157,10 @@ msgid "What's new is on the title menu now, keys and gamepads included, with a N
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "What's new turns a page at a time with A and D, and leaves out the behind-the-scenes notes"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it"
 msgstr ""
 
@@ -7154,6 +7170,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "When a boss falls, the level-up rises once and its plate waits until the Victory card has gone, and a boss's bar never reads 0% while it still stands"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "When a skill is refused, its message now clears as soon as your next cast works"
 msgstr ""
 
 #: assets/data/changelog.json
