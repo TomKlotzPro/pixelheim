@@ -5369,6 +5369,10 @@ msgid "Screens no longer draw over the HUD: a screen that dims the world puts th
 msgstr "Les écrans ne passent plus par-dessus l'interface : un écran qui assombrit le monde range la barre, l'horloge et la plume tant qu'il est ouvert, et à l'aube l'horloge avance avec le ciel"
 
 #: assets/data/changelog.json
+msgid "Search the door of each burnt stead in the Ash Fields: the ash gives up something the fire missed, and its owner in Pixelheim will be glad to have it back"
+msgstr "Fouillez la porte de chaque ferme brûlée des Champs de Cendres : la cendre rend un objet que le feu a épargné, et son propriétaire à Pixelheim sera content de le retrouver"
+
+#: assets/data/changelog.json
 msgid "Second Thoughts"
 msgstr "Réflexion faite"
 
@@ -6535,6 +6539,10 @@ msgstr "Le journal s'ouvre sur ce que vous faites en ce moment : la quête sui
 #: assets/data/changelog.json
 msgid "The journal says where an escort starts"
 msgstr "Le journal indique où commence une escorte"
+
+#: assets/data/changelog.json
+msgid "The journal's Feats count the five things carried home"
+msgstr "Les Hauts faits du journal comptent les cinq objets rapportés"
 
 #: assets/data/changelog.json
 msgid "The journal's Next line now takes a single line, so the quest list shows about five quests instead of three, with a scroll bar when there are more"

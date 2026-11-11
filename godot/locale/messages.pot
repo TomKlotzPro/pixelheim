@@ -5369,6 +5369,10 @@ msgid "Screens no longer draw over the HUD: a screen that dims the world puts th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Search the door of each burnt stead in the Ash Fields: the ash gives up something the fire missed, and its owner in Pixelheim will be glad to have it back"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Second Thoughts"
 msgstr ""
 
@@ -6534,6 +6538,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The journal says where an escort starts"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The journal's Feats count the five things carried home"
 msgstr ""
 
 #: assets/data/changelog.json
