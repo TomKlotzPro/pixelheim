@@ -272,11 +272,21 @@ static func shot_clear(map: MapData, from: Vector2i, to: Vector2i) -> bool:
 	return can_see(map, from, to) and _line(from, to).all(map.is_walkable)
 
 
-## Whether the hero may cross straight from `from` to `to` (Shadowstep,
-## PIX-455): every cell past the first one they could walk, none of them a
-## way out (crossing one would take them through it).
-static func step_clear(map: MapData, from: Vector2i, to: Vector2i) -> bool:
-	return _line(from, to).all(func(cell: Vector2i) -> bool: return cell == from or (map.is_walkable(cell) and not map.portals.has(cell)))
+## Whether Shadowstep may carry the hero's feet straight from `from` to `to`
+## (PIX-455): their body, `body_at` off their feet, over open ground all the
+## way (walks_straight sweeps it, so it never slips through where two
+## blocked cells meet at a corner), and their feet over no way out past the
+## cell they stand on (crossing one would take them through it).
+static func step_clear(map: MapData, from: Vector2, to: Vector2, body_at: Vector2) -> bool:
+	if not walks_straight(map, from + body_at, to + body_at):
+		return false
+	var start := cell_of(from)
+	var steps := maxi(1, ceili(from.distance_to(to) / 4.0))
+	for i in steps + 1:
+		var cell := cell_of(from.lerp(to, float(i) / steps))
+		if cell != start and map.portals.has(cell):
+			return false
+	return true
 
 
 static func blocks_sight(map: MapData, cell: Vector2i) -> bool:

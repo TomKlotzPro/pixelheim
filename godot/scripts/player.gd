@@ -590,10 +590,11 @@ func _targets(skill: Dictionary, foes: Array) -> Array:
 ## they could walk straight to from here (no wall, water or way out on the
 ## way), and on no foe but the one it strikes.
 func _may_land(spot: Vector2, target: Node, foes: Array) -> bool:
-	var from := Packs.cell_of(global_position)
-	for corner: Vector2 in [Vector2(-1, -1), Vector2(1, -1), Vector2(-1, 1), Vector2(1, 1)]:
-		if not Packs.step_clear(world.map, from, Packs.cell_of(spot + BODY_AT + corner * BODY / 2.0)):
-			return false
+	# shortcut: a hero pressed to a prop whose blocker is smaller than its
+	# cell (art.md) reads as hemmed in, so the blow comes from where they
+	# stand; sweep from their feet's cell if players meet it.
+	if not Packs.step_clear(world.map, global_position, spot, BODY_AT):
+		return false
 	# Asked as the hero crosses too (_step_to): a foe gone since is no bar.
 	return foes.all(func(foe: Variant) -> bool: return not is_instance_valid(foe) or foe == target or spot.distance_to(foe.global_position) >= foe.edge)
 

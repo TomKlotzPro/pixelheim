@@ -5,6 +5,8 @@ extends GutTest
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const TILE := 16.0
+## The hero's body, off their feet (player.gd).
+const BODY_AT := Vector2(0, 3)
 
 var state: Node
 
@@ -65,10 +67,30 @@ func test_a_step_crosses_only_open_ground() -> void:
 	map.grid[Vector2i(4, 0)] = "water"
 	map.grid[Vector2i(4, 1)] = "wall"
 	map.portals[Vector2i(4, 2)] = {"kind": "map", "mapId": "town"}
-	assert_false(Packs.step_clear(map, Vector2i(1, 0), Vector2i(6, 0)), "not over water")
-	assert_false(Packs.step_clear(map, Vector2i(1, 1), Vector2i(6, 1)), "nor through a wall")
-	assert_false(Packs.step_clear(map, Vector2i(1, 2), Vector2i(6, 2)), "nor through a door")
-	assert_true(Packs.step_clear(map, Vector2i(5, 1), Vector2i(8, 1)), "over the grass it goes")
+	var step := func(from: Vector2i, to: Vector2i) -> bool: return Packs.step_clear(map, MapView.center(from), MapView.center(to), BODY_AT)
+	assert_false(step.call(Vector2i(1, 0), Vector2i(6, 0)), "not over water")
+	assert_false(step.call(Vector2i(1, 1), Vector2i(6, 1)), "nor through a wall")
+	assert_false(step.call(Vector2i(1, 2), Vector2i(6, 2)), "nor through a door")
+	assert_true(step.call(Vector2i(4, 2), Vector2i(8, 2)), "from the door they stand on, out it goes")
+	assert_true(step.call(Vector2i(5, 1), Vector2i(8, 1)), "over the grass it goes")
+
+
+## PIX-455: nor through the crack where two blocked cells meet at a corner,
+## which the line of cells from the hero's to the landing's crossed: the
+## hero's whole body is swept along the way.
+func test_a_step_never_slips_between_corners() -> void:
+	var map := MapData.new()
+	for x in 8:
+		for y in 4:
+			map.grid[Vector2i(x, y)] = "grass"
+	map.grid[Vector2i(4, 1)] = "wall"
+	map.grid[Vector2i(5, 2)] = "wall"
+	var from := MapView.center(Vector2i(3, 3))
+	var to := MapView.center(Vector2i(6, 0))
+	assert_false(Packs.step_clear(map, from, to, BODY_AT), "the corners meet: no way through")
+	map.grid[Vector2i(4, 1)] = "grass"
+	map.grid[Vector2i(5, 2)] = "grass"
+	assert_true(Packs.step_clear(map, from, to, BODY_AT), "with them gone, the same step goes")
 
 
 func test_a_cleared_pack_stays_down_until_its_time_or_the_inn() -> void:
