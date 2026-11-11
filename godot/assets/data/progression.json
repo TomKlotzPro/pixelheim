@@ -1303,7 +1303,7 @@
       "id": "keepsake_hilda",
       "giver": "ash_fields",
       "name": "Hilda's First Hammer",
-      "brief": "Carry Hilda's first hammer home to her smithy in Pixelheim.",
+      "brief": "Carry Hilda's first hammer home to her in Pixelheim.",
       "objective": {
         "kind": "deliverTo",
         "itemId": "keepsake_hammer",
@@ -1345,7 +1345,7 @@
       "id": "keepsake_vex",
       "giver": "ash_fields",
       "name": "Vex's Mortar",
-      "brief": "Carry Vex's mortar home to her shop in Pixelheim.",
+      "brief": "Carry Vex's mortar home to her in Pixelheim.",
       "objective": {
         "kind": "deliverTo",
         "itemId": "keepsake_mortar",

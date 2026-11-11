@@ -13245,7 +13245,7 @@ msgid "Carry Bram's milk pail home to him in Pixelheim."
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Carry Hilda's first hammer home to her smithy in Pixelheim."
+msgid "Carry Hilda's first hammer home to her in Pixelheim."
 msgstr ""
 
 #: assets/data/progression.json
@@ -13253,7 +13253,7 @@ msgid "Carry Sela's stew recipe home to her in Pixelheim."
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Carry Vex's mortar home to her shop in Pixelheim."
+msgid "Carry Vex's mortar home to her in Pixelheim."
 msgstr ""
 
 #: assets/data/progression.json

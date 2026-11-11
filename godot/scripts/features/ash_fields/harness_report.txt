@@ -2,4 +2,4 @@
 # core's (scripts/harness_report.txt), which it joins after its head, by
 # name; each one's function is `field_<name>(report)` in feature.gd.
 ashruins | on the Reach: the burnt farmsteads' pieces standing in the Ash by kind (the floors under their frames, their frames' and paddocks' log walls with the pack), the logs lying where walls fell, and how many stand mended on ground healed round a lamp: floors 5 posts 65 trees 40 carts 5 rubble 5 logs 14 mended 0 (PIX-397)
-keepsakes | the burnt steads' keepsakes found and carried home, once any is found: found 1 home 0 (PIX-448)
+keepsakes | the burnt steads' keepsakes found and carried home, once any is found, and on the Ash how many still glint at their doors: found 1 home 0 lying 4 (PIX-448)

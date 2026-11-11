@@ -5,7 +5,7 @@ extends Feature
 ## scorched carts, mending on healed ground) and the report's ashruins=, its
 ## row beside this script and its flows in tools/flows.d/ash_fields.txt.
 ## E at a stead's door searches its ash (PIX-448): the keepsake it kept
-## (Quests.keepsakes), and the report's keepsakes=.
+## (Quests.keepsakes), glinting there till found, and the report's keepsakes=.
 
 
 func layers() -> Dictionary[String, MapLayer]:
@@ -27,6 +27,7 @@ func interact(world: Node, cell: Vector2i) -> bool:
 	if quest.is_empty():
 		return false
 	var gains := GameState.questing.salvage(quest)
+	AshRuins.take_keepsake(world.view, cell)
 	Sound.play("pickup")
 	var whose := Npcs.by_id(quest["objective"]["to"], [])
 	world.messages.flash(Text.t("In the ash: %s. Carry it home to %s.") % [Catalog.item_name(quest["objective"]["itemId"]), whose.get("name", "")])
@@ -40,12 +41,17 @@ func field_ashruins(report: HarnessReport) -> String:
 	return AshRuins.describe(report.world.view)
 
 
-## The keepsakes found and carried home, once any is found: found 1 home 0.
-func field_keepsakes(_report: HarnessReport) -> String:
+## The keepsakes found and carried home, once any is found, and on the Ash
+## how many still lie at their doors: found 1 home 0 lying 4.
+func field_keepsakes(report: HarnessReport) -> String:
 	var found := 0
 	var home := 0
 	for quest: Dictionary in Quests.keepsakes():
 		var entry: Dictionary = GameState.progression.quests.get(quest["id"], {})
 		found += 0 if entry.is_empty() else 1
 		home += 1 if entry.get("done", false) else 0
-	return "" if found == 0 else "found %d home %d" % [found, home]
+	if found == 0:
+		return ""
+	var said := "found %d home %d" % [found, home]
+	var view: MapView = report.world.view
+	return said if view == null or not view.has_meta("keepsakes") else "%s lying %d" % [said, view.get_meta("keepsakes").size()]

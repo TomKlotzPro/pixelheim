@@ -230,7 +230,32 @@ func build(view: MapView, slices: Slicer) -> void:
 	var laid: Dictionary = view.get_meta("ash_ruins")
 	slices.add("decor_ash_ruins", func() -> void:
 		for piece: Dictionary in laid["pieces"]:
-			_draw(view, piece))
+			_draw(view, piece)
+		# A keepsake still waiting at a door (PIX-448) glints in its ash as
+		# the Vault's gold does, day and night, so the stead reads as worth a
+		# search: a glint, not the keepsake lying as a pickup does, which
+		# would ask to be walked over.
+		var lying := {}
+		for stead: Dictionary in STEADS:
+			if not Quests.keepsake_at(MAP, stead["door"], GameState.progression.quests).is_empty():
+				var glint := AnimatedSprite2D.new()
+				glint.sprite_frames = HamletArt.glint()
+				glint.centered = false
+				glint.material = Lights.unshaded()
+				glint.position = Vector2(stead["door"] * TILE)
+				glint.add_to_group("decor")
+				glint.play()
+				view.ground.add_child(glint)
+				lying[stead["door"]] = glint
+		view.set_meta("keepsakes", lying))
+
+
+## The keepsake at `cell` found (PIX-448): no longer lying in the ash.
+static func take_keepsake(view: MapView, cell: Vector2i) -> void:
+	var lying: Dictionary = view.get_meta("keepsakes", {})
+	if lying.has(cell):
+		lying[cell].queue_free()
+		lying.erase(cell)
 
 
 ## One piece: standing among the actors (and blocking its cells), or a log
