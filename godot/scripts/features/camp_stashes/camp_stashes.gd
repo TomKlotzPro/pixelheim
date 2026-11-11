@@ -1,6 +1,6 @@
 class_name CampStashes
 extends MapLayer
-## areas: field combat travel +overworld* +deepwood* +mirefen*
+## areas: field combat travel +overworld* +deepwood* +mirefen* +saltmere* +blackiron* +greyhold* +frostgate* +mountain_road*
 ## A stash by a camp's tent once its pack is cleared (PIX-453). A camp was
 ## a tent, a torch and a fight, and nothing made it worth seeking out. Each
 ## day camp (assets/data/camp_stashes.json, one a day pack's spawn) hides a

@@ -1,5 +1,5 @@
 extends Feature
-## areas: field combat travel +overworld* +deepwood* +mirefen*
+## areas: field combat travel +overworld* +deepwood* +mirefen* +saltmere* +blackiron* +greyhold* +frostgate* +mountain_road*
 ## The camps' stashes in the harness (PIX-453): their map layer
 ## (CampStashes), out each second as the packs fall and come back, E and
 ## its prompt at a shut one (opened as the core opens a chest), the

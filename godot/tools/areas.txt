@@ -28,7 +28,7 @@ dungeon +vault*: assets/puny/dungeon/*
 combat field dungeon gathering +vault*: assets/data/combat.json
 combat town title: assets/puny/characters/* assets/puny/beasts/* assets/puny/mini/*
 trade: assets/data/economy.json
-field combat travel +overworld* +deepwood* +mirefen*: assets/data/camp_stashes.json
+field combat travel +overworld* +deepwood* +mirefen* +saltmere* +blackiron* +greyhold* +frostgate* +mountain_road*: assets/data/camp_stashes.json
 trade screen: assets/puny/icons.json assets/puny/icons/*
 none: tools/*.gd assets/puny/ui_kit.json
 story: assets/data/story.json

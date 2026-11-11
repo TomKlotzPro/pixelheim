@@ -83,8 +83,10 @@ func test_each_note_is_a_line_or_two_in_english_and_french() -> void:
 			var said := Text.t(english)
 			if lang == "fr":
 				assert_ne(said, english, "%s's note in French" % spawn_id)
-			var wide := UiStyle.body_font().get_string_size(said, HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.reading(16)).x
-			assert_lte(wide, Messages.MESSAGE_WIDTH * 2.0, "%s: %s" % [spawn_id, said])
+			# The lines the plate wraps it to, not its width on one line (a wrap loses room).
+			var font := UiStyle.body_font()
+			var tall := font.get_multiline_string_size(said, HORIZONTAL_ALIGNMENT_LEFT, Messages.MESSAGE_WIDTH, UiStyle.reading(16)).y
+			assert_lte(roundi(tall / font.get_height(UiStyle.reading(16))), 2, "%s: %s" % [spawn_id, said])
 	TranslationServer.set_locale(locale)
 
 
