@@ -356,7 +356,8 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 	var water_stage := 99.0
 	for spot: Dictionary in Bestiary.fishing_spots():
 		var catches: Array = spot.get("catches", Bestiary.fishing_rules()["catches"])
-		if catches.any(func(entry: Array) -> bool: return entry[0] == item_id):
+		# A catch that stands for the item counts too (PIX-450: a Smug Pike is a fresh fish).
+		if catches.any(func(entry: Array) -> bool: return entry[0] == item_id or Catalog.item(entry[0]).get("standsFor", "") == item_id):
 			var place := Text.mid(Catalog.place_name(spot["mapId"]))
 			if place not in waters:
 				waters.append(place)

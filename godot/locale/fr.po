@@ -325,8 +325,8 @@ msgid "Blocks the first blow of every fight"
 msgstr "Pare le premier coup de chaque combat"
 
 #: assets/data/catalog.json
-msgid "Blown off the bridge on a windy day. Half of Pixelheim says it's theirs. The other half says it suits you."
-msgstr "Envolé du pont un jour de grand vent. La moitié de Pixelheim dit qu'il est à elle. L'autre moitié dit qu'il vous va bien."
+msgid "Blown off the bridge on a windy day. Half of Pixelheim says it's theirs. The other half says keep it, it's yours now."
+msgstr "Envolé du pont un jour de grand vent. La moitié de Pixelheim dit qu'il est à elle. L'autre moitié dit de le garder, il est à vous maintenant."
 
 #: assets/data/catalog.json
 msgid "Blue as the ice it came over the pass on. Cold to wear, clear to think in."

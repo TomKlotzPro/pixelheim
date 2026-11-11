@@ -61,6 +61,10 @@ func test_a_new_fish_does_wherever_a_fresh_fish_is_asked() -> void:
 	var jobs := {"smithing": {"level": 1, "xp": 0}, "alchemy": {"level": 3, "xp": 0}}
 	assert_true(Economy.can_craft(stew, {"bridge_trout": 1, "forest_herb": 2}, jobs), "Vex stews a trout")
 	assert_eq(Economy.missing_names(stew, {"lost_hat": 1, "forest_herb": 2}), ["1 × Fresh Fish"], "but not a hat")
+	var fishing: Array = Economy.material_sources("fresh_fish").filter(func(lead: Dictionary) -> bool: return lead["kind"] == "fishing")
+	assert_eq(fishing.size(), 1)
+	for place in ["Pixelheim", "the Mirefen"]:
+		assert_string_contains(fishing[0]["text"], place, "a fresh fish's lead names the waters whose fish stand for it")
 
 
 ## Gold a cast pays on average, by what each catch is worth.

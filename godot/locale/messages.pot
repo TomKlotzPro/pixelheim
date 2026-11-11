@@ -325,7 +325,7 @@ msgid "Blocks the first blow of every fight"
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "Blown off the bridge on a windy day. Half of Pixelheim says it's theirs. The other half says it suits you."
+msgid "Blown off the bridge on a windy day. Half of Pixelheim says it's theirs. The other half says keep it, it's yours now."
 msgstr ""
 
 #: assets/data/catalog.json
