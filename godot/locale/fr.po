@@ -161,6 +161,10 @@ msgid "+10% gold: kills, quests, sales, tips"
 msgstr "+10 % d'or : combats, quêtes, ventes, pourboires"
 
 #: assets/data/catalog.json
+msgid "A Deepwood pike, and it knows it. It took your bait out of pity. Cooks like any fresh fish, which it would hate to hear."
+msgstr "Un brochet des Bois-Profonds, et il le sait. Il a mordu à votre appât par pitié. Se cuisine comme n'importe quel poisson frais, ce qu'il détesterait entendre."
+
+#: assets/data/catalog.json
 msgid "A ball of ice that never melts, held in the off hand. Blows come slower near it. Crafted, never sold."
 msgstr "Une boule de glace qui ne fond jamais, tenue dans la main gauche. Près d'elle, les coups ralentissent. Fait main, jamais en vente."
 
@@ -473,6 +477,10 @@ msgid "Blocks the first blow of every fight"
 msgstr "Pare le premier coup de chaque combat"
 
 #: assets/data/catalog.json
+msgid "Blown off the bridge on a windy day. Half of Pixelheim says it's theirs. The other half says keep it, it's yours now."
+msgstr "Envolé du pont un jour de grand vent. La moitié de Pixelheim dit qu'il est à elle. L'autre moitié dit de le garder, il est à vous maintenant."
+
+#: assets/data/catalog.json
 msgid "Blue as the ice it came over the pass on. Cold to wear, clear to think in."
 msgstr "Bleu comme la glace sur laquelle il a passé le col. Froid à porter, clair pour penser."
 
@@ -511,6 +519,10 @@ msgstr "De la ronce poussée autour d'un cristal et laissée un an à prendre. E
 #: assets/data/catalog.json
 msgid "Briarwood Staff"
 msgstr "Bâton de ronce"
+
+#: assets/data/catalog.json
+msgid "Bridge Trout"
+msgstr "Truite du pont"
 
 #: assets/data/catalog.json
 msgid "Broken blades and rusted mail from Greyhold's armoury. Good steel under the rust."
@@ -869,6 +881,10 @@ msgid "Green and frosted, washed smooth by the tide off Saltmere. Crafters prize
 msgstr "Vert et dépoli, lissé par la marée au large de Saltmere. Les artisans en raffolent."
 
 #: assets/data/catalog.json
+msgid "Grew fat under Pixelheim's bridge on dropped pie crust. Tastes faintly of festival. Does wherever a fresh fish is wanted."
+msgstr "A grossi sous le pont de Pixelheim à coups de croûtes de tourte tombées. A un petit goût de fête. Fait l'affaire partout où l'on veut du poisson frais."
+
+#: assets/data/catalog.json
 msgid "Greyhold"
 msgstr "Greyhold"
 
@@ -1213,6 +1229,10 @@ msgid "Mend"
 msgstr "Soin"
 
 #: assets/data/catalog.json
+msgid "Mirefen Eel"
+msgstr "Anguille de Fange"
+
+#: assets/data/catalog.json
 msgid "Moon Pendant"
 msgstr "Pendentif lunaire"
 
@@ -1235,6 +1255,10 @@ msgstr "Masse de Dos-de-Mousse"
 #: assets/data/catalog.json
 msgid "Mostly adventure stories. A few are even true. Placed at home: +5% XP from every fight."
 msgstr "Surtout des récits d'aventure. Quelques-uns sont même vrais. Chez vous : +5 % d'XP à chaque combat."
+
+#: assets/data/catalog.json
+msgid "Mostly moss, partly eel, entirely damp. Pip's cat eats it as a fresh fish and pretends not to notice."
+msgstr "Surtout de la mousse, un peu d'anguille, entièrement mouillée. Le chat de Pip la mange comme du poisson frais et fait semblant de ne rien remarquer."
 
 #: assets/data/catalog.json
 msgid "Necromancer"
@@ -1541,8 +1565,16 @@ msgid "Smith's Gauntlets"
 msgstr "Gantelets de forgeron"
 
 #: assets/data/catalog.json
+msgid "Smug Pike"
+msgstr "Brochet suffisant"
+
+#: assets/data/catalog.json
 msgid "Smugglers' Rum"
 msgstr "Rhum des contrebandiers"
+
+#: assets/data/catalog.json
+msgid "Somebody's Hat"
+msgstr "Chapeau de quelqu'un"
 
 #: assets/data/catalog.json
 msgid "Someone walked far in these. Now it is your turn."
@@ -2371,6 +2403,10 @@ msgstr "Un écran titre digne d'une arrivée : au premier lancement, la camér
 #: assets/data/changelog.json
 msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
 msgstr "Le nouvel âge d'une ville s'annonce par une fanfare et de la poussière sur la place, et chaque nouvelle carte sort de l'obscurité au lieu d'apparaître d'un coup (sauf avec les animations réduites)"
+
+#: assets/data/changelog.json
+msgid "A trout, a pike or an eel will do wherever a fresh fish is asked: Pip's cat, Ola's first catch, Vex's stew"
+msgstr "Une truite, un brochet ou une anguille font l'affaire partout où l'on demande un poisson frais : le chat de Pip, la première prise d'Ola, le ragoût de Vex"
 
 #: assets/data/changelog.json
 msgid "A way out on a map's south edge no longer hides under the dock, and you arrive facing into the new map, on its road"
@@ -3763,6 +3799,10 @@ msgstr "De l'or qui sert"
 #: assets/data/changelog.json
 msgid "Gold at Work"
 msgstr "L'or au travail"
+
+#: assets/data/changelog.json
+msgid "Gone Fishing"
+msgstr "Partis pêcher"
 
 #: assets/data/changelog.json
 msgid "Good Dog"
@@ -7499,6 +7539,10 @@ msgstr "LIBRE À VOUS DE PASSER : E passe à la ligne suivante et Esc mène di
 #: assets/data/changelog.json
 msgid "You Stayed"
 msgstr "Vous restez"
+
+#: assets/data/changelog.json
+msgid "You can now fish by Pixelheim's bridge, on the Deepwood lake shore and at a Mirefen pool, and each has catches of its own"
+msgstr "Vous pouvez désormais pêcher près du pont de Pixelheim, au bord du lac des Bois-Profonds et dans une mare des Marais de Fange, et chaque endroit a ses propres prises"
 
 #: assets/data/changelog.json
 msgid "You can own a HOUSE. The shut door in the south of town names its price: the deed costs 1,500g - press E and it's yours"
