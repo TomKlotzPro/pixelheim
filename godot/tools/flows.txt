@@ -739,8 +739,8 @@ aske-home | --map town --hunted rimefang reveal | open=reveal_screen home=aske |
 # Rimefang's end: its bar gone once it falls (PIX-288), a way out where it
 # fell far from the ice slide, and straight back by it to the foot of
 # Liane's stair (PIX-292).
-rimefang-bar | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.0103 --wait 2.5 | map=icecave_glass fell=1 bossbar=none shortcut=open wayout=\(30, 3\);\(27, 12\) | dungeon combat
-rimefang-out | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.0103 --then-walk r --wait 0.4 | map=icecave cell=\([4-6], 2[45]\) bossbar=none | dungeon travel combat
+rimefang-bar | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.0103 --wait 2.5 | map=icecave_glass fell=1 bossbar=none shortcut=open wayout=\(30, 3\);\(28, 12\) | dungeon combat
+rimefang-out | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.0103 --then-walk r,r --wait 0.4 | map=icecave cell=\([4-6], 2[45]\) bossbar=none | dungeon travel combat
 # The mountain's gate barred to a new hero (PIX-170).
 gate | --map overworld --at 48,8 --walk u,u --wait 0.3 | map=overworld cell=\(48, 7\) open=none | travel dungeon
 # The fifth letter (PIX-253 step 8, PIX-257): with the four keepsakes home
