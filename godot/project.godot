@@ -85,6 +85,14 @@ foe_at={
 "type": "vec2",
 "value": Vector2(-100000, -100000)
 }
+; The sun for the scenery's shadows (PIX-449, shaders/scenery_shadow.gdshader,
+; DayNight.sun): where a shadow reaches for each pixel of height (x, y) and
+; how strong it is (z), none at night, under cloud or out of the sky; set
+; each frame by scripts/light_rig.gd.
+sun={
+"type": "vec4",
+"value": Vector4(0, 0, 0, 0)
+}
 
 [rendering]
 

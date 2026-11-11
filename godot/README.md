@@ -584,6 +584,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/map_layers/rooms_layer.gd` — Inside, Shade's rooms with the paid pack or from his CC0 sheets (PunyInterior, PIX-133, PIX-163, PIX-318)
 - `scripts/map_layers/ruins_layer.gd` — The old stone ruins in the open (Ruins, RuinArt, PIX-381) and the walls still standing there (StoneWalls, PIX-386)
 - `scripts/map_layers/settlements_layer.gd` — Each settlement's set dressing, what the Post's routes put up, chimney smoke and the village seen far off (Hamlet, Routes, PIX-248, PIX-313, PIX-322)
+- `scripts/map_layers/shadows_layer.gd` — The scenery's shadows on the ground (PIX-449)
 - `scripts/map_screen.gd` — The map screen (M/Tab): a map in a window, painted with the tiles' map colours where the hero has been and night where they haven't (mapColors.ts port), the hero, the waypoints and the lairs the bounty board has posted (PIX-156) marked
 - `scripts/map_view.gd` — One visit to a map, as drawn (PIX-136): Shade's ground, houses, rooms and dungeons, the props, field scatter, chests and door signs, the house's placed furniture, and the invisible boxes on what the hero can't walk into.
 - `scripts/marks.gd` — The marks over the world (PIX-284, PIX-289), one family in the UI's palette
