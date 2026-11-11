@@ -1,0 +1,100 @@
+name: Tests alone
+
+# Every GUT file run on its own, one after another (PIX-454): a test that
+# passes in the whole suite only because an earlier file left something
+# behind (the keys bound, a setting, a static) fails here, by name. Every
+# night on main, and on demand on any branch:
+#
+#   gh workflow run alone.yml --ref <branch>
+#
+# One file alone, on the laptop:
+#
+#   godot --headless --audio-driver Dummy --path godot -s addons/gut/gut_cmdln.gd -gselect=<file name> -gexit
+on:
+  schedule:
+    - cron: "10 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GODOT_VERSION: "4.7.1"
+
+jobs:
+  alone:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore the Godot binary
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/godot-bin
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}
+
+      - name: Install Godot
+        run: |
+          if [ ! -x "$HOME/godot-bin/godot" ]; then
+            mkdir -p "$HOME/godot-bin"
+            curl -sL "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip" -o godot.zip
+            unzip -q godot.zip
+            mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$HOME/godot-bin/godot"
+          fi
+          echo "$HOME/godot-bin" >> "$GITHUB_PATH"
+
+      # The paid art, as the godot job runs GUT: the tests that need it run
+      # too. Only text leaves this job.
+      - name: Fetch the private art
+        id: art
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: TomKlotzPro/pixelheim-assets
+          ssh-key: ${{ secrets.PIXELHEIM_ASSETS_KEY }}
+          path: private-assets
+      - name: Install the private art
+        if: steps.art.outcome == 'success'
+        run: |
+          bash scripts/fetch-private-art.sh private-assets
+          rm -rf private-assets
+
+      # The godot job's import, restored only (the same paths and key).
+      - name: Restore the import
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            godot/.godot
+            godot/assets/puny/shade/**/*.import
+            godot/assets/puny/medieval/*.import
+            godot/assets/audio/paid/*.import
+          key: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-${{ hashFiles('godot/project.godot', 'godot/*.import', 'godot/assets/**', 'godot/addons/**', 'godot/locale/**', 'godot/scenes/**', 'godot/scripts/**', 'godot/shaders/**', 'godot/test/**') }}
+          restore-keys: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-
+
+      - name: Import assets
+        run: godot --headless --path godot --import
+
+      - name: Every GUT file alone
+        run: |
+          mkdir -p results
+          failed=0
+          for file in $(ls godot/test/unit | grep -E '^test_.*\.gd$'); do
+            # GUT exits 0 when a script fails to parse: that fails here too.
+            if ! godot --headless --path godot -s res://addons/gut/gut_cmdln.gd -gselect="$file" -gexit > "results/$file.log" 2>&1 \
+              || grep -qE "Parse Error|Failed to load script" "results/$file.log"; then
+              echo "::error title=$file fails alone::$(sed 's/\x1b\[[0-9;]*m//g' "results/$file.log" | grep -m3 -A1 -E 'Failed|Parse Error' | tr '\n' ' ')"
+              failed=$((failed + 1))
+            fi
+          done
+          echo "$failed file(s) failed alone"
+          exit $((failed > 0))
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: tests-alone
+          path: results/
+          retention-days: 14
