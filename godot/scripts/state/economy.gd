@@ -421,7 +421,7 @@ static func _monster_stage(monster_id: String) -> float:
 static func missing_names(entry: Dictionary, items: Dictionary) -> Array[String]:
 	var out: Array[String] = []
 	for need: String in entry["needs"]:
-		var short := int(entry["needs"][need]) - int(items.get(need, 0))
+		var short := int(entry["needs"][need]) - Catalog.held(items, need)
 		if short > 0:
 			out.append(Text.count(short, Catalog.item_name(need)))
 	return out
@@ -499,7 +499,7 @@ static func can_craft(entry: Dictionary, items: Dictionary, jobs: Dictionary) ->
 	if jobs[entry["job"]["id"]]["level"] < entry["job"]["level"]:
 		return false
 	for item_id: String in entry["needs"]:
-		if items.get(item_id, 0) < entry["needs"][item_id]:
+		if Catalog.held(items, item_id) < entry["needs"][item_id]:
 			return false
 	return true
 

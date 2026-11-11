@@ -178,6 +178,17 @@ func remove_item(item_id: String, count := 1) -> void:
 		items.erase(item_id)
 
 
+## Takes `count` of `item_id` as a delivery or a recipe does: the item
+## itself first, then what stands in for it (Catalog.held, PIX-450).
+func spend(item_id: String, count := 1) -> void:
+	var left := count
+	for id: String in [item_id] + items.keys().filter(func(other: String) -> bool: return Catalog.item(other).get("standsFor", "") == item_id):
+		var take := mini(left, int(items.get(id, 0)))
+		if take > 0:
+			remove_item(id, take)
+			left -= take
+
+
 ## The orders the pack can list in (PIX-89): by kind (gear, then stacks, each
 ## by category and name), dearest first, heaviest first, or by name.
 const SORTS := ["kind", "value", "weight", "name"]
