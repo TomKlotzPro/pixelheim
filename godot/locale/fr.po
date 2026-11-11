@@ -2253,6 +2253,10 @@ msgid "A town's new age is heralded with a flourish and dust on the square, and 
 msgstr "Le nouvel âge d'une ville s'annonce par une fanfare et de la poussière sur la place, et chaque nouvelle carte sort de l'obscurité au lieu d'apparaître d'un coup (sauf avec les animations réduites)"
 
 #: assets/data/changelog.json
+msgid "A trout, a pike or an eel will do wherever a fresh fish is asked: Pip's cat, Ola's first catch, Vex's stew"
+msgstr "Une truite, un brochet ou une anguille font l'affaire partout où l'on demande un poisson frais : le chat de Pip, la première prise d'Ola, le ragoût de Vex"
+
+#: assets/data/changelog.json
 msgid "A way out on a map's south edge no longer hides under the dock, and you arrive facing into the new map, on its road"
 msgstr "Une sortie au sud d'une carte ne se cache plus sous la barre, et vous arrivez face à la nouvelle carte, sur sa route"
 
@@ -3643,6 +3647,10 @@ msgstr "De l'or qui sert"
 #: assets/data/changelog.json
 msgid "Gold at Work"
 msgstr "L'or au travail"
+
+#: assets/data/changelog.json
+msgid "Gone Fishing"
+msgstr "Partis pêcher"
 
 #: assets/data/changelog.json
 msgid "Good Dog"
@@ -7379,6 +7387,10 @@ msgstr "LIBRE À VOUS DE PASSER : E passe à la ligne suivante et Esc mène di
 #: assets/data/changelog.json
 msgid "You Stayed"
 msgstr "Vous restez"
+
+#: assets/data/changelog.json
+msgid "You can now fish by Pixelheim's bridge, on the Deepwood lake shore and at a Mirefen pool, and each has catches of its own"
+msgstr "Vous pouvez désormais pêcher près du pont de Pixelheim, au bord du lac des Bois-Profonds et dans une mare des Marais de Fange, et chaque endroit a ses propres prises"
 
 #: assets/data/changelog.json
 msgid "You can own a HOUSE. The shut door in the south of town names its price: the deed costs 1,500g - press E and it's yours"

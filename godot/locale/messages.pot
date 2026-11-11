@@ -2253,6 +2253,10 @@ msgid "A town's new age is heralded with a flourish and dust on the square, and 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A trout, a pike or an eel will do wherever a fresh fish is asked: Pip's cat, Ola's first catch, Vex's stew"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A way out on a map's south edge no longer hides under the dock, and you arrive facing into the new map, on its road"
 msgstr ""
 
@@ -3642,6 +3646,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Gold at Work"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Gone Fishing"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7378,6 +7386,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "You Stayed"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "You can now fish by Pixelheim's bridge, on the Deepwood lake shore and at a Mirefen pool, and each has catches of its own"
 msgstr ""
 
 #: assets/data/changelog.json
