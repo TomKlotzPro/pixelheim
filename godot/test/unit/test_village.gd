@@ -57,6 +57,9 @@ func test_every_door_and_villager_can_be_walked_to_from_the_gate_at_every_age() 
 		for npc: Dictionary in Npcs.on_map("town", tier, [], Town.projects_through(tier)):
 			var home := Vector2i(int(npc["x"]), int(npc["y"]))
 			assert_true(seen.has(home), "age %d: %s at %s" % [tier, npc["id"], home])
+		# The river bank by the bridge (PIX-450).
+		for spot: Dictionary in Bestiary.fishing_spots().filter(func(each: Dictionary) -> bool: return each["mapId"] == "town"):
+			assert_true(seen.has(Vector2i(int(spot["x"]), int(spot["y"]))), "age %d: %s" % [tier, spot["id"]])
 
 
 func test_the_corners_worth_finding_can_be_reached() -> void:
