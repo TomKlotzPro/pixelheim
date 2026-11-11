@@ -62,10 +62,7 @@ func test_a_plain_crab_is_no_tidecaller() -> void:
 func test_the_jetty_bites_then_rests() -> void:
 	var spot := Gathering.fishing_spot_at("saltmere", Vector2i(31, 31))
 	assert_eq(spot.get("id", ""), "saltmere_jetty")
-	var map := MapData.load_by_id("saltmere")
-	for entry: Dictionary in Bestiary._data()["fishingSpots"]:
-		var at := Vector2i(int(entry["x"]), int(entry["y"]))
-		assert_true(map.is_walkable(at), "%s stands on ground" % entry["id"])
+	# Where every spot stands: test_fishing.
 	var before: int = state.pack.items.values().reduce(func(sum: int, n: int) -> int: return sum + n, 0)
 	# A catch floats up from the water without a word (PIX-245); a resting
 	# spot says so.

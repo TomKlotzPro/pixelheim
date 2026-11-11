@@ -153,7 +153,7 @@ func resolve_quests(giver_id: String) -> String:
 			return Text.t("%s: they wait on your answer.") % quest["name"]
 		if Quests.is_ready(quest, entries, owner.pack.items):
 			if objective["kind"] == "deliver":
-				owner.pack.remove_item(objective["itemId"], int(objective["count"]))
+				owner.pack.spend(objective["itemId"], int(objective["count"]))
 			elif objective["kind"] == "relics":
 				# They go into the mountain's gate (PIX-170).
 				for item_id: String in objective["items"]:
@@ -296,7 +296,7 @@ func choose(quest_id: String, option_id: String) -> String:
 	if option.is_empty():
 		return ""
 	if quest["objective"]["kind"] == "deliver":
-		owner.pack.remove_item(quest["objective"]["itemId"], int(quest["objective"]["count"]))
+		owner.pack.spend(quest["objective"]["itemId"], int(quest["objective"]["count"]))
 	entry["done"] = true
 	entry["choice"] = option_id
 	Journal.let_go(owner.progression)
@@ -431,7 +431,7 @@ func delivery_dip(costs: Dictionary) -> Dictionary:
 		var objective: Dictionary = quest["objective"]
 		if objective["kind"] != "deliver" or entry.is_empty() or entry["done"] or not costs.has(objective["itemId"]):
 			continue
-		var have := int(owner.pack.items.get(objective["itemId"], 0))
+		var have := Catalog.held(owner.pack.items, objective["itemId"])
 		var count := int(objective["count"])
 		if mini(count, have - int(costs[objective["itemId"]])) < mini(count, have):
 			return {"quest": quest["name"], "item": Catalog.item_name(objective["itemId"])}
