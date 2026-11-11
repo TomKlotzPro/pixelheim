@@ -1,4 +1,5 @@
-# The Ash Fields' report field (PIX-397): `field | says`, as the core's
-# (scripts/harness_report.txt), which it joins after its head, by name; its
-# function is `field_ashruins(report)` in feature.gd.
+# The Ash Fields' report fields (PIX-397, PIX-448): `field | says`, as the
+# core's (scripts/harness_report.txt), which it joins after its head, by
+# name; each one's function is `field_<name>(report)` in feature.gd.
 ashruins | on the Reach: the burnt farmsteads' pieces standing in the Ash by kind (the floors under their frames, their frames' and paddocks' log walls with the pack), the logs lying where walls fell, and how many stand mended on ground healed round a lamp: floors 5 posts 65 trees 40 carts 5 rubble 5 logs 14 mended 0 (PIX-397)
+keepsakes | the burnt steads' keepsakes found and carried home, once any is found: found 1 home 0 (PIX-448)

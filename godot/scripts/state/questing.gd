@@ -233,6 +233,21 @@ func hear_out() -> String:
 	return String(Letters.fifth()["given"])
 
 
+## A keepsake searched out of a burnt stead's ash (PIX-448): in the pack,
+## its quest taken, to carry home as a letter is (deliver). Returns what
+## rises (Gains), none when it was found already.
+func salvage(quest: Dictionary) -> Dictionary:
+	var gains := Gains.none()
+	if owner.progression.quests.has(quest["id"]):
+		return gains
+	owner.progression.quests[quest["id"]] = {"progress": 0, "done": false}
+	owner.pack.add_item(quest["objective"]["itemId"])
+	Gains.add_item(gains, quest["objective"]["itemId"], 1)
+	owner.pack_changed()
+	owner.save_now()
+	return gains
+
+
 ## The letter `npc_id` is owed now (PIX-253): a deliverTo quest taken, not
 ## yet handed over, its letter in the pack; {} otherwise.
 func letter_for(npc_id: String) -> Dictionary:
