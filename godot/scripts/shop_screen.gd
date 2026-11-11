@@ -974,7 +974,7 @@ static func _lines(item_id: String, instance := {}) -> Array[String]:
 static func _describe_recipe(entry: Dictionary) -> String:
 	var lines: Array[String] = [_describe(entry["itemId"]), "", Text.t("Needs:")]
 	for need: String in entry["needs"]:
-		var have: int = GameState.pack.items.get(need, 0)
+		var have := Catalog.held(GameState.pack.items, need)
 		lines.append(Text.t("  %s  (have %d)") % [Text.count(int(entry["needs"][need]), Catalog.item_name(need)), have])
 		# Where a missing one comes from (PIX-143).
 		if have < int(entry["needs"][need]):

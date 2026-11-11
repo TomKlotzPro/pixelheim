@@ -9,6 +9,10 @@ msgid "+10% gold: kills, quests, sales, tips"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "A Deepwood pike, and it knows it. It took your bait out of pity. Cooks like any fresh fish, which it would hate to hear."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "A ball of ice that never melts, held in the off hand. Blows come slower near it. Crafted, never sold."
 msgstr ""
 
@@ -321,6 +325,10 @@ msgid "Blocks the first blow of every fight"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Blown off the bridge on a windy day. Half of Pixelheim says it's theirs. The other half says keep it, it's yours now."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Blue as the ice it came over the pass on. Cold to wear, clear to think in."
 msgstr ""
 
@@ -358,6 +366,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Briarwood Staff"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Bridge Trout"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -717,6 +729,10 @@ msgid "Green and frosted, washed smooth by the tide off Saltmere. Crafters prize
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Grew fat under Pixelheim's bridge on dropped pie crust. Tastes faintly of festival. Does wherever a fresh fish is wanted."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Greyhold"
 msgstr ""
 
@@ -1061,6 +1077,10 @@ msgid "Mend"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Mirefen Eel"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Moon Pendant"
 msgstr ""
 
@@ -1082,6 +1102,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Mostly adventure stories. A few are even true. Placed at home: +5% XP from every fight."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Mostly moss, partly eel, entirely damp. Pip's cat eats it as a fresh fish and pretends not to notice."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1389,7 +1413,15 @@ msgid "Smith's Gauntlets"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Smug Pike"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Smugglers' Rum"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Somebody's Hat"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1969,6 +2001,10 @@ msgid "A WEIGHT BAR: how full the pack is sits beside the weight, and it turns r
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A blow no longer cancels the move an elite or a boss is winding up: roll out of it, or stun it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A blow shoves a foe back and the push fades, instead of a one-frame jolt: an elite gives half as much ground, a boss none"
 msgstr ""
 
@@ -2218,6 +2254,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A trout, a pike or an eel will do wherever a fresh fish is asked: Pip's cat, Ola's first catch, Vex's stew"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3497,6 +3537,10 @@ msgid "Fleeing and forage work exactly as before - only the surprise is gone"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Foes now stop at your side instead of walking onto you, so your hero stays in sight in a fight"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
 msgstr ""
 
@@ -3610,6 +3654,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Gold at Work"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Gone Fishing"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7346,6 +7394,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "You Stayed"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "You can now fish by Pixelheim's bridge, on the Deepwood lake shore and at a Mirefen pool, and each has catches of its own"
 msgstr ""
 
 #: assets/data/changelog.json

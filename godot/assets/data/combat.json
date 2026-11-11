@@ -5776,6 +5776,66 @@
           15
         ]
       ]
+    },
+    {
+      "id": "town_bridge",
+      "mapId": "town",
+      "x": 66,
+      "y": 21,
+      "catches": [
+        [
+          "bridge_trout",
+          60
+        ],
+        [
+          "lost_hat",
+          20
+        ],
+        [
+          "old_boot",
+          20
+        ]
+      ]
+    },
+    {
+      "id": "deepwood_lake",
+      "mapId": "deepwood",
+      "x": 7,
+      "y": 7,
+      "catches": [
+        [
+          "smug_pike",
+          60
+        ],
+        [
+          "fresh_fish",
+          25
+        ],
+        [
+          "old_boot",
+          15
+        ]
+      ]
+    },
+    {
+      "id": "mirefen_pool",
+      "mapId": "mirefen",
+      "x": 17,
+      "y": 13,
+      "catches": [
+        [
+          "moss_eel",
+          60
+        ],
+        [
+          "grave_moss",
+          25
+        ],
+        [
+          "old_boot",
+          15
+        ]
+      ]
     }
   ],
   "fishing": {
