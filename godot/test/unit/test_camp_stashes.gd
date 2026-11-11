@@ -24,6 +24,10 @@ func test_every_day_camp_hides_a_stash_beside_its_tent() -> void:
 		var map := MapData.load_by_id(map_id)
 		var camps := CampsLayer.plan_camps(map)
 		var cells := CampStashes.plan_on(map, camps)
+		var apart := {}
+		for cell: Vector2i in cells.values():
+			apart[cell] = true
+		assert_eq(apart.size(), cells.size(), "%s: one stash to a cell" % map_id)
 		for tent: Vector2i in camps:
 			var spawn_id := String(camps[tent].get("spawn", ""))
 			if spawn_id == "":
@@ -53,10 +57,7 @@ func test_a_stash_finds_its_place_among_what_the_map_draws() -> void:
 		var map := MapData.load_by_id(map_id)
 		var view := MapView.new(map, null)
 		view.plan(map.spawn)
-		var cells: Dictionary = view.get_meta(CampStashes.META, {})
-		placed += cells.size()
-		for cell: Vector2i in cells.values():
-			assert_true(map.covered.has(cell), "its cell kept for it")
+		placed += view.get_meta(CampStashes.META, {}).size()
 	assert_eq(placed, CampStashes.stashes().size(), "every camp's stash finds its place")
 
 

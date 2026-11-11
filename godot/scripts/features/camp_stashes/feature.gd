@@ -30,7 +30,7 @@ func interact(world: Node, cell: Vector2i) -> bool:
 	var stash := CampStashes.shut_at(world.view, cell)
 	if stash.is_empty():
 		return false
-	world.interaction._open_chest(stash)
+	world.interaction.open_chest(stash)
 	return true
 
 

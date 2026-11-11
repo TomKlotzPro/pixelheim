@@ -40,7 +40,8 @@ static func shown(world: WorldState, spawn_id: String) -> bool:
 ## pieces (CampsLayer.plan_camps): a cell of the camp's ring two off its
 ## home, the pack's own square left to it (a pack back at an open stash
 ## stands clear of it), beside the tent, else within two of it; open
-## ground of the home's region that nothing covers yet.
+## ground of the home's region that nothing covers yet, nor another camp's
+## stash. A camp left without one says so (a prop over its whole ring).
 static func plan_on(map: MapData, camps: Dictionary) -> Dictionary:
 	var out := {}
 	for tent: Vector2i in camps:
@@ -48,19 +49,21 @@ static func plan_on(map: MapData, camps: Dictionary) -> Dictionary:
 		if not stashes().has(spawn_id):
 			continue
 		var spawn: Dictionary = Bestiary.spawns_on(map.id).filter(func(row: Dictionary) -> bool: return row["id"] == spawn_id)[0]
-		var cell := _beside(map, camps, Vector2i(spawn["x"], spawn["y"]), tent)
+		var cell := _beside(map, camps, Vector2i(spawn["x"], spawn["y"]), tent, out.values())
 		if cell.x >= 0:
 			out[spawn_id] = cell
+		else:
+			push_warning("%s: no cell by %s's tent for its stash" % [map.id, spawn_id])
 	return out
 
 
-static func _beside(map: MapData, camps: Dictionary, home: Vector2i, tent: Vector2i) -> Vector2i:
+static func _beside(map: MapData, camps: Dictionary, home: Vector2i, tent: Vector2i, taken: Array) -> Vector2i:
 	for reach in [1, 2]:
 		for offset: Vector2i in CampsLayer.CAMP_RING:
 			var cell: Vector2i = home + offset
 			if maxi(absi(offset.x), absi(offset.y)) == 2 and maxi(absi(cell.x - tent.x), absi(cell.y - tent.y)) <= reach \
 					and map.is_walkable(cell) and map.region_at(cell) == map.region_at(home) and not map.portals.has(cell) \
-					and not camps.has(cell) and not map.covered.has(cell):
+					and not camps.has(cell) and not map.covered.has(cell) and cell not in taken:
 				return cell
 	return Vector2i(-1, -1)
 
