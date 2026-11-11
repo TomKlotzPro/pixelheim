@@ -13261,8 +13261,8 @@ msgid "Carry every thread of the Post to its last piece."
 msgstr "Mener chaque fil de la Poste jusqu'à son dernier pli."
 
 #: assets/data/progression.json
-msgid "Carry home the five keepsakes from the Ash's burnt steads."
-msgstr "Rapporter les cinq souvenirs des fermes brûlées des Cendres."
+msgid "Carry home the five things the fire missed in the Ash's steads."
+msgstr "Rapporter les cinq choses que le feu a épargnées dans les fermes des Cendres."
 
 #: assets/data/progression.json
 msgid "Carry water from the well to the burning homes ({fires})"
@@ -14009,10 +14009,6 @@ msgid "Keep his secret"
 msgstr "Garder son secret"
 
 #: assets/data/progression.json
-msgid "Keepsake returned"
-msgstr "Souvenir rendu"
-
-#: assets/data/progression.json
 msgid "Kill me a wyvern and tell me how it went. In detail. Wings, fire, your face at the time."
 msgstr "Tuez-moi une wyverne et racontez-moi comment ça s'est passé. En détail. Les ailes, le feu, la tête que vous faisiez."
 
@@ -14451,6 +14447,10 @@ msgstr "Reliques rapportées"
 #: assets/data/progression.json
 msgid "Relics of the Five"
 msgstr "Les Reliques des Cinq"
+
+#: assets/data/progression.json
+msgid "Returned home"
+msgstr "Rendu"
 
 #: assets/data/progression.json
 msgid "Rimefang laid low"

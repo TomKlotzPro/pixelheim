@@ -13261,7 +13261,7 @@ msgid "Carry every thread of the Post to its last piece."
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Carry home the five keepsakes from the Ash's burnt steads."
+msgid "Carry home the five things the fire missed in the Ash's steads."
 msgstr ""
 
 #: assets/data/progression.json
@@ -14009,10 +14009,6 @@ msgid "Keep his secret"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Keepsake returned"
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Kill me a wyvern and tell me how it went. In detail. Wings, fire, your face at the time."
 msgstr ""
 
@@ -14450,6 +14446,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Relics of the Five"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Returned home"
 msgstr ""
 
 #: assets/data/progression.json

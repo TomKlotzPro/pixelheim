@@ -1288,7 +1288,7 @@
         "itemId": "keepsake_pail",
         "to": "villager_bram",
         "count": 1,
-        "label": "Keepsake returned"
+        "label": "Returned home"
       },
       "reward": {
         "gold": 20,
@@ -1309,7 +1309,7 @@
         "itemId": "keepsake_hammer",
         "to": "smith",
         "count": 1,
-        "label": "Keepsake returned"
+        "label": "Returned home"
       },
       "reward": {
         "gold": 20,
@@ -1330,7 +1330,7 @@
         "itemId": "keepsake_recipe",
         "to": "innkeeper",
         "count": 1,
-        "label": "Keepsake returned"
+        "label": "Returned home"
       },
       "reward": {
         "gold": 20,
@@ -1351,7 +1351,7 @@
         "itemId": "keepsake_mortar",
         "to": "alchemist_vex",
         "count": 1,
-        "label": "Keepsake returned"
+        "label": "Returned home"
       },
       "reward": {
         "gold": 20,
@@ -1372,7 +1372,7 @@
         "itemId": "keepsake_boots",
         "to": "villager_ana",
         "count": 1,
-        "label": "Keepsake returned"
+        "label": "Returned home"
       },
       "reward": {
         "gold": 20,
@@ -2287,7 +2287,7 @@
     {
       "id": "keepsakes",
       "name": "What the Fire Missed",
-      "line": "Carry home the five keepsakes from the Ash's burnt steads.",
+      "line": "Carry home the five things the fire missed in the Ash's steads.",
       "kind": "keepsakes",
       "itemId": "medal_keepsakes"
     }
