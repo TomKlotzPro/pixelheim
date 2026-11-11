@@ -66,7 +66,7 @@ static func progress(quest: Dictionary, entries: Dictionary, items: Dictionary) 
 	var have := int(entry["progress"])
 	match String(objective["kind"]):
 		"deliver", "deliverTo":
-			have = items.get(objective["itemId"], 0)
+			have = Catalog.held(items, objective["itemId"])
 		"relics":
 			# Maren's ask (PIX-170): one of each relic, in any order.
 			have = objective["items"].filter(func(item_id: String) -> bool: return int(items.get(item_id, 0)) > 0).size()

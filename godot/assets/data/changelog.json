@@ -1,6 +1,32 @@
 {
   "releases": [
     {
+      "version": "0.347.0",
+      "date": "2026-11-11",
+      "codename": "Long Shadows",
+      "notes": [
+        "Trees, houses and lamp posts now cast a soft shadow on the ground: short and dark at noon, long and faint at dawn and dusk, gone at night"
+      ]
+    },
+    {
+      "version": "0.346.0",
+      "date": "2026-11-11",
+      "codename": "Elbow Room",
+      "notes": [
+        "Foes now stop at your side instead of walking onto you, so your hero stays in sight in a fight",
+        "A blow no longer cancels the move an elite or a boss is winding up: roll out of it, or stun it"
+      ]
+    },
+    {
+      "version": "0.345.0",
+      "date": "2026-11-11",
+      "codename": "Gone Fishing",
+      "notes": [
+        "You can now fish by Pixelheim's bridge, on the Deepwood lake shore and at a Mirefen pool, and each has catches of its own",
+        "A trout, a pike or an eel will do wherever a fresh fish is asked: Pip's cat, Ola's first catch, Vex's stew"
+      ]
+    },
+    {
       "version": "0.344.0",
       "date": "2026-11-11",
       "codename": "Loose Ends",

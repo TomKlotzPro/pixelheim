@@ -424,7 +424,7 @@ func craft(recipe_id: String) -> Dictionary:
 	if not at_station(job):
 		return {"made": false, "count": 0}
 	for item_id: String in entry["needs"]:
-		owner.pack.remove_item(item_id, entry["needs"][item_id])
+		owner.pack.spend(item_id, entry["needs"][item_id])
 	var count := 1
 	if Catalog.item(entry["itemId"]).has("slot"):
 		# Mastery shows in the work (PIX-182): Fine or Epic the more levels

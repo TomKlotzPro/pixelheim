@@ -1582,6 +1582,44 @@
       "restoreHp": 35,
       "description": "A pale fish from under the Frostgate ice. Sweet, and cold to the bone."
     },
+    "bridge_trout": {
+      "name": "Bridge Trout",
+      "category": "food",
+      "sprite": "fish",
+      "weight": 1,
+      "value": 10,
+      "restoreHp": 20,
+      "standsFor": "fresh_fish",
+      "description": "Grew fat under Pixelheim's bridge on dropped pie crust. Tastes faintly of festival. Does wherever a fresh fish is wanted."
+    },
+    "smug_pike": {
+      "name": "Smug Pike",
+      "category": "food",
+      "sprite": "fish",
+      "weight": 1,
+      "value": 14,
+      "restoreHp": 28,
+      "standsFor": "fresh_fish",
+      "description": "A Deepwood pike, and it knows it. It took your bait out of pity. Cooks like any fresh fish, which it would hate to hear."
+    },
+    "moss_eel": {
+      "name": "Mirefen Eel",
+      "category": "food",
+      "sprite": "fish",
+      "weight": 1,
+      "value": 8,
+      "restoreHp": 15,
+      "standsFor": "fresh_fish",
+      "description": "Mostly moss, partly eel, entirely damp. Pip's cat eats it as a fresh fish and pretends not to notice."
+    },
+    "lost_hat": {
+      "name": "Somebody's Hat",
+      "category": "misc",
+      "sprite": "helm",
+      "weight": 1,
+      "value": 2,
+      "description": "Blown off the bridge on a windy day. Half of Pixelheim says it's theirs. The other half says keep it, it's yours now."
+    },
     "caravan_strongbox": {
       "name": "Gunnar's Strongbox",
       "category": "misc",

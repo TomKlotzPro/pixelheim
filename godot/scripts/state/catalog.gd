@@ -21,6 +21,17 @@ static func item_name(item_id: String) -> String:
 	return item(item_id).get("name", item_id.capitalize())
 
 
+## How many of `item_id` `items` holds, counting what stands in for it
+## (an item's "standsFor", PIX-450: a Smug Pike is a fresh fish to Pip's
+## cat, Ola and Vex's stew pot).
+static func held(items: Dictionary, item_id: String) -> int:
+	var count := 0
+	for id: String in items:
+		if id == item_id or item(id).get("standsFor", "") == item_id:
+			count += int(items[id])
+	return count
+
+
 static func role(role_id: String) -> Dictionary:
 	return _data()["roles"].get(role_id, {})
 

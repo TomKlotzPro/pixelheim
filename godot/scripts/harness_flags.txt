@@ -61,6 +61,7 @@ nightfall |  | night falls while the hero looks on: only the packs whose homes a
 overview |  | the camera frames the whole map | overview | 210
 --settlers | <ids> | recruits already living in town before the first map is drawn (iva,wren; PIX-338: mirelle and her counting table)
 festival |  | a festival day: stalls, barker, confetti, everyone on the square (PIX-159) | festival | 220
+noon |  | midday: the sun at its height, the scenery's shadows at their shortest and darkest (PIX-449) | noon | 225
 dusk |  | evening: the town's folk on the square (PIX-159) | dusk | 230
 waypoints |  | every waypoint found: the map's list at its longest | waypoints | 240
 charted |  | every map of the Reach walked end to end: the map screen's pages drawn whole, every waypoint found (PIX-266) | charted | 250

@@ -359,7 +359,7 @@ func _craft_row(index: int) -> Control:
 		var pack := GameState.pack
 		var needs: Array[String] = []
 		for need: String in entry["needs"]:
-			needs.append("%s %d/%d" % [Catalog.item_name(need), mini(pack.items.get(need, 0), entry["needs"][need]), entry["needs"][need]])
+			needs.append("%s %d/%d" % [Catalog.item_name(need), mini(Catalog.held(pack.items, need), entry["needs"][need]), entry["needs"][need]])
 		detail = ", ".join(needs)
 		ink = UiStyle.INK if Economy.can_craft(entry, pack.items, GameState.hero.jobs) else UiStyle.FADED
 	_row_words(index, panel, _row_name(row), ink, detail, "")
@@ -435,7 +435,7 @@ func _about(row: Dictionary) -> String:
 			# What's missing and where it comes from (PIX-143), else what it is.
 			var missing: Array[String] = []
 			for need: String in entry["needs"]:
-				if GameState.pack.items.get(need, 0) < entry["needs"][need]:
+				if Catalog.held(GameState.pack.items, need) < entry["needs"][need]:
 					# The nearest lead true now (PIX-184), or at least its name.
 					var lead := Economy.where_to_find(need, GameState.town_tier(), GameState.trade.stock_stage())
 					missing.append(lead if lead != "" else Catalog.item_name(need))

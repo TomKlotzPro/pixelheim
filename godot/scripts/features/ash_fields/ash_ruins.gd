@@ -302,11 +302,13 @@ static func _draw(view: MapView, piece: Dictionary) -> void:
 			if mended:
 				sprite.texture = PunyProps.texture(YOUNG)
 				stand_on(view, sprite, cell, Vector2.ZERO)
+				cast(view, Vector2(cell * TILE) + Vector2(TILE / 2.0, TILE), TILE * MapView.CROWN_SHADOW.x, TILE * MapView.CROWN_SHADOW.y)
 			else:
 				# Standing as it died, a pixel or two off its row.
 				sprite.texture = AshArt.texture("snag_%d" % piece["variant"])
 				sprite.flip_h = h % 2 == 1
 				stand_on(view, sprite, cell, Vector2(h % 3 - 1, TILE - AshArt.SNAG_HEIGHT))
+				cast(view, Vector2(cell * TILE) + Vector2(h % 3 - 1 + TILE / 2.0, TILE), MapView.SNAG_SHADOW.x, MapView.SNAG_SHADOW.y)
 	if piece["kind"] != "tree":
 		sprite.modulate = WEATHERED if mended else CHARRED
 	for taken: Vector2i in piece["cells"]:

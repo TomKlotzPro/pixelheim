@@ -141,6 +141,18 @@ static func _add_lamp_post(view: MapView, root: Node2D, cell: Vector2i, sort_y: 
 	halo.tree_exiting.connect(light.queue_free)
 	halo.set_meta("light", light)
 	view.lamps.append({"flame": flame, "unlit": post, "glow": halo})
+	lamp_shadow(view, cell, LampArt.size())
+
+
+## How wide a lamp's shadow is: its post's foot and its lantern.
+const LAMP_SHADOW_WIDE := 6.0
+
+
+## A lamp's shadow by day (PIX-449): a lamp `size` big stands on the bottom
+## of `cell`, its foot's last row `clear` rows up; the shadow is the
+## post's, long and thin, the lantern at its end.
+static func lamp_shadow(view: MapView, cell: Vector2i, size: Vector2i, clear := 1) -> void:
+	cast(view, Vector2(cell * TILE) + Vector2(size.x / 2.0, TILE - clear), LAMP_SHADOW_WIDE, size.y - 4)
 
 
 ## Placed furniture in the house: y-sorted sprites that block (rugs lie flat).

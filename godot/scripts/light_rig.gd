@@ -7,7 +7,8 @@ extends Node
 ##
 ## And the open air's motion (PIX-223): the world's clock and the wind that
 ## the shaders read (shaders/wind.gdshaderinc), the banks mirrored in the
-## water, and cloud shadows drifting over the land by day. The clock stops while the game is paused; with
+## water, and cloud shadows drifting over the land by day; and the sun the
+## scenery's shadows follow (PIX-449, DayNight.sun). The clock stops while the game is paused; with
 ## reduced motion it stops too, the wind drops and the clouds stand still.
 ##
 ## And the desktop app's look (PIX-227, DesktopLook): the canvas in linear
@@ -234,6 +235,10 @@ func _process(delta: float) -> void:
 	var at := world_view()
 	_mirror_water(at)
 	_drift_clouds(at, overcast)
+	# The scenery's shadows follow the sun (PIX-449): none indoors or
+	# underground, and none under a sky all cloud.
+	var sun := DayNight.sun(GameState.world.steps) if Lights.under_sky(world.map) else Vector3.ZERO
+	RenderingServer.global_shader_parameter_set("sun", Vector4(sun.x, sun.y, sun.z * (1.0 - overcast), 0.0))
 	var still: bool = GameState.settings.reduce_motion
 	var t := GameClock.seconds()
 	# The day through a room's window follows the sky, not the room's dark
