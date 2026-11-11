@@ -2001,6 +2001,10 @@ msgid "A WEIGHT BAR: how full the pack is sits beside the weight, and it turns r
 msgstr "UNE JAUGE DE POIDS : le remplissage du sac s'affiche à côté du poids, et vire au rouge près de la limite"
 
 #: assets/data/changelog.json
+msgid "A blow no longer cancels the move an elite or a boss is winding up: roll out of it, or stun it"
+msgstr "Un coup ne fait plus avorter l'attaque qu'un ennemi d'élite ou un boss prépare : esquivez-la d'une roulade, ou étourdissez-le"
+
+#: assets/data/changelog.json
 msgid "A blow shoves a foe back and the push fades, instead of a one-frame jolt: an elite gives half as much ground, a boss none"
 msgstr "Un coup repousse l'ennemi et la poussée s'estompe, au lieu d'un sursaut d'une image : un élite recule deux fois moins, un boss pas du tout"
 
@@ -3531,6 +3535,10 @@ msgstr "Corrigé : la ligne de la première nuit sur votre compétence afficha
 #: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
 msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la surprise a disparu"
+
+#: assets/data/changelog.json
+msgid "Foes now stop at your side instead of walking onto you, so your hero stays in sight in a fight"
+msgstr "Les ennemis s'arrêtent désormais à vos côtés au lieu de vous marcher dessus : votre héros reste visible en combat"
 
 #: assets/data/changelog.json
 msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
