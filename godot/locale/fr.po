@@ -16421,6 +16421,10 @@ msgid "   Slayer %s"
 msgstr "   Pourfendeur %s"
 
 #: scripts/codex_screen.gd
+msgid "%d more for +%d%% damage against them."
+msgstr "Encore %d pour +%d %% de dégâts contre eux."
+
+#: scripts/codex_screen.gd
 msgid "%d more for +%d%%."
 msgstr "Encore %d pour +%d %%."
 
@@ -16445,6 +16449,10 @@ msgid "Every kill teaches. Families over faces."
 msgstr "Chaque mise à mort enseigne. Les familles, pas les visages."
 
 #: scripts/codex_screen.gd
+msgid "Found in %s."
+msgstr "Se trouve : %s."
+
+#: scripts/codex_screen.gd
 msgid "Lv %d  HP %d  ATK %d  DEF %d  %d xp"
 msgstr "Niv. %d  PV %d  ATQ %d  DEF %d  %d XP"
 
@@ -16459,10 +16467,6 @@ msgstr "Plus rien à vous apprendre."
 #: scripts/codex_screen.gd
 msgid "Page %d of %d"
 msgstr "Page %d sur %d"
-
-#: scripts/codex_screen.gd
-msgid "Unmet. The wilds keep their secrets."
-msgstr "Jamais croisé. Les terres sauvages gardent leurs secrets."
 
 #: scripts/codex_screen.gd
 msgid "tabs"
@@ -18715,10 +18719,6 @@ msgstr "%s, avec %s."
 #: scripts/state/quests.gd
 msgid "%s, in %s."
 msgstr "%s, %s."
-
-#: scripts/state/quests.gd
-msgid "Found in %s."
-msgstr "Se trouve : %s."
 
 #: scripts/state/quests.gd
 msgid "In %s."
