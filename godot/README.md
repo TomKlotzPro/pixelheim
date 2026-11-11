@@ -516,6 +516,8 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/escort.gd` — An escort (PIX-192): Gunnar's last wagon down the Frostgate - an old mammoth hauling the pass's last crates.
 - `scripts/features/ash_fields/ash_ruins.gd` — The Ash Fields' burnt farmsteads (PIX-397, step 2; the v0.307 world audit: « a flat grey plain with blobs, in a rectangle »).
 - `scripts/features/ash_fields/feature.gd` — The Ash Fields' burnt farmsteads in the harness (PIX-397, step 2)
+- `scripts/features/camp_stashes/camp_stashes.gd` — A stash by a camp's tent once its pack is cleared (PIX-453).
+- `scripts/features/camp_stashes/feature.gd` — The camps' stashes in the harness (PIX-453)
 - `scripts/features/farm_animals/farm_animals.gd` — Pixelheim's farm animals by its age (PIX-387, the village's step 2)
 - `scripts/features/farm_animals/feature.gd` — The town's farm animals in the harness (PIX-387)
 - `scripts/features/farm_animals/herd.gd` — The town's farm animals as they live (PIX-387)

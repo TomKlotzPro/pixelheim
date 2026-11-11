@@ -95,7 +95,7 @@ static func plan_camps(map: MapData) -> Dictionary:
 		for offset: Vector2i in CAMP_RING:
 			if fits.call(home + offset):
 				tent = home + offset
-				out[tent] = {"kind": "tent", "tile": TENTS.get(region, 706)}
+				out[tent] = {"kind": "tent", "tile": TENTS.get(region, 706), "spawn": spawn["id"]}
 				break
 		if tent.x < 0:
 			continue
