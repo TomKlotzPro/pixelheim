@@ -99,6 +99,69 @@ func test_a_blow_shoves_by_weight() -> void:
 	assert_lt(Reach.bite_tell() + travelled, Reach.bite_lands(), "a foe telling its bite keeps it in reach")
 
 
+## PIX-451: a foe closing in stops at the hero's edge (an elite and Fafnyr
+## stood on the hero, the two drawn as one): the step toward them goes, the
+## step round them stays, stopped it faces them, and it never backs off a
+## hero who walks up to it.
+func test_a_foe_stops_at_the_heros_edge() -> void:
+	var foe: CharacterBody2D = autofree(preload("res://scripts/enemy.gd").new())
+	foe.edge = 14.0
+	var tick := 1.0 / 60.0
+	foe.velocity = Vector2(55, 0)
+	foe._keep_off(Vector2(40, 0), tick)
+	assert_eq(foe.velocity, Vector2(55, 0), "far off, the chase as it was")
+	foe._keep_off(Vector2(14.5, 0), tick)
+	assert_almost_eq(foe.velocity.x * tick, 0.5, 0.001, "a step short: as far as its edge")
+	foe.facing = "up"
+	foe.velocity = Vector2(55, 0)
+	foe._keep_off(Vector2(14, 0), tick)
+	assert_eq(foe.velocity, Vector2.ZERO, "at its edge, no nearer")
+	assert_eq(foe.facing, "right", "and it faces them")
+	foe.velocity = Vector2(40, 30)
+	foe._keep_off(Vector2(14, 0), tick)
+	assert_eq(foe.velocity, Vector2(0, 30), "round them to its place in the ring")
+	foe.velocity = Vector2(-20, 0)
+	foe._keep_off(Vector2(10, 0), tick)
+	assert_eq(foe.velocity, Vector2(-20, 0), "walked up to, it goes on as it was")
+
+
+## PIX-451: every foe, drawn as it is (the art installed), stops beside the
+## hero rather than on them - a big dragon's wingtip over them at most - in
+## a blade's reach, telling its bite from there; and an elite or a named
+## monster with a cleave starts it there and strikes a hero who stands.
+func test_every_foe_stops_beside_the_hero_in_reach_of_both() -> void:
+	var EnemyScript := preload("res://scripts/enemy.gd")
+	var EliteBrain := preload("res://scripts/elite_brain.gd")
+	var near := float(Packs.rules()["ring"]["near"])
+	var fighters: Array[Dictionary] = [Bells.fafnyr()]
+	for id: String in Bestiary._data()["monsters"]:
+		fighters.append(Bestiary.spawn(id))
+		fighters.append(Bestiary.spawn(id, true))
+	for entry: Dictionary in Hunts.all():
+		fighters.append(Hunts.fighter(entry["id"]))
+	for fighter in fighters:
+		var who := "%s %s" % [fighter["id"], fighter.get("named", "")]
+		var sprite := AnimatedSprite2D.new()
+		sprite.sprite_frames = PunyArt.frames(PunyArt.monster(fighter["id"]))
+		var size := EnemyScript.drawn_size(fighter)
+		var shadow: Sprite2D = EnemyScript.ground_shadow(sprite, size, 0.0)
+		var foot := shadow.texture.get_width() * size / 2.0
+		shadow.free()
+		sprite.free()
+		var body := EnemyScript.body_of(fighter).x / 2.0
+		var edge := EnemyScript.edge_of(foot, body)
+		var beyond := maxf(0.0, edge - near)
+		var at := Vector2(100, 100)
+		var hero := at + Vector2.LEFT * edge
+		assert_lte(EnemyScript.HERO_HALF + foot - edge, foot / 2.0, "%s: beside the hero, not on them" % who)
+		assert_true(Reach.lands(hero, Vector2.RIGHT, at, body, Reach.swing("sword")), "%s: a blade reaches it" % who)
+		assert_lt(edge, Reach.bite_tell() + beyond, "%s: it tells its bite from there" % who)
+		var trick := Bestiary.elite_moves(Bestiary.family_of(fighter["id"]))
+		if String(trick.get("move", "")) == "cleave":
+			assert_true(EliteBrain.in_reach(trick, at, hero, beyond), "%s: it cleaves from there" % who)
+			assert_true(Geometry2D.is_point_in_polygon(hero, EliteBrain.cleave_band(trick, at, hero, beyond)), "%s: and strikes a hero who stands" % who)
+
+
 ## PIX-377: monsters last a real fight. A wild foe's health grows by a scale
 ## that tapers to the forest's levels, a boss's by one that falls as its row
 ## grows, and the Night of Bells keeps its own numbers.

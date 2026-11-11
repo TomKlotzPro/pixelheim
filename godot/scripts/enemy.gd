@@ -39,8 +39,8 @@ const TAG_HEIGHT := 9.0
 const TAG_HALF_WIDTH := 10.0
 ## Between the level tag and an ailment's icon, and from one to the next.
 const AILMENT_GAP := 1.0
-## A bite is told once the hero is within Reach.bite_tell(), and lands if
-## they're still within Reach.bite_lands() (PIX-410: combat.json's reach).
+## A bite is told once the hero is within bite_tell(), and lands if
+## they're still within bite_lands() (PIX-410: combat.json's reach).
 const CONTACT_COOLDOWN := 0.9
 const ELITE_TINT := Color(1.0, 0.82, 0.7)
 ## A blow's shove (PIX-209): a push that fades to nothing over KNOCK_TIME,
@@ -100,6 +100,9 @@ const HEAD_CLEAR := 6.0
 ## its near edge, half its width either side of its feet (Reach, PIX-410).
 const BODY := Vector2(16, 24)
 const ELITE_BODY := 1.2
+## The hero's half-width at their feet (their shadow, 14 px across): a foe
+## closing in stops at its edge (edge_of, PIX-451).
+const HERO_HALF := 7.0
 ## A boss's weight besides its size (PIX-314): its shadow on the ground,
 ## how dark; and a glow of its own colour on the floor round its feet in the
 ## dark: a light that lights the floor alone (Lights.FLOOR), so nothing
@@ -241,6 +244,11 @@ var _reach_until := -100.0
 ## Where its bar stands, from its feet (over_head, PIX-314); its shadow
 ## on the ground (ground_shadow, PIX-441) and a boss's glow (_weigh).
 var _over_head := BAR_Y
+## How near the hero's feet it comes (edge_of, PIX-451), and how far past the
+## ring's nearest that is: its bite and its trick reach that much further,
+## so from where it stops they reach as a common foe's did from there.
+var edge := 0.0
+var beyond := 0.0
 ## Its shot (Reach.shot, PIX-410), {} for a foe that only bites; seconds
 ## till it may loose the next, and till the one it is telling flies
 ## (negative while none is told).
@@ -294,6 +302,8 @@ func _ready() -> void:
 	_play("idle")
 	_shadow = ground_shadow(sprite, size, _rest_at.y)
 	add_child(_shadow)
+	edge = edge_of(_shadow.texture.get_width() * size / 2.0, body_of(fighter).x / 2.0)
+	beyond = maxf(0.0, edge - float(Packs.rules()["ring"]["near"]))
 	if boss_like:
 		_weigh(size)
 	add_child(sprite)
@@ -541,6 +551,16 @@ static func drawn_size(fighter: Dictionary) -> int:
 static func body_of(fighter: Dictionary) -> Vector2:
 	var grown := growth(fighter)
 	return BODY * (ELITE_BODY if grown == 1 and fighter["elite"] else float(grown))
+
+
+## How near the hero's feet a foe `foot` wide either side of its feet as
+## drawn, its body for blows `body` either side, comes (PIX-451: an elite
+## and Fafnyr stood on the hero, hiding them): to the hero's edge, so the
+## two stand side by side; but never so far that its body is out of a
+## blade's reach - its near edge no further off than the ring's nearest
+## stands (PIX-377), which spares Fafnyr's wings at the Night of Bells.
+static func edge_of(foot: float, body: float) -> float:
+	return minf(HERO_HALF + foot, body + float(Packs.rules()["ring"]["near"]))
 
 
 ## The line its health bar stands on, from its feet (PIX-314): HEAD_CLEAR
@@ -895,13 +915,40 @@ func _chase(to_player: Vector2, delta: float) -> void:
 			facing = Gait.steer(facing, to_player)
 	else:
 		velocity = _heading(to_player, delta) * CHASE_SPEED * pace
+	_keep_off(to_player, delta)
 	if tell_left >= 0:
 		velocity *= 0.3
 		tell_left -= delta
 		if tell_left < 0:
 			_bite(to_player)
-	elif to_player.length() < Reach.bite_tell() and can_bite:
+	elif to_player.length() < bite_tell() and can_bite:
 		_tell_bite(to_player)
+
+
+## At its edge it comes no nearer (PIX-451): the step toward them goes and
+## the step round them stays (to its place in the ring), and stopped, it
+## faces them. It never backs off: a hero may still walk up to it (their
+## bodies meet at the feet) or roll past it, and a blow still shoves it.
+func _keep_off(to_player: Vector2, delta: float) -> void:
+	var apart := to_player.length()
+	if apart <= 0.0:
+		return
+	var toward := to_player / apart
+	var closing := velocity.dot(toward) - maxf(0.0, apart - edge) / delta
+	if closing <= 0.0:
+		return
+	velocity -= toward * closing
+	if velocity.length() <= 1.0:
+		facing = Gait.steer(facing, to_player)
+
+
+## Its bite's reach (Reach.bite_tell and bite_lands), from its edge.
+func bite_tell() -> float:
+	return Reach.bite_tell() + beyond
+
+
+func bite_lands() -> float:
+	return Reach.bite_lands() + beyond
 
 
 ## A shooter's turn (PIX-410): while it has the hero beyond a bite and
@@ -919,7 +966,7 @@ func _shoots(to_player: Vector2, delta: float) -> bool:
 			_loose(to_player)
 		return true
 	var apart := to_player.length()
-	if _at_quarry or tell_left >= 0.0 or apart <= Reach.bite_lands() or apart > Reach.px(shot):
+	if _at_quarry or tell_left >= 0.0 or apart <= bite_lands() or apart > Reach.px(shot):
 		return false
 	if not Packs.shot_clear(world.map, Packs.cell_of(global_position), Packs.cell_of(global_position + to_player)):
 		return false
@@ -981,7 +1028,7 @@ func _tell_bite(toward: Vector2) -> void:
 	tell.tween_property(sprite, "skew", 0.0, tell_left * 0.4)
 	Sound.play("tell")
 	if GameState.settings.clear_warnings:
-		_tell_mark = Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, Reach.bite_lands(), 12.0), tell_left, Callable(), false)
+		_tell_mark = Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, bite_lands(), 12.0), tell_left, Callable(), false)
 
 
 ## Whether it takes a place in the ring round the hero (PIX-377,
@@ -1008,7 +1055,7 @@ func _hunts_wagon() -> bool:
 
 
 func _bite(to_player: Vector2) -> void:
-	if to_player.length() > Reach.bite_lands():
+	if to_player.length() > bite_lands():
 		return
 	can_bite = false
 	Sound.play(Sound.voice_for(String(fighter["id"]), "attack", "foe_bite"))
@@ -1078,7 +1125,7 @@ func _fresh_hunt() -> void:
 ## by the next step of its way round what stands between. With no way at
 ## all it stands and watches, and that counts toward giving up.
 func _heading(to_target: Vector2, delta: float) -> Vector2:
-	if not boss_like or to_target.length() <= Reach.bite_lands():
+	if not boss_like or to_target.length() <= bite_lands():
 		blocked_for = 0.0
 		return to_target.normalized()
 	var way := _way(to_target, delta)
@@ -1154,7 +1201,7 @@ func _can_reach(to_player: Vector2) -> bool:
 func _measure_held(walk: Vector2, to_player: Vector2, delta: float) -> void:
 	var pressing := walk.length() > 1.0
 	if mode == "chase" and boss_like:
-		pressing = pressing and tell_left < 0 and to_player.length() > Reach.bite_lands()
+		pressing = pressing and tell_left < 0 and to_player.length() > bite_lands()
 		held_for = held_for + delta if pressing and get_real_velocity().length() < CHASE_SPEED * pace * 0.25 else 0.0
 	elif mode == "homeward":
 		held_for = held_for + delta if get_real_velocity().length() < HOMEWARD_SPEED * 0.25 else 0.0
@@ -1338,8 +1385,12 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 		bound_until = GameClock.seconds() + BOUND_SECONDS
 		_fresh_hunt()
 	# Struck from anywhere, it turns on the hero at once; struck as it runs,
-	# it stands and fights where it is (PIX-251).
-	if not dying and mode != "chase":
+	# it stands and fights where it is (PIX-251). Struck as it tells a move,
+	# it holds it (PIX-451: a blow that set it chasing had it walk and bite
+	# through its cleave, whose blow the bite's grace then took, so a hero
+	# swinging nonstop never met an elite's move); a stun breaks it
+	# (_interrupt).
+	if not dying and mode not in ["chase", "cast"]:
 		if mode == "flee":
 			at_bay = true
 			fright_mark.visible = false
@@ -1372,6 +1423,9 @@ func _interrupt() -> void:
 		sprite.skew = 0.0
 	if brain != null and brain.interrupt():
 		broke = true
+	# Its marks taken back, nothing will end its cast but this.
+	if mode == "cast":
+		mode = "chase"
 	if broke:
 		# In "dodged" and "blocked"'s blue: gold is lost on sand and straw.
 		world.fx.float_text(Text.t("Interrupted!"), global_position + Vector2(0, minf(-26.0, _over_head)), Color(0.75, 0.9, 1.0), true)

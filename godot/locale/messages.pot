@@ -2001,6 +2001,10 @@ msgid "A WEIGHT BAR: how full the pack is sits beside the weight, and it turns r
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A blow no longer cancels the move an elite or a boss is winding up: roll out of it, or stun it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A blow shoves a foe back and the push fades, instead of a one-frame jolt: an elite gives half as much ground, a boss none"
 msgstr ""
 
@@ -3530,6 +3534,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Foes now stop at your side instead of walking onto you, so your hero stays in sight in a fight"
 msgstr ""
 
 #: assets/data/changelog.json
