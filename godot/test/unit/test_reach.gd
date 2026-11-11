@@ -69,6 +69,25 @@ func test_each_kind_of_skill_has_its_reach() -> void:
 	assert_eq(_cast(spell, [Vector2(7 * CELL, 0)]), [], "not past its reach")
 	assert_eq(_cast(spell, [Vector2(4 * CELL, 0), Vector2(2 * CELL, 0)]), [1], "at the nearest")
 	assert_eq(_cast(spell, [Vector2(0, -2 * CELL), Vector2(2.5 * CELL, 0)]), [1], "those ahead first")
+	# PIX-455: Shadowstep crosses the gap to a gunner holding its distance.
+	var step := {"reach": "step"}
+	assert_eq(_cast(step, [Vector2(4 * CELL, 0)]), [0], "a step reaches four cells off")
+	assert_eq(_cast(step, [Vector2(6 * CELL, 0)]), [], "not six")
+
+
+## PIX-455: a step lands where its foe would stand by the hero, on its far
+## side; beside it when that's taken; where the hero stands when all are.
+func test_a_step_lands_behind_its_foe_or_beside_it() -> void:
+	var foe := Vector2(3 * CELL, 0)
+	var anywhere := func(_spot: Vector2) -> bool: return true
+	assert_eq(Reach.landing(Vector2.ZERO, foe, 12.0, anywhere), foe + Vector2(12, 0), "behind it, at its edge")
+	var not_behind := func(spot: Vector2) -> bool: return spot.x <= foe.x + 0.01
+	var beside := Reach.landing(Vector2.ZERO, foe, 12.0, not_behind)
+	assert_almost_eq(beside.distance_to(foe), 12.0, 0.01, "still at its edge")
+	assert_almost_eq(beside.x, foe.x, 0.01, "beside it")
+	var nowhere := func(_spot: Vector2) -> bool: return false
+	assert_eq(Reach.landing(Vector2.ZERO, foe, 12.0, nowhere), Vector2.ZERO, "no room: where the hero stands")
+	assert_eq(Reach.px(Reach.skill({"reach": "step"})), 4.0 * CELL, "about four cells (Tom: « lance en 4 »)")
 
 
 func test_an_area_skill_strikes_its_area() -> void:

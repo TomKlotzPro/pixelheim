@@ -55,6 +55,22 @@ func test_a_shot_needs_ground_it_could_cross() -> void:
 	assert_true(Packs.shot_clear(map, Vector2i(1, 1), Vector2i(8, 1)), "over the grass it gets through")
 
 
+## PIX-455: Shadowstep crosses only ground the hero could walk, and never
+## through a way out.
+func test_a_step_crosses_only_open_ground() -> void:
+	var map := MapData.new()
+	for x in 10:
+		for y in 3:
+			map.grid[Vector2i(x, y)] = "grass"
+	map.grid[Vector2i(4, 0)] = "water"
+	map.grid[Vector2i(4, 1)] = "wall"
+	map.portals[Vector2i(4, 2)] = {"kind": "map", "mapId": "town"}
+	assert_false(Packs.step_clear(map, Vector2i(1, 0), Vector2i(6, 0)), "not over water")
+	assert_false(Packs.step_clear(map, Vector2i(1, 1), Vector2i(6, 1)), "nor through a wall")
+	assert_false(Packs.step_clear(map, Vector2i(1, 2), Vector2i(6, 2)), "nor through a door")
+	assert_true(Packs.step_clear(map, Vector2i(5, 1), Vector2i(8, 1)), "over the grass it goes")
+
+
 func test_a_cleared_pack_stays_down_until_its_time_or_the_inn() -> void:
 	state.world.steps = 100.0
 	state.spoils.clear_pack("forest_1")

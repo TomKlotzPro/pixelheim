@@ -1549,7 +1549,7 @@
       }
     },
     "skills": {
-      "about": "A damage skill's reach by its kind (each names its `reach`): the hero turns to the nearest foe it reaches (those ahead first) and strikes it. An area skill strikes every foe in its area: a melee one every foe its blow reaches, a burst every foe within its cells round the hero, a ranged one every foe within `around` cells of the foe it flies to.",
+      "about": "A damage skill's reach by its kind (each names its `reach`): the hero turns to the nearest foe it reaches (those ahead first) and strikes it. An area skill strikes every foe in its area: a melee one every foe its blow reaches, a burst every foe within its cells round the hero, a ranged one every foe within `around` cells of the foe it flies to. A step (Shadowstep, PIX-455) crosses to the far side of the foe it reaches, where that foe would stand by the hero (Reach.landing), and strikes it there.",
       "melee": {
         "cells": 1.0
       },
@@ -1559,6 +1559,9 @@
       },
       "burst": {
         "cells": 2.5
+      },
+      "step": {
+        "cells": 4.0
       }
     },
     "bite": {
@@ -2558,7 +2561,7 @@
         "branch": 2,
         "tier": 0,
         "name": "Shadowstep",
-        "description": "Vanish and strike from behind for devastating damage.",
+        "description": "Vanish and reappear behind a foe up to 4 cells away for a devastating strike.",
         "kind": "active",
         "skill": {
           "name": "Shadowstep",
@@ -2568,7 +2571,7 @@
           "multiplier": 3,
           "stat": "dexterity",
           "unlockLevel": 1,
-          "reach": "melee"
+          "reach": "step"
         }
       },
       {

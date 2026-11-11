@@ -9309,8 +9309,8 @@ msgid "Unshakeable"
 msgstr "Imperturbable"
 
 #: assets/data/combat.json
-msgid "Vanish and strike from behind for devastating damage."
-msgstr "Disparaissez et frappez dans le dos pour des dégâts dévastateurs."
+msgid "Vanish and reappear behind a foe up to 4 cells away for a devastating strike."
+msgstr "Disparaissez et réapparaissez derrière un ennemi à 4 cases ou moins pour une frappe dévastatrice."
 
 #: assets/data/combat.json
 msgid "Vanish, strike, reappear grinning. May stun."

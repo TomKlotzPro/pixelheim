@@ -9309,7 +9309,7 @@ msgid "Unshakeable"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "Vanish and strike from behind for devastating damage."
+msgid "Vanish and reappear behind a foe up to 4 cells away for a devastating strike."
 msgstr ""
 
 #: assets/data/combat.json
