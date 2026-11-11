@@ -6,7 +6,7 @@ extends Node
 ## undead raise a guard that turns most of a blow. A named monster (PIX-156)
 ## has its family's trick and one of its own besides: Greymaw howls up
 ## wolves, the Drowned Knight's bog grasps and holds, Cinderjaw spits fire
-## three ways, Mossback throws a stone, Grandmother Gulp leaps onto you.
+## three ways, Mossback throws a stone, Grandmother Gulp leaps at you.
 ## combat.json's "eliteMoves" and "named" hold the numbers; the enemy it
 ## rides on (its parent) does the walking and biting in between.
 
@@ -122,7 +122,7 @@ static func cleave_band(move: Dictionary, at: Vector2, hero: Vector2, beyond := 
 
 
 ## Stands still while its mark pulses, then strikes it; a lunge first leaps
-## to the mark's far end, a leap onto its middle.
+## to the mark's far end, a leap to beside its middle.
 func _tell(move: Dictionary, shape: PackedVector2Array, jump: String) -> void:
 	enemy.mode = "cast"
 	enemy.velocity = Vector2.ZERO
@@ -137,7 +137,9 @@ func _strike(shape: PackedVector2Array, move: Dictionary, jump: String) -> void:
 		for point in shape:
 			mid += point
 		mid /= shape.size()
-		var land := (shape[1] + shape[2]) / 2.0 if jump == "lunge" else mid
+		# A leap lands its edge off the mark's middle (Enemy.edge_of, PIX-457:
+		# it landed on a hero who stood), or stays put when already nearer.
+		var land := (shape[1] + shape[2]) / 2.0 if jump == "lunge" else mid + (enemy.global_position - mid).limit_length(enemy.edge)
 		var cell := Vector2i((land / TILE).floor())
 		var from := Vector2i((enemy.global_position / TILE).floor())
 		if world.map.is_walkable(cell) and Packs.can_see(world.map, from, cell):
