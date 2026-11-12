@@ -13349,8 +13349,16 @@ msgid "A cheese wheel comes rolling down Upper Street."
 msgstr "Une meule de fromage dévale la Grand-Rue."
 
 #: assets/data/progression.json
+msgid "A clean pot on Sela's old hearth. The note in it: no measures. Taste as you go."
+msgstr "Une marmite propre dans l'âtre de Sela, et un mot : pas de mesures. Goûtez."
+
+#: assets/data/progression.json
 msgid "A fire imp's horn, hollowed out, sounds like the end of the world. Bring me one."
 msgstr "Une corne de diablotin de feu, évidée, ça sonne comme la fin du monde. Rapportez-m'en une."
+
+#: assets/data/progression.json
+msgid "A flower grows in an old boot by Ana's door. Her mother said it was green once."
+msgstr "Chez Ana, une fleur dans une vieille botte. Sa mère l'avait dit : c'était vert."
 
 #: assets/data/progression.json
 msgid "A letter for the captain? He's... not receiving. But a letter's a letter. Go on."
@@ -13359,6 +13367,10 @@ msgstr "Une lettre pour le capitaine ? Il... ne reçoit plus. Mais une lettre 
 #: assets/data/progression.json
 msgid "A marching song needs a horn, and Loras knows just the one."
 msgstr "Une chanson de marche a besoin d'un cor, et Loras sait exactement lequel."
+
+#: assets/data/progression.json
+msgid "A new horseshoe on Hilda's door, a little crooked. The awful hammer still works."
+msgstr "Un fer à cheval neuf chez Hilda, un peu tordu. L'affreux marteau sert encore."
 
 #: assets/data/progression.json
 msgid "A troll in the Deepwood took Loras's lute to pick its teeth with."
@@ -13603,6 +13615,10 @@ msgstr "Rapporter les cinq choses que le feu a épargnées dans les fermes des C
 #: assets/data/progression.json
 msgid "Carry water from the well to the burning homes ({fires})"
 msgstr "Porter l'eau du puits jusqu'aux maisons en feu ({fires})"
+
+#: assets/data/progression.json
+msgid "Chalked on Bram's doorpost: COMING BACK. If you see a cow, she's mine."
+msgstr "À la craie chez Bram : JE REVIENS. Si vous voyez une vache, elle est à moi."
 
 #: assets/data/progression.json
 msgid "Champion"
@@ -14195,6 +14211,10 @@ msgstr "Sa lanterne. Elle disait qu'elle l'éteindrait elle-même quand ils sera
 #: assets/data/progression.json
 msgid "Herbs for the Shrine"
 msgstr "Des herbes pour le sanctuaire"
+
+#: assets/data/progression.json
+msgid "Herbs in a row by Vex's door, each with a label. Every label says: secret."
+msgstr "Des herbes en rang chez Vex, chacune son étiquette. Toutes disent : secret."
 
 #: assets/data/progression.json
 msgid "Hierophant"

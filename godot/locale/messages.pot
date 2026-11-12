@@ -13349,7 +13349,15 @@ msgid "A cheese wheel comes rolling down Upper Street."
 msgstr ""
 
 #: assets/data/progression.json
+msgid "A clean pot on Sela's old hearth. The note in it: no measures. Taste as you go."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "A fire imp's horn, hollowed out, sounds like the end of the world. Bring me one."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "A flower grows in an old boot by Ana's door. Her mother said it was green once."
 msgstr ""
 
 #: assets/data/progression.json
@@ -13358,6 +13366,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "A marching song needs a horn, and Loras knows just the one."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "A new horseshoe on Hilda's door, a little crooked. The awful hammer still works."
 msgstr ""
 
 #: assets/data/progression.json
@@ -13602,6 +13614,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Carry water from the well to the burning homes ({fires})"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Chalked on Bram's doorpost: COMING BACK. If you see a cow, she's mine."
 msgstr ""
 
 #: assets/data/progression.json
@@ -14194,6 +14210,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Herbs for the Shrine"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Herbs in a row by Vex's door, each with a label. Every label says: secret."
 msgstr ""
 
 #: assets/data/progression.json

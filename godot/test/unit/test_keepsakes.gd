@@ -81,3 +81,41 @@ func test_what_the_fire_missed_is_a_feat() -> void:
 	state.pack_changed()
 	assert_has(state.progression.deeds, _deed()["id"])
 	assert_eq(int(state.pack.items.get(_deed()["itemId"], 0)), 1)
+
+
+## A ring round the lamp on the road to `place`, `mornings` old.
+func _ring(place: String, mornings: int) -> Dictionary:
+	return {"place": place, "cell": Routes.lamp_of(place)["cell"], "kind": "ember", "reach": Lamps.REACH, "mornings": mornings}
+
+
+## PIX-466: a stead has one line to say, only once its keepsake is home
+## and the ground round its lamp has healed.
+func test_a_stead_remembers_once_its_keepsake_is_home_and_its_lamp_has_healed() -> void:
+	var lines := {}
+	for quest: Dictionary in Quests.keepsakes():
+		var lamp: String = quest["found"]["lamp"]
+		var whole: Array[Dictionary] = [_ring(lamp, Lamps.REACH)]
+		var growing: Array[Dictionary] = [_ring(lamp, Lamps.REACH - 1)]
+		var door := Vector2i(int(quest["found"]["x"]), int(quest["found"]["y"]))
+		assert_false(Routes.lamp_of(lamp).is_empty(), "%s: a lamp can stand on the road to %s" % [quest["id"], lamp])
+		assert_eq(Quests.keepsake_of(AshRuins.MAP, door), quest)
+		assert_eq(Quests.remembered(quest, state.progression.quests, whole), "", "%s: nothing before it's found" % quest["id"])
+		state.questing.salvage(quest)
+		assert_eq(Quests.remembered(quest, state.progression.quests, whole), "", "%s: nothing while it's carried" % quest["id"])
+		state.questing.deliver(quest["objective"]["to"])
+		assert_eq(Quests.remembered(quest, state.progression.quests, []), "", "%s: nothing with its lamp unlit" % quest["id"])
+		assert_eq(Quests.remembered(quest, state.progression.quests, growing), "", "%s: nothing while its ring grows" % quest["id"])
+		var others: Array[Dictionary] = []
+		for place: String in Routes.places():
+			if place != lamp and not Routes.lamp_of(place).is_empty():
+				others.append(_ring(place, Lamps.REACH))
+		assert_eq(Quests.remembered(quest, state.progression.quests, others), "", "%s: nothing by another lamp" % quest["id"])
+		var said := Quests.remembered(quest, state.progression.quests, whole)
+		assert_eq(said, String(quest["remembers"]))
+		# One row of the plate (it wraps past some 83 letters), and it names
+		# whose stead it is.
+		assert_between(said.length(), 20, 80, "%s: one row of the plate" % quest["id"])
+		assert_false("\n" in said)
+		assert_string_contains(said, String(quest["name"]).split("'")[0])
+		lines[said] = true
+	assert_eq(lines.size(), AshRuins.STEADS.size(), "a line of its own each")

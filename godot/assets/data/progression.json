@@ -1279,7 +1279,7 @@
     },
     {
       "id": "keepsake_bram",
-      "about": "PIX-448: the five keepsakes the Night of Ash left in the Ash Fields' burnt steads, one at each stead's door (`found`, AshRuins.STEADS; E there, the ash_fields feature). Found, the keepsake is in the pack and its quest taken; carried home to its owner it's handed over as a letter is (the deliverTo kind): their `answer`, a little gold. The journal's Feats count them home (Deeds' keepsakes).",
+      "about": "PIX-448: the five keepsakes the Night of Ash left in the Ash Fields' burnt steads, one at each stead's door (`found`, AshRuins.STEADS; E there, the ash_fields feature). Found, the keepsake is in the pack and its quest taken; carried home to its owner it's handed over as a letter is (the deliverTo kind): their `answer`, a little gold. The journal's Feats count them home (Deeds' keepsakes). PIX-466: once it's home and the ground round the lamp nearest its stead has healed (`found`'s `lamp`, a route's place: its ring whole, Lamps.whole), E at the door says `remembers` on the message plate: one short line, nothing given.",
       "giver": "ash_fields",
       "name": "Bram's Milk Pail",
       "brief": "Carry Bram's milk pail home to him in Pixelheim.",
@@ -1294,7 +1294,8 @@
         "gold": 20,
         "xp": 0
       },
-      "found": {"mapId": "overworld", "x": 5, "y": 24},
+      "found": {"mapId": "overworld", "x": 5, "y": 24, "lamp": "mirefen"},
+      "remembers": "Chalked on Bram's doorpost: COMING BACK. If you see a cow, she's mine.",
       "answer": [
         "My pail! The cows ran off, the barn burnt and the cheese melted, but the pail came through. A man can start again from a pail."
       ]
@@ -1315,7 +1316,8 @@
         "gold": 20,
         "xp": 0
       },
-      "found": {"mapId": "overworld", "x": 32, "y": 24},
+      "found": {"mapId": "overworld", "x": 32, "y": 24, "lamp": "blackiron"},
+      "remembers": "A new horseshoe on Hilda's door, a little crooked. The awful hammer still works.",
       "answer": [
         "(Hilda smiles. Dagny swears she does it once a year.) My first hammer. I made it at nine, and it's awful. Thank you."
       ]
@@ -1336,7 +1338,8 @@
         "gold": 20,
         "xp": 0
       },
-      "found": {"mapId": "overworld", "x": 35, "y": 15},
+      "found": {"mapId": "overworld", "x": 35, "y": 15, "lamp": "blackiron"},
+      "remembers": "A clean pot on Sela's old hearth. The note in it: no measures. Taste as you go.",
       "answer": [
         "My mother's stew! The fire's had the half with the measures. Good. I never kept to them."
       ]
@@ -1357,7 +1360,8 @@
         "gold": 20,
         "xp": 0
       },
-      "found": {"mapId": "overworld", "x": 54, "y": 19},
+      "found": {"mapId": "overworld", "x": 54, "y": 19, "lamp": "greyhold"},
+      "remembers": "Herbs in a row by Vex's door, each with a label. Every label says: secret.",
       "answer": [
         "My good mortar! Cracked clean through, so it'll grind crooked now. I'll call that the secret."
       ]
@@ -1378,7 +1382,8 @@
         "gold": 20,
         "xp": 0
       },
-      "found": {"mapId": "overworld", "x": 71, "y": 23},
+      "found": {"mapId": "overworld", "x": 71, "y": 23, "lamp": "greyhold"},
+      "remembers": "A flower grows in an old boot by Ana's door. Her mother said it was green once.",
       "answer": [
         "My good boots! The fire had the toes and left the ankles. It knew what mattered."
       ]

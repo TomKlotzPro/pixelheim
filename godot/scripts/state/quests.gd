@@ -49,11 +49,30 @@ static func keepsakes() -> Array:
 ## The keepsake still waiting at `cell` of `map_id` (not found yet: its
 ## quest untaken), {} for none.
 static func keepsake_at(map_id: String, cell: Vector2i, entries: Dictionary) -> Dictionary:
+	var quest := keepsake_of(map_id, cell)
+	return {} if entries.has(quest.get("id", "")) else quest
+
+
+## The keepsake whose stead's door is `cell` of `map_id`, found or not, {}
+## for none.
+static func keepsake_of(map_id: String, cell: Vector2i) -> Dictionary:
 	for quest: Dictionary in keepsakes():
 		var found: Dictionary = quest["found"]
-		if found["mapId"] == map_id and Vector2i(int(found["x"]), int(found["y"])) == cell and not entries.has(quest["id"]):
+		if found["mapId"] == map_id and Vector2i(int(found["x"]), int(found["y"])) == cell:
 			return quest
 	return {}
+
+
+## What a stead says at its door once it has something to say (PIX-466):
+## its keepsake `quest` carried home and the ground healed round the lamp
+## nearest it (its `found`'s `lamp`, whole among `rings`, Lamps.rings: the
+## steads west and east lie past every ring, so no stead's own ground can
+## be asked); "" before. Words only: nothing is given.
+static func remembered(quest: Dictionary, entries: Dictionary, rings: Array[Dictionary]) -> String:
+	if not entries.get(quest.get("id", ""), {}).get("done", false):
+		return ""
+	var healed := rings.any(func(ring: Dictionary) -> bool: return ring["place"] == quest["found"]["lamp"] and Lamps.whole(ring))
+	return String(quest["remembers"]) if healed else ""
 
 
 ## How far along a quest is (questProgress): kills counted so far, or the
