@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.356.0",
+      "date": "2026-11-12",
+      "codename": "In Plain Sight",
+      "notes": [
+        "A foe that closes in from below now stops where your hero stays in sight",
+        "A pack meeting you against a wall now spreads round you instead of queueing in a column"
+      ]
+    },
+    {
       "version": "0.355.0",
       "date": "2026-11-12",
       "codename": "Right on Cue",

@@ -2281,6 +2281,10 @@ msgid "A foe gives you longer to see its bite coming, and shows it: it crouches 
 msgstr "Un ennemi vous laisse plus de temps pour voir venir sa morsure, et la montre : il se ramasse avec une lueur rouge et un son. Avec les Avertissements clairs, une bande au sol marque où elle tombera"
 
 #: assets/data/changelog.json
+msgid "A foe that closes in from below now stops where your hero stays in sight"
+msgstr "Un ennemi qui approche par le bas s'arrête désormais là où votre héros reste visible"
+
+#: assets/data/changelog.json
 msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
 msgstr "Un ennemi qui vous repère fait jaillir une étincelle rouge, un ennemi apeuré une bleue : le danger et la parole ne se confondent plus"
 
@@ -2383,6 +2387,10 @@ msgstr "Un nouveau rêve sous le toit de Sela, la première nuit après le retou
 #: assets/data/changelog.json
 msgid "A new hero starts only from New Game on the title screen; with every slot taken, it says so instead of overwriting anyone"
 msgstr "Un nouveau héros ne commence que depuis Nouvelle partie, sur l'écran titre ; si tous les emplacements sont pris, le jeu le dit au lieu d'écraser qui que ce soit"
+
+#: assets/data/changelog.json
+msgid "A pack meeting you against a wall now spreads round you instead of queueing in a column"
+msgstr "Une meute qui vous trouve contre un mur se répartit désormais autour de vous au lieu de faire la queue en colonne"
 
 #: assets/data/changelog.json
 msgid "A pack shows one level tag in a fight, its highest, and the words over the world step clear of the tags instead of piling up at the kill"
@@ -4135,6 +4143,10 @@ msgstr "Impact"
 #: assets/data/changelog.json
 msgid "In Hand"
 msgstr "En main"
+
+#: assets/data/changelog.json
+msgid "In Plain Sight"
+msgstr "Bien en vue de tous"
 
 #: assets/data/changelog.json
 msgid "In Their Own Words"
