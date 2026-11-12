@@ -11,6 +11,10 @@ extends CharacterBody2D
 const SPEED := 95.0
 ## The body that meets walls: a cell wide, less a few pixels.
 const BODY := Vector2(10, 8)
+## Where that body sits, from the hero's feet.
+const BODY_AT := Vector2(0, 3)
+## How faint the hero is while Shadowstep carries them (PIX-455).
+const STEP_FADE := 0.25
 const ATTACK_COOLDOWN := 0.45
 ## How long a hit hero can't be hit again (PIX-377: 0.8 s let a pack take
 ## turns at a hero who hardly felt the second bite).
@@ -48,6 +52,8 @@ var invulnerable := false
 var dodging := false
 var dodge_ready := true
 var dodge_dir := Vector2.ZERO
+## Shadowstep carrying the hero to the far side of its foe (PIX-455).
+var stepping := false
 var dead := false
 var hit_this_swing: Array[Node] = []
 var scripted_dir := Vector2.ZERO  # test-harness movement override
@@ -96,7 +102,7 @@ func _ready() -> void:
 	var rect := RectangleShape2D.new()
 	rect.size = BODY
 	shape.shape = rect
-	shape.position = Vector2(0, 3)
+	shape.position = BODY_AT
 	add_child(shape)
 
 	sprite.animation_finished.connect(_on_animation_finished)
@@ -144,6 +150,11 @@ func _physics_process(delta: float) -> void:
 		return
 	# Before the blow's check, so a roll that cuts a swing has already ended it.
 	_fire_kept()
+	if stepping:
+		# Its tween carries the hero; the roll's trail behind them.
+		if global_position.distance_to(_ghost_at) >= GHOST_GAP:
+			_ghost()
+		return
 	if dodging:
 		velocity = dodge_dir * float(Bestiary.dodge_rules()["speed"])
 		var rolled_from := global_position
@@ -262,9 +273,10 @@ func _notification(what: int) -> void:
 
 ## Neither down, stunned nor mid-roll: a blow must never land after a roll
 ## has started, and a swing begun in one never ended (the roll's walk holds
-## the sprite, so its animation never finished).
+## the sprite, so its animation never finished). Nor mid-Shadowstep: its
+## blow is still to come.
 func _can_act() -> bool:
-	return not dead and not dodging and not ailments.is_stunned()
+	return not dead and not dodging and not stepping and not ailments.is_stunned()
 
 
 func _can_attack() -> bool:
@@ -387,7 +399,7 @@ var _nipped_until := 0.0
 func take_hit(damage: int, from: Vector2, infliction: Variant = null, grace := true) -> void:
 	if invulnerable or dead or (not grace and GameClock.seconds() < _nipped_until):
 		return
-	if _dodge_iframes:
+	if _dodge_iframes or stepping:
 		# The blow swishing past (PIX-383: it was silent).
 		Sound.play("whiff")
 		world.fx.float_text(Text.t("dodged"), global_position + Vector2(0, -22), Color(0.75, 0.9, 1.0))
@@ -473,7 +485,8 @@ static func _glow() -> Texture2D:
 ## A skill by its place in the hero's list (getHeroSkills): its price paid,
 ## then a heal on the hero or a strike on the nearest foe its kind reaches
 ## (Reach.targets, PIX-410: a blow's up close, a spell's or an arrow's from
-## afar), through the web's formulas; ailments and cleansing as the skill
+## afar; a step's from the far side of its foe once the hero is there,
+## PIX-455), through the web's formulas; ailments and cleansing as the skill
 ## says.
 func cast(index: int) -> void:
 	if not _can_cast():
@@ -489,10 +502,18 @@ func cast(index: int) -> void:
 		_refuse(block)
 		return
 	var targets: Array = []
+	var landing := global_position
+	var open := Callable()
 	if skill["kind"] == "damage":
 		var foes := _living_foes()
-		for found in Reach.targets(global_position, facing, _spots(foes), _radii(foes), skill):
-			targets.append(foes[found])
+		targets = _targets(skill, foes)
+		# A step lands on the far side of its foe (PIX-455); with no room
+		# round it, the blow from here, as far as a blade reaches.
+		if skill["reach"] == "step" and not targets.is_empty():
+			open = _may_land.bind(targets[0], foes)
+			landing = Reach.landing(global_position, targets[0].global_position, targets[0].edge, open)
+			if landing == global_position:
+				targets = _targets(skill.merged({"reach": "melee"}, true), foes)
 		if targets.is_empty():
 			_refuse(Text.t("No foe in reach for %s.") % skill["name"])
 			return
@@ -506,6 +527,14 @@ func cast(index: int) -> void:
 	attacking = true
 	casting = true
 	velocity = Vector2.ZERO
+	if landing != global_position:
+		_step_to(landing, skill, targets, open)
+		return
+	_unleash(skill, targets)
+
+
+## The cast going off: the heal on the hero, or the strike on `targets`.
+func _unleash(skill: Dictionary, targets: Array) -> void:
 	_play(art["attack"])
 	Sound.play(Sound.cast_for(String(skill["name"])))
 	var color: Color = SKILL_COLORS.get(skill["stat"], Color.WHITE)
@@ -547,6 +576,65 @@ func cast(index: int) -> void:
 		var restored := GameState.upkeep.heal_hero(drained)
 		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6), false, self)
 	_steal_life(dealt)
+
+
+## The foes `skill` strikes among `foes` (Reach.targets).
+func _targets(skill: Dictionary, foes: Array) -> Array:
+	var hit: Array = []
+	for found in Reach.targets(global_position, facing, _spots(foes), _radii(foes), skill):
+		hit.append(foes[found])
+	return hit
+
+
+## Where a Shadowstep may land (PIX-455): the hero's whole body on ground
+## they could walk straight to from here (no wall, water or way out on the
+## way), and on no foe but the one it strikes.
+func _may_land(spot: Vector2, target: Node, foes: Array) -> bool:
+	# shortcut: a hero pressed to a prop whose blocker is smaller than its
+	# cell (art.md) reads as hemmed in, so the blow comes from where they
+	# stand; sweep from their feet's cell if players meet it.
+	if not Packs.step_clear(world.map, global_position, spot, BODY_AT):
+		return false
+	# Asked as the hero crosses too (_step_to): a foe gone since is no bar.
+	return foes.all(func(foe: Variant) -> bool: return not is_instance_valid(foe) or foe == target or spot.distance_to(foe.global_position) >= foe.edge)
+
+
+## Shadowstep's crossing (PIX-455): the hero fades and is carried to `spot`
+## as fast as a roll, as safe as in one and its moment after, a trail of
+## ghosts behind; there they turn on whoever of `targets` still stands and
+## the skill goes off. The spot keeps its place by the foe as it moves (a
+## gunner backs off from a hero closing in), while `open` allows it.
+func _step_to(spot: Vector2, skill: Dictionary, targets: Array, open: Callable) -> void:
+	var rules: Dictionary = Bestiary.dodge_rules()
+	var seconds := global_position.distance_to(spot) / float(rules["speed"])
+	stepping = true
+	_dodge_iframes = true
+	get_tree().create_timer(seconds + float(rules["iframes"]) - float(rules["seconds"])).timeout.connect(func() -> void: _dodge_iframes = false)
+	Sound.play("dodge")
+	world.fx.dust(global_position)
+	_ghost()
+	# On physics ticks, with the interpolated body (PIX-135).
+	var step := create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+	step.tween_property(sprite, "modulate:a", STEP_FADE, 0.05)
+	var foe: Node2D = targets[0]
+	var behind := spot - foe.global_position
+	var start := global_position
+	var goal := [spot]
+	var cross := func(t: float) -> void:
+		if is_instance_valid(foe) and open.call(foe.global_position + behind):
+			goal[0] = foe.global_position + behind
+		global_position = start.lerp(goal[0], t)
+	step.parallel().tween_method(cross, 0.0, 1.0, seconds)
+	step.tween_callback(func() -> void:
+		stepping = false
+		if dead:
+			return
+		var standing := targets.filter(func(one: Variant) -> bool: return is_instance_valid(one) and not one.dying)
+		if not standing.is_empty():
+			face(standing[0].global_position - global_position)
+		_unleash(skill, standing)
+	)
+	step.tween_property(sprite, "modulate:a", 1.0, 0.08)
 
 
 ## A cast refused: said on the plate, and heard.

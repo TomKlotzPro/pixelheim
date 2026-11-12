@@ -172,6 +172,7 @@ func build(view: MapView, slices: Slicer) -> void:
 			var h := absi(hash(cell))
 			tree.flip_h = (h >> 20) % 2 == 1
 			stand_on(view, tree, cell, Vector2((h >> 12) % 5 - 2, -AshArt.SNAG_HEIGHT + TILE))
+			cast(view, Vector2(cell * TILE) + Vector2((h >> 12) % 5 - 2 + TILE / 2.0, TILE), MapView.SNAG_SHADOW.x, MapView.SNAG_SHADOW.y)
 			block(view, cell))
 	slices.add("decor_mire_reeds", func() -> void:
 		for cell: Vector2i in laid["reeds"]:

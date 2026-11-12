@@ -23,6 +23,24 @@ const SKY_STOPS := [
 ]
 
 
+## The sun over the open air (PIX-449): up from the night's end (0.92 of the
+## cycle, about five) to its start (0.58, about eight in the evening), so
+## the scenery's shadows go as the lamps come on; highest halfway, at noon.
+const SUNRISE := -0.08
+const SUNSET := 0.58
+## Every shadow falls this way, east and a little south, all day: Shade
+## lights his art from the upper left, and the ruins' and walls' shadows
+## fall south and east (RuinArt).
+const SHADOW_WAY := Vector2(0.94, 0.34)
+## How far a shadow reaches for each pixel of what casts it, with the sun at
+## its height, and at most with the sun low.
+const SHADOW_NOON := 0.35
+const SHADOW_LONGEST := 1.5
+## A shadow's strength is the sun's height to this power: full at noon,
+## fainter as the sun goes down.
+const SHADOW_FADE := 0.6
+
+
 ## Whether it's dark enough for lamps and windows (PIX-149): from dusk's end
 ## to dawn.
 static func is_night(steps: float) -> bool:
@@ -61,6 +79,21 @@ static func night_at(minute: int) -> bool:
 ## the hero (PIX-246).
 static func next_morning(steps: float) -> float:
 	return (floorf(steps / DAY_CYCLE_STEPS) + 1.0) * DAY_CYCLE_STEPS
+
+
+## The sun at `steps` for the scenery's shadows (PIX-449): where a shadow
+## reaches for each pixel of height (x, y, always SHADOW_WAY) and how strong
+## it is (z, 0..1); none between sunset and sunrise.
+static func sun(steps: float) -> Vector3:
+	var t := fposmod(steps, float(DAY_CYCLE_STEPS)) / DAY_CYCLE_STEPS
+	if t >= 1.0 + SUNRISE:
+		t -= 1.0
+	var up := (t - SUNRISE) / (SUNSET - SUNRISE)
+	if up <= 0.0 or up >= 1.0:
+		return Vector3.ZERO
+	var height := sin(PI * up)
+	var cast := SHADOW_WAY.normalized() * minf(SHADOW_NOON / height, SHADOW_LONGEST)
+	return Vector3(cast.x, cast.y, pow(height, SHADOW_FADE))
 
 
 static func sky_at(steps: float) -> Color:

@@ -269,11 +269,19 @@ msgid "A lash of stolen life for heavy magic damage."
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "A little hammer, badly forged, from a burnt stead in the Ash Fields. An H is punched in its head."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "A mantle of moss and scale that death declines to touch. Crafted, never sold."
 msgstr ""
 
 #: assets/data/catalog.json
 msgid "A measured arrow to a weak point for heavy dexterity damage."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "A pair of good boots from a burnt stead in the Ash Fields, scorched at the toes and laced very tight."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -286,6 +294,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "A pebble of the mountain's anger. Warm forever. Found in the ash fields."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "A recipe card from a tin in the Ash Fields, half burnt: \"Mother's stew. Do NOT tell Odo.\""
 msgstr ""
 
 #: assets/data/catalog.json
@@ -329,6 +341,10 @@ msgid "A staggering bash that can stun the enemy for a turn."
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "A stone mortar from a burnt stead in the Ash Fields, cracked through and still green inside. VEX is scratched on the base."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "A tarnished brooch with five marks, the last one hers. She wore it fifty years. It's a promise that someone would finish what the five started. The fifth relic."
 msgstr ""
 
@@ -349,6 +365,10 @@ msgid "A whole bird, roasted the way the town did on the day the fountain first 
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "A wooden milk pail from a burnt stead in the Ash Fields, without a scorch on it. BRAM, says the bottom."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Aegis of the Ash"
 msgstr ""
 
@@ -366,6 +386,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "An iron-bound box with a caravan's mark. Something has chewed one corner."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Ana's Good Boots"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -498,6 +522,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Border-guard issue. The soles outlast the guards."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Bram's Milk Pail"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -761,6 +789,10 @@ msgid "Five letters, fifty years late, every one delivered. A courier's medal."
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Five things the fire missed in the Ash's steads, every one home. Bram has polished his pail twice."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Fizzy."
 msgstr ""
 
@@ -950,6 +982,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Hero's Banner"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Hilda's First Hammer"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1210,6 +1246,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Medal of the Full House"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Medal of the Kept Things"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1514,6 +1554,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Seats two friends or one tired hero lying down. Placed at home: a night in your bed rests you for 10 more fights."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Sela's Stew Recipe"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1865,6 +1909,10 @@ msgid "Vex won't say what's in it, only that it was hard to catch."
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Vex's Mortar"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Vex's finest: brings everything back, every wound and every spent breath. Drunk dry, it fills itself again while you sleep, at the inn or in your own bed."
 msgstr ""
 
@@ -2177,6 +2225,10 @@ msgid "A brass spyglass stands by the bend on the mountain road: at night it sho
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A burnt stead's door now shows a steady pale star while something waits in its ash"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr ""
 
@@ -2225,6 +2277,10 @@ msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead of the same line down the page"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr ""
 
@@ -2254,6 +2310,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A lake behind the square swells and glints, the trees and the hill's pines lean in the wind, mist rolls along the valley and embers rise off the torches"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A leaping beast now lands beside you instead of on you"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3697,6 +3757,10 @@ msgid "Foes standing side by side no longer stack their level tags: the nearest 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Foes' blows can't land on the rogue while it crosses, and with no room behind the foe it strikes from where it stands"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Follow the Cry"
 msgstr ""
 
@@ -3917,6 +3981,10 @@ msgid "Hard Hats"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Hard to Miss"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Head to Toe"
 msgstr ""
 
@@ -4089,6 +4157,10 @@ msgid "Intelligence finally feeds the mana pool: casters gain +2 max MP per INT 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Into the Shadows"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Into the Woods"
 msgstr ""
 
@@ -4142,6 +4214,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Know Thyself"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Know Your Foe"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4298,6 +4374,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Load-Bearing Walls"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Long Shadows"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5469,6 +5549,10 @@ msgid "Screens no longer draw over the HUD: a screen that dims the world puts th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Search the door of each burnt stead in the Ash Fields: the ash gives up something the fire missed, and its owner in Pixelheim will be glad to have it back"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Second Thoughts"
 msgstr ""
 
@@ -5502,6 +5586,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Shadows became a tone, not a hole: half-strength and shorter under a higher sun - the long black smears are gone"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Shadowstep now crosses up to four cells: the rogue fades, slips past the foe and strikes from behind"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6173,6 +6261,10 @@ msgid "The City's showpieces earn their price: the Aegis of the Ash turns the fi
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Codex's masteries now say what the next tier gives: more damage against that family"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Deep Hunt"
 msgstr ""
 
@@ -6634,6 +6726,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The journal says where an escort starts"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The journal's Feats count the five things carried home"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7126,6 +7222,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Tracks crossfade instead of cutting, and the whole score plays through a touch of echo"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Trees, houses and lamp posts now cast a soft shadow on the ground: short and dark at noon, long and faint at dawn and dusk, gone at night"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -9461,7 +9561,7 @@ msgid "Unshakeable"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "Vanish and strike from behind for devastating damage."
+msgid "Vanish and reappear behind a foe up to 4 cells away for a devastating strike."
 msgstr ""
 
 #: assets/data/combat.json
@@ -13093,6 +13193,10 @@ msgid "(He unlocks Liane's door.) Her sums are still on her desk. She did them t
 msgstr ""
 
 #: assets/data/progression.json
+msgid "(Hilda smiles. Dagny swears she does it once a year.) My first hammer. I made it at nine, and it's awful. Thank you."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "(Maren turns a tin box over in her hands, black with soot.) I dug this out of my hearth. Five letters I wrote fifty years ago, and never sent."
 msgstr ""
 
@@ -13389,7 +13493,31 @@ msgid "Caravan Guard"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Carry Ana's good boots home to her in Pixelheim."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Carry Bram's milk pail home to him in Pixelheim."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Carry Hilda's first hammer home to her in Pixelheim."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Carry Sela's stew recipe home to her in Pixelheim."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Carry Vex's mortar home to her in Pixelheim."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Carry every thread of the Post to its last piece."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Carry home the five things the fire missed in the Ash's steads."
 msgstr ""
 
 #: assets/data/progression.json
@@ -14341,6 +14469,14 @@ msgid "My father wore Greyhold's badge till the day the fort fell. They laid the
 msgstr ""
 
 #: assets/data/progression.json
+msgid "My good boots! The fire had the toes and left the ankles. It knew what mattered."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "My good mortar! Cracked clean through, so it'll grind crooked now. I'll call that the secret."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "My house is along Upper Street, or what's left of it. Bring your back, courier. There's a hearthstone to lift."
 msgstr ""
 
@@ -14349,7 +14485,15 @@ msgid "My lute! Slightly chewed. It adds character. Pixelheim gains its first ve
 msgstr ""
 
 #: assets/data/progression.json
+msgid "My mother's stew! The fire's had the half with the measures. Good. I never kept to them."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "My old guard couldn't hit a barn door. Good thing he's bigger than a barn."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "My pail! The cows ran off, the barn burnt and the cheese melted, but the pail came through. A man can start again from a pail."
 msgstr ""
 
 #: assets/data/progression.json
@@ -14558,6 +14702,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Relics of the Five"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Returned home"
 msgstr ""
 
 #: assets/data/progression.json
@@ -15414,6 +15562,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Wenna. Tam didn't die in a rockfall. I said that because the truth was harder to write. The hall came down and he held up the roof so I could run. He was laughing. Of course he was."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "What the Fire Missed"
 msgstr ""
 
 #: assets/data/progression.json
@@ -16581,6 +16733,10 @@ msgid "   Slayer %s"
 msgstr ""
 
 #: scripts/codex_screen.gd
+msgid "%d more for +%d%% damage against them."
+msgstr ""
+
+#: scripts/codex_screen.gd
 msgid "%d more for +%d%%."
 msgstr ""
 
@@ -16605,6 +16761,10 @@ msgid "Every kill teaches. Families over faces."
 msgstr ""
 
 #: scripts/codex_screen.gd
+msgid "Found in %s."
+msgstr ""
+
+#: scripts/codex_screen.gd
 msgid "Lv %d  HP %d  ATK %d  DEF %d  %d xp"
 msgstr ""
 
@@ -16618,10 +16778,6 @@ msgstr ""
 
 #: scripts/codex_screen.gd
 msgid "Page %d of %d"
-msgstr ""
-
-#: scripts/codex_screen.gd
-msgid "Unmet. The wilds keep their secrets."
 msgstr ""
 
 #: scripts/codex_screen.gd
@@ -16838,6 +16994,10 @@ msgstr ""
 
 #: scripts/enemy.gd
 msgid "blocked"
+msgstr ""
+
+#: scripts/features/ash_fields/feature.gd
+msgid "In the ash: %s. Carry it home to %s."
 msgstr ""
 
 #: scripts/features/lookout/lookout.gd
@@ -18874,10 +19034,6 @@ msgstr ""
 
 #: scripts/state/quests.gd
 msgid "%s, in %s."
-msgstr ""
-
-#: scripts/state/quests.gd
-msgid "Found in %s."
 msgstr ""
 
 #: scripts/state/quests.gd

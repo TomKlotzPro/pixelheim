@@ -170,6 +170,8 @@ jobs:
       # run that never quits, waits longer than on a machine with a GPU (as
       # godot.yml's windowed jobs: dawn takes up to 146 s, PIX-445).
       FLOWS_WATCHDOG: "300"
+      # Mesa's JIT kept off AVX-512, as godot.yml's windowed jobs (PIX-452).
+      GALLIUM_OVERRIDE_CPU_CAPS: avx
     steps:
       - uses: actions/checkout@v4
 

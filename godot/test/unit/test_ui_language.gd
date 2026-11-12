@@ -91,3 +91,25 @@ func test_the_codex_bestiary_fits_its_page() -> void:
 	# A row is 28 px and 6 apart; the page line on top; the card's inside is
 	# its inset in (PIX-388).
 	assert_lte(script.PAGE_ROWS * 34 + 24, script.CARD.size.y - 2 * UiStyle.INSET, "a page fits the card")
+
+
+## PIX-456: before the first tier the note says what the bonus is, and an
+## unmet foe's row says where it lives instead of one sentence down the page.
+func test_the_codex_names_the_bonus_and_where_the_unmet_live() -> void:
+	var kept := [GameState.hero, GameState.progression]
+	var lent: Node = autofree(preload("res://scripts/state/game_state.gd").new())
+	lent.new_game("Aldegonde", "ranger")
+	GameState.hero = lent.hero
+	GameState.progression = lent.progression
+	var codex: Node = preload("res://scripts/codex_screen.gd").new()
+	add_child_autofree(codex)
+	var words := func() -> Array: return codex.body.find_children("*", "Label", true, false).map(func(label: Label) -> String: return label.text)
+	assert_has(words.call(), "10 more for +5% damage against them.")
+	codex.tab = 1
+	codex._show()
+	var first: String = Bestiary.monster_ids()[0]
+	assert_has(words.call(), "Found in %s." % ", ".join(Bestiary.where_found(first).slice(0, 2)), "the unmet %s's row" % first)
+	codex.close()
+	GameState.hero = kept[0]
+	GameState.progression = kept[1]
+	await wait_process_frames(1)  # the first tab's rows, let go of, freed

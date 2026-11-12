@@ -1032,6 +1032,9 @@
     },
     "medal_reach_lit": {
       "label": "A feat, displayed with pride"
+    },
+    "medal_keepsakes": {
+      "label": "A feat, displayed with pride"
     }
   },
   "nookCombines": [

@@ -43,6 +43,11 @@ func step_festival() -> void:
 	await h.get_tree().create_timer(0.3).timeout
 
 
+func step_noon() -> void:
+	# Midday (PIX-449): the sun at its height over the scenery's shadows.
+	GameState.world.steps = (Gathering.day_of(GameState.world.steps) + 0.25) * DayNight.DAY_CYCLE_STEPS
+
+
 func step_dusk() -> void:
 	# Evening (PIX-159): the town's folk on the square.
 	GameState.world.steps = (Gathering.day_of(GameState.world.steps) + 0.5) * DayNight.DAY_CYCLE_STEPS

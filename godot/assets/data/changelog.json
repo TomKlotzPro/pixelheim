@@ -1,6 +1,50 @@
 {
   "releases": [
     {
+      "version": "0.351.0",
+      "date": "2026-11-12",
+      "codename": "Into the Shadows",
+      "notes": [
+        "Shadowstep now crosses up to four cells: the rogue fades, slips past the foe and strikes from behind",
+        "Foes' blows can't land on the rogue while it crosses, and with no room behind the foe it strikes from where it stands"
+      ]
+    },
+    {
+      "version": "0.350.0",
+      "date": "2026-11-12",
+      "codename": "Know Your Foe",
+      "notes": [
+        "The Codex's masteries now say what the next tier gives: more damage against that family",
+        "A foe you haven't met yet shows where it lives in the Bestiary, instead of the same line down the page"
+      ]
+    },
+    {
+      "version": "0.349.0",
+      "date": "2026-11-12",
+      "codename": "Hard to Miss",
+      "notes": [
+        "A burnt stead's door now shows a steady pale star while something waits in its ash",
+        "A leaping beast now lands beside you instead of on you"
+      ]
+    },
+    {
+      "version": "0.348.0",
+      "date": "2026-11-11",
+      "codename": "What the Fire Missed",
+      "notes": [
+        "Search the door of each burnt stead in the Ash Fields: the ash gives up something the fire missed, and its owner in Pixelheim will be glad to have it back",
+        "The journal's Feats count the five things carried home"
+      ]
+    },
+    {
+      "version": "0.347.0",
+      "date": "2026-11-11",
+      "codename": "Long Shadows",
+      "notes": [
+        "Trees, houses and lamp posts now cast a soft shadow on the ground: short and dark at noon, long and faint at dawn and dusk, gone at night"
+      ]
+    },
+    {
       "version": "0.346.0",
       "date": "2026-11-11",
       "codename": "Elbow Room",
