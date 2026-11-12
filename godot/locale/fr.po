@@ -2073,6 +2073,10 @@ msgid "A brass spyglass stands by the bend on the mountain road: at night it sho
 msgstr "Une longue-vue en laiton se dresse au tournant de la route de la montagne : la nuit, elle montre la Marche en contrebas, chaque lampe allumée brillant de sa couleur avec sa terre guérie autour ; de jour, on n'y voit que cendre et chemins"
 
 #: assets/data/changelog.json
+msgid "A burnt stead's door now shows a steady pale star while something waits in its ash"
+msgstr "La porte d'une ferme brûlée montre désormais une petite étoile pâle et fixe tant qu'un objet attend dans sa cendre"
+
+#: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr "La première nuit d'un clerc lui dit de frapper les braises et de se soigner entre deux coups, puisque Soin n'est pas une arme"
 
@@ -2151,6 +2155,10 @@ msgstr "Un commerçant s'installe dans son bâtiment le jour où il est reconstr
 #: assets/data/changelog.json
 msgid "A lake behind the square swells and glints, the trees and the hill's pines lean in the wind, mist rolls along the valley and embers rise off the torches"
 msgstr "Un lac derrière la place ondule et scintille, les arbres et les pins de la colline penchent sous le vent, la brume roule dans la vallée et des braises montent des torches"
+
+#: assets/data/changelog.json
+msgid "A leaping beast now lands beside you instead of on you"
+msgstr "Une bête qui bondit atterrit désormais à côté de vous plutôt que sur vous"
 
 #: assets/data/changelog.json
 msgid "A level gained bursts in gold on the hero with LEVEL UP over their head, the experience line flashes, and the news goes on the message plate instead of slipping into the battle log"
@@ -3811,6 +3819,10 @@ msgstr "Gel dur"
 #: assets/data/changelog.json
 msgid "Hard Hats"
 msgstr "Casques de chantier"
+
+#: assets/data/changelog.json
+msgid "Hard to Miss"
+msgstr "Bien en vue"
 
 #: assets/data/changelog.json
 msgid "Head to Toe"

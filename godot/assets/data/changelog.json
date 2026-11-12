@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.349.0",
+      "date": "2026-11-12",
+      "codename": "Hard to Miss",
+      "notes": [
+        "A burnt stead's door now shows a steady pale star while something waits in its ash",
+        "A leaping beast now lands beside you instead of on you"
+      ]
+    },
+    {
       "version": "0.348.0",
       "date": "2026-11-11",
       "codename": "What the Fire Missed",
