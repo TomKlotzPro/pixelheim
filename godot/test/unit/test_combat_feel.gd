@@ -224,9 +224,17 @@ class FakeWorld extends Node2D:
 	var fx := FakeFx.new()
 	var messages := FakeMessages.new()
 	var map := MapData.new()
+	var foes := FakeFight.new()
+	## The hero the foes keep off (PIX-458).
+	var player: Node2D
 
 	func on_player_died() -> void:
 		pass
+
+
+class FakeFight extends RefCounted:
+	func in_fight(_linger := 0.0) -> bool:
+		return true
 
 
 ## A foe as the hero sees one: where it stands, how near another may come,
@@ -452,3 +460,104 @@ func test_holding_the_attack_key_keeps_no_press() -> void:
 	press.echo = false
 	hero._unhandled_input(press)
 	assert_gt(hero._kept_until, 0.0, "a real press is")
+
+
+## PIX-458: the corner of the ice cave's west corridor: a wall above the
+## hero, open floor to their left, and a hero the physics moves as the game
+## does (the other tests' hero is held out of it), against the wall.
+const CORNER := Vector2(1000, 1000)
+
+
+func _cornered() -> CharacterBody2D:
+	var hero := _hero()
+	hero.process_mode = Node.PROCESS_MODE_INHERIT
+	hero.set_physics_process(false)
+	hero.world.player = hero
+	var walls: StaticBody2D = add_child_autofree(StaticBody2D.new())
+	for rect: Rect2 in [Rect2(CORNER + Vector2(-100, -20), Vector2(200, 20)), Rect2(CORNER + Vector2(-60, 0), Vector2(20, 80))]:
+		var shape := CollisionShape2D.new()
+		shape.shape = RectangleShape2D.new()
+		shape.shape.size = rect.size
+		shape.position = rect.get_center()
+		walls.add_child(shape)
+	hero.global_position = CORNER + Vector2(0, 1.1)
+	return hero
+
+
+func _yeti(hero: CharacterBody2D, at: Vector2) -> CharacterBody2D:
+	var foe: CharacterBody2D = preload("res://scripts/enemy.gd").new()
+	foe.world = hero.world
+	foe.fighter = Bestiary.spawn("yeti")
+	foe.position = at
+	add_child_autofree(foe)
+	foe.set_physics_process(false)
+	foe.add_to_group("mobs")
+	return foe
+
+
+## A physics tick: each foe chases as Enemy._physics_process moves it (at the
+## hero, stopped at its edge, moved, held off), then the hero's own tick,
+## pressing `heading`.
+func _tick(hero: CharacterBody2D, foes: Array, heading: Vector2) -> void:
+	var tick := 1.0 / 60.0
+	for foe: CharacterBody2D in foes:
+		var from := foe.global_position
+		var to_hero := hero.global_position - from
+		foe.velocity = to_hero.normalized() * foe.CHASE_SPEED
+		foe._keep_off(to_hero, tick)
+		foe.move_and_slide()
+		foe._hold_off(from)
+	hero.scripted_dir = heading
+	hero._physics_process(tick)
+	await wait_physics_frames(1)
+
+
+## PIX-458: a pack pressing the hero into a corner - a yeti below them and
+## one to their right, each with another behind - comes no nearer than each
+## one's edge (the one behind pushed the one below onto the hero, and on
+## into the wall), and the hero still steps out onto the open floor.
+func test_a_crowd_in_a_corner_never_holds_the_hero() -> void:
+	var hero := _cornered()
+	var at := hero.global_position
+	var foes := [_yeti(hero, at + Vector2(0, 14.5)), _yeti(hero, at + Vector2(0, 26)), _yeti(hero, at + Vector2(15, 1)), _yeti(hero, at + Vector2(27, 1))]
+	await wait_physics_frames(2)
+	for i in 90:
+		await _tick(hero, foes, Vector2.UP)
+	for foe: CharacterBody2D in foes:
+		assert_gte(foe.global_position.distance_to(hero.global_position), foe.edge - 0.01, "beside the hero, never on them")
+	at = hero.global_position
+	for i in 15:
+		await _tick(hero, foes, Vector2.LEFT)
+	assert_lt(hero.global_position.x, at.x - 16.0, "a step out onto the open floor")
+
+
+## PIX-458: a yeti pressed onto the hero against the wall (as the pack did,
+## or a leap's landing) holds them no more: Godot held a body still
+## overlapping after pushing itself out every way at once, so no step and
+## no roll went. A step away from it goes now; a step into it doesn't.
+func test_a_foe_on_the_hero_never_holds_them() -> void:
+	var hero := _cornered()
+	var at := CORNER + Vector2(0, 0.8)
+	hero.global_position = at
+	var foe := _yeti(hero, at + Vector2(0, 10.5))
+	await wait_physics_frames(2)
+	await _tick(hero, [], Vector2.DOWN)
+	assert_lt(hero.global_position.y, foe.global_position.y - 9.0, "not into it")
+	await _tick(hero, [], Vector2.LEFT)
+	assert_lt(hero.global_position.x, at.x - 1.0, "but away from it")
+
+
+## PIX-458: hemmed in on every side - the wall above, a yeti at each other
+## side as close as bodies meet - a roll goes through them.
+func test_a_roll_goes_through_the_foes_round_the_hero() -> void:
+	var hero := _cornered()
+	var at := hero.global_position
+	for beside: Vector2 in [Vector2(-10.2, 0), Vector2(10.2, 0), Vector2(0, 11.2)]:
+		_yeti(hero, at + beside)
+	await wait_physics_frames(2)
+	hero.dodge(Vector2.DOWN)
+	for i in 10:
+		await _tick(hero, [], Vector2.DOWN)
+	assert_gt(hero.global_position.y, at.y + 20.0, "out through the yeti below")
+	for ghost: Node in get_children().filter(func(node: Node) -> bool: return node is Sprite2D):
+		ghost.free()

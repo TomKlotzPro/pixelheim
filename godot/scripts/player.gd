@@ -160,7 +160,8 @@ func _physics_process(delta: float) -> void:
 		var rolled_from := global_position
 		if rolled_from.distance_to(_ghost_at) >= GHOST_GAP:
 			_ghost()
-		move_and_slide()
+		# A roll goes through foes (PIX-458): hemmed in, it is the way out.
+		_slide(get_tree().get_nodes_in_group("mobs"))
 		gait.walk(gait.drawn_way(dodge_dir, _dir_name()), (global_position - rolled_from).length(), delta)
 		return
 	if attacking:
@@ -197,7 +198,7 @@ func _physics_process(delta: float) -> void:
 	pace *= 1.0 + float(HeroRules.passives(GameState.hero)["moveSpeed"])
 	velocity = input * pace
 	var from := global_position
-	move_and_slide()
+	_slide(_inside(input.normalized()))
 	# Straight into the wall with a shoulder over a door (PIX-434): across
 	# to it, and the next step goes in.
 	if input != Vector2.ZERO and (input.x == 0.0 or input.y == 0.0) and global_position.is_equal_approx(from):
@@ -222,6 +223,29 @@ func _physics_process(delta: float) -> void:
 		_play("idle")
 	elif not gait.walking:
 		_play("idle")
+
+
+## move_and_slide, passing through `foes` (PIX-458).
+func _slide(foes: Array) -> void:
+	var past := foes.filter(func(foe: Node) -> bool: return foe is PhysicsBody2D)
+	for foe: PhysicsBody2D in past:
+		add_collision_exception_with(foe)
+	move_and_slide()
+	for foe: PhysicsBody2D in past:
+		remove_collision_exception_with(foe)
+
+
+## The foes whose feet the hero's overlap, but for those `heading` walks on
+## into (PIX-458): a step away leaves them. Godot holds a body still
+## overlapping after it has pushed itself out, every way at once, so a yeti
+## pressed onto the hero against a wall held them there, walking and
+## rolling, for a whole fight.
+func _inside(heading: Vector2) -> Array:
+	var feet := Rect2(global_position + BODY_AT - BODY / 2.0, BODY)
+	var foot: Vector2 = preload("res://scripts/enemy.gd").FEET
+	return get_tree().get_nodes_in_group("mobs").filter(func(foe: Node) -> bool:
+		var at: Vector2 = (foe as Node2D).global_position
+		return feet.intersects(Rect2(at - foot / 2.0, foot)) and heading.dot((at - feet.get_center()).normalized()) < 0.5)
 
 ## The swing and the skills answer key events, so a key that closed a
 ## conversation (Space) never swings the sword behind it.
