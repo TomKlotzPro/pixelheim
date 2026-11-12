@@ -501,7 +501,9 @@ tidecaller-hint-after | --map seacave_grotto --at 23,12 hints fight kill --foe t
 # boss bar, and the dodge, up as Saltmere's name came, was pushed down over
 # the hero): the card stands clear of what rises, the bar goes as the boss
 # falls, a title card holds a hint already up (its line waits, PIX-433), and the
-# arrow keeps off a dungeon floor's name. At the play zoom, as a window has it.
+# arrow keeps off a dungeon floor's name, and off the hero at its first step
+# (PIX-462: hudclash counts the hero under the arrow). At the play zoom, as a
+# window has it.
 boss-fall-words | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.05 --wait 0.6 --zoom play | map=seacave_grotto fell=1 bossbar=none hudclash=none | dungeon combat
 warden-fall-words | --map shafts_blackseam --at 24,11 fight kill --foe seam_warden --foe-left 0.05 --wait 0.6 --zoom play | map=shafts_blackseam fell=1 bossbar=none hudclash=none | dungeon combat
 place-holds-hint | --map seacave_grotto --at 23,12 hints fight kill --foe tidecaller --foe-left 0.007 --then-walk r,r --wait 0.6 --zoom play | map=saltmere card=Saltmere hint=dodge toast= hudclash=none | dungeon travel combat
