@@ -594,7 +594,10 @@ func field_hudclash() -> String:
 				continue
 			pair.sort()
 			var said := "%s/%s" % pair
-			if (shown[i][1] as Rect2).intersects(shown[j][1]) and not clashes.has(said):
+			# The arrow keeps ARROW_CLEAR off the hero, so nearer counts too
+			# (PIX-464: only a real overlap did, and only the Sea Cave had one).
+			var clear := Hud.ARROW_CLEAR if said == "arrow/hero" else 0.0
+			if (shown[i][1] as Rect2).grow(clear).intersects(shown[j][1]) and not clashes.has(said):
 				clashes.append(said)
 	return ",".join(clashes) if not clashes.is_empty() else "none"
 

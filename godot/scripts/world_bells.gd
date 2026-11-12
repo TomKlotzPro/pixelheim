@@ -256,24 +256,19 @@ func ember_fell(_enemy: Node) -> void:
 		_embers_done()
 
 
-## The well's water (or the fountain's), or a burning roof faced with it.
-## True when the cell was either.
-func _water(faced: Vector2i) -> bool:
+## The well's water (`roof` -1), or burning roof `roof` doused with it:
+## E on the water beside the hero (Interaction._water_beside, PIX-464).
+func water(roof: int) -> void:
 	var fires: Dictionary = Bells.data()["fires"]
-	if world.map.tile_at(faced) == "well":
+	if roof < 0:
 		bucket = true
 		Sound.play("bucket_fill")
 		world.messages.flash(String(fires["well"]))
-		return true
-	var roof := Bells.roof_at(faced)
-	if roof < 0 or roof in doused:
-		return false
-	if not bucket:
+	elif not bucket:
 		world.messages.flash(String(fires["empty"]))
-		return true
-	bucket = false
-	_douse(roof)
-	return true
+	else:
+		bucket = false
+		_douse(roof)
 
 
 func _douse(roof: int) -> void:
@@ -291,13 +286,11 @@ func _douse(roof: int) -> void:
 ## Every roof out as the hero would put it out (the harness): a bucket
 ## filled at the well, then carried to the roof's door.
 func douse_all() -> void:
-	var wells: Array = world.map.grid.keys().filter(func(cell: Vector2i) -> bool: return world.map.grid[cell] == "well")
-	var roofs := Bells.roofs()
-	for roof in roofs.size():
-		if beat() != Bells.EMBERS or roof in doused or wells.is_empty():
+	for roof in Bells.roofs().size():
+		if beat() != Bells.EMBERS or roof in doused:
 			continue
-		_water(wells[0])
-		_water(Vector2i(roofs[roof].get_center().x, roofs[roof].end.y - 1))
+		water(-1)
+		water(roof)
 
 
 ## Both done - the embers gone, the roofs out - and the bell stops: wings.
@@ -630,17 +623,13 @@ func barred() -> String:
 	return String(Bells.data()["barred"])
 
 
-## What E does tonight, before anything else: a lantern lit, the well's
-## water, a roof doused. True when it did something.
+## What E does tonight, before anything else: a lantern lit (the well's
+## water and the roofs are Interaction's water beside the hero, PIX-464).
+## True when it did something.
 func interact(faced: Vector2i) -> bool:
-	if not running() or world.map.id != "town":
+	if not running() or world.map.id != "town" or beat() != Bells.LANTERNS:
 		return false
-	match beat():
-		Bells.LANTERNS:
-			return _lantern(faced)
-		Bells.EMBERS:
-			return _water(faced)
-	return false
+	return _lantern(faced)
 
 
 ## Iva's tent on the square's edge.

@@ -67,6 +67,16 @@ func test_a_new_fish_does_wherever_a_fresh_fish_is_asked() -> void:
 		assert_string_contains(fishing[0]["text"], place, "a fresh fish's lead names the waters whose fish stand for it")
 
 
+## The Frostgate's Icefin is a fish too (PIX-464: the Mirefen eel counted and
+## it didn't), but a real fresh fish is still taken first.
+func test_the_icefin_does_for_a_fresh_fish_but_a_fresh_fish_goes_first() -> void:
+	state.pack.add_item("icefin")
+	state.pack.add_item("fresh_fish")
+	assert_eq(Catalog.held(state.pack.items, "fresh_fish"), 2)
+	state.pack.spend("fresh_fish")
+	assert_eq([int(state.pack.items.get("fresh_fish", 0)), int(state.pack.items.get("icefin", 0))], [0, 1])
+
+
 ## Gold a cast pays on average, by what each catch is worth.
 func _worth(spot: Dictionary) -> float:
 	var catches: Array = spot.get("catches", Bestiary.fishing_rules()["catches"])

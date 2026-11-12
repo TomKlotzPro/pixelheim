@@ -165,15 +165,6 @@ static func roofs() -> Array[Rect2i]:
 	return out
 
 
-## The roof `faced` belongs to, -1 for none.
-static func roof_at(faced: Vector2i) -> int:
-	var all := roofs()
-	for i in all.size():
-		if all[i].has_point(faced):
-			return i
-	return -1
-
-
 static func fafnyr_spec() -> Dictionary:
 	return data()["fafnyr"]
 
