@@ -864,9 +864,10 @@ cap-kept | --map town --prologue 4 --talk-to innkeeper --keys e,e,e,e,i,x,x,e,es
 ash-fires | --map town --prologue 8 --at 26,12 | night=8 fires=houses 9 flames [1-9][0-9]{2} smoke 9 sparks 9 coals 9 | story town night
 ash-fires-still | --map town --prologue 8 --at 26,12 still | fires=houses 9 flames [1-9][0-9]{2} smoke 9 sparks 0 coals 9 | story town night
 # The well and the burning homes take E from beside them (PIX-460: one
-# cell and one facing each): under the roof's right half, and facing away
+# cell and one facing each): below the well facing away from it (its own
+# cell, so it holds on Shade's CC0 art as on the paid), and facing away
 # from a burning frame.
-ash-well-beside | --map town --prologue 8 --at 35,32 --keys w,e --wait 0.5 --lang en | night=8 plate=You fill a bucket at the well\. | story town night
+ash-well-beside | --map town --prologue 8 --at 34,32 --keys d,e --wait 0.5 --lang en | night=8 plate=You fill a bucket at the well\. | story town night
 ash-fire-beside | --map town --prologue 8 --at 21,24 --keys s,e --wait 0.5 --lang en | night=8 plate=Your hands are empty: the well is on the green, below the square\. | story town night
 # The waypoint chosen on the map is the one shown, and E goes there (PIX-241).
 waypoint | --map town waypoints --keys m,s,s | open=map_screen dest=mountain_gate | travel screen
