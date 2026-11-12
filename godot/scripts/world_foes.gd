@@ -476,6 +476,16 @@ func fights_like_boss(enemy: Node) -> bool:
 	return Bestiary.fights_like_boss(enemy.fighter)
 
 
+## Whether a foe still stands on the map (PIX-462: the roll's tip is about
+## them, and came up once the hounds were dead): one dying or going with the
+## map left behind is none.
+func about() -> bool:
+	for enemy in get_tree().get_nodes_in_group("mobs"):
+		if not enemy.dying and not enemy.is_queued_for_deletion():
+			return true
+	return false
+
+
 ## The boss or named monster hunting the hero now, or null: while one is,
 ## there's no leaving the place (PIX-232).
 func boss_hunting() -> Node:

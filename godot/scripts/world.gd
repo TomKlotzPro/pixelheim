@@ -442,11 +442,6 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	# The place's name once the hero is there, not on a post by the way out
 	# (PIX-269); the map the game opens on is only noted.
 	hud.name_place(next, arrival, not changing)
-	# The dodge taught on the way out to where packs roam, after the first
-	# night, so no boss is the first to charge (PIX-341: L'Appelle-Marée
-	# was); it waits for the place's card.
-	if changing and GameState.progression.prologue == Prologue.DONE and not Bestiary.spawns_on(next.id).is_empty():
-		hud.hint("dodge")
 	stage.arrive(next)
 	# Home after the run, the Night of Bells (PIX-253 step 9).
 	night.arrive(next)
@@ -462,6 +457,12 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	# Under the sky the camera may look past the south edge, under the dock.
 	camera_rig.set_limits(Vector2(next.size * TILE), next.style != "cave" and PunyTerrain.is_outdoor(next.grid))
 	foes.spawn_for(next)
+	# The dodge taught on the way out to where packs roam, after the first
+	# night, so no boss is the first to charge (PIX-341: L'Appelle-Marée
+	# was); it waits for the place's card, the packs out (PIX-462: a hint
+	# shows while what it is about is there).
+	if changing and GameState.progression.prologue == Prologue.DONE and not Bestiary.spawns_on(next.id).is_empty():
+		hud.hint("dodge")
 	respawn_check = 0.0
 	soundscape.refresh()
 	# Through a door that dissolves, the old picture is already fading out

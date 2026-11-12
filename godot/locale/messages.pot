@@ -2273,6 +2273,10 @@ msgid "A fine or epic drop's name rises over the fallen foe in its colour"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A first-time tip now shows while the thing it's about is there, and waits for a better moment otherwise: no roll tip after the fight, no board tip inside the hall"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A foe gives you longer to see its bite coming, and shows it: it crouches with a red glint and a sound. With Clear warnings on, a band on the ground marks where the bite lands"
 msgstr ""
 
@@ -5389,6 +5393,10 @@ msgid "Right Names"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Right on Cue"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
 msgstr ""
 
@@ -6706,6 +6714,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The gate opens the first depth of every five you've reached, so a long descent no longer starts from the top"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The goal arrow no longer sits on your hero at a dungeon's first step"
 msgstr ""
 
 #: assets/data/changelog.json

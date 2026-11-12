@@ -572,8 +572,7 @@ func field_hudclash() -> String:
 	for chip: Control in messages.log_box.get_children():
 		shown.append(["log", chip.get_global_rect()])
 	if hud.arrow != null and hud.arrow.visible:
-		var art: Texture2D = Marks.arrow(hud.arrow.way, hud.arrow.main)
-		shown.append(["arrow", Rect2(hud.arrow.position - Marks.arrow_middle(), art.get_size())])
+		shown.append(["arrow", hud.arrow.rect()])
 	if shown.is_empty():
 		return ""
 	if hud.boss_bar.showing():
@@ -588,10 +587,10 @@ func field_hudclash() -> String:
 	for i in shown.size():
 		for j in range(i + 1, shown.size()):
 			var pair: Array = [shown[i][0], shown[j][0]]
-			# The hero counts under a card, the plate the HUD places: the
-			# rest stands where it stands, the hero wherever the camera has
-			# them at a map's edge.
-			if pair.has("hero") and not pair.has("card"):
+			# The hero counts under a card, the plate the HUD places, and
+			# under the arrow (PIX-462): the rest stands where it stands, the
+			# hero wherever the camera has them at a map's edge.
+			if pair.has("hero") and not (pair.has("card") or pair.has("arrow")):
 				continue
 			pair.sort()
 			var said := "%s/%s" % pair
