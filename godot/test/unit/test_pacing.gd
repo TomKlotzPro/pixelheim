@@ -24,7 +24,9 @@ const STAGES := [
 		"slime_trouble", "cheese_run", "herbs_for_vex", "hildas_buckler", "wren_leather", "iva_reeds", "wren_apples", "iva_herbs", "wolf_watch"]},
 	{"id": "coast", "sweep": ["coast", "seacave"], "hunt": "tidecaller", "quests": [
 		"letter_wenna", "wenna_smugglers", "wenna_tidecaller", "brin_crabs", "brin_lens", "brin_oilskin", "ola_catch", "rook_captain", "pip_fish", "vex_glass", "sela_rum"]},
-	{"id": "road", "sweep": [], "packs": ["ash_1", "ash_2"], "hunt": "", "quests": ["ash_orcs", "wren_road", "iva_fever"]},
+	# The Ash's packs, and its burnt steads' keepsakes carried home (PIX-448).
+	{"id": "road", "sweep": [], "packs": ["ash_1", "ash_2"], "hunt": "", "quests": [
+		"ash_orcs", "wren_road", "iva_fever", "keepsake_bram", "keepsake_hilda", "keepsake_sela", "keepsake_vex", "keepsake_ana"]},
 	{"id": "mines", "sweep": ["mines", "shafts"], "hunt": "seam_warden", "quests": [
 		"letter_pell", "garrick_crew", "garrick_seam", "garrick_helm", "dagny_ore", "dagny_carts", "pell_canary", "hildas_ore", "bram_shaftcheese"]},
 	{"id": "deepwood", "sweep": ["deepwood"], "hunt": "", "quests": ["loras_lute", "tomas_golems", "mira_moss"]},

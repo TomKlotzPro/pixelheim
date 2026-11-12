@@ -117,12 +117,20 @@ msgid "A lash of stolen life for heavy magic damage."
 msgstr "Un fouet de vie volée qui inflige de lourds dégâts magiques."
 
 #: assets/data/catalog.json
+msgid "A little hammer, badly forged, from a burnt stead in the Ash Fields. An H is punched in its head."
+msgstr "Un petit marteau, mal forgé, tiré d'une ferme brûlée des Champs de Cendres. Un H est frappé sur sa tête."
+
+#: assets/data/catalog.json
 msgid "A mantle of moss and scale that death declines to touch. Crafted, never sold."
 msgstr "Un manteau de mousse et d'écailles que la mort se garde bien de toucher. Fait main, jamais en vente."
 
 #: assets/data/catalog.json
 msgid "A measured arrow to a weak point for heavy dexterity damage."
 msgstr "Une flèche ajustée sur un point faible, pour de lourds dégâts de dextérité."
+
+#: assets/data/catalog.json
+msgid "A pair of good boots from a burnt stead in the Ash Fields, scorched at the toes and laced very tight."
+msgstr "Une paire de bonnes bottes tirée d'une ferme brûlée des Champs de Cendres, roussies au bout et lacées très serré."
 
 #: assets/data/catalog.json
 msgid "A pale fish from under the Frostgate ice. Sweet, and cold to the bone."
@@ -135,6 +143,10 @@ msgstr "Une fleur pâle qui ne s'ouvre que dans la neige. Vex dit qu'elle garde 
 #: assets/data/catalog.json
 msgid "A pebble of the mountain's anger. Warm forever. Found in the ash fields."
 msgstr "Un caillou de la colère de la montagne. Chaud pour toujours. Se trouve dans les Champs de Cendres."
+
+#: assets/data/catalog.json
+msgid "A recipe card from a tin in the Ash Fields, half burnt: \"Mother's stew. Do NOT tell Odo.\""
+msgstr "Une fiche de recette tirée d'une boîte en fer des Champs de Cendres, à moitié brûlée : « Le ragoût de maman. Ne PAS le dire à Odo. »"
 
 #: assets/data/catalog.json
 msgid "A rod of glass with a little weather trapped inside. Shake gently."
@@ -177,6 +189,10 @@ msgid "A staggering bash that can stun the enemy for a turn."
 msgstr "Un choc à faire chanceler, qui peut étourdir l'ennemi pendant un tour."
 
 #: assets/data/catalog.json
+msgid "A stone mortar from a burnt stead in the Ash Fields, cracked through and still green inside. VEX is scratched on the base."
+msgstr "Un mortier de pierre tiré d'une ferme brûlée des Champs de Cendres, fendu de part en part et encore vert dedans. VEX est gravé dessous."
+
+#: assets/data/catalog.json
 msgid "A tarnished brooch with five marks, the last one hers. She wore it fifty years. It's a promise that someone would finish what the five started. The fifth relic."
 msgstr "Une broche ternie à cinq marques, la dernière est la sienne. Elle l'a portée cinquante ans. C'est la promesse que quelqu'un finirait ce que les cinq avaient commencé. La cinquième relique."
 
@@ -197,6 +213,10 @@ msgid "A whole bird, roasted the way the town did on the day the fountain first 
 msgstr "Une volaille entière, rôtie comme le jour où la fontaine a coulé pour la première fois."
 
 #: assets/data/catalog.json
+msgid "A wooden milk pail from a burnt stead in the Ash Fields, without a scorch on it. BRAM, says the bottom."
+msgstr "Un seau à lait en bois tiré d'une ferme brûlée des Champs de Cendres, sans une trace de brûlure. BRAM, dit le fond."
+
+#: assets/data/catalog.json
 msgid "Aegis of the Ash"
 msgstr "Égide des Cendres"
 
@@ -215,6 +235,10 @@ msgstr "Un lingot du filon dont fut coulé le Sceau de braise, frappé de cinq m
 #: assets/data/catalog.json
 msgid "An iron-bound box with a caravan's mark. Something has chewed one corner."
 msgstr "Un coffre cerclé de fer, à la marque d'une caravane. Quelque chose en a rongé un coin."
+
+#: assets/data/catalog.json
+msgid "Ana's Good Boots"
+msgstr "Bonnes bottes d'Ana"
 
 #: assets/data/catalog.json
 msgid "Antidote"
@@ -347,6 +371,10 @@ msgstr "Bibliothèque"
 #: assets/data/catalog.json
 msgid "Border-guard issue. The soles outlast the guards."
 msgstr "Dotation des gardes-frontières. Les semelles survivent aux gardes."
+
+#: assets/data/catalog.json
+msgid "Bram's Milk Pail"
+msgstr "Seau à lait de Bram"
 
 #: assets/data/catalog.json
 msgid "Bread Loaf"
@@ -609,6 +637,10 @@ msgid "Five letters, fifty years late, every one delivered. A courier's medal."
 msgstr "Cinq lettres, cinquante ans de retard, toutes remises. Une médaille de messager."
 
 #: assets/data/catalog.json
+msgid "Five things the fire missed in the Ash's steads, every one home. Bram has polished his pail twice."
+msgstr "Cinq choses que le feu a épargnées dans les fermes des Cendres, toutes rendues. Bram a déjà astiqué son seau deux fois."
+
+#: assets/data/catalog.json
 msgid "Fizzy."
 msgstr "Pétillante."
 
@@ -799,6 +831,10 @@ msgstr "Lourde, bruyante, et merveilleusement résistante aux coups de lame."
 #: assets/data/catalog.json
 msgid "Hero's Banner"
 msgstr "Bannière du héros"
+
+#: assets/data/catalog.json
+msgid "Hilda's First Hammer"
+msgstr "Premier marteau de Hilda"
 
 #: assets/data/catalog.json
 msgid "Hilda's first sword for the Village, its fuller polished bright enough to read by."
@@ -1059,6 +1095,10 @@ msgstr "Médaille du bestiaire complet"
 #: assets/data/catalog.json
 msgid "Medal of the Full House"
 msgstr "Médaille de la maison pleine"
+
+#: assets/data/catalog.json
+msgid "Medal of the Kept Things"
+msgstr "Médaille des choses gardées"
 
 #: assets/data/catalog.json
 msgid "Medal of the Lit Reach"
@@ -1363,6 +1403,10 @@ msgstr "Un éclat ardent qui brûle l'ennemi."
 #: assets/data/catalog.json
 msgid "Seats two friends or one tired hero lying down. Placed at home: a night in your bed rests you for 10 more fights."
 msgstr "De quoi asseoir deux amis, ou allonger un héros fatigué. Chez vous : une nuit dans votre lit vous repose 10 combats de plus."
+
+#: assets/data/catalog.json
+msgid "Sela's Stew Recipe"
+msgstr "Recette de ragoût de Sela"
 
 #: assets/data/catalog.json
 msgid "Sets the enemy ablaze, burning it for several turns."
@@ -1711,6 +1755,10 @@ msgstr "Disparaît et réapparaît derrière l'ennemi pour une frappe dévastatr
 #: assets/data/catalog.json
 msgid "Vex won't say what's in it, only that it was hard to catch."
 msgstr "Vex refuse de dire ce qu'il y a dedans, seulement que ça n'a pas été facile à attraper."
+
+#: assets/data/catalog.json
+msgid "Vex's Mortar"
+msgstr "Mortier de Vex"
 
 #: assets/data/catalog.json
 msgid "Vex's finest: brings everything back, every wound and every spent breath. Drunk dry, it fills itself again while you sleep, at the inn or in your own bed."
@@ -5321,6 +5369,10 @@ msgid "Screens no longer draw over the HUD: a screen that dims the world puts th
 msgstr "Les écrans ne passent plus par-dessus l'interface : un écran qui assombrit le monde range la barre, l'horloge et la plume tant qu'il est ouvert, et à l'aube l'horloge avance avec le ciel"
 
 #: assets/data/changelog.json
+msgid "Search the door of each burnt stead in the Ash Fields: the ash gives up something the fire missed, and its owner in Pixelheim will be glad to have it back"
+msgstr "Fouillez la porte de chaque ferme brûlée des Champs de Cendres : la cendre rend un objet que le feu a épargné, et son propriétaire à Pixelheim sera content de le retrouver"
+
+#: assets/data/changelog.json
 msgid "Second Thoughts"
 msgstr "Réflexion faite"
 
@@ -6487,6 +6539,10 @@ msgstr "Le journal s'ouvre sur ce que vous faites en ce moment : la quête sui
 #: assets/data/changelog.json
 msgid "The journal says where an escort starts"
 msgstr "Le journal indique où commence une escorte"
+
+#: assets/data/changelog.json
+msgid "The journal's Feats count the five things carried home"
+msgstr "Les Hauts faits du journal comptent les cinq objets rapportés"
 
 #: assets/data/changelog.json
 msgid "The journal's Next line now takes a single line, so the quest list shows about five quests instead of three, with a scroll bar when there are more"
@@ -12949,6 +13005,10 @@ msgid "(He unlocks Liane's door.) Her sums are still on her desk. She did them t
 msgstr "(Il déverrouille la porte de Liane.) Ses calculs sont toujours sur son bureau. Elle les a faits la veille de l'ascension. Lisez-les. Elle aurait voulu que quelqu'un les lise."
 
 #: assets/data/progression.json
+msgid "(Hilda smiles. Dagny swears she does it once a year.) My first hammer. I made it at nine, and it's awful. Thank you."
+msgstr "(Hilda sourit. Dagny jure qu'elle le fait une fois par an.) Mon premier marteau. Je l'ai fait à neuf ans, et il est affreux. Merci."
+
+#: assets/data/progression.json
 msgid "(Maren turns a tin box over in her hands, black with soot.) I dug this out of my hearth. Five letters I wrote fifty years ago, and never sent."
 msgstr "(Maren tourne entre ses mains une boîte en fer-blanc, noire de suie.) Je l'ai sortie de mon âtre. Cinq lettres écrites il y a cinquante ans, et jamais envoyées."
 
@@ -13245,8 +13305,32 @@ msgid "Caravan Guard"
 msgstr "La garde des caravanes"
 
 #: assets/data/progression.json
+msgid "Carry Ana's good boots home to her in Pixelheim."
+msgstr "Rapporter ses bonnes bottes à Ana, à Pixelheim."
+
+#: assets/data/progression.json
+msgid "Carry Bram's milk pail home to him in Pixelheim."
+msgstr "Rapporter son seau à lait à Bram, à Pixelheim."
+
+#: assets/data/progression.json
+msgid "Carry Hilda's first hammer home to her in Pixelheim."
+msgstr "Rapporter son premier marteau à Hilda, à Pixelheim."
+
+#: assets/data/progression.json
+msgid "Carry Sela's stew recipe home to her in Pixelheim."
+msgstr "Rapporter sa recette de ragoût à Sela, à Pixelheim."
+
+#: assets/data/progression.json
+msgid "Carry Vex's mortar home to her in Pixelheim."
+msgstr "Rapporter son mortier à Vex, à Pixelheim."
+
+#: assets/data/progression.json
 msgid "Carry every thread of the Post to its last piece."
 msgstr "Mener chaque fil de la Poste jusqu'à son dernier pli."
+
+#: assets/data/progression.json
+msgid "Carry home the five things the fire missed in the Ash's steads."
+msgstr "Rapporter les cinq choses que le feu a épargnées dans les fermes des Cendres."
 
 #: assets/data/progression.json
 msgid "Carry water from the well to the burning homes ({fires})"
@@ -14197,6 +14281,14 @@ msgid "My father wore Greyhold's badge till the day the fort fell. They laid the
 msgstr "Mon père a porté l'insigne de Greyhold jusqu'au jour où le fort est tombé. On a couché la garnison dans la crypte, sous les caves. Si son insigne est là-bas avec eux, j'aimerais le ramener à la maison."
 
 #: assets/data/progression.json
+msgid "My good boots! The fire had the toes and left the ankles. It knew what mattered."
+msgstr "Mes bonnes bottes ! Le feu a pris le bout et laissé les chevilles. Il savait ce qui compte."
+
+#: assets/data/progression.json
+msgid "My good mortar! Cracked clean through, so it'll grind crooked now. I'll call that the secret."
+msgstr "Mon bon mortier ! Fendu de part en part, il va moudre de travers. J'appellerai ça le secret."
+
+#: assets/data/progression.json
 msgid "My house is along Upper Street, or what's left of it. Bring your back, courier. There's a hearthstone to lift."
 msgstr "Ma maison est dans la Grand-Rue, ou ce qu'il en reste. Apportez votre dos, messager. Il y a une pierre d'âtre à soulever."
 
@@ -14205,8 +14297,16 @@ msgid "My lute! Slightly chewed. It adds character. Pixelheim gains its first ve
 msgstr "Mon luth ! Un peu mâchouillé. Ça lui donne du caractère. Ce soir, Pixelheim gagne son premier couplet."
 
 #: assets/data/progression.json
+msgid "My mother's stew! The fire's had the half with the measures. Good. I never kept to them."
+msgstr "Le ragoût de ma mère ! Le feu a pris la moitié avec les mesures. Tant mieux. Je ne les ai jamais suivies."
+
+#: assets/data/progression.json
 msgid "My old guard couldn't hit a barn door. Good thing he's bigger than a barn."
 msgstr "Ma vieille garde ne toucherait pas une porte de grange. Heureusement, il est plus gros qu'une grange."
+
+#: assets/data/progression.json
+msgid "My pail! The cows ran off, the barn burnt and the cheese melted, but the pail came through. A man can start again from a pail."
+msgstr "Mon seau ! Les vaches ont filé, la grange a brûlé et le fromage a fondu, mais le seau s'en est tiré. Avec un seau, un homme peut tout recommencer."
 
 #: assets/data/progression.json
 msgid "My sister's locket. They took it when they threw me in the cells - the end cell, under the straw."
@@ -14415,6 +14515,10 @@ msgstr "Reliques rapportées"
 #: assets/data/progression.json
 msgid "Relics of the Five"
 msgstr "Les Reliques des Cinq"
+
+#: assets/data/progression.json
+msgid "Returned home"
+msgstr "Rendu"
 
 #: assets/data/progression.json
 msgid "Rimefang laid low"
@@ -15271,6 +15375,10 @@ msgstr "Wenna vous sert le ragoût de Tam à la louche, trop poivré comme il se
 #: assets/data/progression.json
 msgid "Wenna. Tam didn't die in a rockfall. I said that because the truth was harder to write. The hall came down and he held up the roof so I could run. He was laughing. Of course he was."
 msgstr "Wenna. Tam n'est pas mort dans un éboulement. J'ai dit ça parce que la vérité était plus dure à écrire. La salle s'est effondrée et il a retenu le toit pour que je puisse fuir. Il riait. Évidemment qu'il riait."
+
+#: assets/data/progression.json
+msgid "What the Fire Missed"
+msgstr "Ce que le feu a épargné"
 
 #: assets/data/progression.json
 msgid "Wildlord"
@@ -16695,6 +16803,10 @@ msgstr "Niv. %d"
 #: scripts/enemy.gd
 msgid "blocked"
 msgstr "paré"
+
+#: scripts/features/ash_fields/feature.gd
+msgid "In the ash: %s. Carry it home to %s."
+msgstr "Dans la cendre : %s. À rapporter à %s."
 
 #: scripts/features/lookout/lookout.gd
 msgid "By day the Reach is only ash and roads from up here. Come back after dark, when the lamps are lit."

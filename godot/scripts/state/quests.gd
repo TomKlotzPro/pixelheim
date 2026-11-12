@@ -33,10 +33,27 @@ static func for_giver(giver: String) -> Array:
 
 
 ## The quests carried to someone other than their giver (PIX-253, the
-## "deliverTo" kind: Maren's letters) that `npc_id` receives.
+## "deliverTo" kind: Maren's letters, the Ash's keepsakes) that `npc_id`
+## receives.
 static func for_recipient(npc_id: String) -> Array:
 	return all().filter(func(quest: Dictionary) -> bool:
 		return quest["objective"]["kind"] == "deliverTo" and quest["objective"]["to"] == npc_id)
+
+
+## The burnt steads' keepsakes (PIX-448): carried to their owner as a letter
+## is (the deliverTo kind), each `found` at its stead's door in the Ash.
+static func keepsakes() -> Array:
+	return all().filter(func(quest: Dictionary) -> bool: return quest.has("found"))
+
+
+## The keepsake still waiting at `cell` of `map_id` (not found yet: its
+## quest untaken), {} for none.
+static func keepsake_at(map_id: String, cell: Vector2i, entries: Dictionary) -> Dictionary:
+	for quest: Dictionary in keepsakes():
+		var found: Dictionary = quest["found"]
+		if found["mapId"] == map_id and Vector2i(int(found["x"]), int(found["y"])) == cell and not entries.has(quest["id"]):
+			return quest
+	return {}
 
 
 ## How far along a quest is (questProgress): kills counted so far, or the
@@ -100,7 +117,8 @@ static func mark_tells_story(giver: String, entries: Dictionary, items: Dictiona
 static func _marked(giver: String, entries: Dictionary, items: Dictionary, opened: Callable) -> Array:
 	for quest: Dictionary in for_recipient(giver):
 		if is_ready(quest, entries, items):
-			return ["letter", quest]
+			# A keepsake from the Ash (PIX-448) is a side quest's hand-in, not the story's.
+			return ["letter" if Letters.is_letter(quest) else "ready", quest]
 	for quest: Dictionary in for_giver(giver):
 		var entry: Dictionary = entries.get(quest["id"], {})
 		if entry.get("done", false):

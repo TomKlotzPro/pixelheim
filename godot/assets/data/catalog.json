@@ -1773,6 +1773,51 @@
       "quest": true,
       "description": "A soldier's badge from Greyhold, the tower on it worn smooth by a thumb."
     },
+    "keepsake_pail": {
+      "name": "Bram's Milk Pail",
+      "category": "misc",
+      "sprite": "pail",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "A wooden milk pail from a burnt stead in the Ash Fields, without a scorch on it. BRAM, says the bottom."
+    },
+    "keepsake_hammer": {
+      "name": "Hilda's First Hammer",
+      "category": "misc",
+      "sprite": "hammer",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "A little hammer, badly forged, from a burnt stead in the Ash Fields. An H is punched in its head."
+    },
+    "keepsake_recipe": {
+      "name": "Sela's Stew Recipe",
+      "category": "misc",
+      "sprite": "letter",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "A recipe card from a tin in the Ash Fields, half burnt: \"Mother's stew. Do NOT tell Odo.\""
+    },
+    "keepsake_mortar": {
+      "name": "Vex's Mortar",
+      "category": "misc",
+      "sprite": "mortar",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "A stone mortar from a burnt stead in the Ash Fields, cracked through and still green inside. VEX is scratched on the base."
+    },
+    "keepsake_boots": {
+      "name": "Ana's Good Boots",
+      "category": "misc",
+      "sprite": "boots",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "A pair of good boots from a burnt stead in the Ash Fields, scorched at the toes and laced very tight."
+    },
     "kings_signet": {
       "name": "King's Signet",
       "category": "apparel",
@@ -2165,6 +2210,14 @@
       "weight": 0,
       "value": 10,
       "description": "An ember lamp on every post road. On a clear night you can see them all from the mountain road."
+    },
+    "medal_keepsakes": {
+      "name": "Medal of the Kept Things",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "Five things the fire missed in the Ash's steads, every one home. Bram has polished his pail twice."
     }
   },
   "roles": {
