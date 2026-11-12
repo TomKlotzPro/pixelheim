@@ -146,7 +146,10 @@ static func spread(map: MapData, hero: Vector2, spots: Array[Vector2], body_at: 
 	var done: Array[bool] = []
 	var taken: Array[Vector2] = []
 	for i in spots.size():
-		var held := i < last.size() and is_equal_approx(last[i].distance_to(hero), spots[i].distance_to(hero))
+		# Within a pixel, not is_equal_approx's relative hair: far out on a big
+		# map float32 misses that now and then (the ring's radii, 11 and 28, are
+		# far apart).
+		var held := i < last.size() and absf(last[i].distance_to(hero) - spots[i].distance_to(hero)) < 1.0
 		if held:
 			out[i] = last[i]
 		done.append(held or walks_straight(map, hero + body_at, spots[i]))
