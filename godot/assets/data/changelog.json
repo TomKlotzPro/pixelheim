@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.358.0",
+      "date": "2026-11-12",
+      "codename": "Same Rules",
+      "notes": [
+        "On the Night of Bells, the well and the burning roofs now show E and answer from any cell beside them, as on the Night of Ash",
+        "The Icefin now counts as a fresh fish wherever one is asked"
+      ]
+    },
+    {
       "version": "0.357.0",
       "date": "2026-11-12",
       "codename": "Steady Now",

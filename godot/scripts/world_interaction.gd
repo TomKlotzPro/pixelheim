@@ -75,8 +75,8 @@ func interact() -> void:
 	if not water.is_empty():
 		_carry_water(water)
 		return
-	# The Night of Bells' lanterns, the well's water and the burning roofs
-	# (PIX-253 step 9).
+	# The Night of Bells' lanterns (PIX-253 step 9; its well and roofs are
+	# the water above).
 	if world.night.interact(faced):
 		return
 	var chest := _chest_at(faced)
@@ -595,10 +595,14 @@ func open_chest(chest: Dictionary) -> void:
 
 
 ## The fires beat (PIX-197): the well fills a bucket; a burning home beside
-## the hero with one puts that fire out. `water`: _water_beside's.
+## the hero with one puts that fire out; on the Night of Bells, the night's
+## own bucket and roofs (PIX-464). `water`: _water_beside's.
 func _carry_water(water: Dictionary) -> void:
-	var fires: Dictionary = Prologue.data()["fires"]
 	var ruin: int = water["ruin"]
+	if GameState.progression.prologue != Prologue.FIRES:
+		world.night.water(ruin)
+		return
+	var fires: Dictionary = Prologue.data()["fires"]
 	if ruin < 0:
 		prologue_bucket = true
 		Sound.play("bucket_fill")
@@ -616,13 +620,31 @@ func _carry_water(water: Dictionary) -> void:
 
 
 ## On the Night of Ash's fires beat, the well or a burning home beside the
-## hero (Prologue.water_beside: {cell, ruin}), else {}. A villager beside
-## the hero keeps E unless the water is on the side faced.
+## hero (Prologue.water_beside: {cell, ruin}), else {}; on the Night of
+## Bells' embers, the well or a burning roof, by the same rule (PIX-464: E
+## took one faced cell there). A villager beside the hero keeps E unless
+## the water is on the side faced.
 func _water_beside() -> Dictionary:
-	if world.map.id != "town" or GameState.progression.prologue != Prologue.FIRES:
+	if world.map.id != "town":
 		return {}
-	var water := Prologue.water_beside(world.player_cell, Vector2i(world.player.facing), _well_cells(),
-		Town.ruins(Town.done_projects(GameState.settlement)), GameState.progression.prologue_doused)
+	var fires: Array[Dictionary] = []
+	var doused := GameState.progression.prologue_doused
+	if GameState.progression.prologue == Prologue.FIRES:
+		fires = Town.ruins(Town.done_projects(GameState.settlement))
+	elif world.night.running() and world.night.beat() == Bells.EMBERS:
+		for roof in Bells.roofs():
+			fires.append({"rect": roof})
+		doused = GameState.progression.bells_doused
+	else:
+		return {}
+	var water := Prologue.water_beside(world.player_cell, Vector2i(world.player.facing), _well_cells(), fires, doused)
+	# Any other well tile beside the hero gives water too: the fountain, once
+	# built, as the old faced-cell rule allowed (PIX-464's review).
+	if water.is_empty():
+		for side: Vector2i in [Vector2i(world.player.facing)] + Npcs.SIDES:
+			if world.map.tile_at(world.player_cell + side) == "well":
+				water = {"cell": world.player_cell + side, "ruin": -1}
+				break
 	if not water.is_empty() and water["cell"] != facing_cell() and not world.folk.beside().is_empty():
 		return {}
 	return water
@@ -723,7 +745,8 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 
 ## The one interaction-prompt rule (interactionPrompt.ts): on the Night of
 ## Ash's fires, the well or a burning home beside the hero, over all of the
-## well or the burning cell (PIX-460: there was none); then a villager
+## well or the burning cell (PIX-460: there was none; the Night of Bells'
+## embers likewise, PIX-464); then a villager
 ## beside the hero, then a faced unopened chest, a station (PIX-234), the
 ## water from a fishing spot, a bed or the stairs down (PIX-256), a
 ## letter's answer on its table, a ledger on its desk (PIX-338), a

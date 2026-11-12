@@ -174,8 +174,8 @@ func test_the_roofs_that_burn_are_homes_and_a_well_is_near() -> void:
 	var map := _town()
 	var wells := map.grid.keys().filter(func(cell: Vector2i) -> bool: return map.grid[cell] == "well")
 	assert_false(wells.is_empty(), "the well below the square")
-	assert_eq(Bells.roof_at(Vector2i(23, 19)), 0, "Vex's door is the brewery's roof")
-	assert_eq(Bells.roof_at(Bells.landing()), -1)
+	assert_true(Bells.roofs()[0].has_point(Vector2i(23, 19)), "Vex's door is the brewery's roof")
+	assert_false(Bells.roofs().any(func(roof: Rect2i) -> bool: return roof.has_point(Bells.landing())))
 
 
 func test_the_lanterns_hold_the_square_and_iva_is_in_reach_of_it() -> void:

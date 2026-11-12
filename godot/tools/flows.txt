@@ -508,6 +508,10 @@ boss-fall-words | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --
 warden-fall-words | --map shafts_blackseam --at 24,11 fight kill --foe seam_warden --foe-left 0.05 --wait 0.6 --zoom play | map=shafts_blackseam fell=1 bossbar=none hudclash=none | dungeon combat
 place-holds-hint | --map seacave_grotto --at 23,12 hints fight kill --foe tidecaller --foe-left 0.007 --then-walk r,r --wait 0.6 --zoom play | map=saltmere card=Saltmere hint=dodge toast= hudclash=none | dungeon travel combat
 floor-name-arrow | --map saltmere --at 6,24 --walk u fades --wait 0.6 --zoom play | map=seacave toast=1 box, 1 line, fits hudclash=none | dungeon travel
+# The arrow keeps off the hero at the Blackiron Shafts' and the Ice Cave's
+# first steps too (PIX-464: hudclash counts it within ARROW_CLEAR).
+shafts-name-arrow | --map blackiron --at 26,5 --walk u fades --wait 0.6 --zoom play | map=shafts hudclash=none | dungeon travel
+icecave-name-arrow | --map observatory --at 13,7 --walk u,u --keys s,e fades --wait 0.6 --zoom play | map=icecave hudclash=none | dungeon travel rooms
 # The Hollow King's fall in French (PIX-378: « NIVEAU SUPÉRIEUR » rising,
 # the win, the Victory card and the level's plate all at once, the win on a
 # blow's number): LEVEL UP alone says the level under the card (the plate
@@ -799,6 +803,11 @@ bells-gate | --map town --bells 1 --at 40,4 --walk u,u --wait 0.4 | map=town bel
 bells-fall | --map town --bells 3 hurt die | map=town cell=\(50, 12\) bells=hold mobs=1 | story night combat
 bells-midnight | --load res://test/fixtures/bells_night.json --wait 0.3 | map=town bells=lanterns lit=0 next=lanterns | save story night
 bells-resume | --load res://test/fixtures/bells_resume.json --wait 0.3 | map=town bells=embers lit=5 burning=2 mobs=3 next=embers | save story night
+# The well and the burning roofs take E from beside them, as on the Night
+# of Ash (PIX-464: one faced cell each): below the well facing away from
+# it, and facing away from a burning roof.
+bells-well-beside | --map town --bells 2 --at 34,32 --keys d,e --wait 0.5 --lang en | bells=embers plate=You fill a bucket\. Water, for once, is on our side\. | story town night
+bells-roof-beside | --map town --bells 2 --at 21,24 --keys s,e --wait 0.5 --lang en | bells=embers plate=Your hands are empty: the well is on the green, below the square\. | story town night
 # The Kings' Vault after the story (PIX-257, PIX-253 step 11): its door of
 # black iron under the summit holds a new hero back until the dragon is
 # freed; the collar off, it stands open, Fafnyr's word playing as it first

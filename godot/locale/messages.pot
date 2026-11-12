@@ -4913,6 +4913,10 @@ msgid "On the Night of Bells, Sela brings a bowl of broth to whoever holds the s
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On the Night of Bells, the well and the burning roofs now show E and answer from any cell beside them, as on the Night of Ash"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "On the first night, the burning houses light the square in soft pools: no more lit and dark areas ending in straight lines"
 msgstr ""
 
@@ -5582,6 +5586,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Saltmere, Fernoir and the Frostgate are lived in: no two houses alike, Saltmere's boats, fish racks and kegs on its quay, ore carts coming down the miners' road, firewood and a loaded sledge at the Frostgate, lamps by their doors at night, and each step the Post brings them shows in the street as you walk in"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Same Rules"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6434,6 +6442,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Hollow King waits at the bottom with the Old King's Crown, and the Obsidian Blade, Runic Armor and Starfall Staff are down there too"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Icefin now counts as a fresh fish wherever one is asked"
 msgstr ""
 
 #: assets/data/changelog.json

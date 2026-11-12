@@ -4913,6 +4913,10 @@ msgid "On the Night of Bells, Sela brings a bowl of broth to whoever holds the s
 msgstr "Pendant la Nuit des Cloches, Sela apporte un bol de bouillon à qui tient la place, pour que chaque classe voie l'aube ; le clerc commence plus solide, et les premiers champs s'adoucissent encore"
 
 #: assets/data/changelog.json
+msgid "On the Night of Bells, the well and the burning roofs now show E and answer from any cell beside them, as on the Night of Ash"
+msgstr "Pendant la Nuit des Cloches, le puits et les toits en feu affichent désormais E et répondent depuis n'importe quelle case voisine, comme pendant la Nuit des Cendres"
+
+#: assets/data/changelog.json
 msgid "On the first night, the burning houses light the square in soft pools: no more lit and dark areas ending in straight lines"
 msgstr "La première nuit, les maisons en feu éclairent la place en halos doux : fini les zones claires et sombres coupées en lignes droites"
 
@@ -5583,6 +5587,10 @@ msgstr "La mer de Saltmere continue au-delà du bord de la carte au lieu de s'ar
 #: assets/data/changelog.json
 msgid "Saltmere, Fernoir and the Frostgate are lived in: no two houses alike, Saltmere's boats, fish racks and kegs on its quay, ore carts coming down the miners' road, firewood and a loaded sledge at the Frostgate, lamps by their doors at night, and each step the Post brings them shows in the street as you walk in"
 msgstr "Saltmere, Fernoir et la Porte-Givre sont habités : pas deux maisons pareilles, les barques, les séchoirs à poisson et les tonneaux sur le quai de Saltmere, des chariots de minerai qui descendent la route des mineurs, du bois et un traîneau chargé à la Porte-Givre, des lanternes à leurs portes la nuit, et chaque étape que le Courrier leur apporte se voit dans la rue en arrivant"
+
+#: assets/data/changelog.json
+msgid "Same Rules"
+msgstr "Mêmes règles"
 
 #: assets/data/changelog.json
 msgid "Save codes and delete-save moved into Options"
@@ -6435,6 +6443,10 @@ msgstr "Le Capitaine creux ne se bat plus jusqu'au bout : épuisez-le et lisez
 #: assets/data/changelog.json
 msgid "The Hollow King waits at the bottom with the Old King's Crown, and the Obsidian Blade, Runic Armor and Starfall Staff are down there too"
 msgstr "Le Roi Creux attend tout en bas avec la Couronne du Vieux Roi, et la Lame d'obsidienne, l'Armure runique et le Bâton d'étoile filante y sont aussi"
+
+#: assets/data/changelog.json
+msgid "The Icefin now counts as a fresh fish wherever one is asked"
+msgstr "Le Nageglace compte désormais comme un poisson frais partout où l'on en demande un"
 
 #: assets/data/changelog.json
 msgid "The JOURNAL (J) tracks every promise with progress bars and tells you who to see when it's ready"
