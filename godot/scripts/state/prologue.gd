@@ -48,13 +48,17 @@ static func keeps(step: int, item_id: String) -> bool:
 
 
 ## What the line above the dock says at a step, "" outside the prologue;
-## `doused`: the fires out so far (the carrying beat counts them).
-static func objective(step: int, doused := 0, heals_first := false) -> String:
+## `doused`: the fires out so far (the carrying beat counts them);
+## `bucket`: the well's water in hand, which the carrying beat's line says
+## (PIX-461: nothing on screen did).
+static func objective(step: int, doused := 0, heals_first := false, bucket := false) -> String:
 	var steps: Array = data()["steps"]
 	if step < 1 or step > steps.size():
 		return ""
 	# A hero whose first skill mends hears how to fight without it (PIX-205).
 	var line: String = steps[step - 1].get("textHeal", steps[step - 1]["text"]) if heals_first else steps[step - 1]["text"]
+	if bucket:
+		line = steps[step - 1].get("textBucket", line)
 	var text := line.replace("{fires}", "%d/%d" % [doused, fires_needed()])
 	return Controls.say(text)
 
@@ -128,6 +132,39 @@ static func well() -> Vector2i:
 				_well = cell
 				break
 	return _well
+
+
+## What the fires' water meets beside a hero at `cell` facing `facing`
+## (PIX-460: E took one exact cell and facing, and cost a newcomer fifteen
+## tries): the well, drawn over `well_cells`, or a home still burning
+## (`ruins`, Town.ruins'; `doused` out), on any side, the faced one first,
+## as a villager beside the hero is: {cell, ruin} (ruin -1 for the well),
+## or {}.
+static func water_beside(cell: Vector2i, facing: Vector2i, well_cells: Rect2i, ruins: Array[Dictionary], doused: Array[int]) -> Dictionary:
+	for side: Vector2i in [facing] + Npcs.SIDES:
+		var at := cell + side
+		if well_cells.has_point(at):
+			return {"cell": at, "ruin": -1}
+		for i in ruins.size():
+			if i not in doused and (ruins[i]["rect"] as Rect2i).has_point(at):
+				return {"cell": at, "ruin": i}
+	return {}
+
+
+## Where a bucket of the well's water goes (PIX-461: the arrow kept pointing
+## back at the well): the cell nearest `from` of the nearest home still
+## burning (`ruins`, Town.ruins'; `doused` out); the well once none is.
+static func nearest_fire(from: Vector2i, ruins: Array[Dictionary], doused: Array[int]) -> Vector2i:
+	var best := well()
+	var best_off := INF
+	for i in ruins.size():
+		var rect: Rect2i = ruins[i]["rect"]
+		var at := from.clamp(rect.position, rect.end - Vector2i.ONE)
+		var off := Vector2(at - from).length()
+		if i not in doused and off < best_off:
+			best = at
+			best_off = off
+	return best
 
 
 ## What a survivor says that night (PIX-426): their scene on their own

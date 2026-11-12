@@ -177,6 +177,26 @@ func test_the_fires_put_out_are_kept() -> void:
 	assert_eq(ProgressionState.from_dict(saved).prologue_doused, [2] as Array[int])
 
 
+## PIX-460: the well and each burning home took E from one cell and one
+## facing, and a newcomer spent fifteen tries on them: beside one, on any
+## side, is enough, the faced side first. PIX-461: a full bucket leads to the
+## nearest fire, and the line says it's in hand.
+func test_the_water_is_met_from_beside_and_a_full_bucket_leads_to_a_fire() -> void:
+	# Shade's well, two wide with its roof two tall over it, and two homes.
+	var well := Rect2i(4, 2, 2, 3)
+	var homes: Array[Dictionary] = [{"rect": Rect2i(10, 4, 4, 3)}, {"rect": Rect2i(15, 4, 3, 3)}]
+	assert_eq(Prologue.water_beside(Vector2i(5, 5), Vector2i.UP, well, homes, []), {"cell": Vector2i(5, 4), "ruin": -1}, "under the roof's right half")
+	assert_eq(Prologue.water_beside(Vector2i(6, 3), Vector2i.DOWN, well, homes, []), {"cell": Vector2i(5, 3), "ruin": -1}, "beside the roof, facing away")
+	assert_eq(Prologue.water_beside(Vector2i(14, 5), Vector2i.RIGHT, well, homes, []), {"cell": Vector2i(15, 5), "ruin": 1}, "between two homes, the faced one")
+	assert_eq(Prologue.water_beside(Vector2i(14, 5), Vector2i.RIGHT, well, homes, [1]), {"cell": Vector2i(13, 5), "ruin": 0}, "one put out takes no more")
+	assert_eq(Prologue.water_beside(Vector2i(12, 8), Vector2i.UP, well, homes, []), {}, "a step off, nothing")
+	assert_eq(Prologue.nearest_fire(Vector2i(20, 5), homes, []), Vector2i(17, 5), "the nearest home, at its nearest cell")
+	assert_eq(Prologue.nearest_fire(Vector2i(20, 5), homes, [1]), Vector2i(13, 5), "the next once that one is out")
+	assert_eq(Prologue.nearest_fire(Vector2i(20, 5), homes, [0, 1]), Prologue.well(), "the well once none burns")
+	assert_eq(Prologue.objective(Prologue.FIRES, 1, false, true), "Pour the bucket on a burning home (1/3)")
+	assert_eq(Prologue.objective(Prologue.EMBERS, 3, false, true), Prologue.objective(Prologue.EMBERS, 3), "only the carrying beat has a bucket")
+
+
 ## PIX-426: the line above the dock said Upper Street while the map's goal,
 ## the journal and Maren's gold "!" sent a newcomer to her, who played her
 ## letter scene again and again and never found the caller. At every step of

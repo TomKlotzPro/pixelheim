@@ -14657,6 +14657,10 @@ msgid "Postmaster of the Reach"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Pour the bucket on a burning home ({fires})"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Prelate"
 msgstr ""
 
