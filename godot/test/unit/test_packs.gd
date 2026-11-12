@@ -209,6 +209,38 @@ func test_a_pack_spreads_round_a_hero_against_a_wall() -> void:
 			assert_gte(spots[i].distance_to(spots[j]), TILE, "%d and %d: a cell apart" % [i, j])
 
 
+## PIX-463: five foes closing in on a hero against the wall above them (the
+## Blackiron Shafts at 38,20), each a step a tick toward its spot and no
+## nearer than its stop: once they are in, every spot stays put from one
+## tick to the next. Each one's step moved the ring a hair, and a spot sent
+## round the hero flipped between two places 30 degrees apart every tick
+## (134 times in the last 3 s here; in the game, one spearman's 276 times in
+## 8 s. No layout of four here ever flipped).
+func test_a_pack_against_a_wall_keeps_its_spots() -> void:
+	var map := MapData.new()
+	for x in 16:
+		for y in 16:
+			map.grid[Vector2i(x, y)] = "wall" if y < 5 else "grass"
+	var hero := Vector2(8.5, 5.5) * TILE
+	# The harness's pack (fight pack --foe goblin_spear) as five, cell by cell.
+	var at: Array[Vector2] = [hero + Vector2(16, 0), hero + Vector2(16, 16), hero + Vector2(0, 32), hero + Vector2(32, 32), hero + Vector2(-16, 16)]
+	var last: Array[Vector2] = []
+	var jumps := 0
+	for tick in 300:
+		var spots := Packs.spread(map, hero, Packs.ring(hero, at), BODY_AT, last)
+		for i in at.size():
+			if tick > 120 and spots[i].distance_to(last[i]) > 1.0:
+				jumps += 1
+			var to := at[i] + (spots[i] - at[i]).limit_length(1.5)
+			if to.distance_to(hero) < 14.0:
+				to = hero + (to - hero).normalized() * 14.0
+			# A foe's feet keep off the wall.
+			if Packs.walks_straight(map, to, to):
+				at[i] = to
+		last = spots
+	assert_eq(jumps, 0, "every spot stays put")
+
+
 ## Every cell a hero can appear on, per map: its spawn, its doors, where
 ## other maps' doors and the waypoints set them down.
 func _arrivals(map_ids: Array) -> Dictionary:

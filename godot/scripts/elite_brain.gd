@@ -138,9 +138,10 @@ func _strike(shape: PackedVector2Array, move: Dictionary, jump: String) -> void:
 		for point in shape:
 			mid += point
 		mid /= shape.size()
-		# A leap lands its edge off the mark's middle (Enemy.edge_of, PIX-457:
-		# it landed on a hero who stood), or stays put when already nearer.
-		var land := (shape[1] + shape[2]) / 2.0 if jump == "lunge" else mid + (enemy.global_position - mid).limit_length(enemy.edge)
+		# A leap lands where it stops off the mark's middle (Enemy.edge_of,
+		# PIX-457: it landed on a hero who stood; deeper below them, Enemy.stop,
+		# PIX-463), or stays put when already nearer.
+		var land := (shape[1] + shape[2]) / 2.0 if jump == "lunge" else mid + (enemy.global_position - mid).limit_length(enemy.stop(mid - enemy.global_position))
 		var cell := Vector2i((land / TILE).floor())
 		var from := Vector2i((enemy.global_position / TILE).floor())
 		if world.map.is_walkable(cell) and Packs.can_see(world.map, from, cell):

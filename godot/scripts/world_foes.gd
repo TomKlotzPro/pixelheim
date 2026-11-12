@@ -63,10 +63,11 @@ var stood := 0
 ## reports it), and when the last did.
 var fled := 0
 var frightened_at := -100.0
-## The ring round the hero (ring_spot): each hunter's spot, and the physics
-## tick it was worked out on.
+## The ring round the hero (ring_spot): each hunter's spot, the physics
+## tick it was worked out on, and where the hero stood.
 var _ring := {}
 var _ring_tick := -1
+var _ring_hero := Vector2.INF
 
 
 ## Packs at their homes (the spawns): the species its region and position
@@ -450,12 +451,14 @@ func on_enemy_frightened(_enemy: Node) -> void:
 ## Vector2.INF when it is in none: the hunters within the ring's reach,
 ## bosses and named monsters aside, two or more of them. Worked out once a
 ## physics tick for all; a spot a wall stands between goes round the hero
-## to an open one (Packs.spread, PIX-459).
+## to an open one (Packs.spread, PIX-459), and while the hero stands and the
+## pack is the same, each keeps its own (PIX-463).
 func ring_spot(enemy: Node) -> Vector2:
 	var tick := Engine.get_physics_frames()
 	if tick != _ring_tick:
 		_ring_tick = tick
-		_ring.clear()
+		var before := _ring
+		_ring = {}
 		var hero: Vector2 = world.player.global_position
 		var reach := float(Packs.rules()["ring"]["reachTiles"]) * MapView.TILE
 		var hunters: Array[Node] = []
@@ -465,9 +468,15 @@ func ring_spot(enemy: Node) -> Vector2:
 				hunters.append(mob)
 				at.append(mob.global_position)
 		if hunters.size() > 1:
-			var spots := Packs.spread(world.map, hero, Packs.ring(hero, at), preload("res://scripts/player.gd").BODY_AT)
+			# PIX-463: the hero standing and the pack the same, last tick's spots.
+			var last: Array[Vector2] = []
+			if hero == _ring_hero and before.size() == hunters.size() and hunters.all(func(mob: Node) -> bool: return before.has(mob)):
+				for mob in hunters:
+					last.append(before[mob])
+			var spots := Packs.spread(world.map, hero, Packs.ring(hero, at), preload("res://scripts/player.gd").BODY_AT, last)
 			for index in hunters.size():
 				_ring[hunters[index]] = spots[index]
+		_ring_hero = hero
 	return _ring.get(enemy, Vector2.INF)
 
 
