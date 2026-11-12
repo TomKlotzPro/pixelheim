@@ -218,6 +218,12 @@ static func _decor_hamlet(view: MapView) -> void:
 					plant.texture = PunyProps.texture(piece["tile"])
 					plant.position = still.position - Vector2(0, PunyProps.POT_RISE)
 					root.add_child(plant)
+				# The pack's young trees and bushes, a planter's tree and
+				# the street lamps cast a shadow (PIX-449).
+				if piece.has("tile") and Yards.grows(piece["tile"]):
+					cast(view, Vector2(cell * TILE) + Vector2(TILE / 2.0, TILE), TILE * MapView.CROWN_SHADOW.x, (TILE + (PunyProps.POT_RISE if potted else 0)) * MapView.CROWN_SHADOW.y)
+				elif art == "lamp_post":
+					PropsLayer.lamp_shadow(view, cell, HamletArt.size(art))
 				if piece["kind"] == "stand":
 					for taken: Vector2i in piece["cells"]:
 						block(view, taken)
@@ -301,6 +307,7 @@ static func _decor_routes(view: MapView) -> void:
 			var root := stand_on(view, sprite, cell, Vector2(0, TILE - RouteArt.size(art).y))
 			if kind == "lamp":
 				_add_ember_lamp(view, root, cell, String(piece["place"]), cell in own_light, String(piece.get("lamp", "ember")))
+				PropsLayer.lamp_shadow(view, cell, RouteArt.size(art), 0)
 			elif kind == "hut":
 				_add_hut_window(view, root)
 				view.waystations.append(String(piece["place"]))

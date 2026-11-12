@@ -242,6 +242,13 @@ const GREEN := [
 const SETS := {"market": MARKET, "street": STREET, "green": GREEN}
 
 
+## Whether the pack's `tile` is a young tree or a bush in flower, here, in
+## the farmland's orchard or on the Ash's healed ground: what casts a
+## shadow as a tree does (PIX-449).
+static func grows(tile: int) -> bool:
+	return tile in TREES or tile in [ROSES, LAVENDER, MARIGOLDS, BERRIES, BUSH, BLUEBELLS, BOX_BUSH]
+
+
 ## The town's dressing at `age` (GameState.town_tier) on `map`, its houses
 ## `pieces` as PunyTown drew them (window boxes go under their windows):
 ## Hamlet.plan's `grown` entries. None without the pack (`paid`).

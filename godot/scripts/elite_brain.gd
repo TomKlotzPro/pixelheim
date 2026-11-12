@@ -6,7 +6,7 @@ extends Node
 ## undead raise a guard that turns most of a blow. A named monster (PIX-156)
 ## has its family's trick and one of its own besides: Greymaw howls up
 ## wolves, the Drowned Knight's bog grasps and holds, Cinderjaw spits fire
-## three ways, Mossback throws a stone, Grandmother Gulp leaps onto you.
+## three ways, Mossback throws a stone, Grandmother Gulp leaps at you.
 ## combat.json's "eliteMoves" and "named" hold the numbers; the enemy it
 ## rides on (its parent) does the walking and biting in between.
 
@@ -63,7 +63,7 @@ func _try(move: Dictionary) -> bool:
 	var hero: Vector2 = world.player.global_position
 	var at: Vector2 = enemy.global_position
 	var tiles := at.distance_to(hero) / TILE
-	if not in_reach(move, at, hero):
+	if not in_reach(move, at, hero, enemy.beyond):
 		return false
 	if String(move["move"]) == "howl" and _calling() >= int(move["max"]):
 		return false
@@ -74,9 +74,9 @@ func _try(move: Dictionary) -> bool:
 			var length := minf(float(move["length"]), tiles + 1.0) * TILE
 			_tell(move, Telegraph.band(at, hero, length, float(move["width"]) * TILE), "lunge")
 		"cleave":
-			_tell(move, cleave_band(move, at, hero), "")
+			_tell(move, cleave_band(move, at, hero, enemy.beyond), "")
 		"stamp":
-			_tell(move, Telegraph.circle(at, float(move["radius"]) * TILE), "")
+			_tell(move, Telegraph.circle(at, float(move["radius"]) * TILE + enemy.beyond), "")
 		"guard":
 			_guard(move)
 		"firebolt", "firefan":
@@ -104,9 +104,12 @@ func _try(move: Dictionary) -> bool:
 
 ## Whether a foe at `at` may start `move` on a hero at `hero`: within its
 ## range, in cells (PIX-422: the cleave within a cell and a quarter, as a
-## hero's blade reaches only the cell in front since PIX-410).
-static func in_reach(move: Dictionary, at: Vector2, hero: Vector2) -> bool:
-	var tiles := at.distance_to(hero) / TILE
+## hero's blade reaches only the cell in front since PIX-410), counted from
+## `beyond` pixels nearer: a foe that stops that far past the ring's nearest
+## (Enemy.edge_of, PIX-451) reaches as far from its edge, and its cleave's
+## band and its stamp's ring run as much further.
+static func in_reach(move: Dictionary, at: Vector2, hero: Vector2, beyond := 0.0) -> bool:
+	var tiles := (at.distance_to(hero) - beyond) / TILE
 	var reach: Array = move["range"]
 	return tiles >= float(reach[0]) and tiles <= float(reach[1])
 
@@ -114,12 +117,12 @@ static func in_reach(move: Dictionary, at: Vector2, hero: Vector2) -> bool:
 ## The ground a cleave marks: a band from the foe toward the hero, its
 ## `length` reaching a little past where it may start (a hero who stands is
 ## struck) and no further (one who steps back is not).
-static func cleave_band(move: Dictionary, at: Vector2, hero: Vector2) -> PackedVector2Array:
-	return Telegraph.band(at, hero, float(move["length"]) * TILE, float(move["width"]) * TILE)
+static func cleave_band(move: Dictionary, at: Vector2, hero: Vector2, beyond := 0.0) -> PackedVector2Array:
+	return Telegraph.band(at, hero, float(move["length"]) * TILE + beyond, float(move["width"]) * TILE)
 
 
 ## Stands still while its mark pulses, then strikes it; a lunge first leaps
-## to the mark's far end, a leap onto its middle.
+## to the mark's far end, a leap to beside its middle.
 func _tell(move: Dictionary, shape: PackedVector2Array, jump: String) -> void:
 	enemy.mode = "cast"
 	enemy.velocity = Vector2.ZERO
@@ -134,7 +137,9 @@ func _strike(shape: PackedVector2Array, move: Dictionary, jump: String) -> void:
 		for point in shape:
 			mid += point
 		mid /= shape.size()
-		var land := (shape[1] + shape[2]) / 2.0 if jump == "lunge" else mid
+		# A leap lands its edge off the mark's middle (Enemy.edge_of, PIX-457:
+		# it landed on a hero who stood), or stays put when already nearer.
+		var land := (shape[1] + shape[2]) / 2.0 if jump == "lunge" else mid + (enemy.global_position - mid).limit_length(enemy.edge)
 		var cell := Vector2i((land / TILE).floor())
 		var from := Vector2i((enemy.global_position / TILE).floor())
 		if world.map.is_walkable(cell) and Packs.can_see(world.map, from, cell):

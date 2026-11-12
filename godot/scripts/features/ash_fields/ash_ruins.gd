@@ -75,8 +75,16 @@ const SOOT := [[70, "N"], [90, "X"], [100, "Q"]]
 const SOOT_ALPHA := 0.7
 const BLOCK := 2
 const EDGE := 6
+## A find's glint at its door (PIX-457: the Vault's glint, dark most of its
+## beats and five pixels at most, was lost unless zoomed): a pale star that
+## stays lit at GLINT_AT in the door's cell, bigger than the Ash's cinders,
+## its arms reaching GLINT_BEATS' pixels in turn, so it flares now and then.
+const GLINT_BEATS := [2, 2, 2, 2, 2, 2, 2, 3, 3, 3]
+const GLINT_FPS := 6.0
+const GLINT_AT := Vector2i(8, 9)
 
 static var _floors := {}
+static var _glint: SpriteFrames
 
 
 ## The steads on `map` as they're laid: a list of pieces, each {"kind":
@@ -230,7 +238,32 @@ func build(view: MapView, slices: Slicer) -> void:
 	var laid: Dictionary = view.get_meta("ash_ruins")
 	slices.add("decor_ash_ruins", func() -> void:
 		for piece: Dictionary in laid["pieces"]:
-			_draw(view, piece))
+			_draw(view, piece)
+		# A keepsake still waiting at a door (PIX-448) glints in its ash,
+		# day and night, so the stead reads as worth a search: a glint, not
+		# the keepsake lying as a pickup does, which would ask to be walked
+		# over. On the door, the cell E meets.
+		var lying := {}
+		for stead: Dictionary in STEADS:
+			if not Quests.keepsake_at(MAP, stead["door"], GameState.progression.quests).is_empty():
+				var glint := AnimatedSprite2D.new()
+				glint.sprite_frames = glint_frames()
+				glint.centered = false
+				glint.material = Lights.unshaded()
+				glint.position = Vector2(stead["door"] * TILE)
+				glint.add_to_group("decor")
+				glint.play()
+				view.ground.add_child(glint)
+				lying[stead["door"]] = glint
+		view.set_meta("keepsakes", lying))
+
+
+## The keepsake at `cell` found (PIX-448): no longer lying in the ash.
+static func take_keepsake(view: MapView, cell: Vector2i) -> void:
+	var lying: Dictionary = view.get_meta("keepsakes", {})
+	if lying.has(cell):
+		lying[cell].queue_free()
+		lying.erase(cell)
 
 
 ## One piece: standing among the actors (and blocking its cells), or a log
@@ -277,15 +310,36 @@ static func _draw(view: MapView, piece: Dictionary) -> void:
 			if mended:
 				sprite.texture = PunyProps.texture(YOUNG)
 				stand_on(view, sprite, cell, Vector2.ZERO)
+				cast(view, Vector2(cell * TILE) + Vector2(TILE / 2.0, TILE), TILE * MapView.CROWN_SHADOW.x, TILE * MapView.CROWN_SHADOW.y)
 			else:
 				# Standing as it died, a pixel or two off its row.
 				sprite.texture = AshArt.texture("snag_%d" % piece["variant"])
 				sprite.flip_h = h % 2 == 1
 				stand_on(view, sprite, cell, Vector2(h % 3 - 1, TILE - AshArt.SNAG_HEIGHT))
+				cast(view, Vector2(cell * TILE) + Vector2(h % 3 - 1 + TILE / 2.0, TILE), MapView.SNAG_SHADOW.x, MapView.SNAG_SHADOW.y)
 	if piece["kind"] != "tree":
 		sprite.modulate = WEATHERED if mended else CHARRED
 	for taken: Vector2i in piece["cells"]:
 		block(view, taken)
+
+
+## A find's glint (GLINT_BEATS), a cell's frames: its middle pale, its arms
+## gold, their tips warm and half lit, and its heart's corners half lit so
+## it reads as a light, not a thin cross. Made once.
+static func glint_frames() -> SpriteFrames:
+	if _glint == null:
+		_glint = SpriteFrames.new()
+		_glint.set_animation_speed("default", GLINT_FPS)
+		for reach: int in GLINT_BEATS:
+			var image := Image.create(TILE, TILE, false, Image.FORMAT_RGBA8)
+			for corner: Vector2i in [Vector2i(-1, -1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(1, 1)]:
+				image.set_pixelv(GLINT_AT + corner, Color(HamletArt.INKS["a"], 0.5))
+			image.set_pixelv(GLINT_AT, HamletArt.INKS["q"])
+			for way: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+				for step in range(1, reach + 1):
+					image.set_pixelv(GLINT_AT + way * step, HamletArt.INKS["Y"] if step < reach else Color(HamletArt.INKS["a"], 0.6))
+			_glint.add_frame("default", ImageTexture.create_from_image(image))
+	return _glint
 
 
 ## A burnt house's floor `size` cells: soot in blocks, char and heaped ash

@@ -36,6 +36,14 @@ spawn | --map town | map=town | town
 # with them (no glass without the paid pack's houses).
 lamps-day | --map town --at 40,13 | lamplight=posts 0/[1-9]\d* panes 0 flames 0 beams 0 | town
 lamps-night | --map town --at 40,13 night | lamplight=posts ([1-9]\d*)/\1 panes \d+ flames 0 beams 0 | town night
+# The scenery's shadows (PIX-449): the lamps, trees, bushes and houses cast
+# them by day, at full strength at noon, fainter at dusk, none at night; the
+# Deepwood's woods (the Medieval Age's trees: Shade's free ones carry their
+# own, so without the pack it casts none of ours).
+shadows-noon | --map town --at 40,13 noon | map=town shadows=standing [1-9]\d* houses \d+ sun 100 | town
+shadows-dusk | --map town --at 40,13 dusk | map=town shadows=standing [1-9]\d* houses \d+ sun [1-9]\d | town
+shadows-night | --map town --at 40,13 night | map=town shadows=standing [1-9]\d* houses \d+ sun 0 | town night
+shadows-wood | --map deepwood noon | map=deepwood shadows=(standing [1-9]\d* houses 0 sun 100)? | field
 # Through the nearest door into one of its rooms (PIX-129).
 portal | --map town portal | map=town_.* | town travel
 # A shoulder over a door (PIX-434): two steps along the wall stop the hero
@@ -731,8 +739,8 @@ aske-home | --map town --hunted rimefang reveal | open=reveal_screen home=aske |
 # Rimefang's end: its bar gone once it falls (PIX-288), a way out where it
 # fell far from the ice slide, and straight back by it to the foot of
 # Liane's stair (PIX-292).
-rimefang-bar | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.0103 --wait 2.5 | map=icecave_glass fell=1 bossbar=none shortcut=open wayout=\(30, 3\);\(27, 12\) | dungeon combat
-rimefang-out | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.0103 --then-walk r --wait 0.4 | map=icecave cell=\([4-6], 2[45]\) bossbar=none | dungeon travel combat
+rimefang-bar | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.0103 --wait 2.5 | map=icecave_glass fell=1 bossbar=none shortcut=open wayout=\(30, 3\);\(28, 12\) | dungeon combat
+rimefang-out | --map icecave_glass --at 26,12 fight kill --foe rimefang --foe-left 0.0103 --then-walk r,r --wait 0.4 | map=icecave cell=\([4-6], 2[45]\) bossbar=none | dungeon travel combat
 # The mountain's gate barred to a new hero (PIX-170).
 gate | --map overworld --at 48,8 --walk u,u --wait 0.3 | map=overworld cell=\(48, 7\) open=none | travel dungeon
 # The fifth letter (PIX-253 step 8, PIX-257): with the four keepsakes home

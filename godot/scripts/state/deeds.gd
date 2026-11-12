@@ -4,7 +4,8 @@ class_name Deeds
 ## what the save already knows - every bounty, every family's mastery, a
 ## whole set worn, the whole bestiary met, every letter delivered, every
 ## settler home; and the Post's (PIX-326): every thread tied, fifty pieces
-## delivered, every waystation's lamp lit. Each one done stays done
+## delivered, every waystation's lamp lit; and the burnt steads' five
+## keepsakes carried home (PIX-448). Each one done stays done
 ## (ProgressionState.deeds) and brings a medal home for the trophy shelf.
 ## (Ten Below and Thirty Below,
 ## the Deep Hunt's, left with the old saves that could hold them, PIX-319.)
@@ -73,4 +74,8 @@ static func count(deed: Dictionary, hero: HeroState, pack: InventoryState, progr
 			var roads := Routes.places().filter(func(place: String) -> bool: return not Routes.station(place).is_empty())
 			var empty := SettlementState.new() if settlement == null else settlement
 			return [Routes.built(empty).size(), roads.size()]
+		"keepsakes":
+			# What the Fire Missed (PIX-448): the burnt steads' keepsakes home.
+			var keepsakes := Quests.keepsakes()
+			return [keepsakes.filter(func(quest: Dictionary) -> bool: return progression.quests.get(quest["id"], {}).get("done", false)).size(), keepsakes.size()]
 	return [0, 1]

@@ -1,6 +1,41 @@
 {
   "releases": [
     {
+      "version": "0.349.0",
+      "date": "2026-11-12",
+      "codename": "Hard to Miss",
+      "notes": [
+        "A burnt stead's door now shows a steady pale star while something waits in its ash",
+        "A leaping beast now lands beside you instead of on you"
+      ]
+    },
+    {
+      "version": "0.348.0",
+      "date": "2026-11-11",
+      "codename": "What the Fire Missed",
+      "notes": [
+        "Search the door of each burnt stead in the Ash Fields: the ash gives up something the fire missed, and its owner in Pixelheim will be glad to have it back",
+        "The journal's Feats count the five things carried home"
+      ]
+    },
+    {
+      "version": "0.347.0",
+      "date": "2026-11-11",
+      "codename": "Long Shadows",
+      "notes": [
+        "Trees, houses and lamp posts now cast a soft shadow on the ground: short and dark at noon, long and faint at dawn and dusk, gone at night"
+      ]
+    },
+    {
+      "version": "0.346.0",
+      "date": "2026-11-11",
+      "codename": "Elbow Room",
+      "notes": [
+        "Foes now stop at your side instead of walking onto you, so your hero stays in sight in a fight",
+        "A blow no longer cancels the move an elite or a boss is winding up: roll out of it, or stun it"
+      ]
+    },
+    {
       "version": "0.345.0",
       "date": "2026-11-11",
       "codename": "Gone Fishing",

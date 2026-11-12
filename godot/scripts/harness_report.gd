@@ -834,6 +834,15 @@ func field_scorch() -> String:
 	return ",".join(parts)
 
 
+func field_shadows() -> String:
+	var view: MapView = world.view
+	if view == null or not view.layers.has("shadows"):
+		return ""
+	var group: CanvasItem = view.layers["shadows"]
+	var sun := roundi(DayNight.sun(GameState.world.steps).z * 100.0) if group.visible else 0
+	return "standing %d houses %d sun %d" % [view.casters.size(), ShadowsLayer.houses_of(view.buildings["pieces"]).size() if view.layers.has("pieces") else 0, sun]
+
+
 func field_shortcut() -> String:
 	if Depths.number(world.map.id) <= 0:
 		return ""
