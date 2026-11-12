@@ -183,6 +183,32 @@ func test_a_pack_spreads_round_the_hero() -> void:
 		assert_almost_eq(again[index].distance_to(spots[index]), 0.0, 0.01, "in place, it stays")
 
 
+## PIX-459: a hero against the wall above them (the Blackiron Shafts' north
+## wall), a pack of three closing in from below: the spots the wall stands in
+## go round the hero onto open ground, a cell apart, as far off as their
+## places in the ring - none on the hero, where the pack queued in a column
+## behind the first.
+func test_a_pack_spreads_round_a_hero_against_a_wall() -> void:
+	var map := MapData.new()
+	for x in 12:
+		for y in 12:
+			map.grid[Vector2i(x, y)] = "wall" if y < 5 else "grass"
+	# Their body's top against the wall.
+	var hero := Vector2(5.5 * TILE, 5 * TILE + 1.0)
+	var at: Array[Vector2] = [hero + Vector2(-4, 40), hero + Vector2(3, 44), hero + Vector2(0, 60)]
+	var ring := Packs.ring(hero, at)
+	var body := hero + BODY_AT
+	assert_true(ring.any(func(spot: Vector2) -> bool: return not Packs.walks_straight(map, body, spot)), "the ring reaches into the wall")
+	var spots := Packs.spread(map, hero, ring, BODY_AT)
+	for i in spots.size():
+		assert_true(Packs.walks_straight(map, body, spots[i]), "%d: on open ground the hero's side of the wall" % i)
+		assert_almost_eq(spots[i].distance_to(hero), ring[i].distance_to(hero), 0.01, "%d: as far off as its place in the ring" % i)
+		if Packs.walks_straight(map, body, ring[i]):
+			assert_eq(spots[i], ring[i], "%d: an open spot stays" % i)
+		for j in range(i + 1, spots.size()):
+			assert_gte(spots[i].distance_to(spots[j]), TILE, "%d and %d: a cell apart" % [i, j])
+
+
 ## Every cell a hero can appear on, per map: its spawn, its doors, where
 ## other maps' doors and the waypoints set them down.
 func _arrivals(map_ids: Array) -> Dictionary:

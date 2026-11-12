@@ -2281,6 +2281,10 @@ msgid "A foe gives you longer to see its bite coming, and shows it: it crouches 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe that closes in from below now stops where your hero stays in sight"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
 msgstr ""
 
@@ -2382,6 +2386,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A new hero starts only from New Game on the title screen; with every slot taken, it says so instead of overwriting anyone"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A pack meeting you against a wall now spreads round you instead of queueing in a column"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4134,6 +4142,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "In Hand"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "In Plain Sight"
 msgstr ""
 
 #: assets/data/changelog.json

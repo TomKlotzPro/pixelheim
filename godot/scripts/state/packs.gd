@@ -128,6 +128,38 @@ static func ring(hero: Vector2, at: Array[Vector2]) -> Array[Vector2]:
 	return spots
 
 
+## The ring's `spots` round `hero` where foes can stand (PIX-459): a spot a
+## wall stands between and the hero (a hero against a wall) goes round them,
+## at its distance, to the nearest open one no other spot is a cell from;
+## only with none left is it the hero's own, as all of them were, and the
+## pack queued in a column behind the one at the hero. The way out to a
+## spot starts at the hero's body, `body_at` off their feet: from their
+## feet a foe's would reach into the wall they stand against.
+static func spread(map: MapData, hero: Vector2, spots: Array[Vector2], body_at: Vector2) -> Array[Vector2]:
+	var open := spots.map(func(spot: Vector2) -> bool: return walks_straight(map, hero + body_at, spot))
+	var taken: Array[Vector2] = []
+	for i in spots.size():
+		if open[i]:
+			taken.append(spots[i])
+	var out: Array[Vector2] = spots.duplicate()
+	for i in spots.size():
+		if open[i]:
+			continue
+		out[i] = hero
+		for turn: float in SPREAD_TURNS:
+			var spot := hero + (spots[i] - hero).rotated(deg_to_rad(turn))
+			if walks_straight(map, hero + body_at, spot) and taken.all(func(other: Vector2) -> bool: return other.distance_to(spot) >= TILE):
+				out[i] = spot
+				taken.append(spot)
+				break
+	return out
+
+
+## How far round the hero a walled-off spot looks for an open one (spread),
+## nearest first.
+const SPREAD_TURNS: Array[float] = [30.0, -30.0, 60.0, -60.0, 90.0, -90.0, 120.0, -120.0, 150.0, -150.0, 180.0]
+
+
 ## Whether a foe with this elite trick (combat.json's eliteMoves; {} for
 ## none) takes its turn in the ring: only if it can start the trick from the
 ## ring's `far`. PIX-422: the cleave, told within a cell and a quarter,

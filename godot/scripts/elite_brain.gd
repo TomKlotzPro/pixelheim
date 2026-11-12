@@ -63,7 +63,7 @@ func _try(move: Dictionary) -> bool:
 	var hero: Vector2 = world.player.global_position
 	var at: Vector2 = enemy.global_position
 	var tiles := at.distance_to(hero) / TILE
-	if not in_reach(move, at, hero, enemy.beyond):
+	if not in_reach(move, at, hero, enemy.past(hero - at)):
 		return false
 	if String(move["move"]) == "howl" and _calling() >= int(move["max"]):
 		return false
@@ -74,9 +74,9 @@ func _try(move: Dictionary) -> bool:
 			var length := minf(float(move["length"]), tiles + 1.0) * TILE
 			_tell(move, Telegraph.band(at, hero, length, float(move["width"]) * TILE), "lunge")
 		"cleave":
-			_tell(move, cleave_band(move, at, hero, enemy.beyond), "")
+			_tell(move, cleave_band(move, at, hero, enemy.past(hero - at)), "")
 		"stamp":
-			_tell(move, Telegraph.circle(at, float(move["radius"]) * TILE + enemy.beyond), "")
+			_tell(move, Telegraph.circle(at, float(move["radius"]) * TILE + enemy.past(hero - at)), "")
 		"guard":
 			_guard(move)
 		"firebolt", "firefan":
@@ -106,7 +106,8 @@ func _try(move: Dictionary) -> bool:
 ## range, in cells (PIX-422: the cleave within a cell and a quarter, as a
 ## hero's blade reaches only the cell in front since PIX-410), counted from
 ## `beyond` pixels nearer: a foe that stops that far past the ring's nearest
-## (Enemy.edge_of, PIX-451) reaches as far from its edge, and its cleave's
+## (Enemy.edge_of, PIX-451; deeper below the hero, Enemy.past, PIX-459)
+## reaches as far from where it stops, and its cleave's
 ## band and its stamp's ring run as much further.
 static func in_reach(move: Dictionary, at: Vector2, hero: Vector2, beyond := 0.0) -> bool:
 	var tiles := (at.distance_to(hero) - beyond) / TILE

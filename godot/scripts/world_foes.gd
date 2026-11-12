@@ -449,7 +449,8 @@ func on_enemy_frightened(_enemy: Node) -> void:
 ## Where `enemy` stands in the ring round the hero (PIX-377, Packs.ring), or
 ## Vector2.INF when it is in none: the hunters within the ring's reach,
 ## bosses and named monsters aside, two or more of them. Worked out once a
-## physics tick for all; a spot a wall stands between is the hero's own.
+## physics tick for all; a spot a wall stands between goes round the hero
+## to an open one (Packs.spread, PIX-459).
 func ring_spot(enemy: Node) -> Vector2:
 	var tick := Engine.get_physics_frames()
 	if tick != _ring_tick:
@@ -464,9 +465,9 @@ func ring_spot(enemy: Node) -> Vector2:
 				hunters.append(mob)
 				at.append(mob.global_position)
 		if hunters.size() > 1:
-			var spots := Packs.ring(hero, at)
+			var spots := Packs.spread(world.map, hero, Packs.ring(hero, at), preload("res://scripts/player.gd").BODY_AT)
 			for index in hunters.size():
-				_ring[hunters[index]] = spots[index] if Packs.walks_straight(world.map, hero, spots[index]) else hero
+				_ring[hunters[index]] = spots[index]
 	return _ring.get(enemy, Vector2.INF)
 
 
