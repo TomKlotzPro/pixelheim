@@ -88,6 +88,7 @@ pauseline | the pause menu's line under its title while it's open: when the game
 plate | the message's plate over the objective's line while it's up: its tag, or its words when it has none: Level up (PIX-378: never under a boss's Victory card)
 post | once the Pixelheim Post is open: standing when its box is drawn on this map, then the pieces in the box this morning, in the satchel and delivered, and while the map is open the addressees it marks on its page: standing,box:0,bag:2,sent:1,marked:1 (PIX-320)
 posthouse | on the square once the post house is built: standing when it's drawn behind the box (PIX-325)
+prompt | the E prompt while it shows over the faced spot: shown (PIX-465: it waits while a word rises through it, and comes back)
 quill | the quill by the clock: the times it wrote of the saves made this session (moments write, the quiet autosaves don't), and slept when the last was a night's sleep, Saved under it: 1/3 slept (PIX-302 step 4)
 read | on the journal's Letters page: the letters it reads (PIX-253)
 rise | with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)

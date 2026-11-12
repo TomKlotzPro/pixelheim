@@ -765,6 +765,11 @@ func field_posthouse() -> String:
 	return "standing" if world.view.post_house != null and is_instance_valid(world.view.post_house) else ""
 
 
+func field_prompt() -> String:
+	var prompt: Control = world.interaction.prompt_label
+	return "shown" if prompt != null and prompt.visible else ""
+
+
 func field_quill() -> String:
 	var quill: Hud.Quill = world.hud.quill
 	return "%d/%d%s" % [quill.writes, GameState.saves_made, " slept" if quill.slept else ""]

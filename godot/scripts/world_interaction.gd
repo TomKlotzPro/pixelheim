@@ -833,9 +833,11 @@ func _show_prompt(target: Rect2, cell: Vector2i) -> void:
 		(prompt_label as Keycap).show_key(_interact_key())
 		prompt_label.reset_size()
 	var bob := roundf(sin(GameClock.msec() / 260.0)) if not GameState.settings.reduce_motion else 0.0
-	prompt_label.position = prompt_spot(target, cell, prompt_label.size, cell.y > world.player_cell.y) + Vector2(0, bob)
-	# A pixel wider, so the bob doesn't blink it in and out.
-	var stands := Rect2(prompt_label.position, prompt_label.size).grow(1.0)
+	var spot := prompt_spot(target, cell, prompt_label.size, cell.y > world.player_cell.y)
+	prompt_label.position = spot + Vector2(0, bob)
+	# Every place the bob takes it (a pixel up or down), so the bob doesn't
+	# blink it in and out while a word stops at its edge.
+	var stands := Rect2(spot, prompt_label.size).grow(1.0)
 	prompt_label.visible = not world.fx.shown().any(func(word: Rect2) -> bool: return word.intersects(stands))
 
 
