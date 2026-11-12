@@ -5057,6 +5057,10 @@ msgid "Options on the title screen opens again: it was opening behind the title"
 msgstr "Les options de l'écran titre s'ouvrent de nouveau : elles s'ouvraient derrière le titre"
 
 #: assets/data/changelog.json
+msgid "Out of the Way"
+msgstr "Place nette"
+
+#: assets/data/changelog.json
 msgid "Outside the walls, the Reach's farmland grows with the town: a plot trampled bare in the Ashes, rows sprouting under a scarecrow at the Hamlet, wheat, a fenced sheep pasture and lamps along the north road at the Village, an orchard and a farmstead with its hay, cart and well under the south wall at the Town, and ripe crops and grazing cows at the City"
 msgstr "Hors des murs, les terres de la Marche grandissent avec la ville : un champ piétiné dans les Cendres, des rangs qui pointent sous un épouvantail au Hameau, du blé, un pré à moutons clos et des lanternes le long de la route du nord au Village, un verger et une ferme avec son foin, sa charrette et son puits sous le rempart sud au Bourg, et à la Cité des récoltes mûres et des vaches au pré"
 
@@ -6383,6 +6387,10 @@ msgstr "La Poste-Dragon : une fois l'histoire finie, Fafnyr porte lui-même la
 #: assets/data/changelog.json
 msgid "The E prompt sits just above what it opens and never hides it"
 msgstr "Le E s'affiche juste au-dessus de ce qu'il ouvre et ne le cache plus"
+
+#: assets/data/changelog.json
+msgid "The E prompt waits while a catch or a find rises past it, and never sits on your hero when the spot is below you"
+msgstr "Le E attend qu'une prise ou une trouvaille soit passée, et ne se pose plus sur votre héros quand l'endroit est sous vous"
 
 #: assets/data/changelog.json
 msgid "The Ember Seal"

@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.360.0",
+      "date": "2026-11-12",
+      "codename": "Out of the Way",
+      "notes": [
+        "The E prompt waits while a catch or a find rises past it, and never sits on your hero when the spot is below you"
+      ]
+    },
+    {
       "version": "0.359.0",
       "date": "2026-11-12",
       "codename": "Remembered",

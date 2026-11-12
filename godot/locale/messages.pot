@@ -5057,6 +5057,10 @@ msgid "Options on the title screen opens again: it was opening behind the title"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Out of the Way"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Outside the walls, the Reach's farmland grows with the town: a plot trampled bare in the Ashes, rows sprouting under a scarecrow at the Hamlet, wheat, a fenced sheep pasture and lamps along the north road at the Village, an orchard and a farmstead with its hay, cart and well under the south wall at the Town, and ripe crops and grazing cows at the City"
 msgstr ""
 
@@ -6382,6 +6386,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The E prompt sits just above what it opens and never hides it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The E prompt waits while a catch or a find rises past it, and never sits on your hero when the spot is below you"
 msgstr ""
 
 #: assets/data/changelog.json
