@@ -2825,6 +2825,10 @@ msgid "Bright things now glow in the dark: lamps, fires, torches, lit windows an
 msgstr "Ce qui brille rayonne désormais dans le noir : lampes, feux, torches, fenêtres éclairées et sorts s'auréolent doucement la nuit et sous terre, tandis que les pixels restent nets et le jour reste clair"
 
 #: assets/data/changelog.json
+msgid "Bucket Brigade"
+msgstr "La chaîne des seaux"
+
+#: assets/data/changelog.json
 msgid "Buildings grew wooden door plates - INN, SHOP and the rest hang over their doorways, readable from across the square"
 msgstr "Les bâtiments ont gagné des enseignes en bois - AUBERGE, BAZAR et les autres pendent au-dessus des portes, lisibles depuis l'autre bout de la place"
 
@@ -4867,6 +4871,10 @@ msgstr "Sur téléphone, les commandes ont la taille d'un pouce sur tous les éc
 #: assets/data/changelog.json
 msgid "On a phone, first-time tips now name what you can touch on screen instead of a keyboard key"
 msgstr "Sur téléphone, les astuces de découverte nomment désormais ce que vous pouvez toucher à l'écran plutôt qu'une touche du clavier"
+
+#: assets/data/changelog.json
+msgid "On the Night of Ash, the well and the burning homes now show E, and answer from any cell beside them"
+msgstr "Pendant la Nuit des Cendres, le puits et les maisons en feu affichent désormais E, et répondent depuis n'importe quelle case voisine"
 
 #: assets/data/changelog.json
 msgid "On the Night of Bells, Sela brings a bowl of broth to whoever holds the square, so every class can see the dawn; the cleric starts sturdier, and the first fields ease in more gently"
@@ -7547,6 +7555,10 @@ msgstr "Avec Réduire les animations, la ruine reste un instant, puis le bâtime
 #: assets/data/changelog.json
 msgid "With Reduce motion, the wins fade in where they stand"
 msgstr "Avec Réduire les animations, les gains apparaissent en fondu sur place"
+
+#: assets/data/changelog.json
+msgid "With a bucket in hand, the arrow points to the nearest home still burning, and the line above the dock says to pour it"
+msgstr "Un seau à la main, la flèche montre la maison en feu la plus proche, et la ligne au-dessus du dock dit de le verser"
 
 #: assets/data/changelog.json
 msgid "With the four keepsakes home, Maren tells it all at the shrine and gives you her fifth letter: it has an address now"
