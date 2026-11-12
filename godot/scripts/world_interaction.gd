@@ -638,6 +638,13 @@ func _water_beside() -> Dictionary:
 	else:
 		return {}
 	var water := Prologue.water_beside(world.player_cell, Vector2i(world.player.facing), _well_cells(), fires, doused)
+	# Any other well tile beside the hero gives water too: the fountain, once
+	# built, as the old faced-cell rule allowed (PIX-464's review).
+	if water.is_empty():
+		for side: Vector2i in [Vector2i(world.player.facing)] + Npcs.SIDES:
+			if world.map.tile_at(world.player_cell + side) == "well":
+				water = {"cell": world.player_cell + side, "ruin": -1}
+				break
 	if not water.is_empty() and water["cell"] != facing_cell() and not world.folk.beside().is_empty():
 		return {}
 	return water
