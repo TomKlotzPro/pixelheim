@@ -185,7 +185,8 @@ func test_a_stun_breaks_an_elites_mark_and_its_blow_never_lands() -> void:
 
 
 func test_a_blow_that_turned_it_to_the_chase_first_still_breaks_the_tell() -> void:
-	# take_hit sets a telling foe chasing before the stun is rolled.
+	# Its mark still standing though it chases (take_hit set a telling foe
+	# chasing before PIX-451): the stun still takes it back.
 	var foe := _foe()
 	var brain := _elite_brain(foe)
 	foe.mode = "cast"
@@ -195,6 +196,27 @@ func test_a_blow_that_turned_it_to_the_chase_first_still_breaks_the_tell() -> vo
 	await wait_seconds(STRUCK_BY)
 	assert_eq(_world.player.hits, 0, "the stamp never came")
 	assert_eq(_world.fx.words.size(), 1)
+
+
+## PIX-451: a blow that doesn't stun leaves the move told to land - before,
+## it set the foe chasing, and the elite walked and bit through its cleave,
+## whose blow the bite's grace took: a hero swinging nonstop never met it.
+func test_a_blow_without_a_stun_leaves_the_tell_to_land() -> void:
+	var elite := _foe()
+	var cleave := _elite_brain(elite)
+	elite.mode = "cast"
+	cleave._tell({"move": "cleave", "tell": TELL, "power": 1.0}, _over_hero(), "")
+	var boss := _foe()
+	var breath := _boss_brain(boss)
+	boss.mode = "cast"
+	breath._tell(_over_hero(), _boss_attack())
+	elite.take_hit(1, Vector2.ZERO)
+	boss.take_hit(1, Vector2.ZERO)
+	assert_eq(elite.mode, "cast", "the elite holds its cleave")
+	assert_eq(boss.mode, "cast", "the boss its breath")
+	await wait_seconds(STRUCK_BY)
+	assert_eq(_world.player.hits, 2, "both land")
+	assert_eq([elite.mode, boss.mode], ["chase", "chase"], "then they chase again")
 
 
 func test_a_stun_breaks_a_told_bolt_its_glow_and_its_marks() -> void:

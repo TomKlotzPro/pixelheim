@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.346.0",
+      "date": "2026-11-11",
+      "codename": "Elbow Room",
+      "notes": [
+        "Foes now stop at your side instead of walking onto you, so your hero stays in sight in a fight",
+        "A blow no longer cancels the move an elite or a boss is winding up: roll out of it, or stun it"
+      ]
+    },
+    {
       "version": "0.345.0",
       "date": "2026-11-11",
       "codename": "Gone Fishing",
