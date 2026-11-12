@@ -2993,6 +2993,10 @@ msgid "Clear Way"
 msgstr "Voie libre"
 
 #: assets/data/changelog.json
+msgid "Clear a camp's pack and a stash turns up by its tent: a small find and a note from whoever camped there"
+msgstr "Videz un camp de sa meute et une cache apparaît près de sa tente : une petite trouvaille et un mot de celui qui y campait"
+
+#: assets/data/changelog.json
 msgid "Clearing a floor steps you back out of the door you entered"
 msgstr "Nettoyer un étage vous fait ressortir par la porte d'où vous êtes entré"
 
@@ -4299,6 +4303,10 @@ msgstr "Des feuilles tombent en virevoltant dans les forêts, la poussière flot
 #: assets/data/changelog.json
 msgid "Ledgers look like ledgers: Captain Hale's order book is an open book with ruled pages, a ribbon, a quill and inkwell, his map and a dagger beside it; the town hall gets its ledger desk, Mirelle a counting table with coins and a strongbox, and the bounty board a clawed notice (Tom's playtest)"
 msgstr "Les registres ressemblent à des registres : celui du capitaine Hale est un livre ouvert aux pages réglées, avec un signet, une plume et un encrier, sa carte et une dague à côté ; la mairie a son bureau du registre, Mirelle une table de comptes avec ses pièces et son coffre, et le tableau des primes un avis griffé (playtest de Tom)"
+
+#: assets/data/changelog.json
+msgid "Left Behind"
+msgstr "Laissé derrière"
 
 #: assets/data/changelog.json
 msgid "Less text at once in a fight: the battle log shows a few lines at a time and folds repeats (+3 gold four times reads +12 gold), a fight's gold, XP and loot rise once when it's over, on one line, blows on one foe add up into one number, and the log no longer repeats what the screen already shows (Tom's playtest)"

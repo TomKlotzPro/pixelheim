@@ -2993,6 +2993,10 @@ msgid "Clear Way"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Clear a camp's pack and a stash turns up by its tent: a small find and a note from whoever camped there"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Clearing a floor steps you back out of the door you entered"
 msgstr ""
 
@@ -4298,6 +4302,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Ledgers look like ledgers: Captain Hale's order book is an open book with ruled pages, a ribbon, a quill and inkwell, his map and a dagger beside it; the town hall gets its ledger desk, Mirelle a counting table with coins and a strongbox, and the bounty board a clawed notice (Tom's playtest)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Left Behind"
 msgstr ""
 
 #: assets/data/changelog.json

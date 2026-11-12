@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.352.0",
+      "date": "2026-11-12",
+      "codename": "Left Behind",
+      "notes": [
+        "Clear a camp's pack and a stash turns up by its tent: a small find and a note from whoever camped there"
+      ]
+    },
+    {
       "version": "0.351.0",
       "date": "2026-11-12",
       "codename": "Into the Shadows",
