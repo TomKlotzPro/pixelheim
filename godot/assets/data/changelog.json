@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.353.0",
+      "date": "2026-11-12",
+      "codename": "Bucket Brigade",
+      "notes": [
+        "On the Night of Ash, the well and the burning homes now show E, and answer from any cell beside them",
+        "With a bucket in hand, the arrow points to the nearest home still burning, and the line above the dock says to pour it"
+      ]
+    },
+    {
       "version": "0.352.0",
       "date": "2026-11-12",
       "codename": "Left Behind",

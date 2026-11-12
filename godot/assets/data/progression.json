@@ -1789,7 +1789,8 @@
       },
       {
         "id": "fires",
-        "text": "Carry water from the well to the burning homes ({fires})"
+        "text": "Carry water from the well to the burning homes ({fires})",
+        "textBucket": "Pour the bucket on a burning home ({fires})"
       },
       {
         "id": "embers",

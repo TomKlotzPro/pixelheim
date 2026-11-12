@@ -71,7 +71,9 @@ func facing_cell() -> Vector2i:
 ## fixtures, then the villager beside the hero (turning to face them).
 func interact() -> void:
 	var faced := facing_cell()
-	if world.map.id == "town" and GameState.progression.prologue == Prologue.FIRES and _carry_water(faced):
+	var water := _water_beside()
+	if not water.is_empty():
+		_carry_water(water)
 		return
 	# The Night of Bells' lanterns, the well's water and the burning roofs
 	# (PIX-253 step 9).
@@ -592,31 +594,50 @@ func open_chest(chest: Dictionary) -> void:
 	world.fx.show_gains(result["gains"], MapView.center(Vector2i(int(chest["x"]), int(chest["y"]))) + WorldFx.OVER_THING)
 
 
-## The fires beat (PIX-197): the well fills a bucket; a burning home's
-## frame, faced with one, puts that fire out. True when the cell was either.
-func _carry_water(faced: Vector2i) -> bool:
+## The fires beat (PIX-197): the well fills a bucket; a burning home beside
+## the hero with one puts that fire out. `water`: _water_beside's.
+func _carry_water(water: Dictionary) -> void:
 	var fires: Dictionary = Prologue.data()["fires"]
-	if world.map.tile_at(faced) == "well":
+	var ruin: int = water["ruin"]
+	if ruin < 0:
 		prologue_bucket = true
 		Sound.play("bucket_fill")
 		world.messages.flash(String(fires["well"]))
-		return true
-	var ruins := Town.ruins(Town.done_projects(GameState.settlement))
-	for i in ruins.size():
-		var rect: Rect2i = ruins[i]["rect"]
-		if not rect.has_point(faced) or i in GameState.progression.prologue_doused:
-			continue
-		if not prologue_bucket:
-			world.messages.flash(String(fires["empty"]))
-			return true
-		prologue_bucket = false
-		world.view.douse_ruin(i)
-		Sound.play("douse")
-		world.messages.flash(GameState.questing.prologue_douse(i))
-		if GameState.progression.prologue == Prologue.EMBERS:
-			world.stage.prologue_wave.call_deferred()
-		return true
-	return false
+		return
+	if not prologue_bucket:
+		world.messages.flash(String(fires["empty"]))
+		return
+	prologue_bucket = false
+	world.view.douse_ruin(ruin)
+	Sound.play("douse")
+	world.messages.flash(GameState.questing.prologue_douse(ruin))
+	if GameState.progression.prologue == Prologue.EMBERS:
+		world.stage.prologue_wave.call_deferred()
+
+
+## On the Night of Ash's fires beat, the well or a burning home beside the
+## hero (Prologue.water_beside: {cell, ruin}), else {}. A villager beside
+## the hero keeps E unless the water is on the side faced.
+func _water_beside() -> Dictionary:
+	if world.map.id != "town" or GameState.progression.prologue != Prologue.FIRES:
+		return {}
+	var water := Prologue.water_beside(world.player_cell, Vector2i(world.player.facing), _well_cells(),
+		Town.ruins(Town.done_projects(GameState.settlement)), GameState.progression.prologue_doused)
+	if not water.is_empty() and water["cell"] != facing_cell() and not world.folk.beside().is_empty():
+		return {}
+	return water
+
+
+## The cells the well is drawn over (PIX-460: Shade's stands two wide under
+## its roof, and E took only its one cell): its own without the pack.
+func _well_cells() -> Rect2i:
+	var cell := Prologue.well()
+	var drawn := Rect2i(cell, Vector2i.ONE)
+	for prop: Dictionary in world.view.outdoor_props["props"]:
+		if prop["cell"] == cell:
+			for tile: Array in prop["tiles"]:
+				drawn = drawn.merge(Rect2i(cell + Vector2i(tile[0]), Vector2i.ONE))
+	return drawn
 
 
 ## The hero stepped onto `cell`: ground treasure there is picked up, a
@@ -700,13 +721,19 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 		world.fx.show_gains(result["gains"], MapView.center(cell) + WorldFx.OVER_HERO)
 
 
-## The one interaction-prompt rule (interactionPrompt.ts): a villager beside
-## the hero wins, then a faced unopened chest, a station (PIX-234), the
+## The one interaction-prompt rule (interactionPrompt.ts): on the Night of
+## Ash's fires, the well or a burning home beside the hero, over all of the
+## well or the burning cell (PIX-460: there was none); then a villager
+## beside the hero, then a faced unopened chest, a station (PIX-234), the
 ## water from a fishing spot, a bed or the stairs down (PIX-256), a
 ## letter's answer on its table, a ledger on its desk (PIX-338), a
 ## waystation's bench or post box (PIX-322), what a feature put there
 ## (Feature.prompt_at, PIX-369); the prompt floats over them.
 func update_prompt() -> void:
+	var water := _water_beside()
+	if not water.is_empty():
+		_show_prompt(_pixels(_well_cells() if water["ruin"] < 0 else Rect2i(water["cell"], Vector2i.ONE)), water["cell"])
+		return
 	var beside: Dictionary = world.folk.beside()
 	if not beside.is_empty():
 		var at: Vector2i = world.player_cell + Vector2i(beside["side"])

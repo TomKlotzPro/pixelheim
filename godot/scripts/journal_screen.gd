@@ -453,7 +453,10 @@ func _fill_now() -> void:
 	var progress := String(lead["progress"])
 	# On the night of the fire the line above the dock is the night's.
 	if progression.prologue != Prologue.DONE:
-		step = Prologue.objective(progression.prologue, progression.prologue_doused.size(), GameState.questing.first_skill_heals())
+		# A bucket in hand says so here too (PIX-461), as the dock's line does.
+		var interaction: Variant = get_parent().get("interaction") if get_parent() != null else null
+		var bucket: bool = interaction is Object and bool((interaction as Object).get("prologue_bucket"))
+		step = Prologue.objective(progression.prologue, progression.prologue_doused.size(), GameState.questing.first_skill_heals(), bucket)
 		place = ""
 		progress = ""
 	var quest := Quests.by_id(String(lead["quest_id"]))
