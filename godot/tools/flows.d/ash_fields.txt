@@ -34,3 +34,10 @@ cpu-ash | --map overworld --at 30,20 night cpu --wait 2 | map=overworld cpu=(?!2
 keepsake-search | --map overworld --at 5,26 --walk u --keys e --lang en | map=overworld cell=\(5, 25\) keepsakes=found 1 home 0 lying 4 plate=In the ash: Bram's Milk Pail\. Carry it home to Bram\. | travel field quest
 keepsake-home | --map town --ready keepsake_bram --talk-to villager_bram --keys e --lang en | open=none keepsakes=found 1 home 1 | town quest
 keepsake-stall | --map town --town-tier 0 --ready keepsake_hilda --at 45,25 --keys d,e --lang en | open=dialogue_box said=\(Hilda smiles\..* | town quest
+# A stead remembers (PIX-466): Vex's mortar home and the ground whole
+# round Greyhold's lamp, E at her stead's door says its one line on the
+# plate, and gives nothing; with the mortar home and the lamp unlit, or the
+# lamp's ring whole and the mortar still in the pack, E says nothing.
+stead-remembers | --map overworld --routes greyhold:6 --built waystation_greyhold --lit greyhold:5 --delivered keepsake_vex --at 54,21 --walk u --keys e --lang en | map=overworld cell=\(54, 20\) gold=30 keepsakes=found 1 home 1 lying 4 plate=Herbs in a row by Vex's door, each with a label\. Every label says: secret\. | travel field quest
+stead-not-healed | --map overworld --delivered keepsake_vex --at 54,21 --walk u --keys e --lang en | map=overworld cell=\(54, 20\) keepsakes=found 1 home 1 lying 4 plate= | travel field quest
+stead-not-home | --map overworld --routes greyhold:6 --built waystation_greyhold --lit greyhold:5 --ready keepsake_vex --at 54,21 --walk u --keys e --lang en | map=overworld cell=\(54, 20\) keepsakes=found 1 home 0 lying \d plate= | travel field quest
