@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.351.0",
+      "date": "2026-11-12",
+      "codename": "Into the Shadows",
+      "notes": [
+        "Shadowstep now crosses up to four cells: the rogue fades, slips past the foe and strikes from behind",
+        "Foes' blows can't land on the rogue while it crosses, and with no room behind the foe it strikes from where it stands"
+      ]
+    },
+    {
       "version": "0.350.0",
       "date": "2026-11-12",
       "codename": "Know Your Foe",

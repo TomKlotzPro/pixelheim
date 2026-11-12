@@ -9,6 +9,9 @@ class_name Reach
 ## and enemy.gd ask it who a blow lands on.
 
 const TILE := 16.0
+## Where round its foe a step lands (PIX-455), in degrees off straight past
+## it: behind first, then its back corners, then beside it.
+const STEP_TURNS: Array[float] = [0.0, 45.0, -45.0, 90.0, -90.0]
 
 
 static func rules() -> Dictionary:
@@ -116,3 +119,16 @@ static func targets(from: Vector2, facing: Vector2, spots: Array[Vector2], radii
 		if i == first or lands(centre, Vector2.ZERO, spots[i], radii[i], around):
 			hit.append(i)
 	return hit
+
+
+## Where a step from `from` to the foe at `to` lands (Shadowstep, PIX-455):
+## `edge` past its feet, where it would stand by the hero (Enemy.edge_of),
+## on its far side, else round it to beside it: the first spot `open` takes.
+## `from` when it takes none, the blow struck from where the hero stands.
+static func landing(from: Vector2, to: Vector2, edge: float, open: Callable) -> Vector2:
+	var past := (to - from).normalized() if to != from else Vector2.RIGHT
+	for turn in STEP_TURNS:
+		var spot := to + past.rotated(deg_to_rad(turn)) * edge
+		if open.call(spot):
+			return spot
+	return from

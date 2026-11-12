@@ -3605,6 +3605,10 @@ msgid "Foes standing side by side no longer stack their level tags: the nearest 
 msgstr "Les ennemis côte à côte n'empilent plus leurs niveaux : le plus proche affiche le sien, et une étiquette qui le chevaucherait attend son tour"
 
 #: assets/data/changelog.json
+msgid "Foes' blows can't land on the rogue while it crosses, and with no room behind the foe it strikes from where it stands"
+msgstr "Les coups ennemis ne touchent pas le voleur pendant sa traversée, et faute de place derrière l'ennemi il frappe d'où il se tient"
+
+#: assets/data/changelog.json
 msgid "Follow the Cry"
 msgstr "Suivre l'appel"
 
@@ -3999,6 +4003,10 @@ msgstr "À l'intérieur : votre propre lit (repos gratuit, pour toujours - l'a
 #: assets/data/changelog.json
 msgid "Intelligence finally feeds the mana pool: casters gain +2 max MP per INT point"
 msgstr "L'Intelligence alimente enfin la réserve de mana : les lanceurs de sorts gagnent +2 PM max par point d'INT"
+
+#: assets/data/changelog.json
+msgid "Into the Shadows"
+msgstr "Dans l'ombre"
 
 #: assets/data/changelog.json
 msgid "Into the Woods"
@@ -5427,6 +5435,10 @@ msgstr "Sept coffres muets des contrées sauvages disent désormais qui les a la
 #: assets/data/changelog.json
 msgid "Shadows became a tone, not a hole: half-strength and shorter under a higher sun - the long black smears are gone"
 msgstr "Les ombres deviennent une teinte, plus un trou : moitié moins fortes et plus courtes sous un soleil plus haut - fini les longues traînées noires"
+
+#: assets/data/changelog.json
+msgid "Shadowstep now crosses up to four cells: the rogue fades, slips past the foe and strikes from behind"
+msgstr "Pas de l'ombre franchit désormais jusqu'à quatre cases : le voleur s'efface, passe derrière l'ennemi et frappe dans son dos"
 
 #: assets/data/changelog.json
 msgid "Sharpened Steel"
@@ -9397,8 +9409,8 @@ msgid "Unshakeable"
 msgstr "Imperturbable"
 
 #: assets/data/combat.json
-msgid "Vanish and strike from behind for devastating damage."
-msgstr "Disparaissez et frappez dans le dos pour des dégâts dévastateurs."
+msgid "Vanish and reappear behind a foe up to 4 cells away for a devastating strike."
+msgstr "Disparaissez et réapparaissez derrière un ennemi à 4 cases ou moins pour une frappe dévastatrice."
 
 #: assets/data/combat.json
 msgid "Vanish, strike, reappear grinning. May stun."

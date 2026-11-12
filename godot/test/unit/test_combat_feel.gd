@@ -185,16 +185,75 @@ func test_the_fight_has_its_own_blips() -> void:
 		assert_gt(SoundScript._synth(SoundScript.UI_SOUNDS[name]).data.size(), 0, name)
 
 
+class FakeSkillFx extends RefCounted:
+	var impacts_held := false
+
+	func cast(_skill: Dictionary, _caster: Node, _targets: Array) -> bool:
+		return false
+
+
 class FakeFx extends RefCounted:
+	var skills := FakeSkillFx.new()
+	var words: Array[String] = []
+
 	func dust(_at: Vector2) -> void:
+		pass
+
+	func float_text(text: String, _at: Vector2, _color: Color, _big := false) -> void:
+		words.append(text)
+
+	func float_number(_value: int, _at: Vector2, _color: Color, _crit := false, _who: Object = null) -> void:
+		pass
+
+	func skill_flash(_at: Vector2, _color: Color, _glow := true) -> void:
+		pass
+
+
+class FakeMessages extends RefCounted:
+	func withdraw(_text: String) -> void:
+		pass
+
+	func flash(_text: String) -> void:
+		pass
+
+	func log_line(_text: String) -> void:
 		pass
 
 
 class FakeWorld extends Node2D:
 	var fx := FakeFx.new()
+	var messages := FakeMessages.new()
+	var map := MapData.new()
 
 	func on_player_died() -> void:
 		pass
+
+
+## A foe as the hero sees one: where it stands, how near another may come,
+## and how often it was struck.
+class FakeFoe extends Node2D:
+	var fighter := Bestiary.spawn("wolf")
+	var edge := 14.0
+	var dying := false
+	var hits := 0
+
+	func _ready() -> void:
+		add_to_group("mobs")
+
+	static func body_of(_fighter: Dictionary) -> Vector2:
+		return Vector2(10, 8)
+
+	func take_hit(_damage: int, _from: Vector2, _infliction: Variant = null, _crit := false, _blow := "") -> void:
+		hits += 1
+
+
+var _kept := {}
+
+
+func after_each() -> void:
+	for key: String in _kept:
+		GameState.set(key, _kept[key])
+	_kept.clear()
 
 
 ## A hero with a sword (strikes on frames 1 and 2 of 0..3), stepped by hand.
@@ -206,6 +265,72 @@ func _hero() -> CharacterBody2D:
 	hero.world = autofree(FakeWorld.new())
 	hero.art = hero.art.merged({"attack": "sword"}, true)
 	return hero
+
+
+## A rogue with Shadowstep on the first key, lent to GameState for the test,
+## on a field of grass at cell (5, 5), facing right.
+func _rogue() -> CharacterBody2D:
+	var lent: Node = autofree(preload("res://scripts/state/game_state.gd").new())
+	lent.new_game("Robin", "rogue")
+	lent.hero.skill_nodes.append("rogue_shadowstep")
+	lent.hero.skill_dock.assign(["rogue_shadowstep"])
+	lent.hero.mp = 50
+	_kept = {"hero": GameState.hero, "pack": GameState.pack}
+	GameState.hero = lent.hero
+	GameState.pack = lent.pack
+	var hero := _hero()
+	for x in 12:
+		for y in 12:
+			hero.world.map.grid[Vector2i(x, y)] = "grass"
+	hero.global_position = MapView.center(Vector2i(5, 5))
+	hero.face(Vector2.RIGHT)
+	return hero
+
+
+func _foe(at: Vector2) -> FakeFoe:
+	var foe: FakeFoe = add_child_autofree(FakeFoe.new())
+	foe.global_position = at
+	return foe
+
+
+## PIX-455: with every spot round its foe walled off or taken by another
+## foe, Shadowstep strikes from where the hero stands, as far as a blade
+## reaches: refused three cells off, the foe struck from the cell beside it.
+func test_a_hemmed_in_step_strikes_from_where_the_hero_stands() -> void:
+	var hero := _rogue()
+	for y in [4, 5, 6]:
+		hero.world.map.grid[Vector2i(7, y)] = "wall"
+	var foe := _foe(MapView.center(Vector2i(6, 5)))
+	var others := [_foe(foe.global_position + Vector2(0, -16)), _foe(foe.global_position + Vector2(0, 16))]
+	var mp: int = GameState.hero.mp
+	hero.global_position = MapView.center(Vector2i(3, 5))
+	hero.cast(0)
+	assert_eq(hero.refused, "No foe in reach for Shadowstep.", "three cells off, out of a blade's reach")
+	assert_eq(GameState.hero.mp, mp, "and it costs nothing")
+	var at := MapView.center(Vector2i(5, 5))
+	hero.global_position = at
+	hero.cast(0)
+	assert_false(hero.stepping, "no step")
+	assert_eq(hero.global_position, at, "the hero stays put")
+	assert_eq(foe.hits, 1, "the foe beside them is struck")
+	assert_eq(others.map(func(other: FakeFoe) -> int: return other.hits), [0, 0], "and only that one")
+
+
+## PIX-455: the crossing is as safe as a roll: a blow while the hero steps
+## swishes past, "dodged", and costs them nothing.
+func test_a_blow_while_the_hero_steps_is_dodged() -> void:
+	var hero := _rogue()
+	var foe := _foe(MapView.center(Vector2i(8, 5)))
+	hero.cast(0)
+	assert_true(hero.stepping, "the hero is crossing")
+	var hp: int = GameState.hero.hp
+	hero.take_hit(5, foe.global_position)
+	assert_eq(GameState.hero.hp, hp, "the blow takes nothing")
+	assert_eq(hero.world.fx.words, ["dodged"] as Array[String], "it swishes past")
+	assert_eq(foe.hits, 0, "the step's own blow still to come")
+	# The ghost the step left where the hero stood.
+	for ghost: Node in get_children().filter(func(node: Node) -> bool: return node is Sprite2D):
+		ghost.free()
 
 
 ## PIX-439: a press the hero can't honour yet waits for them.

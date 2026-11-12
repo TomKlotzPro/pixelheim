@@ -3605,6 +3605,10 @@ msgid "Foes standing side by side no longer stack their level tags: the nearest 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Foes' blows can't land on the rogue while it crosses, and with no room behind the foe it strikes from where it stands"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Follow the Cry"
 msgstr ""
 
@@ -3998,6 +4002,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Intelligence finally feeds the mana pool: casters gain +2 max MP per INT point"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Into the Shadows"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5426,6 +5434,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Shadows became a tone, not a hole: half-strength and shorter under a higher sun - the long black smears are gone"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Shadowstep now crosses up to four cells: the rogue fades, slips past the foe and strikes from behind"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -9397,7 +9409,7 @@ msgid "Unshakeable"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "Vanish and strike from behind for devastating damage."
+msgid "Vanish and reappear behind a foe up to 4 cells away for a devastating strike."
 msgstr ""
 
 #: assets/data/combat.json

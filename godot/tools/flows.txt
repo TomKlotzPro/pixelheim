@@ -193,6 +193,9 @@ skillfx-mend | --role cleric cast | skillfx=vitality_heal drawn \d+ | combat
 skillfx-chill | --role necromancer --level 10 cast --skill 3 | skillfx=ice_arrow,ice_crystals drawn \d+ | combat
 skillfx-arrow | --role ranger fight --wait 0.12 | skillfx=arrow,impact drawn \d+ | combat
 skillfx-still | --role ranger fight --wait 0.12 still | skillfx=arrow,impact drawn 0 | combat
+# A rogue's Shadowstep (PIX-455) crosses the gap to the orc two cells off,
+# from (40, 30) to its far side past (42, 30), and strikes it there.
+shadowstep | --role rogue --level 10 cast --skill 3 --wait 0.5 | cell=\(43, \d+\) skillfx=smoke_vanish drawn \d+ | combat
 # Foes that shoot (PIX-410): a coast gunner and a Greyhold bowman stood
 # where a ranger's bow reaches, two cells off, hold there, glow and loose
 # their ball or arrow, and it strikes before they fall: a bite never
