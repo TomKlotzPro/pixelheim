@@ -2125,6 +2125,10 @@ msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead of the same line down the page"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr ""
 
@@ -4050,6 +4054,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Know Thyself"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Know Your Foe"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6086,6 +6094,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The City's showpieces earn their price: the Aegis of the Ash turns the first blow of every fight, the Everflask fills itself again while you sleep, and the King's Signet adds a tenth to the gold you earn"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Codex's masteries now say what the next tier gives: more damage against that family"
 msgstr ""
 
 #: assets/data/changelog.json

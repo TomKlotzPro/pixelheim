@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.350.0",
+      "date": "2026-11-12",
+      "codename": "Know Your Foe",
+      "notes": [
+        "The Codex's masteries now say what the next tier gives: more damage against that family",
+        "A foe you haven't met yet shows where it lives in the Bestiary, instead of the same line down the page"
+      ]
+    },
+    {
       "version": "0.349.0",
       "date": "2026-11-12",
       "codename": "Hard to Miss",

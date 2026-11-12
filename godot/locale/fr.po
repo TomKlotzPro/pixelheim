@@ -2125,6 +2125,10 @@ msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so
 msgstr "Un ennemi qui vous repère fait jaillir une étincelle rouge, un ennemi apeuré une bleue : le danger et la parole ne se confondent plus"
 
 #: assets/data/changelog.json
+msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead of the same line down the page"
+msgstr "Un ennemi pas encore rencontré indique dans le Bestiaire où il vit, au lieu de la même phrase répétée sur toute la page"
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr "Un « ! » doré au-dessus de qui a une quête pour vous, un « ? » doré au-dessus de qui attend que vous en remettiez une, et un « ? » gris tant qu'une quête prise auprès de lui est en cours ; les Options peuvent les masquer (Marqueurs de quête)"
 
@@ -4051,6 +4055,10 @@ msgstr "Des victoires qui comptent"
 #: assets/data/changelog.json
 msgid "Know Thyself"
 msgstr "Connais-toi toi-même"
+
+#: assets/data/changelog.json
+msgid "Know Your Foe"
+msgstr "Connaître l'ennemi"
 
 #: assets/data/changelog.json
 msgid "Know Your Trade"
@@ -6087,6 +6095,10 @@ msgstr "Le Cartographe"
 #: assets/data/changelog.json
 msgid "The City's showpieces earn their price: the Aegis of the Ash turns the first blow of every fight, the Everflask fills itself again while you sleep, and the King's Signet adds a tenth to the gold you earn"
 msgstr "Les trésors de la cité valent leur prix : l'Égide des Cendres pare le premier coup de chaque combat, la Flasque éternelle se remplit pendant votre sommeil, et la Chevalière du roi ajoute un dixième à l'or que vous gagnez"
+
+#: assets/data/changelog.json
+msgid "The Codex's masteries now say what the next tier gives: more damage against that family"
+msgstr "Les maîtrises du Codex disent désormais ce que donne le palier suivant : plus de dégâts contre cette famille"
 
 #: assets/data/changelog.json
 msgid "The Deep Hunt"
