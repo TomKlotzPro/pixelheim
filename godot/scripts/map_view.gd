@@ -229,8 +229,11 @@ var took := {}
 var _layers: Dictionary[String, MapLayer] = {
 	"dungeon": DungeonLayer.new(), "rooms": RoomsLayer.new(), "ground": GroundLayer.new(),
 	"camps": CampsLayer.new(), "patches": PatchesLayer.new(), "props": PropsLayer.new(), "gates": GatesLayer.new(),
-	"settlements": SettlementsLayer.new(), "ruins": RuinsLayer.new(),
+	"settlements": SettlementsLayer.new(), "ruins": RuinsLayer.new(), "shadows": ShadowsLayer.new(),
 }
+## What stands and casts a shadow, as MapLayer.cast lays it (PIX-449): its
+## foot, width and height, for ShadowsLayer once the rest is drawn.
+var casters: Array[Vector4] = []
 ## Every feature's layers (Features, PIX-361), in `_layers` too so the hour
 ## sets them: their units come after the core's, in the plan and in the
 ## drawing before the set pieces.
@@ -281,6 +284,12 @@ const DECOR_ROWS := 1
 ## The tiles whose decor is the woods' (Woods.pieces): a forest's trees, the
 ## ridge's pines and rocks on its rim.
 const WOODED := ["forest", "mountain"]
+## The shadow under a tree or a bush of the woods (PIX-449), shares of its
+## picture: about its crown's width, cast from about its crown's height;
+## and under a dead tree of the Ash, a little across, its bare branches
+## high.
+const CROWN_SHADOW := Vector2(1.0, 0.6)
+const SNAG_SHADOW := Vector2(8, 20)
 ## Each tile layer's rendering quadrant, this many cells a side (PIX-285).
 ## A rendering quadrant is one canvas item, and Godot lights a canvas item
 ## with only the first Lights.PER_ITEM lights that reach it: with quadrants
@@ -533,6 +542,8 @@ func building(root: Node, slices: Slicer) -> void:
 	_decor_units(slices)
 	for layer: MapLayer in _feature_layers.values():
 		layer.build(self, slices)
+	# Once everything that casts one stands (PIX-449).
+	_layers["shadows"].build(self, slices)
 	slices.add("set_pieces", _add_set_pieces.bind(data))
 	slices.add("rest", func() -> void:
 		furnish()
@@ -922,6 +933,7 @@ func _add_field_decor(cell: Vector2i) -> void:
 			sprite.flip_h = (h >> 20) % 2 == 1
 			sprite.add_to_group("decor")
 			actors.add_child(sprite)
+			MapLayer.cast(self, sprite.position + Vector2(0, 6), SNAG_SHADOW.x, SNAG_SHADOW.y)
 		return
 	if choice < 0:
 		return
@@ -955,6 +967,10 @@ func _add_wood(piece: Dictionary, cell: Vector2i) -> void:
 	sprite.material = woods_sway if piece["own"] else decor_sway
 	sprite.add_to_group("decor")
 	actors.add_child(sprite)
+	# The Medieval Age's trees and bushes have no shadow drawn under them;
+	# Shade's free ones do (PIX-449).
+	if piece["own"]:
+		MapLayer.cast(self, sprite.position, rect.size.x * CROWN_SHADOW.x, rect.size.y * CROWN_SHADOW.y)
 
 
 ## The sun through the canopy's edge into the Deepwood's glades by day

@@ -4149,6 +4149,10 @@ msgid "Load-Bearing Walls"
 msgstr "Murs porteurs"
 
 #: assets/data/changelog.json
+msgid "Long Shadows"
+msgstr "Ombres portées"
+
+#: assets/data/changelog.json
 msgid "Long messages now grow upward instead of running under the dock"
 msgstr "Les longs messages s'agrandissent désormais vers le haut au lieu de passer sous la barre"
 
@@ -6975,6 +6979,10 @@ msgstr "Les habitants dessinés d'après le même modèle portent désormais leu
 #: assets/data/changelog.json
 msgid "Tracks crossfade instead of cutting, and the whole score plays through a touch of echo"
 msgstr "Les morceaux se fondent l'un dans l'autre au lieu de couper net, et toute la bande-son passe par une pointe d'écho"
+
+#: assets/data/changelog.json
+msgid "Trees, houses and lamp posts now cast a soft shadow on the ground: short and dark at noon, long and faint at dawn and dusk, gone at night"
+msgstr "Les arbres, les maisons et les lampadaires projettent désormais une ombre douce au sol : courte et sombre à midi, longue et pâle à l'aube et au crépuscule, absente la nuit"
 
 #: assets/data/changelog.json
 msgid "Trees, the well's roof and the marsh reeds now turn see-through around you when you walk behind them, and around the nearest foe in a fight, so you never lose sight of your hero"
