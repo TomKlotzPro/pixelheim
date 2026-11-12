@@ -418,7 +418,7 @@ func update_objective() -> void:
 		look_again()
 	var text := Bearing.line(bearing)
 	if GameState.progression.prologue != Prologue.DONE:
-		text = Prologue.objective(GameState.progression.prologue, GameState.progression.prologue_doused.size(), GameState.questing.first_skill_heals())
+		text = Prologue.objective(GameState.progression.prologue, GameState.progression.prologue_doused.size(), GameState.questing.first_skill_heals(), world.interaction.prologue_bucket)
 	elif GameState.progression.bells != Bells.NONE:
 		# The Night of Bells says how far each beat has got (PIX-253 step 9).
 		text = world.night.objective()
@@ -447,9 +447,12 @@ func update_objective() -> void:
 
 
 ## Where the hero is headed, looked at again now: the active lead, and the
-## main story's behind it while something else leads.
+## main story's behind it while something else leads. On the Night of Ash a
+## bucket in hand leads to the nearest fire, not back to the well (PIX-461).
 func look_again() -> void:
 	bearing = Bearing.active(GameState.progression, GameState.settlement, GameState.pack.items, GameState.world.discovered)
+	if GameState.progression.prologue == Prologue.FIRES and world.map.id == "town" and world.interaction.prologue_bucket:
+		bearing["cell"] = Prologue.nearest_fire(world.player_cell, Town.ruins(Town.done_projects(GameState.settlement)), GameState.progression.prologue_doused)
 	story = Bearing.behind(bearing, GameState.progression, GameState.settlement, GameState.pack.items, GameState.world.discovered)
 	leads_story = Bearing.tells_story(bearing)
 
