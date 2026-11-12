@@ -65,7 +65,7 @@ homes | on a settlement beyond Pixelheim: its houses, how many looks (roof and w
 hour | at the Night of Ash's dawn: the HUD's clock as it reads, its dial a sun or a moon: 04:48 sun (PIX-346)
 houses | on the town: its age and the houses standing on it, ruins not counted (the same with or without the paid art): 4:17 (PIX-382 step 3)
 hub | on a hub's map: its place, the step it has grown to and what of it stands, drawn: saltmere:3:lighthouse (PIX-324)
-hudclash | while a title card, the battle log (a hint is one of its lines), the arrow or anything rising over the world shows: the words on the screen that overlap, as pairs (card, float, log, arrow, bar, next, plate, and the hero under a card, or within Hud.ARROW_CLEAR of the arrow: PIX-464), or none (PIX-345: the Victory card on a boss's win, a hint pushed over the hero, the arrow on a floor's name; PIX-462: the arrow on the hero at a floor's first step): none
+hudclash | while a title card, the battle log (a hint is one of its lines), the arrow, the E prompt or anything rising over the world shows: the words on the screen that overlap, as pairs (card, float, log, arrow, bar, next, plate, and the hero under a card, or within Hud.ARROW_CLEAR of the arrow: PIX-464; prompt against float and the hero alone: PIX-465), or none (PIX-345: the Victory card on a boss's win, a hint pushed over the hero, the arrow on a floor's name; PIX-462: the arrow on the hero at a floor's first step): none
 jobs | on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)
 jumps | with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)
 lamplight | on a map with lamps or lit windows, and in every room: its street lamps lit of all, its windows' lit glass, a room's candles burning and the day through its windows: posts 6/6 panes 12 flames 0 beams 0 (PIX-311)
@@ -88,6 +88,7 @@ pauseline | the pause menu's line under its title while it's open: when the game
 plate | the message's plate over the objective's line while it's up: its tag, or its words when it has none: Level up (PIX-378: never under a boss's Victory card)
 post | once the Pixelheim Post is open: standing when its box is drawn on this map, then the pieces in the box this morning, in the satchel and delivered, and while the map is open the addressees it marks on its page: standing,box:0,bag:2,sent:1,marked:1 (PIX-320)
 posthouse | on the square once the post house is built: standing when it's drawn behind the box (PIX-325)
+prompt | the E prompt while it shows over the faced spot: shown (PIX-465: it waits while a word rises through it, and comes back)
 quill | the quill by the clock: the times it wrote of the saves made this session (moments write, the quiet autosaves don't), and slept when the last was a night's sleep, Saved under it: 1/3 slept (PIX-302 step 4)
 read | on the journal's Letters page: the letters it reads (PIX-253)
 rise | with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)

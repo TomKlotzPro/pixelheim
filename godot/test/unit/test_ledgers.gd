@@ -131,6 +131,21 @@ func test_the_prompt_never_hides_what_its_for() -> void:
 	_assert_clear([cell], _pixels(Rect2i(cell, Vector2i.ONE)), _pixels(Rect2i(cell, Vector2i.ONE)), size, "a cell")
 
 
+## Faced from above, the prompt stands under the spot (PIX-465: over it,
+## it covered the hero whole): clear of the spot and of the hero above it,
+## bobbed a pixel either way.
+func test_the_prompt_stands_under_a_spot_faced_from_above() -> void:
+	var size := Vector2(14, 16)
+	var cell := Vector2i(5, 5)
+	var target := _pixels(Rect2i(cell, Vector2i.ONE))
+	var hero := Rect2(MapView.center(cell + Vector2i.UP) + Hud.HERO_BODY.position, Hud.HERO_BODY.size)
+	for bob: int in [-1, 1]:
+		var prompt := Rect2(Interaction.prompt_spot(target, cell, size, true) + Vector2(0, bob), size)
+		assert_false(prompt.intersects(target), "clear of the spot, bobbed %d" % bob)
+		assert_false(prompt.intersects(hero), "clear of the hero, bobbed %d" % bob)
+	assert_true(Rect2(Interaction.prompt_spot(target, cell, size), size).intersects(hero), "over the spot it would stand on the hero")
+
+
 ## The prompt, `size` big, over `target` (pixels) faced from each of
 ## `faced`: clear of the pixels `sprite` covers, bobbed a pixel down too.
 func _assert_clear(faced: Array, target: Rect2, sprite: Rect2, size: Vector2, what: String) -> void:
