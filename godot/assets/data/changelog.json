@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.359.0",
+      "date": "2026-11-12",
+      "codename": "Remembered",
+      "notes": [
+        "Once a burnt stead's find is home and its lamp's ring is whole, its door has one last word about the family that lived there"
+      ]
+    },
+    {
       "version": "0.358.0",
       "date": "2026-11-12",
       "codename": "Same Rules",

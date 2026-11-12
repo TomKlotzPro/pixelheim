@@ -4945,6 +4945,10 @@ msgid "Once a boss lets go the roads out open again, and it keeps its wounds: th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Once a burnt stead's find is home and its lamp's ring is whole, its door has one last word about the family that lived there"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Once a waystation stands, the town's board offers the post house: built behind the box, Wren's riders bring five pieces a morning, and Pip takes charge of the doves in its loft (they are all called Steve)"
 msgstr ""
 
@@ -5398,6 +5402,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Recruits leave the map they waited on and walk the town's streets like anyone born there"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Remembered"
 msgstr ""
 
 #: assets/data/changelog.json
