@@ -91,7 +91,8 @@ func log_line(line: String) -> void:
 
 ## A first-time hint as a line of the log (PIX-433), by the id it's seen
 ## by: one short line at a time, stepping aside for the plate and coming
-## back in full (one box at a time).
+## back in full (one box at a time), while its moment lasts (PIX-462:
+## _drop_past_hints). Seen once it shows, not before.
 func hint_line(id: String, text: String) -> void:
 	_log.add(text)["hint"] = id
 	update()
@@ -135,6 +136,9 @@ func _say(entry: Dictionary) -> void:
 		if not entry.has("logged") and not entry.has("hint"):
 			logged += 1
 			entry["logged"] = true
+		if entry.has("hint") and not entry["hint"] in GameState.settings.hints_seen:
+			GameState.settings.hints_seen.append(entry["hint"])
+			GameState.settings.save_file()
 		chip = PanelContainer.new()
 		chip.add_theme_stylebox_override("panel", UiStyle.plate(8))
 		chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -246,6 +250,7 @@ static func tag_of(text: String, tags: Array) -> String:
 ## qui pop d'un coup »): the plate goes first, the log's line stepping
 ## aside for it, and the log's next waits until the plate has faded.
 func update() -> void:
+	_drop_past_hints()
 	_hold_hint_for_card()
 	var fighting := _fighting()
 	if _message_now != "" and not _message_tagged and GameClock.seconds() - _message_since >= PLAIN_MESSAGE_S:
@@ -293,6 +298,22 @@ func withdraw(text: String) -> void:
 	message_fade.kill()
 	message_box.modulate.a = 0.0
 	update()
+
+
+## A first-time hint whose moment has gone leaves the log, showing or
+## waiting (PIX-462: the roll's came up after the hounds were dead, the
+## board's in the town hall, back after its card): one never shown stays
+## unseen, for the next time (Hud.hint_there). No world (a test's): kept.
+func _drop_past_hints() -> void:
+	if world == null or world.get("hud") == null:
+		return
+	for entry: Dictionary in _log.showing + _log.waiting:
+		if entry.has("hint") and not world.hud.hint_there(entry["hint"]):
+			var chip: Node = entry.get("chip")
+			if is_instance_valid(chip):
+				chip.queue_free()
+			_log.gone(entry)
+			_log.waiting.erase(entry)
 
 
 ## A title card up: a first-time hint's line waits it out, one box at a time

@@ -81,6 +81,9 @@ var _clock_dial: Dial
 ## saved.
 var quill: Quill
 const ARROW_INSET := 26.0
+## How far the arrow keeps from the hero's figure, on the screen (PIX-462:
+## against their side at the Blackiron Shafts' first step, it read as theirs).
+const ARROW_CLEAR := 24.0
 
 
 ## The layer and its widgets, in the order they stand: the sky's tint, a
@@ -167,19 +170,21 @@ func place() -> void:
 ## (GameSettings.hints_seen, `key` when one hint has many, a skill each) and
 ## never with hints off. It waits its turn among the log's lines and behind
 ## the plate (Messages.hint_line), and never comes over a boss's entrance or
-## a title card (hints_wait).
+## a title card (hints_wait); and only while what it is about is there
+## (hint_there), seen once it has shown.
 func hint(id: String, values := {}, key := "") -> void:
 	var settings := GameState.settings
 	var seen_id := key if key != "" else id
 	if not settings.hints or seen_id in settings.hints_seen or root == null:
 		return
-	if _held_hints.any(func(held: Array) -> bool: return held[2] == seen_id):
+	if world.messages.hint_up() == seen_id or _held_hints.any(func(held: Array) -> bool: return held[2] == seen_id):
 		return
 	if hints_wait():
 		_held_hints.append([id, values, seen_id])
 		return
-	settings.hints_seen.append(seen_id)
-	settings.save_file()
+	# Its moment gone (held past it): no hint, still unseen (PIX-462).
+	if not hint_there(seen_id):
+		return
 	if _hint_doc.is_empty() or _hint_generation != Text.generation:
 		_hint_doc = Text.localize(JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json")))
 		_hint_generation = Text.generation
@@ -202,11 +207,37 @@ func next_hint() -> void:
 ## another is up or a title card is (a place's name, a boss's fall), and
 ## while a boss makes its entrance - the BOSS_HINT_S after it sees the hero,
 ## as long as it hunts them. Once it falls, the hero gets away or the fight
-## has gone on a while, the hint shows.
+## has gone on a while, the hint shows, if its moment lasts (hint_there).
 func hints_wait() -> bool:
 	if world.messages.hint_up() != "" or card_up():
 		return true
 	return world.foes.boss_hunting() != null and GameClock.seconds() - world.foes.boss_noticed_at < BOSS_HINT_S
+
+
+## Whether what a first-time hint is about is there, by the id it's seen by
+## (PIX-462: the roll's tip came up after the hounds were dead, the board's
+## in the town hall): a foe for the roll, the board in sight for the board.
+## A hint shows while it is, or not at all, left unseen for the next time.
+func hint_there(seen_id: String) -> bool:
+	match seen_id:
+		"dodge", "fright":
+			return world.foes.about()
+		"board":
+			return _in_sight(Town.project_board())
+		"bounty":
+			return _in_sight(Town.bounty_board())
+		"post":
+			return _in_sight(Post.box_cell())
+		"house":
+			return world.map.id == "town_house"
+		"potion":
+			return GameState.hero.hp * 2 < int(GameState.hero.stats["maxHp"])
+	return true
+
+
+## A cell of the square on the screen, the hero in town.
+func _in_sight(cell: Vector2i) -> bool:
+	return world.map.id == "town" and world.camera_rig.in_view(MapView.center(cell))
 
 
 ## Whether a title card is up (title_card).
@@ -513,10 +544,10 @@ func on_saved(how: int) -> void:
 
 ## The arrow at the view's edge (PIX-240): toward the bearing's spot on this
 ## map, or the door that starts the way to its map, while it's off screen;
-## gone once it's in view, with nowhere to head for, or with the quest marks
-## turned off; on the first night, to its step's place (PIX-426). Gold while
-## it leads the main story, cream for a side quest or a bounty (PIX-253
-## step 2).
+## gone once it's in view, with nowhere to head for, with the quest marks
+## turned off, or where it would stand on the hero (PIX-462); on the first
+## night, to its step's place (PIX-426). Gold while it leads the main story,
+## cream for a side quest or a bounty (PIX-253 step 2).
 func update_arrow() -> void:
 	if root == null:
 		return
@@ -544,6 +575,10 @@ func update_arrow() -> void:
 	# Drawn for the nearest of eight ways, never turned (PIX-284): its pixels
 	# stay square, and where it stands on the edge says the rest.
 	arrow.way = Marks.way_of(heading)
+	# Never on the hero (PIX-462: at a floor's first step the words over the
+	# dock brought the edge down to them, the way out just past): standing
+	# there, the goal is a step or two off and the arrow has nothing to say.
+	arrow.visible = not arrow.rect().grow(ARROW_CLEAR).intersects(hero_on_screen())
 
 
 ## Where the arrow keeps to: the screen inside its inset, above the words
@@ -631,6 +666,10 @@ class Arrow extends Control:
 
 	func _init() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	## Where it is drawn, on the HUD's layer.
+	func rect() -> Rect2:
+		return Rect2(position - Marks.arrow_middle(), Marks.arrow(way, main).get_size())
 
 	## Its colour: the main story's gold, or cream.
 	func ink() -> Color:

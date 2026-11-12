@@ -5,7 +5,8 @@ extends GutTest
 ## or the fight has gone on a while); and one hint at a time, the next in
 ## its turn, nothing lost. PIX-433: a hint is one short line on the battle
 ## log's place, never a box over the view, never two boxes at once. PIX-345:
-## a title card stands clear of what rises over the world.
+## a title card stands clear of what rises over the world. PIX-462: a hint
+## shows while what it is about is there, or not at all, left unseen.
 
 
 ## The tallest a "Quest accepted" plate may stand: past that it is the big
@@ -17,9 +18,14 @@ const PLATE_LINES := 4
 class FakeFoes extends RefCounted:
 	var boss: Node = null
 	var boss_noticed_at := -100.0
+	## A foe still on the map (Foes.about).
+	var left := true
 
 	func boss_hunting() -> Node:
 		return boss
+
+	func about() -> bool:
+		return left
 
 	func in_fight(_calm := 0.0) -> bool:
 		return false
@@ -33,9 +39,27 @@ class FakeFx extends RefCounted:
 		return rising
 
 
+## The map the hero is on, by its id.
+class FakeMap extends RefCounted:
+	var id := "town"
+
+
+## What the camera has on the screen, all or nothing, the dock at the foot.
+class FakeCamera extends RefCounted:
+	var sees := true
+
+	func in_view(_at: Vector2, _margin := 0.0) -> bool:
+		return sees
+
+	func dock_top() -> float:
+		return 720.0
+
+
 class FakeWorld extends Node:
 	var foes := FakeFoes.new()
 	var fx := FakeFx.new()
+	var map := FakeMap.new()
+	var camera_rig := FakeCamera.new()
 	var messages: Messages = null
 	var hud: Hud = null
 
@@ -126,6 +150,51 @@ func test_a_title_card_holds_a_hint_already_up() -> void:
 	world.messages.update()
 	var back := chips.get_children().filter(func(chip: Node) -> bool: return not chip.is_queued_for_deletion())
 	assert_eq(back.size(), 1, "back as the card goes")
+
+
+## PIX-462: the roll's tip came up after the hounds were dead, behind the
+## plate all the fight. Its moment gone, it never shows and stays unseen,
+## held or waiting; the next foe brings it.
+func test_a_hint_past_its_moment_is_not_shown_and_stays_unseen() -> void:
+	var chips := world.messages.log_box
+	world.messages.flash("The slime was carrying a traveller's pouch.")
+	hud.hint("dodge")
+	assert_eq([_up(), chips.get_child_count()], ["dodge", 0], "behind the plate")
+	world.foes.left = false
+	world.messages.update()
+	world.messages.message_fade.custom_step(30.0)
+	assert_eq([_up(), chips.get_child_count()], ["", 0], "gone with the hounds")
+	var card := hud.title_card("Pixelheim", "")
+	world.foes.left = true
+	hud.hint("dodge")
+	world.foes.left = false
+	card.free()
+	hud.next_hint()
+	assert_eq([_up(), hud.hint_held()], ["", ""], "held past its moment: gone")
+	assert_false("dodge" in GameState.settings.hints_seen, "unseen, for the next time")
+	world.foes.left = true
+	hud.hint("dodge")
+	assert_eq([_up(), chips.get_child_count()], ["dodge", 1], "the next foe brings it")
+	assert_true("dodge" in GameState.settings.hints_seen)
+
+
+## PIX-462: the board's tip, up as the hero walked past to the hall door,
+## came back after the hall's card, inside, where there is no board.
+func test_the_board_tip_stays_by_the_board() -> void:
+	var chips := world.messages.log_box
+	hud.hint("board")
+	assert_eq([_up(), chips.get_child_count()], ["board", 1], "the board in sight")
+	var card := hud.title_card("Town Hall", "")
+	world.messages.update()
+	world.map.id = "town_hall"
+	world.messages.update()
+	card.free()
+	world.messages.update()
+	var back := chips.get_children().filter(func(chip: Node) -> bool: return not chip.is_queued_for_deletion())
+	assert_eq([_up(), back.size()], ["", 0], "not in the hall")
+	world.map.id = "town"
+	world.camera_rig.sees = false
+	assert_false(hud.hint_there("board"), "nor off the screen")
 
 
 ## PIX-433: "Quest accepted" and the journal's hint stood as two boxes at
