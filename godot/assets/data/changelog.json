@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.355.0",
+      "date": "2026-11-12",
+      "codename": "Right on Cue",
+      "notes": [
+        "A first-time tip now shows while the thing it's about is there, and waits for a better moment otherwise: no roll tip after the fight, no board tip inside the hall",
+        "The goal arrow no longer sits on your hero at a dungeon's first step"
+      ]
+    },
+    {
       "version": "0.354.0",
       "date": "2026-11-12",
       "codename": "Room to Breathe",
