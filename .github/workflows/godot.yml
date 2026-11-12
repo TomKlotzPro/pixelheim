@@ -214,6 +214,13 @@ jobs:
       # headless in the godot job's 60 s anyway.
       FLOWS_WATCHDOG: "300"
       SHARE: ${{ matrix.share }}
+      # Mesa's JIT kept off AVX-512 (PIX-452): on Ubuntu 26.04 (Mesa 26.0.8,
+      # LLVM 21.1.8), its AVX-512 code for the ground's shader on the Intel
+      # hosts (Xeon 8370C, 8573C, 6973P-C) found 0.5's bits in the register
+      # meant to hold the road map's -1 texel offset, read 1 GB past the map
+      # and segfaulted on every overworld shot; never on AMD. AVX2 code, as
+      # the EPYC 7763 hosts draw.
+      GALLIUM_OVERRIDE_CPU_CAPS: avx
     steps:
       - uses: actions/checkout@v4
 

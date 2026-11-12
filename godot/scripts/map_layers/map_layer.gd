@@ -59,6 +59,14 @@ static func see_through(sprite: Sprite2D) -> void:
 	sprite.material = _see_through
 
 
+## A soft shadow on the ground under what stands with the middle of its foot
+## at `foot` (the drawing's pixels, the bottom of its lowest row), `wide`
+## pixels across and `tall` high (ShadowsLayer, PIX-449): a tree, a bush, a
+## lamp. Not for Shade's Puny World pieces, which carry their own.
+static func cast(view: MapView, foot: Vector2, wide: float, tall: float) -> void:
+	view.casters.append(Vector4(foot.x, foot.y, wide, tall))
+
+
 ## A box on `cell` (PIX-313's dressing): covering the middle of the bottom
 ## of the cell, as every prop's foot does (MapView.HAMLET_FOOT).
 static func block(view: MapView, cell: Vector2i) -> void:

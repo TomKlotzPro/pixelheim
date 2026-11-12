@@ -26,3 +26,11 @@ ash-steads-block | --map overworld --at 35,21 --walk d,d | map=overworld cell=\(
 # no game change; now in paces (PIX-445, as cpu-night): CI 5.96-6.65, held
 # under 7.50, and under 2.50 ms.
 cpu-ash | --map overworld --at 30,20 night cpu --wait 2 | map=overworld cpu=(?!2\.[5-9])[0-2]\.\d\d/\d+\.\d\d paced=(?!7\.[5-9])[0-7]\.\d\d | field night
+# The steads' keepsakes (PIX-448): E at a burnt stead's door searches its
+# ash, once: Bram's milk pail into the pack, its quest taken, the plate
+# saying whose it is; carried home, it's handed over as the word with its
+# owner ends, for a little gold; at her stall on the burnt square Hilda
+# takes her hammer in a word before her counter opens.
+keepsake-search | --map overworld --at 5,26 --walk u --keys e --lang en | map=overworld cell=\(5, 25\) keepsakes=found 1 home 0 lying 4 plate=In the ash: Bram's Milk Pail\. Carry it home to Bram\. | travel field quest
+keepsake-home | --map town --ready keepsake_bram --talk-to villager_bram --keys e --lang en | open=none keepsakes=found 1 home 1 | town quest
+keepsake-stall | --map town --town-tier 0 --ready keepsake_hilda --at 45,25 --keys d,e --lang en | open=dialogue_box said=\(Hilda smiles\..* | town quest

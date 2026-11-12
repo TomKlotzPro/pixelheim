@@ -183,9 +183,11 @@ func interact() -> void:
 		# the next word opens the counter), a settled Mirelle her bank (her
 		# arc's asks first, PIX-157). The
 		# mayor talks, then opens the projects ledger (see talk).
-		# A piece of the Post's for them is handed over in a word too (PIX-320).
+		# A piece of the Post's for them is handed over in a word too (PIX-320),
+		# and a keepsake from the Ash (PIX-448: Hilda's hammer, at her counter).
 		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open) \
-				or not GameState.posting.carried_for(beside["npc"]["id"]).is_empty()
+				or not GameState.posting.carried_for(beside["npc"]["id"]).is_empty() \
+				or not GameState.questing.letter_for(beside["npc"]["id"]).is_empty()
 		var at_stall: bool = world.map.id == "town" and beside["npc"].has("stall") and beside["npc"]["mapId"] == "town"
 		# A trader out in the Reach (PIX-176) sells from their own pack.
 		var trader: String = beside["npc"].get("shop", "")

@@ -36,6 +36,14 @@ spawn | --map town | map=town | town
 # with them (no glass without the paid pack's houses).
 lamps-day | --map town --at 40,13 | lamplight=posts 0/[1-9]\d* panes 0 flames 0 beams 0 | town
 lamps-night | --map town --at 40,13 night | lamplight=posts ([1-9]\d*)/\1 panes \d+ flames 0 beams 0 | town night
+# The scenery's shadows (PIX-449): the lamps, trees, bushes and houses cast
+# them by day, at full strength at noon, fainter at dusk, none at night; the
+# Deepwood's woods (the Medieval Age's trees: Shade's free ones carry their
+# own, so without the pack it casts none of ours).
+shadows-noon | --map town --at 40,13 noon | map=town shadows=standing [1-9]\d* houses \d+ sun 100 | town
+shadows-dusk | --map town --at 40,13 dusk | map=town shadows=standing [1-9]\d* houses \d+ sun [1-9]\d | town
+shadows-night | --map town --at 40,13 night | map=town shadows=standing [1-9]\d* houses \d+ sun 0 | town night
+shadows-wood | --map deepwood noon | map=deepwood shadows=(standing [1-9]\d* houses 0 sun 100)? | field
 # Through the nearest door into one of its rooms (PIX-129).
 portal | --map town portal | map=town_.* | town travel
 # A shoulder over a door (PIX-434): two steps along the wall stop the hero
