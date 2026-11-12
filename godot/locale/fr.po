@@ -2241,6 +2241,10 @@ msgid "A critical hit shows: its number pops up in gold, twice the size, with a 
 msgstr "Un coup critique se voit : son chiffre jaillit en or, deux fois plus grand, avec un « ! » ; dans une volée de coups, les chiffres se posent côte à côte au lieu de s'empiler"
 
 #: assets/data/changelog.json
+msgid "A crowd of foes can no longer hold you in a corner: you can always step out onto open floor, and a roll now passes through foes"
+msgstr "Une foule d'ennemis ne peut plus vous bloquer dans un coin : vous pouvez toujours sortir vers un sol libre, et une roulade traverse désormais les ennemis"
+
+#: assets/data/changelog.json
 msgid "A day lasts three times longer, and a clock at the top right tells the hour: a sun by day, a moon by night"
 msgstr "Une journée dure trois fois plus longtemps, et une horloge en haut à droite donne l'heure : un soleil le jour, une lune la nuit"
 
@@ -3759,6 +3763,10 @@ msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la
 #: assets/data/changelog.json
 msgid "Foes now stop at your side instead of walking onto you, so your hero stays in sight in a fight"
 msgstr "Les ennemis s'arrêtent désormais à vos côtés au lieu de vous marcher dessus : votre héros reste visible en combat"
+
+#: assets/data/changelog.json
+msgid "Foes pressing in from behind no longer push another onto you against a wall"
+msgstr "Des ennemis qui poussent par-derrière ne poussent plus l'un des leurs sur vous contre un mur"
 
 #: assets/data/changelog.json
 msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
@@ -5387,6 +5395,10 @@ msgstr "Les rivières, les étangs et le lac des Bois-Profonds ont désormais de
 #: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr "Les routes et la ville restent dégagées parce qu'elles SONT sûres"
+
+#: assets/data/changelog.json
+msgid "Room to Breathe"
+msgstr "De l'air"
 
 #: assets/data/changelog.json
 msgid "Room to Grow"

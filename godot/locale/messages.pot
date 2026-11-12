@@ -2241,6 +2241,10 @@ msgid "A critical hit shows: its number pops up in gold, twice the size, with a 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A crowd of foes can no longer hold you in a corner: you can always step out onto open floor, and a roll now passes through foes"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A day lasts three times longer, and a clock at the top right tells the hour: a sun by day, a moon by night"
 msgstr ""
 
@@ -3758,6 +3762,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Foes now stop at your side instead of walking onto you, so your hero stays in sight in a fight"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Foes pressing in from behind no longer push another onto you against a wall"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5386,6 +5394,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Room to Breathe"
 msgstr ""
 
 #: assets/data/changelog.json
