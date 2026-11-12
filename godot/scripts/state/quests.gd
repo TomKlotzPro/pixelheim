@@ -64,8 +64,8 @@ static func keepsake_of(map_id: String, cell: Vector2i) -> Dictionary:
 
 
 ## What a stead says at its door once it has something to say (PIX-466):
-## its keepsake `quest` carried home and the ground healed round the lamp
-## nearest it (its `found`'s `lamp`, whole among `rings`, Lamps.rings: the
+## its keepsake `quest` carried home and the ground healed round its lamp
+## (its `found`'s `lamp`, whole among `rings`, Lamps.rings: the
 ## steads west and east lie past every ring, so no stead's own ground can
 ## be asked); "" before. Words only: nothing is given.
 static func remembered(quest: Dictionary, entries: Dictionary, rings: Array[Dictionary]) -> String:
