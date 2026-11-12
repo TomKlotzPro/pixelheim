@@ -1,0 +1,4 @@
+# The camps' stashes' harness flags (PIX-453): `flag | takes | does`, as the
+# core's (scripts/harness_flags.txt), in its table after feature.gd's
+# flags_after().
+stash |  | with clear: the hero beside the first camp's stash out on the map, facing it, E pressed (PIX-453); the report's stashes= says it opened | stash | 535

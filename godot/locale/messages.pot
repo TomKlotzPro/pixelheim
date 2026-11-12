@@ -4,6 +4,158 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
+#: assets/data/camp_stashes.json
+msgid "A bandit's cheese ledger: \"Stolen: 9 wheels. Eaten: 9 wheels. Profit: none, but worth it.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A bedtime story chalked on bark: \"...and the troll ate the knight. The end.\" Well thumbed."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A bowman's scorecard: three bullseyes, eleven trees, one very surprised goose."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A coat turned inside out, a note pinned on: \"Wash me. I've changed sides twice this week.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A diary, a little damp: \"Day 40. Still a slime. Still happy.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A ghost's love letter: \"I would give you my heart, but I can't think where I left it.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A goblin's love letter, never sent: \"Your warts are like stars. I counted. Forty-one.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A goblin's shift log: \"Dug. Dug more. Found a rock. Put it back.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A gunner's letter: \"Dear Mum. Still deaf. Still happy. Send socks.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A note in a wendigo's scrawl: \"Hungry.\" Below, smaller: \"Also a bit lonely.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A note in very faint ink: \"Gone out. Back in a century.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A note nailed to the tent post, in a very tired hand: \"Please stop eating the tent.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A notice under a stone, so it won't drift off: \"Boo practice, Tuesdays. Bring your own chains.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A pirate's map. X marks the spot. The spot is this tent. He was bad at hiding things."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A sign-up sheet: \"Join the turncoats! Nice coats, no loyalty needed.\" Both names crossed out."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A skeleton's drawing of himself, with muscles. Optimistic, and rather good."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A skeleton's letter home: \"Mum, the marsh is lovely. Bit damp in the ribs.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A slate by the bedrolls: \"Quiet after dark. This means you, Brog.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A spear-goblin's list of things to do: \"Poke things.\" Ticked off twice."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A troll's diary: \"Ate a bridge today. Turns out you're meant to live under it.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A troll's recipe: \"Stone soup. Step one: stone.\" There is no step two."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A wolf's stash: a stick, a better stick, and a third stick nobody may touch."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A wolf's stash: three bones, sorted by size. The biggest one has a name."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A wyvern's nest, and an egg somebody painted a smile on. You leave it be."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "A yeti's diary: \"Saw a man. He screamed. I screamed. We both ran. Nice day.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "An orc's letter home: \"Dear Mum, the ash is lovely. I've eaten nothing that talked. Mostly.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "An orc's shopping list: \"Meat. More meat. Something green, for Mum.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "Half a knitted scarf, and a note: \"For Mum. Do NOT stab.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "Orders cut into a slab: \"Guard the thing.\" Nobody said which thing. It guarded all of them."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "Shells sorted by size, then by how much somebody liked them."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "The captain's log: \"Crew asked for shore leave. Told them we ARE ashore. Mutiny pending.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "The crabs' collection: a fork, two buttons and one very shiny spoon, in a row."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "The goblins' suggestion box. One suggestion, in big letters: \"LESS ROCKS.\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "The hounds' hoard: one old boot, chewed with love. They will want it back."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "The hounds' stash: a shepherd's crook, chewed into a much better shape."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "The skeletons' rota, very tidy: \"Mon: rattle. Tue: rattle. Wed: Gerald (Gerald, it IS your turn).\""
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "The wolves' winter store: one frozen sausage, guarded like a crown."
+msgstr ""
+
+#: assets/data/camp_stashes.json
+msgid "Under the snow by the tent: one mitten. The wolves are very proud of it."
+msgstr ""
+
 #: assets/data/catalog.json
 msgid "+10% gold: kills, quests, sales, tips"
 msgstr ""
@@ -2841,6 +2993,10 @@ msgid "Clear Way"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Clear a camp's pack and a stash turns up by its tent: a small find and a note from whoever camped there"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Clearing a floor steps you back out of the door you entered"
 msgstr ""
 
@@ -4146,6 +4302,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Ledgers look like ledgers: Captain Hale's order book is an open book with ruled pages, a ribbon, a quill and inkwell, his map and a dagger beside it; the town hall gets its ledger desk, Mirelle a counting table with coins and a strongbox, and the bounty board a clawed notice (Tom's playtest)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Left Behind"
 msgstr ""
 
 #: assets/data/changelog.json

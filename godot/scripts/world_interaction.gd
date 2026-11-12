@@ -79,7 +79,7 @@ func interact() -> void:
 		return
 	var chest := _chest_at(faced)
 	if not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest):
-		_open_chest(chest)
+		open_chest(chest)
 		return
 	# A letter's answer that waits where it was written (PIX-255: Captain
 	# Hale's order book, on his table).
@@ -575,7 +575,9 @@ func _points(count: int) -> String:
 	return Text.t("1 point") if count == 1 else Text.t("%d points") % count
 
 
-func _open_chest(chest: Dictionary) -> void:
+## A shut chest opened, its find and what it says shown; public for the
+## features that stand a chest of their own (camp_stashes, PIX-453).
+func open_chest(chest: Dictionary) -> void:
 	var result := GameState.spoils.open_chest(chest)
 	world.messages.flash(result["message"])
 	if not result["opened"]:

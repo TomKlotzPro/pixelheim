@@ -4,6 +4,158 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 
+#: assets/data/camp_stashes.json
+msgid "A bandit's cheese ledger: \"Stolen: 9 wheels. Eaten: 9 wheels. Profit: none, but worth it.\""
+msgstr "Le registre à fromages d'un bandit : « Volées : 9 meules. Mangées : 9 meules. Bénéfice : aucun, mais ça valait le coup. »"
+
+#: assets/data/camp_stashes.json
+msgid "A bedtime story chalked on bark: \"...and the troll ate the knight. The end.\" Well thumbed."
+msgstr "Une histoire du soir, à la craie sur une écorce : « … et le troll mangea le chevalier. Fin. » Très lue."
+
+#: assets/data/camp_stashes.json
+msgid "A bowman's scorecard: three bullseyes, eleven trees, one very surprised goose."
+msgstr "Le carton d'un archer : trois dans le mille, onze arbres, une oie très surprise."
+
+#: assets/data/camp_stashes.json
+msgid "A coat turned inside out, a note pinned on: \"Wash me. I've changed sides twice this week.\""
+msgstr "Un manteau retourné, un mot épinglé dessus : « Lave-moi. J'ai changé de camp deux fois cette semaine. »"
+
+#: assets/data/camp_stashes.json
+msgid "A diary, a little damp: \"Day 40. Still a slime. Still happy.\""
+msgstr "Un journal, un peu humide : « Jour 40. Toujours une gelée. Toujours heureuse. »"
+
+#: assets/data/camp_stashes.json
+msgid "A ghost's love letter: \"I would give you my heart, but I can't think where I left it.\""
+msgstr "La lettre d'amour d'un fantôme : « Je vous donnerais bien mon cœur, mais je ne sais plus où je l'ai laissé. »"
+
+#: assets/data/camp_stashes.json
+msgid "A goblin's love letter, never sent: \"Your warts are like stars. I counted. Forty-one.\""
+msgstr "La lettre d'amour d'un gobelin, jamais envoyée : « Tes verrues sont comme les étoiles. Je les ai comptées. Quarante et une. »"
+
+#: assets/data/camp_stashes.json
+msgid "A goblin's shift log: \"Dug. Dug more. Found a rock. Put it back.\""
+msgstr "Le carnet de quart d'un gobelin : « Creusé. Creusé encore. Trouvé un caillou. Remis en place. »"
+
+#: assets/data/camp_stashes.json
+msgid "A gunner's letter: \"Dear Mum. Still deaf. Still happy. Send socks.\""
+msgstr "La lettre d'un canonnier : « Chère maman. Toujours sourd. Toujours heureux. Envoie des chaussettes. »"
+
+#: assets/data/camp_stashes.json
+msgid "A note in a wendigo's scrawl: \"Hungry.\" Below, smaller: \"Also a bit lonely.\""
+msgstr "Un mot griffonné par un wendigo : « Faim. » Dessous, plus petit : « Et un peu seul. »"
+
+#: assets/data/camp_stashes.json
+msgid "A note in very faint ink: \"Gone out. Back in a century.\""
+msgstr "Un mot à l'encre très pâle : « Sorti. De retour dans un siècle. »"
+
+#: assets/data/camp_stashes.json
+msgid "A note nailed to the tent post, in a very tired hand: \"Please stop eating the tent.\""
+msgstr "Un mot cloué au mât de la tente, d'une main très lasse : « Merci d'arrêter de manger la tente. »"
+
+#: assets/data/camp_stashes.json
+msgid "A notice under a stone, so it won't drift off: \"Boo practice, Tuesdays. Bring your own chains.\""
+msgstr "Une affiche sous une pierre, pour qu'elle ne s'envole pas : « Répétition de bouh, le mardi. Apportez vos chaînes. »"
+
+#: assets/data/camp_stashes.json
+msgid "A pirate's map. X marks the spot. The spot is this tent. He was bad at hiding things."
+msgstr "Une carte de pirate. La croix marque l'endroit. L'endroit, c'est cette tente. Il cachait mal les choses."
+
+#: assets/data/camp_stashes.json
+msgid "A sign-up sheet: \"Join the turncoats! Nice coats, no loyalty needed.\" Both names crossed out."
+msgstr "Une feuille d'engagement : « Rejoignez les renégats ! Beaux manteaux, loyauté facultative. » Les deux noms rayés."
+
+#: assets/data/camp_stashes.json
+msgid "A skeleton's drawing of himself, with muscles. Optimistic, and rather good."
+msgstr "Un squelette s'est dessiné lui-même, avec des muscles. Optimiste, et plutôt réussi."
+
+#: assets/data/camp_stashes.json
+msgid "A skeleton's letter home: \"Mum, the marsh is lovely. Bit damp in the ribs.\""
+msgstr "La lettre d'un squelette à sa mère : « Maman, le marais est charmant. Un peu humide dans les côtes. »"
+
+#: assets/data/camp_stashes.json
+msgid "A slate by the bedrolls: \"Quiet after dark. This means you, Brog.\""
+msgstr "Une ardoise près des couchages : « Silence après la nuit tombée. Brog, c'est pour toi. »"
+
+#: assets/data/camp_stashes.json
+msgid "A spear-goblin's list of things to do: \"Poke things.\" Ticked off twice."
+msgstr "La liste de choses à faire d'un gobelin lancier : « Piquer des trucs. » Cochée deux fois."
+
+#: assets/data/camp_stashes.json
+msgid "A troll's diary: \"Ate a bridge today. Turns out you're meant to live under it.\""
+msgstr "Le journal d'un troll : « Mangé un pont aujourd'hui. Il paraît qu'on est censé vivre dessous. »"
+
+#: assets/data/camp_stashes.json
+msgid "A troll's recipe: \"Stone soup. Step one: stone.\" There is no step two."
+msgstr "La recette d'un troll : « Soupe au caillou. Étape un : un caillou. » Il n'y a pas d'étape deux."
+
+#: assets/data/camp_stashes.json
+msgid "A wolf's stash: a stick, a better stick, and a third stick nobody may touch."
+msgstr "La cachette d'un loup : un bâton, un meilleur bâton, et un troisième auquel nul ne touche."
+
+#: assets/data/camp_stashes.json
+msgid "A wolf's stash: three bones, sorted by size. The biggest one has a name."
+msgstr "La cachette d'un loup : trois os, rangés par taille. Le plus gros a un nom."
+
+#: assets/data/camp_stashes.json
+msgid "A wyvern's nest, and an egg somebody painted a smile on. You leave it be."
+msgstr "Un nid de wyverne, et un œuf où quelqu'un a peint un sourire. Vous le laissez tranquille."
+
+#: assets/data/camp_stashes.json
+msgid "A yeti's diary: \"Saw a man. He screamed. I screamed. We both ran. Nice day.\""
+msgstr "Le journal d'un yéti : « Vu un homme. Il a crié. J'ai crié. On a couru tous les deux. Belle journée. »"
+
+#: assets/data/camp_stashes.json
+msgid "An orc's letter home: \"Dear Mum, the ash is lovely. I've eaten nothing that talked. Mostly.\""
+msgstr "La lettre d'un orc à sa mère : « Chère maman, la cendre, c'est joli. Je n'ai rien mangé qui parlait. Presque rien. »"
+
+#: assets/data/camp_stashes.json
+msgid "An orc's shopping list: \"Meat. More meat. Something green, for Mum.\""
+msgstr "La liste de courses d'un orc : « Viande. Encore de la viande. Un truc vert, pour maman. »"
+
+#: assets/data/camp_stashes.json
+msgid "Half a knitted scarf, and a note: \"For Mum. Do NOT stab.\""
+msgstr "La moitié d'une écharpe tricotée, et un mot : « Pour maman. NE PAS poignarder. »"
+
+#: assets/data/camp_stashes.json
+msgid "Orders cut into a slab: \"Guard the thing.\" Nobody said which thing. It guarded all of them."
+msgstr "Des ordres gravés dans une dalle : « Garder la chose. » Personne n'a dit laquelle. Il les a toutes gardées."
+
+#: assets/data/camp_stashes.json
+msgid "Shells sorted by size, then by how much somebody liked them."
+msgstr "Des coquillages rangés par taille, puis selon l'affection que quelqu'un leur portait."
+
+#: assets/data/camp_stashes.json
+msgid "The captain's log: \"Crew asked for shore leave. Told them we ARE ashore. Mutiny pending.\""
+msgstr "Le journal du capitaine : « L'équipage veut descendre à terre. Je leur ai dit qu'on EST à terre. Mutinerie en vue. »"
+
+#: assets/data/camp_stashes.json
+msgid "The crabs' collection: a fork, two buttons and one very shiny spoon, in a row."
+msgstr "La collection des crabes : une fourchette, deux boutons et une cuillère très brillante, bien alignés."
+
+#: assets/data/camp_stashes.json
+msgid "The goblins' suggestion box. One suggestion, in big letters: \"LESS ROCKS.\""
+msgstr "La boîte à idées des gobelins. Une seule idée, en grosses lettres : « MOINS DE CAILLOUX. »"
+
+#: assets/data/camp_stashes.json
+msgid "The hounds' hoard: one old boot, chewed with love. They will want it back."
+msgstr "Le trésor des chiens de cendre : une vieille botte, mâchouillée avec amour. Ils voudront la récupérer."
+
+#: assets/data/camp_stashes.json
+msgid "The hounds' stash: a shepherd's crook, chewed into a much better shape."
+msgstr "La cachette des chiens de cendre : une houlette de berger, mâchouillée en bien plus joli."
+
+#: assets/data/camp_stashes.json
+msgid "The skeletons' rota, very tidy: \"Mon: rattle. Tue: rattle. Wed: Gerald (Gerald, it IS your turn).\""
+msgstr "Le tableau de service des squelettes, très soigné : « Lun : cliqueter. Mar : cliqueter. Mer : Gérald (Gérald, c'est TON tour). »"
+
+#: assets/data/camp_stashes.json
+msgid "The wolves' winter store: one frozen sausage, guarded like a crown."
+msgstr "Les provisions d'hiver des loups : une saucisse gelée, gardée comme une couronne."
+
+#: assets/data/camp_stashes.json
+msgid "Under the snow by the tent: one mitten. The wolves are very proud of it."
+msgstr "Sous la neige, près de la tente : une moufle. Les loups en sont très fiers."
+
 #: assets/data/catalog.json
 msgid "+10% gold: kills, quests, sales, tips"
 msgstr "+10 % d'or : combats, quêtes, ventes, pourboires"
@@ -2841,6 +2993,10 @@ msgid "Clear Way"
 msgstr "Voie libre"
 
 #: assets/data/changelog.json
+msgid "Clear a camp's pack and a stash turns up by its tent: a small find and a note from whoever camped there"
+msgstr "Videz un camp de sa meute et une cache apparaît près de sa tente : une petite trouvaille et un mot de celui qui y campait"
+
+#: assets/data/changelog.json
 msgid "Clearing a floor steps you back out of the door you entered"
 msgstr "Nettoyer un étage vous fait ressortir par la porte d'où vous êtes entré"
 
@@ -4147,6 +4303,10 @@ msgstr "Des feuilles tombent en virevoltant dans les forêts, la poussière flot
 #: assets/data/changelog.json
 msgid "Ledgers look like ledgers: Captain Hale's order book is an open book with ruled pages, a ribbon, a quill and inkwell, his map and a dagger beside it; the town hall gets its ledger desk, Mirelle a counting table with coins and a strongbox, and the bounty board a clawed notice (Tom's playtest)"
 msgstr "Les registres ressemblent à des registres : celui du capitaine Hale est un livre ouvert aux pages réglées, avec un signet, une plume et un encrier, sa carte et une dague à côté ; la mairie a son bureau du registre, Mirelle une table de comptes avec ses pièces et son coffre, et le tableau des primes un avis griffé (playtest de Tom)"
+
+#: assets/data/changelog.json
+msgid "Left Behind"
+msgstr "Laissé derrière"
 
 #: assets/data/changelog.json
 msgid "Less text at once in a fight: the battle log shows a few lines at a time and folds repeats (+3 gold four times reads +12 gold), a fight's gold, XP and loot rise once when it's over, on one line, blows on one foe add up into one number, and the log no longer repeats what the screen already shows (Tom's playtest)"

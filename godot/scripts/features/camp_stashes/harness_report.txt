@@ -1,0 +1,4 @@
+# The camps' stashes' report field (PIX-453): `field | says`, as the core's
+# (scripts/harness_report.txt), which it joins after its head, by name; its
+# function is `field_stashes(report)` in feature.gd.
+stashes | on a map with day camps: each camp's stash, its cell and how it stands, none until its pack is cleared, then shut, then open for good: mire_1@31,40:shut (PIX-453)

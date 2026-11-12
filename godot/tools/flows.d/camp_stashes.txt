@@ -1,0 +1,9 @@
+# The camps' stashes' flows (PIX-361: a feature's flows, read after
+# tools/flows.txt as its own, scripts/features/camp_stashes/), a line each
+# as in flows.txt.
+# The camps' stashes (PIX-453): none while the Mirefen's packs stand; the
+# packs felled, the world's next second puts a stash out by each camp's
+# tent, shut; E at the first opens it, and it stays open.
+camp-stash-none | --map mirefen | stashes=(mire_[1-4]@[0-9]+,[0-9]+:none,?){4} | field
+camp-stash-out | --map mirefen clear --wait 1.2 | stashes=(mire_[1-4]@[0-9]+,[0-9]+:shut,?){4} mobs=0 | field combat
+camp-stash | --map mirefen clear stash | stashes=mire_1@[0-9]+,[0-9]+:open,(mire_[2-4]@[0-9]+,[0-9]+:shut,?){3} | field combat
