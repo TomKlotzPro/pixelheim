@@ -573,6 +573,10 @@ func field_hudclash() -> String:
 		shown.append(["log", chip.get_global_rect()])
 	if hud.arrow != null and hud.arrow.visible:
 		shown.append(["arrow", hud.arrow.rect()])
+	# The E prompt counts against what rises and the hero (PIX-465).
+	var prompt: Control = world.interaction.prompt_label
+	if prompt != null and prompt.visible:
+		shown.append(["prompt", hud.to_screen(prompt.get_global_rect())])
 	if shown.is_empty():
 		return ""
 	if hud.boss_bar.showing():
@@ -588,15 +592,24 @@ func field_hudclash() -> String:
 		for j in range(i + 1, shown.size()):
 			var pair: Array = [shown[i][0], shown[j][0]]
 			# The hero counts under a card, the plate the HUD places, and
-			# under the arrow (PIX-462): the rest stands where it stands, the
-			# hero wherever the camera has them at a map's edge.
-			if pair.has("hero") and not (pair.has("card") or pair.has("arrow")):
+			# under the arrow (PIX-462) and the E prompt (PIX-465, which
+			# counts against nothing else but what rises): the rest stands
+			# where it stands, the hero wherever the camera has them at a
+			# map's edge.
+			if pair.has("hero") and not (pair.has("card") or pair.has("arrow") or pair.has("prompt")):
+				continue
+			if pair.has("prompt") and not (pair.has("hero") or pair.has("float")):
 				continue
 			pair.sort()
 			var said := "%s/%s" % pair
 			# The arrow keeps ARROW_CLEAR off the hero, so nearer counts too
 			# (PIX-464: only a real overlap did, and only the Sea Cave had one).
 			var clear := Hud.ARROW_CLEAR if said == "arrow/hero" else 0.0
+			# The hero's box is wider than the figure: a prompt beside them
+			# grazes its corner as they lean on the shore (PIX-465), so only
+			# 3 px of the world into it counts.
+			if said == "hero/prompt":
+				clear = -3.0 * world.get_viewport().get_canvas_transform().get_scale().x
 			if (shown[i][1] as Rect2).grow(clear).intersects(shown[j][1]) and not clashes.has(said):
 				clashes.append(said)
 	return ",".join(clashes) if not clashes.is_empty() else "none"

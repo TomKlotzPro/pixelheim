@@ -1,6 +1,6 @@
 class_name Interaction
 extends Node
-## areas: town rooms trade story quest
+## areas: town rooms trade story quest gathering
 ## What E does in the world (Solid Ground, PIX-260: moved out of world.gd as
 ## it was), in the web's INTERACT order: the well's water on the Night of
 ## Ash, a faced chest, a letter's answer waiting to be read and a dungeon's
@@ -813,9 +813,12 @@ func _prompt_target(cell: Vector2i) -> Rect2:
 
 ## Where the prompt `size` big stands so it never hides what it's for
 ## (PIX-338): over the faced `cell`'s column, its foot PROMPT_CLEAR pixels
-## above the top of `target`, the pixels what E meets is drawn in.
-static func prompt_spot(target: Rect2, cell: Vector2i, size: Vector2) -> Vector2:
-	return Vector2(cell.x * MapView.TILE + roundf((MapView.TILE - size.x) / 2.0), target.position.y - PROMPT_CLEAR - size.y)
+## above the top of `target`, the pixels what E meets is drawn in. Facing
+## down (`below`), the hero stands right there (PIX-465: it covered them
+## whole), so its head is PROMPT_CLEAR under the target's foot instead.
+static func prompt_spot(target: Rect2, cell: Vector2i, size: Vector2, below := false) -> Vector2:
+	var y := target.end.y + PROMPT_CLEAR if below else target.position.y - PROMPT_CLEAR - size.y
+	return Vector2(cell.x * MapView.TILE + roundf((MapView.TILE - size.x) / 2.0), y)
 
 
 static func _pixels(cells: Rect2i) -> Rect2:
@@ -823,14 +826,17 @@ static func _pixels(cells: Rect2i) -> Rect2:
 
 
 ## The prompt over `target` (prompt_spot), bobbing a pixel; the key read
-## fresh (it may have been rebound).
+## fresh (it may have been rebound). It waits while anything rises through
+## where it stands (PIX-465: a catch read "Sm[E] Pike").
 func _show_prompt(target: Rect2, cell: Vector2i) -> void:
 	if prompt_label is Keycap and not prompt_label.visible:
 		(prompt_label as Keycap).show_key(_interact_key())
 		prompt_label.reset_size()
-	prompt_label.visible = true
 	var bob := roundf(sin(GameClock.msec() / 260.0)) if not GameState.settings.reduce_motion else 0.0
-	prompt_label.position = prompt_spot(target, cell, prompt_label.size) + Vector2(0, bob)
+	prompt_label.position = prompt_spot(target, cell, prompt_label.size, cell.y > world.player_cell.y) + Vector2(0, bob)
+	# A pixel wider, so the bob doesn't blink it in and out.
+	var stands := Rect2(prompt_label.position, prompt_label.size).grow(1.0)
+	prompt_label.visible = not world.fx.shown().any(func(word: Rect2) -> bool: return word.intersects(stands))
 
 
 ## The ledgers lying open on a desk (PIX-338), by what E opens there: the
