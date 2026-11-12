@@ -100,6 +100,8 @@ const HEAD_CLEAR := 6.0
 ## its near edge, half its width either side of its feet (Reach, PIX-410).
 const BODY := Vector2(16, 24)
 const ELITE_BODY := 1.2
+## The box at its feet that meets walls, the hero and its pack.
+const FEET := Vector2(10, 8)
 ## The hero's half-width at their feet (their shadow, 14 px across): a foe
 ## closing in stops at its edge (edge_of, PIX-451).
 const HERO_HALF := 7.0
@@ -325,7 +327,7 @@ func _ready() -> void:
 
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
-	rect.size = Vector2(10, 8)
+	rect.size = FEET
 	shape.shape = rect
 	# Movement collides at the feet; blows reach its body (body_of, Reach).
 	add_child(shape)
@@ -458,6 +460,7 @@ func _physics_process(delta: float) -> void:
 	velocity += shove
 	var from := global_position
 	move_and_slide()
+	_hold_off(from)
 	if shove != Vector2.ZERO:
 		# Shoved, it still faces (and walks) the way it meant to.
 		velocity = walk
@@ -928,7 +931,7 @@ func _chase(to_player: Vector2, delta: float) -> void:
 ## At its edge it comes no nearer (PIX-451): the step toward them goes and
 ## the step round them stays (to its place in the ring), and stopped, it
 ## faces them. It never backs off: a hero may still walk up to it (their
-## bodies meet at the feet) or roll past it, and a blow still shoves it.
+## bodies meet at the feet) or roll through it, and a blow still shoves it.
 func _keep_off(to_player: Vector2, delta: float) -> void:
 	var apart := to_player.length()
 	if apart <= 0.0:
@@ -940,6 +943,19 @@ func _keep_off(to_player: Vector2, delta: float) -> void:
 	velocity -= toward * closing
 	if velocity.length() <= 1.0:
 		facing = Gait.steer(facing, to_player)
+
+
+## However its move went (PIX-458) - a slide along a wall, or its pack
+## pressing it on, which Godot passes body to body until the hero is
+## squeezed into a wall and held there - it ends no nearer the hero than its
+## edge, nor than it stood: put back out along the line from them, whatever
+## presses behind it (that one is pushed back in turn).
+func _hold_off(from: Vector2) -> void:
+	var hero: Vector2 = world.player.global_position
+	var apart := global_position.distance_to(hero)
+	var least := minf(edge, from.distance_to(hero))
+	if apart < least and apart > 0.0:
+		global_position = hero + (global_position - hero) * (least / apart)
 
 
 ## Its bite's reach (Reach.bite_tell and bite_lands), from its edge.

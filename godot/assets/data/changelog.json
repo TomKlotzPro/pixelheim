@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.354.0",
+      "date": "2026-11-12",
+      "codename": "Room to Breathe",
+      "notes": [
+        "A crowd of foes can no longer hold you in a corner: you can always step out onto open floor, and a roll now passes through foes",
+        "Foes pressing in from behind no longer push another onto you against a wall"
+      ]
+    },
+    {
       "version": "0.353.0",
       "date": "2026-11-12",
       "codename": "Bucket Brigade",
