@@ -2285,6 +2285,10 @@ msgid "A foe that closes in from below now stops where your hero stays in sight"
 msgstr "Un ennemi qui approche par le bas s'arrête désormais là où votre héros reste visible"
 
 #: assets/data/changelog.json
+msgid "A foe that comes round below you steps back out fully, and a leaping beast lands where your hero stays in sight"
+msgstr "Un ennemi qui passe sous vous recule bien jusqu'au bout, et une bête qui bondit atterrit là où votre héros reste visible"
+
+#: assets/data/changelog.json
 msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
 msgstr "Un ennemi qui vous repère fait jaillir une étincelle rouge, un ennemi apeuré une bleue : le danger et la parole ne se confondent plus"
 
@@ -2391,6 +2395,10 @@ msgstr "Un nouveau héros ne commence que depuis Nouvelle partie, sur l'écran t
 #: assets/data/changelog.json
 msgid "A pack meeting you against a wall now spreads round you instead of queueing in a column"
 msgstr "Une meute qui vous trouve contre un mur se répartit désormais autour de vous au lieu de faire la queue en colonne"
+
+#: assets/data/changelog.json
+msgid "A pack round you against a wall no longer jitters: each foe keeps its place while you stand"
+msgstr "Une meute autour de vous contre un mur ne tremble plus : chaque ennemi garde sa place tant que vous ne bougez pas"
 
 #: assets/data/changelog.json
 msgid "A pack shows one level tag in a fight, its highest, and the words over the world step clear of the tags instead of piling up at the kill"
@@ -5799,6 +5807,10 @@ msgstr "Caméra stable"
 #: assets/data/changelog.json
 msgid "Steady Hands"
 msgstr "Mains sûres"
+
+#: assets/data/changelog.json
+msgid "Steady Now"
+msgstr "Du calme"
 
 #: assets/data/changelog.json
 msgid "Steady Steps"

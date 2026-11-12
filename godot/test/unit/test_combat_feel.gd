@@ -155,7 +155,15 @@ func test_every_foe_stops_beside_the_hero_in_reach_of_both() -> void:
 		var hero := at + Vector2.LEFT * edge
 		assert_lte(EnemyScript.HERO_HALF + foot - edge, foot / 2.0, "%s: beside the hero, not on them" % who)
 		assert_true(Reach.lands(hero, Vector2.RIGHT, at, body, Reach.swing("sword")), "%s: a blade reaches it" % who)
-		assert_lt(edge, Reach.bite_tell() + beyond, "%s: it tells its bite from there" % who)
+		# PIX-463: its own reach, as Enemy works it out toward the hero.
+		var crown := EnemyScript.crown_of(PunyArt.frames(PunyArt.monster(fighter["id"])), Vector2(0, PunyArt.lift(PunyArt.monster(fighter["id"])) * size), size)
+		var foe: CharacterBody2D = autofree(EnemyScript.new())
+		foe.edge = edge
+		foe.beyond = beyond
+		foe.depth = EnemyScript.HERO_FEET - crown
+		foe.farthest = body + near
+		assert_lt(edge, foe.bite_tell(hero - at), "%s: it tells its bite from there" % who)
+		assert_lte(edge, foe.bite_lands(hero - at), "%s: and lands it" % who)
 		var trick := Bestiary.elite_moves(Bestiary.family_of(fighter["id"]))
 		if String(trick.get("move", "")) == "cleave":
 			assert_true(EliteBrain.in_reach(trick, at, hero, beyond), "%s: it cleaves from there" % who)
@@ -164,22 +172,23 @@ func test_every_foe_stops_beside_the_hero_in_reach_of_both() -> void:
 		# round toward their side, it stops where its head leaves their body
 		# in sight (their feet aside), unless a blade would miss it; its bite
 		# and its trick reach as far from there.
-		var crown := EnemyScript.crown_of(PunyArt.frames(PunyArt.monster(fighter["id"])), Vector2(0, PunyArt.lift(PunyArt.monster(fighter["id"])) * size), size)
-		var depth := EnemyScript.HERO_FEET - crown
-		var farthest := body + near
 		for turn: float in [0.0, 30.0, 60.0, 85.0]:
 			var away := Vector2.DOWN.rotated(deg_to_rad(turn))
-			var stop := EnemyScript.stop_at(away, edge, depth, farthest)
+			var stop := EnemyScript.stop_at(away, edge, foe.depth, foe.farthest)
 			var below := hero + away * stop
-			var past := beyond + stop - edge
+			var to := hero - below
 			var where := "%s %d degrees round" % [who, turn]
+			assert_almost_eq(foe.stop(to), stop, 0.001, "%s: it stops there" % where)
 			assert_gte(stop, edge, "%s: no nearer than beside them" % where)
-			assert_true(below.y + crown >= hero.y + EnemyScript.HERO_FEET - 0.01 or absf(below.x - hero.x) >= edge - 0.01 or is_equal_approx(stop, farthest), "%s: the hero's body in sight" % where)
+			assert_true(below.y + crown >= hero.y + EnemyScript.HERO_FEET - 0.01 or absf(below.x - hero.x) >= edge - 0.01 or is_equal_approx(stop, foe.farthest), "%s: the hero's body in sight" % where)
 			assert_true(Reach.lands(hero, away, below, body, Reach.swing("sword")), "%s: a blade reaches it" % where)
-			assert_almost_eq(Reach.bite_tell() + past - stop, Reach.bite_tell() + beyond - edge, 0.001, "%s: its bite reaches as far from there" % where)
+			assert_lt(stop, foe.bite_tell(to), "%s: it tells its bite from there" % where)
+			assert_lte(stop, foe.bite_lands(to), "%s: and lands it" % where)
+			assert_almost_eq(foe.bite_tell(to) - stop, foe.bite_tell(hero - at) - edge, 0.001, "%s: as far past where it stops as beside them" % where)
+			assert_almost_eq(foe.bite_lands(to) - stop, foe.bite_lands(hero - at) - edge, 0.001, "%s: its bite lands as far" % where)
 			if String(trick.get("move", "")) == "cleave":
-				assert_true(EliteBrain.in_reach(trick, below, hero, past), "%s: it cleaves from there" % where)
-				assert_true(Geometry2D.is_point_in_polygon(hero, EliteBrain.cleave_band(trick, below, hero, past)), "%s: and strikes a hero who stands" % where)
+				assert_true(EliteBrain.in_reach(trick, below, hero, foe.past(to)), "%s: it cleaves from there" % where)
+				assert_true(Geometry2D.is_point_in_polygon(hero, EliteBrain.cleave_band(trick, below, hero, foe.past(to))), "%s: and strikes a hero who stands" % where)
 
 
 ## PIX-377: monsters last a real fight. A wild foe's health grows by a scale
@@ -567,6 +576,30 @@ func test_spearmen_below_leave_the_hero_in_sight() -> void:
 		assert_gt(foe.depth, 0.0, "how deep worked out from its drawing")
 		assert_almost_eq(away.length(), foe.stop(-away), 0.05, "closed in as near as it stops")
 		assert_gte(away.y - foe.depth, -0.05, "its head no higher than the hero's feet")
+
+
+## PIX-463: a spearman at its stop beside the hero comes round below them,
+## where it stops deeper: it steps back out that far. A float's hair nearer
+## than it stopped read as a hero who walked up, and kept it short from then
+## on; a hero who did walk up it still never backs off from.
+func test_a_foe_come_round_below_steps_back_out() -> void:
+	var hero := _cornered()
+	var at := hero.global_position
+	var foe: Node = _yeti(hero, at + Vector2(20, 0), "goblin_spear")
+	# As deep as the paid art's spearman stops (Shade's CC0 one stops at its
+	# edge all round).
+	foe.depth = foe.farthest
+	var beside := Vector2.RIGHT.rotated(deg_to_rad(5.0))
+	var under := Vector2.RIGHT.rotated(deg_to_rad(70.0))
+	var stood: float = foe.stop(-beside)
+	var deeper: float = foe.stop(-under)
+	assert_gt(deeper, stood + 0.5, "below, it stops deeper")
+	for short: float in [0.001, 2.0]:
+		var from := at + beside * (stood - short)
+		foe.global_position = at + under * from.distance_to(at)
+		foe._hold_off(from)
+		var want := deeper if short < 1.0 else from.distance_to(at)
+		assert_almost_eq(foe.global_position.distance_to(at), want, 0.001, "%s px nearer than it stopped" % short)
 
 
 ## PIX-458: a yeti pressed onto the hero against the wall (as the pack did,

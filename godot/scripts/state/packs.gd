@@ -135,15 +135,28 @@ static func ring(hero: Vector2, at: Array[Vector2]) -> Array[Vector2]:
 ## pack queued in a column behind the one at the hero. The way out to a
 ## spot starts at the hero's body, `body_at` off their feet: from their
 ## feet a foe's would reach into the wall they stand against.
-static func spread(map: MapData, hero: Vector2, spots: Array[Vector2], body_at: Vector2) -> Array[Vector2]:
-	var open := spots.map(func(spot: Vector2) -> bool: return walks_straight(map, hero + body_at, spot))
+##
+## PIX-463: given `last`, each foe's spot last tick (the hero standing and
+## the pack the same: Foes.ring_spot), a foe keeps its spot while its place
+## in the ring is as far off: each foe's step turned the ring a hair, a spot
+## by a wall went from open to shut and back, and its foe's spot flipped 30
+## degrees round every tick.
+static func spread(map: MapData, hero: Vector2, spots: Array[Vector2], body_at: Vector2, last: Array[Vector2] = []) -> Array[Vector2]:
+	var out: Array[Vector2] = spots.duplicate()
+	var done: Array[bool] = []
 	var taken: Array[Vector2] = []
 	for i in spots.size():
-		if open[i]:
-			taken.append(spots[i])
-	var out: Array[Vector2] = spots.duplicate()
+		# Within a pixel, not is_equal_approx's relative hair: far out on a big
+		# map float32 misses that now and then (the ring's radii, 11 and 28, are
+		# far apart).
+		var held := i < last.size() and absf(last[i].distance_to(hero) - spots[i].distance_to(hero)) < 1.0
+		if held:
+			out[i] = last[i]
+		done.append(held or walks_straight(map, hero + body_at, spots[i]))
+		if done[i]:
+			taken.append(out[i])
 	for i in spots.size():
-		if open[i]:
+		if done[i]:
 			continue
 		out[i] = hero
 		for turn: float in SPREAD_TURNS:

@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.357.0",
+      "date": "2026-11-12",
+      "codename": "Steady Now",
+      "notes": [
+        "A pack round you against a wall no longer jitters: each foe keeps its place while you stand",
+        "A foe that comes round below you steps back out fully, and a leaping beast lands where your hero stays in sight"
+      ]
+    },
+    {
       "version": "0.356.0",
       "date": "2026-11-12",
       "codename": "In Plain Sight",

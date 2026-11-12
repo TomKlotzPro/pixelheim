@@ -109,6 +109,10 @@ const HERO_HALF := 7.0
 ## two pixels lower): a foe below them, drawn in front, may hide their feet
 ## and no more (stop_at, PIX-459).
 const HERO_FEET := 2.0
+## How much nearer than it stops a foe must stand for _hold_off to count the
+## hero as having walked up to it (PIX-463): past a float's error, short of
+## the hero's step a tick.
+const WALKED_UP := 0.5
 ## A boss's weight besides its size (PIX-314): its shadow on the ground,
 ## how dark; and a glow of its own colour on the floor round its feet in the
 ## dark: a light that lights the floor alone (Lights.FLOOR), so nothing
@@ -984,13 +988,15 @@ func _keep_off(to_player: Vector2, delta: float) -> void:
 ## squeezed into a wall and held there - it ends no nearer the hero than it
 ## stops (stop), nor than it stood if it stood nearer (the hero walked up):
 ## put back out along the line from them, whatever presses behind it (that
-## one is pushed back in turn). Come round below them, it steps back out.
+## one is pushed back in turn). Come round below them, it steps back out:
+## standing a float's hair nearer than it stopped is no hero who walked up
+## (PIX-463: it kept the hair, and every step round after it).
 func _hold_off(from: Vector2) -> void:
 	var hero: Vector2 = world.player.global_position
 	var apart := global_position.distance_to(hero)
 	var least := stop(hero - global_position)
 	var was := from.distance_to(hero)
-	if was < stop(hero - from):
+	if was < stop(hero - from) - WALKED_UP:
 		least = minf(least, was)
 	if apart < least and apart > 0.0:
 		global_position = hero + (global_position - hero) * (least / apart)

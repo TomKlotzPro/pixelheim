@@ -2285,6 +2285,10 @@ msgid "A foe that closes in from below now stops where your hero stays in sight"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe that comes round below you steps back out fully, and a leaping beast lands where your hero stays in sight"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
 msgstr ""
 
@@ -2390,6 +2394,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A pack meeting you against a wall now spreads round you instead of queueing in a column"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A pack round you against a wall no longer jitters: each foe keeps its place while you stand"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5798,6 +5806,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Steady Hands"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Steady Now"
 msgstr ""
 
 #: assets/data/changelog.json
