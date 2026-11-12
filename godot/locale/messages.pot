@@ -2125,6 +2125,10 @@ msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead of the same line down the page"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr ""
 
@@ -4050,6 +4054,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Know Thyself"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Know Your Foe"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6086,6 +6094,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The City's showpieces earn their price: the Aegis of the Ash turns the first blow of every fight, the Everflask fills itself again while you sleep, and the King's Signet adds a tenth to the gold you earn"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Codex's masteries now say what the next tier gives: more damage against that family"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -16557,6 +16569,10 @@ msgid "   Slayer %s"
 msgstr ""
 
 #: scripts/codex_screen.gd
+msgid "%d more for +%d%% damage against them."
+msgstr ""
+
+#: scripts/codex_screen.gd
 msgid "%d more for +%d%%."
 msgstr ""
 
@@ -16581,6 +16597,10 @@ msgid "Every kill teaches. Families over faces."
 msgstr ""
 
 #: scripts/codex_screen.gd
+msgid "Found in %s."
+msgstr ""
+
+#: scripts/codex_screen.gd
 msgid "Lv %d  HP %d  ATK %d  DEF %d  %d xp"
 msgstr ""
 
@@ -16594,10 +16614,6 @@ msgstr ""
 
 #: scripts/codex_screen.gd
 msgid "Page %d of %d"
-msgstr ""
-
-#: scripts/codex_screen.gd
-msgid "Unmet. The wilds keep their secrets."
 msgstr ""
 
 #: scripts/codex_screen.gd
@@ -18854,10 +18870,6 @@ msgstr ""
 
 #: scripts/state/quests.gd
 msgid "%s, in %s."
-msgstr ""
-
-#: scripts/state/quests.gd
-msgid "Found in %s."
 msgstr ""
 
 #: scripts/state/quests.gd

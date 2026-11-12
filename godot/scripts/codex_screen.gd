@@ -2,8 +2,9 @@ extends Screen
 ## areas: screen
 ## The codex (Codex.tsx): the trophy case. Masteries shows each monster
 ## family's kills, the Slayer tier earned and what the next teaches; the
-## Bestiary shows every monster whose family the hero has met, and keeps the
-## rest secret. A/D switch tabs, B or Esc closes. The world holds still.
+## Bestiary shows every monster whose family the hero has met, and of the
+## rest only where they live. A/D switch tabs, B or Esc closes. The world
+## holds still.
 
 const TABS := ["Masteries", "Bestiary"]
 ## The card, laid out as the counter's pages are (PIX-388): under the
@@ -86,7 +87,9 @@ func _masteries() -> void:
 		var note := ""
 		if tier > 0:
 			note = Text.t("+%d%% damage against them. ") % roundi(float(tiers[tier - 1]["bonus"]) * 100)
-		note += Text.t("Nothing left to teach you.") if next.is_empty() else Text.t("%d more for +%d%%.") % [
+		# Before the first tier the note says what the bonus is too (PIX-456).
+		var more := Text.t("%d more for +%d%%.") if tier > 0 else Text.t("%d more for +%d%% damage against them.")
+		note += Text.t("Nothing left to teach you.") if next.is_empty() else more % [
 			int(next["kills"]) - kills, roundi(float(next["bonus"]) * 100),
 		]
 		body.add_child(UiStyle.label(note, 13, UiStyle.FADED))
@@ -134,7 +137,10 @@ func _bestiary() -> void:
 			line.add_child(numbers)
 			line.add_child(UiStyle.label(Bestiary.family_names()[family], 14, UiStyle.FADED))
 		else:
-			line.add_child(UiStyle.label("Unmet. The wilds keep their secrets.", 14, UiStyle.FADED))
+			# Where it lives, not one sentence down the page (PIX-456); a foe of
+			# no pack (a boss) keeps its secret.
+			var places := Bestiary.where_found(monster_id)
+			line.add_child(UiStyle.label(Text.t("Found in %s.") % ", ".join(places.slice(0, 2)) if not places.is_empty() else "???", 14, UiStyle.FADED))
 		body.add_child(line)
 
 
