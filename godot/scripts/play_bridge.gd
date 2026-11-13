@@ -70,20 +70,25 @@ func _problem(steps: Variant) -> String:
 			return "a step is {keys, seconds}"
 		for key: Variant in step["keys"]:
 			if OS.find_keycode_from_string(str(key)) == KEY_NONE:
-				return "no key named " + str(key)
+				# A whole word (PIX-468: `Aria` played nothing, and the name stayed empty).
+				return "no key named " + str(key) + " (a word is typed a letter a key, as A,r,i,a)"
 	return ""
 
 
 ## One step: its keys pressed together, held its time, let go.
 func _step(step: Dictionary) -> void:
 	var keys: Array[InputEventKey] = []
+	# Shift held with a letter types its capital, as the keyboard does
+	# (PIX-468: `shift+a` typed "a"). The event itself stays unshifted, so a
+	# move held with Shift is still its action.
+	var shifted: bool = step["keys"].any(func(held: String) -> bool: return OS.find_keycode_from_string(held) == KEY_SHIFT)
 	for name: String in step["keys"]:
 		var key := InputEventKey.new()
 		key.keycode = OS.find_keycode_from_string(name)
 		key.physical_keycode = key.keycode
 		# A letter typed into a field (a hero's name) as the keyboard types it.
 		if name.length() == 1:
-			key.unicode = name.unicode_at(0)
+			key.unicode = (name.to_upper() if shifted else name).unicode_at(0)
 		keys.append(key)
 	var seconds: Variant = step.get("seconds")
 	for key in keys:

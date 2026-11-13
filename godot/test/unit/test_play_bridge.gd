@@ -82,7 +82,7 @@ func test_a_key_godot_does_not_know_plays_nothing() -> void:
 	var from := GameClock.seconds()
 	page.command = JSON.stringify([{"keys": ["Right"], "seconds": 2}, {"keys": ["jump"], "seconds": null}])
 	var said: Dictionary = await _answer()
-	assert_eq(said.get("error"), "no key named jump")
+	assert_eq(said.get("error"), "no key named jump (a word is typed a letter a key, as A,r,i,a)")
 	assert_lt(float(said["seconds"]) - from, 0.2, "nothing was held")
 	page.frozen = false
 	page.command = "{}"
@@ -101,6 +101,22 @@ func test_a_name_typed_and_backspaced() -> void:
 		page.command = JSON.stringify(typed[0].map(func(key: String) -> Dictionary: return {"keys": [key], "seconds": null}))
 		await _answer()
 		assert_eq(field.text, typed[1], str(typed[0]))
+
+
+## PIX-468: a name with capitals, a letter a key or under Shift; a whole
+## word is no key, so it types nothing and the answer says how to type one.
+func test_a_name_typed_with_capitals() -> void:
+	var field := LineEdit.new()
+	add_child_autofree(field)
+	field.grab_focus()
+	page.command = JSON.stringify([["A"], ["r"], ["shift", "i"], ["a"]].map(func(keys: Array) -> Dictionary: return {"keys": keys, "seconds": null}))
+	await _answer()
+	assert_eq(field.text, "ArIa")
+	page.frozen = false
+	page.command = JSON.stringify([{"keys": ["Aria"], "seconds": null}])
+	var said: Dictionary = await _answer()
+	assert_string_contains(said.get("error", ""), "no key named Aria")
+	assert_eq(field.text, "ArIa", "nothing typed")
 
 
 ## The chosen ones' words under `node`, one list apiece.
