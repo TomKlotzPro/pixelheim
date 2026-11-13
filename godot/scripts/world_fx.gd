@@ -66,6 +66,10 @@ var floated := Gains.none()
 ## crit, at}.
 const NUMBER_JOIN_S := 0.3
 var _numbers := {}
+## What the last pass kept the words clear of (keep_clear), for a word born
+## after it.
+var _reserved: Array[Rect2] = []
+var _over: Array[Rect2] = []
 ## A word over the world steps up clear of a level tag or a word already
 ## there (PIX-340, keep_clear), this far apart, at most this far.
 const SLOT_MARGIN := 1.0
@@ -83,7 +87,7 @@ const REACH := 16.0 + MOST_LIFT
 func float_text(text: String, at: Vector2, color: Color, big := false) -> void:
 	var label := _floating(text, color)
 	label.position = Vector2(Ink.centred(_ink(label), at.x), roundf(at.y))
-	label.z_index = 11 if big else 10
+	label.z_index = Foes.OVER_TAGS + (1 if big else 0)
 	_stand(label)
 	var life := 1.8 if big else 0.6
 	var tween := label.create_tween().set_parallel()
@@ -118,6 +122,9 @@ func _stand(label: Label) -> void:
 	label.tree_exited.connect(stand.queue_free)
 	stand.add_child(label)
 	add_child(stand)
+	# Clear from its first frame (PIX-469: a blow landing after the frame's
+	# pass began on the tag, and stepped up a frame late).
+	keep_clear(_reserved, _over)
 
 
 ## Each word over the world, oldest first, stepped up just clear
@@ -130,6 +137,8 @@ func _stand(label: Label) -> void:
 ## a title card, a hint): it stays under them (TextBudget.room_under,
 ## PIX-345: LEVEL UP was cut by the boss bar).
 func keep_clear(reserved: Array[Rect2], over: Array[Rect2] = []) -> void:
+	_reserved = reserved
+	_over = over
 	var taken: Array[Rect2] = reserved.duplicate()
 	for win: Dictionary in _rising:
 		if is_instance_valid(win["box"]):
@@ -253,7 +262,7 @@ func float_number(value: int, at: Vector2, color: Color, crit := false, who: Obj
 		crit = crit or bool(last["crit"])
 	var label := _floating(str(value) + ("!" if crit else ""), UiStyle.BRASS_LIGHT if crit else color)
 	label.position = Vector2(Ink.centred(_ink(label), at.x + randf_range(-4.0, 4.0)), roundf(at.y - (4 if crit else 0)))
-	label.z_index = 11 if crit else 10
+	label.z_index = Foes.OVER_TAGS + (1 if crit else 0)
 	_stand(label)
 	if key != "":
 		_numbers[key] = {"word": label, "value": value, "crit": crit, "at": now}
@@ -339,7 +348,7 @@ func show_gains(gains: Dictionary, at: Vector2) -> void:
 	if win.is_empty():
 		var box := Node2D.new()
 		box.position = (at - Vector2(0, GAIN_STILL_LIFT if GameState.settings.reduce_motion else 0.0)).round()
-		box.z_index = 10
+		box.z_index = Foes.OVER_TAGS
 		add_child(box)
 		win = {"box": box, "at": at, "joined": now, "gains": Gains.none(), "rows": {}, "fresh": true, "tween": null}
 		_rising.append(win)

@@ -62,6 +62,9 @@ static func boot(flags: HarnessFlags, state: Node) -> void:
 		# `still`: the run with Reduce motion on, as a player can set it.
 		if flags.has("still"):
 			state.settings.reduce_motion = true
+		# `large`: the run with Large reading text on (PIX-477).
+		if flags.has("large"):
+			state.settings.large_text = true
 		# `hints`: a new player's first-time hints, none seen (PIX-341).
 		if flags.has("hints"):
 			state.settings.hints = true

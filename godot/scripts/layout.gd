@@ -14,12 +14,17 @@ const DECOR := &"layout_decor"
 ## ledger's info card grew under its status line and keys, still on the
 ## canvas in English). Opt-in, so no screen fails on a rule it never had.
 const CLEAR := &"layout_clear"
+## The keys `paging` takes, as a footer names them, and the line a page
+## turned keeps in sight where what scrolls has no words to measure.
+const PAGE_KEYS := "PgUp/PgDn"
+const PAGE_LINE := 32
 
 
 ## Every visible Control under the open screens of `root` whose rect runs
 ## past a `view`-sized canvas, or a list wider than it was laid out
 ## (`spills`): "screen path rect" lines, the outermost culprit of each branch
-## only; and every piece standing on one its screen keeps clear (`crowded`).
+## only; a line cut short with no ellipsis (`cut`); and every piece standing
+## on one its screen keeps clear (`crowded`).
 static func overflows(root: Node, view: Vector2) -> Array[String]:
 	var out: Array[String] = []
 	var bounds := Rect2(Vector2.ZERO, view).grow(SLACK)
@@ -59,6 +64,9 @@ static func _scan(node: Node, layer: CanvasLayer, bounds: Rect2, out: Array[Stri
 			var rect := Rect2(control.get_global_rect().position + layer.offset, control.get_global_rect().size)
 			if rect.size.x > 0.0 and rect.size.y > 0.0 and not bounds.encloses(rect):
 				out.append("%s %s %s" % [layer.get_script().resource_path.get_file(), layer.get_path_to(control), rect])
+				continue
+			if control is Label and cut(control as Label):
+				out.append("%s %s %d < %d" % [layer.get_script().resource_path.get_file(), layer.get_path_to(control), control.size.x, words_width(control as Label)])
 				continue
 			var spill := spills(control)
 			if spill != "":
@@ -103,6 +111,14 @@ static func _on_a_panel(label: Label, screen: Screen, spot: Rect2) -> bool:
 	return false
 
 
+## Whether `label`'s one line is cut where its room ends with nothing to
+## say so (PIX-482: the Skills page's line stopped mid-sentence at the
+## page's edge). One that gives way (`ellipsis`) says so.
+static func cut(label: Label) -> bool:
+	return label.clip_text and label.autowrap_mode == TextServer.AUTOWRAP_OFF \
+		and label.text_overrun_behavior == TextServer.OVERRUN_NO_TRIMMING and words_width(label) > label.size.x + SLACK
+
+
 ## Why `control` runs wider than its page, or "" (PIX-298): a scrolling
 ## window, or a list standing free on the screen, laid out at a width (its
 ## minimum's) that its rows pushed wider, or a scrolling window whose rows
@@ -124,6 +140,57 @@ static func spills(control: Control) -> String:
 			if content is Control and (content as Control).visible and (content as Control).size.x > room + SLACK:
 				return "%d > %d |" % [(content as Control).size.x, room]
 	return ""
+
+
+## Whether what `scroll` holds runs past its window: there is more to read
+## than shows (PIX-477, PIX-483: large reading text on a card that keeps
+## its size).
+static func runs_long(scroll: ScrollContainer) -> bool:
+	var bar := scroll.get_v_scroll_bar()
+	return bar.max_value - bar.page > SLACK
+
+
+## What Page Up or Page Down does to `scroll` when it runs long (PIX-483:
+## the counter's card drew a scrollbar no key moved), else nothing: the one
+## way a screen pages (What's new too). The keys by their codes, as hero
+## creation takes them, not Godot's ui_page actions, which are one
+## device's and so miss the harness's keys: they are named outright in the
+## footer (`PAGE_KEYS`), W/S and A/D being the rows' and the tabs'.
+static func paging(scroll: ScrollContainer, event: InputEvent) -> Callable:
+	var key := event as InputEventKey
+	if key == null or not key.pressed:
+		return Callable()
+	return turned(scroll, int(key.keycode == KEY_PAGEDOWN) - int(key.keycode == KEY_PAGEUP))
+
+
+## `scroll` turned `pages` on (back, below zero) when it runs long, else
+## nothing: the whole lines its window holds, less one, so the last line
+## read stays in sight and a page starts on a line, not through one.
+static func turned(scroll: ScrollContainer, pages: int) -> Callable:
+	if pages == 0 or not runs_long(scroll):
+		return Callable()
+	var line := line_of(scroll)
+	var by := maxi(1, int(scroll.size.y) / line - 1) * line * pages
+	return func() -> void: scroll.scroll_vertical += by
+
+
+## The height of a line of what `scroll` holds, its tallest type's with the
+## space under it (a line of Large reading text is 36 px: a fixed 32 left
+## the line just read sliced through its letters at the card's top), or
+## PAGE_LINE where it holds no words.
+static func line_of(scroll: ScrollContainer) -> int:
+	var line := 0
+	for node in scroll.find_children("*", "", true, false):
+		var label := node as Label
+		if label != null:
+			line = maxi(line, label.get_line_height() + label.get_theme_constant("line_spacing"))
+	return line if line > 0 else PAGE_LINE
+
+
+## A footer's `line` with the page keys named before its own, for a screen
+## whose card runs long.
+static func paged_footer(line: String) -> String:
+	return "%s  %s      %s" % [PAGE_KEYS, Text.t("read"), line]
 
 
 ## Empties `container` for a redraw: the old pieces leave at once, not at the

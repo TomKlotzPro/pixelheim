@@ -1,6 +1,36 @@
 {
   "releases": [
     {
+      "version": "0.363.0",
+      "date": "2026-11-13",
+      "codename": "Make Way",
+      "notes": [
+        "A foe's level plate and health bar fade while your hero stands under them, and your hits' numbers rise over the plates",
+        "The Smuggler Gunner's ball is easy to see: a rimmed ball with a trail of smoke, fired the way the gunner faces"
+      ]
+    },
+    {
+      "version": "0.362.0",
+      "date": "2026-11-13",
+      "codename": "Room to Read",
+      "notes": [
+        "With Large reading text, the village works, the bank, the counters and the other cards keep their size, and PgUp / PgDn read the rest",
+        "A conversation in large text stays on the screen",
+        "A long hero name ends in … on hero creation instead of pushing the panels off the screen",
+        "Skills names the path you walk in one line that fits",
+        "The village works describe the chosen work first"
+      ]
+    },
+    {
+      "version": "0.361.0",
+      "date": "2026-11-13",
+      "codename": "The Long Way Round",
+      "notes": [
+        "Foes chasing you go round the well, the fountain or a villager in the way, instead of standing against it",
+        "A foe with no way to reach you gives up and walks home, and keeps its wounds"
+      ]
+    },
+    {
       "version": "0.360.0",
       "date": "2026-11-12",
       "codename": "Out of the Way",
