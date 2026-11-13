@@ -2305,6 +2305,10 @@ msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead o
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe's level plate and health bar fade while your hero stands under them, and your hits' numbers rise over the plates"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr ""
 
@@ -4533,6 +4537,10 @@ msgid "Main Street"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Make Way"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Many Tongues"
 msgstr ""
 
@@ -6594,6 +6602,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Slayer's Ledger"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Smuggler Gunner's ball is easy to see: a rimmed ball with a trail of smoke, fired the way the gunner faces"
 msgstr ""
 
 #: assets/data/changelog.json

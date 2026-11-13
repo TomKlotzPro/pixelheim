@@ -36,6 +36,8 @@ const DROP_RUN := 3.0
 ## height over the health bar.
 const MARK_CLEAR := 1.0
 const TAG_HEIGHT := 9.0
+## How long the words over its head take to make way for the hero (make_way).
+const MAKE_WAY_S := 0.1
 const TAG_HALF_WIDTH := 10.0
 ## Between the level tag and an ailment's icon, and from one to the next.
 const AILMENT_GAP := 1.0
@@ -145,6 +147,8 @@ var health_bar: ColorRect
 var health_bar_back: ColorRect
 ## "Lv N" beside the health bar (PIX-188).
 var level_tag: PanelContainer
+## A named foe's name over its head, or null.
+var name_plate: Label
 ## Poison, burn and stun from the hero's afflicting passives.
 var ailments := Ailments.new()
 ## An icon for each of them beside the tag (PIX-440), built at the first:
@@ -379,6 +383,7 @@ func _ready() -> void:
 	var plate: Label = null
 	if not named.is_empty():
 		plate = _name_plate(_over_head - 1)
+		name_plate = plate
 		Lights.unshade(plate)
 		add_child(plate)
 	# Its level by the health bar (PIX-188), coloured by the gap to the
@@ -391,7 +396,7 @@ func _ready() -> void:
 	level_tag.add_child(UiStyle.strong(Text.t("Lv %d") % level, 16, Bestiary.gap_color(level, GameState.hero.level)))
 	level_tag.scale = Vector2.ONE * CameraRig.LABEL_SCALE
 	level_tag.z_as_relative = false
-	level_tag.z_index = 20
+	level_tag.z_index = Foes.TAG_Z
 	level_tag.visible = false
 	level_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# A named foe's tag stands above its name, not over it.
@@ -403,6 +408,21 @@ func _ready() -> void:
 		plate.resized.connect(place_tag)
 	Lights.unshade(level_tag)
 	add_child(level_tag)
+
+
+## What stands over its head (its level tag, the ailments beside it, a named
+## foe's name, its health bar) makes way while the hero, feet at `hero`,
+## stands under the words (PIX-469: over every actor, the plate hid a hero
+## in the cell above the foe, and the bar crossed them), fading out and back
+## in a few frames: by its alpha, so what shows and hides each still does.
+func make_way(hero: Vector2, delta: float) -> void:
+	if level_tag == null:
+		return
+	var under := Foes.hero_under(level_tag.get_global_rect(), hero) or (name_plate != null and Foes.hero_under(name_plate.get_global_rect(), hero))
+	var alpha := move_toward(level_tag.modulate.a, 0.0 if under else 1.0, delta / MAKE_WAY_S)
+	for words: CanvasItem in [level_tag, name_plate, _ailment_row, health_bar, health_bar_back]:
+		if words != null:
+			words.modulate.a = alpha
 
 
 ## The level its tag reads (PIX-340: in a fight a pack's one tag reads the
@@ -524,7 +544,8 @@ func _show_ailments() -> void:
 		_ailment_row = Node2D.new()
 		# Over every actor, as the tag.
 		_ailment_row.z_as_relative = false
-		_ailment_row.z_index = 20
+		_ailment_row.z_index = Foes.TAG_Z
+		_ailment_row.modulate.a = level_tag.modulate.a
 		add_child(_ailment_row)
 	_ailment_row.position = _beside_tag()
 	if kinds == _ailing:
@@ -1079,8 +1100,15 @@ func _flies() -> float:
 ## stands now, as far as _flies.
 func _loose(to_player: Vector2) -> void:
 	shot_left = float(shot["every"])
-	_play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
+	# The way the shot goes, not the way it faced as it took aim (PIX-470:
+	# its gun flashed to the left of a ball flying up).
+	facing = Gait.dir_of(to_player)
+	var drawn := sprite.sprite_frames.has_animation("attack_" + facing)
+	_play("attack" if drawn else "sword")
 	var bolt := Firebolt.new()
+	# A sheet's own attack has its gun's flash drawn in (the gunner's): a
+	# second one from the chest a frame before it read as two shots.
+	bolt.flash = not drawn
 	bolt.world = world
 	bolt.caster = fighter.duplicate()
 	bolt.look = String(shot["look"])
