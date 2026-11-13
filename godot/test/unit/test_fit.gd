@@ -307,3 +307,17 @@ func test_tabs_stand_apart_on_their_pages_edge() -> void:
 				view.queue_free()
 				await get_tree().process_frame
 	UiStyle.withheld = withheld
+
+
+## PIX-488: the hall's card starts on the chosen work's word, so a card that
+## runs long (large text, French) never hides what a work does under its foot.
+func test_the_halls_card_starts_on_the_chosen_work() -> void:
+	var screen: Screen = TownHallScreen.new()
+	add_child(screen)
+	await wait_process_frames(2)
+	assert_false(screen._chosen_project().is_empty(), "a work is chosen")
+	assert_true(screen.info.text.begins_with(String(screen._chosen_project().get("name", "?"))), screen.info.text)
+	screen._select(1)
+	assert_true(screen.info.text.begins_with(String(screen._chosen_project().get("name", "?"))), screen.info.text)
+	screen.close()
+	await get_tree().process_frame

@@ -16430,7 +16430,7 @@ msgstr "La place est pleine et personne ne travaille. Ce soir, Pixelheim boit à
 
 #: assets/data/town.json
 msgid "Torches along Upper Street and by the square, so the night has edges."
-msgstr "Des torches le long de la Grand-Rue et près de la place, pour que la nuit ait des contours."
+msgstr "Des torches sur la Grand-Rue et la place, pour que la nuit ait des contours."
 
 #: assets/data/town.json
 msgid "Town"
