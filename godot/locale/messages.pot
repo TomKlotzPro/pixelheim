@@ -2305,6 +2305,10 @@ msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead o
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe's ailment shows as it lands and goes when the foe falls, and no line turns up after its moment"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A foe's level plate and health bar fade while your hero stands under them, and your hits' numbers rise over the plates"
 msgstr ""
 
@@ -2426,6 +2430,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A phone starts with large text, which now reaches the shops' and ledgers' descriptions too"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A quest accepted names the quest and its whole pay, without its story: the journal keeps that"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4169,6 +4177,10 @@ msgid "Impact"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "In French a number stays with its unit and a mark with its word, on the web too"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "In Hand"
 msgstr ""
 
@@ -4550,6 +4562,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Maren's letters are the main story in the journal: the courier's satchel lists each letter, who it's for and where, and once it's delivered, what they answered"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Maren's letters fit in one line"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5454,6 +5470,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Right on Cue"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Right on Time"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7058,6 +7078,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The roll's hint reads quickly and lets the fight's lines through"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -13553,10 +13577,6 @@ msgid "Bram wants a cheese wheel. Of course he does."
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Bram's crew is out clearing the cliff road to Saltmere."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Bram: \"I've waited my whole life for this.\""
 msgstr ""
 
@@ -14057,7 +14077,7 @@ msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The 
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Four letters in your satchel: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
+msgid "Four letters in your satchel ({key:journal})."
 msgstr ""
 
 #: assets/data/progression.json
@@ -14385,7 +14405,7 @@ msgid "Imps taught a lesson"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "In your satchel: %s. Maren keeps the fifth."
+msgid "In your satchel ({key:journal}): %s."
 msgstr ""
 
 #: assets/data/progression.json
@@ -19161,6 +19181,14 @@ msgid "a recipe in your book: %s"
 msgstr ""
 
 #: scripts/state/questing.gd
+msgid "%d XP"
+msgstr ""
+
+#: scripts/state/questing.gd
+msgid "%d gold"
+msgstr ""
+
+#: scripts/state/questing.gd
 msgid "%s: %d/%d %s."
 msgstr ""
 
@@ -19192,18 +19220,6 @@ msgstr ""
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr ""
 
-#: scripts/state/questing.gd
-msgid "Your satchel is in the journal ({key:journal})."
-msgstr ""
-
-#: scripts/state/quests.gd
-msgid "%d XP"
-msgstr ""
-
-#: scripts/state/quests.gd
-msgid "%d gold"
-msgstr ""
-
 #: scripts/state/quests.gd
 msgid "%s, from %s."
 msgstr ""
@@ -19221,10 +19237,6 @@ msgid "In a chest somewhere in %s."
 msgstr ""
 
 #: scripts/state/quests.gd
-msgid "It's in your journal ({key:journal})."
-msgstr ""
-
-#: scripts/state/quests.gd
 msgid "Pays %s"
 msgstr ""
 
@@ -19233,7 +19245,7 @@ msgid "Pays as you choose"
 msgstr ""
 
 #: scripts/state/quests.gd
-msgid "Quest accepted: %s. %s"
+msgid "Quest accepted: %s."
 msgstr ""
 
 #: scripts/state/quests.gd

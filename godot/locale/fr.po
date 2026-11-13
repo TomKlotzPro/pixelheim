@@ -2305,6 +2305,10 @@ msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead o
 msgstr "Un ennemi pas encore rencontré indique dans le Bestiaire où il vit, au lieu de la même phrase répétée sur toute la page"
 
 #: assets/data/changelog.json
+msgid "A foe's ailment shows as it lands and goes when the foe falls, and no line turns up after its moment"
+msgstr "L'affliction d'un ennemi s'affiche quand elle le frappe et s'en va quand il tombe, et plus aucune ligne n'arrive après coup"
+
+#: assets/data/changelog.json
 msgid "A foe's level plate and health bar fade while your hero stands under them, and your hits' numbers rise over the plates"
 msgstr "La plaque de niveau et la barre de vie d'un ennemi s'effacent quand votre héros passe dessous, et les chiffres de vos coups montent par-dessus les plaques"
 
@@ -2427,6 +2431,10 @@ msgstr "Une voie est une identité permanente : un thème passif toujours acti
 #: assets/data/changelog.json
 msgid "A phone starts with large text, which now reaches the shops' and ledgers' descriptions too"
 msgstr "Un téléphone démarre avec le grand texte, qui s'applique désormais aussi aux descriptions des boutiques et des registres"
+
+#: assets/data/changelog.json
+msgid "A quest accepted names the quest and its whole pay, without its story: the journal keeps that"
+msgstr "Une quête acceptée s'annonce par son nom et toute sa paie, sans son histoire : le journal la garde"
 
 #: assets/data/changelog.json
 msgid "A quest's goods can't be sold, from any screen"
@@ -4169,6 +4177,10 @@ msgid "Impact"
 msgstr "Impact"
 
 #: assets/data/changelog.json
+msgid "In French a number stays with its unit and a mark with its word, on the web too"
+msgstr "En français, un nombre reste avec son unité et un signe avec son mot, sur le web aussi"
+
+#: assets/data/changelog.json
 msgid "In Hand"
 msgstr "En main"
 
@@ -4551,6 +4563,10 @@ msgstr "Maren ne saute plus d'histoire : si vous avez exploré loin avant de l
 #: assets/data/changelog.json
 msgid "Maren's letters are the main story in the journal: the courier's satchel lists each letter, who it's for and where, and once it's delivered, what they answered"
 msgstr "Les lettres de Maren sont l'histoire principale du journal : la sacoche du messager liste chaque lettre, son destinataire et où le trouver, puis, une fois remise, ce qu'il a répondu"
+
+#: assets/data/changelog.json
+msgid "Maren's letters fit in one line"
+msgstr "Les lettres de Maren tiennent en une ligne"
 
 #: assets/data/changelog.json
 msgid "Market Day"
@@ -5455,6 +5471,10 @@ msgstr "Les bons noms"
 #: assets/data/changelog.json
 msgid "Right on Cue"
 msgstr "Au bon moment"
+
+#: assets/data/changelog.json
+msgid "Right on Time"
+msgstr "À point nommé"
 
 #: assets/data/changelog.json
 msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
@@ -7059,6 +7079,10 @@ msgstr "La crête entre les régions apparaît là où vous l'avez vue, les rela
 #: assets/data/changelog.json
 msgid "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave"
 msgstr "Les routes vers les Marais de Fange et les Bois-Profonds sortent par la crête au lieu d'entrer dans une grotte"
+
+#: assets/data/changelog.json
+msgid "The roll's hint reads quickly and lets the fight's lines through"
+msgstr "Le conseil de la roulade se lit vite et laisse passer les lignes du combat"
 
 #: assets/data/changelog.json
 msgid "The same gate from the Ashenreach, where the road widens up to it; from inside the town you see the fields beyond"
@@ -13553,10 +13577,6 @@ msgid "Bram wants a cheese wheel. Of course he does."
 msgstr "Bram veut une meule de fromage. Évidemment."
 
 #: assets/data/progression.json
-msgid "Bram's crew is out clearing the cliff road to Saltmere."
-msgstr "L'équipe de Bram est partie dégager la route de la falaise vers Saltmere."
-
-#: assets/data/progression.json
 msgid "Bram: \"I've waited my whole life for this.\""
 msgstr "Bram : « J'ai attendu ça toute ma vie. »"
 
@@ -14057,8 +14077,8 @@ msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The 
 msgstr "Quatre herbes des bois, fraîches, cueillies aux points de récolte de la Forêt murmurante. Les lits du sanctuaire ne restent jamais vides bien longtemps."
 
 #: assets/data/progression.json
-msgid "Four letters in your satchel: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
-msgstr "Quatre lettres dans votre sacoche : pour la vieille Wenna à Saltmere, le vieux Pell à Fernoir, le capitaine Hale à Greyhold et Aske sur la Porte-Givre. Maren garde la cinquième."
+msgid "Four letters in your satchel ({key:journal})."
+msgstr "Quatre lettres dans votre sacoche ({key:journal})."
 
 #: assets/data/progression.json
 msgid "Four lumps of blackiron. The veins glint in the shafts' dead ends."
@@ -14385,8 +14405,8 @@ msgid "Imps taught a lesson"
 msgstr "Diablotins remis à leur place"
 
 #: assets/data/progression.json
-msgid "In your satchel: %s. Maren keeps the fifth."
-msgstr "Dans votre sacoche : %s. Maren garde la cinquième."
+msgid "In your satchel ({key:journal}): %s."
+msgstr "Dans votre sacoche ({key:journal}) : %s."
 
 #: assets/data/progression.json
 msgid "Ink Nobody Can Copy"
@@ -19161,6 +19181,14 @@ msgid "a recipe in your book: %s"
 msgstr "une recette dans votre carnet : %s"
 
 #: scripts/state/questing.gd
+msgid "%d XP"
+msgstr "%d XP"
+
+#: scripts/state/questing.gd
+msgid "%d gold"
+msgstr "%d or"
+
+#: scripts/state/questing.gd
 msgid "%s: %d/%d %s."
 msgstr "%s : %d/%d %s."
 
@@ -19192,18 +19220,6 @@ msgstr "Quête terminée : %s. %s. « %s »"
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer."
 
-#: scripts/state/questing.gd
-msgid "Your satchel is in the journal ({key:journal})."
-msgstr "Votre sacoche est dans le journal ({key:journal})."
-
-#: scripts/state/quests.gd
-msgid "%d XP"
-msgstr "%d XP"
-
-#: scripts/state/quests.gd
-msgid "%d gold"
-msgstr "%d or"
-
 #: scripts/state/quests.gd
 msgid "%s, from %s."
 msgstr "%s, avec %s."
@@ -19221,10 +19237,6 @@ msgid "In a chest somewhere in %s."
 msgstr "Dans un coffre, quelque part (%s)."
 
 #: scripts/state/quests.gd
-msgid "It's in your journal ({key:journal})."
-msgstr "Elle est dans votre journal ({key:journal})."
-
-#: scripts/state/quests.gd
 msgid "Pays %s"
 msgstr "Rapporte %s"
 
@@ -19233,8 +19245,8 @@ msgid "Pays as you choose"
 msgstr "Rapporte selon votre choix"
 
 #: scripts/state/quests.gd
-msgid "Quest accepted: %s. %s"
-msgstr "Quête acceptée : %s. %s"
+msgid "Quest accepted: %s."
+msgstr "Quête acceptée : %s."
 
 #: scripts/state/quests.gd
 msgid "The five left them in %s."

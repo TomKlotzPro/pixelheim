@@ -53,6 +53,9 @@ class StubMessages extends RefCounted:
 	func log_line(_line: String) -> void:
 		pass
 
+	func log_now(_line: String, _holds := Callable()) -> void:
+		pass
+
 
 class StubHero extends CharacterBody2D:
 	var dead := false
