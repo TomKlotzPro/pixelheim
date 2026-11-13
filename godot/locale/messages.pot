@@ -2237,6 +2237,10 @@ msgid "A code-quality pass under the floorboards: one panel system instead of se
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A conversation in large text stays on the screen"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A critical hit shows: its number pops up in gold, twice the size, with a \"!\"; numbers in a flurry land side by side instead of on top of each other"
 msgstr ""
 
@@ -2346,6 +2350,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A loading screen of its own: the night over Pixelheim, the smoking mountain and the lake, with the village's windows lighting up one by one as the game loads"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A long hero name ends in … on hero creation instead of pushing the panels off the screen"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5457,6 +5465,10 @@ msgid "Room to Grow"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Room to Read"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Room to Spare"
 msgstr ""
 
@@ -5722,6 +5734,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Skill trees! One skill point per level, three branches per role"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Skills names the path you walk in one line that fits"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7169,6 +7185,10 @@ msgid "The village stopped being rectangles: shingled roof courses, rounded buil
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The village works describe the chosen work first"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The water cleared: translucent shallows over the riverbed, and a lip of foam along every bank where water meets land"
 msgstr ""
 
@@ -7618,6 +7638,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Wind and Water"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "With Large reading text, the village works, the bank, the counters and the other cards keep their size, and PgUp / PgDn read the rest"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -17798,6 +17822,14 @@ msgstr ""
 
 #: scripts/keycap.gd
 msgid "Up"
+msgstr ""
+
+#: scripts/layout.gd
+msgid "PgUp/PgDn"
+msgstr ""
+
+#: scripts/layout.gd
+msgid "read"
 msgstr ""
 
 #: scripts/ledger_screen.gd
