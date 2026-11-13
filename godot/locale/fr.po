@@ -2673,6 +2673,10 @@ msgid "At dawn Morvax comes down the mountain road, the collar comes off, and th
 msgstr "À l'aube, Morvax descend la route de la montagne, le collier tombe, et le dragon laisse une écaille dans la fontaine avant de rentrer chez lui, libre"
 
 #: assets/data/changelog.json
+msgid "At full health a potion or a meal is kept and a line says why, as is a mana potion with the pool full or a remedy with nothing to cure"
+msgstr "En pleine santé, une potion ou un repas est gardé et une ligne dit pourquoi ; de même pour une potion de mana quand la réserve est pleine, ou un remède quand rien n'est à soigner"
+
+#: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
 msgstr "La nuit, ses fenêtres et ses lanternes s'allument, et la fumée monte de ses toits"
 
@@ -4081,6 +4085,10 @@ msgid "Hero creation reads clearly: the first night is a setting of its own (The
 msgstr "La création du héros se lit clairement : la première nuit est un réglage à part (La première nuit (tutoriel) : Jouer / Passer, avec une ligne sur ce que chacun veut dire), et Commencer l'aventure est le départ, seul en bas ; Tab, un clic ou le Y de la manette change la nuit, et une manette atteint désormais chaque commande"
 
 #: assets/data/changelog.json
+msgid "Hero creation shows its three skills as a preview, the first marked as the one you start with"
+msgstr "La création du héros présente ses trois compétences comme un aperçu, la première marquée comme celle de départ"
+
+#: assets/data/changelog.json
 msgid "Hero creation shows the hero as they will really start, without the colour looks nobody kept; the stats have icons, pips against the best of all the roles and their full names, and the starting skills are chips with their icons, a click or PgUp/PgDn reading each"
 msgstr "La création du héros le montre tel qu'il commencera vraiment, sans les couleurs que personne ne gardait ; les stats ont leurs icônes, des crans face au meilleur de tous les rôles et leur nom complet, et les compétences de départ sont des pastilles avec leur icône, un clic ou PgUp/PgDn pour lire chacune"
 
@@ -4823,6 +4831,10 @@ msgstr "Les nœuds à votre portée brillent. Les apprendre semble toujours auss
 #: assets/data/changelog.json
 msgid "Nothing Underfoot"
 msgstr "Rien sous le pied"
+
+#: assets/data/changelog.json
+msgid "Nothing Wasted"
+msgstr "Rien de perdu"
 
 #: assets/data/changelog.json
 msgid "Now and then a shower crosses the open land: rain slants down and splashes, the light turns grey, the lamps come up, the birds fall quiet and you hear the rain"
@@ -6575,6 +6587,10 @@ msgstr "La Nuit des Cendres ressemble enfin à un incendie : les flammes grimp
 #: assets/data/changelog.json
 msgid "The Open World"
 msgstr "Le Monde ouvert"
+
+#: assets/data/changelog.json
+msgid "The Options footer shows the new keys as soon as you rebind them, and so does the pause menu's"
+msgstr "Le pied de page des Options montre les nouvelles touches dès que vous les changez, celui du menu de pause aussi"
 
 #: assets/data/changelog.json
 msgid "The Pages tab is now Letters: read Maren's own words once a letter is delivered (a courier never reads the post) and the answer that came back"
@@ -17133,12 +17149,16 @@ msgid "first night"
 msgstr "première nuit"
 
 #: scripts/create_screen.gd
+msgid "read skills"
+msgstr "lire les compétences"
+
+#: scripts/create_screen.gd
 msgid "role"
 msgstr "classe"
 
 #: scripts/create_screen.gd
-msgid "skill"
-msgstr "compétence"
+msgid "start"
+msgstr "départ"
 
 #: scripts/cutscene.gd
 msgid "Esc"
@@ -19553,6 +19573,10 @@ msgid "You come to on the road. Pixelheim is still burning ahead."
 msgstr "Vous reprenez connaissance sur la route. Pixelheim brûle toujours, droit devant."
 
 #: scripts/state/upkeep.gd
+msgid "You have no need of that right now."
+msgstr "Vous n'en avez pas besoin pour l'instant."
+
+#: scripts/state/upkeep.gd
 msgid "You sit a while on the bench by the ember lamp. Its warmth mends you."
 msgstr "Vous vous asseyez un moment sur le banc près de la lampe de braise. Sa chaleur vous remet d'aplomb."
 
@@ -19579,6 +19603,14 @@ msgstr "Vous vous réveillez près de la tente de Sela, avec %d or en moins. Ce 
 #: scripts/state/upkeep.gd
 msgid "You wake beside Sela's tent, your cuts bound. She has patched up worse."
 msgstr "Vous vous réveillez près de la tente de Sela, vos plaies pansées. Elle a soigné bien pire."
+
+#: scripts/state/upkeep.gd
+msgid "You're already at full health."
+msgstr "Vous êtes déjà en pleine santé."
+
+#: scripts/state/upkeep.gd
+msgid "Your %s is already full."
+msgstr "Vos %s sont déjà au maximum."
 
 #: scripts/stats_screen.gd
 msgid "%d stat point%s to spend. %s at the shrine can undo it, for a price."
