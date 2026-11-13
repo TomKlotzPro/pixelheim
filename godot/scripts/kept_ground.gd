@@ -243,7 +243,7 @@ func _detail_rows(from: int) -> void:
 			var cell := Vector2i(x, y)
 			var kind := Scatter.detail(_look, cell, _data.regions.get(cell, ""))
 			if kind != "":
-				details[cell] = GroundDetail.coords(kind, Scatter.detail_variant(cell))
+				details[cell] = GroundDetail.coords(kind, Scatter.detail_variant(_look, cell))
 
 
 ## Each cell's tile and ground terrain (PunyTerrain.ground_at), rows

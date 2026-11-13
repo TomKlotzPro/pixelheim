@@ -119,9 +119,16 @@ static func detail(grid: Dictionary, cell: Vector2i, region := "") -> String:
 	return kinds[(h >> 7) % kinds.size()]
 
 
-## Which of GroundDetail's spots in its cell a cell's detail stands on.
-static func detail_variant(cell: Vector2i) -> int:
-	return (_detail_hash(cell) >> 13) % GroundDetail.VARIANTS.size()
+## Which of GroundDetail's spots in its cell a cell's detail stands on. A
+## bank's reeds stand off the land beside their water's cell (PIX-467: the
+## bank is drawn inside that cell now, and a reed at any spot stood on the
+## grass above it).
+static func detail_variant(grid: Dictionary, cell: Vector2i) -> int:
+	var pick := _detail_hash(cell) >> 13
+	if grid.get(cell, "") != "water":
+		return pick % GroundDetail.VARIANTS.size()
+	var land := func(step: Vector2i) -> bool: return grid.get(cell + step, "") in BANKS
+	return GroundDetail.bank_variant(land.call(Vector2i.LEFT), land.call(Vector2i.RIGHT), land.call(Vector2i.UP), land.call(Vector2i.DOWN), pick)
 
 
 static func _detail_hash(cell: Vector2i) -> int:

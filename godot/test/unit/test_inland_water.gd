@@ -188,7 +188,7 @@ func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
 	# (inland_water.gdshaderinc's water_in), so a cell deeper than its bank
 	# touches no land, not even by a corner; and running or pooled water is
 	# two cells thick at the least, or its banks would meet (the hole in the
-	# ice, a cell thin, is cut straight).
+	# ice, a cell thin, bends its own little).
 	var shader := (load("res://shaders/inland_water.gdshaderinc") as ShaderInclude).code
 	assert_string_contains(shader, "return BANK_IN + bank_wander(tone);")
 	assert_string_contains(shader, "in_water = (here - 0.5) * CELL + mix(LANDING_IN, -bank_lie(tone), ease);", "the bank is drawn where it lies")
@@ -198,10 +198,10 @@ func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
 	var rim := _shader_number(shader, "BANK_IN")
 	assert_gte(rim, 1.0, "the bank's wet lip, a pixel, lies inside the water's cells")
 	assert_lt(_shader_number(shader, "LANDING_IN"), 0.0, "and under a bridge's planks")
+	assert_string_contains(shader, "-0.5, 0.5) * 2.0 * bank_wander(tone);", "a bank bends its wander at the most, so wandered all the way out it is still inside")
 	for wander: float in [_shader_number(shader, "BANK_WANDER"), _shader_number(shader, "MIRE_WANDER")]:
-		var lie := rim + wander
-		assert_gte(lie - wander, rim, "a bank wandered all the way out is still inside")
-		assert_gt(2.0 * PunyTerrain.TILE - 2.0 * (lie + wander), 0.0, "and two banks wandered all the way in leave water between them, two cells apart")
+		assert_gt(2.0 * PunyTerrain.TILE - 2.0 * (rim + 2.0 * wander), 0.0, "two banks wandered all the way in leave water between them, two cells apart")
+	assert_gt(PunyTerrain.TILE - 2.0 * (rim + 2.0 * _shader_number(shader, "ICE_WANDER")), 0.0, "and the banks of the hole in the ice, a cell apart")
 	# The river's swing brings a bank no further in than the bank's own
 	# wander can, so the hero stops no shorter of the water for it.
 	assert_eq(_shader_number(shader, "SWING_CAP"), rim + 2.0 * _shader_number(shader, "BANK_WANDER"))
@@ -224,6 +224,60 @@ func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
 			if map_id != "frostgate":
 				assert_false(dry.call(Vector2i.LEFT) and dry.call(Vector2i.RIGHT), "%s %s is a cell thin" % [map_id, cell])
 				assert_false(dry.call(Vector2i.UP) and dry.call(Vector2i.DOWN), "%s %s is a cell thin" % [map_id, cell])
+
+
+## A bank's reeds (Scatter's `bank`, PIX-390) stand in their water's first
+## cell, which the bank is now drawn inside (PIX-467): off the land's side
+## by as far as the bank can lie in from it, less its wet lip, so a reed's
+## foot is in the water or on that lip and never on the grass.
+func test_a_banks_reeds_stand_in_the_water() -> void:
+	var shader := (load("res://shaders/inland_water.gdshaderinc") as ShaderInclude).code
+	var clear := int(_shader_number(shader, "BANK_IN") + 2.0 * _shader_number(shader, "BANK_WANDER")) - 1
+	var sheet := (GroundDetail.tileset().get_source(0) as TileSetAtlasSource).texture.get_image()
+	var last := GroundDetail.TILE - 1
+	var seen := {}
+	for sides in range(1, 16):
+		var west := sides & 1 > 0
+		var east := sides & 2 > 0
+		var north := sides & 4 > 0
+		var south := sides & 8 > 0
+		# Water is two cells thick (above), so no land lies at both sides.
+		if (west and east) or (north and south):
+			continue
+		for pick in 4:
+			var variant := GroundDetail.bank_variant(west, east, north, south, pick)
+			assert_gte(variant, GroundDetail.VARIANTS.size(), "a bank's own spot")
+			seen[variant] = true
+			var tile := GroundDetail.coords("reeds", variant) * GroundDetail.TILE
+			# The inked pixels' first and last, across and down.
+			var low := Vector2i(GroundDetail.TILE, GroundDetail.TILE)
+			var high := Vector2i(-1, -1)
+			for y in GroundDetail.TILE:
+				for x in GroundDetail.TILE:
+					if sheet.get_pixel(tile.x + x, tile.y + y).a > 0.0:
+						low = low.min(Vector2i(x, y))
+						high = high.max(Vector2i(x, y))
+			var where := "%s for land %s" % [GroundDetail.spot(variant), sides]
+			assert_eq(high - low, Vector2i(5, 5), "the reeds are drawn whole at %s" % where)
+			if west:
+				assert_gte(low.x, clear, "off the west bank: %s" % where)
+			if east:
+				assert_gte(last - high.x, clear, "off the east bank: %s" % where)
+			# A reed rises over the bank behind it: its foot stands clear.
+			if north:
+				assert_gte(high.y, clear, "its foot off the north bank: %s" % where)
+			if south:
+				assert_gte(last - high.y, clear, "its foot off the south bank: %s" % where)
+	assert_gt(seen.size(), 8, "and not one spot for all")
+	# Scatter asks for them by the land round the cell, the same every time.
+	var grid := _river(40, 2)
+	for x in 40:
+		for y: int in [1, 2]:
+			var variant := Scatter.detail_variant(grid, Vector2i(x, y))
+			assert_eq(variant, Scatter.detail_variant(grid, Vector2i(x, y)))
+			var spot := GroundDetail.spot(variant)
+			assert_true(spot.y >= 6 if y == 1 else spot.y == 0, "by the land's side at %s: %s" % [Vector2i(x, y), spot])
+	assert_lt(Scatter.detail_variant({Vector2i.ZERO: "grass"}, Vector2i.ZERO), GroundDetail.VARIANTS.size(), "open ground keeps its own spots")
 
 
 func test_the_bridges_planks_and_the_ground_read_the_water() -> void:

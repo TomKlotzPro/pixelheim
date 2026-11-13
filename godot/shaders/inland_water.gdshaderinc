@@ -56,6 +56,9 @@ const float BANK_BENDS = 1.5;
 const float MIRE_SOFT = 9.0;
 const float MIRE_WANDER = 7.0;
 const float MIRE_BENDS = 2.2;
+// The hole in the Frostgate's ice is a cell thin: its banks bend this
+// little, so they never meet and the hole still isn't a ruled slot.
+const float ICE_WANDER = 2.0;
 const float BANK_IN = 1.0;
 // How far out from its bank the water is still drawn by how near the bank
 // is (its shallows, the foam's lap, the mire's reeds).
@@ -336,9 +339,8 @@ vec2 flow_of(int code) {
 // is the water's cells: a bank lying 3 pixels out, as it did, and wandering
 // 5 more put up to 8 pixels of water under their feet (and twice that in
 // the mire).
-// The hole in the ice is a cell thin, too thin to wander in: cut straight.
 float bank_wander(int tone) {
-	return tone == TONE_MIRE ? MIRE_WANDER : (tone == TONE_ICE ? 0.0 : BANK_WANDER);
+	return tone == TONE_MIRE ? MIRE_WANDER : (tone == TONE_ICE ? ICE_WANDER : BANK_WANDER);
 }
 
 float bank_lie(int tone) {

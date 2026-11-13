@@ -180,7 +180,8 @@ void fragment() {
 	// Rivers, ponds and pools drawn again with their banks (PIX-306); the
 	// bank is toned as the land is, the water keeps its own.
 	int inland = water_life ? inland_water(world_pos, base.rgb, TEXTURE_PIXEL_SIZE) : INLAND_NONE;
-	if (inland == INLAND_LAND) {
+	bool drawn_back = inland == INLAND_LAND;
+	if (drawn_back) {
 		base.rgb = to_display(texture(TEXTURE, base.xy * TEXTURE_PIXEL_SIZE).rgb);
 		inland = INLAND_BANK;
 	}
@@ -225,7 +226,12 @@ void fragment() {
 	bool iced = false;
 	if (ice_life && !water) {
 		vec2 px = floor(world_pos) + 0.5;
-		vec4 ice = ice_over(base.rgb, px, texture(ice_map, (ice_shore_at(px) - map_origin) / ice_pixels).r, threshold, OPEN_ICE);
+		// A hole in the ice is cut in it (PIX-467): the ice lies whole up to the
+		// hole's rim of shelf ice, which stays bare. Its own shore wandered
+		// round the hole's cells, and its blue lip showed as a bar under the
+		// hole once the hole's bank was drawn inside them.
+		float reach = inland == INLAND_BANK ? float(drawn_back) : texture(ice_map, (ice_shore_at(px) - map_origin) / ice_pixels).r;
+		vec4 ice = ice_over(base.rgb, px, reach, threshold, OPEN_ICE);
 		if (ice.a > 0.0) {
 			base.rgb = ice.rgb;
 			iced = true;
