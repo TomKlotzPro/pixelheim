@@ -2293,6 +2293,10 @@ msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so
 msgstr "Un ennemi qui vous repère fait jaillir une étincelle rouge, un ennemi apeuré une bleue : le danger et la parole ne se confondent plus"
 
 #: assets/data/changelog.json
+msgid "A foe with no way to reach you gives up and walks home, and keeps its wounds"
+msgstr "Un ennemi qui ne peut pas vous atteindre renonce et rentre chez lui, sans guérir de ses blessures"
+
+#: assets/data/changelog.json
 msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead of the same line down the page"
 msgstr "Un ennemi pas encore rencontré indique dans le Bestiaire où il vit, au lieu de la même phrase répétée sur toute la page"
 
@@ -3779,6 +3783,10 @@ msgstr "Corrigé : la ligne de la première nuit sur votre compétence afficha
 #: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
 msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la surprise a disparu"
+
+#: assets/data/changelog.json
+msgid "Foes chasing you go round the well, the fountain or a villager in the way, instead of standing against it"
+msgstr "Les ennemis qui vous poursuivent contournent le puits, la fontaine ou le villageois qui les gêne, au lieu de rester plantés devant"
 
 #: assets/data/changelog.json
 msgid "Foes now stop at your side instead of walking onto you, so your hero stays in sight in a fight"
@@ -6479,6 +6487,10 @@ msgstr "Les lettres"
 #: assets/data/changelog.json
 msgid "The Letters tab no longer claims your satchel is empty while you carry the Chancellor's letter"
 msgstr "L'onglet Lettres ne prétend plus que votre sacoche est vide quand vous portez la lettre du chancelier"
+
+#: assets/data/changelog.json
+msgid "The Long Way Round"
+msgstr "Le Détour"
 
 #: assets/data/changelog.json
 msgid "The Lookout"
