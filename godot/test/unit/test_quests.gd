@@ -82,6 +82,16 @@ func test_deliveries_count_the_pack_and_leave_it_on_turn_in() -> void:
 	assert_eq(state.pack.items.get("cheese_wheel", 0), 1, "one wheel handed over")
 
 
+## PIX-471: « +25 or » parted from its number at a line's end in large text.
+## The done plate's pay has Quests.pay's no-break space; the floats keep theirs.
+func test_a_quest_done_keeps_a_french_number_with_its_unit() -> void:
+	Text.apply("fr")
+	state.questing.resolve_quests("villager_bram")
+	var said: String = state.questing.resolve_quests("villager_bram")
+	Text.apply("en")
+	assert_string_contains(said, "+25\u202for, +10\u202fXP")
+
+
 func test_some_quests_pay_an_item_too() -> void:
 	state.questing.resolve_quests("alchemist_vex")
 	state.progression.quests["herbs_for_vex"]["progress"] = 1

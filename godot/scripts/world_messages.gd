@@ -25,10 +25,15 @@ var message_fade: Tween
 const LOG_LINES := 1
 const LOG_WIDTH := 700.0
 ## A line of the moment (log_now: an ailment landed) shows within this long
-## or not at all (PIX-476: poison's line came up 3 s on, its orc dead).
+## or not at all (PIX-476: poison's line came up 3 s on, its orc dead); or
+## NOW_MARGIN_S after the line of the log it landed behind has been read (a
+## boss's roar, a named foe's « seen » line hold 2.5 s at least: every
+## ailment behind one was dropped unshown).
 const NOW_S := 2.0
-## A first-time hint a line of the moment cuts short has been read once it
-## stood this long; cut sooner, it comes back after the line (PIX-476).
+const NOW_MARGIN_S := 0.5
+## The roll's hint, cut short by a line of the fight, has been read once it
+## stood this long; cut sooner, it comes back after the line (PIX-476). Any
+## other hint always comes back, for its full time (PIX-433).
 const HINT_READ_S := 1.5
 ## A first-time hint shows once: this long at least, or a short one is gone
 ## before it is read (PIX-433: the log's own floor of 2.5 s was too short
@@ -101,19 +106,26 @@ func log_line(line: String) -> void:
 ## showed behind the roll's hint, its orc dead, and came back 10 s later):
 ## it shows as it lands, a first-time hint stepping aside for it and an
 ## older line of the moment giving it the place, and only while `holds`
-## says its moment lasts (its foe alive) and within NOW_S of landing; past
-## that it is dropped, never shown late (_drop_past).
+## says its moment lasts (its foe alive) and within NOW_S of landing, or
+## until the line it landed behind has been read; past that it is dropped,
+## never shown late (_drop_past). Only the roll's hint, once read, is gone
+## for good: any other shows once, so it comes back after the line with its
+## full time (PIX-433: the potion's, cut by a stun's line, was never read).
 func log_now(line: String, holds := Callable()) -> void:
 	var entry := _log.add(line)
-	entry["at"] = GameClock.seconds()
+	var now := GameClock.seconds()
+	entry["at"] = now
 	entry["holds"] = holds
+	entry["wait"] = NOW_S
 	for other: Dictionary in _log.showing.duplicate():
 		if is_same(other, entry):
 			continue
-		if other.has("hint") and GameClock.seconds() - float(other["since"]) < HINT_READ_S:
+		if other.has("hint") and (other["hint"] != "dodge" or now - float(other["since"]) < HINT_READ_S):
 			_step_aside([other])
 		elif other.has("hint") or other.has("at"):
 			_drop(other)
+		else:
+			entry["wait"] = maxf(entry["wait"], float(other["ends"]) - now + NOW_MARGIN_S)
 	if entry.has("chip"):
 		_say(entry)
 	else:
@@ -214,7 +226,11 @@ func _say(entry: Dictionary) -> void:
 		(chip.get_meta("fade") as Tween).kill()
 	var fade := chip.create_tween()
 	var seconds := UiStyle.reading_seconds(text)
-	fade.tween_interval(maxf(seconds, HINT_SECONDS) if entry.has("hint") and entry["hint"] != "dodge" else seconds)
+	if entry.has("hint") and entry["hint"] != "dodge":
+		seconds = maxf(seconds, HINT_SECONDS)
+	# When it leaves the log: a line of the moment behind it waits that long.
+	entry["ends"] = GameClock.seconds() + seconds + 0.6
+	fade.tween_interval(seconds)
 	fade.tween_property(chip, "modulate:a", 0.0, 0.6)
 	fade.tween_callback(func() -> void:
 		_log.gone(entry)
@@ -387,7 +403,8 @@ func withdraw(text: String) -> void:
 ## hounds were dead, the board's in the town hall, back after its card): one
 ## never shown stays unseen, for the next time (Hud.hint_there); no world (a
 ## test's): kept. A line of the moment (PIX-476, log_now): once what it is
-## about is gone (its foe dead), or still waiting NOW_S after it landed.
+## about is gone (its foe dead), or still waiting past its wait (NOW_S, or
+## the line it landed behind: log_now) after it landed.
 func _drop_past() -> void:
 	for entry: Dictionary in _log.showing + _log.waiting:
 		var past := false
@@ -396,7 +413,7 @@ func _drop_past() -> void:
 		elif entry.has("at"):
 			var holds: Callable = entry["holds"]
 			past = (not holds.is_null() and not (holds.is_valid() and holds.call())) \
-				or (not entry.has("chip") and GameClock.seconds() - float(entry["at"]) > NOW_S)
+				or (not entry.has("chip") and GameClock.seconds() - float(entry["at"]) > float(entry["wait"]))
 		if past:
 			_drop(entry)
 

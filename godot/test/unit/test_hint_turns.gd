@@ -317,6 +317,55 @@ func test_a_hint_read_gives_its_place_to_the_fight() -> void:
 	assert_eq(_up(), "", "the roll's: as long as a line, no longer: %s" % said)
 
 
+## The potion's hint, up 1.5 s, was cut by Shield Slam's stun line and never
+## shown again, already seen. Only the roll's is gone once read: any other
+## steps aside and comes back after the line, for its full time (PIX-433).
+func test_a_hint_but_the_rolls_comes_back_after_a_line_of_the_moment() -> void:
+	hud.hint("fright")
+	world.messages._log.showing[0]["since"] -= Messages.HINT_READ_S
+	world.messages.log_now("Orc Raider is afflicted by stun!")
+	assert_eq([_lines(), _up()], [["Orc Raider is afflicted by stun!"], "fright"], "out of the line's way, not lost")
+	(world.messages.log_box.get_child(-1).get_meta("fade") as Tween).custom_step(30.0)
+	assert_eq(_lines().size(), 1, "back after the line")
+	var chip: Node = world.messages.log_box.get_child(-1)
+	assert_eq(world.messages._log.showing[0].get("hint", ""), "fright")
+	(chip.get_meta("fade") as Tween).custom_step(Messages.HINT_SECONDS - 0.1)
+	assert_eq(_up(), "fright", "for its full time")
+
+
+## A boss's roar or a named foe's « seen » line holds the log 2.5 s at least,
+## longer than NOW_S: every ailment landing behind one was dropped unshown.
+## It waits out the line in front, and a little more; no longer, and not if
+## its foe dies first.
+func test_an_ailment_waits_out_the_line_in_front() -> void:
+	var alive := [true]
+	var messages := world.messages
+	messages.log_line("Greymaw has seen you.")
+	var front: Dictionary = messages._log.showing[0]
+	messages.log_now("Greymaw is afflicted by burn!", func() -> bool: return alive[0])
+	assert_eq(_lines(), ["Greymaw has seen you."], "the line in front is read out")
+	# The line's reading time on, past NOW_S.
+	var read: float = float(front["ends"]) - GameClock.seconds()
+	assert_gt(read, Messages.NOW_S)
+	messages._log.waiting[0]["at"] -= read
+	(messages.log_box.get_child(-1).get_meta("fade") as Tween).custom_step(read)
+	assert_eq(_lines(), ["Greymaw is afflicted by burn!"], "its turn, still news")
+	# Later than that (the plate up meanwhile): dropped.
+	messages.clear()
+	messages.log_line("Greymaw has seen you.")
+	messages.log_now("Greymaw is afflicted by burn!")
+	messages._log.waiting[0]["at"] -= read + Messages.NOW_MARGIN_S + 0.1
+	messages.update()
+	assert_eq(messages._log.waiting.size(), 0, "never shown late")
+	# Its foe dead while it waited: dropped.
+	messages.clear()
+	messages.log_line("Greymaw has seen you.")
+	messages.log_now("Greymaw is afflicted by burn!", func() -> bool: return alive[0])
+	alive[0] = false
+	messages.update()
+	assert_eq(messages._log.waiting.size(), 0, "nothing said of the dead")
+
+
 ## A named foe's first notice says the roll's hint, then its « seen » line,
 ## which waited 3 s behind the hint: the line goes first, the hint unread
 ## after it; a hint already read goes.

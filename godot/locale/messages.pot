@@ -19101,6 +19101,14 @@ msgid "a recipe in your book: %s"
 msgstr ""
 
 #: scripts/state/questing.gd
+msgid "%d XP"
+msgstr ""
+
+#: scripts/state/questing.gd
+msgid "%d gold"
+msgstr ""
+
+#: scripts/state/questing.gd
 msgid "%s: %d/%d %s."
 msgstr ""
 
@@ -19130,14 +19138,6 @@ msgstr ""
 
 #: scripts/state/questing.gd
 msgid "That uses what %s needs (%s). Do it again to go ahead."
-msgstr ""
-
-#: scripts/state/quests.gd
-msgid "%d XP"
-msgstr ""
-
-#: scripts/state/quests.gd
-msgid "%d gold"
 msgstr ""
 
 #: scripts/state/quests.gd
