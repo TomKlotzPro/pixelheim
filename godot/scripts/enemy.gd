@@ -64,13 +64,15 @@ const KILL_STOP := 0.08
 const SLEEP_BREATH := 0.35
 const SLEEP_DRIFT_SECONDS := 1.6
 const SLEEP_PAUSE_SECONDS := 0.3
-## A boss or a named monster on the hunt (PIX-288): it gives the chase up
-## once it has lost the hero this long (Packs.lost: so far behind them it's
-## past the screen's edge), had no way to them this long, or stood stuck
-## this long, though never in the moments after a blow (BOUND_SECONDS). It
-## looks again for its way every ROUTE_EVERY seconds, round what stands
-## between within ROUTE_MARGIN cells of itself and the hero, and at once
-## after standing stuck HELD_REROUTE.
+## A foe on the hunt. Every foe (PIX-475) gives the chase up once it has
+## had no way to the hero for BLOCKED_SECONDS; a boss or a named monster
+## (PIX-288) also once it has lost them for LOST_SECONDS (Packs.lost: so far
+## behind them it's past the screen's edge) or stood stuck for HELD_SECONDS,
+## though never in the moments after a blow (BOUND_SECONDS). HELD_SECONDS is
+## also how long a stuck foe keeps going round whoever blocked it
+## (_in_the_way). Every foe looks again for its way every ROUTE_EVERY
+## seconds, round what stands between within ROUTE_MARGIN cells of itself
+## and the hero, and at once after standing stuck HELD_REROUTE.
 const LOST_SECONDS := 2.5
 const BLOCKED_SECONDS := 2.0
 const HELD_SECONDS := 3.0
@@ -222,13 +224,17 @@ var _rest_at := Vector2.ZERO
 ## Its walk (PIX-243): stepping with the ground it covers, wandering slowly
 ## or hunting fast.
 var gait: Gait
-## A boss's hunt (PIX-288): how long it has lost the hero, had no way to
-## them, and stood stuck (chasing, or any foe walking home); and until when
-## a blow binds it to the fight.
+## Its hunt: how long it has had no way to the hero and stood stuck
+## (chasing or walking home), every foe's (PIX-475); how long a boss has
+## lost the hero, and until when a blow binds a boss to the fight (PIX-288).
 var lost_for := 0.0
 var blocked_for := 0.0
 var held_for := 0.0
 var bound_until := -100.0
+## It gave the chase up for want of a way to the hero (_lets_go): home, it
+## keeps its wounds, as a boss does (PIX-232, PIX-475), or a ranger across
+## a river could never finish it off.
+var _no_way := false
 ## A boss or a named monster (Bestiary.fights_like_boss), and one of the
 ## wilds that keeps to its ground (Hunts.of_the_wilds): known from the start.
 var boss_like := false
@@ -252,7 +258,8 @@ var _shut_until := -100.0
 var _grid: AStarGrid2D
 var _grid_map: MapData
 ## Whether it had a way to the hero when last asked, and until when that
-## answer holds (a boss watching a hero it can't reach asks twice a second).
+## answer holds (a foe watching a hero it can't reach asks twice a second:
+## every foe, PIX-475).
 var _reaches := false
 var _reach_until := -100.0
 ## Where its bar stands, from its feet (over_head, PIX-314); its shadow
@@ -448,7 +455,7 @@ func _physics_process(delta: float) -> void:
 			if player.dead or (not _hunts_wagon() and gives_up(fighter, leash, global_position, player.global_position)):
 				_give_up()
 			elif _lets_go(delta):
-				_give_up()
+				_give_up(true)
 			else:
 				_chase(aim, delta)
 		"cast":
@@ -1151,8 +1158,10 @@ func _bite(to_player: Vector2) -> void:
 
 
 ## Too far from home or behind, or far enough from a hero it ran from
-## (PIX-251): back home, deaf to the hero on the way.
-func _give_up() -> void:
+## (PIX-251): back home, deaf to the hero on the way. `no_way`: it let go
+## (_lets_go), and heals none on settling.
+func _give_up(no_way := false) -> void:
+	_no_way = no_way
 	mode = "homeward"
 	aim_left = -1.0
 	hunting = false
@@ -1344,12 +1353,13 @@ func _home_at_last() -> void:
 
 ## Home again, and watching: a pack's foe whole again; a boss or a named
 ## monster keeps its wounds (PIX-232: walking off never made one whole
-## again), so its bar comes back as it was when the fight does (PIX-288).
+## again), so its bar comes back as it was when the fight does (PIX-288),
+## and so does any foe that let go for want of a way (PIX-475).
 func _settle() -> void:
 	mode = "idle"
 	woken = false
 	_fresh_hunt()
-	if boss_like:
+	if boss_like or _no_way:
 		return
 	fighter["hp"] = fighter["maxHp"]
 	health_bar.visible = false

@@ -145,3 +145,25 @@ func test_with_no_way_to_the_hero_a_foe_gives_up_and_takes_up_no_chase() -> void
 	assert_false(foe._can_reach(hero - foe.global_position), "it watches, taking up no chase")
 	await _run(foe, Enemy.BLOCKED_SECONDS + 1.0, hero, 0.0)
 	assert_false(foe.hunting, "no way a while: it gives the chase up")
+
+
+## A ranger across a river: the foe they hurt walks home, but no walk home
+## makes it whole (as a boss's never did, PIX-232).
+func test_a_hurt_foe_with_no_way_goes_home_still_hurt() -> void:
+	for cell in Packs.AROUND:
+		_world.map.covered[HERO + cell] = true
+	var foe := _goblin()
+	foe.global_position = MapView.center(FOE + Vector2i(-2, 0))
+	foe.fighter["hp"] = 1
+	await _run(foe, Enemy.BLOCKED_SECONDS + 6.0, foe.home, 0.0)
+	assert_eq(foe.mode, "idle", "home and watching")
+	assert_eq(int(foe.fighter["hp"]), 1, "as hurt as it left the fight")
+
+
+func test_a_hurt_foe_led_too_far_goes_home_and_heals() -> void:
+	var foe := _goblin("homeward")
+	foe.global_position = MapView.center(FOE + Vector2i(-2, 0))
+	foe.fighter["hp"] = 1
+	await _run(foe, 6.0, foe.home, 0.0)
+	assert_eq(foe.mode, "idle", "home and watching")
+	assert_eq(int(foe.fighter["hp"]), int(foe.fighter["maxHp"]), "whole again")
