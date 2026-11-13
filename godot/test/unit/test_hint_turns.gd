@@ -348,7 +348,10 @@ func test_an_ailment_waits_out_the_line_in_front() -> void:
 	var read: float = float(front["ends"]) - GameClock.seconds()
 	assert_gt(read, Messages.NOW_S)
 	messages._log.waiting[0]["at"] -= read
-	(messages.log_box.get_child(-1).get_meta("fade") as Tween).custom_step(read)
+	# A hair past the fade's end: `ends - now` can come out a rounding short
+	# of the fade's own length, and the line in front would stay (it failed
+	# that way on CI, where the clock stood elsewhere when the test ran).
+	(messages.log_box.get_child(-1).get_meta("fade") as Tween).custom_step(read + 0.01)
 	assert_eq(_lines(), ["Greymaw is afflicted by burn!"], "its turn, still news")
 	# Later than that (the plate up meanwhile): dropped.
 	messages.clear()
