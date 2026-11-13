@@ -1,7 +1,7 @@
 export const meta = {
   name: 'pixelheim-playtest',
-  description: 'Agents play Pixelheim unseen (the web build in a headless Chrome) on cheaper models; an Opus triage replays every bug and files what holds in Linear',
-  whenToUse: 'A playtest after a big release, or when Tom asks for one. args: {run: "2026-11-07", players?: ["newcomer","fighter","explorer","french","menus"], compare?: "french" | null, looks?: 70, file?: true}. Needs godot/tools/play.py (PIX-423) and the pixelheim-playtest skill on main. The main session applies the lessons it returns.',
+  description: 'Agents play Pixelheim unseen (the web build in a headless Chrome) on Fable or Sonnet; an Opus triage replays every bug and files what holds in Linear',
+  whenToUse: 'A playtest after a big release, or when Tom asks for one. args: {run: "2026-11-07", players?: ["newcomer","fighter","explorer","french","menus"], compare?: "newcomer" | null, model?: "fable", looks?: 70, file?: true}. compare plays that player on its other model too; model puts every player on one model. Needs godot/tools/play.py (PIX-423) and the pixelheim-playtest skill on main. The main session applies the lessons it returns.',
   phases: [
     { title: 'Build', detail: 'one web export of main, with the private art, shared by every player' },
     { title: 'Play', detail: 'each player plays its own session and reports findings with proof' },
@@ -11,26 +11,28 @@ export const meta = {
   ],
 }
 
-// Who plays, and on which model (Tom, 2026-11-07: cheaper players, Opus
-// orchestrates and triages). lessons.md may move a player to another model.
+// Who plays, and on which model (Tom, 2026-11-13: Fable as much as useful;
+// Opus orchestrates and triages). The newcomer and the explorer stay on Sonnet
+// until a run compares them. lessons.md may move a player to another model.
 const PLAYERS = {
   newcomer: 'sonnet',
-  fighter: 'sonnet',
+  fighter: 'fable',
   explorer: 'sonnet',
-  french: 'haiku',
-  menus: 'haiku',
+  french: 'fable',
+  menus: 'fable',
 }
-const OTHER = { sonnet: 'haiku', haiku: 'sonnet' }
+const OTHER = { fable: 'sonnet', sonnet: 'fable', haiku: 'sonnet' }
 
 const REPO = '/Users/klotztom/playground/pixelheim'
 const SKILL = `${REPO}/.claude/skills/pixelheim-playtest`
 const a = args || {}
+if (a.model) Object.keys(PLAYERS).forEach((k) => { PLAYERS[k] = a.model })
 if (!a.run) throw new Error('args needs run, a name for this run such as the date')
 const RUN_DIR = `/Users/klotztom/playground/pixelheim-playtests/${a.run}`
 const LOOKS = a.looks || 70
 const FILE = a.file !== false
 const chosen = a.players || Object.keys(PLAYERS)
-const compare = a.compare === undefined ? 'french' : a.compare
+const compare = a.compare === undefined ? 'newcomer' : a.compare
 
 const SAFETY = [
   'Never run godot with a window, shot.sh, flows.sh without --quiet, lookbook.sh, or any --slot.',
@@ -104,7 +106,7 @@ const sessions = []
 chosen.forEach((id) => {
   if (!PLAYERS[id]) throw new Error(`no player "${id}" (have ${Object.keys(PLAYERS).join(', ')})`)
   sessions.push({ id, model: PLAYERS[id] })
-  if (id === compare) sessions.push({ id, model: OTHER[PLAYERS[id]] })
+  if (id === compare && OTHER[PLAYERS[id]]) sessions.push({ id, model: OTHER[PLAYERS[id]] })
 })
 sessions.forEach((s, i) => {
   s.label = `${s.id} (${s.model})`
@@ -162,8 +164,11 @@ const merged = all.length === 0 ? { kept: [], dropped: [] } : await agent(
   `- Merge the findings that are one fault; its \`players\` are the \`player\` labels of every finding merged into it, exactly as written.\n` +
   `- Check Linear for each (open Pixelheim issues, and those closed in the last month). ${LINEAR}\n` +
   `- Bugs of S1 to S3: keep them with replay=true; the replays run after you.\n` +
-  `- Confusing and polish findings, and S4 bugs: judge each from its screenshots (Read them) and keep only what most players would agree with, replay=false.\n\n` +
-  `The findings (JSON):\n${JSON.stringify(all, null, 1)}`,
+  `- Confusing and polish findings, and S4 bugs: judge each from its screenshots (Read them) and keep only what most players would agree with, replay=false.\n` +
+  `- Read the players' summaries below too (triage.md, step 1). An observation left there that can cost the player gold, progress or a choice ` +
+  `is kept as a bug with replay=true: \`players\` is that session's label, its steps are what the summary gives, and it has no screenshots yet.\n\n` +
+  `The findings (JSON):\n${JSON.stringify(all, null, 1)}\n\n` +
+  `Players' summaries:\n${reports.map((r) => `- ${r.label}: ${r.summary}`).join('\n')}`,
   { label: 'merge and judge', phase: 'Triage', schema: MERGED },
 )
 if (!merged) return { run: a.run, error: 'triage returned nothing', reports }
@@ -254,7 +259,7 @@ const lessons = await agent(
   `You are the orchestrator of Pixelheim's playtests. Read ${SKILL}/SKILL.md, the players' pages, triage.md and lessons.md, then this run's results, ` +
   `and say what it taught: an entry for lessons.md in its format, and the rule changes it calls for. Look for: findings dropped as false alarms ` +
   `(which rule would have stopped them), players who got stuck or wasted looks (on the rules or the tool), checklist items nobody reached, ` +
-  `and${compare ? ` the comparison of ${compare} on both models (findings held, false alarms, looks used): which model should it run on, and the other mechanical players?` : ' whether each player\'s model fits.'} ` +
+  `and${compare ? ` the comparison of ${compare} on both models (findings held, false alarms, looks used): which model should it run on, and should another player move too?` : ' whether each player\'s model fits.'} ` +
   `Change nothing yourself: the main session applies them.\n\n` +
   `Per session: ${JSON.stringify(stats)}\n\nPlayers' summaries:\n${reports.map((r) => `- ${r.label}: ${r.summary}`).join('\n')}\n\n` +
   `Held: ${JSON.stringify(held.map((f) => ({ title: f.title, kind: f.kind, severity: f.severity, players: f.players, note: f.note })))}\n\n` +

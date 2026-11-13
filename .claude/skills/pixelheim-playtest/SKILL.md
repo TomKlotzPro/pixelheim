@@ -13,7 +13,7 @@ The game runs as the web build in a headless Chrome, driven by `godot/tools/play
 - `triage.md`: how the findings are merged, reproduced and filed in Linear.
 - `lessons.md`: what each run taught, and the rule it changed. **Read it before you play**: its rules overrule this page where they disagree.
 
-The players run on cheaper models (Sonnet, Haiku). The orchestrator and the triage run on Opus: they set these rules, confirm every finding before it reaches Linear, and change the rules after each run.
+The players run on Fable (since 2026-11-13), the newcomer and the explorer on Sonnet until `lessons.md` compares them. The orchestrator and the triage run on Opus: they set these rules, confirm every finding before it reaches Linear, and change the rules after each run.
 
 ## Safety, always
 
@@ -36,6 +36,9 @@ Each turn is one command: `look`, then think, then `keys`. The game runs only du
 
 - **`keys`**: keys separated by commas. A key alone is tapped; `right:1.2` holds it 1.2 s of game time; `up+left:0.5` holds both; `wait:2` presses nothing for 2 s. A one-letter key also types its letter (`R,o,b,i,n` types a name; `Robin` in one piece is no key and types nothing), and `backspace` deletes one. `keys` prints the state after its last key, but no picture.
 - **`look`**: a screenshot (read it with the Read tool) and the state: `map`, `cell`, `hp`/`maxHp`, `mana`/`maxMana`, `level`, `gold`, `hour`, `night`, `paused`, `open` (the screens open), `text` (the words on the top screen, cut near 2000 characters with a line saying how many more; a caption still typing out ends in `[still typing]`), `focus` (the words of each chosen thing, one list apiece: in the pack and at a counter the lit tab, then the chosen row, the one E would take), `hud` (the HUD's words: messages, hints, a door's nameplate), `quest` (the "Next" line), `foes` (within 12 cells, with their hp and cell), `npcs` (the villagers within 12 cells: name and cell), `doors` (the ways in and out within 12 cells: cell and the map they lead to), `seconds` (the game's clock), `errors` (console errors since the last look) and `webgl` (a count of the headless Chrome's own WebGL warnings).
+- **After a key that starts a fade or a reload, wait.** `keys` answers as soon as its last key is done. After Enter on Begin, Quit to title, the Language row or a paste, add `wait:0.5` before you trust the state.
+- **Reading a talk with E in a loop**: stop once `open` no longer lists the talk. The next E acts on whatever opened next, and a shop's counter opens on Buy.
+- **A caption types for up to 9 s.** Send `wait:3` until `text` no longer ends in `[still typing]`, look, then press E once.
 - **Spend your looks.** Your brief gives a budget, about 60 to 80 looks. Look after every move that could change something: a door, a fight, a menu, a line of text. Between looks, `keys`' own state is often enough to know you moved. Don't stop before your budget while your route or checklist has items left: few findings mean keep looking, not stop. When one step holds you more than six looks, report it and go past it the way your brief says, instead of trying it again.
 - **The state says where you are, the picture says how it looks.** Trust the state for map, cell, health and quest, and quote `text` and `hud` for on-screen words. Trust the screenshot for what a player sees. When the two disagree, that is a finding.
 - **Walk with short holds** (0.2 to 0.5 s) near things, and longer ones to travel: `right:1` walks one second of the game. If two holds don't change `cell`, you are blocked: look at why before you push again.
@@ -83,7 +86,7 @@ A text field (the hero's name) types every one-letter key, `e`, `w` and `s` too:
 
 Every finding has a **kind**:
 
-- **bug**: the game does something wrong. A freeze, a crash, an error in `look`'s errors. A number on screen that disagrees with the state. A hero stuck on nothing, or walking through a wall, a house or water. A sprite drawn over or under the wrong thing. A seam, gap, flicker or black band in the world. Text cut off or spilling out of its frame. A key that doesn't do what its footer says. A quest step that never completes.
+- **bug**: the game does something wrong. A freeze, a crash, an error in `look`'s errors. A number on screen that disagrees with the state. A hero stuck on nothing, or walking through a wall, a house or water. A sprite drawn over or under the wrong thing. A seam, gap, flicker or black band in the world. Text cut off or spilling out of its frame: a line cut with no …, mid-word or mid-sentence, is a bug, but a list row that ends in … while its whole words show elsewhere on the same screen gives way by design (`ui.md`). A key that doesn't do what its footer says. A quest step that never completes.
 - **confusing**: a player wouldn't know what to do or what just happened. You spent more than three looks unsure where to go. A message that doesn't say what it means. A foe's big attack that gives no warning before it lands (no glow, band, circle or drawn bow). How long the warning lasts is Tom's call: a player that moves in steps of a few tenths of a second can't time a human's reaction.
 - **polish**: it works, but it feels off. Text too long to read in a box, a moment that drags, a screen that looks unlike the others, a reward that goes unnoticed.
 
@@ -105,7 +108,7 @@ A finding without proof is not reported.
 - **A screenshot** that shows it (the path `look` gave). For something that moves, two or three in a row.
 - **The state** at that moment (the JSON `look` printed, or the part that matters).
 - **The steps**: the `start` options and every `keys` from the start to the moment you saw it, from your log. Triage replays exactly these.
-- **For a bug, try it twice.** Say whether it happened again (`seen twice: yes/no`). If you could only guess at it, it is not a bug: report it as confusing or polish (S4 when unsure), with its screenshot. Don't leave something you saw only in your summary: triage judges a picture cheaply, and a line in a summary is lost.
+- **For a bug, try it twice.** Say whether it happened again (`seen twice: yes/no`). If you could only guess at it, it is not a bug: report it as confusing or polish (S4 when unsure), with its screenshot. The summary is for your route and the tool, never for things you saw. A "seen but too weak" list in the summary is a list of findings you didn't send: send each one at S4 with its screenshot, and triage drops what's weak.
 
 ## Don't report
 
@@ -118,6 +121,8 @@ A finding without proof is not reported.
   - On the web, a door's fade starts about 0.17 s after the key.
   - The village starts as burnt ashes for a new hero (the Night of Ash) and rebuilds over the story.
   - The day clock turns only while the hero walks (PIX-246): standing still or `wait` leaves the hour as it was, so waiting never brings the dawn.
+  - A footer key that answers by saying where to do it tells the truth (Skills' F names Old Hessa's shrine). A choice that can be undone (a path) is design.
+  - `--level` 5, 10 and 20 dress every role in the same kit (`harness_boot.gd` KITS), so heroes of different roles look alike: that is the preset, not the game.
   - A greyed button or row is one you can't use yet (no name typed, no points to spend, not enough gold). Report it only when nothing on screen says why and a player would be stuck.
 - **What is already ticketed.** Triage checks Linear; you don't need to.
 
