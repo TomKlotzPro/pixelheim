@@ -19580,6 +19580,10 @@ msgstr "Vous vous réveillez près de la tente de Sela, vos plaies pansées. Ell
 msgid "You're already at full health."
 msgstr "Vous êtes déjà en pleine santé."
 
+#: scripts/state/upkeep.gd
+msgid "Your %s is already full."
+msgstr "Vos %s sont déjà au maximum."
+
 #: scripts/stats_screen.gd
 msgid "%d stat point%s to spend. %s at the shrine can undo it, for a price."
 msgstr "%d point%s de caractéristique à dépenser. %s, au sanctuaire, peut tout défaire, contre paiement."

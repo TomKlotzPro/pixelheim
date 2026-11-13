@@ -19580,6 +19580,10 @@ msgstr ""
 msgid "You're already at full health."
 msgstr ""
 
+#: scripts/state/upkeep.gd
+msgid "Your %s is already full."
+msgstr ""
+
 #: scripts/stats_screen.gd
 msgid "%d stat point%s to spend. %s at the shrine can undo it, for a price."
 msgstr ""

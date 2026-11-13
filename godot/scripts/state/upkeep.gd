@@ -165,8 +165,10 @@ func use_item(item_id: String, ailing: Array = []) -> Dictionary:
 	var heals: bool = item.has("restoreHp") and owner.hero.hp < int(owner.hero.stats["maxHp"])
 	var fills: bool = item.has("restoreMp") and owner.hero.mp < int(owner.hero.stats["maxMp"])
 	if not (heals or fills or item.get("cures", "") in ailing):
-		var only_heals := not (item.has("restoreMp") or item.has("cures"))
-		return {"used": false, "text": Text.t("You're already at full health.") if only_heals else Text.t("You have no need of that right now."), "cures": ""}
+		var why := Text.t("You have no need of that right now.")
+		if not item.has("cures") and item.has("restoreHp") != item.has("restoreMp"):
+			why = Text.t("You're already at full health.") if item.has("restoreHp") else Text.t("Your %s is already full.") % Skills.resource_label(owner.hero.role_id)
+		return {"used": false, "text": why, "cures": ""}
 	owner.pack.remove_item(item_id)
 	# The Everflask stays in the pack, empty, till a night's sleep (PIX-376).
 	if item.has("emptiesTo"):

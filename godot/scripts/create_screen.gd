@@ -408,19 +408,34 @@ func _skill_chip(skill: Dictionary, index: int) -> PanelContainer:
 	line.add_theme_constant_override("separation", 6)
 	chip.add_child(line)
 	line.add_child(_icon(ItemIcons.skill(skill["name"])))
-	# Two lines at most: "Imposition des mains" is the longest.
+	# Two lines at most ("Frappe puissante", "Imposition des mains").
 	var label := Layout.wrapped(UiStyle.label(skill["name"], 14, UiStyle.INK), 150)
-	# The tag under the name: beside it, the three ran wider than the card.
-	var words := VBoxContainer.new()
-	words.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	words.add_theme_constant_override("separation", 0)
-	words.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	words.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	words.add_child(label)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	line.add_child(label)
 	if index == 0:
-		words.add_child(UiStyle.strong(Text.t("start"), 12, UiStyle.FADED))
-	line.add_child(words)
+		chip.add_child(_start_tag())
 	return chip
+
+
+## "start" on a dark tag at the right end of the first chip's top edge, as
+## the pack's tabs wear their counts: out of the chip's layout, since under
+## the name it made a two-line French name three and the card 20 px taller,
+## down onto Begin (PIX-473). Its foot rests on the chip's padding, clear
+## of the name.
+func _start_tag() -> Control:
+	# The chip lays the pin out over its words; the tag hangs from it, unplaced.
+	var pin := Control.new()
+	pin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tag := UiStyle.tag(Text.t("start"))
+	# A word, where a tag fits a count or a key: its last letter ran off.
+	tag.custom_minimum_size.x += 6
+	tag.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	tag.offset_left =-tag.custom_minimum_size.x
+	tag.offset_top = -tag.custom_minimum_size.y
+	tag.offset_bottom = 0
+	pin.add_child(tag)
+	return pin
 
 
 func _pick_role(index: int) -> void:

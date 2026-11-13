@@ -101,7 +101,9 @@ func test_what_would_do_nothing_is_kept() -> void:
 		var kept: Dictionary = state.upkeep.use_item(item_id)
 		assert_false(kept["used"], item_id)
 		assert_eq(kept["text"], "You're already at full health.")
-	for item_id: String in ["potion_mp", "elixir", "antidote"]:
+	var full := "Your %s is already full." % Skills.resource_label(hero.role_id)
+	assert_eq(state.upkeep.use_item("potion_mp")["text"], full, "the full bar by name")
+	for item_id: String in ["elixir", "antidote"]:
 		var kept: Dictionary = state.upkeep.use_item(item_id)
 		assert_false(kept["used"], item_id)
 		assert_eq(kept["text"], "You have no need of that right now.")
