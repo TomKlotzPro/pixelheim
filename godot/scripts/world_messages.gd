@@ -30,6 +30,11 @@ const NOW_S := 2.0
 ## A first-time hint a line of the moment cuts short has been read once it
 ## stood this long; cut sooner, it comes back after the line (PIX-476).
 const HINT_READ_S := 1.5
+## A first-time hint shows once: this long at least, or a short one is gone
+## before it is read (PIX-433: the log's own floor of 2.5 s was too short
+## for something shown once). Not the roll's, said as a fight starts
+## (PIX-476): it reads as long as any line.
+const HINT_SECONDS := 5.0
 ## Tags a message may open with, set in gold on its plate.
 const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"]
 ## A plain message gives way to the next after this long; a tagged one
@@ -121,7 +126,8 @@ func log_now(line: String, holds := Callable()) -> void:
 ## by: one short line at a time, stepping aside for the plate and coming
 ## back in full (one box at a time), while its moment lasts (PIX-462:
 ## _drop_past). Seen once it shows, not before. It holds no line of the
-## fight back (PIX-476: log_now), and reads as long as any line.
+## fight back (PIX-476: log_now, log_lines), and stays HINT_SECONDS at
+## least, but the roll's, which reads as long as any line.
 func hint_line(id: String, text: String) -> void:
 	_log.add(text)["hint"] = id
 	update()
@@ -148,10 +154,27 @@ func log_lines(lines: Array, later := false) -> void:
 			flash(line)
 			continue
 		var entry := _log.add(line, later)
+		if not later:
+			_roll_hint_after(entry)
 		# Folded into one already up: its new words, and its time again.
 		if entry.has("chip"):
 			_say(entry)
 	update()
+
+
+## The roll's hint holds no line of the fight back (PIX-476: a named foe's
+## « seen » line, said with it, waited 3 s behind it): read (HINT_READ_S),
+## it goes; unread, it takes its turn after `line`.
+func _roll_hint_after(line: Dictionary) -> void:
+	for entry: Dictionary in _log.showing + _log.waiting:
+		if entry.get("hint", "") != "dodge" or is_same(entry, line):
+			continue
+		var read := entry.has("chip") and GameClock.seconds() - float(entry["since"]) >= HINT_READ_S
+		if entry.has("chip"):
+			_step_aside([entry])
+		_log.waiting.erase(entry)
+		if not read:
+			_log.waiting.append(entry)
 
 
 ## A line of the log on its own small plate, like the objective's (PIX-194),
@@ -190,7 +213,8 @@ func _say(entry: Dictionary) -> void:
 	if chip.has_meta("fade") and (chip.get_meta("fade") as Tween).is_valid():
 		(chip.get_meta("fade") as Tween).kill()
 	var fade := chip.create_tween()
-	fade.tween_interval(UiStyle.reading_seconds(text))
+	var seconds := UiStyle.reading_seconds(text)
+	fade.tween_interval(maxf(seconds, HINT_SECONDS) if entry.has("hint") and entry["hint"] != "dodge" else seconds)
 	fade.tween_property(chip, "modulate:a", 0.0, 0.6)
 	fade.tween_callback(func() -> void:
 		_log.gone(entry)

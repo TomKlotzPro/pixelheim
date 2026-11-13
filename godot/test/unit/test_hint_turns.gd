@@ -292,7 +292,7 @@ func test_an_ailment_shows_as_it_lands_and_goes_with_its_foe() -> void:
 
 ## The roll's hint held the log for 5 to 7 s of every fight. Read (up
 ## HINT_READ_S), it is gone for good when a line of the fight comes; and it
-## stays no longer than any line.
+## stays no longer than any line, when every other hint keeps its 5 s.
 func test_a_hint_read_gives_its_place_to_the_fight() -> void:
 	hud.hint("dodge")
 	world.messages._log.showing[0]["since"] -= Messages.HINT_READ_S
@@ -303,8 +303,33 @@ func test_a_hint_read_gives_its_place_to_the_fight() -> void:
 	hud.hint("fright")
 	var said: String = _lines()[0]
 	var chip: Node = world.messages.log_box.get_child(-1)
+	(chip.get_meta("fade") as Tween).custom_step(Messages.HINT_SECONDS - 0.1)
+	assert_eq(_up(), "fright", "any hint but the roll's stays HINT_SECONDS at least (PIX-433): %s" % said)
+	(chip.get_meta("fade") as Tween).custom_step(0.8)
+	assert_eq(_up(), "", "and no longer")
+	# The roll's reads as long as a line.
+	world.messages.clear()
+	GameState.settings.hints_seen.erase("dodge")
+	hud.hint("dodge")
+	said = _lines()[0]
+	chip = world.messages.log_box.get_child(-1)
 	(chip.get_meta("fade") as Tween).custom_step(UiStyle.reading_seconds(said) + 0.7)
-	assert_eq(_up(), "", "read as long as a line, no longer: %s" % said)
+	assert_eq(_up(), "", "the roll's: as long as a line, no longer: %s" % said)
+
+
+## A named foe's first notice says the roll's hint, then its « seen » line,
+## which waited 3 s behind the hint: the line goes first, the hint unread
+## after it; a hint already read goes.
+func test_the_rolls_hint_holds_no_line_of_the_fight_back() -> void:
+	hud.hint("dodge")
+	world.messages.log_line("Greymaw has seen you.")
+	assert_eq([_lines(), _up()], [["Greymaw has seen you."], "dodge"])
+	world.messages.clear()
+	GameState.settings.hints_seen.erase("dodge")
+	hud.hint("dodge")
+	world.messages._log.showing[0]["since"] -= Messages.HINT_READ_S
+	world.messages.log_line("Greymaw has seen you.")
+	assert_eq([_lines(), _up()], [["Greymaw has seen you."], ""])
 
 
 ## The burn's line stepped aside for « Not enough MP » and came back 10 s
