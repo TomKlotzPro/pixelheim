@@ -24,6 +24,14 @@ const CALM_S := 0.6
 ## Where nobody stands, for the see-through's globals (PIX-429,
 ## shaders/see_through.gdshaderinc): the hero's and the hunter's.
 const NOBODY := Vector2(-100000, -100000)
+## A foe's level tag (and its ailments) stands over every actor, and what
+## rises or flies over the world over the tags (PIX-469: a blow's number
+## began half hidden behind the plate, and a gunner's ball flew under it).
+const TAG_Z := 20
+const OVER_TAGS := TAG_Z + 1
+## The hero's figure from its feet (PIX-469): the words over a foe's head
+## make way while it stands under them.
+const HERO := Rect2(-6, -22, 12, 22)
 ## In a fight a pack shows one level tag (PIX-340): foes this close to one
 ## another (a chain of them) are one pack, and tags stand this far apart.
 ## As far as the ring round the hero reaches (PIX-377: its waiting foes
@@ -214,6 +222,7 @@ func _process(_delta: float) -> void:
 	var hunter := NOBODY
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		enemy.rest(view)
+		enemy.make_way(hero, _delta)
 		if enemy.level_tag != null and enemy.level_tag.visible and not enemy.dying:
 			shown.append(enemy)
 		if enemy.hunting and not enemy.dying and enemy.global_position.distance_squared_to(hero) < hunter.distance_squared_to(hero):
@@ -243,12 +252,21 @@ func _process(_delta: float) -> void:
 	var reserved: Array[Rect2] = []
 	for index in kept.size():
 		if keep[index]:
-			reserved.append(rects[index])
+			# One that made way for the hero (Enemy.make_way) holds no place.
+			if kept[index].level_tag.modulate.a > 0.5:
+				reserved.append(rects[index])
 		else:
 			kept[index].level_tag.visible = false
 	if fighting:
 		most_tags = maxi(most_tags, reserved.size())
 	world.fx.keep_clear(reserved, world.hud.plates_over())
+
+
+## Whether the hero standing at `feet` is under `words` (a foe's level tag,
+## its name; PIX-469: in the cell above a foe, the plate hid nearly all of
+## the hero).
+static func hero_under(words: Rect2, feet: Vector2) -> bool:
+	return words.intersects(Rect2(feet + HERO.position, HERO.size))
 
 
 ## Which of `rects`, nearest first, may show: each one that comes within

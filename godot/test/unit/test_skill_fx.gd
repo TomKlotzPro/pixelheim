@@ -162,8 +162,8 @@ func test_the_heros_shot_flies_without_the_pack_too() -> void:
 	for weapon: String in ["bow", "staff"]:
 		assert_true(fx.swing(weapon, Vector2.ZERO, foe, foe.position, 0.1), "%s: its shot flies" % weapon)
 	assert_false(fx.swing("sword", Vector2.ZERO, foe, foe.position, 0.1), "a blade looses nothing")
-	assert_true(autofree(Firebolt.plain("arrow", Vector2.RIGHT)) is Line2D, "a shaft")
-	assert_true(autofree(Firebolt.plain("ball", Vector2.RIGHT)) is ColorRect, "a ball")
+	assert_true(autofree(Firebolt.plain("arrow", Vector2.RIGHT)).get_child(0) is Line2D, "a shaft")
+	assert_true(autofree(Firebolt.plain("ball", Vector2.RIGHT)).get_child(0) is ColorRect, "a ball")
 	var was: bool = GameState.settings.reduce_motion
 	GameState.settings.reduce_motion = true
 	assert_false(fx.swing("bow", Vector2.ZERO, foe, foe.position, 0.1), "still: nothing flies")

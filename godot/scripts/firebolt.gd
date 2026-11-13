@@ -15,6 +15,12 @@ const REACH := 9.0
 const SHAFT := Color(0.85, 0.75, 0.55)
 const BALL := Color(0.95, 0.92, 0.8)
 const EMBER := Color(1.0, 0.55, 0.15)
+## The dark rim Shade draws round his figures: a shot reads on the pale
+## path as on the grass (PIX-470: the ball was one cream pixel on the sand).
+const RIM := Color("1a1410")
+## A gun's flash, aimed the way its ball goes, and how long it shows.
+const FLASH := Color("fff3c4")
+const FLASH_S := 0.12
 
 var world: Node2D
 var caster: Dictionary
@@ -28,7 +34,8 @@ var look := "flame"
 
 
 func _ready() -> void:
-	z_index = 6
+	# Over the foes' level tags: a shot is seen all the way (PIX-470).
+	z_index = Foes.OVER_TAGS
 	match look:
 		"arrow":
 			# Shade draws the arrow pointing up; turned by quarter turns, as
@@ -44,6 +51,7 @@ func _ready() -> void:
 				add_child(plain(look, heading))
 		"ball":
 			add_child(plain(look, heading))
+			_flash()
 		_:
 			var frames := ItemIcons.effect("flame", 14.0)
 			if frames != null:
@@ -60,18 +68,51 @@ func _ready() -> void:
 ## an arrow's shaft, a ball, an ember. The hero's arrow and bolt fly these
 ## too without the pack (SkillFx.swing).
 static func plain(kind: String, along: Vector2) -> CanvasItem:
+	var shot := Node2D.new()
 	if kind == "arrow":
-		var shaft := Line2D.new()
-		shaft.points = PackedVector2Array([-along * 4.0, along * 3.0])
-		shaft.width = 1.0
-		shaft.default_color = SHAFT
-		return shaft
-	var size := 2.0 if kind == "ball" else 4.0
+		# Its shaft in a dark rim, the head bright.
+		for line: Array in [[RIM, 3.0, -5.0, 4.0], [SHAFT, 1.0, -4.0, 3.0], [BALL, 1.0, 1.0, 3.0]]:
+			var shaft := Line2D.new()
+			shaft.points = PackedVector2Array([along * line[2], along * line[3]])
+			shaft.width = line[1]
+			shaft.default_color = line[0]
+			shot.add_child(shaft)
+		return shot
+	if kind == "ball":
+		# A ball in a dark rim with its smoke behind it, a few pixels long:
+		# on the grid, so it stays crisp whichever way it flies.
+		for puff in 3:
+			shot.add_child(_dot(Color(RIM, 0.55 - 0.15 * puff), Vector2(2, 2), (-along * (4.0 + 2.5 * puff)).round()))
+		shot.add_child(_dot(RIM, Vector2(5, 3), Vector2.ZERO))
+		shot.add_child(_dot(RIM, Vector2(3, 5), Vector2.ZERO))
+		shot.add_child(_dot(BALL, Vector2(3, 3), Vector2.ZERO))
+		return shot
+	shot.add_child(_dot(EMBER, Vector2(4, 4), Vector2.ZERO))
+	return shot
+
+
+## A block of one colour, its middle `at`.
+static func _dot(color: Color, size: Vector2, at: Vector2) -> ColorRect:
 	var dot := ColorRect.new()
-	dot.color = BALL if kind == "ball" else EMBER
-	dot.size = Vector2(size, size)
-	dot.position = -dot.size / 2.0
+	dot.color = color
+	dot.size = size
+	dot.position = at - (size / 2.0).floor()
+	dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return dot
+
+
+## A gun's flash where the ball leaves it, pointing the way the ball goes
+## (PIX-470: the gunner's own, drawn four ways, pointed left of a ball
+## flying up), left behind as the ball flies and gone in a moment.
+func _flash() -> void:
+	var flash := Polygon2D.new()
+	flash.polygon = PackedVector2Array([Vector2(3, 0), Vector2(5, -3), Vector2(12, 0), Vector2(5, 3)])
+	flash.color = FLASH
+	flash.rotation = heading.angle()
+	flash.top_level = true
+	flash.position = position
+	add_child(flash)
+	flash.create_tween().tween_property(flash, "modulate:a", 0.0, FLASH_S)
 
 
 func _physics_process(delta: float) -> void:
