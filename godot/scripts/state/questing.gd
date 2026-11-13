@@ -146,7 +146,7 @@ func resolve_quests(giver_id: String) -> String:
 			note_deliveries(false)
 			owner.save_now()
 			# The giver's words were just said; the line names the task (PIX-194).
-			return Quests.accepted(quest, "journal" not in owner.settings.hints_seen)
+			return Quests.accepted(quest)
 		var objective: Dictionary = quest["objective"]
 		# A quest that ends in a choice waits for the hero's answer (PIX-192).
 		if quest.has("choice") and Quests.is_ready(quest, entries, owner.pack.items):
@@ -208,9 +208,8 @@ func open_tin() -> String:
 		owner.progression.quests[relics["id"]] = {"progress": 0, "done": false}
 	owner.pack_changed()
 	owner.save_now()
-	var line := Letters.taken_line(given)
-	# The satchel is the journal's main story (PIX-253 step 2).
-	return line + " " + Controls.say(Text.t("Your satchel is in the journal ({key:journal}).")) if not given.is_empty() else line
+	# The satchel is the journal's main story (PIX-253 step 2): its key.
+	return Controls.say(Letters.taken_line(given))
 
 
 ## Maren has told it all (PIX-253 step 8): her confession, at the shrine,

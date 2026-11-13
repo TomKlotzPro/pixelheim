@@ -116,8 +116,7 @@ func test_the_tin_gives_four_letters_and_the_step_is_met() -> void:
 	assert_true(_met("tin"))
 	assert_false(Letters.tin_waits(state.progression))
 	assert_eq(said.size(), 1)
-	assert_string_contains(said[0], "Four letters in your satchel")
-	assert_string_contains(said[0], "cliff road", "Bram's crew clears the road to Saltmere")
+	assert_eq(said[0], Controls.say("Four letters in your satchel ({key:journal})."), "one short line (PIX-471)")
 	for quest: Dictionary in Letters.all():
 		assert_eq(state.progression.quests[quest["id"]], {"progress": 0, "done": false}, "%s taken" % quest["id"])
 	assert_true(state.progression.quests.has(Relics.quest_id()), "her ask comes with them: the relics home")

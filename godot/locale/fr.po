@@ -13505,10 +13505,6 @@ msgid "Bram wants a cheese wheel. Of course he does."
 msgstr "Bram veut une meule de fromage. Évidemment."
 
 #: assets/data/progression.json
-msgid "Bram's crew is out clearing the cliff road to Saltmere."
-msgstr "L'équipe de Bram est partie dégager la route de la falaise vers Saltmere."
-
-#: assets/data/progression.json
 msgid "Bram: \"I've waited my whole life for this.\""
 msgstr "Bram : « J'ai attendu ça toute ma vie. »"
 
@@ -14009,8 +14005,8 @@ msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The 
 msgstr "Quatre herbes des bois, fraîches, cueillies aux points de récolte de la Forêt murmurante. Les lits du sanctuaire ne restent jamais vides bien longtemps."
 
 #: assets/data/progression.json
-msgid "Four letters in your satchel: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
-msgstr "Quatre lettres dans votre sacoche : pour la vieille Wenna à Saltmere, le vieux Pell à Fernoir, le capitaine Hale à Greyhold et Aske sur la Porte-Givre. Maren garde la cinquième."
+msgid "Four letters in your satchel ({key:journal})."
+msgstr "Quatre lettres dans votre sacoche ({key:journal})."
 
 #: assets/data/progression.json
 msgid "Four lumps of blackiron. The veins glint in the shafts' dead ends."
@@ -14337,8 +14333,8 @@ msgid "Imps taught a lesson"
 msgstr "Diablotins remis à leur place"
 
 #: assets/data/progression.json
-msgid "In your satchel: %s. Maren keeps the fifth."
-msgstr "Dans votre sacoche : %s. Maren garde la cinquième."
+msgid "In your satchel ({key:journal}): %s."
+msgstr "Dans votre sacoche ({key:journal}) : %s."
 
 #: assets/data/progression.json
 msgid "Ink Nobody Can Copy"
@@ -19136,17 +19132,13 @@ msgstr "Quête terminée : %s. %s. « %s »"
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer."
 
-#: scripts/state/questing.gd
-msgid "Your satchel is in the journal ({key:journal})."
-msgstr "Votre sacoche est dans le journal ({key:journal})."
-
 #: scripts/state/quests.gd
 msgid "%d XP"
-msgstr "%d XP"
+msgstr "%d XP"
 
 #: scripts/state/quests.gd
 msgid "%d gold"
-msgstr "%d or"
+msgstr "%d or"
 
 #: scripts/state/quests.gd
 msgid "%s, from %s."
@@ -19165,10 +19157,6 @@ msgid "In a chest somewhere in %s."
 msgstr "Dans un coffre, quelque part (%s)."
 
 #: scripts/state/quests.gd
-msgid "It's in your journal ({key:journal})."
-msgstr "Elle est dans votre journal ({key:journal})."
-
-#: scripts/state/quests.gd
 msgid "Pays %s"
 msgstr "Rapporte %s"
 
@@ -19177,8 +19165,8 @@ msgid "Pays as you choose"
 msgstr "Rapporte selon votre choix"
 
 #: scripts/state/quests.gd
-msgid "Quest accepted: %s. %s"
-msgstr "Quête acceptée : %s. %s"
+msgid "Quest accepted: %s."
+msgstr "Quête acceptée : %s."
 
 #: scripts/state/quests.gd
 msgid "The five left them in %s."

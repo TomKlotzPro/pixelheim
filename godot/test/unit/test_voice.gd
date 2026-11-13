@@ -27,7 +27,7 @@ func _guidance() -> Array[String]:
 		for line: String in quest.get("answer", [quest.get("accepted", ""), quest.get("completed", "")]):
 			out.append(line)
 	var letters: Dictionary = progression["letters"]
-	out.append_array(letters["tin"] + letters["late"] + [letters["taken"], letters["takenSome"], letters["answered"], letters["road"], letters["room"]])
+	out.append_array(letters["tin"] + letters["late"] + [letters["taken"], letters["takenSome"], letters["answered"], letters["room"]])
 	var hints: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json"))
 	for id: String in hints:
 		for line: String in hints[id].values():

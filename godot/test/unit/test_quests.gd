@@ -23,7 +23,7 @@ func _slay(monster_id: String) -> Array[String]:
 func test_a_givers_first_word_accepts_their_quest() -> void:
 	assert_eq(
 		state.questing.resolve_quests("innkeeper"),
-		"Quest accepted: Slime Trouble. Slimes have crept into what's left of Sela's stores. Thin the forest's supply of them. Pays 60 gold, 20 XP. It's in your journal (Q).",
+		"Quest accepted: Slime Trouble. Pays 60 gold, 20 XP.",
 		"PIX-194: the task, not the words just said; PIX-446: what it pays, and the journal's key while its hint is unseen"
 	)
 	assert_eq(state.progression.quests["slime_trouble"], {"progress": 0, "done": false})
@@ -98,7 +98,7 @@ func test_closing_a_conversation_resolves_quests() -> void:
 	state.questing.finish_dialogue("elder")
 	# Since the gate was barred (PIX-170) Maren's first ask is the relics.
 	assert_eq(said.size(), 1)
-	assert_string_contains(said[0], "Quest accepted: Relics of the Five. Only what the five climbers left behind")
+	assert_string_contains(said[0], "Quest accepted: Relics of the Five.")
 
 
 func test_vex_talks_before_his_counter_only_while_his_quest_waits() -> void:

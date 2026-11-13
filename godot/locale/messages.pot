@@ -13505,10 +13505,6 @@ msgid "Bram wants a cheese wheel. Of course he does."
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Bram's crew is out clearing the cliff road to Saltmere."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Bram: \"I've waited my whole life for this.\""
 msgstr ""
 
@@ -14009,7 +14005,7 @@ msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The 
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Four letters in your satchel: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
+msgid "Four letters in your satchel ({key:journal})."
 msgstr ""
 
 #: assets/data/progression.json
@@ -14337,7 +14333,7 @@ msgid "Imps taught a lesson"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "In your satchel: %s. Maren keeps the fifth."
+msgid "In your satchel ({key:journal}): %s."
 msgstr ""
 
 #: assets/data/progression.json
@@ -19136,10 +19132,6 @@ msgstr ""
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr ""
 
-#: scripts/state/questing.gd
-msgid "Your satchel is in the journal ({key:journal})."
-msgstr ""
-
 #: scripts/state/quests.gd
 msgid "%d XP"
 msgstr ""
@@ -19165,10 +19157,6 @@ msgid "In a chest somewhere in %s."
 msgstr ""
 
 #: scripts/state/quests.gd
-msgid "It's in your journal ({key:journal})."
-msgstr ""
-
-#: scripts/state/quests.gd
 msgid "Pays %s"
 msgstr ""
 
@@ -19177,7 +19165,7 @@ msgid "Pays as you choose"
 msgstr ""
 
 #: scripts/state/quests.gd
-msgid "Quest accepted: %s. %s"
+msgid "Quest accepted: %s."
 msgstr ""
 
 #: scripts/state/quests.gd
