@@ -2305,6 +2305,10 @@ msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead o
 msgstr "Un ennemi pas encore rencontré indique dans le Bestiaire où il vit, au lieu de la même phrase répétée sur toute la page"
 
 #: assets/data/changelog.json
+msgid "A foe's level plate and health bar fade while your hero stands under them, and your hits' numbers rise over the plates"
+msgstr "La plaque de niveau et la barre de vie d'un ennemi s'effacent quand votre héros passe dessous, et les chiffres de vos coups montent par-dessus les plaques"
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr "Un « ! » doré au-dessus de qui a une quête pour vous, un « ? » doré au-dessus de qui attend que vous en remettiez une, et un « ? » gris tant qu'une quête prise auprès de lui est en cours ; les Options peuvent les masquer (Marqueurs de quête)"
 
@@ -4533,6 +4537,10 @@ msgid "Main Street"
 msgstr "Rue principale"
 
 #: assets/data/changelog.json
+msgid "Make Way"
+msgstr "Place au héros"
+
+#: assets/data/changelog.json
 msgid "Many Tongues"
 msgstr "Mille langues"
 
@@ -6595,6 +6603,10 @@ msgstr "Le panneau des compétences affiche tout le graphe : nœuds, liens d'a
 #: assets/data/changelog.json
 msgid "The Slayer's Ledger"
 msgstr "Le Registre du tueur"
+
+#: assets/data/changelog.json
+msgid "The Smuggler Gunner's ball is easy to see: a rimmed ball with a trail of smoke, fired the way the gunner faces"
+msgstr "La balle du Canonnier contrebandier se voit bien : cerclée de sombre, elle laisse un filet de fumée, et part dans le sens où il regarde"
 
 #: assets/data/changelog.json
 msgid "The Smuggler Gunner, the Turncoat Bowman and the Fire Imp keep their distance and shoot: they glow before firing, their shot flies where you can see it, and with water or rocks in the way they come closer instead"

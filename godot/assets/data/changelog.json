@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.363.0",
+      "date": "2026-11-13",
+      "codename": "Make Way",
+      "notes": [
+        "A foe's level plate and health bar fade while your hero stands under them, and your hits' numbers rise over the plates",
+        "The Smuggler Gunner's ball is easy to see: a rimmed ball with a trail of smoke, fired the way the gunner faces"
+      ]
+    },
+    {
       "version": "0.362.0",
       "date": "2026-11-13",
       "codename": "Room to Read",
