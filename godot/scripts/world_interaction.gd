@@ -203,9 +203,13 @@ func interact() -> void:
 				# E on a keeper may be the E that read her talk: a night
 				# asks first (PIX-486), as a big buy does.
 				var night := Town.rest_cost_for(GameState.town_tier())
+				var question := Controls.say(Text.t("A night in the tent costs %d gold. Press {key:interact} again to sleep.") % night)
 				if GameState.pack.gold >= night and not _asked_twice("night"):
-					world.messages.ask(Controls.say(Text.t("A night in the tent costs %d gold. Press {key:interact} again to sleep.") % night))
+					world.messages.ask(question)
 				else:
+					# Answered, the question goes: left up over the woken
+					# world it asked for another E, and a second night.
+					world.messages.withdraw(question)
 					_sleep_at_inn()
 			else:
 				_open_stall(Economy.shop_at(String(Npcs.by_id(beside["npc"]["id"], []).get("mapId", ""))))

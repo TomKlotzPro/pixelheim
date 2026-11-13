@@ -248,7 +248,7 @@ counter-buy | --map town_shop --at 8,3 --keys w,e,wait,e,wait,e | open=shop_scre
 # price is on the plate at once, ahead of "Quest accepted"; the next one
 # sleeps. And Maren's tin left with Esc stays shut: no letters taken.
 tent-asks | --map town --town-tier 0 --at 46,28 --keys w,e,e,e,e,wait,e --lang en | open=none gold=30 next=slimes plate=A night in the tent.* | town trade quest
-tent-sleeps | --map town --town-tier 0 --at 46,28 --keys w,e,e,e,e,wait,e,wait,e | open=none gold=20 quill=[0-9]/[0-9]+ slept | town trade quest
+tent-sleeps | --map town --town-tier 0 --at 46,28 --keys w,e,e,e,e,wait,e,wait,e --lang en | open=none gold=20 quill=[0-9]/[0-9]+ slept plate=(?!A night in the tent).* | town trade quest
 tin-left | --map town --town-tier 0 talk --keys e,esc | open=none next=tin | town story
 talk-left | --map town_alchemist talk --keys esc,wait,e | open=dialogue_box | rooms quest trade screen
 # In the Ashes she digs in front of her house: the tin, its five lines,
