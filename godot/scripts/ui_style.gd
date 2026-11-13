@@ -707,9 +707,10 @@ static func plate_text(text: String) -> Label:
 	return label(text, reading(16), CREAM)
 
 
-## A plate's tag ("Next", "Quest accepted"): gold, bold.
+## A plate's tag ("Next", "Quest accepted"): gold, bold, its words' size
+## (PIX-471: small beside large reading text).
 static func plate_tag(text: String) -> Label:
-	return strong(text, 16, GOLD)
+	return strong(text, reading(16), GOLD)
 
 
 ## The key a command answers to, as a keycap (PIX-193): "E", "Esc", "↑".

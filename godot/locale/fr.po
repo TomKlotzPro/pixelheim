@@ -2305,6 +2305,10 @@ msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead o
 msgstr "Un ennemi pas encore rencontré indique dans le Bestiaire où il vit, au lieu de la même phrase répétée sur toute la page"
 
 #: assets/data/changelog.json
+msgid "A foe's ailment shows as it lands and goes when the foe falls, and no line turns up after its moment"
+msgstr "L'affliction d'un ennemi s'affiche quand elle le frappe et s'en va quand il tombe, et plus aucune ligne n'arrive après coup"
+
+#: assets/data/changelog.json
 msgid "A foe's level plate and health bar fade while your hero stands under them, and your hits' numbers rise over the plates"
 msgstr "La plaque de niveau et la barre de vie d'un ennemi s'effacent quand votre héros passe dessous, et les chiffres de vos coups montent par-dessus les plaques"
 
@@ -2427,6 +2431,10 @@ msgstr "Une voie est une identité permanente : un thème passif toujours acti
 #: assets/data/changelog.json
 msgid "A phone starts with large text, which now reaches the shops' and ledgers' descriptions too"
 msgstr "Un téléphone démarre avec le grand texte, qui s'applique désormais aussi aux descriptions des boutiques et des registres"
+
+#: assets/data/changelog.json
+msgid "A quest accepted names the quest and its whole pay, without its story: the journal keeps that"
+msgstr "Une quête acceptée s'annonce par son nom et toute sa paie, sans son histoire : le journal la garde"
 
 #: assets/data/changelog.json
 msgid "A quest's goods can't be sold, from any screen"
@@ -2663,6 +2671,10 @@ msgstr "En un coup d'œil"
 #: assets/data/changelog.json
 msgid "At dawn Morvax comes down the mountain road, the collar comes off, and the dragon leaves a scale in the fountain and flies home, free"
 msgstr "À l'aube, Morvax descend la route de la montagne, le collier tombe, et le dragon laisse une écaille dans la fontaine avant de rentrer chez lui, libre"
+
+#: assets/data/changelog.json
+msgid "At full health a potion or a meal is kept and a line says why, as is a mana potion with the pool full or a remedy with nothing to cure"
+msgstr "En pleine santé, une potion ou un repas est gardé et une ligne dit pourquoi ; de même pour une potion de mana quand la réserve est pleine, ou un remède quand rien n'est à soigner"
 
 #: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
@@ -3203,6 +3215,10 @@ msgstr "Tenue assortie"
 #: assets/data/changelog.json
 msgid "Dropping a piece of gear or a whole stack asks for the same key again, and a key with a fixed job (drop, a skill, Esc) can't be given to another action"
 msgstr "Jeter une pièce d'équipement ou tout un lot demande la même touche une seconde fois, et une touche qui a déjà un rôle (jeter, une compétence, Esc) ne peut pas être donnée à une autre action"
+
+#: assets/data/changelog.json
+msgid "Dry Feet"
+msgstr "Les pieds au sec"
 
 #: assets/data/changelog.json
 msgid "Dungeon torches hang on the wall with a soft glow, instead of sitting in a square hole cut into it"
@@ -4073,6 +4089,10 @@ msgid "Hero creation reads clearly: the first night is a setting of its own (The
 msgstr "La création du héros se lit clairement : la première nuit est un réglage à part (La première nuit (tutoriel) : Jouer / Passer, avec une ligne sur ce que chacun veut dire), et Commencer l'aventure est le départ, seul en bas ; Tab, un clic ou le Y de la manette change la nuit, et une manette atteint désormais chaque commande"
 
 #: assets/data/changelog.json
+msgid "Hero creation shows its three skills as a preview, the first marked as the one you start with"
+msgstr "La création du héros présente ses trois compétences comme un aperçu, la première marquée comme celle de départ"
+
+#: assets/data/changelog.json
 msgid "Hero creation shows the hero as they will really start, without the colour looks nobody kept; the stats have icons, pips against the best of all the roles and their full names, and the starting skills are chips with their icons, a click or PgUp/PgDn reading each"
 msgstr "La création du héros le montre tel qu'il commencera vraiment, sans les couleurs que personne ne gardait ; les stats ont leurs icônes, des crans face au meilleur de tous les rôles et leur nom complet, et les compétences de départ sont des pastilles avec leur icône, un clic ou PgUp/PgDn pour lire chacune"
 
@@ -4169,6 +4189,10 @@ msgid "Impact"
 msgstr "Impact"
 
 #: assets/data/changelog.json
+msgid "In French a number stays with its unit and a mark with its word, on the web too"
+msgstr "En français, un nombre reste avec son unité et un signe avec son mot, sur le web aussi"
+
+#: assets/data/changelog.json
 msgid "In Hand"
 msgstr "En main"
 
@@ -4195,6 +4219,10 @@ msgstr "Dans les Cendres, la forge de Hilda et le chaudron de Vex sont à leurs 
 #: assets/data/changelog.json
 msgid "In the Browser"
 msgstr "Dans le navigateur"
+
+#: assets/data/changelog.json
+msgid "In the Mirefen, the narrow tips of four pools are now marsh you can walk on"
+msgstr "Dans les Marais de Fange, les pointes étroites de quatre mares sont désormais un marais où l'on peut marcher"
 
 #: assets/data/changelog.json
 msgid "In the browser, the game saves the moment its tab is hidden or closed, and a private window that won't keep saves says so on the title"
@@ -4553,6 +4581,10 @@ msgid "Maren's letters are the main story in the journal: the courier's satchel 
 msgstr "Les lettres de Maren sont l'histoire principale du journal : la sacoche du messager liste chaque lettre, son destinataire et où le trouver, puis, une fois remise, ce qu'il a répondu"
 
 #: assets/data/changelog.json
+msgid "Maren's letters fit in one line"
+msgstr "Les lettres de Maren tiennent en une ligne"
+
+#: assets/data/changelog.json
 msgid "Market Day"
 msgstr "Jour de marché"
 
@@ -4807,6 +4839,10 @@ msgstr "Les nœuds à votre portée brillent. Les apprendre semble toujours auss
 #: assets/data/changelog.json
 msgid "Nothing Underfoot"
 msgstr "Rien sous le pied"
+
+#: assets/data/changelog.json
+msgid "Nothing Wasted"
+msgstr "Rien de perdu"
 
 #: assets/data/changelog.json
 msgid "Now and then a shower crosses the open land: rain slants down and splashes, the light turns grey, the lamps come up, the birds fall quiet and you hear the rain"
@@ -5433,6 +5469,10 @@ msgid "Recruits leave the map they waited on and walk the town's streets like an
 msgstr "Les recrues quittent la carte où elles attendaient et arpentent les rues de la ville comme n'importe quel enfant du pays"
 
 #: assets/data/changelog.json
+msgid "Reflections show on the water only, never on the marsh beside it"
+msgstr "Les reflets n'apparaissent que sur l'eau, jamais sur le marais d'à côté"
+
+#: assets/data/changelog.json
 msgid "Remembered"
 msgstr "On s'en souvient"
 
@@ -5455,6 +5495,14 @@ msgstr "Les bons noms"
 #: assets/data/changelog.json
 msgid "Right on Cue"
 msgstr "Au bon moment"
+
+#: assets/data/changelog.json
+msgid "Right on Time"
+msgstr "À point nommé"
+
+#: assets/data/changelog.json
+msgid "Rivers and pools are drawn a little narrower, their banks bend more softly, and their reeds stand in the water"
+msgstr "Rivières et mares sont dessinées un peu plus étroites, leurs berges ondulent plus doucement, et leurs roseaux poussent dans l'eau"
 
 #: assets/data/changelog.json
 msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
@@ -6557,6 +6605,10 @@ msgid "The Open World"
 msgstr "Le Monde ouvert"
 
 #: assets/data/changelog.json
+msgid "The Options footer shows the new keys as soon as you rebind them, and so does the pause menu's"
+msgstr "Le pied de page des Options montre les nouvelles touches dès que vous les changez, celui du menu de pause aussi"
+
+#: assets/data/changelog.json
 msgid "The Pages tab is now Letters: read Maren's own words once a letter is delivered (a courier never reads the post) and the answer that came back"
 msgstr "L'onglet Pages devient Lettres : lisez les mots de Maren une fois la lettre remise (un messager ne lit jamais le courrier) et la réponse qui est revenue"
 
@@ -7059,6 +7111,10 @@ msgstr "La crête entre les régions apparaît là où vous l'avez vue, les rela
 #: assets/data/changelog.json
 msgid "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave"
 msgstr "Les routes vers les Marais de Fange et les Bois-Profonds sortent par la crête au lieu d'entrer dans une grotte"
+
+#: assets/data/changelog.json
+msgid "The roll's hint reads quickly and lets the fight's lines through"
+msgstr "Le conseil de la roulade se lit vite et laisse passer les lignes du combat"
 
 #: assets/data/changelog.json
 msgid "The same gate from the Ashenreach, where the road widens up to it; from inside the town you see the fields beyond"
@@ -7839,6 +7895,10 @@ msgstr "Votre héros entre dans la lumière : les personnages portent leur pro
 #: assets/data/changelog.json
 msgid "Your hero walks in eight directions and turns through the diagonal, instead of snapping a quarter turn at once"
 msgstr "Votre héros marche dans huit directions et tourne en passant par la diagonale, au lieu de pivoter d'un quart de tour d'un coup"
+
+#: assets/data/changelog.json
+msgid "Your hero's feet stop at the bank: no water is drawn under them any more"
+msgstr "Les pieds de votre héros s'arrêtent à la berge : plus d'eau dessinée sous eux"
 
 #: assets/data/changelog.json
 msgid "Your hero, the villagers and every foe now stand on a soft shadow at their feet, instead of looking pasted onto the ground"
@@ -13553,10 +13613,6 @@ msgid "Bram wants a cheese wheel. Of course he does."
 msgstr "Bram veut une meule de fromage. Évidemment."
 
 #: assets/data/progression.json
-msgid "Bram's crew is out clearing the cliff road to Saltmere."
-msgstr "L'équipe de Bram est partie dégager la route de la falaise vers Saltmere."
-
-#: assets/data/progression.json
 msgid "Bram: \"I've waited my whole life for this.\""
 msgstr "Bram : « J'ai attendu ça toute ma vie. »"
 
@@ -14057,8 +14113,8 @@ msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The 
 msgstr "Quatre herbes des bois, fraîches, cueillies aux points de récolte de la Forêt murmurante. Les lits du sanctuaire ne restent jamais vides bien longtemps."
 
 #: assets/data/progression.json
-msgid "Four letters in your satchel: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
-msgstr "Quatre lettres dans votre sacoche : pour la vieille Wenna à Saltmere, le vieux Pell à Fernoir, le capitaine Hale à Greyhold et Aske sur la Porte-Givre. Maren garde la cinquième."
+msgid "Four letters in your satchel ({key:journal})."
+msgstr "Quatre lettres dans votre sacoche ({key:journal})."
 
 #: assets/data/progression.json
 msgid "Four lumps of blackiron. The veins glint in the shafts' dead ends."
@@ -14385,8 +14441,8 @@ msgid "Imps taught a lesson"
 msgstr "Diablotins remis à leur place"
 
 #: assets/data/progression.json
-msgid "In your satchel: %s. Maren keeps the fifth."
-msgstr "Dans votre sacoche : %s. Maren garde la cinquième."
+msgid "In your satchel ({key:journal}): %s."
+msgstr "Dans votre sacoche ({key:journal}) : %s."
 
 #: assets/data/progression.json
 msgid "Ink Nobody Can Copy"
@@ -17113,12 +17169,16 @@ msgid "first night"
 msgstr "première nuit"
 
 #: scripts/create_screen.gd
+msgid "read skills"
+msgstr "lire les compétences"
+
+#: scripts/create_screen.gd
 msgid "role"
 msgstr "classe"
 
 #: scripts/create_screen.gd
-msgid "skill"
-msgstr "compétence"
+msgid "start"
+msgstr "départ"
 
 #: scripts/cutscene.gd
 msgid "Esc"
@@ -19165,6 +19225,14 @@ msgid "a recipe in your book: %s"
 msgstr "une recette dans votre carnet : %s"
 
 #: scripts/state/questing.gd
+msgid "%d XP"
+msgstr "%d XP"
+
+#: scripts/state/questing.gd
+msgid "%d gold"
+msgstr "%d or"
+
+#: scripts/state/questing.gd
 msgid "%s: %d/%d %s."
 msgstr "%s : %d/%d %s."
 
@@ -19196,18 +19264,6 @@ msgstr "Quête terminée : %s. %s. « %s »"
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer."
 
-#: scripts/state/questing.gd
-msgid "Your satchel is in the journal ({key:journal})."
-msgstr "Votre sacoche est dans le journal ({key:journal})."
-
-#: scripts/state/quests.gd
-msgid "%d XP"
-msgstr "%d XP"
-
-#: scripts/state/quests.gd
-msgid "%d gold"
-msgstr "%d or"
-
 #: scripts/state/quests.gd
 msgid "%s, from %s."
 msgstr "%s, avec %s."
@@ -19225,10 +19281,6 @@ msgid "In a chest somewhere in %s."
 msgstr "Dans un coffre, quelque part (%s)."
 
 #: scripts/state/quests.gd
-msgid "It's in your journal ({key:journal})."
-msgstr "Elle est dans votre journal ({key:journal})."
-
-#: scripts/state/quests.gd
 msgid "Pays %s"
 msgstr "Rapporte %s"
 
@@ -19237,8 +19289,8 @@ msgid "Pays as you choose"
 msgstr "Rapporte selon votre choix"
 
 #: scripts/state/quests.gd
-msgid "Quest accepted: %s. %s"
-msgstr "Quête acceptée : %s. %s"
+msgid "Quest accepted: %s."
+msgstr "Quête acceptée : %s."
 
 #: scripts/state/quests.gd
 msgid "The five left them in %s."
@@ -19545,6 +19597,10 @@ msgid "You come to on the road. Pixelheim is still burning ahead."
 msgstr "Vous reprenez connaissance sur la route. Pixelheim brûle toujours, droit devant."
 
 #: scripts/state/upkeep.gd
+msgid "You have no need of that right now."
+msgstr "Vous n'en avez pas besoin pour l'instant."
+
+#: scripts/state/upkeep.gd
 msgid "You sit a while on the bench by the ember lamp. Its warmth mends you."
 msgstr "Vous vous asseyez un moment sur le banc près de la lampe de braise. Sa chaleur vous remet d'aplomb."
 
@@ -19571,6 +19627,14 @@ msgstr "Vous vous réveillez près de la tente de Sela, avec %d or en moins. Ce 
 #: scripts/state/upkeep.gd
 msgid "You wake beside Sela's tent, your cuts bound. She has patched up worse."
 msgstr "Vous vous réveillez près de la tente de Sela, vos plaies pansées. Elle a soigné bien pire."
+
+#: scripts/state/upkeep.gd
+msgid "You're already at full health."
+msgstr "Vous êtes déjà en pleine santé."
+
+#: scripts/state/upkeep.gd
+msgid "Your %s is already full."
+msgstr "Vos %s sont déjà au maximum."
 
 #: scripts/stats_screen.gd
 msgid "%d stat point%s to spend. %s at the shrine can undo it, for a price."

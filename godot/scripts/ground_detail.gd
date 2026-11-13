@@ -155,6 +155,16 @@ const INKS := {
 ## Where in its cell a drawing's top-left stands, by variant (in pixels);
 ## the odd variants are mirrored.
 const VARIANTS: Array[Vector2i] = [Vector2i(2, 3), Vector2i(7, 6), Vector2i(4, 8), Vector2i(8, 2)]
+## Where a bank's reeds stand in their water's cell (PIX-467), after
+## VARIANTS in the sheet: off the side the land is on by as far as the bank
+## can lie in from it (inland_water.gdshaderinc: 11 px, its wet lip the
+## last), so they stand in the water and never on the grass (the mire's bank
+## lies further in, where reeds grow on the land too). Across: the
+## land east of the cell, west of it, at neither side (two spots); down: the
+## land north (two spots), south, at neither. The odd ones across are
+## mirrored, as VARIANTS' are, which puts a drawing's clear column landward.
+const BANK_ACROSS: Array[int] = [0, 9, 5, 3]
+const BANK_DOWN: Array[int] = [6, 8, 0, 4]
 const TILE := 16
 
 static var _tileset: TileSet
@@ -172,19 +182,42 @@ static func kinds() -> Array:
 ## The sheet's tile for a kind's variant: a column per variant, a row per
 ## kind.
 static func coords(kind: String, variant: int) -> Vector2i:
-	return Vector2i(variant % VARIANTS.size(), kinds().find(kind))
+	return Vector2i(variant % spots(), kinds().find(kind))
+
+
+## How many spots a drawing has in the sheet: VARIANTS, then a bank's.
+static func spots() -> int:
+	return VARIANTS.size() + BANK_ACROSS.size() * BANK_DOWN.size()
+
+
+## Where in its cell a variant's drawing stands.
+static func spot(variant: int) -> Vector2i:
+	if variant < VARIANTS.size():
+		return VARIANTS[variant]
+	var bank := variant - VARIANTS.size()
+	return Vector2i(BANK_ACROSS[bank % BANK_ACROSS.size()], BANK_DOWN[bank / BANK_ACROSS.size()])
+
+
+## The variant of a bank's reeds by the sides its land lies on, `pick` (any
+## number, the cell's own) choosing between the spots that side leaves.
+static func bank_variant(west: bool, east: bool, north: bool, south: bool, pick: int) -> int:
+	var across := 1 if west else (0 if east else 2 + pick % 2)
+	var down := (pick >> 1) % 2 if north else (2 if south else 3)
+	return VARIANTS.size() + across + BANK_ACROSS.size() * down
 
 
 ## Every drawing at every spot, one sheet, drawn once; every tile made with
 ## the tileset, so laying one never changes it (One Reach, PIX-269).
 static func tileset() -> TileSet:
 	if _tileset == null:
-		var image := Image.create(TILE * VARIANTS.size(), TILE * kinds().size(), false, Image.FORMAT_RGBA8)
+		var image := Image.create(TILE * spots(), TILE * kinds().size(), false, Image.FORMAT_RGBA8)
 		image.fill(Color(0, 0, 0, 0))
 		for row in kinds().size():
 			var drawing: Array = DRAWINGS[kinds()[row]]
-			for variant in VARIANTS.size():
-				_draw(image, drawing, Vector2i(variant * TILE, row * TILE) + VARIANTS[variant], variant % 2 == 1)
+			for variant in spots():
+				# A bank's spots are the reeds': a wider drawing keeps in its tile.
+				var at := spot(variant).min(Vector2i(TILE - (drawing[0] as String).length(), TILE - drawing.size()))
+				_draw(image, drawing, Vector2i(variant * TILE, row * TILE) + at, variant % 2 == 1)
 		_tileset = TileSet.new()
 		_tileset.tile_size = Vector2i(TILE, TILE)
 		var source := TileSetAtlasSource.new()
@@ -192,7 +225,7 @@ static func tileset() -> TileSet:
 		source.texture_region_size = Vector2i(TILE, TILE)
 		_tileset.add_source(source, 0)
 		for row in kinds().size():
-			for variant in VARIANTS.size():
+			for variant in spots():
 				source.create_tile(Vector2i(variant, row))
 	return _tileset
 

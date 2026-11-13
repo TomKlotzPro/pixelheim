@@ -2305,6 +2305,10 @@ msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead o
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe's ailment shows as it lands and goes when the foe falls, and no line turns up after its moment"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A foe's level plate and health bar fade while your hero stands under them, and your hits' numbers rise over the plates"
 msgstr ""
 
@@ -2426,6 +2430,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A phone starts with large text, which now reaches the shops' and ledgers' descriptions too"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A quest accepted names the quest and its whole pay, without its story: the journal keeps that"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2662,6 +2670,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "At dawn Morvax comes down the mountain road, the collar comes off, and the dragon leaves a scale in the fountain and flies home, free"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "At full health a potion or a meal is kept and a line says why, as is a mana potion with the pool full or a remedy with nothing to cure"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3202,6 +3214,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Dropping a piece of gear or a whole stack asks for the same key again, and a key with a fixed job (drop, a skill, Esc) can't be given to another action"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Dry Feet"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4073,6 +4089,10 @@ msgid "Hero creation reads clearly: the first night is a setting of its own (The
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Hero creation shows its three skills as a preview, the first marked as the one you start with"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Hero creation shows the hero as they will really start, without the colour looks nobody kept; the stats have icons, pips against the best of all the roles and their full names, and the starting skills are chips with their icons, a click or PgUp/PgDn reading each"
 msgstr ""
 
@@ -4169,6 +4189,10 @@ msgid "Impact"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "In French a number stays with its unit and a mark with its word, on the web too"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "In Hand"
 msgstr ""
 
@@ -4194,6 +4218,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "In the Browser"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "In the Mirefen, the narrow tips of four pools are now marsh you can walk on"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4553,6 +4581,10 @@ msgid "Maren's letters are the main story in the journal: the courier's satchel 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Maren's letters fit in one line"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Market Day"
 msgstr ""
 
@@ -4806,6 +4838,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Nothing Underfoot"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Nothing Wasted"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5433,6 +5469,10 @@ msgid "Recruits leave the map they waited on and walk the town's streets like an
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Reflections show on the water only, never on the marsh beside it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Remembered"
 msgstr ""
 
@@ -5454,6 +5494,14 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Right on Cue"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Right on Time"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Rivers and pools are drawn a little narrower, their banks bend more softly, and their reeds stand in the water"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6557,6 +6605,10 @@ msgid "The Open World"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Options footer shows the new keys as soon as you rebind them, and so does the pause menu's"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Pages tab is now Letters: read Maren's own words once a letter is delivered (a courier never reads the post) and the answer that came back"
 msgstr ""
 
@@ -7058,6 +7110,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The roll's hint reads quickly and lets the fight's lines through"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7838,6 +7894,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Your hero walks in eight directions and turns through the diagonal, instead of snapping a quarter turn at once"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Your hero's feet stop at the bank: no water is drawn under them any more"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -13553,10 +13613,6 @@ msgid "Bram wants a cheese wheel. Of course he does."
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Bram's crew is out clearing the cliff road to Saltmere."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Bram: \"I've waited my whole life for this.\""
 msgstr ""
 
@@ -14057,7 +14113,7 @@ msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The 
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Four letters in your satchel: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
+msgid "Four letters in your satchel ({key:journal})."
 msgstr ""
 
 #: assets/data/progression.json
@@ -14385,7 +14441,7 @@ msgid "Imps taught a lesson"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "In your satchel: %s. Maren keeps the fifth."
+msgid "In your satchel ({key:journal}): %s."
 msgstr ""
 
 #: assets/data/progression.json
@@ -17113,11 +17169,15 @@ msgid "first night"
 msgstr ""
 
 #: scripts/create_screen.gd
+msgid "read skills"
+msgstr ""
+
+#: scripts/create_screen.gd
 msgid "role"
 msgstr ""
 
 #: scripts/create_screen.gd
-msgid "skill"
+msgid "start"
 msgstr ""
 
 #: scripts/cutscene.gd
@@ -19165,6 +19225,14 @@ msgid "a recipe in your book: %s"
 msgstr ""
 
 #: scripts/state/questing.gd
+msgid "%d XP"
+msgstr ""
+
+#: scripts/state/questing.gd
+msgid "%d gold"
+msgstr ""
+
+#: scripts/state/questing.gd
 msgid "%s: %d/%d %s."
 msgstr ""
 
@@ -19196,18 +19264,6 @@ msgstr ""
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr ""
 
-#: scripts/state/questing.gd
-msgid "Your satchel is in the journal ({key:journal})."
-msgstr ""
-
-#: scripts/state/quests.gd
-msgid "%d XP"
-msgstr ""
-
-#: scripts/state/quests.gd
-msgid "%d gold"
-msgstr ""
-
 #: scripts/state/quests.gd
 msgid "%s, from %s."
 msgstr ""
@@ -19225,10 +19281,6 @@ msgid "In a chest somewhere in %s."
 msgstr ""
 
 #: scripts/state/quests.gd
-msgid "It's in your journal ({key:journal})."
-msgstr ""
-
-#: scripts/state/quests.gd
 msgid "Pays %s"
 msgstr ""
 
@@ -19237,7 +19289,7 @@ msgid "Pays as you choose"
 msgstr ""
 
 #: scripts/state/quests.gd
-msgid "Quest accepted: %s. %s"
+msgid "Quest accepted: %s."
 msgstr ""
 
 #: scripts/state/quests.gd
@@ -19545,6 +19597,10 @@ msgid "You come to on the road. Pixelheim is still burning ahead."
 msgstr ""
 
 #: scripts/state/upkeep.gd
+msgid "You have no need of that right now."
+msgstr ""
+
+#: scripts/state/upkeep.gd
 msgid "You sit a while on the bench by the ember lamp. Its warmth mends you."
 msgstr ""
 
@@ -19570,6 +19626,14 @@ msgstr ""
 
 #: scripts/state/upkeep.gd
 msgid "You wake beside Sela's tent, your cuts bound. She has patched up worse."
+msgstr ""
+
+#: scripts/state/upkeep.gd
+msgid "You're already at full health."
+msgstr ""
+
+#: scripts/state/upkeep.gd
+msgid "Your %s is already full."
 msgstr ""
 
 #: scripts/stats_screen.gd

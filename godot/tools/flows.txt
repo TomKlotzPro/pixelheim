@@ -65,6 +65,16 @@ streets-fountain | --map town --town-tier 4 --at 39,24 | map=town street=bricks 
 bank-ashes | --map town --town-tier 0 --at 20,35 | map=town cell=\(20, 35\) bank=0 street= | town
 bank-village | --map town --town-tier 2 --at 20,35 | map=town cell=\(20, 35\) bank=0 street= | town
 bank-city-night | --map town --town-tier 4 --at 40,35 night | map=town cell=\(40, 35\) bank=0 street= | town night
+# The hero's feet stop at the bank (PIX-467): walked down into the
+# village's river where the playtest saw them over it, up into its stream,
+# and into a pool of the Mirefen, they stand on the land's cell with no
+# part of their feet on the water's. That is what stops them, and it always
+# did: the water was drawn up to 8 pixels out over the land, under them.
+# Where the bank is drawn is the shader's, held inside the water's cells by
+# test_inland_water (no flow reads a pixel).
+feet-south | --map town --at 24,35 --walk d,d,d | map=town cell=\(24, 35\) feet=dry | town
+feet-north | --map town --at 71,14 --walk u,u,u | map=town cell=\(71, 14\) feet=dry | town
+feet-mire | --map mirefen --at 25,15 --walk d,d,d | map=mirefen cell=\(25, 15\) feet=dry | field
 # Pixelheim's yards and square by its age (PIX-382): what each household
 # keeps by its house, the square's rims, the City's bunting lit at night;
 # with the paid pack (on Shade's CC0 art alone, none).
@@ -227,7 +237,9 @@ die-tent | --map town --town-tier 0 die --wait 1.5 | map=town cell=\(44, 27\) ni
 saves | saves | open=saves_screen | save screen
 # A hero's first word with Maren after the night is her tin (PIX-253):
 # in the Hamlet her house stands again and she says it short, two lines.
-talk | --map town talk --keys e,e | open=none letters=4 delivered=0 | town story
+# The plate after it is one short line, five words and the journal's key,
+# in English and French (PIX-471: it was four lines over the village).
+talk | --map town talk --keys e,e | open=none letters=4 delivered=0 plate=\S+ \S+ \S+ \S+ \S+ \(\S+\)\. | town story
 # A conversation left with Esc, a real key press (PIX-131).
 leave | --map town talk --keys e,esc | open=none | town story
 # Nothing bought or taken by accident (PIX-486). E pressed on past the end
@@ -253,7 +265,7 @@ tin-left | --map town --town-tier 0 talk --keys e,esc | open=none next=tin | tow
 talk-left | --map town_alchemist talk --keys esc,wait,e | open=dialogue_box | rooms quest trade screen
 # In the Ashes she digs in front of her house: the tin, its five lines,
 # and four letters in the pack; one handed to Old Wenna in Saltmere.
-tin | --map town --town-tier 0 talk --keys e,e,e,e,e | open=none letters=4 delivered=0 | town story
+tin | --map town --town-tier 0 talk --keys e,e,e,e,e | open=none letters=4 delivered=0 plate=\S+ \S+ \S+ \S+ \S+ \(\S+\)\. | town story
 letter | --map saltmere --ready letter_wenna --talk-to saltmere_wenna --keys e,e,e | open=none letters=0 delivered=1 | story quest
 # The courier's satchel (PIX-253 step 2): the journal's Letters page reads
 # the two delivered and keeps the rest sealed; a chapter's card as the

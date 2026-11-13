@@ -1561,7 +1561,8 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 			world.foes.on_enemy_noticed(self)
 	if not dying and ailments.inflict(infliction, GameState.roll):
 		Sound.play("foe_afflicted")
-		world.messages.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])])
+		# Said as it lands and only while this foe stands (PIX-476).
+		world.messages.log_now(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])], func() -> bool: return not dying)
 		if infliction["kind"] == "stun":
 			_interrupt()
 

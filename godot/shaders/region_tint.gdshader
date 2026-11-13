@@ -103,9 +103,9 @@ const float EDGE_WANDER = 0.4;
 const float EDGE_BENDS = 2.6;
 const float EDGE_SEAM = 1.5;
 
-float hash(vec2 p) {
-	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-}
+// hash and value_noise (the slow bends of a region's edge), and where an
+// inland water's bank lies, as the reflections read it too.
+#include "res://shaders/water_bank.gdshaderinc"
 
 // Shade's water, river and sea: blue-green with little red.
 bool is_water(vec3 c) {
@@ -125,18 +125,6 @@ void vertex() {
 		}
 	}
 	VERTEX.x += lean;
-}
-
-// Smooth value noise, 0..1: the slow bends of a region's edge.
-float value_noise(vec2 p) {
-	vec2 i = floor(p);
-	vec2 f = fract(p);
-	f = f * f * (3.0 - 2.0 * f);
-	float a = hash(i);
-	float b = hash(i + vec2(1.0, 0.0));
-	float c = hash(i + vec2(0.0, 1.0));
-	float d = hash(i + vec2(1.0, 1.0));
-	return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
 }
 
 #include "res://shaders/open_ground.gdshaderinc"
@@ -180,7 +168,8 @@ void fragment() {
 	// Rivers, ponds and pools drawn again with their banks (PIX-306); the
 	// bank is toned as the land is, the water keeps its own.
 	int inland = water_life ? inland_water(world_pos, base.rgb, TEXTURE_PIXEL_SIZE) : INLAND_NONE;
-	if (inland == INLAND_LAND) {
+	bool drawn_back = inland == INLAND_LAND;
+	if (drawn_back) {
 		base.rgb = to_display(texture(TEXTURE, base.xy * TEXTURE_PIXEL_SIZE).rgb);
 		inland = INLAND_BANK;
 	}
@@ -225,7 +214,12 @@ void fragment() {
 	bool iced = false;
 	if (ice_life && !water) {
 		vec2 px = floor(world_pos) + 0.5;
-		vec4 ice = ice_over(base.rgb, px, texture(ice_map, (ice_shore_at(px) - map_origin) / ice_pixels).r, threshold, OPEN_ICE);
+		// A hole in the ice is cut in it (PIX-467): the ice lies whole up to the
+		// hole's rim of shelf ice, which stays bare. Its own shore wandered
+		// round the hole's cells, and its blue lip showed as a bar under the
+		// hole once the hole's bank was drawn inside them.
+		float reach = inland == INLAND_BANK ? float(drawn_back) : texture(ice_map, (ice_shore_at(px) - map_origin) / ice_pixels).r;
+		vec4 ice = ice_over(base.rgb, px, reach, threshold, OPEN_ICE);
 		if (ice.a > 0.0) {
 			base.rgb = ice.rgb;
 			iced = true;

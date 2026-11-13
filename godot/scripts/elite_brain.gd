@@ -229,7 +229,8 @@ func _bolt(move: Dictionary, heading: Vector2) -> void:
 
 ## The forest answers a howl: wolves of its kind at its side.
 func _howl(move: Dictionary) -> void:
-	world.messages.log_line(Text.t("%s howls - the forest answers!") % enemy.fighter["name"])
+	# Said as it howls and only while it stands (PIX-476).
+	world.messages.log_now(Text.t("%s howls - the forest answers!") % enemy.fighter["name"], func() -> bool: return not enemy.dying)
 	world.camera_rig.shake(3.0, 0.3)
 	var cell := Vector2i((enemy.global_position / TILE).floor())
 	var offsets: Array[Vector2i] = [Vector2i(-2, 1), Vector2i(2, 1), Vector2i(0, 2), Vector2i(0, -2)]

@@ -102,16 +102,15 @@ static func room_line(progression: ProgressionState) -> String:
 	return String(_doc()["room"]) if first not in progression.story_seen else ""
 
 
-## What the tin left in the satchel, said once it's opened: the letters
-## given (by item id), and whether the cliff road is being cleared.
+## What the tin left in the satchel, said once it's opened: one short line
+## (PIX-471: who each is for and Bram's crew on the cliff road made four
+## lines over the village; the journal's satchel and Bram say those).
 static func taken_line(given: Array[String]) -> String:
 	var line := String(_doc()["answered"])
 	if given.size() == all().size():
 		line = String(_doc()["taken"])
 	elif not given.is_empty():
 		line = String(_doc()["takenSome"]) % ", ".join(given.map(func(item_id: String) -> String: return Catalog.item_name(item_id)))
-	if all()[0]["objective"]["itemId"] in given:
-		line += " " + String(_doc()["road"])
 	return line
 
 

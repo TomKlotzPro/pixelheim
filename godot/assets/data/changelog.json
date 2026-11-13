@@ -1,6 +1,39 @@
 {
   "releases": [
     {
+      "version": "0.366.0",
+      "date": "2026-11-13",
+      "codename": "Dry Feet",
+      "notes": [
+        "Your hero's feet stop at the bank: no water is drawn under them any more",
+        "Rivers and pools are drawn a little narrower, their banks bend more softly, and their reeds stand in the water",
+        "In the Mirefen, the narrow tips of four pools are now marsh you can walk on",
+        "Reflections show on the water only, never on the marsh beside it"
+      ]
+    },
+    {
+      "version": "0.365.0",
+      "date": "2026-11-13",
+      "codename": "Nothing Wasted",
+      "notes": [
+        "At full health a potion or a meal is kept and a line says why, as is a mana potion with the pool full or a remedy with nothing to cure",
+        "Hero creation shows its three skills as a preview, the first marked as the one you start with",
+        "The Options footer shows the new keys as soon as you rebind them, and so does the pause menu's"
+      ]
+    },
+    {
+      "version": "0.364.0",
+      "date": "2026-11-13",
+      "codename": "Right on Time",
+      "notes": [
+        "A quest accepted names the quest and its whole pay, without its story: the journal keeps that",
+        "Maren's letters fit in one line",
+        "A foe's ailment shows as it lands and goes when the foe falls, and no line turns up after its moment",
+        "The roll's hint reads quickly and lets the fight's lines through",
+        "In French a number stays with its unit and a mark with its word, on the web too"
+      ]
+    },
+    {
       "version": "0.363.0",
       "date": "2026-11-13",
       "codename": "Make Way",

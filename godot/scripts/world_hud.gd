@@ -38,6 +38,8 @@ const HERO_BODY := Rect2(-8, -16, 16, 22)
 ## pill holding "Next" and the step.
 var objective_box: PanelContainer
 var objective_label: Label
+## Its "Next" tag, kept to size with its words (World.apply_video).
+var objective_tag: Label
 ## The nameplate over the signed door the hero walks up to (ShopSign).
 var nameplate: PanelContainer
 var nameplate_door := Vector2i(-1, -1)
@@ -134,7 +136,8 @@ func build() -> void:
 	objective_row.add_theme_constant_override("separation", 8)
 	objective_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	objective_box.add_child(objective_row)
-	objective_row.add_child(UiStyle.plate_tag("Next"))
+	objective_tag = UiStyle.plate_tag("Next")
+	objective_row.add_child(objective_tag)
 	objective_label = UiStyle.plate_text("")
 	objective_row.add_child(objective_label)
 	# Centred over the dock whatever the step's length.

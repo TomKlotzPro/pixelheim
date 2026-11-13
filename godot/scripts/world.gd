@@ -878,8 +878,11 @@ func apply_video() -> void:
 	# Large reading text (PIX-160) applies at once to what's on the HUD.
 	if messages != null and messages.message_label != null:
 		UiStyle.sized(messages.message_label, UiStyle.reading(16))
+		# Their tags the size of their words (PIX-471).
+		UiStyle.sized(messages.message_tag, UiStyle.reading(16), true)
 		messages.message_box.reset_size()
 		UiStyle.sized(hud.objective_label, UiStyle.reading(16))
+		UiStyle.sized(hud.objective_tag, UiStyle.reading(16), true)
 		hud.objective_box.reset_size()
 	if settings.scanlines and crt == null:
 		crt = CanvasLayer.new()

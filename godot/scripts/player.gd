@@ -570,7 +570,8 @@ func _unleash(skill: Dictionary, targets: Array) -> void:
 		if skill.get("cleanse", false) and not ailments.kinds().is_empty():
 			ailments.clear()
 			_show_ailment()
-			world.messages.log_line("All ailments are purged!")
+			# Said as they go, and not once a new one has landed (PIX-476).
+			world.messages.log_now("All ailments are purged!", func() -> bool: return ailments.kinds().is_empty())
 		# Its own strips round the hero, the soft glow without them; the
 		# ground lit either way.
 		var shown: bool = world.fx.skills.cast(skill, self, [])
