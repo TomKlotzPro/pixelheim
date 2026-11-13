@@ -19761,6 +19761,10 @@ msgid "1 skill"
 msgstr "1 compétence"
 
 #: scripts/world_interaction.gd
+msgid "A night in the tent costs %d gold. Press {key:interact} again to sleep."
+msgstr "Une nuit sous la tente coûte %d or. Appuyez à nouveau sur {key:interact} pour dormir."
+
+#: scripts/world_interaction.gd
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. Press {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. Appuyez à nouveau sur {key:interact} pour l'acheter."
 

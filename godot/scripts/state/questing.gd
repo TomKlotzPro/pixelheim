@@ -95,6 +95,11 @@ func finish_dialogue(npc_id: String, heard := true) -> void:
 	# The first word with Maren after the night is her tin (PIX-253): the
 	# letters, and nothing else asked or handed in that time. Once the four
 	# keepsakes are home, her confession gives the fifth (step 8).
+	# Left before its end (Esc), the tin stays shut and her confession untold:
+	# the next word with her is the same one (PIX-486).
+	if npc_id == "elder" and not heard and (Letters.tin_waits(owner.progression) or Letters.fifth_due(owner.progression, owner.settlement)):
+		owner.dialogue_closed.emit(npc_id)
+		return
 	var said := open_tin() if npc_id == "elder" else ""
 	if said == "" and npc_id == "elder":
 		said = hear_out()

@@ -5,6 +5,8 @@ extends GutTest
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const DialogueBox := preload("res://scripts/dialogue_box.gd")
+const ShopScreen := preload("res://scripts/shop_screen.gd")
+const BankScreen := preload("res://scripts/bank_screen.gd")
 const QUEST := "herbs_for_vex"
 const VEX := "alchemist_vex"
 
@@ -67,18 +69,58 @@ func test_e_pressed_on_after_a_talk_does_not_buy() -> void:
 	assert_eq(counter.bought, 1, "a press after a pause is meant")
 
 
-func test_e_held_across_the_talks_end_does_not_buy() -> void:
+func test_a_fresh_e_just_after_the_talks_end_does_not_buy() -> void:
 	_talk().close()
 	var counter := _counter()
-	# A key held sends echoes, never a second press.
-	var held := InputEventKey.new()
-	held.keycode = KEY_E
-	held.physical_keycode = KEY_E
-	held.pressed = true
-	held.echo = true
-	await _past_the_moment()
-	counter._unhandled_input(held)
-	assert_eq(counter.bought, 0)
+	counter._unhandled_input(_press(&"interact"))
+	assert_eq(counter.bought, 0, "a press, not an echo, inside the moment")
+
+
+# ---- E at a reading pace ---------------------------------------------------------
+
+func test_the_counter_opens_with_no_row_chosen() -> void:
+	var kept_stall: String = GameState.trade.stall_shop
+	var kept_gold: int = GameState.pack.gold
+	var kept_items: Dictionary = GameState.pack.items.duplicate()
+	GameState.trade.stall_shop = Economy.shop_at("town_shop")
+	GameState.pack.gold = 30
+	var counter: Screen = ShopScreen.new()
+	add_child_autofree(counter)
+	assert_true(counter.resting)
+	# Every press past the moment: a reader's pace, one E a second.
+	counter._unhandled_input(_press(&"interact"))
+	assert_false(counter.resting, "the first E chooses the first row")
+	assert_eq(counter.selected, 0)
+	assert_eq(GameState.pack.gold, 30, "and buys nothing")
+	counter._unhandled_input(_press(&"interact"))
+	assert_lt(GameState.pack.gold, 30, "E on a row chosen buys")
+	GameState.trade.stall_shop = kept_stall
+	GameState.pack.gold = kept_gold
+	GameState.pack.items = kept_items
+
+
+func test_up_or_down_first_chooses_the_first_row() -> void:
+	var kept_stall: String = GameState.trade.stall_shop
+	GameState.trade.stall_shop = Economy.shop_at("town_shop")
+	var counter: Screen = ShopScreen.new()
+	add_child_autofree(counter)
+	counter._unhandled_input(_press(&"move_down"))
+	assert_false(counter.resting)
+	assert_eq(counter.selected, 0, "chosen, not passed over")
+	counter._unhandled_input(_press(&"move_down"))
+	assert_eq(counter.selected, 1)
+	GameState.trade.stall_shop = kept_stall
+
+
+func test_a_ledger_opens_with_no_row_chosen() -> void:
+	var kept: int = GameState.pack.gold
+	GameState.pack.gold = 100
+	var bank: Screen = BankScreen.new()
+	add_child_autofree(bank)
+	bank._unhandled_input(_press(&"interact"))
+	assert_eq(GameState.pack.gold, 100, "the first E only chooses")
+	assert_false(bank.resting)
+	GameState.pack.gold = kept
 
 
 func test_esc_and_the_arrows_are_never_held_back() -> void:
@@ -121,3 +163,18 @@ func test_the_box_says_whether_it_was_heard_out() -> void:
 	box._unhandled_input(_press(&"ui_cancel"))
 	assert_true(box.is_queued_for_deletion(), "Esc leaves on line 1 of 3")
 	assert_eq(quests, before, "and takes nothing")
+
+
+func test_marens_tin_left_with_esc_stays_shut() -> void:
+	var state: Node = autofree(GameStateScript.new())
+	state.progression.prologue = Prologue.DONE
+	assert_true(Letters.tin_waits(state.progression), "the tin waits")
+	var said: Array[String] = []
+	state.message.connect(func(text: String) -> void: said.append(text))
+	state.questing.finish_dialogue("elder", false)
+	assert_true(Letters.tin_waits(state.progression), "left with Esc: still shut")
+	assert_eq(state.progression.quests, {}, "no letter, no ask taken")
+	assert_eq(said, [] as Array[String])
+	state.questing.finish_dialogue("elder")
+	assert_false(Letters.tin_waits(state.progression), "heard to the end: opened")
+	assert_false(state.progression.quests.is_empty())

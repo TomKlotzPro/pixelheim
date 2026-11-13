@@ -50,6 +50,10 @@ var start_tab := ""
 ## shop's own greeting.
 var greeting := ""
 var selected := 0
+## No row chosen yet, as the counter opens (PIX-486): the first E, or up or
+## down, only chooses one, as a question's answers wait (PIX-215), so the E
+## that read a talk at any pace buys nothing.
+var resting := true
 ## Where each tab's choice stood: Buy and Sell keep theirs across A/D.
 var _chosen := {}
 var rows: Array[Dictionary] = []
@@ -253,6 +257,10 @@ func _command(event: InputEvent) -> Callable:
 			return _pick.bind(_stack_count())
 		return Callable()
 	var command := Callable()
+	if resting:
+		for action: String in ["move_up", "move_down", "interact"]:
+			if event.is_action_pressed(action):
+				return _select.bind(selected)
 	if event.is_action_pressed("move_left"):
 		command = _switch.bind(tab - 1)
 	elif event.is_action_pressed("move_right"):
@@ -306,6 +314,7 @@ func _switch(index: int) -> void:
 	_chosen[tabs[tab]] = selected
 	tab = wrapi(index, 0, tabs.size())
 	selected = int(_chosen.get(tabs[tab], 0))
+	resting = false
 	amount = 0
 	asking_junk = false
 	status.text = ""
@@ -331,6 +340,7 @@ func _select(index: int) -> void:
 	if rows.is_empty():
 		return
 	selected = clampi(index, 0, rows.size() - 1)
+	resting = false
 	amount = 0
 	asking_junk = false
 	_refresh()
@@ -559,11 +569,11 @@ func _refresh() -> void:
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))
 	# The chosen tab's list, and at Buy and Sell the other beside it.
 	var side := 1 if tabs[tab] == "Sell" else 0
-	_fill(side, tabs[tab], rows, selected)
+	_fill(side, tabs[tab], rows, -1 if resting else selected)
 	if _paired():
 		var other: String = PAIRED[1 - side]
 		_fill(1 - side, other, _rows_for(other), -1)
-	_show(rows[selected] if not rows.is_empty() else {})
+	_show(rows[selected] if not (rows.is_empty() or resting) else {})
 	if not rows.is_empty():
 		# Deferred until layout. Old rows leave the list at once on refresh, so
 		# looking the row up by index then always finds the current one.

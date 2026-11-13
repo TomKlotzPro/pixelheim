@@ -97,7 +97,7 @@ func _holdings() -> void:
 
 
 func _chosen_project() -> Dictionary:
-	if rows.is_empty() or selected >= rows.size():
+	if rows.is_empty() or resting or selected >= rows.size():
 		return {}
 	var chosen := String(rows[selected].get("project", ""))
 	for found: Dictionary in [Town.project(chosen), Town.work(chosen), Town.commission(chosen)]:
