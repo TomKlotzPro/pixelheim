@@ -245,6 +245,10 @@ var _route_next := 0
 var _route_to := NO_CELL
 var _route_left := 0.0
 var _straight := true
+## Somebody stood in its way (PIX-475: a villager by the well, a hen): the
+## cells they stand on, and until when it goes round them.
+var _shut: Array[Vector2i] = []
+var _shut_until := -100.0
 var _grid: AStarGrid2D
 var _grid_map: MapData
 ## Whether it had a way to the hero when last asked, and until when that
@@ -939,9 +943,9 @@ func held_to_fight() -> bool:
 	return _hunts_wagon() or has_meta("prologue") or has_meta("prologue_wave") or has_meta("bells_wave") or woken
 
 
-## At the hero (straight, or a boss by its way round: _heading); in reach,
-## a flash tells the bite, which lands if the hero is still close when the
-## tell is done.
+## At the hero, or its place in the ring round them, by its way round what
+## stands between (_toward); in reach, a flash tells the bite, which lands if
+## the hero is still close when the tell is done.
 func _chase(to_player: Vector2, delta: float) -> void:
 	if not shot.is_empty() and _shoots(to_player, delta):
 		return
@@ -950,7 +954,7 @@ func _chase(to_player: Vector2, delta: float) -> void:
 		# Its place in the ring round the hero (PIX-377), slowing onto it,
 		# and once there facing them.
 		var to_spot := spot - global_position
-		velocity = to_spot.limit_length(CHASE_SPEED * pace * delta) / delta
+		velocity = _toward(to_spot, delta).limit_length(CHASE_SPEED * pace * delta) / delta
 		if to_spot.length() < 1.0:
 			facing = Gait.steer(facing, to_player)
 	else:
@@ -1169,12 +1173,15 @@ static func gives_up(fighter: Dictionary, home_at: Vector2, at: Vector2, hero: V
 ## has lost the hero, had no way to them, or stood stuck, each a while; or,
 ## one of the wilds, the hero has led it out of its ground (Packs.strays).
 ## Never in the moments after a blow, and never one sent at an escort's
-## wagon. Any other foe answers to gives_up.
+## wagon. Any other foe answers to gives_up, and goes home too once it has
+## had no way to the hero a while (PIX-475).
 ## Old Greymaw hunted a hero gone far across the Reach, his bar across the
 ## screen and every road out barred for as long as he lived.
 func _lets_go(delta: float) -> bool:
-	if not boss_like or _hunts_wagon():
+	if _hunts_wagon():
 		return false
+	if not boss_like:
+		return blocked_for > BLOCKED_SECONDS
 	var hero: Vector2 = world.player.global_position
 	lost_for = lost_for + delta if Packs.lost(global_position, hero) else 0.0
 	if GameClock.seconds() < bound_until:
@@ -1193,36 +1200,51 @@ func _fresh_hunt() -> void:
 	_route.clear()
 	_route_to = NO_CELL
 	_route_left = 0.0
+	_shut_until = -100.0
 
 
 ## Which way to head for what lies `to_target` away, a unit vector (ZERO
-## for no way): straight at it, or, for a boss or a named monster (PIX-288),
-## by the next step of its way round what stands between. With no way at
-## all it stands and watches, and that counts toward giving up.
+## for no way).
 func _heading(to_target: Vector2, delta: float) -> Vector2:
-	if not boss_like or to_target.length() <= bite_lands(to_target):
+	return _toward(to_target, delta).normalized()
+
+
+## The step toward what lies `to_target` away (ZERO for no way): straight
+## at it, or by the next cell of its way round what stands between
+## (PIX-288). With no way at all it stands and watches, and that counts
+## toward giving up. Every foe's (PIX-475), to the hero, to its place in the
+## ring and home: a goblin whose place lay past the village well walked
+## straight at it and stood pressed against the well, chasing, for 20 s.
+func _toward(to_target: Vector2, delta: float) -> Vector2:
+	if to_target.length() <= bite_lands(to_target):
 		blocked_for = 0.0
-		return to_target.normalized()
+		return to_target
 	var way := _way(to_target, delta)
 	blocked_for = blocked_for + delta if way == Vector2.ZERO else 0.0
-	return way.normalized()
+	return way
 
 
 ## Where to step for what lies `to_target` away: straight at it while the
 ## line is open, else toward the next cell of a way round (Packs.route),
 ## found again every ROUTE_EVERY seconds, when the target changes cell, or
-## once it stands stuck; ZERO when there is none.
+## once it stands stuck; ZERO when there is none. Stuck, it keeps to a way
+## round for HELD_SECONDS, and round whoever it stood against (_in_the_way).
 func _way(to_target: Vector2, delta: float) -> Vector2:
 	var here := Packs.cell_of(global_position)
 	var there := Packs.cell_of(global_position + to_target)
+	var now := GameClock.seconds()
+	var stuck := held_for > HELD_REROUTE and now >= _shut_until
 	_route_left -= delta
-	if _route_left <= 0.0 or there != _route_to or (_straight and held_for > HELD_REROUTE):
+	if _route_left <= 0.0 or there != _route_to or stuck:
+		if stuck:
+			_shut = _in_the_way()
+			_shut_until = now + HELD_SECONDS
 		_route_left = ROUTE_EVERY
 		_route_to = there
-		_straight = held_for <= HELD_REROUTE and Packs.walks_straight(world.map, global_position, global_position + to_target)
+		_straight = now >= _shut_until and Packs.walks_straight(world.map, global_position, global_position + to_target)
 		_route.clear()
 		if not _straight:
-			_route = _plan(here, there)
+			_route = _plan(here, there, _shut if now < _shut_until else ([] as Array[Vector2i]))
 		# From the middle of the cell it stands in, unless it can step
 		# straight on to the next one from where it is (no step back).
 		_route_next = 1 if _route.size() > 1 and Packs.walks_straight(world.map, global_position, Packs.middle(_route[1])) else 0
@@ -1239,14 +1261,42 @@ func _way(to_target: Vector2, delta: float) -> Vector2:
 	return Packs.middle(_route[_route_next]) - global_position
 
 
-## A way from `from` to `to` (cells) over the open ground round both, or []:
-## the grid is kept while the map and the area it needs hold.
-func _plan(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
+## The cells under whoever its last move ran into, none for nobody: a
+## villager, an animal - the map knows no cell of theirs as shut. Never a
+## packmate (it moves on, and in a corridor the one behind waits its turn),
+## nor the hero, nor the map's own walls and props (shut already).
+func _in_the_way() -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	for i in get_slide_collision_count():
+		var hit := get_slide_collision(i)
+		var body := hit.get_collider() as PhysicsBody2D
+		var shape := hit.get_collider_shape() as CollisionShape2D
+		if body == null or shape == null or body == world.player or body.is_in_group("mobs") or not (body is CharacterBody2D or body is AnimatableBody2D):
+			continue
+		var under: Rect2 = shape.shape.get_rect()
+		var from := Packs.cell_of(shape.global_position + under.position)
+		var to := Packs.cell_of(shape.global_position + under.end - Vector2(0.01, 0.01))
+		for y in range(from.y, to.y + 1):
+			for x in range(from.x, to.x + 1):
+				cells.append(Vector2i(x, y))
+	return cells
+
+
+## A way from `from` to `to` (cells) over the open ground round both and
+## over none of `shut`, or []: the grid is kept while the map and the area
+## it needs hold.
+func _plan(from: Vector2i, to: Vector2i, shut: Array[Vector2i] = []) -> Array[Vector2i]:
 	var area := Packs.route_area(from, to, ROUTE_MARGIN).intersection(Rect2i(Vector2i.ZERO, world.map.size))
 	if _grid == null or _grid_map != world.map or not _grid.region.encloses(area):
 		_grid = Packs.route_grid(world.map, area.grow(ROUTE_SLACK))
 		_grid_map = world.map
+	# Shut for this one look, then as they were.
+	var shuts := shut.filter(func(cell: Vector2i) -> bool: return _grid.is_in_boundsv(cell) and not _grid.is_point_solid(cell))
+	for cell: Vector2i in shuts:
+		_grid.set_point_solid(cell)
 	var way := Packs.route(_grid, from, to)
+	for cell: Vector2i in shuts:
+		_grid.set_point_solid(cell, false)
 	# The grid kept may reach past this area: a way round further is no way.
 	for cell in way:
 		if not area.has_point(cell):
@@ -1255,13 +1305,10 @@ func _plan(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 	return way
 
 
-## Whether this foe has a way to the hero `to_player` away: always for a
-## pack's, but a boss or a named monster with none (PIX-288: across the
-## river, behind the wall) takes up no chase it would only give up - it
-## watches. Asked twice a second at most.
+## Whether this foe has a way to the hero `to_player` away: one with none
+## (PIX-288: across the river, behind the wall) takes up no chase it would
+## only give up - it watches. Asked twice a second at most.
 func _can_reach(to_player: Vector2) -> bool:
-	if not boss_like:
-		return true
 	var now := GameClock.seconds()
 	if now >= _reach_until:
 		_reach_until = now + ROUTE_EVERY
@@ -1271,11 +1318,11 @@ func _can_reach(to_player: Vector2) -> bool:
 
 
 ## Whether it stood stuck this tick (PIX-288), counted while it presses on
-## and gets nowhere: a boss chasing (not in reach, not telling a bite), any
-## foe walking home - which, stuck long enough, is home at last.
+## and gets nowhere: chasing (not in reach, not telling a bite) or walking
+## home - where, stuck long enough, it is home at last.
 func _measure_held(walk: Vector2, to_player: Vector2, delta: float) -> void:
 	var pressing := walk.length() > 1.0
-	if mode == "chase" and boss_like:
+	if mode == "chase":
 		pressing = pressing and tell_left < 0 and to_player.length() > bite_lands(to_player)
 		held_for = held_for + delta if pressing and get_real_velocity().length() < CHASE_SPEED * pace * 0.25 else 0.0
 	elif mode == "homeward":
