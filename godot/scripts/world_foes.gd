@@ -250,15 +250,22 @@ func _process(_delta: float) -> void:
 		rects.append((shown[index].level_tag as Control).get_global_rect())
 	var keep := Foes.apart(rects, TAG_MARGIN)
 	var reserved: Array[Rect2] = []
+	var made_way := false
 	for index in kept.size():
 		if keep[index]:
 			# One that made way for the hero (Enemy.make_way) holds no place.
 			if kept[index].level_tag.modulate.a > 0.5:
 				reserved.append(rects[index])
+			else:
+				made_way = true
 		else:
 			kept[index].level_tag.visible = false
 	if fighting:
 		most_tags = maxi(most_tags, reserved.size())
+	# The hero it made way for holds it instead: a blow's number steps up
+	# clear of them (PIX-469: it sat over the hero's legs and chest).
+	if made_way:
+		reserved.append(Rect2(hero + HERO.position, HERO.size))
 	world.fx.keep_clear(reserved, world.hud.plates_over())
 
 

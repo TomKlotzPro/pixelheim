@@ -399,16 +399,17 @@ func _ready() -> void:
 	add_child(level_tag)
 
 
-## The words over its head (its level tag, the ailments beside it, a named
-## foe's name) make way while the hero, feet at `hero`, stands under them
-## (PIX-469: over every actor, the plate hid a hero in the cell above the
-## foe), fading out and back in a few frames.
+## What stands over its head (its level tag, the ailments beside it, a named
+## foe's name, its health bar) makes way while the hero, feet at `hero`,
+## stands under the words (PIX-469: over every actor, the plate hid a hero
+## in the cell above the foe, and the bar crossed them), fading out and back
+## in a few frames: by its alpha, so what shows and hides each still does.
 func make_way(hero: Vector2, delta: float) -> void:
 	if level_tag == null:
 		return
 	var under := Foes.hero_under(level_tag.get_global_rect(), hero) or (name_plate != null and Foes.hero_under(name_plate.get_global_rect(), hero))
 	var alpha := move_toward(level_tag.modulate.a, 0.0 if under else 1.0, delta / MAKE_WAY_S)
-	for words: CanvasItem in [level_tag, name_plate, _ailment_row]:
+	for words: CanvasItem in [level_tag, name_plate, _ailment_row, health_bar, health_bar_back]:
 		if words != null:
 			words.modulate.a = alpha
 
@@ -1091,8 +1092,12 @@ func _loose(to_player: Vector2) -> void:
 	# The way the shot goes, not the way it faced as it took aim (PIX-470:
 	# its gun flashed to the left of a ball flying up).
 	facing = Gait.dir_of(to_player)
-	_play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
+	var drawn := sprite.sprite_frames.has_animation("attack_" + facing)
+	_play("attack" if drawn else "sword")
 	var bolt := Firebolt.new()
+	# A sheet's own attack has its gun's flash drawn in (the gunner's): a
+	# second one from the chest a frame before it read as two shots.
+	bolt.flash = not drawn
 	bolt.world = world
 	bolt.caster = fighter.duplicate()
 	bolt.look = String(shot["look"])

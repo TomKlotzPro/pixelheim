@@ -31,6 +31,9 @@ var flown := 0.0
 ## How far it flies, and what it looks like (flame, arrow or ball).
 var flies := RANGE
 var look := "flame"
+## Whether a ball leaves a flash behind it (_flash): for a shooter whose
+## sheet draws none of its own.
+var flash := false
 
 
 func _ready() -> void:
@@ -51,7 +54,8 @@ func _ready() -> void:
 				add_child(plain(look, heading))
 		"ball":
 			add_child(plain(look, heading))
-			_flash()
+			if flash:
+				_flash()
 		_:
 			var frames := ItemIcons.effect("flame", 14.0)
 			if frames != null:
@@ -102,8 +106,8 @@ static func _dot(color: Color, size: Vector2, at: Vector2) -> ColorRect:
 
 
 ## A gun's flash where the ball leaves it, pointing the way the ball goes
-## (PIX-470: the gunner's own, drawn four ways, pointed left of a ball
-## flying up), left behind as the ball flies and gone in a moment.
+## (PIX-470), left behind as the ball flies and gone in a moment. Only for
+## a shooter with no attack drawn (`flash`): the gunner's sheet has its own.
 func _flash() -> void:
 	var flash := Polygon2D.new()
 	flash.polygon = PackedVector2Array([Vector2(3, 0), Vector2(5, -3), Vector2(12, 0), Vector2(5, 3)])

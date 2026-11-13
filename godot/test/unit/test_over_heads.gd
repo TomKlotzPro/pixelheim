@@ -5,6 +5,81 @@ extends GutTest
 ## frame, and a foe's shot flies over them, a few pixels of it.
 
 const TILE := 16.0
+const Enemy := preload("res://scripts/enemy.gd")
+
+
+class StubHud extends RefCounted:
+	func plates_over() -> Array[Rect2]:
+		return []
+
+
+## What Foes' pass over the words asks of the world.
+class StubWorld extends Node2D:
+	var player := Node2D.new()
+	var map: RefCounted = null
+	## Out of the tree: it has no world to follow.
+	var camera_rig := CameraRig.new()
+	var fx := WorldFx.new()
+	var hud := StubHud.new()
+
+	func _init() -> void:
+		for part: Node in [player, fx]:
+			add_child(part)
+
+
+## A real foe, its feet at `at` (as test_foes_rest's), its tag laid out.
+func _foe(at: Vector2) -> Node:
+	var foe: Node = Enemy.new()
+	foe.fighter = Bestiary.spawn("slime")
+	add_child_autofree(foe)
+	foe.set_physics_process(false)
+	foe.global_position = at
+	foe.add_to_group("mobs")
+	await wait_process_frames(2)
+	return foe
+
+
+## The real tag and bar over a real foe (PIX-469): gone with the hero in the
+## cell above, back with the hero below.
+func test_a_foes_tag_and_bar_make_way_for_the_hero_above_it() -> void:
+	var foe: Node = await _foe(Vector2(200, 200))
+	var over: Array = [foe.level_tag, foe.health_bar, foe.health_bar_back]
+	assert_gt(foe.level_tag.get_global_rect().size.y, 0.0, "a tag laid out")
+	for step in 3:
+		foe.make_way(foe.global_position + Vector2(0, -TILE), 0.2)
+	for words: CanvasItem in over:
+		assert_eq(words.modulate.a, 0.0, "gone under the hero")
+	for step in 3:
+		foe.make_way(foe.global_position + Vector2(0, TILE), 0.2)
+	for words: CanvasItem in over:
+		assert_eq(words.modulate.a, 1.0, "back with the hero below")
+
+
+## Foes' pass asks each foe to make way, and holds the hero's figure in the
+## faded tag's place: a blow's number steps up clear of the hero.
+func test_the_pass_fades_the_tag_and_keeps_numbers_off_the_hero() -> void:
+	var world := StubWorld.new()
+	add_child_autofree(world)
+	autofree(world.camera_rig)
+	var foes := Foes.new()
+	foes.world = world
+	foes.set_process(false)
+	world.add_child(foes)
+	var foe: Node = await _foe(Vector2(200, 200))
+	foe.level_tag.visible = true
+	world.player.global_position = foe.global_position + Vector2(0, -TILE)
+	for step in 3:
+		foes._process(0.2)
+	assert_eq(foe.level_tag.modulate.a, 0.0, "the pass made the tag make way")
+	var hero := Rect2(world.player.global_position + Foes.HERO.position, Foes.HERO.size)
+	world.fx.float_number(14, foe.global_position + Vector2(0, -20), Color.WHITE)
+	assert_eq(world.fx.shown().size(), 1)
+	for word in world.fx.shown():
+		assert_false(word.intersects(hero), "%s clear of the hero %s" % [word, hero])
+	world.player.global_position = foe.global_position + Vector2(0, TILE)
+	for step in 3:
+		foes._process(0.2)
+	assert_eq(foe.level_tag.modulate.a, 1.0, "and back")
 
 
 ## A foe's tag as Enemy lays it out, over its head: the foe's feet at `at`.
@@ -34,6 +109,13 @@ func test_what_rises_and_flies_is_drawn_over_the_tags() -> void:
 	bolt.set_physics_process(false)
 	add_child_autofree(bolt)
 	assert_gt(bolt.z_index, Foes.TAG_Z, "a shot over the tags")
+	assert_false(bolt.get_children().any(func(part: Node) -> bool: return part is Polygon2D), "no flash of its own: the gunner's sheet draws one")
+	var plain := Firebolt.new()
+	plain.look = "ball"
+	plain.flash = true
+	plain.set_physics_process(false)
+	add_child_autofree(plain)
+	assert_true(plain.get_children().any(func(part: Node) -> bool: return part is Polygon2D), "a flash for a shooter with no attack drawn")
 
 
 ## The number began behind the plate and stepped up a frame late: a blow
