@@ -102,4 +102,6 @@ func _open() -> void:
 	closing_actions = [&"stats"]
 	# On the stat the weapon asks for, whatever the role (PIX-442).
 	selected = maxi(0, Skills.STATS.find(HeroRules.weapon_stat(GameState.pack)))
+	# Opened by its own key, never by a talk's E: its row is chosen (PIX-486).
+	resting = false
 	super()

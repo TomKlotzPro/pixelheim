@@ -18417,6 +18417,10 @@ msgid "Buy the deed"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "Choose something to see what it is."
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "Damage %d"
 msgstr ""
 

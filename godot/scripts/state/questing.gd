@@ -97,12 +97,12 @@ func finish_dialogue(npc_id: String, heard := true) -> void:
 	# keepsakes are home, her confession gives the fifth (step 8).
 	# Left before its end (Esc), the tin stays shut and her confession untold:
 	# the next word with her is the same one (PIX-486).
-	if npc_id == "elder" and not heard and (Letters.tin_waits(owner.progression) or Letters.fifth_due(owner.progression, owner.settlement)):
-		owner.dialogue_closed.emit(npc_id)
-		return
-	var said := open_tin() if npc_id == "elder" else ""
-	if said == "" and npc_id == "elder":
-		said = hear_out()
+	# What is ready for her is still handed in.
+	var said := ""
+	if npc_id == "elder" and heard:
+		said = open_tin()
+		if said == "":
+			said = hear_out()
 	# A letter carried to this villager is theirs as the talk ends; then a
 	# piece of the Post's for them (PIX-320).
 	if said == "":

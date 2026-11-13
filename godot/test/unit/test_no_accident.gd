@@ -7,6 +7,9 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 const DialogueBox := preload("res://scripts/dialogue_box.gd")
 const ShopScreen := preload("res://scripts/shop_screen.gd")
 const BankScreen := preload("res://scripts/bank_screen.gd")
+const ThroneScreen := preload("res://scripts/throne_screen.gd")
+const StatsScreen := preload("res://scripts/stats_screen.gd")
+const BountyScreen := preload("res://scripts/bounty_screen.gd")
 const QUEST := "herbs_for_vex"
 const VEX := "alchemist_vex"
 
@@ -87,6 +90,7 @@ func test_the_counter_opens_with_no_row_chosen() -> void:
 	var counter: Screen = ShopScreen.new()
 	add_child_autofree(counter)
 	assert_true(counter.resting)
+	assert_ne(counter.detail.text, "", "its card says to choose, not a blank page")
 	# Every press past the moment: a reader's pace, one E a second.
 	counter._unhandled_input(_press(&"interact"))
 	assert_false(counter.resting, "the first E chooses the first row")
@@ -121,6 +125,27 @@ func test_a_ledger_opens_with_no_row_chosen() -> void:
 	assert_eq(GameState.pack.gold, 100, "the first E only chooses")
 	assert_false(bank.resting)
 	GameState.pack.gold = kept
+
+
+func test_morvaxs_question_waits_for_an_arrow() -> void:
+	var ask: Screen = ThroneScreen.new()
+	add_child_autofree(ask)
+	assert_eq(ask.info.text, String(Homecoming.data()["waiting"]), "no answer's outcome said before one is chosen")
+	ask._unhandled_input(_press(&"interact"))
+	ask._unhandled_input(_press(&"interact"))
+	assert_true(ask.resting, "E chooses no answer")
+	assert_false(ask.is_queued_for_deletion(), "and gives none")
+	ask._unhandled_input(_press(&"move_down"))
+	assert_string_contains(ask.info.text, String(Homecoming.choices()[0]["detail"]))
+	ask._unhandled_input(_press(&"interact"))
+	assert_true(ask.is_queued_for_deletion(), "E on an answer chosen gives it")
+
+
+func test_the_stats_and_the_board_open_on_a_row() -> void:
+	for script: Script in [StatsScreen, BountyScreen]:
+		var sheet: Screen = script.new()
+		add_child_autofree(sheet)
+		assert_false(sheet.resting, "no talk's E opens it, and its card speaks of its row")
 
 
 func test_esc_and_the_arrows_are_never_held_back() -> void:
@@ -178,3 +203,14 @@ func test_marens_tin_left_with_esc_stays_shut() -> void:
 	state.questing.finish_dialogue("elder")
 	assert_false(Letters.tin_waits(state.progression), "heard to the end: opened")
 	assert_false(state.progression.quests.is_empty())
+
+
+func test_marens_confession_left_with_esc_stays_untold() -> void:
+	var state: Node = autofree(GameStateScript.new())
+	state.progression.prologue = Prologue.DONE
+	state.mark_seen(Letters.scene_id())
+	state.progression.quests[Relics.quest_id()] = {"progress": 4, "done": true}
+	assert_true(Letters.fifth_due(state.progression, state.settlement), "her confession is due")
+	state.questing.finish_dialogue("elder", false)
+	assert_true(Letters.fifth_due(state.progression, state.settlement), "left with Esc: still to tell")
+	assert_false(state.progression.quests.has(Letters.fifth_quest()["id"]), "and the fifth letter not given")

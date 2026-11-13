@@ -204,7 +204,7 @@ func interact() -> void:
 				# asks first (PIX-486), as a big buy does.
 				var night := Town.rest_cost_for(GameState.town_tier())
 				if GameState.pack.gold >= night and not _asked_twice("night"):
-					world.messages.flash(Controls.say(Text.t("A night in the tent costs %d gold. Press {key:interact} again to sleep.") % night))
+					world.messages.ask(Controls.say(Text.t("A night in the tent costs %d gold. Press {key:interact} again to sleep.") % night))
 				else:
 					_sleep_at_inn()
 			else:

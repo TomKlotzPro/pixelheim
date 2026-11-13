@@ -587,7 +587,8 @@ func _refresh() -> void:
 	if _paired():
 		var other: String = PAIRED[1 - side]
 		_fill(1 - side, other, _rows_for(other), -1)
-	_show(rows[selected] if not (rows.is_empty() or resting) else {})
+	# No row chosen yet (PIX-486): the card says so, not a blank page.
+	_show({} if rows.is_empty() else {"detail": Text.t("Choose something to see what it is.")} if resting else rows[selected])
 	if not rows.is_empty():
 		# Deferred until layout. Old rows leave the list at once on refresh, so
 		# looking the row up by index then always finds the current one.
@@ -731,7 +732,7 @@ func _show(row: Dictionary) -> void:
 	var item_id: String = row.get("item_id", "")
 	var icon: String = row.get("icon", "")
 	var piece: Dictionary = row.get("piece", {})
-	card_head.visible = paired and not row.is_empty()
+	card_head.visible = paired and row.has("label")
 	card_icon.texture = ItemIcons.texture(icon) if icon != "" else null
 	card_icon.visible = icon != ""
 	card_name.text = String(row.get("label", ""))
@@ -773,7 +774,7 @@ func _show(row: Dictionary) -> void:
 				_coins(after_row, "Gold after", gold - sum if buying else gold + sum, UiStyle.INK)
 		picked.text = "%d / %d" % [amount, _stack_count()]
 	detail.visible = detail.text != ""
-	act_button.visible = not row.is_empty()
+	act_button.visible = row.has("label")
 	var verb: String = Text.t(row.get("verb", ""))
 	if amount > 0:
 		verb = Text.t("Sell %d") % amount

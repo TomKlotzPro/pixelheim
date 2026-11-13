@@ -244,9 +244,10 @@ counter-mashed | --map town_shop --at 8,3 --keys w,e,e | open=shop_screen gold=3
 counter-read | --map town_shop --at 8,3 --keys w,e,wait,e | open=shop_screen gold=30 | rooms trade screen
 counter-buy | --map town_shop --at 8,3 --keys w,e,wait,e,wait,e | open=shop_screen gold=26 | rooms trade screen
 # Sela's tent on the burnt square asks before it sells a night: after her
-# talk (the slimes taken), an E at a reader's pace costs nothing, the next
-# one sleeps. And Maren's tin left with Esc stays shut: no letters taken.
-tent-asks | --map town --town-tier 0 --at 46,28 --keys w,e,e,e,e,wait,e | open=none gold=30 next=slimes | town trade quest
+# talk (the slimes taken), an E at a reader's pace costs nothing and the
+# price is on the plate at once, ahead of "Quest accepted"; the next one
+# sleeps. And Maren's tin left with Esc stays shut: no letters taken.
+tent-asks | --map town --town-tier 0 --at 46,28 --keys w,e,e,e,e,wait,e --lang en | open=none gold=30 next=slimes plate=A night in the tent.* | town trade quest
 tent-sleeps | --map town --town-tier 0 --at 46,28 --keys w,e,e,e,e,wait,e,wait,e | open=none gold=20 quill=[0-9]/[0-9]+ slept | town trade quest
 tin-left | --map town --town-tier 0 talk --keys e,esc | open=none next=tin | town story
 talk-left | --map town_alchemist talk --keys esc,wait,e | open=dialogue_box | rooms quest trade screen
@@ -449,7 +450,10 @@ choice | --map town choice --keys s,s,e --wait 0.5 | open=reveal_screen ending=s
 # on festival days on his bench.
 home-waits | --map town --bells 3 daybreak --keys esc,esc --wait 0.5 | map=town bells=done morvax=\(43, 24\) next=morvax_choice | story town
 home-ask | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e | map=town open=throne_screen next=morvax_choice | story town screen
-come-home | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,wait,e,e --wait 0.5 | open=reveal_screen ending=home morvax=\(43, 24\) bench | story town screen
+# E pressed on at a reader's pace answers nothing: only up or down chooses
+# an answer (PIX-486).
+home-ask-e | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,wait,e,wait,e | map=town open=throne_screen next=morvax_choice | story town screen
+come-home | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,wait,s,e --wait 0.5 | open=reveal_screen ending=home morvax=\(43, 24\) bench | story town screen
 stay-up | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,wait,s,s,e --wait 0.5 | open=reveal_screen ending=stay | story town screen
 credits | --map town --story ending_home credits --wait 1 --lang en | scene=ending_home credits=Thank you for staying\. | story screen
 morvax-bench | --map town --seen ending_home --wait 0.3 | map=town ending=home morvax=\(43, 24\) bench | story town
