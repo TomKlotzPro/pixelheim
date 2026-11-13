@@ -609,7 +609,11 @@ func _switch(index: int) -> void:
 func _select(index: int) -> void:
 	if rows.is_empty():
 		return
-	selected = wrapi(index, 0, rows.size())
+	var to := wrapi(index, 0, rows.size())
+	# A line said of one row isn't left under the next (PIX-472's refusals).
+	if to != selected:
+		status.text = ""
+	selected = to
 	_refresh()
 
 

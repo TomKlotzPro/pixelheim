@@ -431,7 +431,7 @@ func _start_tag() -> Control:
 	# A word, where a tag fits a count or a key: its last letter ran off.
 	tag.custom_minimum_size.x += 6
 	tag.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	tag.offset_left =-tag.custom_minimum_size.x
+	tag.offset_left = -tag.custom_minimum_size.x
 	tag.offset_top = -tag.custom_minimum_size.y
 	tag.offset_bottom = 0
 	pin.add_child(tag)
