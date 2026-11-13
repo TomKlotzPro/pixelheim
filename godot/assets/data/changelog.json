@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.361.0",
+      "date": "2026-11-13",
+      "codename": "The Long Way Round",
+      "notes": [
+        "Foes chasing you go round the well, the fountain or a villager in the way, instead of standing against it",
+        "A foe with no way to reach you gives up and walks home, and keeps its wounds"
+      ]
+    },
+    {
       "version": "0.360.0",
       "date": "2026-11-12",
       "codename": "Out of the Way",

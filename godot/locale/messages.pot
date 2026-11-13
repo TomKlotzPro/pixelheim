@@ -2293,6 +2293,10 @@ msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe with no way to reach you gives up and walks home, and keeps its wounds"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead of the same line down the page"
 msgstr ""
 
@@ -3778,6 +3782,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Foes chasing you go round the well, the fountain or a villager in the way, instead of standing against it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6478,6 +6486,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Letters tab no longer claims your satchel is empty while you carry the Chancellor's letter"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Long Way Round"
 msgstr ""
 
 #: assets/data/changelog.json
