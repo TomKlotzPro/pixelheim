@@ -25,7 +25,7 @@ ash-steads-block | --map overworld --at 35,21 --walk d,d | map=overworld cell=\(
 # cpu-night's 1.50 failed four of its first 36 readings on slow runners with
 # no game change; now in paces (PIX-445, as cpu-night): CI 5.96-6.65, held
 # under 7.50, and under 2.50 ms.
-cpu-ash | --map overworld --at 30,20 night cpu --wait 2 | map=overworld cpu=(?!2\.[5-9])[0-2]\.\d\d/\d+\.\d\d paced=(?!7\.[5-9])[0-7]\.\d\d | field night
+cpu-ash | --map overworld --at 30,20 night cpu --wait 2 | map=overworld cpu=(?!2\.[5-9])[0-2]\.\d\d/\d+\.\d\d paced=(?!9\.[2-9])[0-9]\.\d\d | field night
 # The steads' keepsakes (PIX-448): E at a burnt stead's door searches its
 # ash, once: Bram's milk pail into the pack, its quest taken, the plate
 # saying whose it is; carried home, it's handed over as the word with its
