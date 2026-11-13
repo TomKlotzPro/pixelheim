@@ -34,13 +34,6 @@ const float TILE = 16.0;
 // Shade's water spills about this far past its cells, so a bank's waterline
 // stands this far above the cells' edge.
 const float SPILL = 4.0;
-// Inland the bank is drawn inside its water's cells (PIX-467,
-// inland_water.gdshaderinc's BANK_IN and its wander): the mirror stands
-// where the bank lies nearest their edge, so the water mirrors from its
-// bank on wherever that wanders (what stands back from the water loses its
-// feet in the bank, as it would), and no water lies above the mirror to
-// show what stands below it upside down.
-const float INLAND_IN = 1.0;
 
 // Still water mirrors this much deeper and stronger, wavering less.
 const float STILL_REACH = 1.5;
@@ -70,10 +63,10 @@ void fragment() {
 	bool still = tone > 0 && code % 8 == 0;
 	COLOR = vec4(0.0);
 	if (water.r > 0.5 && looks_like_water(seen, tone)) {
-		float shore = (cell.y - round(water.g * 255.0)) * TILE + (tone == 0 ? -SPILL : INLAND_IN);
+		float shore = (cell.y - round(water.g * 255.0)) * TILE - SPILL;
 		float depth = px.y - shore;
 		float deepest = still ? reach * STILL_REACH : reach;
-		if (depth >= 0.0 && depth < deepest) {
+		if (depth < deepest) {
 			// A whole-pixel waver, so the mirrored art stays crisp.
 			float waver = floor(sin(px.y * 0.7 + world_time * 2.2) * (still ? 0.7 : 1.2) + 0.5);
 			vec2 mirrored = vec2(px.x + waver, shore - depth);

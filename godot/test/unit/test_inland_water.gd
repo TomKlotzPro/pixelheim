@@ -37,6 +37,43 @@ func _code(mask: Image, cell: Vector2i) -> int:
 	return roundi(mask.get_pixelv(cell).a * 255.0)
 
 
+## inland_water.gdshaderinc's `water_in` at `at` (mask pixels), read as its
+## sampler reads the mask: between four cells' middles, the edge's carried on.
+func _water_in(mask: Image, at: Vector2) -> float:
+	var spot := at / PunyTerrain.TILE - Vector2(0.5, 0.5)
+	var low := spot.floor()
+	var part := spot - low
+	var red := 0.0
+	var blue := 0.0
+	for dy in 2:
+		for dx in 2:
+			var texel := mask.get_pixelv((Vector2i(low) + Vector2i(dx, dy)).clamp(Vector2i.ZERO, mask.get_size() - Vector2i.ONE))
+			var weight := (part.x if dx == 1 else 1.0 - part.x) * (part.y if dy == 1 else 1.0 - part.y)
+			red += texel.r * weight
+			blue += texel.b * weight
+	return maxf(red, blue * 3.0)
+
+
+## The shader's `in_water` there, away from a bridge and a river's swing: how
+## many pixels inside the drawn bank `at` lies (below 0: on the land's side)
+## where the bank's wander bends it by `bend`; `lie` its `bank_lie`, `soft`
+## the mire's softening (its `water_red`).
+func _in_water(mask: Image, at: Vector2, bend: Vector2, lie: float, soft := 0.0) -> float:
+	var here := 0.0
+	for corner: Vector2 in [Vector2(-1, -1), Vector2(1, -1), Vector2(-1, 1), Vector2(1, 1)]:
+		here += 0.25 * _water_in(mask, at + bend + corner * soft)
+	return (here - 0.5) * PunyTerrain.TILE - lie
+
+
+## Every way a bank's wander can bend it, at its most and not at all.
+func _bends(wander: float) -> Array[Vector2]:
+	var bends: Array[Vector2] = []
+	for y: float in [-1.0, 0.0, 1.0]:
+		for x: float in [-1.0, 0.0, 1.0]:
+			bends.append(Vector2(x, y) * wander)
+	return bends
+
+
 func test_a_river_deepens_from_its_banks() -> void:
 	var mask := _mask(_river(20, 7), Vector2i(20, 9))
 	assert_eq(_depth(mask, Vector2i(10, 1)), 1, "by the bank")
@@ -187,8 +224,8 @@ func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
 	# a pixel lies from the mask's blue where its red is whole
 	# (inland_water.gdshaderinc's water_in), so a cell deeper than its bank
 	# touches no land, not even by a corner; and running or pooled water is
-	# two cells thick at the least, or its banks would meet (the hole in the
-	# ice, a cell thin, bends its own little).
+	# three cells thick at the least (the test below; the hole in the ice, a
+	# cell thin, bends its own little).
 	var shader := (load("res://shaders/inland_water.gdshaderinc") as ShaderInclude).code
 	assert_string_contains(shader, "return BANK_IN + bank_wander(tone);")
 	assert_string_contains(shader, "in_water = (here - 0.5) * CELL + mix(LANDING_IN, -bank_lie(tone), ease);", "the bank is drawn where it lies")
@@ -199,17 +236,13 @@ func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
 	assert_gte(rim, 1.0, "the bank's wet lip, a pixel, lies inside the water's cells")
 	assert_lt(_shader_number(shader, "LANDING_IN"), 0.0, "and under a bridge's planks")
 	assert_string_contains(shader, "-0.5, 0.5) * 2.0 * bank_wander(tone);", "a bank bends its wander at the most, so wandered all the way out it is still inside")
-	for wander: float in [_shader_number(shader, "BANK_WANDER"), _shader_number(shader, "MIRE_WANDER")]:
-		assert_gt(2.0 * PunyTerrain.TILE - 2.0 * (rim + 2.0 * wander), 0.0, "two banks wandered all the way in leave water between them, two cells apart")
-	assert_gt(PunyTerrain.TILE - 2.0 * (rim + 2.0 * _shader_number(shader, "ICE_WANDER")), 0.0, "and the banks of the hole in the ice, a cell apart")
 	# The river's swing brings a bank no further in than the bank's own
 	# wander can, so the hero stops no shorter of the water for it.
 	assert_eq(_shader_number(shader, "SWING_CAP"), rim + 2.0 * _shader_number(shader, "BANK_WANDER"))
-	# The mirror stands where a bank lies nearest its cells' edge, and
-	# nothing above it is mirrored (reflections.gdshader).
+	# The mirror stands where the sea's does, above the cells' edge, so no
+	# water lies above it (reflections.gdshader).
 	var mirror := (load("res://shaders/reflections.gdshader") as Shader).code
-	assert_eq(_shader_number(mirror, "INLAND_IN"), rim)
-	assert_string_contains(mirror, "if (depth >= 0.0 && depth < deepest) {")
+	assert_gt(_shader_number(mirror, "SPILL"), -rim)
 	for map_id: String in ["overworld", "town", "deepwood", "mirefen", "frostgate", "demo"]:
 		var data := MapData.load_by_id(map_id)
 		var mask := _mask(data.grid, data.size, map_id)
@@ -221,9 +254,70 @@ func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
 				for y in range(-1, 2):
 					for x in range(-1, 2):
 						assert_false(dry.call(Vector2i(x, y)), "%s %s is deep and touches land" % [map_id, cell])
+			# Three cells thick at the least (test_water_is_drawn_between_its_banks).
 			if map_id != "frostgate":
-				assert_false(dry.call(Vector2i.LEFT) and dry.call(Vector2i.RIGHT), "%s %s is a cell thin" % [map_id, cell])
-				assert_false(dry.call(Vector2i.UP) and dry.call(Vector2i.DOWN), "%s %s is a cell thin" % [map_id, cell])
+				for way: Vector2i in [Vector2i.RIGHT, Vector2i.DOWN]:
+					if dry.call(-way):
+						assert_false(dry.call(way) or dry.call(way * 2), "%s %s is under three cells thick" % [map_id, cell])
+
+
+## The shader's own sums done here on a small mask (`_in_water`, its lines
+## held below): where a bank is drawn, and that water is left between two.
+## The mask's measure of how far in a pixel lies stops at half a cell unless
+## a cell deeper than its bank is beside it, so water two cells thick read 8
+## px in right across: clear water came out a pale shallow all foam, the
+## mire's (softened, lying 8 in) all marsh that still stopped the hero
+## (PIX-467's review: the Mirefen's 2x2 tips, the village stream's 1x2 nubs).
+## Three cells thick it has a middle; the maps' rule is in the test above.
+func test_water_is_drawn_between_its_banks() -> void:
+	var shader := (load("res://shaders/inland_water.gdshaderinc") as ShaderInclude).code
+	# The twin's lines, as the shader has them.
+	assert_string_contains(shader, "return max(texel.r, texel.b * 3.0);")
+	assert_string_contains(shader, "float here = water_red(local_px + bend, mire && !landing ? MIRE_SOFT : 0.0);")
+	assert_string_contains(shader, "float in_water = (here - 0.5) * CELL + mix(LANDING_IN, -bank_lie(tone), ease);")
+	assert_string_contains(shader, "return BANK_IN + bank_wander(tone);")
+	assert_string_contains(shader, "if (abs(in_water - lap) < 0.5")
+	var rim := _shader_number(shader, "BANK_IN")
+	# Past the lip and as far as the foam laps: open water.
+	var foam := _shader_number(shader, "LAP_OUT") + _shader_number(shader, "LAP_SWING") + 0.5
+	var tile := float(PunyTerrain.TILE)
+	var waters := {
+		"town": [_shader_number(shader, "BANK_WANDER"), 0.0, 3],
+		"mirefen": [_shader_number(shader, "MIRE_WANDER"), _shader_number(shader, "MIRE_SOFT"), 3],
+		"frostgate": [_shader_number(shader, "ICE_WANDER"), 0.0, 1],
+	}
+	for map_id: String in waters:
+		var wander: float = waters[map_id][0]
+		var soft: float = waters[map_id][1]
+		var thick: int = waters[map_id][2]
+		var mask := _mask(_river(12, thick), Vector2i(12, thick + 2), map_id)
+		var x := 6.5 * tile
+		assert_gt(_in_water(mask, Vector2(x, (1.0 + thick * 0.5) * tile), Vector2.ZERO, rim + wander, soft), foam, "%s: open water down the middle, %d thick" % [map_id, thick])
+		for bend in _bends(wander):
+			var deepest := -INF
+			var wide := 0
+			for y in (thick + 2) * PunyTerrain.TILE:
+				var inside := _in_water(mask, Vector2(x, y + 0.5), bend, rim + wander, soft)
+				deepest = maxf(deepest, inside)
+				wide += int(inside >= 0.0)
+				if y < PunyTerrain.TILE or y >= (thick + 1) * PunyTerrain.TILE:
+					assert_lt(inside, 0.0, "%s: no water over the land at %d, bent %s" % [map_id, y, bend])
+			assert_gt(deepest, foam, "%s: open water wherever its banks wander (%s)" % [map_id, bend])
+			assert_gte(wide, (thick * PunyTerrain.TILE) / 3, "%s: and a third of its cells at the least (%s)" % [map_id, bend])
+	# Two cells thick, clear water never gets past its foam and the mire's
+	# is no water at all: why the maps keep to three.
+	var thin := _mask(_river(12, 2), Vector2i(12, 4), "town")
+	assert_lt(_in_water(thin, Vector2(6.5 * tile, 2.0 * tile), Vector2.ZERO, rim + waters["town"][0]), foam)
+	thin = _mask(_river(12, 2), Vector2i(12, 4), "mirefen")
+	assert_lt(_in_water(thin, Vector2(6.5 * tile, 2.0 * tile), Vector2.ZERO, rim + waters["mirefen"][0], waters["mirefen"][1]), 0.0)
+	# A nub a cell out of a stream's bank, three cells long (the village's):
+	# its middle cell has open water on the stream's side.
+	var grid := {}
+	for y in 9:
+		for x in 7:
+			grid[Vector2i(x, y)] = "water" if x >= 2 and x <= 5 or (x == 1 and y >= 3 and y <= 5) else "grass"
+	var nub := _mask(grid, Vector2i(7, 9), "town")
+	assert_gt(_in_water(nub, Vector2(2.0 * tile - 1.0, 4.5 * tile), Vector2.ZERO, rim + waters["town"][0]), foam, "a nub's middle")
 
 
 ## A bank's reeds (Scatter's `bank`, PIX-390) stand in their water's first
@@ -241,7 +335,7 @@ func test_a_banks_reeds_stand_in_the_water() -> void:
 		var east := sides & 2 > 0
 		var north := sides & 4 > 0
 		var south := sides & 8 > 0
-		# Water is two cells thick (above), so no land lies at both sides.
+		# Water is three cells thick (above), so no land lies at both sides.
 		if (west and east) or (north and south):
 			continue
 		for pick in 4:

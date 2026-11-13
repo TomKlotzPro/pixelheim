@@ -66,9 +66,11 @@ const float BANK_SHOAL = 7.0;
 const float SHADE_BANK = 9.5;
 // Where a bridge lands the bank lies this far in under its planks, and the
 // bank beside comes round to meet it over LANDING_EASE cells (it stood out of
-// the bank's wander as a square tongue of land before).
+// the bank's wander as a square tongue of land before): a cell, no more, or
+// a bank drawn inside its cells runs ruler-straight from the bridge
+// (PIX-467), and landing_ease looks no further than the cells beside.
 const float LANDING_IN = -3.0;
-const float LANDING_EASE = 1.5;
+const float LANDING_EASE = 1.0;
 // The Reach's river meanders off its cells (PIX-397: seen whole it was a
 // ruler-straight band): its banks pulled in over its water, the north bank
 // as the south lets go and back, by up to `river_swing` pixels
@@ -274,7 +276,7 @@ float swing_ease(vec2 local_px, ivec2 cell) {
 float landing_ease(vec2 local_px, ivec2 cell) {
 	float nearest = LANDING_EASE * CELL;
 	for (int dy = -1; dy <= 1; dy++) {
-		for (int dx = -2; dx <= 2; dx++) {
+		for (int dx = -1; dx <= 1; dx++) {
 			ivec2 span = cell + ivec2(dx, dy);
 			if (span_at(span)) {
 				vec2 low = vec2(span) * CELL;
@@ -351,6 +353,9 @@ float bank_lie(int tone) {
 // of the land's cell beside it: its red, a half on the bank and whole a
 // half-cell in, and from there its blue (the cells to the bank, the same
 // where the red is rising), so a bank can lie more than that half-cell in.
+// Between two banks two cells apart no cell is deeper than its bank, and
+// this stops at 1 right across: inland water is three cells thick at the
+// least (test_inland_water).
 float water_in(vec4 texel) {
 	return max(texel.r, texel.b * 3.0);
 }
