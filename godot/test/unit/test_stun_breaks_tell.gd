@@ -3,7 +3,8 @@ extends GutTest
 ## can be stopped as well as dodged: the mark goes and never strikes, the
 ## boss's count of marks to come is left at none, the foe goes back to
 ## chasing, "Interrupted!" rises over it; and what ails a foe shows as icons
-## over it, one each, gone when the ailment or the foe is.
+## over it, one each, gone when the ailment or the foe is. And a mark left to
+## strike: a leap lands beside the hero, not on them (PIX-468).
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const Enemy := preload("res://scripts/enemy.gd")
@@ -35,6 +36,9 @@ class StubFx extends RefCounted:
 
 	func float_text(text: String, _at: Vector2, _tone: Color, _big := false) -> void:
 		words.append(text)
+
+	func dust(_at: Vector2) -> void:
+		pass
 
 
 class StubCamera extends RefCounted:
@@ -72,6 +76,8 @@ class StubWorld extends Node2D:
 	var messages := StubMessages.new()
 	var foes := StubFoes.new()
 	var player: StubHero
+	## Open grass, for a leap to land on.
+	var map := MapData.new()
 
 	func _init() -> void:
 		# Telegraph lays its marks at this depth among the world's children.
@@ -79,6 +85,9 @@ class StubWorld extends Node2D:
 			add_child(Node.new())
 		player = StubHero.new()
 		add_child(player)
+		for x in 16:
+			for y in 16:
+				map.grid[Vector2i(x, y)] = "grass"
 
 
 func before_each() -> void:
@@ -182,6 +191,32 @@ func test_a_stun_breaks_an_elites_mark_and_its_blow_never_lands() -> void:
 	assert_eq(_world.fx.words.size(), 1, "the word rises")
 	await wait_seconds(STRUCK_BY)
 	assert_eq(_world.player.hits, 0, "the cleave never came")
+
+
+## PIX-457, PIX-463: a leap ends where the beast would have stopped walking
+## up (Enemy.stop), on the side it came from: it landed on a hero who stood.
+## One already that near stays where it is.
+func test_a_leap_lands_beside_the_hero() -> void:
+	var hero := Vector2(8.5, 8.5) * 16.0
+	_world.player.global_position = hero
+	var leap := {"move": "leap", "tell": TELL, "power": 1.0}
+	for from: Vector2 in [Vector2(-64, 0), Vector2(48, -48), Vector2(0, 56)]:
+		var foe := _foe()
+		foe.global_position = hero + from
+		var beside: float = foe.stop(-from)
+		assert_gt(beside, Enemy.HERO_HALF, "beside is clear of the hero's body")
+		_elite_brain(foe)._tell(leap, Telegraph.circle(hero, 24.0), "leap")
+		await wait_seconds(STRUCK_BY + 0.25)
+		var landed: Vector2 = foe.global_position - hero
+		assert_almost_eq(landed.length(), beside, 0.5, "%s: as near as it stops, no nearer" % from)
+		assert_almost_eq(landed.angle_to(from), 0.0, 0.01, "%s: on the side it came from" % from)
+		foe.free()
+	var near := _foe()
+	near.global_position = hero + Vector2(4, 0)
+	_elite_brain(near)._tell(leap, Telegraph.circle(hero, 24.0), "leap")
+	await wait_seconds(STRUCK_BY + 0.25)
+	assert_eq(near.global_position, hero + Vector2(4, 0), "nearer already: it stays")
+	assert_eq(_world.player.hits, 4, "and each struck the hero in its ring")
 
 
 func test_a_blow_that_turned_it_to_the_chase_first_still_breaks_the_tell() -> void:
