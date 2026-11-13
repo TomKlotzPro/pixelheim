@@ -3217,6 +3217,10 @@ msgid "Dropping a piece of gear or a whole stack asks for the same key again, an
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Dry Feet"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Dungeon torches hang on the wall with a soft glow, instead of sitting in a square hole cut into it"
 msgstr ""
 
@@ -4214,6 +4218,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "In the Browser"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "In the Mirefen, the narrow tips of four pools are now marsh you can walk on"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5461,6 +5469,10 @@ msgid "Recruits leave the map they waited on and walk the town's streets like an
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Reflections show on the water only, never on the marsh beside it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Remembered"
 msgstr ""
 
@@ -5486,6 +5498,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Right on Time"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Rivers and pools are drawn a little narrower, their banks bend more softly, and their reeds stand in the water"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7878,6 +7894,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Your hero walks in eight directions and turns through the diagonal, instead of snapping a quarter turn at once"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Your hero's feet stop at the bank: no water is drawn under them any more"
 msgstr ""
 
 #: assets/data/changelog.json

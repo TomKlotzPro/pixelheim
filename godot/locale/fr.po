@@ -3217,6 +3217,10 @@ msgid "Dropping a piece of gear or a whole stack asks for the same key again, an
 msgstr "Jeter une pièce d'équipement ou tout un lot demande la même touche une seconde fois, et une touche qui a déjà un rôle (jeter, une compétence, Esc) ne peut pas être donnée à une autre action"
 
 #: assets/data/changelog.json
+msgid "Dry Feet"
+msgstr "Les pieds au sec"
+
+#: assets/data/changelog.json
 msgid "Dungeon torches hang on the wall with a soft glow, instead of sitting in a square hole cut into it"
 msgstr "Les torches des donjons sont accrochées au mur avec un doux halo, au lieu de loger dans un trou carré taillé dedans"
 
@@ -4215,6 +4219,10 @@ msgstr "Dans les Cendres, la forge de Hilda et le chaudron de Vex sont à leurs 
 #: assets/data/changelog.json
 msgid "In the Browser"
 msgstr "Dans le navigateur"
+
+#: assets/data/changelog.json
+msgid "In the Mirefen, the narrow tips of four pools are now marsh you can walk on"
+msgstr "Dans les Marais de Fange, les pointes étroites de quatre mares sont désormais un marais où l'on peut marcher"
 
 #: assets/data/changelog.json
 msgid "In the browser, the game saves the moment its tab is hidden or closed, and a private window that won't keep saves says so on the title"
@@ -5461,6 +5469,10 @@ msgid "Recruits leave the map they waited on and walk the town's streets like an
 msgstr "Les recrues quittent la carte où elles attendaient et arpentent les rues de la ville comme n'importe quel enfant du pays"
 
 #: assets/data/changelog.json
+msgid "Reflections show on the water only, never on the marsh beside it"
+msgstr "Les reflets n'apparaissent que sur l'eau, jamais sur le marais d'à côté"
+
+#: assets/data/changelog.json
 msgid "Remembered"
 msgstr "On s'en souvient"
 
@@ -5487,6 +5499,10 @@ msgstr "Au bon moment"
 #: assets/data/changelog.json
 msgid "Right on Time"
 msgstr "À point nommé"
+
+#: assets/data/changelog.json
+msgid "Rivers and pools are drawn a little narrower, their banks bend more softly, and their reeds stand in the water"
+msgstr "Rivières et mares sont dessinées un peu plus étroites, leurs berges ondulent plus doucement, et leurs roseaux poussent dans l'eau"
 
 #: assets/data/changelog.json
 msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
@@ -7879,6 +7895,10 @@ msgstr "Votre héros entre dans la lumière : les personnages portent leur pro
 #: assets/data/changelog.json
 msgid "Your hero walks in eight directions and turns through the diagonal, instead of snapping a quarter turn at once"
 msgstr "Votre héros marche dans huit directions et tourne en passant par la diagonale, au lieu de pivoter d'un quart de tour d'un coup"
+
+#: assets/data/changelog.json
+msgid "Your hero's feet stop at the bank: no water is drawn under them any more"
+msgstr "Les pieds de votre héros s'arrêtent à la berge : plus d'eau dessinée sous eux"
 
 #: assets/data/changelog.json
 msgid "Your hero, the villagers and every foe now stand on a soft shadow at their feet, instead of looking pasted onto the ground"

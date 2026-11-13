@@ -65,6 +65,16 @@ streets-fountain | --map town --town-tier 4 --at 39,24 | map=town street=bricks 
 bank-ashes | --map town --town-tier 0 --at 20,35 | map=town cell=\(20, 35\) bank=0 street= | town
 bank-village | --map town --town-tier 2 --at 20,35 | map=town cell=\(20, 35\) bank=0 street= | town
 bank-city-night | --map town --town-tier 4 --at 40,35 night | map=town cell=\(40, 35\) bank=0 street= | town night
+# The hero's feet stop at the bank (PIX-467): walked down into the
+# village's river where the playtest saw them over it, up into its stream,
+# and into a pool of the Mirefen, they stand on the land's cell with no
+# part of their feet on the water's. That is what stops them, and it always
+# did: the water was drawn up to 8 pixels out over the land, under them.
+# Where the bank is drawn is the shader's, held inside the water's cells by
+# test_inland_water (no flow reads a pixel).
+feet-south | --map town --at 24,35 --walk d,d,d | map=town cell=\(24, 35\) feet=dry | town
+feet-north | --map town --at 71,14 --walk u,u,u | map=town cell=\(71, 14\) feet=dry | town
+feet-mire | --map mirefen --at 25,15 --walk d,d,d | map=mirefen cell=\(25, 15\) feet=dry | field
 # Pixelheim's yards and square by its age (PIX-382): what each household
 # keeps by its house, the square's rims, the City's bunting lit at night;
 # with the paid pack (on Shade's CC0 art alone, none).
