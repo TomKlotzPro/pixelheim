@@ -125,10 +125,13 @@ func _path_graph(hero: HeroState) -> void:
 	))
 	if not walked.is_empty():
 		var identity := HeroRules.path_node(walked[-1])
-		var walking := UiStyle.label("%s - %s" % [identity["name"], identity["blurb"]], 13, UiStyle.FADED, Vector2(COLUMN_X[1], TOP + 2))
-		walking.custom_minimum_size = Vector2(COLUMN_X[2] + PATH_CARD.x - COLUMN_X[1], 0)
-		walking.clip_text = true
-		view.add_child(walking)
+		# Who they walk as, short enough for its one line in any language
+		# (PIX-482: the path's whole blurb stood here, cut at the page's edge;
+		# French's longest needs three lines of a row that has one). The
+		# blurb is the card's, read under the tree when it's chosen. Wrapped,
+		# so words that did run long would never be cut.
+		var walking := UiStyle.label(Text.t("You walk the path of the %s.") % identity["name"], 13, UiStyle.FADED, Vector2(COLUMN_X[1], TOP + 2))
+		view.add_child(Layout.wrapped(walking, COLUMN_X[2] + PATH_CARD.x - COLUMN_X[1]))
 	var at := func(node: Dictionary) -> Vector2:
 		return Vector2(COLUMN_X[int(node["tier"]) - 1], TOP + 24 + (0 if node["branch"] == "a" else PATH_CARD.y + 12))
 	for node: Dictionary in nodes:
@@ -197,8 +200,7 @@ func _node_card(entry: Dictionary, chosen: bool) -> Control:
 		UiStyle.LAMP if owned else (UiStyle.INK if buyable else UiStyle.FADED)
 	)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	name.clip_text = true
-	head.add_child(name)
+	head.add_child(Layout.ellipsis(name))
 	if owned and _key_of(entry["id"]) > 0:
 		# The key as the dock shows it, a digit on a tag: the word cut French names.
 		var key := UiStyle.tag(str(_key_of(entry["id"])))
@@ -381,7 +383,8 @@ func _act() -> void:
 	if cell["kind"] == "path":
 		if GameState.training.choose_path(entry["id"]):
 			Sound.play("path_chosen")
-			status.text = Text.t("You walk the path of the %s.") % entry["name"]
+			# The line over the tree now says who they walk as: once is enough.
+			status.text = ""
 		else:
 			status.text = "That path isn't yours to walk now."
 	elif GameState.training.buy_skill_node(entry["id"]):

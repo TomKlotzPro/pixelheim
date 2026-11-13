@@ -58,7 +58,7 @@ func step_create() -> void:
 	creation.role_index = maxi(0, creation.ROLES.find(flags.value("--role", "ranger")))
 	world.add_child(creation)
 	await h.get_tree().create_timer(0.1).timeout
-	creation.name_field.text = "Robin"
+	creation.name_field.text = flags.value("--name", "Robin")
 	creation._refresh()
 	await h.get_tree().create_timer(0.4).timeout
 
