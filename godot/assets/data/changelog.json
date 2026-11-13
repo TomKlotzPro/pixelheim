@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.366.0",
+      "date": "2026-11-13",
+      "codename": "Dry Feet",
+      "notes": [
+        "Your hero's feet stop at the bank: no water is drawn under them any more",
+        "Rivers and pools are drawn a little narrower, their banks bend more softly, and their reeds stand in the water",
+        "In the Mirefen, the narrow tips of four pools are now marsh you can walk on",
+        "Reflections show on the water only, never on the marsh beside it"
+      ]
+    },
+    {
       "version": "0.365.0",
       "date": "2026-11-13",
       "codename": "Nothing Wasted",
