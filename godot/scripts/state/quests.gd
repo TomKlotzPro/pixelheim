@@ -205,16 +205,20 @@ static func pay(quest: Dictionary) -> String:
 	return Text.t("Pays %s") % ", ".join(parts)
 
 
-## The word that takes a quest (PIX-194: the task, not the giver's words just
-## said) and what it pays (PIX-446). `journal`: the journal's key too, until
-## its hint was seen, so a player with hints off is still told where it went.
+## The word that takes a quest: its name and what it pays, in full
+## (PIX-446), and no more (PIX-471: with the quest's story it stood four
+## lines over the village; the journal holds that). `journal`: the journal's
+## key after the name, as Maren's tin says it, until its hint was seen, so a
+## player with hints off is still told where it went (PIX-446; a sentence
+## of its own read as the reward in French, « Elle »).
 static func accepted(quest: Dictionary, journal := false) -> String:
-	var line: String = Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]]
+	var named := String(quest["name"])
+	if journal:
+		named += Controls.say(" ({key:journal})")
+	var line: String = Text.t("Quest accepted: %s.") % named
 	var paid := pay(quest)
 	if paid != "":
 		line += " " + paid + "."
-	if journal:
-		line += " " + Controls.say(Text.t("It's in your journal ({key:journal})."))
 	return line
 
 

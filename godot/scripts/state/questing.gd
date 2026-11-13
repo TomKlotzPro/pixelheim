@@ -173,10 +173,12 @@ func resolve_quests(giver_id: String) -> String:
 				owner.settlers_changed.emit()
 			owner.pack_changed()
 			owner.save_now()
+			# Quests.pay's words, not the floats': French keeps a number with
+			# its unit, a no-break space between them (PIX-471).
 			var paid: Array[String] = []
 			if gold > 0:
-				paid.append(Text.t("+%d gold") % gold)
-			paid.append(Text.t("+%d XP") % reward["xp"])
+				paid.append("+" + Text.t("%d gold") % gold)
+			paid.append("+" + Text.t("%d XP") % int(reward["xp"]))
 			var done := Text.t("Quest complete: %s. %s. \u201c%s\u201d") % [quest["name"], ", ".join(paid), quest["completed"]]
 			return done + ("\n" + level_line if level_line != "" else "")
 		return Text.t("%s: %d/%d %s.") % [
@@ -208,9 +210,8 @@ func open_tin() -> String:
 		owner.progression.quests[relics["id"]] = {"progress": 0, "done": false}
 	owner.pack_changed()
 	owner.save_now()
-	var line := Letters.taken_line(given)
-	# The satchel is the journal's main story (PIX-253 step 2).
-	return line + " " + Controls.say(Text.t("Your satchel is in the journal ({key:journal}).")) if not given.is_empty() else line
+	# The satchel is the journal's main story (PIX-253 step 2): its key.
+	return Controls.say(Letters.taken_line(given))
 
 
 ## Maren has told it all (PIX-253 step 8): her confession, at the shrine,
@@ -274,11 +275,12 @@ func deliver(npc_id: String) -> String:
 	var level_line := owner.spoils.earn_xp(int(reward.get("xp", 0)))
 	owner.pack_changed()
 	owner.save_now()
+	# Quests.pay's words: French keeps a number with its unit (PIX-471).
 	var paid: Array[String] = []
 	if gold > 0:
-		paid.append(Text.t("+%d gold") % gold)
+		paid.append("+" + Text.t("%d gold") % gold)
 	if int(reward.get("xp", 0)) > 0:
-		paid.append(Text.t("+%d XP") % reward["xp"])
+		paid.append("+" + Text.t("%d XP") % int(reward["xp"]))
 	var done := Text.t("Delivered: %s.") % quest["name"]
 	if not paid.is_empty():
 		done = Text.t("Delivered: %s. %s.") % [quest["name"], ", ".join(paid)]
@@ -322,10 +324,11 @@ func choose(quest_id: String, option_id: String) -> String:
 		owner.pack.add_item(reward["itemId"])
 	owner.pack_changed()
 	owner.save_now()
+	# Quests.pay's words: French keeps a number with its unit (PIX-471).
 	var paid: Array[String] = []
 	if gold > 0:
-		paid.append(Text.t("+%d gold") % gold)
-	paid.append(Text.t("+%d XP") % reward.get("xp", 0))
+		paid.append("+" + Text.t("%d gold") % gold)
+	paid.append("+" + Text.t("%d XP") % int(reward.get("xp", 0)))
 	if reward.has("itemId"):
 		paid.append(Catalog.item_name(reward["itemId"]))
 	var done := Text.t("Quest complete: %s. %s. \u201c%s\u201d") % [quest["name"], ", ".join(paid), option["line"]]

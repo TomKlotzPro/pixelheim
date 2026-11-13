@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.364.0",
+      "date": "2026-11-13",
+      "codename": "Right on Time",
+      "notes": [
+        "A quest accepted names the quest and its whole pay, without its story: the journal keeps that",
+        "Maren's letters fit in one line",
+        "A foe's ailment shows as it lands and goes when the foe falls, and no line turns up after its moment",
+        "The roll's hint reads quickly and lets the fight's lines through",
+        "In French a number stays with its unit and a mark with its word, on the web too"
+      ]
+    },
+    {
       "version": "0.363.0",
       "date": "2026-11-13",
       "codename": "Make Way",

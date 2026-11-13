@@ -2216,10 +2216,9 @@
       "(Maren turns a tin box over in her hands, black with soot.) I dug this out of my hearth. Five letters I wrote fifty years ago, and never sent.",
       "You carry letters, courier. Take the ones that can still be delivered. The fifth has no address."
     ],
-    "taken": "Four letters in your satchel: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth.",
-    "takenSome": "In your satchel: %s. Maren keeps the fifth.",
+    "taken": "Four letters in your satchel ({key:journal}).",
+    "takenSome": "In your satchel ({key:journal}): %s.",
     "answered": "Maren's letters were answered long ago: you brought their keepsakes home. She keeps the fifth.",
-    "road": "Bram's crew is out clearing the cliff road to Saltmere.",
     "news": {
       "villager_bram": "Cliff road to Saltmere's clear, courier. Took the whole crew all morning. I lifted one rock. Supervised the rest."
     },
