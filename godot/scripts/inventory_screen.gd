@@ -649,9 +649,10 @@ func _primary() -> void:
 			close()
 			world.interaction.place_from_pack(item_id)
 			return
-		var used := GameState.upkeep.use_item(item_id)
+		var used := GameState.upkeep.use_item(item_id, world.player.ailments.kinds() if world != null else [])
 		if not used["used"]:
-			status.text = "Nothing to do with that here."
+			# Kept, and why (PIX-472), when it would have done nothing.
+			status.text = used["text"] if used["text"] != "" else "Nothing to do with that here."
 		else:
 			Sound.play("item_use")
 			status.text = used["text"]

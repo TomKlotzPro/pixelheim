@@ -154,12 +154,19 @@ func drop_gear(uid: String) -> bool:
 
 
 ## Drinks or eats something (USE_ITEM): health and mana up to their caps.
-## The cure, if any, is for the world to apply to the hero's live ailments.
-## Returns {used, text, cures}.
-func use_item(item_id: String) -> Dictionary:
+## The cure, if any, is for the world to apply to the hero's live ailments
+## (`ailing`, their kinds). One that would do nothing now (the bar it fills
+## is full, nothing of its to cure) is kept, and `text` says why (PIX-472:
+## a 25 g potion went for "Restored 0 HP"). Returns {used, text, cures}.
+func use_item(item_id: String, ailing: Array = []) -> Dictionary:
 	var item := Catalog.item(item_id)
 	if owner.pack.items.get(item_id, 0) <= 0 or not (item.has("restoreHp") or item.has("restoreMp") or item.has("cures")):
 		return {"used": false, "text": "", "cures": ""}
+	var heals: bool = item.has("restoreHp") and owner.hero.hp < int(owner.hero.stats["maxHp"])
+	var fills: bool = item.has("restoreMp") and owner.hero.mp < int(owner.hero.stats["maxMp"])
+	if not (heals or fills or item.get("cures", "") in ailing):
+		var only_heals := not (item.has("restoreMp") or item.has("cures"))
+		return {"used": false, "text": Text.t("You're already at full health.") if only_heals else Text.t("You have no need of that right now."), "cures": ""}
 	owner.pack.remove_item(item_id)
 	# The Everflask stays in the pack, empty, till a night's sleep (PIX-376).
 	if item.has("emptiesTo"):

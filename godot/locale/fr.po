@@ -17077,12 +17077,16 @@ msgid "first night"
 msgstr "première nuit"
 
 #: scripts/create_screen.gd
+msgid "read skills"
+msgstr "lire les compétences"
+
+#: scripts/create_screen.gd
 msgid "role"
 msgstr "classe"
 
 #: scripts/create_screen.gd
-msgid "skill"
-msgstr "compétence"
+msgid "start"
+msgstr "départ"
 
 #: scripts/cutscene.gd
 msgid "Esc"
@@ -19497,6 +19501,10 @@ msgid "You come to on the road. Pixelheim is still burning ahead."
 msgstr "Vous reprenez connaissance sur la route. Pixelheim brûle toujours, droit devant."
 
 #: scripts/state/upkeep.gd
+msgid "You have no need of that right now."
+msgstr "Vous n'en avez pas besoin pour l'instant."
+
+#: scripts/state/upkeep.gd
 msgid "You sit a while on the bench by the ember lamp. Its warmth mends you."
 msgstr "Vous vous asseyez un moment sur le banc près de la lampe de braise. Sa chaleur vous remet d'aplomb."
 
@@ -19523,6 +19531,10 @@ msgstr "Vous vous réveillez près de la tente de Sela, avec %d or en moins. Ce 
 #: scripts/state/upkeep.gd
 msgid "You wake beside Sela's tent, your cuts bound. She has patched up worse."
 msgstr "Vous vous réveillez près de la tente de Sela, vos plaies pansées. Elle a soigné bien pire."
+
+#: scripts/state/upkeep.gd
+msgid "You're already at full health."
+msgstr "Vous êtes déjà en pleine santé."
 
 #: scripts/stats_screen.gd
 msgid "%d stat point%s to spend. %s at the shrine can undo it, for a price."

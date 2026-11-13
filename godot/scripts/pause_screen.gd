@@ -49,8 +49,7 @@ func _open() -> void:
 	footer.custom_minimum_size = Vector2(296, 0)
 	column.add_child(footer)
 	# Its keys along the bottom, as every screen's (PIX-388).
-	keys = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  do it      Esc  close")
-	add_child(keys)
+	_name_keys()
 	options = [
 		{"label": "Resume", "action": _resume},
 		{"label": "Saves", "action": _saves},
@@ -120,6 +119,19 @@ func _options() -> void:
 	var screen := Options.new()
 	screen.world = world
 	open_over(screen, [card, keys])
+	screen.tree_exited.connect(_name_keys)
+
+
+## The keys along the bottom, written again as Options close: a key may
+## have been rebound there (PIX-480).
+func _name_keys() -> void:
+	if keys != null:
+		if not is_inside_tree() or is_queued_for_deletion():
+			return
+		remove_child(keys)
+		keys.queue_free()
+	keys = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  do it      Esc  close")
+	add_child(keys)
 
 
 ## Back to the title: the hero is saved first, then the world starts over.

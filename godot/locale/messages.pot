@@ -17077,11 +17077,15 @@ msgid "first night"
 msgstr ""
 
 #: scripts/create_screen.gd
+msgid "read skills"
+msgstr ""
+
+#: scripts/create_screen.gd
 msgid "role"
 msgstr ""
 
 #: scripts/create_screen.gd
-msgid "skill"
+msgid "start"
 msgstr ""
 
 #: scripts/cutscene.gd
@@ -19497,6 +19501,10 @@ msgid "You come to on the road. Pixelheim is still burning ahead."
 msgstr ""
 
 #: scripts/state/upkeep.gd
+msgid "You have no need of that right now."
+msgstr ""
+
+#: scripts/state/upkeep.gd
 msgid "You sit a while on the bench by the ember lamp. Its warmth mends you."
 msgstr ""
 
@@ -19522,6 +19530,10 @@ msgstr ""
 
 #: scripts/state/upkeep.gd
 msgid "You wake beside Sela's tent, your cuts bound. She has patched up worse."
+msgstr ""
+
+#: scripts/state/upkeep.gd
+msgid "You're already at full health."
 msgstr ""
 
 #: scripts/stats_screen.gd

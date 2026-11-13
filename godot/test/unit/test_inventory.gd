@@ -90,9 +90,35 @@ func test_potions_heal_up_to_the_cap() -> void:
 	assert_false(state.upkeep.use_item("wolf_pelt")["used"], "pelts aren't for eating")
 
 
+## PIX-472: at full health a potion went for "Restored 0 HP". What would do
+## nothing now is kept and says why; what still does anything is used.
+func test_what_would_do_nothing_is_kept() -> void:
+	var hero: HeroState = state.hero
+	hero.hp = int(hero.stats["maxHp"])
+	hero.mp = int(hero.stats["maxMp"])
+	state.pack.items = {"potion_hp": 1, "bread": 1, "potion_mp": 1, "elixir": 1, "antidote": 1}
+	for item_id: String in ["potion_hp", "bread"]:
+		var kept: Dictionary = state.upkeep.use_item(item_id)
+		assert_false(kept["used"], item_id)
+		assert_eq(kept["text"], "You're already at full health.")
+	for item_id: String in ["potion_mp", "elixir", "antidote"]:
+		var kept: Dictionary = state.upkeep.use_item(item_id)
+		assert_false(kept["used"], item_id)
+		assert_eq(kept["text"], "You have no need of that right now.")
+	assert_eq(state.pack.items, {"potion_hp": 1, "bread": 1, "potion_mp": 1, "elixir": 1, "antidote": 1}, "all still in the pack")
+	assert_true(state.upkeep.use_item("antidote", ["poison"])["used"], "a remedy with something to cure")
+	hero.mp -= 1
+	assert_true(state.upkeep.use_item("elixir")["used"], "a mixed one with either bar short")
+	hero.mp -= 1
+	assert_false(state.upkeep.use_item("potion_hp")["used"], "mana short is no use to a health potion")
+	assert_true(state.upkeep.use_item("potion_mp")["used"])
+	hero.hp -= 1
+	assert_true(state.upkeep.use_item("potion_hp")["used"])
+
+
 func test_remedies_name_the_ailment_they_cure() -> void:
 	state.pack.items["antidote"] = 1
-	assert_eq(state.upkeep.use_item("antidote")["cures"], "poison")
+	assert_eq(state.upkeep.use_item("antidote", ["poison"])["cures"], "poison")
 	var ailments := Ailments.new()
 	ailments.inflict({"kind": "poison", "chance": 1.0, "turns": 3, "power": 4}, func() -> float: return 0.0)
 	assert_true(ailments.cure("poison"))

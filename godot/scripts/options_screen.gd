@@ -51,14 +51,24 @@ func _open() -> void:
 	status.custom_minimum_size.y = 47
 	status.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	add_child(status)
-	footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  adjust      {key:interact}  rebind / toggle      Esc  close")
-	add_child(footer)
+	_name_keys()
 	waiting_footer = UiStyle.screen_footer(Text.t("Press the new key") + "      Esc  " + Text.t("keep the old one"))
 	add_child(waiting_footer)
 	if back_at >= 0:
 		selected = back_at
 		back_at = -1
 	_refresh()
+
+
+## The keys' footer, written again with the keys as they are now: on
+## opening, and the moment a rebind or a reset changes them (PIX-480: it
+## kept "W S choose" after Move up went to Q, till Options were reopened).
+func _name_keys() -> void:
+	if footer != null:
+		remove_child(footer)
+		footer.queue_free()
+	footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  adjust      {key:interact}  rebind / toggle      Esc  close")
+	add_child(footer)
 
 
 ## The rows: section headings, then a control each.
@@ -186,6 +196,7 @@ func _input(event: InputEvent) -> void:
 		settings.bindings = Controls.rebind(settings.bindings, listening, key)
 		settings.save_file()
 		Controls.apply(settings.bindings)
+		_name_keys()
 		status.text = Text.t("%s is now %s.") % [named, Controls.key_label(key)]
 		if swapped != "":
 			status.text = Text.t("%s is now %s, and %s takes %s.") % [named, Controls.key_label(key), Text.t(Controls.BINDABLE[swapped][0]), Controls.key_label(old_key)]
@@ -249,4 +260,5 @@ func _reset_keys() -> void:
 	GameState.settings.bindings = {}
 	GameState.settings.save_file()
 	Controls.apply({})
+	_name_keys()
 	status.text = "Keys are back to the defaults."

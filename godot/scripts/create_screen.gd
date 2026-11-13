@@ -49,7 +49,7 @@ var name_field: LineEdit
 var begin: Button
 var roles_box: VBoxContainer
 var details: PanelContainer
-## The skills' chips, the one read lit.
+## The skills' chips, the one read marked.
 var skill_chips: Array[PanelContainer] = []
 var status: Label
 
@@ -118,9 +118,9 @@ func _open() -> void:
 	bottom.add_child(begin)
 	# The pad's buttons once it's in hand (PIX-215): no PgUp or Tab there.
 	if Controls.pad:
-		add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  role    {key:move_left}/{key:move_right}  skill    {key:inventory}  first night    Enter  begin    Esc  close"))
+		add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  role    {key:move_left}/{key:move_right}  read skills    {key:inventory}  first night    Enter  begin    Esc  close"))
 	else:
-		add_child(UiStyle.screen_footer("Up/Down  role    PgUp/PgDn  skill    Tab  first night    Enter  begin    Esc  close"))
+		add_child(UiStyle.screen_footer("Up/Down  role    PgUp/PgDn  read skills    Tab  first night    Enter  begin    Esc  close"))
 	_refresh()
 	name_field.grab_focus.call_deferred()
 
@@ -291,7 +291,7 @@ func _fill_details() -> void:
 		stats.add_child(_stat(role_id, stat))
 	sheet.add_child(stats)
 
-	# The skills they start with, the one read lit and its words under them.
+	# The role's first skills, the one read marked and its words under them.
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	card.add_child(spacer)
@@ -385,14 +385,17 @@ static func _pip(lit: bool) -> ColorRect:
 	return pip
 
 
-## A starting skill as a chip: its icon (Shade's Puny Skills, as the dock
-## shows it) and its name, lit when it's the one read; a click reads it.
+## One of the role's skills as a chip: its icon (Shade's Puny Skills, as
+## the dock shows it) and its name; a click reads it. The skills are read
+## here, not chosen (PIX-473: the one read wore the chosen role's red frame,
+## and the hero began with the first all the same): the one read stands out
+## in a brown rim, and the first says it's the one the hero starts with.
 func _skill_chip(skill: Dictionary, index: int) -> PanelContainer:
-	var chosen := index == skill_index
+	var read := index == skill_index
 	var chip := PanelContainer.new()
 	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chip.add_theme_stylebox_override("panel", UiStyle.box(
-		UiStyle.CARD if chosen else Color(UiStyle.CARD, 0.5), UiStyle.LAMP if chosen else UiStyle.RIM, 6
+		UiStyle.CARD if read else Color(UiStyle.CARD, 0.5), UiStyle.WOOD_DARK if read else UiStyle.RIM, 6
 	))
 	chip.gui_input.connect(func(event: InputEvent) -> void:
 		if _clicked(event):
@@ -404,10 +407,17 @@ func _skill_chip(skill: Dictionary, index: int) -> PanelContainer:
 	chip.add_child(line)
 	line.add_child(_icon(ItemIcons.skill(skill["name"])))
 	# Two lines at most: "Imposition des mains" is the longest.
-	var label := Layout.wrapped(UiStyle.label(skill["name"], 14, UiStyle.LAMP if chosen else UiStyle.INK), 150)
-	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	line.add_child(label)
+	var label := Layout.wrapped(UiStyle.label(skill["name"], 14, UiStyle.INK), 150)
+	# The tag under the name: beside it, the three ran wider than the card.
+	var words := VBoxContainer.new()
+	words.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	words.add_theme_constant_override("separation", 0)
+	words.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	words.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	words.add_child(label)
+	if index == 0:
+		words.add_child(UiStyle.strong(Text.t("start"), 12, UiStyle.FADED))
+	line.add_child(words)
 	return chip
 
 
@@ -433,7 +443,7 @@ func _set_night(on: bool) -> void:
 
 
 ## The state in force in rubric red inside a rubric rim, the other faded,
-## as the roles and skills mark theirs.
+## as the roles mark theirs.
 func _show_night() -> void:
 	for choice: PanelContainer in [night_play, night_skip]:
 		var chosen := (choice == night_play) == play_night
