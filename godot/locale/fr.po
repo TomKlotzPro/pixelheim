@@ -4385,6 +4385,10 @@ msgid "Leaves drift down through the forests, dust floats in the light of every 
 msgstr "Des feuilles tombent en virevoltant dans les forêts, la poussière flotte dans la lumière de chaque pièce, et des braises s'élèvent des forges, des âtres et des feux de camp"
 
 #: assets/data/changelog.json
+msgid "Leaving a talk with Esc takes no quest, and the giver asks again next time"
+msgstr "Quitter une conversation avec Esc ne prend aucune quête, et on vous la proposera la prochaine fois"
+
+#: assets/data/changelog.json
 msgid "Ledgers look like ledgers: Captain Hale's order book is an open book with ruled pages, a ribbon, a quill and inkwell, his map and a dagger beside it; the town hall gets its ledger desk, Mirelle a counting table with coins and a strongbox, and the bounty board a clawed notice (Tom's playtest)"
 msgstr "Les registres ressemblent à des registres : celui du capitaine Hale est un livre ouvert aux pages réglées, avec un signet, une plume et un encrier, sa carte et une dague à côté ; la mairie a son bureau du registre, Mirelle une table de comptes avec ses pièces et son coffre, et le tableau des primes un avis griffé (playtest de Tom)"
 
@@ -4795,6 +4799,10 @@ msgstr "Veille de nuit"
 #: assets/data/changelog.json
 msgid "Nine places that shared a track now have their own: Saltmere, the Frostgate, Greyhold, Blackiron, the mountain road, the inn, the crypts, the ice cave, and the dragon's fight on the square"
 msgstr "Neuf lieux qui partageaient une musique ont désormais la leur : Saltmere, la Porte-Givre, Greyhold, Fernoir, la route de la montagne, l'auberge, les cryptes, la grotte de glace et le combat contre le dragon sur la place"
+
+#: assets/data/changelog.json
+msgid "No Sale by Accident"
+msgstr "Rien sans le vouloir"
 
 #: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
@@ -5717,6 +5725,10 @@ msgid "Seen whole, the river now winds in gentle bends, and the roads across the
 msgstr "Vu de loin, le fleuve serpente désormais en douces courbes, et les routes qui traversent les cendres et le marais s'écartent de la grille, tandis que chaque virage et chaque embranchement garde ses angles arrondis"
 
 #: assets/data/changelog.json
+msgid "Sela asks before she rents you a night in her tent"
+msgstr "Sela demande avant de vous louer une nuit sous sa tente"
+
+#: assets/data/changelog.json
 msgid "Sell all your junk in one go, choose how many of a stack to sell, and buy back what you just sold at the price you got, until you leave the counter"
 msgstr "Vendez toute votre camelote d'un coup, choisissez combien d'une pile vendre, et rachetez ce que vous venez de vendre au prix obtenu, jusqu'à ce que vous quittiez le comptoir"
 
@@ -6471,6 +6483,10 @@ msgstr "Le E s'affiche juste au-dessus de ce qu'il ouvre et ne le cache plus"
 #: assets/data/changelog.json
 msgid "The E prompt waits while a catch or a find rises past it, and never sits on your hero when the spot is below you"
 msgstr "Le E attend qu'une prise ou une trouvaille soit passée, et ne se pose plus sur votre héros quand l'endroit est sous vous"
+
+#: assets/data/changelog.json
+msgid "The E that ends a talk never buys: after a talk, E waits a moment before it acts at a counter"
+msgstr "Le E qui clôt une conversation n'achète jamais rien : après une conversation, E attend un instant avant d'agir à un comptoir"
 
 #: assets/data/changelog.json
 msgid "The Ember Seal"

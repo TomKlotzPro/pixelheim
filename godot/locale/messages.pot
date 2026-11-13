@@ -4385,6 +4385,10 @@ msgid "Leaves drift down through the forests, dust floats in the light of every 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Leaving a talk with Esc takes no quest, and the giver asks again next time"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Ledgers look like ledgers: Captain Hale's order book is an open book with ruled pages, a ribbon, a quill and inkwell, his map and a dagger beside it; the town hall gets its ledger desk, Mirelle a counting table with coins and a strongbox, and the bounty board a clawed notice (Tom's playtest)"
 msgstr ""
 
@@ -4794,6 +4798,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Nine places that shared a track now have their own: Saltmere, the Frostgate, Greyhold, Blackiron, the mountain road, the inn, the crypts, the ice cave, and the dragon's fight on the square"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "No Sale by Accident"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5717,6 +5725,10 @@ msgid "Seen whole, the river now winds in gentle bends, and the roads across the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Sela asks before she rents you a night in her tent"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Sell all your junk in one go, choose how many of a stack to sell, and buy back what you just sold at the price you got, until you leave the counter"
 msgstr ""
 
@@ -6470,6 +6482,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The E prompt waits while a catch or a find rises past it, and never sits on your hero when the spot is below you"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The E that ends a talk never buys: after a talk, E waits a moment before it acts at a counter"
 msgstr ""
 
 #: assets/data/changelog.json
