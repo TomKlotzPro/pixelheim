@@ -21,6 +21,7 @@ cc0 |  | the paid Medieval Age pack, GegX's UI kit, ninth-jedi's farm animals an
 --slot | <n> | play save slot n, not a throwaway hero (it WRITES the slot)
 --load | <file> | play that save (a PXH2 code or a v5 file, res://test/fixtures) as a slot would load it, nothing written: where a save wakes (PIX-302)
 still |  | Reduce motion on, as a player can set it
+large |  | Large reading text on, as a player can set it (PIX-477: a card's words then run past it and page by a key)
 hints |  | the first-time hints on and none seen yet, as a new player has them (PIX-341)
 --role | <id> | a new hero of that role before the first map, its starting weapon in hand (PIX-379): warrior, mage, ranger, cleric, paladin, rogue or necromancer; the report adds hero=
 --level | <n> | a hero of that level as the game makes one (PIX-379): its level-ups' health, mana and points, the stat points 2:1 on its weapon's stat and endurance, its role's tree bought in order, a kit of gear for the level worn; the rank's title (the hero looks the same at every rank); the report adds hero=
@@ -74,6 +75,7 @@ walk-path |  | with rankup: walk the new rank's path
 stats |  | the stats sheet, points to spend | stats | 290
 skills |  | the skills sheet, points to spend | skills | 300
 create |  | hero creation over the title, a role picked (--role, else the ranger) and a name typed | create | 310
+--name | <name> | with create: the name typed, not Robin (PIX-481: sixteen W)
 whatsnew |  | with title: What's new over it | whatsnew | 330
 options |  | the options: over the title with title, else from the pause menu | options | 350
 pause |  | the pause menu | pause | 340

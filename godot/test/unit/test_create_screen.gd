@@ -243,6 +243,20 @@ func test_the_starting_skills_are_chips_and_one_is_read() -> void:
 	assert_eq(screen.skill_index, 0, "a new role reads its first")
 
 
+## PIX-473: the skill read wore the chosen role's red frame, but the hero
+## starts with the first whatever is read. They read as a preview: none in
+## the choice's frame, the first tagged as the start, the footer says read.
+func test_the_skills_read_as_a_preview_not_a_choice() -> void:
+	_open()
+	screen._command(_key(KEY_PAGEDOWN)).call()
+	for chip: PanelContainer in screen.skill_chips:
+		assert_false(chip.get_theme_stylebox("panel").get_meta("chosen", false), "no skill in the choice's frame")
+	assert_has(_labels(screen.skill_chips[0]), "start", "the first is the one they start with")
+	assert_does_not_have(_labels(screen.skill_chips[1]), "start")
+	assert_has(_labels(screen), "read skills")
+	assert_does_not_have(_labels(screen), "skill")
+
+
 ## The name under the hero only once there is one (a red "..." stood there).
 func test_no_stand_in_for_the_name() -> void:
 	_open()
@@ -250,3 +264,16 @@ func test_no_stand_in_for_the_name() -> void:
 	screen.name_field.text = "Robin"
 	screen._refresh()
 	assert_has(_labels(screen.details), "Robin")
+
+
+## PIX-481: sixteen W under the portrait end in an ellipsis; they widened
+## its column and pushed the cards 65 px off the canvas.
+func test_a_wide_name_leaves_the_cards_their_size() -> void:
+	_open()
+	await wait_process_frames(2)
+	var width: float = screen.details.size.x
+	screen.name_field.text = "WWWWWWWWWWWWWWWW"
+	screen._refresh()
+	await wait_process_frames(2)
+	assert_eq(screen.details.size.x, width, "the hero's card as wide as with no name")
+	assert_eq(Layout.overflows(get_tree().root, Vector2(1280, 720)).size(), 0, "nothing off the canvas")

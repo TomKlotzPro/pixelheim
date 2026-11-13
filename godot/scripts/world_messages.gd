@@ -24,8 +24,21 @@ var message_fade: Tween
 ## (UiStyle.reading_seconds).
 const LOG_LINES := 1
 const LOG_WIDTH := 700.0
-## A first-time hint shows once, often in a fight: this long at least, or a
-## short one is gone before it is read.
+## A line of the moment (log_now: an ailment landed) shows within this long
+## or not at all (PIX-476: poison's line came up 3 s on, its orc dead); or
+## NOW_MARGIN_S after the line of the log it landed behind has been read (a
+## boss's roar, a named foe's « seen » line hold 2.5 s at least: every
+## ailment behind one was dropped unshown).
+const NOW_S := 2.0
+const NOW_MARGIN_S := 0.5
+## The roll's hint, cut short by a line of the fight, has been read once it
+## stood this long; cut sooner, it comes back after the line (PIX-476). Any
+## other hint always comes back, for its full time (PIX-433).
+const HINT_READ_S := 1.5
+## A first-time hint shows once: this long at least, or a short one is gone
+## before it is read (PIX-433: the log's own floor of 2.5 s was too short
+## for something shown once). Not the roll's, said as a fight starts
+## (PIX-476): it reads as long as any line.
 const HINT_SECONDS := 5.0
 ## Tags a message may open with, set in gold on its plate.
 const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"]
@@ -89,10 +102,44 @@ func clear() -> void:
 func log_line(line: String) -> void:
 	log_lines([line])
 
+## A line of the moment (PIX-476: « Orc Raider is afflicted by burn! » first
+## showed behind the roll's hint, its orc dead, and came back 10 s later):
+## it shows as it lands, a first-time hint stepping aside for it and an
+## older line of the moment giving it the place, and only while `holds`
+## says its moment lasts (its foe alive) and within NOW_S of landing, or
+## until the line it landed behind has been read; past that it is dropped,
+## never shown late (_drop_past). Only the roll's hint, once read, is gone
+## for good: any other shows once, so it comes back after the line with its
+## full time (PIX-433: the potion's, cut by a stun's line, was never read).
+func log_now(line: String, holds := Callable()) -> void:
+	var entry := _log.add(line)
+	var now := GameClock.seconds()
+	entry["at"] = now
+	entry["holds"] = holds
+	entry["wait"] = NOW_S
+	for other: Dictionary in _log.showing.duplicate():
+		if is_same(other, entry):
+			continue
+		if other.has("hint") and (other["hint"] != "dodge" or now - float(other["since"]) < HINT_READ_S):
+			_step_aside([other])
+		elif other.has("hint") or other.has("at"):
+			_drop(other)
+		else:
+			entry["wait"] = maxf(entry["wait"], float(other["ends"]) - now + NOW_MARGIN_S)
+	if entry.has("chip"):
+		_say(entry)
+	else:
+		_log.waiting.erase(entry)
+		_log.waiting.push_front(entry)
+	update()
+
+
 ## A first-time hint as a line of the log (PIX-433), by the id it's seen
 ## by: one short line at a time, stepping aside for the plate and coming
 ## back in full (one box at a time), while its moment lasts (PIX-462:
-## _drop_past_hints). Seen once it shows, not before.
+## _drop_past). Seen once it shows, not before. It holds no line of the
+## fight back (PIX-476: log_now, log_lines), and stays HINT_SECONDS at
+## least, but the roll's, which reads as long as any line.
 func hint_line(id: String, text: String) -> void:
 	_log.add(text)["hint"] = id
 	update()
@@ -119,10 +166,27 @@ func log_lines(lines: Array, later := false) -> void:
 			flash(line)
 			continue
 		var entry := _log.add(line, later)
+		if not later:
+			_roll_hint_after(entry)
 		# Folded into one already up: its new words, and its time again.
 		if entry.has("chip"):
 			_say(entry)
 	update()
+
+
+## The roll's hint holds no line of the fight back (PIX-476: a named foe's
+## « seen » line, said with it, waited 3 s behind it): read (HINT_READ_S),
+## it goes; unread, it takes its turn after `line`.
+func _roll_hint_after(line: Dictionary) -> void:
+	for entry: Dictionary in _log.showing + _log.waiting:
+		if entry.get("hint", "") != "dodge" or is_same(entry, line):
+			continue
+		var read := entry.has("chip") and GameClock.seconds() - float(entry["since"]) >= HINT_READ_S
+		if entry.has("chip"):
+			_step_aside([entry])
+		_log.waiting.erase(entry)
+		if not read:
+			_log.waiting.append(entry)
 
 
 ## A line of the log on its own small plate, like the objective's (PIX-194),
@@ -139,6 +203,7 @@ func _say(entry: Dictionary) -> void:
 		if entry.has("hint") and not entry["hint"] in GameState.settings.hints_seen:
 			GameState.settings.hints_seen.append(entry["hint"])
 			GameState.settings.save_file()
+		entry["since"] = GameClock.seconds()
 		chip = PanelContainer.new()
 		chip.add_theme_stylebox_override("panel", UiStyle.plate(8))
 		chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -161,7 +226,11 @@ func _say(entry: Dictionary) -> void:
 		(chip.get_meta("fade") as Tween).kill()
 	var fade := chip.create_tween()
 	var seconds := UiStyle.reading_seconds(text)
-	fade.tween_interval(maxf(seconds, HINT_SECONDS) if entry.has("hint") else seconds)
+	if entry.has("hint") and entry["hint"] != "dodge":
+		seconds = maxf(seconds, HINT_SECONDS)
+	# When it leaves the log: a line of the moment behind it waits that long.
+	entry["ends"] = GameClock.seconds() + seconds + 0.6
+	fade.tween_interval(seconds)
 	fade.tween_property(chip, "modulate:a", 0.0, 0.6)
 	fade.tween_callback(func() -> void:
 		_log.gone(entry)
@@ -211,6 +280,8 @@ func flash(text: String) -> void:
 	if text == "":
 		return
 	for part: String in split_messages(text, _tags()):
+		if tag_of(part, [Text.t("Quest complete")]) != "":
+			_quest_done(part)
 		var entry := _plate.add(part, tag_of(part, _tags()) != "")
 		# Folded into the one showing: its new words.
 		if is_same(entry, _shown) and entry["text"] != _message_now:
@@ -220,6 +291,37 @@ func flash(text: String) -> void:
 
 func _tags() -> Array:
 	return MESSAGE_TAGS.map(func(known: String) -> String: return Text.t(known))
+
+
+## A quest done: its "Quest accepted" leaves the plate at once, or never
+## shows if it still waits (PIX-476: The Cheese Run's stayed 8 s after the
+## cheese was handed over, « Quest complete » waiting behind it). Both
+## start with the quest's name after their tag, the taken one's maybe with
+## the journal's key after it (Quests.accepted).
+func _quest_done(done: String) -> void:
+	var taken := Text.t("Quest accepted")
+	var quest := _untagged(done, tag_of(done, _tags())).get_slice(".", 0)
+	for entry: Dictionary in _plate.showing + _plate.waiting:
+		var text: String = entry["text"]
+		var named := _untagged(text, taken)
+		if tag_of(text, [taken]) != "" and (named.begins_with(quest + ".") or named.begins_with(quest + " (")):
+			_plate.waiting.erase(entry)
+			if is_same(entry, _shown):
+				_take_down()
+
+
+## A message's words without its tag and the colon after it.
+static func _untagged(text: String, tag: String) -> String:
+	return text.substr(tag.length()).lstrip(" \u202f:")
+
+
+## The plate's message gone at once, its room free.
+func _take_down() -> void:
+	_plate.gone(_shown)
+	_shown = {}
+	_message_now = ""
+	message_fade.kill()
+	message_box.modulate.a = 0.0
 
 
 ## A line that starts with a known tag begins a message of its own; any
@@ -250,7 +352,7 @@ static func tag_of(text: String, tags: Array) -> String:
 ## qui pop d'un coup »): the plate goes first, the log's line stepping
 ## aside for it, and the log's next waits until the plate has faded.
 func update() -> void:
-	_drop_past_hints()
+	_drop_past()
 	_hold_hint_for_card()
 	var fighting := _fighting()
 	if _message_now != "" and not _message_tagged and GameClock.seconds() - _message_since >= PLAIN_MESSAGE_S:
@@ -292,28 +394,37 @@ func withdraw(text: String) -> void:
 			_plate.waiting.erase(entry)
 	if text == "" or _message_now != text:
 		return
-	_plate.gone(_shown)
-	_shown = {}
-	_message_now = ""
-	message_fade.kill()
-	message_box.modulate.a = 0.0
+	_take_down()
 	update()
 
 
-## A first-time hint whose moment has gone leaves the log, showing or
-## waiting (PIX-462: the roll's came up after the hounds were dead, the
-## board's in the town hall, back after its card): one never shown stays
-## unseen, for the next time (Hud.hint_there). No world (a test's): kept.
-func _drop_past_hints() -> void:
-	if world == null or world.get("hud") == null:
-		return
+## A line whose moment has gone leaves the log, showing or waiting, never
+## shown late. A first-time hint (PIX-462: the roll's came up after the
+## hounds were dead, the board's in the town hall, back after its card): one
+## never shown stays unseen, for the next time (Hud.hint_there); no world (a
+## test's): kept. A line of the moment (PIX-476, log_now): once what it is
+## about is gone (its foe dead), or still waiting past its wait (NOW_S, or
+## the line it landed behind: log_now) after it landed.
+func _drop_past() -> void:
 	for entry: Dictionary in _log.showing + _log.waiting:
-		if entry.has("hint") and not world.hud.hint_there(entry["hint"]):
-			var chip: Node = entry.get("chip")
-			if is_instance_valid(chip):
-				chip.queue_free()
-			_log.gone(entry)
-			_log.waiting.erase(entry)
+		var past := false
+		if entry.has("hint"):
+			past = world != null and world.get("hud") != null and not world.hud.hint_there(entry["hint"])
+		elif entry.has("at"):
+			var holds: Callable = entry["holds"]
+			past = (not holds.is_null() and not (holds.is_valid() and holds.call())) \
+				or (not entry.has("chip") and GameClock.seconds() - float(entry["at"]) > float(entry["wait"]))
+		if past:
+			_drop(entry)
+
+
+## A line of the log gone for good, showing or waiting.
+func _drop(entry: Dictionary) -> void:
+	var chip: Node = entry.get("chip")
+	if is_instance_valid(chip):
+		chip.queue_free()
+	_log.gone(entry)
+	_log.waiting.erase(entry)
 
 
 ## A title card up: a first-time hint's line waits it out, one box at a time
@@ -349,7 +460,7 @@ func _show_message(text: String) -> void:
 	var tag := tag_of(text, _tags())
 	_message_tagged = tag != ""
 	if tag != "":
-		text = text.substr(tag.length()).lstrip(" \u202f:")
+		text = _untagged(text, tag)
 		text = text[0].to_upper() + text.substr(1)
 	message_tag.text = tag
 	message_tag.visible = tag != ""

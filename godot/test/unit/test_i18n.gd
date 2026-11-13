@@ -70,7 +70,7 @@ func test_the_catalogue_holds_the_datas_words() -> void:
 	for npc: Dictionary in Npcs._data()["npcs"]:
 		for line: String in npc.get("lines", []):
 			assert_true(catalogue.has(line), "%s's line" % npc["id"])
-	assert_true(catalogue.has("Quest accepted: %s. %s"), "a format the game fills")
+	assert_true(catalogue.has("Quest accepted: %s."), "a format the game fills")
 	assert_true(catalogue.has("close"), "a footer's word")
 
 

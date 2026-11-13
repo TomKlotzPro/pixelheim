@@ -2237,6 +2237,10 @@ msgid "A code-quality pass under the floorboards: one panel system instead of se
 msgstr "Un grand ménage du code, sous le plancher : un seul système de panneaux au lieu de sept indicateurs éparpillés - les menus sont désormais vraiment modaux partout, et une sauvegarde faite avec un panneau ouvert se recharge proprement"
 
 #: assets/data/changelog.json
+msgid "A conversation in large text stays on the screen"
+msgstr "Une conversation en texte agrandi reste à l'écran"
+
+#: assets/data/changelog.json
 msgid "A critical hit shows: its number pops up in gold, twice the size, with a \"!\"; numbers in a flurry land side by side instead of on top of each other"
 msgstr "Un coup critique se voit : son chiffre jaillit en or, deux fois plus grand, avec un « ! » ; dans une volée de coups, les chiffres se posent côte à côte au lieu de s'empiler"
 
@@ -2301,6 +2305,14 @@ msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead o
 msgstr "Un ennemi pas encore rencontré indique dans le Bestiaire où il vit, au lieu de la même phrase répétée sur toute la page"
 
 #: assets/data/changelog.json
+msgid "A foe's ailment shows as it lands and goes when the foe falls, and no line turns up after its moment"
+msgstr "L'affliction d'un ennemi s'affiche quand elle le frappe et s'en va quand il tombe, et plus aucune ligne n'arrive après coup"
+
+#: assets/data/changelog.json
+msgid "A foe's level plate and health bar fade while your hero stands under them, and your hits' numbers rise over the plates"
+msgstr "La plaque de niveau et la barre de vie d'un ennemi s'effacent quand votre héros passe dessous, et les chiffres de vos coups montent par-dessus les plaques"
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr "Un « ! » doré au-dessus de qui a une quête pour vous, un « ? » doré au-dessus de qui attend que vous en remettiez une, et un « ? » gris tant qu'une quête prise auprès de lui est en cours ; les Options peuvent les masquer (Marqueurs de quête)"
 
@@ -2347,6 +2359,10 @@ msgstr "Un panneau de caractéristiques en direct à côté du mannequin : ATQ
 #: assets/data/changelog.json
 msgid "A loading screen of its own: the night over Pixelheim, the smoking mountain and the lake, with the village's windows lighting up one by one as the game loads"
 msgstr "Un écran de chargement bien à lui : la nuit sur Pixelheim, la montagne qui fume et le lac, avec les fenêtres du village qui s'allument une à une pendant le chargement"
+
+#: assets/data/changelog.json
+msgid "A long hero name ends in … on hero creation instead of pushing the panels off the screen"
+msgstr "Un long nom de héros finit par … à la création au lieu de pousser les panneaux hors de l'écran"
 
 #: assets/data/changelog.json
 msgid "A lost fight still wakes you tucked into the inn's bed"
@@ -2415,6 +2431,10 @@ msgstr "Une voie est une identité permanente : un thème passif toujours acti
 #: assets/data/changelog.json
 msgid "A phone starts with large text, which now reaches the shops' and ledgers' descriptions too"
 msgstr "Un téléphone démarre avec le grand texte, qui s'applique désormais aussi aux descriptions des boutiques et des registres"
+
+#: assets/data/changelog.json
+msgid "A quest accepted names the quest and its whole pay, without its story: the journal keeps that"
+msgstr "Une quête acceptée s'annonce par son nom et toute sa paie, sans son histoire : le journal la garde"
 
 #: assets/data/changelog.json
 msgid "A quest's goods can't be sold, from any screen"
@@ -2651,6 +2671,10 @@ msgstr "En un coup d'œil"
 #: assets/data/changelog.json
 msgid "At dawn Morvax comes down the mountain road, the collar comes off, and the dragon leaves a scale in the fountain and flies home, free"
 msgstr "À l'aube, Morvax descend la route de la montagne, le collier tombe, et le dragon laisse une écaille dans la fontaine avant de rentrer chez lui, libre"
+
+#: assets/data/changelog.json
+msgid "At full health a potion or a meal is kept and a line says why, as is a mana potion with the pool full or a remedy with nothing to cure"
+msgstr "En pleine santé, une potion ou un repas est gardé et une ligne dit pourquoi ; de même pour une potion de mana quand la réserve est pleine, ou un remède quand rien n'est à soigner"
 
 #: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
@@ -4061,6 +4085,10 @@ msgid "Hero creation reads clearly: the first night is a setting of its own (The
 msgstr "La création du héros se lit clairement : la première nuit est un réglage à part (La première nuit (tutoriel) : Jouer / Passer, avec une ligne sur ce que chacun veut dire), et Commencer l'aventure est le départ, seul en bas ; Tab, un clic ou le Y de la manette change la nuit, et une manette atteint désormais chaque commande"
 
 #: assets/data/changelog.json
+msgid "Hero creation shows its three skills as a preview, the first marked as the one you start with"
+msgstr "La création du héros présente ses trois compétences comme un aperçu, la première marquée comme celle de départ"
+
+#: assets/data/changelog.json
 msgid "Hero creation shows the hero as they will really start, without the colour looks nobody kept; the stats have icons, pips against the best of all the roles and their full names, and the starting skills are chips with their icons, a click or PgUp/PgDn reading each"
 msgstr "La création du héros le montre tel qu'il commencera vraiment, sans les couleurs que personne ne gardait ; les stats ont leurs icônes, des crans face au meilleur de tous les rôles et leur nom complet, et les compétences de départ sont des pastilles avec leur icône, un clic ou PgUp/PgDn pour lire chacune"
 
@@ -4155,6 +4183,10 @@ msgstr "ENCRÉ : le contour de chaque être vivant ferme désormais ses angles
 #: assets/data/changelog.json
 msgid "Impact"
 msgstr "Impact"
+
+#: assets/data/changelog.json
+msgid "In French a number stays with its unit and a mark with its word, on the web too"
+msgstr "En français, un nombre reste avec son unité et un signe avec son mot, sur le web aussi"
 
 #: assets/data/changelog.json
 msgid "In Hand"
@@ -4525,6 +4557,10 @@ msgid "Main Street"
 msgstr "Rue principale"
 
 #: assets/data/changelog.json
+msgid "Make Way"
+msgstr "Place au héros"
+
+#: assets/data/changelog.json
 msgid "Many Tongues"
 msgstr "Mille langues"
 
@@ -4535,6 +4571,10 @@ msgstr "Maren ne saute plus d'histoire : si vous avez exploré loin avant de l
 #: assets/data/changelog.json
 msgid "Maren's letters are the main story in the journal: the courier's satchel lists each letter, who it's for and where, and once it's delivered, what they answered"
 msgstr "Les lettres de Maren sont l'histoire principale du journal : la sacoche du messager liste chaque lettre, son destinataire et où le trouver, puis, une fois remise, ce qu'il a répondu"
+
+#: assets/data/changelog.json
+msgid "Maren's letters fit in one line"
+msgstr "Les lettres de Maren tiennent en une ligne"
 
 #: assets/data/changelog.json
 msgid "Market Day"
@@ -4791,6 +4831,10 @@ msgstr "Les nœuds à votre portée brillent. Les apprendre semble toujours auss
 #: assets/data/changelog.json
 msgid "Nothing Underfoot"
 msgstr "Rien sous le pied"
+
+#: assets/data/changelog.json
+msgid "Nothing Wasted"
+msgstr "Rien de perdu"
 
 #: assets/data/changelog.json
 msgid "Now and then a shower crosses the open land: rain slants down and splashes, the light turns grey, the lamps come up, the birds fall quiet and you hear the rain"
@@ -5441,6 +5485,10 @@ msgid "Right on Cue"
 msgstr "Au bon moment"
 
 #: assets/data/changelog.json
+msgid "Right on Time"
+msgstr "À point nommé"
+
+#: assets/data/changelog.json
 msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
 msgstr "Les rivières, les étangs et le lac des Bois-Profonds ont désormais de la profondeur : plus sombres au milieu, plus clairs vers les berges, avec de l'écume au bord et des reflets qui filent au fil du courant"
 
@@ -5455,6 +5503,10 @@ msgstr "De l'air"
 #: assets/data/changelog.json
 msgid "Room to Grow"
 msgstr "De la place pour grandir"
+
+#: assets/data/changelog.json
+msgid "Room to Read"
+msgstr "De quoi lire"
 
 #: assets/data/changelog.json
 msgid "Room to Spare"
@@ -5723,6 +5775,10 @@ msgstr "Les points de compétence n'allument plus le menu quand il n'y a plus ri
 #: assets/data/changelog.json
 msgid "Skill trees! One skill point per level, three branches per role"
 msgstr "Des arbres de compétences ! Un point de compétence par niveau, trois branches par rôle"
+
+#: assets/data/changelog.json
+msgid "Skills names the path you walk in one line that fits"
+msgstr "Les compétences nomment la voie que vous suivez en une ligne qui tient"
 
 #: assets/data/changelog.json
 msgid "Slaying one makes you a Boss slayer: +10% damage for 10 minutes, counting down at the top left"
@@ -6533,6 +6589,10 @@ msgid "The Open World"
 msgstr "Le Monde ouvert"
 
 #: assets/data/changelog.json
+msgid "The Options footer shows the new keys as soon as you rebind them, and so does the pause menu's"
+msgstr "Le pied de page des Options montre les nouvelles touches dès que vous les changez, celui du menu de pause aussi"
+
+#: assets/data/changelog.json
 msgid "The Pages tab is now Letters: read Maren's own words once a letter is delivered (a courier never reads the post) and the answer that came back"
 msgstr "L'onglet Pages devient Lettres : lisez les mots de Maren une fois la lettre remise (un messager ne lit jamais le courrier) et la réponse qui est revenue"
 
@@ -6579,6 +6639,10 @@ msgstr "Le panneau des compétences affiche tout le graphe : nœuds, liens d'a
 #: assets/data/changelog.json
 msgid "The Slayer's Ledger"
 msgstr "Le Registre du tueur"
+
+#: assets/data/changelog.json
+msgid "The Smuggler Gunner's ball is easy to see: a rimmed ball with a trail of smoke, fired the way the gunner faces"
+msgstr "La balle du Canonnier contrebandier se voit bien : cerclée de sombre, elle laisse un filet de fumée, et part dans le sens où il regarde"
 
 #: assets/data/changelog.json
 msgid "The Smuggler Gunner, the Turncoat Bowman and the Fire Imp keep their distance and shoot: they glow before firing, their shot flies where you can see it, and with water or rocks in the way they come closer instead"
@@ -7033,6 +7097,10 @@ msgid "The roads to the Mirefen and the Deepwood run out through the ridge inste
 msgstr "Les routes vers les Marais de Fange et les Bois-Profonds sortent par la crête au lieu d'entrer dans une grotte"
 
 #: assets/data/changelog.json
+msgid "The roll's hint reads quickly and lets the fight's lines through"
+msgstr "Le conseil de la roulade se lit vite et laisse passer les lignes du combat"
+
+#: assets/data/changelog.json
 msgid "The same gate from the Ashenreach, where the road widens up to it; from inside the town you see the fields beyond"
 msgstr "La même porte depuis la Marche des Cendres, où la route s'élargit jusqu'à elle ; depuis le village, on aperçoit les champs au-delà"
 
@@ -7167,6 +7235,10 @@ msgstr "Le village vu de l'extérieur est celui où vous marchez : ses propres
 #: assets/data/changelog.json
 msgid "The village stopped being rectangles: shingled roof courses, rounded building corners, and chimneys with smoke wisps - form, not squares"
 msgstr "Le village n'est plus fait de rectangles : rangs de bardeaux sur les toits, angles de bâtiments arrondis et cheminées aux volutes de fumée - des formes, pas des carrés"
+
+#: assets/data/changelog.json
+msgid "The village works describe the chosen work first"
+msgstr "Les chantiers du village décrivent d'abord le chantier choisi"
 
 #: assets/data/changelog.json
 msgid "The water cleared: translucent shallows over the riverbed, and a lip of foam along every bank where water meets land"
@@ -7619,6 +7691,10 @@ msgstr "Gagnez des combats dans la nature pour faire de la cueillette : des he
 #: assets/data/changelog.json
 msgid "Wind and Water"
 msgstr "Le Vent et l'Eau"
+
+#: assets/data/changelog.json
+msgid "With Large reading text, the village works, the bank, the counters and the other cards keep their size, and PgUp / PgDn read the rest"
+msgstr "Avec le texte de lecture agrandi, les chantiers du village, la banque, les comptoirs et les autres fiches gardent leur taille, et PgUp / PgDn font lire la suite"
 
 #: assets/data/changelog.json
 msgid "With Reduce motion on, nothing falls or drifts and the heat haze holds still"
@@ -13517,10 +13593,6 @@ msgid "Bram wants a cheese wheel. Of course he does."
 msgstr "Bram veut une meule de fromage. Évidemment."
 
 #: assets/data/progression.json
-msgid "Bram's crew is out clearing the cliff road to Saltmere."
-msgstr "L'équipe de Bram est partie dégager la route de la falaise vers Saltmere."
-
-#: assets/data/progression.json
 msgid "Bram: \"I've waited my whole life for this.\""
 msgstr "Bram : « J'ai attendu ça toute ma vie. »"
 
@@ -14021,8 +14093,8 @@ msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The 
 msgstr "Quatre herbes des bois, fraîches, cueillies aux points de récolte de la Forêt murmurante. Les lits du sanctuaire ne restent jamais vides bien longtemps."
 
 #: assets/data/progression.json
-msgid "Four letters in your satchel: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
-msgstr "Quatre lettres dans votre sacoche : pour la vieille Wenna à Saltmere, le vieux Pell à Fernoir, le capitaine Hale à Greyhold et Aske sur la Porte-Givre. Maren garde la cinquième."
+msgid "Four letters in your satchel ({key:journal})."
+msgstr "Quatre lettres dans votre sacoche ({key:journal})."
 
 #: assets/data/progression.json
 msgid "Four lumps of blackiron. The veins glint in the shafts' dead ends."
@@ -14349,8 +14421,8 @@ msgid "Imps taught a lesson"
 msgstr "Diablotins remis à leur place"
 
 #: assets/data/progression.json
-msgid "In your satchel: %s. Maren keeps the fifth."
-msgstr "Dans votre sacoche : %s. Maren garde la cinquième."
+msgid "In your satchel ({key:journal}): %s."
+msgstr "Dans votre sacoche ({key:journal}) : %s."
 
 #: assets/data/progression.json
 msgid "Ink Nobody Can Copy"
@@ -16442,7 +16514,7 @@ msgstr "La place est pleine et personne ne travaille. Ce soir, Pixelheim boit à
 
 #: assets/data/town.json
 msgid "Torches along Upper Street and by the square, so the night has edges."
-msgstr "Des torches le long de la Grand-Rue et près de la place, pour que la nuit ait des contours."
+msgstr "Des torches sur la Grand-Rue et la place, pour que la nuit ait des contours."
 
 #: assets/data/town.json
 msgid "Town"
@@ -17077,12 +17149,16 @@ msgid "first night"
 msgstr "première nuit"
 
 #: scripts/create_screen.gd
+msgid "read skills"
+msgstr "lire les compétences"
+
+#: scripts/create_screen.gd
 msgid "role"
 msgstr "classe"
 
 #: scripts/create_screen.gd
-msgid "skill"
-msgstr "compétence"
+msgid "start"
+msgstr "départ"
 
 #: scripts/cutscene.gd
 msgid "Esc"
@@ -17799,6 +17875,14 @@ msgstr "Right"
 #: scripts/keycap.gd
 msgid "Up"
 msgstr "Up"
+
+#: scripts/layout.gd
+msgid "PgUp/PgDn"
+msgstr "PgUp/PgDn"
+
+#: scripts/layout.gd
+msgid "read"
+msgstr "lire"
 
 #: scripts/ledger_screen.gd
 msgid "do it"
@@ -19117,6 +19201,14 @@ msgid "a recipe in your book: %s"
 msgstr "une recette dans votre carnet : %s"
 
 #: scripts/state/questing.gd
+msgid "%d XP"
+msgstr "%d XP"
+
+#: scripts/state/questing.gd
+msgid "%d gold"
+msgstr "%d or"
+
+#: scripts/state/questing.gd
 msgid "%s: %d/%d %s."
 msgstr "%s : %d/%d %s."
 
@@ -19148,18 +19240,6 @@ msgstr "Quête terminée : %s. %s. « %s »"
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer."
 
-#: scripts/state/questing.gd
-msgid "Your satchel is in the journal ({key:journal})."
-msgstr "Votre sacoche est dans le journal ({key:journal})."
-
-#: scripts/state/quests.gd
-msgid "%d XP"
-msgstr "%d XP"
-
-#: scripts/state/quests.gd
-msgid "%d gold"
-msgstr "%d or"
-
 #: scripts/state/quests.gd
 msgid "%s, from %s."
 msgstr "%s, avec %s."
@@ -19177,10 +19257,6 @@ msgid "In a chest somewhere in %s."
 msgstr "Dans un coffre, quelque part (%s)."
 
 #: scripts/state/quests.gd
-msgid "It's in your journal ({key:journal})."
-msgstr "Elle est dans votre journal ({key:journal})."
-
-#: scripts/state/quests.gd
 msgid "Pays %s"
 msgstr "Rapporte %s"
 
@@ -19189,8 +19265,8 @@ msgid "Pays as you choose"
 msgstr "Rapporte selon votre choix"
 
 #: scripts/state/quests.gd
-msgid "Quest accepted: %s. %s"
-msgstr "Quête acceptée : %s. %s"
+msgid "Quest accepted: %s."
+msgstr "Quête acceptée : %s."
 
 #: scripts/state/quests.gd
 msgid "The five left them in %s."
@@ -19497,6 +19573,10 @@ msgid "You come to on the road. Pixelheim is still burning ahead."
 msgstr "Vous reprenez connaissance sur la route. Pixelheim brûle toujours, droit devant."
 
 #: scripts/state/upkeep.gd
+msgid "You have no need of that right now."
+msgstr "Vous n'en avez pas besoin pour l'instant."
+
+#: scripts/state/upkeep.gd
 msgid "You sit a while on the bench by the ember lamp. Its warmth mends you."
 msgstr "Vous vous asseyez un moment sur le banc près de la lampe de braise. Sa chaleur vous remet d'aplomb."
 
@@ -19523,6 +19603,14 @@ msgstr "Vous vous réveillez près de la tente de Sela, avec %d or en moins. Ce 
 #: scripts/state/upkeep.gd
 msgid "You wake beside Sela's tent, your cuts bound. She has patched up worse."
 msgstr "Vous vous réveillez près de la tente de Sela, vos plaies pansées. Elle a soigné bien pire."
+
+#: scripts/state/upkeep.gd
+msgid "You're already at full health."
+msgstr "Vous êtes déjà en pleine santé."
+
+#: scripts/state/upkeep.gd
+msgid "Your %s is already full."
+msgstr "Vos %s sont déjà au maximum."
 
 #: scripts/stats_screen.gd
 msgid "%d stat point%s to spend. %s at the shrine can undo it, for a price."

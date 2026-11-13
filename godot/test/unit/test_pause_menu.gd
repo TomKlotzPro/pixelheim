@@ -78,6 +78,50 @@ func test_esc_on_saves_or_options_goes_back_to_the_menu() -> void:
 		await wait_physics_frames(1)
 
 
+## The keycaps under `root`, in order.
+func _caps(root: Node) -> Array[String]:
+	var out: Array[String] = []
+	for node in root.find_children("*", "", true, false):
+		if node is Keycap:
+			out.append((node as Keycap).label.text)
+	return out
+
+
+## PIX-480: Journal rebound to W swaps Move up to Q, and the footer kept
+## "W S choose" till Options were reopened. It names the new keys at once,
+## after the swap back and a reset too, and so does the menu under it.
+func test_the_footers_follow_a_rebind() -> void:
+	var settings := GameState.settings
+	var was_read_only := settings.read_only
+	var was_bound := settings.bindings
+	settings.read_only = true
+	settings.bindings = {}
+	var menu := _pause()
+	assert_eq(_caps(menu.keys).slice(0, 2), ["W", "S"])
+	menu.selected = 2
+	_key(&"interact")
+	var options := _over(menu)
+	for step: Array in [["journal", KEY_W, "Q"], ["journal", KEY_Q, "W"], ["move_up", KEY_Q, "Q"]]:
+		options.listening = step[0]
+		var press := InputEventKey.new()
+		press.physical_keycode = step[1]
+		press.pressed = true
+		options._input(press)
+		assert_eq(_caps(options.footer).slice(0, 2), [step[2], "S"], "%s to %s" % [step[0], OS.get_keycode_string(step[1])])
+		assert_true(options.footer.visible)
+	options._reset_keys()
+	assert_eq(_caps(options.footer).slice(0, 2), ["W", "S"], "the defaults again")
+	settings.bindings = Controls.rebind({}, "journal", KEY_W)
+	Controls.apply(settings.bindings)
+	_key(&"ui_cancel")
+	await wait_physics_frames(1)
+	assert_eq(_caps(menu.keys).slice(0, 2), ["Q", "S"], "the menu's keys, as Options close")
+	assert_true(menu.keys.visible)
+	settings.bindings = was_bound
+	settings.read_only = was_read_only
+	Controls.apply({})
+
+
 func test_playing_the_hero_in_hand_from_its_saves_resumes() -> void:
 	var menu := _pause()
 	menu._take(1)

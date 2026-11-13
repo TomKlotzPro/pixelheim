@@ -9,9 +9,11 @@ extends GutTest
 ## shows while what it is about is there, or not at all, left unseen.
 
 
-## The tallest a "Quest accepted" plate may stand: past that it is the big
-## box over the view Tom can't stand (PIX-446).
-const PLATE_LINES := 4
+## The tallest a "Quest accepted" plate may stand (a line more in large
+## reading text, French's longest): past that it is the big box over the
+## view Tom can't stand (PIX-446, PIX-471: four lines with the quest's
+## story, now its name and its pay).
+const PLATE_LINES := 2
 
 
 ## Foes as the HUD asks them: the boss hunting the hero, and since when.
@@ -210,20 +212,222 @@ func test_a_hint_is_a_line_of_the_log_and_waits_behind_the_plate() -> void:
 	assert_string_contains(line, Controls.say("{key:journal}"), "the player's own key")
 
 
-## PIX-446: the "Quest accepted" plate says what a quest pays in full, and
-## the journal's key until its hint was seen (Tom: no need to be short). The
-## longest still fits the plate, in English and French.
-func test_every_quest_accepted_plate_fits() -> void:
+## PIX-446: the "Quest accepted" plate says what a quest pays in full.
+## PIX-471: and not the quest's story, which the journal holds. The longest,
+## the journal's key after its name, fits the plate in English and French,
+## in large reading text too, its tag the size of its words.
+func test_every_quest_accepted_plate_is_its_name_and_its_pay() -> void:
+	for large: bool in [false, true]:
+		GameState.settings.large_text = large
+		world.messages.message_box.free()
+		world.messages.build_plate(hud.root)
+		for lang: String in ["en", "fr"]:
+			Text.apply(lang)
+			var most := 0
+			for quest: Dictionary in Quests.all():
+				var said := Quests.accepted(quest, true)
+				assert_false(String(quest["brief"]) in said, "%s (%s): its story is the journal's" % [quest["id"], lang])
+				assert_string_contains(said, String(quest["name"]) + Controls.say(" ({key:journal})."), "where it went, hints off or on")
+				assert_false(Controls.say(" ({key:journal})") in Quests.accepted(quest), "the hint seen: the name alone")
+				if Quests.pay(quest) != "":
+					assert_string_contains(said, Quests.pay(quest), "%s (%s): its pay in full" % [quest["id"], lang])
+				var lines := _plate_lines(said)
+				assert_lte(lines, PLATE_LINES + int(large), "%s (%s, large %s): %s" % [quest["id"], lang, large, said])
+				most = maxi(most, lines)
+			gut.p("%s, large text %s: the longest plate %d lines" % [lang, large, most])
+		assert_eq(world.messages.message_tag.get_theme_font_size("font_size"), world.messages.message_label.get_theme_font_size("font_size"),
+			"the tag as big as the words")
+	Text.apply("en")
+	Text.apply("fr")
+	assert_string_contains(Quests.pay({"reward": {"gold": 70, "xp": 25}}), "70\u202for, 25\u202fXP", "a no-break space between a number and its unit")
+	Text.apply("en")
+	# The space alone proves no wrap: this binary has ICU's line-break rules
+	# built in, an export only with this setting (without it « Rapporte 70 »
+	# / « or » parted again on the web build, in large text).
+	assert_true(ProjectSettings.get_setting("internationalization/locale/include_text_server_data"), "the export ships the rules that keep them together")
+
+
+## PIX-471: Maren's tin said who each letter is for and where Bram's crew
+## was, four lines over the village. One short line with the journal's key;
+## the journal's satchel names them.
+func test_marens_letters_are_one_short_line() -> void:
+	var given: Array[String] = []
+	for quest: Dictionary in Letters.all():
+		given.append(quest["objective"]["itemId"])
 	for lang: String in ["en", "fr"]:
 		Text.apply(lang)
-		var most := 0
-		for quest: Dictionary in Quests.all():
-			if quest["objective"]["kind"] != "deliverTo":
-				var lines := _plate_lines(Quests.accepted(quest, true))
-				assert_lte(lines, PLATE_LINES, "%s (%s): %s" % [quest["id"], lang, Quests.accepted(quest, true)])
-				most = maxi(most, lines)
-		gut.p("%s: the longest plate %d lines" % [lang, most])
+		var said := Controls.say(Letters.taken_line(given))
+		assert_eq(_plate_lines(said), 1, "%s: %s" % [lang, said])
+		assert_string_contains(said, Controls.say("{key:journal}"), "where they are read")
+		assert_lte(said.length(), 60, said)
 	Text.apply("en")
+
+
+# ---- A line shows at its moment or not at all (PIX-476) -------------------
+
+## The log's lines on the screen.
+func _lines() -> Array:
+	var chips := world.messages.log_box.get_children().filter(func(chip: Node) -> bool: return not chip.is_queued_for_deletion())
+	return chips.map(func(chip: Node) -> String: return (chip.get_child(0) as Label).text)
+
+
+## Poison landed at 2.97 s and its line came up at 6.32 s, behind the roll's
+## hint, the orc dead. An ailment's line shows as it lands, the hint stepping
+## aside; and goes with its foe.
+func test_an_ailment_shows_as_it_lands_and_goes_with_its_foe() -> void:
+	var alive := [true]
+	hud.hint("dodge")
+	assert_eq(_lines().size(), 1, "the roll's hint up")
+	world.messages.log_now("Orc Raider is afflicted by burn!", func() -> bool: return alive[0])
+	assert_eq(_lines(), ["Orc Raider is afflicted by burn!"], "at once, the hint out of its way")
+	assert_eq(_up(), "dodge", "the hint barely shown: back after it")
+	world.messages.log_now("Orc Raider is afflicted by poison!", func() -> bool: return alive[0])
+	assert_eq(_lines(), ["Orc Raider is afflicted by poison!"], "the newest news has the line")
+	alive[0] = false
+	world.foes.left = false
+	world.messages.update()
+	assert_eq([_lines(), _up()], [[], ""], "the orc dead: nothing said of it, no hint for no foe")
+	assert_eq(world.messages._log.waiting.size(), 0, "and nothing waits to come back")
+
+
+## The roll's hint held the log for 5 to 7 s of every fight. Read (up
+## HINT_READ_S), it is gone for good when a line of the fight comes; and it
+## stays no longer than any line, when every other hint keeps its 5 s.
+func test_a_hint_read_gives_its_place_to_the_fight() -> void:
+	hud.hint("dodge")
+	world.messages._log.showing[0]["since"] -= Messages.HINT_READ_S
+	world.messages.log_now("Orc Raider is afflicted by burn!")
+	assert_eq([_lines(), _up()], [["Orc Raider is afflicted by burn!"], ""])
+	assert_true("dodge" in GameState.settings.hints_seen, "shown once")
+	world.messages.clear()
+	hud.hint("fright")
+	var said: String = _lines()[0]
+	var chip: Node = world.messages.log_box.get_child(-1)
+	(chip.get_meta("fade") as Tween).custom_step(Messages.HINT_SECONDS - 0.1)
+	assert_eq(_up(), "fright", "any hint but the roll's stays HINT_SECONDS at least (PIX-433): %s" % said)
+	(chip.get_meta("fade") as Tween).custom_step(0.8)
+	assert_eq(_up(), "", "and no longer")
+	# The roll's reads as long as a line.
+	world.messages.clear()
+	GameState.settings.hints_seen.erase("dodge")
+	hud.hint("dodge")
+	said = _lines()[0]
+	chip = world.messages.log_box.get_child(-1)
+	(chip.get_meta("fade") as Tween).custom_step(UiStyle.reading_seconds(said) + 0.7)
+	assert_eq(_up(), "", "the roll's: as long as a line, no longer: %s" % said)
+
+
+## The potion's hint, up 1.5 s, was cut by Shield Slam's stun line and never
+## shown again, already seen. Only the roll's is gone once read: any other
+## steps aside and comes back after the line, for its full time (PIX-433).
+func test_a_hint_but_the_rolls_comes_back_after_a_line_of_the_moment() -> void:
+	hud.hint("fright")
+	world.messages._log.showing[0]["since"] -= Messages.HINT_READ_S
+	world.messages.log_now("Orc Raider is afflicted by stun!")
+	assert_eq([_lines(), _up()], [["Orc Raider is afflicted by stun!"], "fright"], "out of the line's way, not lost")
+	(world.messages.log_box.get_child(-1).get_meta("fade") as Tween).custom_step(30.0)
+	assert_eq(_lines().size(), 1, "back after the line")
+	var chip: Node = world.messages.log_box.get_child(-1)
+	assert_eq(world.messages._log.showing[0].get("hint", ""), "fright")
+	(chip.get_meta("fade") as Tween).custom_step(Messages.HINT_SECONDS - 0.1)
+	assert_eq(_up(), "fright", "for its full time")
+
+
+## A boss's roar or a named foe's « seen » line holds the log 2.5 s at least,
+## longer than NOW_S: every ailment landing behind one was dropped unshown.
+## It waits out the line in front, and a little more; no longer, and not if
+## its foe dies first.
+func test_an_ailment_waits_out_the_line_in_front() -> void:
+	var alive := [true]
+	var messages := world.messages
+	messages.log_line("Greymaw has seen you.")
+	var front: Dictionary = messages._log.showing[0]
+	messages.log_now("Greymaw is afflicted by burn!", func() -> bool: return alive[0])
+	assert_eq(_lines(), ["Greymaw has seen you."], "the line in front is read out")
+	# The line's reading time on, past NOW_S.
+	var read: float = float(front["ends"]) - GameClock.seconds()
+	assert_gt(read, Messages.NOW_S)
+	messages._log.waiting[0]["at"] -= read
+	# A hair past the fade's end: `ends - now` can come out a rounding short
+	# of the fade's own length, and the line in front would stay (it failed
+	# that way on CI, where the clock stood elsewhere when the test ran).
+	(messages.log_box.get_child(-1).get_meta("fade") as Tween).custom_step(read + 0.01)
+	assert_eq(_lines(), ["Greymaw is afflicted by burn!"], "its turn, still news")
+	# Later than that (the plate up meanwhile): dropped.
+	messages.clear()
+	messages.log_line("Greymaw has seen you.")
+	messages.log_now("Greymaw is afflicted by burn!")
+	messages._log.waiting[0]["at"] -= read + Messages.NOW_MARGIN_S + 0.1
+	messages.update()
+	assert_eq(messages._log.waiting.size(), 0, "never shown late")
+	# Its foe dead while it waited: dropped.
+	messages.clear()
+	messages.log_line("Greymaw has seen you.")
+	messages.log_now("Greymaw is afflicted by burn!", func() -> bool: return alive[0])
+	alive[0] = false
+	messages.update()
+	assert_eq(messages._log.waiting.size(), 0, "nothing said of the dead")
+
+
+## A named foe's first notice says the roll's hint, then its « seen » line,
+## which waited 3 s behind the hint: the line goes first, the hint unread
+## after it; a hint already read goes.
+func test_the_rolls_hint_holds_no_line_of_the_fight_back() -> void:
+	hud.hint("dodge")
+	world.messages.log_line("Greymaw has seen you.")
+	assert_eq([_lines(), _up()], [["Greymaw has seen you."], "dodge"])
+	world.messages.clear()
+	GameState.settings.hints_seen.erase("dodge")
+	hud.hint("dodge")
+	world.messages._log.showing[0]["since"] -= Messages.HINT_READ_S
+	world.messages.log_line("Greymaw has seen you.")
+	assert_eq([_lines(), _up()], [["Greymaw has seen you."], ""])
+
+
+## The burn's line stepped aside for « Not enough MP » and came back 10 s
+## after the orc died. A line of the moment the plate kept off the screen
+## past NOW_S is dropped, not shown late; any other line still has its turn.
+func test_a_line_of_the_moment_is_never_shown_late() -> void:
+	world.messages.flash("Not enough MP for Absolution.")
+	world.messages.log_now("Orc Raider is afflicted by burn!")
+	world.messages.log_line("Greymaw has seen you.")
+	assert_eq(_lines(), [], "one box at a time: the plate")
+	world.messages._log.waiting[0]["at"] -= Messages.NOW_S + 0.1
+	world.messages.message_fade.custom_step(30.0)
+	assert_eq(_lines(), ["Greymaw has seen you."], "the burn's moment went; what a player needs is kept")
+	# Up when the plate came: it steps aside, and is not back after it.
+	world.messages.clear()
+	world.messages.log_now("Orc Raider is afflicted by stun!")
+	world.messages.flash("No skill on that key yet.")
+	world.messages._log.waiting[0]["at"] -= Messages.NOW_S + 0.1
+	world.messages.message_fade.custom_step(30.0)
+	assert_eq(_lines(), [], "not back 10 s on")
+
+
+## The Cheese Run handed in 2.4 s after it was taken: the plate kept « Quest
+## accepted » 8 s more, the reward unseen. « Quest complete » takes its
+## place at once; another quest's stays, and a level is still read.
+func test_quest_complete_replaces_its_quest_accepted_at_once() -> void:
+	var messages := world.messages
+	var taken := Text.t("Quest accepted")
+	# With the journal's key after its name, as a first quest's has it.
+	messages.flash(taken + ": The Cheese Run (Q). Pays 25 gold, 10 XP.")
+	messages.flash(taken + ": Slime Trouble. Pays 40 gold.")
+	assert_eq(messages.message_label.text, "The Cheese Run (Q). Pays 25 gold, 10 XP.")
+	messages.flash(Text.t("Quest complete") + ": The Cheese Run. +25 gold, +10 XP. \u201cGood.\u201d\n" + Text.t("Level up") + ": you reached level 2.")
+	assert_eq(messages.message_tag.text, taken, "another quest's is read out")
+	assert_eq(messages.message_label.text, "Slime Trouble. Pays 40 gold.", "the done quest's is gone at once")
+	messages.message_fade.custom_step(30.0)
+	assert_eq(messages.message_tag.text, Text.t("Quest complete"))
+	messages.message_fade.custom_step(30.0)
+	assert_eq(messages.message_tag.text, Text.t("Level up"), "what a player needs to read is kept")
+	# Still waiting its turn when its quest is done: never shown.
+	messages.clear()
+	messages.flash(Text.t("Level up") + ": you reached level 3.")
+	messages.flash(taken + ": The Cheese Run. Pays 25 gold, 10 XP.")
+	messages.flash(Text.t("Quest complete") + ": The Cheese Run. +25 gold, +10 XP.")
+	messages.message_fade.custom_step(30.0)
+	assert_eq(messages.message_tag.text, Text.t("Quest complete"), "straight to the reward")
 
 
 ## How many lines a message takes on the plate.

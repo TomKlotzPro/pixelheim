@@ -23,6 +23,10 @@ var list: VBoxContainer
 var scroll: ScrollContainer
 var info: Label
 var info_card: PanelContainer
+## The info card's window (PIX-477): the card keeps its size and words that
+## run longer (large reading text) scroll in it, by the key the footer names.
+var info_scroll: ScrollContainer
+var keys: Control
 var purse: HBoxContainer
 var status: Label
 var page: Panel
@@ -44,14 +48,20 @@ func _open() -> void:
 	info_card = card
 	card.position = CARD.position
 	card.custom_minimum_size = CARD.size
+	card.size = CARD.size
 	card.add_theme_stylebox_override("panel", UiStyle.window(UiStyle.INSET))
 	add_child(card)
-	# Large text reaches the page's words too (PIX-214).
+	info_scroll = ScrollContainer.new()
+	info_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	card.add_child(info_scroll)
+	# Large text reaches the page's words too (PIX-214). As wide as the
+	# window leaves it: beside its scrollbar when there is one.
 	info = UiStyle.label("", UiStyle.reading(14), UiStyle.INK)
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	info.custom_minimum_size = Vector2(CARD.size.x - 2 * UiStyle.INSET, 0)
-	info.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	card.add_child(info)
+	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info_scroll.add_child(info)
+	# The footer names the key once there is more to read, and only then.
+	info_scroll.get_v_scroll_bar().changed.connect(_set_keys)
 
 	scroll = ScrollContainer.new()
 	scroll.position = LIST.position
@@ -68,12 +78,25 @@ func _open() -> void:
 	status.custom_minimum_size = Vector2(1120, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	var keys := UiStyle.screen_footer(_footer())
-	add_child(keys)
 	# The info card keeps off both (PIX-373: Layout.overflows checks it).
 	status.set_meta(Layout.CLEAR, true)
-	keys.set_meta(Layout.CLEAR, true)
+	_set_keys()
 	_refresh()
+
+
+## The keys along the bottom, the info's page keys among them while its
+## words run past its card (PIX-477).
+func _set_keys() -> void:
+	var reads := Layout.runs_long(info_scroll)
+	if keys != null:
+		if reads == keys.get_meta(&"reads"):
+			return
+		remove_child(keys)
+		keys.queue_free()
+	keys = UiStyle.screen_footer(Layout.paged_footer(_footer()) if reads else _footer())
+	keys.set_meta(&"reads", reads)
+	keys.set_meta(Layout.CLEAR, true)
+	add_child(keys)
 
 
 ## Override: the screen's name, its one-line intro, the info column, the actions.
@@ -106,7 +129,9 @@ func _rows() -> Array[Dictionary]:
 
 
 func _command(event: InputEvent) -> Callable:
-	var command := Callable()
+	var command := Layout.paging(info_scroll, event)
+	if command.is_valid():
+		return command
 	if event.is_action_pressed("move_up"):
 		command = _select.bind(selected - 1)
 	elif event.is_action_pressed("move_down"):
@@ -142,7 +167,11 @@ func _refresh() -> void:
 	# The rows first: the info may speak of the chosen one.
 	rows = _rows()
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))
-	info.text = _info()
+	# Other words start at their top.
+	var words := _info()
+	if words != info.text:
+		info_scroll.scroll_vertical = 0
+	info.text = words
 	info_card.visible = info.text != ""
 	for child in list.get_children():
 		list.remove_child(child)

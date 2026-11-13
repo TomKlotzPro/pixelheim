@@ -92,6 +92,7 @@ posthouse | on the square once the post house is built: standing when it's drawn
 prompt | the E prompt while it shows over the faced spot: shown (PIX-465: it waits while a word rises through it, and comes back)
 quill | the quill by the clock: the times it wrote of the saves made this session (moments write, the quiet autosaves don't), and slept when the last was a night's sleep, Saved under it: 1/3 slept (PIX-302 step 4)
 read | on the journal's Letters page: the letters it reads (PIX-253)
+reading | while a ledger's or a counter's card holds more words than it shows: how far it is paged of how far it goes, and keyed when the footer names the keys that page it: 172/236 keyed (PIX-477, PIX-483)
 rise | with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)
 rising | with fight kill pack: the wins rising over the world once the first of the pack fell, the rest still standing (PIX-343: at each kill, not held to the fight's end)
 rooms | with rooms: what the rooms are drawn from (paid, free or none), how many of them have walls and a floor, and those with a stair down: free walled 9/9 stairs keep,observatory (PIX-318)
