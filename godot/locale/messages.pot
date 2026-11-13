@@ -17788,6 +17788,14 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
+#: scripts/layout.gd
+msgid "PgUp/PgDn"
+msgstr ""
+
+#: scripts/layout.gd
+msgid "read"
+msgstr ""
+
 #: scripts/ledger_screen.gd
 msgid "do it"
 msgstr ""

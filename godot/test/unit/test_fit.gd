@@ -188,7 +188,8 @@ func test_every_screen_fits_every_view() -> void:
 func test_stats_and_skills_fit_in_large_text() -> void:
 	var before: bool = GameState.settings.large_text
 	GameState.settings.large_text = true
-	var kinds: Array[String] = ["stats", "skills"]
+	# And every card that reads in it (PIX-477, PIX-483): it keeps its size.
+	var kinds: Array[String] = ["stats", "skills", "shop", "bank", "town_hall", "bounty", "home"]
 	var out := await _fits(kinds)
 	GameState.settings.large_text = before
 	assert_eq(out.size(), 0, "\n".join(out))
