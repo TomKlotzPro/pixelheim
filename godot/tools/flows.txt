@@ -1088,7 +1088,11 @@ fit-skills-l20 | --map town skills --level 20 overflow --lang fr | open=skills_s
 # Sixteen W typed at hero creation end in an ellipsis under the portrait
 # instead of pushing the cards off the canvas, and the Skills page's line
 # for a path walked is whole in both languages (overflow counts a line cut
-# short with no ellipsis).
+# short with no ellipsis). A three-line speech in the large type grows the
+# conversation's window upward, its foot on the canvas (the mayor's and
+# Vex's first lines in French stood 26 px off it).
+fit-talk-large | --map town_hall large talk overflow --lang fr | open=dialogue_box overflow=0 | screen lang town story
+fit-talk-large-vex | --map town_alchemist large talk overflow --lang fr | open=dialogue_box overflow=0 | screen lang town story
 fit-hall-large | --map town_hall large talk --keys e,e,e,pgdn overflow --lang fr | open=town_hall_screen overflow=0 reading=[1-9]\d*/\d+ keyed | screen lang town
 fit-hall-large-en | --map town_hall large talk --keys e,e,e,pgdn overflow --lang en | open=town_hall_screen overflow=0 reading=[1-9]\d*/\d+ keyed | screen lang town
 fit-stats-large | --map town large stats --role mage --level 20 overflow --lang fr | open=stats_screen overflow=0 | screen lang

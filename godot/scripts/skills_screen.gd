@@ -383,7 +383,8 @@ func _act() -> void:
 	if cell["kind"] == "path":
 		if GameState.training.choose_path(entry["id"]):
 			Sound.play("path_chosen")
-			status.text = Text.t("You walk the path of the %s.") % entry["name"]
+			# The line over the tree now says who they walk as: once is enough.
+			status.text = ""
 		else:
 			status.text = "That path isn't yours to walk now."
 	elif GameState.training.buy_skill_node(entry["id"]):

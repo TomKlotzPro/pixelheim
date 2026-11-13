@@ -148,7 +148,7 @@ func test_a_long_name_gives_way_and_a_long_note_wraps() -> void:
 
 
 ## PIX-477, PIX-483: words that run past their window page by Page Up and
-## Page Down, a page less a line; a window that holds them all takes no key.
+## Page Down, its whole lines less one; a window that holds them all takes no key.
 func test_a_window_that_runs_long_pages_by_its_keys() -> void:
 	var layer := _screen()
 	var scroll := ScrollContainer.new()
@@ -172,9 +172,16 @@ func test_a_window_that_runs_long_pages_by_its_keys() -> void:
 	await wait_process_frames(3)
 	assert_true(Layout.runs_long(scroll), "700 px of words run past it")
 	Layout.paging(scroll, down).call()
-	assert_eq(scroll.scroll_vertical, 200 - Layout.PAGE_LINE, "a page less a line down")
+	assert_eq(scroll.scroll_vertical, 5 * Layout.PAGE_LINE, "the six lines a 200 px window holds, less one")
 	Layout.paging(scroll, up).call()
 	assert_eq(scroll.scroll_vertical, 0, "and back up")
+	# The line kept is the words' own: large type's is taller than PAGE_LINE.
+	var line := UiStyle.label("Read me", 24, UiStyle.INK)
+	words.add_child(line)
+	assert_gt(Layout.line_of(scroll), Layout.PAGE_LINE, "a line of the big type")
+	Layout.paging(scroll, down).call()
+	assert_eq(scroll.scroll_vertical % Layout.line_of(scroll), 0, "a page starts on a line of its own type")
+	assert_gt(scroll.scroll_vertical, 0, "and moves on")
 	down.keycode = KEY_S
 	assert_false(Layout.paging(scroll, down).is_valid(), "another key is not its")
 

@@ -15,7 +15,7 @@ const DECOR := &"layout_decor"
 ## canvas in English). Opt-in, so no screen fails on a rule it never had.
 const CLEAR := &"layout_clear"
 ## The keys `paging` takes, as a footer names them, and the line a page
-## turned keeps in sight.
+## turned keeps in sight where what scrolls has no words to measure.
 const PAGE_KEYS := "PgUp/PgDn"
 const PAGE_LINE := 32
 
@@ -151,16 +151,40 @@ static func runs_long(scroll: ScrollContainer) -> bool:
 
 
 ## What Page Up or Page Down does to `scroll` when it runs long (PIX-483:
-## the counter's card drew a scrollbar no key moved), else nothing: a page
-## less a line, so the last line read stays in sight. The keys by their
-## codes, as hero creation takes them: they are named outright in the
+## the counter's card drew a scrollbar no key moved), else nothing: the one
+## way a screen pages (What's new too). The keys by their codes, as hero
+## creation takes them, not Godot's ui_page actions, which are one
+## device's and so miss the harness's keys: they are named outright in the
 ## footer (`PAGE_KEYS`), W/S and A/D being the rows' and the tabs'.
 static func paging(scroll: ScrollContainer, event: InputEvent) -> Callable:
 	var key := event as InputEventKey
-	if key == null or not key.pressed or not key.keycode in [KEY_PAGEUP, KEY_PAGEDOWN] or not runs_long(scroll):
+	if key == null or not key.pressed:
 		return Callable()
-	var by := (int(scroll.size.y) - PAGE_LINE) * (1 if key.keycode == KEY_PAGEDOWN else -1)
+	return turned(scroll, int(key.keycode == KEY_PAGEDOWN) - int(key.keycode == KEY_PAGEUP))
+
+
+## `scroll` turned `pages` on (back, below zero) when it runs long, else
+## nothing: the whole lines its window holds, less one, so the last line
+## read stays in sight and a page starts on a line, not through one.
+static func turned(scroll: ScrollContainer, pages: int) -> Callable:
+	if pages == 0 or not runs_long(scroll):
+		return Callable()
+	var line := line_of(scroll)
+	var by := maxi(1, int(scroll.size.y) / line - 1) * line * pages
 	return func() -> void: scroll.scroll_vertical += by
+
+
+## The height of a line of what `scroll` holds, its tallest type's with the
+## space under it (a line of Large reading text is 36 px: a fixed 32 left
+## the line just read sliced through its letters at the card's top), or
+## PAGE_LINE where it holds no words.
+static func line_of(scroll: ScrollContainer) -> int:
+	var line := 0
+	for node in scroll.find_children("*", "", true, false):
+		var label := node as Label
+		if label != null:
+			line = maxi(line, label.get_line_height() + label.get_theme_constant("line_spacing"))
+	return line if line > 0 else PAGE_LINE
 
 
 ## A footer's `line` with the page keys named before its own, for a screen
