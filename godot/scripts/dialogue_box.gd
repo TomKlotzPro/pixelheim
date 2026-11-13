@@ -167,7 +167,7 @@ func _command(event: InputEvent) -> Callable:
 
 func _advance() -> void:
 	if page >= npc["lines"].size() - 1:
-		_close()
+		_close(true)
 		return
 	page += 1
 	Sound.play("ui_page")
@@ -231,6 +231,19 @@ func _fit() -> void:
 	tab.position.y = panel.position.y - 22
 
 
-func _close() -> void:
+## The talk over: heard to its end (E on the last line), or left before
+## (Esc, a step away). Only one heard out takes the quest its last line
+## asks (PIX-486: Esc on Vex's first line took hers).
+func _close(heard := false) -> void:
 	close()
-	GameState.questing.finish_dialogue(npc["id"])
+	GameState.questing.finish_dialogue(npc["id"], heard)
+
+
+## The E that ends a talk isn't the next thing's E (PIX-486).
+func close() -> void:
+	Screen.hush()
+	super()
+
+
+func _reads_at_once() -> bool:
+	return true

@@ -75,8 +75,10 @@ func board_floors() -> Array:
 
 
 ## A conversation closed: recruits answer (resolveSettler), then the quest
-## hooks (PIX-125) get their turn through dialogue_closed.
-func finish_dialogue(npc_id: String) -> void:
+## hooks (PIX-125) get their turn through dialogue_closed. A talk left
+## before its end (`heard` false: Esc, a step away) takes no new quest
+## (PIX-486): the giver's ask is its last line, and still waits.
+func finish_dialogue(npc_id: String, heard := true) -> void:
 	# On the night of the fire, talking is the night's next step (PIX-152).
 	if owner.progression.prologue != Prologue.DONE:
 		_prologue_talk(npc_id)
@@ -111,9 +113,9 @@ func finish_dialogue(npc_id: String) -> void:
 	# it after their service.
 	var text := owner.holdings.resolve_settler(npc_id)
 	if text == "":
-		text = resolve_quests(npc_id)
+		text = resolve_quests(npc_id, heard)
 	elif owner.holdings.is_settled(npc_id) and Quests.awaits_word(npc_id, owner.progression.quests, owner.pack.items, quest_open):
-		text += " " + resolve_quests(npc_id)
+		text = (text + " " + resolve_quests(npc_id, heard)).strip_edges()
 	owner.dialogue_closed.emit(npc_id)
 	if text != "":
 		owner.message.emit(text)
@@ -122,14 +124,14 @@ func finish_dialogue(npc_id: String) -> void:
 ## Closing a conversation with a giver (resolveQuests): accept their first
 ## untaken quest, or turn in a finished one (deliveries leave the pack), or
 ## say how far along it stands. "" when they give no open quest.
-func resolve_quests(giver_id: String) -> String:
+func resolve_quests(giver_id: String, take := true) -> String:
 	var entries := owner.progression.quests
 	for quest: Dictionary in Quests.for_giver(giver_id):
 		var entry: Dictionary = entries.get(quest["id"], {})
 		if entry.get("done", false):
 			continue
 		# A side quest waits for the story to reach it (PIX-171).
-		if entry.is_empty() and not quest_open(quest):
+		if entry.is_empty() and not (take and quest_open(quest)):
 			return ""
 		if entry.is_empty():
 			# A hunt whose quarry already fell counts at once (PIX-165).
