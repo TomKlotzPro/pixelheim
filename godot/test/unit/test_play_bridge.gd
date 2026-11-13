@@ -82,7 +82,7 @@ func test_a_key_godot_does_not_know_plays_nothing() -> void:
 	var from := GameClock.seconds()
 	page.command = JSON.stringify([{"keys": ["Right"], "seconds": 2}, {"keys": ["jump"], "seconds": null}])
 	var said: Dictionary = await _answer()
-	assert_eq(said.get("error"), "no key named jump (a word is typed a letter a key, as A,r,i,a)")
+	assert_eq(said.get("error"), "no key named jump (keys are named as e, enter, pgdn; a word is typed a letter a key, as A,r,i,a)")
 	assert_lt(float(said["seconds"]) - from, 0.2, "nothing was held")
 	page.frozen = false
 	page.command = "{}"

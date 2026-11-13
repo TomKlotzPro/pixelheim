@@ -70,8 +70,9 @@ func _problem(steps: Variant) -> String:
 			return "a step is {keys, seconds}"
 		for key: Variant in step["keys"]:
 			if OS.find_keycode_from_string(str(key)) == KEY_NONE:
-				# A whole word (PIX-468: `Aria` played nothing, and the name stayed empty).
-				return "no key named " + str(key) + " (a word is typed a letter a key, as A,r,i,a)"
+				# Says both ways in: a key mistyped, or a whole word (PIX-468: `Aria`
+				# played nothing, and the name stayed empty).
+				return "no key named " + str(key) + " (keys are named as e, enter, pgdn; a word is typed a letter a key, as A,r,i,a)"
 	return ""
 
 
