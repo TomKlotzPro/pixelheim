@@ -388,6 +388,25 @@ func field_feats() -> String:
 	return ",".join(GameState.progression.deeds)
 
 
+func field_feet() -> String:
+	if not flags.has("--walk"):
+		return ""
+	var feet := Rect2(world.player.position + world.player.BODY_AT - world.player.BODY * 0.5, world.player.BODY)
+	var from := Vector2i((feet.position / world.TILE).floor())
+	# The far edge on a cell's line stands in the cell before it.
+	var to := Vector2i(((feet.end - Vector2(0.01, 0.01)) / world.TILE).floor())
+	var beside := false
+	for y in range(from.y - 1, to.y + 2):
+		for x in range(from.x - 1, to.x + 2):
+			var cell := Vector2i(x, y)
+			if world.is_walkable(cell) or not PunyTerrain.is_wet(world.map.grid.get(cell, "")):
+				continue
+			if x >= from.x and x <= to.x and y >= from.y and y <= to.y:
+				return "wet"
+			beside = true
+	return "dry" if beside else ""
+
+
 func field_fell() -> String:
 	return str(world.foes.bosses_fallen) if world.foes.bosses_fallen > 0 else ""
 

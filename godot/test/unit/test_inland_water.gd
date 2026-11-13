@@ -26,6 +26,13 @@ func _depth(mask: Image, cell: Vector2i) -> int:
 	return roundi(mask.get_pixelv(cell).b * PunyTerrain.DEPTH_CELLS)
 
 
+## A `const float` of a shader's, by name.
+func _shader_number(code: String, constant: String) -> float:
+	var found := RegEx.create_from_string("const float %s = (-?[0-9.]+);" % constant).search(code)
+	assert_not_null(found, "the shader has no %s" % constant)
+	return found.get_string(1).to_float() if found else NAN
+
+
 func _code(mask: Image, cell: Vector2i) -> int:
 	return roundi(mask.get_pixelv(cell).a * 255.0)
 
@@ -171,6 +178,52 @@ func test_the_regions_waters_as_drawn() -> void:
 	assert_eq(PunyTerrain.water_near(_mask(town.grid, town.size, "town"), Vector2i(30, 36), 0), "clear west", "the village's river along its south wall")
 	var saltmere := MapData.load_by_id("saltmere")
 	assert_eq(PunyTerrain.water_near(_mask(saltmere.grid, saltmere.size, "saltmere"), Vector2i(33, 30), 8), "", "Saltmere's sea is the sea")
+
+
+func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
+	# The bank is drawn inside the water's cells, by its rim and its wander
+	# (PIX-467: what stops the hero is those cells, and a bank drawn out
+	# over the land put water under their feet). The shader reads how far in
+	# a pixel lies from the mask's blue where its red is whole
+	# (inland_water.gdshaderinc's water_in), so a cell deeper than its bank
+	# touches no land, not even by a corner; and running or pooled water is
+	# two cells thick at the least, or its banks would meet (the hole in the
+	# ice, a cell thin, is cut straight).
+	var shader := (load("res://shaders/inland_water.gdshaderinc") as ShaderInclude).code
+	assert_string_contains(shader, "return BANK_IN + bank_wander(tone);")
+	assert_string_contains(shader, "in_water = (here - 0.5) * CELL + mix(LANDING_IN, -bank_lie(tone), ease);", "the bank is drawn where it lies")
+	assert_string_contains(shader, "if (mask_texel(cell).r < 0.5) {\n\t\tin_water = min(in_water,", "and never on a land cell")
+	# The shader's sums, done here on its own numbers: a bank lies its lie
+	# into its water's cells, give or take its wander.
+	var rim := _shader_number(shader, "BANK_IN")
+	assert_gte(rim, 1.0, "the bank's wet lip, a pixel, lies inside the water's cells")
+	assert_lt(_shader_number(shader, "LANDING_IN"), 0.0, "and under a bridge's planks")
+	for wander: float in [_shader_number(shader, "BANK_WANDER"), _shader_number(shader, "MIRE_WANDER")]:
+		var lie := rim + wander
+		assert_gte(lie - wander, rim, "a bank wandered all the way out is still inside")
+		assert_gt(2.0 * PunyTerrain.TILE - 2.0 * (lie + wander), 0.0, "and two banks wandered all the way in leave water between them, two cells apart")
+	# The river's swing brings a bank no further in than the bank's own
+	# wander can, so the hero stops no shorter of the water for it.
+	assert_eq(_shader_number(shader, "SWING_CAP"), rim + 2.0 * _shader_number(shader, "BANK_WANDER"))
+	# The mirror stands where a bank lies nearest its cells' edge, and
+	# nothing above it is mirrored (reflections.gdshader).
+	var mirror := (load("res://shaders/reflections.gdshader") as Shader).code
+	assert_eq(_shader_number(mirror, "INLAND_IN"), rim)
+	assert_string_contains(mirror, "if (depth >= 0.0 && depth < deepest) {")
+	for map_id: String in ["overworld", "town", "deepwood", "mirefen", "frostgate", "demo"]:
+		var data := MapData.load_by_id(map_id)
+		var mask := _mask(data.grid, data.size, map_id)
+		for cell: Vector2i in data.grid:
+			if data.grid[cell] != "water":
+				continue
+			var dry := func(step: Vector2i) -> bool: return data.grid.has(cell + step) and not PunyTerrain.is_wet(data.grid[cell + step])
+			if _depth(mask, cell) > 1:
+				for y in range(-1, 2):
+					for x in range(-1, 2):
+						assert_false(dry.call(Vector2i(x, y)), "%s %s is deep and touches land" % [map_id, cell])
+			if map_id != "frostgate":
+				assert_false(dry.call(Vector2i.LEFT) and dry.call(Vector2i.RIGHT), "%s %s is a cell thin" % [map_id, cell])
+				assert_false(dry.call(Vector2i.UP) and dry.call(Vector2i.DOWN), "%s %s is a cell thin" % [map_id, cell])
 
 
 func test_the_bridges_planks_and_the_ground_read_the_water() -> void:

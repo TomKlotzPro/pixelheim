@@ -45,6 +45,7 @@ dressed | on a dungeon floor: its look and what it is dressed in, counted by kin
 ending | the ending this hero chose for Morvax once it has played: home or stay (PIX-253 step 10)
 entrance | the ways in drawn as entrances in their setting on this map, by look: mine, sea_cave, mountain_gate, vault_door, ice_stair (PIX-290)
 feats | the feats done, by id, once any is (PIX-257)
+feet | after --walk by water the hero can't walk on (a river, a pool, the sea): dry while the body that stops them, their feet, lies on none of its cells, else wet; the banks are drawn inside those cells (PIX-467)
 fell | bosses fallen, when one fell (PIX-232)
 fires | on a night with houses burning: how many, and what draws their fires: flames standing on what burns, smoke, sparks (none with Reduce motion) and coals (PIX-327)
 firstnight | hero creation's first night: play or skip (PIX-228)

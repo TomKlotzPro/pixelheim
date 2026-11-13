@@ -43,9 +43,10 @@ const int TONE_DEEP = 3;
 const int TONE_ICE = 4;
 
 // How far the bank bends off its cells, in pixels either way, and how many
-// cells lie between its bends; where it lies on average, in pixels past its
-// water's cells (Shade's water spills about 4); and how far past them Shade
-// drew his water and his bank, which the land's own tile covers where the
+// cells lie between its bends; how far inside its water's cells it lies at
+// the least, its rim (it lies there and further in by its wander, never
+// out over the land: PIX-467, below); and how far past them Shade drew his
+// water (about 4) and his bank, which the land's own tile covers where the
 // bank draws back.
 const float BANK_WANDER = 5.0;
 const float BANK_BENDS = 1.5;
@@ -55,7 +56,10 @@ const float BANK_BENDS = 1.5;
 const float MIRE_SOFT = 9.0;
 const float MIRE_WANDER = 7.0;
 const float MIRE_BENDS = 2.2;
-const float BANK_OUT = 3.0;
+const float BANK_IN = 1.0;
+// How far out from its bank the water is still drawn by how near the bank
+// is (its shallows, the foam's lap, the mire's reeds).
+const float BANK_SHOAL = 7.0;
 const float SHADE_BANK = 9.5;
 // Where a bridge lands the bank lies this far in under its planks, and the
 // bank beside comes round to meet it over LANDING_EASE cells (it stood out of
@@ -74,7 +78,7 @@ const float LANDING_EASE = 1.5;
 // eases to nothing over SWING_STILL cells by a bridge.
 uniform float river_swing = 0.0;
 const float SWING_BENDS = 10.0;
-const float SWING_CAP = 8.0;
+const float SWING_CAP = 11.0;
 const float SWING_STILL = 3.0;
 const int SWING_CELLS = 6;
 // The mask's blue (cells from the bank / 3) where the water starts to
@@ -315,7 +319,8 @@ float river_swung(vec2 at, vec2 plain, float in_water, float ease, inout int gro
 	float from_south = float(south.y) * CELL - at.y - river_swing * ease * smoothstep(-0.4, 1.0, -turn);
 	ground = int(round(mask_texel(from_north < from_south ? north : south).a * 255.0)) % 16;
 	float deep = min(plain.y - float(north.y + 1) * CELL, float(south.y) * CELL - plain.y);
-	return min(in_water, max(min(from_north, from_south) + BANK_OUT, deep - SWING_CAP));
+	// The bank's own lie is in `in_water`.
+	return min(in_water, max(min(from_north, from_south) - BANK_IN, deep - SWING_CAP));
 }
 
 // Which way the water in a cell of code `code` runs: (0, 0) still, west
@@ -325,24 +330,47 @@ vec2 flow_of(int code) {
 	return flow == 1 ? vec2(-1.0, 0.0) : (flow == 2 ? vec2(0.0, 1.0) : vec2(0.0));
 }
 
-// The mask's red at `at` (mask pixels), read smoothly between its cells;
-// softened over `soft` pixels each way (the mire's, PIX-401), so a bank laid
-// two cells a step rounds its corners and runs on between them.
+// How far the bank bends off its cells, by its water's tone, and how far
+// inside them it lies where it doesn't bend (PIX-467): by its rim and all
+// its wander, so no bend brings it out over the land. What stops the hero
+// is the water's cells: a bank lying 3 pixels out, as it did, and wandering
+// 5 more put up to 8 pixels of water under their feet (and twice that in
+// the mire).
+// The hole in the ice is a cell thin, too thin to wander in: cut straight.
+float bank_wander(int tone) {
+	return tone == TONE_MIRE ? MIRE_WANDER : (tone == TONE_ICE ? 0.0 : BANK_WANDER);
+}
+
+float bank_lie(int tone) {
+	return BANK_IN + bank_wander(tone);
+}
+
+// How far into the water `texel` of the mask lies, in cells from the middle
+// of the land's cell beside it: its red, a half on the bank and whole a
+// half-cell in, and from there its blue (the cells to the bank, the same
+// where the red is rising), so a bank can lie more than that half-cell in.
+float water_in(vec4 texel) {
+	return max(texel.r, texel.b * 3.0);
+}
+
+// That at `at` (mask pixels), read smoothly between its cells; softened
+// over `soft` pixels each way (the mire's, PIX-401), so a bank laid two
+// cells a step rounds its corners and runs on between them.
 float water_red(vec2 at, float soft) {
 	if (soft <= 0.0) {
-		return texture(water_map, at / map_pixels).r;
+		return water_in(texture(water_map, at / map_pixels));
 	}
-	return 0.25 * (texture(water_map, (at + vec2(-soft, -soft)) / map_pixels).r
-		+ texture(water_map, (at + vec2(soft, -soft)) / map_pixels).r
-		+ texture(water_map, (at + vec2(-soft, soft)) / map_pixels).r
-		+ texture(water_map, (at + vec2(soft, soft)) / map_pixels).r);
+	return 0.25 * (water_in(texture(water_map, (at + vec2(-soft, -soft)) / map_pixels))
+		+ water_in(texture(water_map, (at + vec2(soft, -soft)) / map_pixels))
+		+ water_in(texture(water_map, (at + vec2(-soft, soft)) / map_pixels))
+		+ water_in(texture(water_map, (at + vec2(soft, soft)) / map_pixels)));
 }
 
 // How many pixels the mire's bank lies from `at` (mask pixels) into the
 // water, read where the bank's bend moves it: below 0 on the land side.
 // Only the mire's lily pads and reeds ask, so it reads the mire's soft bank.
 float bank_depth(vec2 at, vec2 bend) {
-	return (water_red(at + bend, MIRE_SOFT) - 0.5) * CELL + BANK_OUT;
+	return (water_red(at + bend, MIRE_SOFT) - 0.5) * CELL - bank_lie(TONE_MIRE);
 }
 
 // A lily pad on still water, if one floats over `px` (plane pixels): its
@@ -443,15 +471,23 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	// looks for its bridge to the side.
 	bool swings = river_swing > 0.0 && flow_of(code).x < 0.0;
 	vec2 cells = floor(px) / CELL / (mire ? MIRE_BENDS : BANK_BENDS);
-	vec2 bend = clamp((vec2(value_noise(cells + 31.7), value_noise(cells + 47.1)) - 0.5) * 1.7, -0.5, 0.5) * 2.0 * (mire ? MIRE_WANDER : BANK_WANDER);
-	// Out in the water (the mask's red whole) no bank is near to ease.
-	float ease = landing ? 0.0 : (plain.r < 1.0 ? landing_ease(local_px, cell) : 1.0);
+	vec2 bend = clamp((vec2(value_noise(cells + 31.7), value_noise(cells + 47.1)) - 0.5) * 1.7, -0.5, 0.5) * 2.0 * bank_wander(tone);
+	// Out in the water, past where a bank can lie and its shallows reach
+	// (BANK_SHOAL), no bank is near to ease. Not by the mask's red, whole
+	// from half a cell in: a bank lies further in than that now, and by a
+	// bridge it broke there into a spit of land with water behind it.
+	float ease = landing ? 0.0 : ((water_in(plain) - 0.5) * CELL < bank_lie(tone) + bank_wander(tone) + BANK_SHOAL ? landing_ease(local_px, cell) : 1.0);
 	bend *= ease;
 	float here = water_red(local_px + bend, mire && !landing ? MIRE_SOFT : 0.0);
-	float in_water = (here - 0.5) * CELL + mix(LANDING_IN, BANK_OUT, ease);
+	float in_water = (here - 0.5) * CELL + mix(LANDING_IN, -bank_lie(tone), ease);
 	int bank_ground = 0;
 	if (swings && !landing) {
 		in_water = river_swung(local_px + bend, local_px, in_water, swing_ease(local_px, cell), bank_ground);
+	}
+	// Never water on a land cell, whatever the bends above make of a corner
+	// (PIX-467): there the bank's rim at the most, on the pixel by the water.
+	if (mask_texel(cell).r < 0.5) {
+		in_water = min(in_water, min((plain.r - 0.5) * CELL, 0.0) - BANK_IN - 0.01);
 	}
 	float threshold = bayer_at(px);
 	if (in_water < 0.0) {
