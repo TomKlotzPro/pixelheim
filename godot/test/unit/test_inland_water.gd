@@ -26,6 +26,25 @@ func _depth(mask: Image, cell: Vector2i) -> int:
 	return roundi(mask.get_pixelv(cell).b * PunyTerrain.DEPTH_CELLS)
 
 
+## The inland water's shader as written: where its bank lies
+## (water_bank.gdshaderinc, the reflections' too) and how it is drawn.
+func _shader() -> String:
+	return (load("res://shaders/water_bank.gdshaderinc") as ShaderInclude).code + (load("res://shaders/inland_water.gdshaderinc") as ShaderInclude).code
+
+
+## Every map on disk, and the village as each age leaves it: [its name, the
+## map whose water it has, its cells].
+func _maps() -> Array:
+	var out := []
+	for file: String in DirAccess.get_files_at("res://assets/maps"):
+		if file.ends_with(".json") and file != "interactables.json":
+			var data := MapData.load_from("res://assets/maps/%s" % file)
+			out.append([file.get_basename(), data.id, data])
+	for tier in range(Town.MAX_TIER + 1):
+		out.append(["town@%d" % tier, "town", MapData.load_tiered("town", Town.projects_through(tier), 1)])
+	return out
+
+
 ## A `const float` of a shader's, by name.
 func _shader_number(code: String, constant: String) -> float:
 	var found := RegEx.create_from_string("const float %s = (-?[0-9.]+);" % constant).search(code)
@@ -163,7 +182,7 @@ func test_the_ash_and_the_grass_reach_the_river_each_on_its_own_ground() -> void
 	assert_eq(PunyTerrain.tone_at(tint, Vector2i(87, 27)), "tone", "wholly toned")
 	assert_eq(_code(mask, Vector2i(88, 27)) - tone, PunyTerrain.BANK_GROUNDS["grass"], "the first of the green: grass")
 	assert_eq(PunyTerrain.tone_at(tint, Vector2i(88, 27)), "fringe", "its own dirt alone")
-	var shader := (load("res://shaders/inland_water.gdshaderinc") as ShaderInclude).code
+	var shader := _shader()
 	assert_string_contains(shader, "tone_read(at)", "the bank's land reads where the tone does")
 
 
@@ -226,7 +245,7 @@ func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
 	# touches no land, not even by a corner; and running or pooled water is
 	# three cells thick at the least (the test below; the hole in the ice, a
 	# cell thin, bends its own little).
-	var shader := (load("res://shaders/inland_water.gdshaderinc") as ShaderInclude).code
+	var shader := _shader()
 	assert_string_contains(shader, "return BANK_IN + bank_wander(tone);")
 	assert_string_contains(shader, "in_water = (here - 0.5) * CELL + mix(LANDING_IN, -bank_lie(tone), ease);", "the bank is drawn where it lies")
 	assert_string_contains(shader, "if (mask_texel(cell).r < 0.5) {\n\t\tin_water = min(in_water,", "and never on a land cell")
@@ -235,7 +254,7 @@ func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
 	var rim := _shader_number(shader, "BANK_IN")
 	assert_gte(rim, 1.0, "the bank's wet lip, a pixel, lies inside the water's cells")
 	assert_lt(_shader_number(shader, "LANDING_IN"), 0.0, "and under a bridge's planks")
-	assert_string_contains(shader, "-0.5, 0.5) * 2.0 * bank_wander(tone);", "a bank bends its wander at the most, so wandered all the way out it is still inside")
+	assert_string_contains(shader, "bend = (smoothstep(0.0, 1.0, mix(slow, quick, BANK_RIPPLES)) - 0.5) * 2.0 * bank_wander(tone);", "a bank bends its wander at the most, so wandered all the way out it is still inside")
 	# The river's swing brings a bank no further in than the bank's own
 	# wander can, so the hero stops no shorter of the water for it.
 	assert_eq(_shader_number(shader, "SWING_CAP"), rim + 2.0 * _shader_number(shader, "BANK_WANDER"))
@@ -243,9 +262,19 @@ func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
 	# water lies above it (reflections.gdshader).
 	var mirror := (load("res://shaders/reflections.gdshader") as Shader).code
 	assert_gt(_shader_number(mirror, "SPILL"), -rim)
-	for map_id: String in ["overworld", "town", "deepwood", "mirefen", "frostgate", "demo"]:
-		var data := MapData.load_by_id(map_id)
-		var mask := _mask(data.grid, data.size, map_id)
+	# And only what was drawn as water mirrors, by the bank's own sums: by
+	# its cells and its colour the mire's marsh above the bank mirrored the
+	# hero under their feet.
+	assert_string_contains(mirror, "#include \"res://shaders/water_bank.gdshaderinc\"")
+	assert_string_contains(mirror, "bank_in_water(px, px - mirror_origin * CELL, bank_code, bend, bank_ground) >= 0.0")
+	assert_string_contains((load("res://shaders/region_tint.gdshader") as Shader).code, "#include \"res://shaders/water_bank.gdshaderinc\"")
+	assert_string_contains(shader, "float in_water = bank_in_water(px, local_px, code, bend, bank_ground);", "as the ground draws it")
+	var seen := 0
+	for entry: Array in _maps():
+		var map_id: String = entry[0]
+		var data: MapData = entry[2]
+		var mask := _mask(data.grid, data.size, entry[1])
+		seen += 1
 		for cell: Vector2i in data.grid:
 			if data.grid[cell] != "water":
 				continue
@@ -259,6 +288,7 @@ func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
 				for way: Vector2i in [Vector2i.RIGHT, Vector2i.DOWN]:
 					if dry.call(-way):
 						assert_false(dry.call(way) or dry.call(way * 2), "%s %s is under three cells thick" % [map_id, cell])
+	assert_gt(seen, 30, "every map on disk")
 
 
 ## The shader's own sums done here on a small mask (`_in_water`, its lines
@@ -270,7 +300,7 @@ func test_a_bank_can_be_drawn_inside_its_waters_cells() -> void:
 ## (PIX-467's review: the Mirefen's 2x2 tips, the village stream's 1x2 nubs).
 ## Three cells thick it has a middle; the maps' rule is in the test above.
 func test_water_is_drawn_between_its_banks() -> void:
-	var shader := (load("res://shaders/inland_water.gdshaderinc") as ShaderInclude).code
+	var shader := _shader()
 	# The twin's lines, as the shader has them.
 	assert_string_contains(shader, "return max(texel.r, texel.b * 3.0);")
 	assert_string_contains(shader, "float here = water_red(local_px + bend, mire && !landing ? MIRE_SOFT : 0.0);")
@@ -325,7 +355,7 @@ func test_water_is_drawn_between_its_banks() -> void:
 ## by as far as the bank can lie in from it, less its wet lip, so a reed's
 ## foot is in the water or on that lip and never on the grass.
 func test_a_banks_reeds_stand_in_the_water() -> void:
-	var shader := (load("res://shaders/inland_water.gdshaderinc") as ShaderInclude).code
+	var shader := _shader()
 	var clear := int(_shader_number(shader, "BANK_IN") + 2.0 * _shader_number(shader, "BANK_WANDER")) - 1
 	var sheet := (GroundDetail.tileset().get_source(0) as TileSetAtlasSource).texture.get_image()
 	var last := GroundDetail.TILE - 1

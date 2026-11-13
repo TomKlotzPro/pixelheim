@@ -103,9 +103,9 @@ const float EDGE_WANDER = 0.4;
 const float EDGE_BENDS = 2.6;
 const float EDGE_SEAM = 1.5;
 
-float hash(vec2 p) {
-	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-}
+// hash and value_noise (the slow bends of a region's edge), and where an
+// inland water's bank lies, as the reflections read it too.
+#include "res://shaders/water_bank.gdshaderinc"
 
 // Shade's water, river and sea: blue-green with little red.
 bool is_water(vec3 c) {
@@ -125,18 +125,6 @@ void vertex() {
 		}
 	}
 	VERTEX.x += lean;
-}
-
-// Smooth value noise, 0..1: the slow bends of a region's edge.
-float value_noise(vec2 p) {
-	vec2 i = floor(p);
-	vec2 f = fract(p);
-	f = f * f * (3.0 - 2.0 * f);
-	float a = hash(i);
-	float b = hash(i + vec2(1.0, 0.0));
-	float c = hash(i + vec2(0.0, 1.0));
-	float d = hash(i + vec2(1.0, 1.0));
-	return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
 }
 
 #include "res://shaders/open_ground.gdshaderinc"

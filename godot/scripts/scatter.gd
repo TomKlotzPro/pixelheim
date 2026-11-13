@@ -127,7 +127,10 @@ static func detail_variant(grid: Dictionary, cell: Vector2i) -> int:
 	var pick := _detail_hash(cell) >> 13
 	if grid.get(cell, "") != "water":
 		return pick % GroundDetail.VARIANTS.size()
-	var land := func(step: Vector2i) -> bool: return grid.get(cell + step, "") in BANKS
+	# Any dry ground beside it is land the bank is drawn back from (a forest,
+	# a road, a wall: BANKS only says whether reeds grow); past the map's
+	# edge the water runs on.
+	var land := func(step: Vector2i) -> bool: return grid.has(cell + step) and not PunyTerrain.is_wet(grid[cell + step])
 	return GroundDetail.bank_variant(land.call(Vector2i.LEFT), land.call(Vector2i.RIGHT), land.call(Vector2i.UP), land.call(Vector2i.DOWN), pick)
 
 
