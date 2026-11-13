@@ -63,6 +63,10 @@ var footer: HBoxContainer
 var pages: Array[Panel] = []
 var headings: Array[Label] = []
 var scrolls: Array[ScrollContainer] = []
+## The card's window (PIX-214), and whether its words run past it: the
+## footer then names the keys that page it (PIX-483).
+var about: ScrollContainer
+var reads := false
 var lists: Array[VBoxContainer] = []
 var card: PanelContainer
 var card_head: HBoxContainer
@@ -164,9 +168,10 @@ func _open() -> void:
 	inside.add_theme_constant_override("separation", 8)
 	card.add_child(inside)
 	# What the card says scrolls when large text runs it long (PIX-214).
-	var about := ScrollContainer.new()
+	about = ScrollContainer.new()
 	about.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	about.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	about.get_v_scroll_bar().changed.connect(_set_footer)
 	inside.add_child(about)
 	var info := VBoxContainer.new()
 	info.add_theme_constant_override("separation", 8)
@@ -256,7 +261,9 @@ func _command(event: InputEvent) -> Callable:
 		if amount > 0 and event.is_action_pressed("drop_all"):
 			return _pick.bind(_stack_count())
 		return Callable()
-	var command := Callable()
+	var command := Layout.paging(about, event)
+	if command.is_valid():
+		return command
 	if resting:
 		for action: String in ["move_up", "move_down", "interact"]:
 			if event.is_action_pressed(action):
@@ -315,6 +322,7 @@ func _switch(index: int) -> void:
 	tab = wrapi(index, 0, tabs.size())
 	selected = int(_chosen.get(tabs[tab], 0))
 	resting = false
+	about.scroll_vertical = 0
 	amount = 0
 	asking_junk = false
 	status.text = ""
@@ -325,14 +333,19 @@ func _switch(index: int) -> void:
 ## The footer (PIX-374): what E does on this tab, a verb (a tab's name is
 ## a noun in French: « Forge », « Artisanat »), and Z only where a stack sells.
 func _set_footer() -> void:
+	var long := Layout.runs_long(about)
 	if footer != null:
+		if long == reads and footer.get_meta(&"tab") == tab:
+			return
 		remove_child(footer)
 		footer.queue_free()
 	var verb: String = {"Buy": Text.t("buy"), "Sell": Text.t("sell"), "Forge": Text.t("forge"), "Salvage": Text.t("salvage"),
 		"Reforge": Text.t("reforge"), "Quench": Text.t("quench"), "Craft": Text.t("craft")}[tabs[tab]]
 	var line := Text.t("{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close") if tabs[tab] == "Sell" \
 		else Text.t("{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close")
-	footer = UiStyle.screen_footer(line % verb)
+	reads = long
+	footer = UiStyle.screen_footer(Layout.paged_footer(line % verb) if reads else line % verb)
+	footer.set_meta(&"tab", tab)
 	add_child(footer)
 
 
@@ -341,6 +354,7 @@ func _select(index: int) -> void:
 		return
 	selected = clampi(index, 0, rows.size() - 1)
 	resting = false
+	about.scroll_vertical = 0
 	amount = 0
 	asking_junk = false
 	_refresh()

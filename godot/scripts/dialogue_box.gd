@@ -8,7 +8,8 @@ extends Screen
 
 ## Where the window stands and its size, against the kit's frame (PIX-388):
 ## three lines of a speech and the keys under them fit inside it without it
-## growing, its foot where it always stood.
+## growing, its foot where it always stood; a longer speech (Large reading
+## text, French) grows it upward.
 const AT := Vector2(150, 512)
 const SIZE := Vector2(980, 192)
 const PORTRAIT := 112
@@ -32,11 +33,23 @@ var tab: PanelContainer
 func _open() -> void:
 	layer = 4
 
+	# The window hangs by its foot in a frame that keeps AT and SIZE: the
+	# screen's entrance moves the frame (UiStyle.enter settles what it finds
+	# where it stood at opening, which put a window that had grown back
+	# down, its foot off the canvas), the window grows upward inside it.
+	var frame := Control.new()
+	frame.position = AT
+	frame.size = SIZE
+	add_child(frame)
 	panel = PanelContainer.new()
-	panel.position = AT
 	panel.custom_minimum_size = SIZE
+	panel.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	panel.add_theme_stylebox_override("panel", UiStyle.window(18))
-	add_child(panel)
+	frame.add_child(panel)
+	# As tall as its page needs and no taller: a free window never shrinks
+	# on its own, and a wrapped speech measures itself tall for a frame.
+	panel.minimum_size_changed.connect(func() -> void: panel.offset_top = -SIZE.y)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 18)
 	panel.add_child(row)
@@ -76,9 +89,10 @@ func _open() -> void:
 	# The name tab sits on the window's top edge, over the frame.
 	tab = PanelContainer.new()
 	tab.add_theme_stylebox_override("panel", UiStyle.tab(true, 8))
-	tab.position = AT + Vector2(PORTRAIT + 36 if npc.has("sprite") else 24, -22)
+	tab.position = Vector2(PORTRAIT + 36 if npc.has("sprite") else 24, -22)
 	tab.add_child(UiStyle.strong(npc["name"], 16, UiStyle.plank_ink(true)))
-	add_child(tab)
+	frame.add_child(tab)
+	panel.resized.connect(func() -> void: tab.position.y = panel.position.y - 22)
 	_show()
 
 
@@ -221,14 +235,6 @@ func _show() -> void:
 		# second list's "leave" went untranslated).
 		hints.add_child(UiStyle.hints(["{key:interact}", "close"]) if last else UiStyle.hints(["{key:interact}", "next", "Esc", "leave"]))
 	more.visible = not last
-	_fit.call_deferred()
-
-
-## A long line in the large type grows the window upward, never off screen.
-func _fit() -> void:
-	panel.reset_size()
-	panel.position.y = minf(AT.y, AT.y + SIZE.y - panel.size.y)
-	tab.position.y = panel.position.y - 22
 
 
 ## The talk over: heard to its end (E on the last line), or left before

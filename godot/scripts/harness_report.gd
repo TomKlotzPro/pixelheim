@@ -781,6 +781,21 @@ func field_read() -> String:
 	return str(Letters.satchel(GameState.progression).filter(func(carried: Dictionary) -> bool: return carried["delivered"]).size())
 
 
+func field_reading() -> String:
+	var shown: Array[CanvasLayer] = []
+	_screens_in(world, shown)
+	for screen in shown:
+		var card := (screen.get("info_scroll") if screen.get("info_scroll") != null else screen.get("about")) as ScrollContainer
+		if card == null or not Layout.runs_long(card):
+			continue
+		var bar := card.get_v_scroll_bar()
+		var keyed := screen.find_children("*", "Label", true, false).any(
+			func(label: Label) -> bool: return label.text == "PgDn" and label.is_visible_in_tree()
+		)
+		return "%d/%d%s" % [card.scroll_vertical, bar.max_value - bar.page, " keyed" if keyed else ""]
+	return ""
+
+
 func field_rise() -> String:
 	if not flags.has("--rise"):
 		return ""

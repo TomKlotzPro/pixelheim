@@ -145,3 +145,56 @@ func test_a_long_name_gives_way_and_a_long_note_wraps() -> void:
 	var long: Label = autofree(Layout.narrowed(UiStyle.label("3 Lingot de fer, 2 Cuir épais, 1 Racine profonde", 16, UiStyle.LAMP), 200.0))
 	assert_eq(long.autowrap_mode, TextServer.AUTOWRAP_WORD_SMART, "a long one wraps")
 	assert_eq(long.custom_minimum_size.x, 200.0, "within its share")
+
+
+## PIX-477, PIX-483: words that run past their window page by Page Up and
+## Page Down, its whole lines less one; a window that holds them all takes no key.
+func test_a_window_that_runs_long_pages_by_its_keys() -> void:
+	var layer := _screen()
+	var scroll := ScrollContainer.new()
+	scroll.position = Vector2(100, 100)
+	scroll.size = Vector2(300, 200)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	layer.add_child(scroll)
+	var words := Control.new()
+	words.custom_minimum_size = Vector2(200, 150)
+	scroll.add_child(words)
+	var down := InputEventKey.new()
+	down.keycode = KEY_PAGEDOWN
+	down.pressed = true
+	var up := InputEventKey.new()
+	up.keycode = KEY_PAGEUP
+	up.pressed = true
+	await wait_process_frames(3)
+	assert_false(Layout.runs_long(scroll), "150 px of words in a 200 px window")
+	assert_false(Layout.paging(scroll, down).is_valid(), "nothing to page: the key passes on")
+	words.custom_minimum_size.y = 700
+	await wait_process_frames(3)
+	assert_true(Layout.runs_long(scroll), "700 px of words run past it")
+	Layout.paging(scroll, down).call()
+	assert_eq(scroll.scroll_vertical, 5 * Layout.PAGE_LINE, "the six lines a 200 px window holds, less one")
+	Layout.paging(scroll, up).call()
+	assert_eq(scroll.scroll_vertical, 0, "and back up")
+	# The line kept is the words' own: large type's is taller than PAGE_LINE.
+	var line := UiStyle.label("Read me", 24, UiStyle.INK)
+	words.add_child(line)
+	assert_gt(Layout.line_of(scroll), Layout.PAGE_LINE, "a line of the big type")
+	Layout.paging(scroll, down).call()
+	assert_eq(scroll.scroll_vertical % Layout.line_of(scroll), 0, "a page starts on a line of its own type")
+	assert_gt(scroll.scroll_vertical, 0, "and moves on")
+	down.keycode = KEY_S
+	assert_false(Layout.paging(scroll, down).is_valid(), "another key is not its")
+
+
+## PIX-482: a line cut where its room ends, with nothing to say so, is
+## found; one that ends in an ellipsis gave way on purpose.
+func test_a_line_cut_with_no_ellipsis_is_found() -> void:
+	var layer := _screen()
+	var line := UiStyle.label("Everything burns. Plain attacks can ignite; fire answers to you.", 13, UiStyle.INK, Vector2(100, 100))
+	line.custom_minimum_size = Vector2(200, 0)
+	line.clip_text = true
+	layer.add_child(line)
+	await wait_process_frames(2)
+	assert_eq(Layout.overflows(get_tree().root, VIEW).size(), 1, "cut at 200 px")
+	Layout.ellipsis(line)
+	assert_eq(Layout.overflows(get_tree().root, VIEW).size(), 0, "an ellipsis says so")

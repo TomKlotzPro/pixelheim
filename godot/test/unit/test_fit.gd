@@ -188,7 +188,8 @@ func test_every_screen_fits_every_view() -> void:
 func test_stats_and_skills_fit_in_large_text() -> void:
 	var before: bool = GameState.settings.large_text
 	GameState.settings.large_text = true
-	var kinds: Array[String] = ["stats", "skills"]
+	# And every card that reads in it (PIX-477, PIX-483): it keeps its size.
+	var kinds: Array[String] = ["stats", "skills", "shop", "bank", "town_hall", "bounty", "home"]
 	var out := await _fits(kinds)
 	GameState.settings.large_text = before
 	assert_eq(out.size(), 0, "\n".join(out))
@@ -306,3 +307,20 @@ func test_tabs_stand_apart_on_their_pages_edge() -> void:
 				view.queue_free()
 				await get_tree().process_frame
 	UiStyle.withheld = withheld
+
+
+## PIX-488: the hall's card starts on the chosen work's word, so a card that
+## runs long (large text, French) never hides what a work does under its foot.
+func test_the_halls_card_starts_on_the_chosen_work() -> void:
+	var screen: Screen = TownHallScreen.new()
+	add_child(screen)
+	await wait_process_frames(2)
+	# It opens with no row chosen (PIX-486): the village's own word first.
+	assert_true(screen._chosen_project().is_empty(), "none chosen as it opens")
+	screen._select(0)
+	assert_false(screen._chosen_project().is_empty(), "a work is chosen")
+	assert_true(screen.info.text.begins_with(String(screen._chosen_project().get("name", "?"))), screen.info.text)
+	screen._select(1)
+	assert_true(screen.info.text.begins_with(String(screen._chosen_project().get("name", "?"))), screen.info.text)
+	screen.close()
+	await get_tree().process_frame

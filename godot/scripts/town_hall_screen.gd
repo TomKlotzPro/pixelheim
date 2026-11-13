@@ -23,37 +23,37 @@ func _intro() -> String:
 
 
 func _info() -> String:
+	# The chosen row's word first (PIX-488: last, a card that ran long hid
+	# what a work does before you pay for it, and each row change scrolled
+	# back to the top), and only its word, never every commission's
+	# (PIX-373: the City's ran 708 px tall, under the keys and off the canvas).
+	var chosen := _chosen_project()
+	var lines: Array[String] = []
+	if not chosen.is_empty():
+		lines.append(Text.t("%s: %s") % [chosen["name"], chosen["blurb"]])
+		# What it brings for good (PIX-206): an age's project alone has one.
+		if chosen.has("perk"):
+			lines.append(Text.t("Once built: %s.") % chosen["perk"])
+		lines.append("")
 	var now := Town.tier(GameState.town_tier())
-	var lines: Array[String] = [
+	lines.append_array([
 		Text.t("Pixelheim today: %s (age %d of %d)") % [now["name"], now["tier"], Town.MAX_TIER],
 		String(now["blurb"]),
-	]
-	# Only the chosen row's word, never every commission's (PIX-373: the
-	# City's ran 708 px tall, under the keys and off the canvas).
-	var chosen := _chosen_project()
-	var told: Array[String] = []
-	if not chosen.is_empty():
-		told.assign(["", Text.t("%s: %s") % [chosen["name"], chosen["blurb"]]])
+	])
 	# A work on the roads (PIX-254) belongs to no age: its word alone (the
 	# age's needs beside Saltmere's waystation ran under the status line).
 	if not Town.work(String(chosen.get("id", ""))).is_empty():
-		lines.append_array(told)
 		return "\n".join(lines)
 	var building := Town.current_age(GameState.settlement)
 	if building == 0:
 		lines.append_array(["", Text.t("Every project is built. Pixelheim stands at its full height."), "",
 			Text.t("Commissions: costly works the town would build in your honour, each a lasting edge.")])
-		lines.append_array(told)
 		return "\n".join(lines)
 	lines.append_array(["", Text.t("Building the %s") % Town.tier(building)["name"]])
 	var blockers := Town.age_blockers(building, GameState.progression, GameState.settlement)
 	for need: Dictionary in Town.age(building)["requires"]:
 		lines.append("%s %s" % [Text.t("Needed:") if need["line"] in blockers else Text.t("Done:"), need["line"]])
 	lines.append(Text.t("When it's done: %s.") % Text.listed(Town.tier(building)["perks"]).to_lower())
-	lines.append_array(told)
-	# What it brings for good (PIX-206).
-	if chosen.has("perk"):
-		lines.append(Text.t("Once built: %s.") % chosen["perk"])
 	return "\n".join(lines)
 
 

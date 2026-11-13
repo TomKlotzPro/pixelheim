@@ -2237,6 +2237,10 @@ msgid "A code-quality pass under the floorboards: one panel system instead of se
 msgstr "Un grand ménage du code, sous le plancher : un seul système de panneaux au lieu de sept indicateurs éparpillés - les menus sont désormais vraiment modaux partout, et une sauvegarde faite avec un panneau ouvert se recharge proprement"
 
 #: assets/data/changelog.json
+msgid "A conversation in large text stays on the screen"
+msgstr "Une conversation en texte agrandi reste à l'écran"
+
+#: assets/data/changelog.json
 msgid "A critical hit shows: its number pops up in gold, twice the size, with a \"!\"; numbers in a flurry land side by side instead of on top of each other"
 msgstr "Un coup critique se voit : son chiffre jaillit en or, deux fois plus grand, avec un « ! » ; dans une volée de coups, les chiffres se posent côte à côte au lieu de s'empiler"
 
@@ -2301,6 +2305,10 @@ msgid "A foe you haven't met yet shows where it lives in the Bestiary, instead o
 msgstr "Un ennemi pas encore rencontré indique dans le Bestiaire où il vit, au lieu de la même phrase répétée sur toute la page"
 
 #: assets/data/changelog.json
+msgid "A foe's level plate and health bar fade while your hero stands under them, and your hits' numbers rise over the plates"
+msgstr "La plaque de niveau et la barre de vie d'un ennemi s'effacent quand votre héros passe dessous, et les chiffres de vos coups montent par-dessus les plaques"
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr "Un « ! » doré au-dessus de qui a une quête pour vous, un « ? » doré au-dessus de qui attend que vous en remettiez une, et un « ? » gris tant qu'une quête prise auprès de lui est en cours ; les Options peuvent les masquer (Marqueurs de quête)"
 
@@ -2347,6 +2355,10 @@ msgstr "Un panneau de caractéristiques en direct à côté du mannequin : ATQ
 #: assets/data/changelog.json
 msgid "A loading screen of its own: the night over Pixelheim, the smoking mountain and the lake, with the village's windows lighting up one by one as the game loads"
 msgstr "Un écran de chargement bien à lui : la nuit sur Pixelheim, la montagne qui fume et le lac, avec les fenêtres du village qui s'allument une à une pendant le chargement"
+
+#: assets/data/changelog.json
+msgid "A long hero name ends in … on hero creation instead of pushing the panels off the screen"
+msgstr "Un long nom de héros finit par … à la création au lieu de pousser les panneaux hors de l'écran"
 
 #: assets/data/changelog.json
 msgid "A lost fight still wakes you tucked into the inn's bed"
@@ -4525,6 +4537,10 @@ msgid "Main Street"
 msgstr "Rue principale"
 
 #: assets/data/changelog.json
+msgid "Make Way"
+msgstr "Place au héros"
+
+#: assets/data/changelog.json
 msgid "Many Tongues"
 msgstr "Mille langues"
 
@@ -5457,6 +5473,10 @@ msgid "Room to Grow"
 msgstr "De la place pour grandir"
 
 #: assets/data/changelog.json
+msgid "Room to Read"
+msgstr "De quoi lire"
+
+#: assets/data/changelog.json
 msgid "Room to Spare"
 msgstr "De la marge"
 
@@ -5723,6 +5743,10 @@ msgstr "Les points de compétence n'allument plus le menu quand il n'y a plus ri
 #: assets/data/changelog.json
 msgid "Skill trees! One skill point per level, three branches per role"
 msgstr "Des arbres de compétences ! Un point de compétence par niveau, trois branches par rôle"
+
+#: assets/data/changelog.json
+msgid "Skills names the path you walk in one line that fits"
+msgstr "Les compétences nomment la voie que vous suivez en une ligne qui tient"
 
 #: assets/data/changelog.json
 msgid "Slaying one makes you a Boss slayer: +10% damage for 10 minutes, counting down at the top left"
@@ -6581,6 +6605,10 @@ msgid "The Slayer's Ledger"
 msgstr "Le Registre du tueur"
 
 #: assets/data/changelog.json
+msgid "The Smuggler Gunner's ball is easy to see: a rimmed ball with a trail of smoke, fired the way the gunner faces"
+msgstr "La balle du Canonnier contrebandier se voit bien : cerclée de sombre, elle laisse un filet de fumée, et part dans le sens où il regarde"
+
+#: assets/data/changelog.json
 msgid "The Smuggler Gunner, the Turncoat Bowman and the Fire Imp keep their distance and shoot: they glow before firing, their shot flies where you can see it, and with water or rocks in the way they come closer instead"
 msgstr "Le canonnier contrebandier, l'archer renégat et le diablotin de feu gardent leurs distances et tirent : ils brillent avant de tirer, leur tir vole sous vos yeux, et si de l'eau ou des rochers les séparent de vous, ils se rapprochent plutôt"
 
@@ -7169,6 +7197,10 @@ msgid "The village stopped being rectangles: shingled roof courses, rounded buil
 msgstr "Le village n'est plus fait de rectangles : rangs de bardeaux sur les toits, angles de bâtiments arrondis et cheminées aux volutes de fumée - des formes, pas des carrés"
 
 #: assets/data/changelog.json
+msgid "The village works describe the chosen work first"
+msgstr "Les chantiers du village décrivent d'abord le chantier choisi"
+
+#: assets/data/changelog.json
 msgid "The water cleared: translucent shallows over the riverbed, and a lip of foam along every bank where water meets land"
 msgstr "L'eau s'est éclaircie : des hauts-fonds translucides au-dessus du lit de la rivière, et un liseré d'écume le long de chaque rive, là où l'eau rencontre la terre"
 
@@ -7619,6 +7651,10 @@ msgstr "Gagnez des combats dans la nature pour faire de la cueillette : des he
 #: assets/data/changelog.json
 msgid "Wind and Water"
 msgstr "Le Vent et l'Eau"
+
+#: assets/data/changelog.json
+msgid "With Large reading text, the village works, the bank, the counters and the other cards keep their size, and PgUp / PgDn read the rest"
+msgstr "Avec le texte de lecture agrandi, les chantiers du village, la banque, les comptoirs et les autres fiches gardent leur taille, et PgUp / PgDn font lire la suite"
 
 #: assets/data/changelog.json
 msgid "With Reduce motion on, nothing falls or drifts and the heat haze holds still"
@@ -16442,7 +16478,7 @@ msgstr "La place est pleine et personne ne travaille. Ce soir, Pixelheim boit à
 
 #: assets/data/town.json
 msgid "Torches along Upper Street and by the square, so the night has edges."
-msgstr "Des torches le long de la Grand-Rue et près de la place, pour que la nuit ait des contours."
+msgstr "Des torches sur la Grand-Rue et la place, pour que la nuit ait des contours."
 
 #: assets/data/town.json
 msgid "Town"
@@ -17799,6 +17835,14 @@ msgstr "Right"
 #: scripts/keycap.gd
 msgid "Up"
 msgstr "Up"
+
+#: scripts/layout.gd
+msgid "PgUp/PgDn"
+msgstr "PgUp/PgDn"
+
+#: scripts/layout.gd
+msgid "read"
+msgstr "lire"
 
 #: scripts/ledger_screen.gd
 msgid "do it"
