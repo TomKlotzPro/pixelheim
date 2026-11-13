@@ -113,3 +113,39 @@ func test_the_codex_names_the_bonus_and_where_the_unmet_live() -> void:
 	GameState.hero = kept[0]
 	GameState.progression = kept[1]
 	await wait_process_frames(1)  # the first tab's rows, let go of, freed
+
+
+## PIX-468: a met foe's row leads with its name, in the player's language;
+## an unmet one with no pack to point at (a boss) says "???" and no more
+## (PIX-456), in either.
+func test_a_bestiary_row_names_the_met_and_keeps_a_boss_unknown() -> void:
+	var kept := [GameState.hero, GameState.progression]
+	var lent: Node = autofree(preload("res://scripts/state/game_state.gd").new())
+	lent.new_game("Aldegonde", "ranger")
+	GameState.hero = lent.hero
+	GameState.progression = lent.progression
+	var ids := Bestiary.monster_ids()
+	var met: String = ids[0]
+	var secret: String = ids.filter(func(id: String) -> bool: return Bestiary.where_found(id).is_empty())[0]
+	lent.progression.met = {met: 1}
+	var english: String = Bestiary.monster(met)["name"]
+	for lang: String in ["en", "fr"]:
+		Text.apply(lang)
+		var codex: Node = preload("res://scripts/codex_screen.gd").new()
+		add_child_autofree(codex)
+		codex.tab = 1
+		var rows := {}
+		for id: String in [met, secret]:
+			codex.page = ids.find(id) / codex.PAGE_ROWS
+			codex._show()
+			var lines: Array = codex.body.get_children().filter(func(line: Node) -> bool: return line is HBoxContainer and not line.is_queued_for_deletion())
+			rows[id] = lines[ids.find(id) % codex.PAGE_ROWS].find_children("*", "Label", true, false).map(func(label: Label) -> String: return label.atr(label.text))
+		assert_eq(rows[met][0], codex.tr(english), "%s: the met %s's name" % [lang, met])
+		assert_eq(rows[secret], ["???"], "%s: the unmet %s" % [lang, secret])
+		if lang == "fr":
+			assert_ne(rows[met][0], english, "its name in French")
+		codex.close()
+		await wait_process_frames(1)
+	Text.apply("en")
+	GameState.hero = kept[0]
+	GameState.progression = kept[1]

@@ -4,7 +4,13 @@
 
 **Start:** a plain launch: `start` with no option, in English. A fresh profile. The title's intro runs about 8 s before its menu shows: send `wait:8` before the first look. The state's `focus` says which row is chosen: read it before each E on a setting rather than counting presses.
 
-**Model:** Haiku (`lessons.md`, 2026-11-07).
+Then one session per preset, for what the plain launch doesn't reach. Stop each before starting the next:
+* `start --role mage --level 10 --flags skills` and `start --role warrior --flags stats`: 3 skill points and 5 stat points to spend ("E do it" and the path chooser). A `--level` hero alone arrives with none;
+* `start --role warrior --map town_shop --flags shop`: a counter's Sell and Craft tabs (500 g and a pack to sell);
+* `start --role warrior --map town_smith --flags shop`: Hilda's Forge and Craft tabs;
+* `start --role warrior --map town_alchemist --flags shop`: Vex, who stands inside at 8,2.
+
+**Model:** Fable (`lessons.md`, 2026-11-13).
 
 ## Route
 
@@ -13,16 +19,17 @@
 3. **The saves screen**, if the title has one.
 4. **In the game**, open each screen by its key and close it with the same key, then again with Esc: inventory (I), world map (M, then Tab), journal (Q), stats (C), skills (K), codex (B).
 5. **The pause menu** (Esc) and every entry in it.
-6. **A conversation** (E next to someone) and a shop: choose, buy one cheap thing, leave. For the shop's Sell and Craft tabs, a second session at a counter: `start --role warrior --map town_shop --flags shop` (500 g and a pack to sell). Check each tab by picture.
+6. **A conversation** (E next to someone) and a shop: choose, buy one cheap thing, leave. For the Sell, Craft and Forge tabs, the counter sessions above: check each tab by picture.
 7. **Back to the title** from the pause menu, then into the game again.
+8. **Large reading text** on (Options), then every screen once more.
 
-The dock's Menu opens only with the mouse or a pad's Back button, which play.py can't press. Each of its screens has its own key (step 4).
+The dock (its Menu button and how it is drawn) is out of your route. Each of its screens has its own key (step 4).
 
 ## Check
 
 - **Every screen opens with its key and closes** with that key and with Esc.
 - **One key, one screen.** Esc closing a screen must not also open the pause menu behind it. E closing a conversation must not open it again.
-- **The focus.** Something is always chosen and you can see what. W/S and the arrows reach every entry, with no entry you can't reach and no dead end.
+- **The focus.** Something is always chosen and you can see what. W/S and the arrows reach every entry, with no entry you can't reach and no dead end. A list whose focus doesn't wrap while the others do is a finding.
 - **The footer tells the truth.** Each key it shows does what it says.
 - **Nothing overlaps or spills** out of its page: tabs, lists, buttons, footers.
 - **Settings take effect** and are still set after you leave the screen.
