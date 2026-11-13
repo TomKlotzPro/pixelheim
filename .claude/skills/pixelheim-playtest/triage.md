@@ -1,11 +1,12 @@
 # Triage: from the players' findings to Linear
 
-The triage runs on Opus. A player on a cheaper model can be wrong; nothing they report reaches Linear until triage has checked it.
+The triage runs on Opus. A player can be wrong; nothing they report reaches Linear until triage has checked it.
 
 ## 1. Merge
 
 - **Two findings are one** when they show the same fault in the same place: same map and nearby cells, or the same screen, with the same symptom. Keep the clearest screenshot and the shortest steps, and keep the other players' names as "also seen by".
 - **The same fault in several places** (one typography rule broken on five screens, one seam on three lines between maps) is one finding listing every place.
+- **Read each player's summary too.** An observation left there that can cost the player gold, progress or a choice (something bought, a quest taken without asking) gets one replay for its picture, like a finding with no screenshot (step 2), and is kept or dropped the same way.
 - **Check Linear.** Search the open Pixelheim issues, and the closed ones of the last month, for the same thing. Already ticketed and still open: drop it, and note the ticket. Closed but back: keep it, and link the old ticket ("came back after PIX-NNN").
 
 ## 2. Confirm
