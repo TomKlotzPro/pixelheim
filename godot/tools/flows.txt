@@ -1063,7 +1063,9 @@ fit-everflask | --map town_alchemist --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s
 fit-craft | --map town_alchemist shop --tab 2 overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
 fit-refusal | --map town_alchemist station --keys e overflow --lang fr | open=shop_screen tab=Craft overflow=0 | screen lang trade
 fit-rankup | --map town rankup --rank-beat unlocks overflow --lang fr | open=rankup_screen overflow=0 | screen lang rank
-fit-hall | --map town_hall talk --keys e,e,e overflow --lang fr | open=town_hall_screen overflow=0 | screen lang town
+# The hall at the normal size holds its card whole (reading= empty, PIX-488:
+# the French one ran a line long and hid the chosen work's last words).
+fit-hall | --map town_hall talk --keys e,e,e overflow --lang fr | open=town_hall_screen overflow=0 reading= | screen lang town
 # The board with every waystation offered, in French (PIX-322).
 fit-hall-roads | --map town --routes all hall overflow --lang fr | open=town_hall_screen overflow=0 works=waystation_saltmere,waystation_blackiron,waystation_greyhold,waystation_frostgate | screen lang town
 fit-bounty | --map town --at 43,22 --hunted tidecaller,seam_warden --keys w,e overflow --lang fr | open=bounty_screen overflow=0 | screen lang quest
@@ -1084,11 +1086,35 @@ dock-menu-steer | --map town --level 8 --keys back,pad_up,pad_up | dockmenu=inve
 # town to wait for here (150 s and more).
 fit-skills-en | --map town --keys k overflow --lang en | open=skills_screen overflow=0 | screen lang rank
 fit-skills-l20 | --map town skills --level 20 overflow --lang fr | open=skills_screen overflow=0 | screen lang rank
+# Panels keep to the screen (PIX-477, PIX-481, PIX-482, PIX-483). With Large
+# reading text a ledger's card keeps its size, clear of the keys under it,
+# and a counter's card holds its recipe whole: the words that run past page
+# by PgUp/PgDn, which the footer names (reading= paged down of how far, keyed).
+# Sixteen W typed at hero creation end in an ellipsis under the portrait
+# instead of pushing the cards off the canvas, and the Skills page's line
+# for a path walked is whole in both languages (overflow counts a line cut
+# short with no ellipsis). A three-line speech in the large type grows the
+# conversation's window upward, its foot on the canvas (the mayor's and
+# Vex's first lines in French stood 26 px off it).
+fit-talk-large | --map town_hall large talk overflow --lang fr | open=dialogue_box overflow=0 | screen lang town story
+fit-talk-large-vex | --map town_alchemist large talk overflow --lang fr | open=dialogue_box overflow=0 | screen lang town story
+fit-hall-large | --map town_hall large talk --keys e,e,e,pgdn overflow --lang fr | open=town_hall_screen overflow=0 reading=[1-9]\d*/\d+ keyed | screen lang town
+fit-hall-large-en | --map town_hall large talk --keys e,e,e,pgdn overflow --lang en | open=town_hall_screen overflow=0 reading=[1-9]\d*/\d+ keyed | screen lang town
+fit-stats-large | --map town large stats --role mage --level 20 overflow --lang fr | open=stats_screen overflow=0 | screen lang
+fit-craft-large | --map town_alchemist large shop --tab 2 --keys pgdn overflow --lang fr | open=shop_screen overflow=0 reading=[1-9]\d*/\d+ keyed | screen lang trade
+fit-craft-large-en | --map town_alchemist large shop --tab 2 --keys pgdn overflow --lang en | open=shop_screen overflow=0 reading=[1-9]\d*/\d+ keyed | screen lang trade
+fit-smith-large | --map town_smith large shop --tab 4 --keys pgdn overflow --lang fr | open=shop_screen overflow=0 reading=[1-9]\d*/\d+ keyed | screen lang trade
+fit-shop-large | --map town_shop large shop overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
+fit-create-wide | create --name WWWWWWWWWWWWWWWW overflow --lang fr | open=create_screen overflow=0 | screen lang title
+fit-create-wide-en | create --name WWWWWWWWWWWWWWWW overflow --lang en | open=create_screen overflow=0 | screen lang title
+fit-skills-path | --map town skills --role mage --level 10 --path pyromancer overflow --lang fr | open=skills_screen overflow=0 | screen lang rank
+fit-skills-path-en | --map town skills --role mage --level 10 --path pyromancer overflow --lang en | open=skills_screen overflow=0 | screen lang rank
+fit-skills-path-pseudo | --map town skills --role rogue --level 20 --path trickster,phantom_jester overflow --pseudo | open=skills_screen overflow=0 | screen lang rank
 fit-stats-en | --map town --keys c overflow --lang en | open=stats_screen overflow=0 | screen lang
 fit-bestiary | --map town codex bestiary overflow --lang fr | open=codex_screen overflow=0 | screen lang
 fit-bestiary-en | --map town codex bestiary overflow --lang en | open=codex_screen overflow=0 | screen lang
 fit-shop-en | --map town_shop shop overflow --lang en | open=shop_screen overflow=0 | screen lang trade
-fit-hall-en | --map town_hall hall overflow --lang en | open=town_hall_screen overflow=0 | screen lang town
+fit-hall-en | --map town_hall hall overflow --lang en | open=town_hall_screen overflow=0 reading= | screen lang town
 fit-bank | --map town bank overflow --lang fr | open=bank_screen overflow=0 | screen lang town
 fit-bank-en | --map town bank overflow --lang en | open=bank_screen overflow=0 | screen lang town
 fit-workbench-en | --map town_house home --mode workbench overflow --lang en | open=home_screen overflow=0 | screen lang rooms

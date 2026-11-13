@@ -70,15 +70,15 @@ func _release(release: Dictionary) -> Control:
 
 
 func _command(event: InputEvent) -> Callable:
-	var command := Callable()
+	# A page, as every screen turns one (Layout.paging): by Page Up and Page
+	# Down, and here by left and right too.
+	var command := Layout.paging(scroll, event)
 	if event.is_action_pressed("move_down") or event.is_action_pressed("ui_down"):
 		command = func() -> void: scroll.scroll_vertical += SCROLL_STEP
 	elif event.is_action_pressed("move_up") or event.is_action_pressed("ui_up"):
 		command = func() -> void: scroll.scroll_vertical -= SCROLL_STEP
-	# A page: the window's height less a line, so the last line read stays
-	# in sight at the top.
-	elif event.is_action_pressed("move_right") or event.is_action_pressed("ui_page_down"):
-		command = func() -> void: scroll.scroll_vertical += int(scroll.size.y) - SCROLL_STEP
-	elif event.is_action_pressed("move_left") or event.is_action_pressed("ui_page_up"):
-		command = func() -> void: scroll.scroll_vertical -= int(scroll.size.y) - SCROLL_STEP
+	elif event.is_action_pressed("move_right"):
+		command = Layout.turned(scroll, 1)
+	elif event.is_action_pressed("move_left"):
+		command = Layout.turned(scroll, -1)
 	return command

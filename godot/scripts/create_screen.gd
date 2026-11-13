@@ -276,7 +276,9 @@ func _fill_details() -> void:
 	# over the role while the field was empty).
 	var named := UiStyle.label(name_field.text.strip_edges(), 18, UiStyle.LAMP)
 	named.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	portrait.add_child(named)
+	# As wide as the portrait, a longer name ending in an ellipsis (PIX-481:
+	# sixteen W widened the column and pushed the cards off the canvas).
+	portrait.add_child(Layout.ellipsis(named))
 
 	var sheet := VBoxContainer.new()
 	sheet.add_theme_constant_override("separation", 7)

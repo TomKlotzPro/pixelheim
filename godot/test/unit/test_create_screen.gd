@@ -264,3 +264,16 @@ func test_no_stand_in_for_the_name() -> void:
 	screen.name_field.text = "Robin"
 	screen._refresh()
 	assert_has(_labels(screen.details), "Robin")
+
+
+## PIX-481: sixteen W under the portrait end in an ellipsis; they widened
+## its column and pushed the cards 65 px off the canvas.
+func test_a_wide_name_leaves_the_cards_their_size() -> void:
+	_open()
+	await wait_process_frames(2)
+	var width: float = screen.details.size.x
+	screen.name_field.text = "WWWWWWWWWWWWWWWW"
+	screen._refresh()
+	await wait_process_frames(2)
+	assert_eq(screen.details.size.x, width, "the hero's card as wide as with no name")
+	assert_eq(Layout.overflows(get_tree().root, Vector2(1280, 720)).size(), 0, "nothing off the canvas")
