@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.362.0",
+      "date": "2026-11-13",
+      "codename": "Room to Read",
+      "notes": [
+        "With Large reading text, the village works, the bank, the counters and the other cards keep their size, and PgUp / PgDn read the rest",
+        "A conversation in large text stays on the screen",
+        "A long hero name ends in … on hero creation instead of pushing the panels off the screen",
+        "Skills names the path you walk in one line that fits",
+        "The village works describe the chosen work first"
+      ]
+    },
+    {
       "version": "0.361.0",
       "date": "2026-11-13",
       "codename": "The Long Way Round",
