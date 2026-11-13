@@ -2673,6 +2673,10 @@ msgid "At dawn Morvax comes down the mountain road, the collar comes off, and th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "At full health a potion or a meal is kept and a line says why, as is a mana potion with the pool full or a remedy with nothing to cure"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
 msgstr ""
 
@@ -4081,6 +4085,10 @@ msgid "Hero creation reads clearly: the first night is a setting of its own (The
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Hero creation shows its three skills as a preview, the first marked as the one you start with"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Hero creation shows the hero as they will really start, without the colour looks nobody kept; the stats have icons, pips against the best of all the roles and their full names, and the starting skills are chips with their icons, a click or PgUp/PgDn reading each"
 msgstr ""
 
@@ -4822,6 +4830,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Nothing Underfoot"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Nothing Wasted"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6574,6 +6586,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Open World"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Options footer shows the new keys as soon as you rebind them, and so does the pause menu's"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.365.0",
+      "date": "2026-11-13",
+      "codename": "Nothing Wasted",
+      "notes": [
+        "At full health a potion or a meal is kept and a line says why, as is a mana potion with the pool full or a remedy with nothing to cure",
+        "Hero creation shows its three skills as a preview, the first marked as the one you start with",
+        "The Options footer shows the new keys as soon as you rebind them, and so does the pause menu's"
+      ]
+    },
+    {
       "version": "0.364.0",
       "date": "2026-11-13",
       "codename": "Right on Time",
