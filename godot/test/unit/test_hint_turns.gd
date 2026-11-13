@@ -10,8 +10,9 @@ extends GutTest
 
 
 ## The tallest a "Quest accepted" plate may stand (a line more in large
-## reading text, French's longest): past that it is the big box over the view Tom can't stand (PIX-446,
-## PIX-471: four lines with the quest's story, now its name and its pay).
+## reading text, French's longest): past that it is the big box over the
+## view Tom can't stand (PIX-446, PIX-471: four lines with the quest's
+## story, now its name and its pay).
 const PLATE_LINES := 2
 
 
@@ -212,8 +213,9 @@ func test_a_hint_is_a_line_of_the_log_and_waits_behind_the_plate() -> void:
 
 
 ## PIX-446: the "Quest accepted" plate says what a quest pays in full.
-## PIX-471: and not the quest's story, which the journal holds. The longest fits the plate in English and
-## French, in large reading text too, its tag the size of its words.
+## PIX-471: and not the quest's story, which the journal holds. The longest,
+## the journal's key after its name, fits the plate in English and French,
+## in large reading text too, its tag the size of its words.
 func test_every_quest_accepted_plate_is_its_name_and_its_pay() -> void:
 	for large: bool in [false, true]:
 		GameState.settings.large_text = large
@@ -223,9 +225,10 @@ func test_every_quest_accepted_plate_is_its_name_and_its_pay() -> void:
 			Text.apply(lang)
 			var most := 0
 			for quest: Dictionary in Quests.all():
-				var said := Quests.accepted(quest)
+				var said := Quests.accepted(quest, true)
 				assert_false(String(quest["brief"]) in said, "%s (%s): its story is the journal's" % [quest["id"], lang])
-				assert_string_contains(said, String(quest["name"]))
+				assert_string_contains(said, String(quest["name"]) + Controls.say(" ({key:journal})."), "where it went, hints off or on")
+				assert_false(Controls.say(" ({key:journal})") in Quests.accepted(quest), "the hint seen: the name alone")
 				if Quests.pay(quest) != "":
 					assert_string_contains(said, Quests.pay(quest), "%s (%s): its pay in full" % [quest["id"], lang])
 				var lines := _plate_lines(said)
@@ -236,8 +239,12 @@ func test_every_quest_accepted_plate_is_its_name_and_its_pay() -> void:
 			"the tag as big as the words")
 	Text.apply("en")
 	Text.apply("fr")
-	assert_string_contains(Quests.pay({"reward": {"gold": 70, "xp": 25}}), "70\u202for, 25\u202fXP", "a number never parts from its unit")
+	assert_string_contains(Quests.pay({"reward": {"gold": 70, "xp": 25}}), "70\u202for, 25\u202fXP", "a no-break space between a number and its unit")
 	Text.apply("en")
+	# The space alone proves no wrap: this binary has ICU's line-break rules
+	# built in, an export only with this setting (without it « Rapporte 70 »
+	# / « or » parted again on the web build, in large text).
+	assert_true(ProjectSettings.get_setting("internationalization/locale/include_text_server_data"), "the export ships the rules that keep them together")
 
 
 ## PIX-471: Maren's tin said who each letter is for and where Bram's crew
@@ -326,9 +333,10 @@ func test_a_line_of_the_moment_is_never_shown_late() -> void:
 func test_quest_complete_replaces_its_quest_accepted_at_once() -> void:
 	var messages := world.messages
 	var taken := Text.t("Quest accepted")
-	messages.flash(taken + ": The Cheese Run. Pays 25 gold, 10 XP.")
+	# With the journal's key after its name, as a first quest's has it.
+	messages.flash(taken + ": The Cheese Run (Q). Pays 25 gold, 10 XP.")
 	messages.flash(taken + ": Slime Trouble. Pays 40 gold.")
-	assert_eq(messages.message_label.text, "The Cheese Run. Pays 25 gold, 10 XP.")
+	assert_eq(messages.message_label.text, "The Cheese Run (Q). Pays 25 gold, 10 XP.")
 	messages.flash(Text.t("Quest complete") + ": The Cheese Run. +25 gold, +10 XP. \u201cGood.\u201d\n" + Text.t("Level up") + ": you reached level 2.")
 	assert_eq(messages.message_tag.text, taken, "another quest's is read out")
 	assert_eq(messages.message_label.text, "Slime Trouble. Pays 40 gold.", "the done quest's is gone at once")

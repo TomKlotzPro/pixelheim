@@ -876,7 +876,7 @@ func apply_video() -> void:
 		UiStyle.sized(messages.message_tag, UiStyle.reading(16), true)
 		messages.message_box.reset_size()
 		UiStyle.sized(hud.objective_label, UiStyle.reading(16))
-		UiStyle.sized(hud.objective_label.get_parent().get_child(0), UiStyle.reading(16), true)
+		UiStyle.sized(hud.objective_tag, UiStyle.reading(16), true)
 		hud.objective_box.reset_size()
 	if settings.scanlines and crt == null:
 		crt = CanvasLayer.new()

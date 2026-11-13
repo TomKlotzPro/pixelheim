@@ -40,6 +40,10 @@ theme/custom_font="res://assets/fonts/PixeloidSans.ttf"
 
 [internationalization]
 
+; ICU's line-break rules go in the export (PIX-471): without them an
+; exported build breaks a line after any space, a no-break one too, and
+; French parts « 70 » from « or » and a word from its « ! ».
+locale/include_text_server_data=true
 locale/translations=PackedStringArray("res://locale/fr.po")
 
 [physics]

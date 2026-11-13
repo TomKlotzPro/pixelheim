@@ -243,7 +243,7 @@ func test_a_recruits_story_is_a_quest_that_brings_them_home() -> void:
 	var messages: Array[String] = []
 	state.message.connect(func(text: String) -> void: messages.append(text))
 	state.questing.finish_dialogue("settler_iva")
-	assert_string_starts_with(messages[0], "Quest accepted: Reeds for a Healer.")
+	assert_string_starts_with(messages[0], "Quest accepted: Reeds for a Healer (Q).")
 	assert_false(state.holdings.is_settled("settler_iva"))
 	state.pack.items["marsh_reed"] = 3
 	var moved := [false]

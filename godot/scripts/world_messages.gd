@@ -256,13 +256,15 @@ func _tags() -> Array:
 ## A quest done: its "Quest accepted" leaves the plate at once, or never
 ## shows if it still waits (PIX-476: The Cheese Run's stayed 8 s after the
 ## cheese was handed over, « Quest complete » waiting behind it). Both
-## start with the quest's name after their tag.
+## start with the quest's name after their tag, the taken one's maybe with
+## the journal's key after it (Quests.accepted).
 func _quest_done(done: String) -> void:
 	var taken := Text.t("Quest accepted")
-	var quest := _untagged(done, tag_of(done, _tags())).get_slice(".", 0) + "."
+	var quest := _untagged(done, tag_of(done, _tags())).get_slice(".", 0)
 	for entry: Dictionary in _plate.showing + _plate.waiting:
 		var text: String = entry["text"]
-		if tag_of(text, [taken]) != "" and _untagged(text, taken).begins_with(quest):
+		var named := _untagged(text, taken)
+		if tag_of(text, [taken]) != "" and (named.begins_with(quest + ".") or named.begins_with(quest + " (")):
 			_plate.waiting.erase(entry)
 			if is_same(entry, _shown):
 				_take_down()

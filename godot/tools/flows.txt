@@ -227,12 +227,14 @@ die-tent | --map town --town-tier 0 die --wait 1.5 | map=town cell=\(44, 27\) ni
 saves | saves | open=saves_screen | save screen
 # A hero's first word with Maren after the night is her tin (PIX-253):
 # in the Hamlet her house stands again and she says it short, two lines.
-talk | --map town talk --keys e,e | open=none letters=4 delivered=0 | town story
+# The plate after it is one short line, five words and the journal's key,
+# in English and French (PIX-471: it was four lines over the village).
+talk | --map town talk --keys e,e | open=none letters=4 delivered=0 plate=\S+ \S+ \S+ \S+ \S+ \(\S+\)\. | town story
 # A conversation left with Esc, a real key press (PIX-131).
 leave | --map town talk --keys e,esc | open=none | town story
 # In the Ashes she digs in front of her house: the tin, its five lines,
 # and four letters in the pack; one handed to Old Wenna in Saltmere.
-tin | --map town --town-tier 0 talk --keys e,e,e,e,e | open=none letters=4 delivered=0 | town story
+tin | --map town --town-tier 0 talk --keys e,e,e,e,e | open=none letters=4 delivered=0 plate=\S+ \S+ \S+ \S+ \S+ \(\S+\)\. | town story
 letter | --map saltmere --ready letter_wenna --talk-to saltmere_wenna --keys e,e,e | open=none letters=0 delivered=1 | story quest
 # The courier's satchel (PIX-253 step 2): the journal's Letters page reads
 # the two delivered and keeps the rest sealed; a chapter's card as the
