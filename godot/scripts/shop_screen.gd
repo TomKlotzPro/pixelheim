@@ -50,6 +50,10 @@ var start_tab := ""
 ## shop's own greeting.
 var greeting := ""
 var selected := 0
+## No row chosen yet, as the counter opens (PIX-486): the first E, or up or
+## down, only chooses one, as a question's answers wait (PIX-215), so the E
+## that read a talk at any pace buys nothing.
+var resting := true
 ## Where each tab's choice stood: Buy and Sell keep theirs across A/D.
 var _chosen := {}
 var rows: Array[Dictionary] = []
@@ -260,6 +264,10 @@ func _command(event: InputEvent) -> Callable:
 	var command := Layout.paging(about, event)
 	if command.is_valid():
 		return command
+	if resting:
+		for action: String in ["move_up", "move_down", "interact"]:
+			if event.is_action_pressed(action):
+				return _select.bind(selected)
 	if event.is_action_pressed("move_left"):
 		command = _switch.bind(tab - 1)
 	elif event.is_action_pressed("move_right"):
@@ -313,6 +321,7 @@ func _switch(index: int) -> void:
 	_chosen[tabs[tab]] = selected
 	tab = wrapi(index, 0, tabs.size())
 	selected = int(_chosen.get(tabs[tab], 0))
+	resting = false
 	about.scroll_vertical = 0
 	amount = 0
 	asking_junk = false
@@ -344,6 +353,7 @@ func _select(index: int) -> void:
 	if rows.is_empty():
 		return
 	selected = clampi(index, 0, rows.size() - 1)
+	resting = false
 	about.scroll_vertical = 0
 	amount = 0
 	asking_junk = false
@@ -573,11 +583,12 @@ func _refresh() -> void:
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))
 	# The chosen tab's list, and at Buy and Sell the other beside it.
 	var side := 1 if tabs[tab] == "Sell" else 0
-	_fill(side, tabs[tab], rows, selected)
+	_fill(side, tabs[tab], rows, -1 if resting else selected)
 	if _paired():
 		var other: String = PAIRED[1 - side]
 		_fill(1 - side, other, _rows_for(other), -1)
-	_show(rows[selected] if not rows.is_empty() else {})
+	# No row chosen yet (PIX-486): the card says so, not a blank page.
+	_show({} if rows.is_empty() else {"detail": Text.t("Choose something to see what it is.")} if resting else rows[selected])
 	if not rows.is_empty():
 		# Deferred until layout. Old rows leave the list at once on refresh, so
 		# looking the row up by index then always finds the current one.
@@ -721,7 +732,7 @@ func _show(row: Dictionary) -> void:
 	var item_id: String = row.get("item_id", "")
 	var icon: String = row.get("icon", "")
 	var piece: Dictionary = row.get("piece", {})
-	card_head.visible = paired and not row.is_empty()
+	card_head.visible = paired and row.has("label")
 	card_icon.texture = ItemIcons.texture(icon) if icon != "" else null
 	card_icon.visible = icon != ""
 	card_name.text = String(row.get("label", ""))
@@ -763,7 +774,7 @@ func _show(row: Dictionary) -> void:
 				_coins(after_row, "Gold after", gold - sum if buying else gold + sum, UiStyle.INK)
 		picked.text = "%d / %d" % [amount, _stack_count()]
 	detail.visible = detail.text != ""
-	act_button.visible = not row.is_empty()
+	act_button.visible = row.has("label")
 	var verb: String = Text.t(row.get("verb", ""))
 	if amount > 0:
 		verb = Text.t("Sell %d") % amount

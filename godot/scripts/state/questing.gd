@@ -75,8 +75,10 @@ func board_floors() -> Array:
 
 
 ## A conversation closed: recruits answer (resolveSettler), then the quest
-## hooks (PIX-125) get their turn through dialogue_closed.
-func finish_dialogue(npc_id: String) -> void:
+## hooks (PIX-125) get their turn through dialogue_closed. A talk left
+## before its end (`heard` false: Esc, a step away) takes no new quest
+## (PIX-486): the giver's ask is its last line, and still waits.
+func finish_dialogue(npc_id: String, heard := true) -> void:
 	# On the night of the fire, talking is the night's next step (PIX-152).
 	if owner.progression.prologue != Prologue.DONE:
 		_prologue_talk(npc_id)
@@ -93,9 +95,14 @@ func finish_dialogue(npc_id: String) -> void:
 	# The first word with Maren after the night is her tin (PIX-253): the
 	# letters, and nothing else asked or handed in that time. Once the four
 	# keepsakes are home, her confession gives the fifth (step 8).
-	var said := open_tin() if npc_id == "elder" else ""
-	if said == "" and npc_id == "elder":
-		said = hear_out()
+	# Left before its end (Esc), the tin stays shut and her confession untold:
+	# the next word with her is the same one (PIX-486).
+	# What is ready for her is still handed in.
+	var said := ""
+	if npc_id == "elder" and heard:
+		said = open_tin()
+		if said == "":
+			said = hear_out()
 	# A letter carried to this villager is theirs as the talk ends; then a
 	# piece of the Post's for them (PIX-320).
 	if said == "":
@@ -111,9 +118,9 @@ func finish_dialogue(npc_id: String) -> void:
 	# it after their service.
 	var text := owner.holdings.resolve_settler(npc_id)
 	if text == "":
-		text = resolve_quests(npc_id)
+		text = resolve_quests(npc_id, heard)
 	elif owner.holdings.is_settled(npc_id) and Quests.awaits_word(npc_id, owner.progression.quests, owner.pack.items, quest_open):
-		text += " " + resolve_quests(npc_id)
+		text = (text + " " + resolve_quests(npc_id, heard)).strip_edges()
 	owner.dialogue_closed.emit(npc_id)
 	if text != "":
 		owner.message.emit(text)
@@ -122,14 +129,14 @@ func finish_dialogue(npc_id: String) -> void:
 ## Closing a conversation with a giver (resolveQuests): accept their first
 ## untaken quest, or turn in a finished one (deliveries leave the pack), or
 ## say how far along it stands. "" when they give no open quest.
-func resolve_quests(giver_id: String) -> String:
+func resolve_quests(giver_id: String, take := true) -> String:
 	var entries := owner.progression.quests
 	for quest: Dictionary in Quests.for_giver(giver_id):
 		var entry: Dictionary = entries.get(quest["id"], {})
 		if entry.get("done", false):
 			continue
 		# A side quest waits for the story to reach it (PIX-171).
-		if entry.is_empty() and not quest_open(quest):
+		if entry.is_empty() and not (take and quest_open(quest)):
 			return ""
 		if entry.is_empty():
 			# A hunt whose quarry already fell counts at once (PIX-165).

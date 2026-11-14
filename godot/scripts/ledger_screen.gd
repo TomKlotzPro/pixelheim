@@ -19,6 +19,10 @@ const NOTE_SHARE := 0.45
 
 var rows: Array[Dictionary] = []
 var selected := 0
+## No row chosen yet, as it opens (PIX-486): the first E, or up or down, only
+## chooses one, as a question's answers wait (PIX-215), so the E that read a
+## talk at any pace funds, banks and answers nothing.
+var resting := true
 var list: VBoxContainer
 var scroll: ScrollContainer
 var info: Label
@@ -132,7 +136,11 @@ func _command(event: InputEvent) -> Callable:
 	var command := Layout.paging(info_scroll, event)
 	if command.is_valid():
 		return command
-	if event.is_action_pressed("move_up"):
+	if resting:
+		for action: String in ["move_up", "move_down", "interact"]:
+			if event.is_action_pressed(action):
+				command = _select.bind(selected)
+	elif event.is_action_pressed("move_up"):
 		command = _select.bind(selected - 1)
 	elif event.is_action_pressed("move_down"):
 		command = _select.bind(selected + 1)
@@ -145,6 +153,7 @@ func _select(index: int) -> void:
 	if rows.is_empty():
 		return
 	selected = wrapi(index, 0, rows.size())
+	resting = false
 	_refresh()
 
 
@@ -190,7 +199,7 @@ func _refresh() -> void:
 
 func _row(index: int) -> Control:
 	var row: Dictionary = rows[index]
-	var chosen := index == selected
+	var chosen := index == selected and not resting
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", UiStyle.box(
 		UiStyle.CARD if chosen else Color(UiStyle.CARD, 0.5), UiStyle.LAMP if chosen else UiStyle.RIM, 10

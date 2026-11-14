@@ -220,7 +220,13 @@ func _unhandled_input(event: InputEvent) -> void:
 				break
 	if command.is_valid():
 		get_viewport().set_input_as_handled()
+		# The E that ended a talk, pressed again at once, opens nothing
+		# (PIX-486); and a screen E opens takes no E for a moment.
+		if command == interaction.interact and Screen.hushed(event):
+			return
 		command.call()
+		if command == interaction.interact and Screen.holds() > 0:
+			Screen.hush()
 
 func _process(delta: float) -> void:
 	camera_rig.update(delta)

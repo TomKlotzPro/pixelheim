@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.367.0",
+      "date": "2026-11-13",
+      "codename": "No Sale by Accident",
+      "notes": [
+        "The E that ends a talk never buys: after a talk, E waits a moment before it acts at a counter",
+        "Leaving a talk with Esc takes no quest, and the giver asks again next time",
+        "Sela asks before she rents you a night in her tent"
+      ]
+    },
+    {
       "version": "0.366.0",
       "date": "2026-11-13",
       "codename": "Dry Feet",

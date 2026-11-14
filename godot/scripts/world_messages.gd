@@ -289,6 +289,25 @@ func flash(text: String) -> void:
 	update()
 
 
+## A question E must answer again ("press E again", PIX-486): on the plate
+## at once and for its whole reading time, ahead of what shows, which goes
+## back to wait its turn in full. Queued behind "Quest accepted" after
+## Sela's talk, the price showed after the E that paid it.
+func ask(text: String) -> void:
+	if text == _message_now:
+		return
+	if _message_now != "":
+		_plate.gone(_shown)
+		_plate.waiting.push_front(_shown)
+	_step_aside()
+	_shown = _plate.add(text)
+	_plate.waiting.erase(_shown)
+	_plate.showing.append(_shown)
+	_show_message(_shown["text"])
+	# Read to its end, as a tagged one is: nothing waiting cuts it short.
+	_message_tagged = true
+
+
 func _tags() -> Array:
 	return MESSAGE_TAGS.map(func(known: String) -> String: return Text.t(known))
 

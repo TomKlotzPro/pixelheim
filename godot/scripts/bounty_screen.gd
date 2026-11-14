@@ -8,6 +8,13 @@ extends "res://scripts/ledger_screen.gd"
 ## mountain's floors posted some too, before they left play.
 
 
+## E here only says where a lair is: the first notice is chosen as it
+## opens, its tale on the card (PIX-486).
+func _open() -> void:
+	resting = false
+	super()
+
+
 func _title() -> String:
 	return "Bounties"
 

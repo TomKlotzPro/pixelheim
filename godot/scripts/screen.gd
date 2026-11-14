@@ -32,6 +32,12 @@ static var _asides := 0
 static var _hud_layer: CanvasLayer
 static var _hud_showed := true
 
+## How long E does nothing once a talk ends or the world's E opens a screen
+## (PIX-486), in seconds, and the physics tick that wait ends on. A hand
+## turning a talk's pages with E went on into the counter and bought bread.
+const SETTLE := 0.4
+static var _quiet_until := 0
+
 ## Actions besides Esc and the menu key that close this screen (its own key:
 ## I closes the pack).
 var closing_actions: Array[StringName] = []
@@ -74,12 +80,38 @@ func _command(_event: InputEvent) -> Callable:
 func _unhandled_input(event: InputEvent) -> void:
 	if not on_top():
 		return
+	if not _reads_at_once() and hushed(event):
+		get_viewport().set_input_as_handled()
+		return
 	var command := _command(event)
 	if not command.is_valid() and _closes_on(event):
 		command = close
 	if command.is_valid():
 		get_viewport().set_input_as_handled()
 		command.call()
+
+
+## E, and the keys that stand in for it, do nothing for SETTLE from now.
+static func hush() -> void:
+	_quiet_until = Engine.get_physics_frames() + roundi(SETTLE * Engine.physics_ticks_per_second)
+
+
+## Whether `event` is an E pressed too soon after `hush` to mean anything.
+## Each one starts the wait again, so E pressed over and over never acts;
+## a key held sends no second press.
+static func hushed(event: InputEvent) -> bool:
+	if Engine.get_physics_frames() >= _quiet_until:
+		return false
+	if not (event.is_action_pressed("interact") or event.is_action_pressed("ui_accept") or event.is_action_pressed("attack")):
+		return false
+	hush()
+	return true
+
+
+## Whether E acts here even right after `hush`: a conversation's pages turn
+## as fast as they're read.
+func _reads_at_once() -> bool:
+	return false
 
 
 func _closes_on(event: InputEvent) -> bool:

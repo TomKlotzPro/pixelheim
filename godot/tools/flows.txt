@@ -129,7 +129,7 @@ craft | --map town_alchemist shop --tab 2 | map=town_alchemist | rooms trade scr
 # three pelts sold, the counter asking how many; all the junk sold at once
 # (herbs past what crafting keeps, the old boots, the rusty sword under an
 # iron one); three pelts sold whole (Z) and bought back at what they fetched.
-shop-buy | --map town_shop shop --keys e | map=town_shop open=shop_screen gold=496 | rooms trade screen
+shop-buy | --map town_shop shop --keys e,e | map=town_shop open=shop_screen gold=496 | rooms trade screen
 shop-sell-stack | --map town_shop shop --tab 1 --keys s,s,s,s,e,d,d,e | map=town_shop open=shop_screen gold=566 | rooms trade screen
 shop-sell-junk | --map town_shop --wear iron_sword shop --tab 1 --keys e,e | map=town_shop open=shop_screen gold=521 | rooms trade screen
 shop-buy-back | --map town_shop shop --tab 1 --keys s,s,s,s,z,e,a,e | map=town_shop open=shop_screen gold=500 | rooms trade screen
@@ -242,6 +242,27 @@ saves | saves | open=saves_screen | save screen
 talk | --map town talk --keys e,e | open=none letters=4 delivered=0 plate=\S+ \S+ \S+ \S+ \S+ \(\S+\)\. | town story
 # A conversation left with Esc, a real key press (PIX-131).
 leave | --map town talk --keys e,esc | open=none | town story
+# Nothing bought or taken by accident (PIX-486). E pressed on past the end
+# of Vex's talk (three lines, the quest taken) opens no counter and buys no
+# potion; after a pause it opens it with no row chosen, the next only
+# chooses one, and the one after buys. Her talk left with Esc on its first
+# line takes no quest: she still asks. At Odo's, by real key presses: E
+# twice at once opens his counter and no more, E at a reader's pace buys no
+# bread, and the third E does.
+talk-no-buy | --map town_alchemist talk --keys e,e,e,e,e,e --lang en | open=none gold=30 plate=Quest accepted | rooms quest trade screen
+talk-then-read | --map town_alchemist talk --keys e,e,e,wait,e,wait,e | open=shop_screen gold=30 | rooms quest trade screen
+talk-then-buy | --map town_alchemist talk --keys e,e,e,wait,e,wait,e,wait,e | open=shop_screen gold=7 | rooms quest trade screen
+counter-mashed | --map town_shop --at 8,3 --keys w,e,e | open=shop_screen gold=30 | rooms trade screen
+counter-read | --map town_shop --at 8,3 --keys w,e,wait,e | open=shop_screen gold=30 | rooms trade screen
+counter-buy | --map town_shop --at 8,3 --keys w,e,wait,e,wait,e | open=shop_screen gold=26 | rooms trade screen
+# Sela's tent on the burnt square asks before it sells a night: after her
+# talk (the slimes taken), an E at a reader's pace costs nothing and the
+# price is on the plate at once, ahead of "Quest accepted"; the next one
+# sleeps. And Maren's tin left with Esc stays shut: no letters taken.
+tent-asks | --map town --town-tier 0 --at 46,28 --keys w,e,e,e,e,wait,e --lang en | open=none gold=30 next=slimes plate=A night in the tent.* | town trade quest
+tent-sleeps | --map town --town-tier 0 --at 46,28 --keys w,e,e,e,e,wait,e,wait,e --lang en | open=none gold=20 quill=[0-9]/[0-9]+ slept plate=(?!A night in the tent).* | town trade quest
+tin-left | --map town --town-tier 0 talk --keys e,esc | open=none next=tin | town story
+talk-left | --map town_alchemist talk --keys esc,wait,e | open=dialogue_box | rooms quest trade screen
 # In the Ashes she digs in front of her house: the tin, its five lines,
 # and four letters in the pack; one handed to Old Wenna in Saltmere.
 tin | --map town --town-tier 0 talk --keys e,e,e,e,e | open=none letters=4 delivered=0 plate=\S+ \S+ \S+ \S+ \S+ \(\S+\)\. | town story
@@ -319,7 +340,7 @@ word-counter-before | --map saltmere --at 26,18 --keys w,e --lang en | open=shop
 word-counter | --map saltmere --at 26,18 --routes saltmere:7 --keys w,e --lang en | hub=saltmere:3.* open=shop_screen said=Lamp oil by the barrel.* | trade story
 word-counter-fr | --map saltmere --at 26,18 --routes saltmere:7 --keys w,e --lang fr | open=shop_screen said=De l'huile à lampe.* | trade story lang
 word-counter-longest-fr | --map frostgate --at 37,42 --routes frostgate:7 --keys w,e overflow --lang fr | open=shop_screen said=Un refuge avec un feu.* overflow=0 | trade story lang
-word-since | --ready letter_pell --map blackiron --at 20,19 --talk-to mines_pell --keys e,e,e,e,w,e --lang en | open=dialogue_box delivered=1 said=Since your letter.* | story quest
+word-since | --ready letter_pell --map blackiron --at 20,19 --talk-to mines_pell --keys e,e,e,e,w,wait,e --lang en | open=dialogue_box delivered=1 said=Since your letter.* | story quest
 # The prologue's road out of the village (PIX-164).
 road | --prologue 1 | map=overworld cell=\(48, 34\) | story travel
 # A dodge roll with Shift (PIX-129).
@@ -431,7 +452,7 @@ water-mire | --map mirefen --at 21,25 | map=mirefen water=mire still | field
 bounty | --map town --at 43,22 --hunted tidecaller,seam_warden --keys w,e | open=bounty_screen | town quest screen
 # Morvax's choice asked outright (PIX-253 step 10; the old throne's,
 # PIX-157): "Stay with them." chosen, and the lanterns ending's tour.
-choice | --map town choice --keys s,e --wait 0.5 | open=reveal_screen ending=stay | story screen
+choice | --map town choice --keys s,s,e --wait 0.5 | open=reveal_screen ending=stay | story screen
 # Coming Home (PIX-253 step 10): the morning after the Night of Bells
 # Morvax waits by the fountain with his question; his words, then the
 # choice; "Come home." and the festival ending's tour, Morvax on his bench
@@ -441,8 +462,11 @@ choice | --map town choice --keys s,e --wait 0.5 | open=reveal_screen ending=sta
 # on festival days on his bench.
 home-waits | --map town --bells 3 daybreak --keys esc,esc --wait 0.5 | map=town bells=done morvax=\(43, 24\) next=morvax_choice | story town
 home-ask | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e | map=town open=throne_screen next=morvax_choice | story town screen
-come-home | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,e --wait 0.5 | open=reveal_screen ending=home morvax=\(43, 24\) bench | story town screen
-stay-up | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,s,e --wait 0.5 | open=reveal_screen ending=stay | story town screen
+# E pressed on at a reader's pace answers nothing: only up or down chooses
+# an answer (PIX-486).
+home-ask-e | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,wait,e,wait,e | map=town open=throne_screen next=morvax_choice | story town screen
+come-home | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,wait,s,e --wait 0.5 | open=reveal_screen ending=home morvax=\(43, 24\) bench | story town screen
+stay-up | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,wait,s,s,e --wait 0.5 | open=reveal_screen ending=stay | story town screen
 credits | --map town --story ending_home credits --wait 1 --lang en | scene=ending_home credits=Thank you for staying\. | story screen
 morvax-bench | --map town --seen ending_home --wait 0.3 | map=town ending=home morvax=\(43, 24\) bench | story town
 morvax-forge | --map morvax_forge --seen ending_stay --wait 0.3 | map=morvax_forge ending=stay morvax=\(8, 4\) | story rooms

@@ -29,8 +29,20 @@ func _verb() -> String:
 	return Text.t("answer")
 
 
+## What an answer brings is said once one is chosen: as it opens, none is
+## (PIX-486: "He takes a room at the inn" read as already decided).
 func _info() -> String:
-	return "\n\n".join([String(Homecoming.data()["waiting"]), String(rows[selected].get("detail", ""))])
+	var waiting := String(Homecoming.data()["waiting"])
+	return waiting if resting else "\n\n".join([waiting, String(rows[selected].get("detail", ""))])
+
+
+## An ending can't be undone: E answers nothing until up or down has chosen
+## an answer, as a talk's question waits (PIX-215), where a ledger's first E
+## chooses its first row.
+func _command(event: InputEvent) -> Callable:
+	if resting and event.is_action_pressed("interact"):
+		return Callable()
+	return super(event)
 
 
 func _rows() -> Array[Dictionary]:

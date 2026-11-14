@@ -315,6 +315,9 @@ func test_the_halls_card_starts_on_the_chosen_work() -> void:
 	var screen: Screen = TownHallScreen.new()
 	add_child(screen)
 	await wait_process_frames(2)
+	# It opens with no row chosen (PIX-486): the village's own word first.
+	assert_true(screen._chosen_project().is_empty(), "none chosen as it opens")
+	screen._select(0)
 	assert_false(screen._chosen_project().is_empty(), "a work is chosen")
 	assert_true(screen.info.text.begins_with(String(screen._chosen_project().get("name", "?"))), screen.info.text)
 	screen._select(1)

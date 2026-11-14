@@ -76,6 +76,10 @@ func _keys(flags: HarnessFlags) -> void:
 	# A pad's buttons by name (PIX-388: Back opens the dock's menu, the D-pad steers it).
 	var pad := {"back": JOY_BUTTON_BACK, "pad_up": JOY_BUTTON_DPAD_UP, "pad_down": JOY_BUTTON_DPAD_DOWN}
 	for key: String in flags.list("--keys"):
+		# A hand's pause: past the moment E does nothing after a talk (PIX-486).
+		if key == "wait":
+			await get_tree().create_timer(Screen.SETTLE + 0.1).timeout
+			continue
 		await _tap(KEY_NONE if pad.has(key) else codes[key], pad.get(key, JOY_BUTTON_INVALID))
 	await get_tree().create_timer(0.2).timeout
 
