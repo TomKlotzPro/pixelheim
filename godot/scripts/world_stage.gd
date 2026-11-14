@@ -136,6 +136,7 @@ func arrive(next: MapData) -> void:
 				var foes: Foes = world.foes
 				var scavenger := foes.spawn_enemy(at["monsterId"], Vector2i(at["x"], at["y"]), "forest", "", false, true)
 				scavenger.set_meta("prologue", true)
+				scavenger.plain()
 				# It keeps to its meal until the hero walks up or strikes:
 				# the night's first fight is the hero's to start.
 				scavenger.feeding = true
@@ -165,6 +166,7 @@ func prologue_wave() -> void:
 		var foe := foes.spawn_enemy(wave["monsterId"], cell, "", "", bool(wave.get("elite", false)), false, cell, int(wave["level"]) - int(kind["level"]))
 		foe.fighter["name"] = wave["name"]
 		foe.set_meta("prologue_wave", true)
+		foe.plain()
 		world.fx.appear(foe)
 
 

@@ -37,6 +37,9 @@ var firsts: Array[String] = []
 ## Every kind met in a fight (PIX-188: the codex by species, not family),
 ## with the highest level it was met at; saved once there is one.
 var met := {}
+## The kinds whose trick the hero has seen (PIX-489: the Bestiary says it);
+## saved once there is one.
+var tricks: Array[String] = []
 ## item id -> how many the hero has made at a station (PIX-231), so a
 ## crafting quest taken after the work counts it; saved once there is one.
 var crafted := {}
@@ -56,6 +59,7 @@ static func from_dict(data: Dictionary) -> ProgressionState:
 	progress.deeds.assign(data.get("deeds", []))
 	progress.firsts.assign(data.get("firsts", []))
 	progress.met = data.get("met", {}).duplicate()
+	progress.tricks.assign(data.get("tricks", []))
 	progress.crafted = data.get("crafted", {}).duplicate()
 	progress.tracked = String(data.get("tracked", ""))
 	var night: Dictionary = data["bells"] if data.get("bells") is Dictionary else {}
@@ -81,6 +85,8 @@ func write_into(state: Dictionary) -> void:
 		state["firsts"] = firsts.duplicate()
 	if not met.is_empty():
 		state["met"] = met.duplicate()
+	if not tricks.is_empty():
+		state["tricks"] = tricks.duplicate()
 	if not crafted.is_empty():
 		state["crafted"] = crafted.duplicate()
 	if tracked != "":

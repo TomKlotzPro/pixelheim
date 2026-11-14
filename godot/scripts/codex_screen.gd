@@ -2,8 +2,9 @@ extends Screen
 ## areas: screen
 ## The codex (Codex.tsx): the trophy case. Masteries shows each monster
 ## family's kills, the Slayer tier earned and what the next teaches; the
-## Bestiary shows every monster whose family the hero has met, and of the
-## rest only where they live. A/D switch tabs, B or Esc closes. The world
+## Bestiary shows every monster whose family the hero has met (and, once
+## seen, its kind's trick in a line where its family stood: PIX-489), and of the rest only where
+## they live. A/D switch tabs, B or Esc closes. The world
 ## holds still.
 
 const TABS := ["Masteries", "Bestiary"]
@@ -135,7 +136,12 @@ func _bestiary() -> void:
 			)
 			numbers.custom_minimum_size = Vector2(360, 0)
 			line.add_child(numbers)
-			line.add_child(UiStyle.label(Bestiary.family_names()[family], 14, UiStyle.FADED))
+			# Its trick in a line, once the hero has seen it (PIX-489), where its
+			# family stood: the row has room for one, and Masteries has the families.
+			if monster_id in GameState.progression.tricks:
+				line.add_child(UiStyle.label(Tricks.says(monster_id), 14, UiStyle.INK))
+			else:
+				line.add_child(UiStyle.label(Bestiary.family_names()[family], 14, UiStyle.FADED))
 		else:
 			# Where it lives, not one sentence down the page (PIX-456); a foe of
 			# no pack (a boss) keeps its secret.

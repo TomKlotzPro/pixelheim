@@ -120,6 +120,8 @@ func step_inventory() -> void:
 func step_codex() -> void:
 	# A record to read: twelve beasts (Slayer I) and a few undead.
 	GameState.hero.mastery = {"beasts": 12, "undead": 3}
+	# Their tricks seen (PIX-489): the bestiary's longest rows.
+	GameState.progression.tricks.assign(["slime", "wolf", "goblin", "skeleton", "ghost", "crab"])
 	var codex := preload("res://scripts/codex_screen.gd").new()
 	codex.tab = 1 if flags.has("bestiary") else 0
 	world.add_child(codex)

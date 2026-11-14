@@ -5,7 +5,8 @@ extends CharacterBody2D
 ## that strays too far, walking home to heal (PIX-142). One far below the
 ## hero runs from it instead (PIX-251), and turns only when cornered or
 ## struck. One whose pack sleeps after dark lies still by its camp's fire
-## until the hero comes close or strikes (PIX-252). Its numbers are the web
+## until the hero comes close or strikes (PIX-252). Six common kinds have a
+## trick of their own (PIX-489: Tricks, trick_brain.gd). Its numbers are the web
 ## bestiary's (`fighter` from Bestiary.spawn): hits land through Bestiary's
 ## damage formulas, and its death pays out through
 ## GameState.spoils.defeat_monster (via the world). It wears the Puny sheet
@@ -157,6 +158,12 @@ var _ailment_row: Node2D
 var _ailing: Array[String] = []
 ## Its boss or elite brain, if it has one: what it tells a stun can break.
 var brain: Node
+## Its kind's own trick (PIX-489, trick_brain.gd), or null: it says where
+## the foe stands (stand), whether it may bite (may_bite), what a blow does
+## (takes, hurt) and what its fall is (falls, died).
+var trick: Node
+## Faded (a ghost's trick; a slime's half as it bursts out): no blow finds it.
+var faded := false
 ## PunyArt.monster spec, and the way it last faced.
 var art: Dictionary
 var facing := "down"
@@ -169,8 +176,9 @@ var _at_quarry := false
 ## Where it lives: wanders around it, gives up a chase too far from it.
 var home := Vector2.ZERO
 ## "idle" (at home), "alert" (the "!" wind-up), "chase", "homeward",
-## "flee" (running from a hero far above it, PIX-251), and for a boss
-## "cast" (standing still while its attack is told, PIX-150).
+## "flee" (running from a hero far above it, PIX-251), for a boss "cast"
+## (standing still while its attack is told, PIX-150), and "pile" (a
+## skeleton's bones, waiting to rise: PIX-489).
 var mode := "idle"
 var alert_left := 0.0
 ## Seconds until a told bite lands; negative while no bite is coming.
@@ -300,6 +308,9 @@ func _ready() -> void:
 	reset_physics_interpolation()
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	art = PunyArt.monster(fighter["id"])
+	# A slime's half (PIX-489): its kind's sheet at half its size.
+	if fighter.get("small", false):
+		art = PunyArt.small(art)
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = PunyArt.frames(art)
 	# How much bigger than its kind (drawn_size, PIX-314: whole sizes only):
@@ -356,6 +367,9 @@ func _ready() -> void:
 	elif not named.is_empty() or (fighter["elite"] and not Bestiary.elite_moves(Bestiary.family_of(fighter["id"])).is_empty()):
 		brain = preload("res://scripts/elite_brain.gd").new()
 		add_child(brain)
+	if not Tricks.of(fighter).is_empty():
+		trick = preload("res://scripts/trick_brain.gd").new()
+		add_child(trick)
 
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
@@ -445,7 +459,7 @@ func _physics_process(delta: float) -> void:
 	# A falling foe's tag goes with it (PIX-340: it stayed up over the body,
 	# and as the nearest kept the pack's living tags hidden).
 	if level_tag != null:
-		level_tag.visible = not dying and (hunting or health_bar.visible or Packs.within_notice(global_position, world.player.global_position))
+		level_tag.visible = not dying and mode != "pile" and (hunting or health_bar.visible or Packs.within_notice(global_position, world.player.global_position))
 		_show_ailments()
 	if dying:
 		return
@@ -478,7 +492,7 @@ func _physics_process(delta: float) -> void:
 				_give_up(true)
 			else:
 				_chase(aim, delta)
-		"cast":
+		"cast", "pile":
 			velocity = Vector2.ZERO
 		"homeward":
 			var back := home - global_position
@@ -519,6 +533,9 @@ func _physics_process(delta: float) -> void:
 	# between two (PIX-243).
 	if velocity.length() > 1:
 		facing = Gait.steer(facing, velocity)
+	# A trick's pose holds (PIX-489: the crab's claws up).
+	if trick != null and trick.posed():
+		return
 	# Let a bite or a hurt finish before walking resumes.
 	if sprite.is_playing() and not sprite.sprite_frames.get_animation_loop(sprite.animation):
 		return
@@ -978,6 +995,9 @@ func _chase(to_player: Vector2, delta: float) -> void:
 	if not shot.is_empty() and _shoots(to_player, delta):
 		return
 	var spot: Vector2 = world.foes.ring_spot(self)
+	# Its trick may stand it elsewhere (PIX-489: a wolf circling out of reach).
+	if trick != null:
+		spot = trick.stand(spot, to_player)
 	if spot != Vector2.INF:
 		# Its place in the ring round the hero (PIX-377), slowing onto it,
 		# and once there facing them.
@@ -993,7 +1013,7 @@ func _chase(to_player: Vector2, delta: float) -> void:
 		tell_left -= delta
 		if tell_left < 0:
 			_bite(to_player)
-	elif to_player.length() < bite_tell(to_player) and can_bite:
+	elif to_player.length() < bite_tell(to_player) and can_bite and (trick == null or trick.may_bite()):
 		_tell_bite(to_player)
 
 
@@ -1170,6 +1190,8 @@ func _hunts_wagon() -> bool:
 
 func _bite(to_player: Vector2) -> void:
 	if to_player.length() > bite_lands(to_player):
+		if trick != null:
+			trick.bit(false)
 		return
 	can_bite = false
 	Sound.play(Sound.voice_for(String(fighter["id"]), "attack", "foe_bite"))
@@ -1178,11 +1200,26 @@ func _bite(to_player: Vector2) -> void:
 	if _at_quarry:
 		get_tree().create_timer(CONTACT_COOLDOWN).timeout.connect(func() -> void: can_bite = true)
 		return
+	var before := GameState.hero.hp
 	world.player.take_hit(
 		Bestiary.monster_attack_damage(fighter, GameState.hero, GameState.pack, GameState.roll),
 		global_position, fighter.get("inflicts"), not called
 	)
+	# Whether it drew blood is its trick's to know (PIX-489: a goblin's snatch).
+	if trick != null:
+		trick.bit(GameState.hero.hp < before)
 	get_tree().create_timer(CONTACT_COOLDOWN).timeout.connect(func() -> void: can_bite = true)
+
+
+## Runs from the hero though it was fighting (PIX-489: a goblin with their
+## gold): the flight of a foe far below them, without the fright.
+func run_off() -> void:
+	drop_tell()
+	mode = "flee"
+	alert_left = 0.0
+	stuck_for = 0.0
+	_step = Vector2i.ZERO
+	_fled_from = NO_CELL
 
 
 ## Too far from home or behind, or far enough from a hero it ran from
@@ -1502,15 +1539,22 @@ func _shove(delta: float) -> Vector2:
 ## `crit` whether it was one; `infliction` is the hero's afflicting passive,
 ## if any; `blow` what it sounds like (PIX-411: the weapon's, a spell's).
 func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := false, blow := "hit_blade") -> void:
-	if dying:
+	if dying or faded:
 		return
 	# Struck in its sleep (PIX-252): up, and its pack with it, even if the
 	# blow is its last.
 	_wake()
+	var blocked := guarding
 	if guarding:
 		damage = maxi(1, roundi(damage * float(Bestiary.elite_moves("undead")["block"])))
+	elif trick != null:
+		# Its trick may turn the blow (PIX-489: a crab's shell, from the front).
+		var whole := damage
+		damage = trick.takes(damage, from)
+		blocked = damage < whole
+	if blocked:
 		world.fx.float_text(Text.t("blocked"), global_position + Vector2(0, -26), Color(0.7, 0.85, 1.0))
-	Sound.play("hit_blocked" if guarding else "hit_crit" if crit else blow)
+	Sound.play("hit_blocked" if blocked else "hit_crit" if crit else blow)
 	# Steel on armour throws sparks where the blow lands (PIX-225).
 	if Motes.sparks_off(String(fighter["id"])) and world.get("atmosphere") != null:
 		world.atmosphere.sparks(global_position + (from - global_position).normalized() * 6.0 + SPARK_LIFT)
@@ -1528,7 +1572,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	if fell:
 		Sound.play(Sound.of_family("kill", String(fighter["id"])))
 		Sound.play(Sound.voice_for(String(fighter["id"]), "death"))
-	elif not guarding:
+	elif not blocked:
 		Sound.play(Sound.voice_for(String(fighter["id"]), "hurt"))
 	# A named monster falls as a boss does (PIX-232), not just a boss.
 	if fell and Bestiary.fights_like_boss(fighter):
@@ -1550,21 +1594,25 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	# through its cleave, whose blow the bite's grace then took, so a hero
 	# swinging nonstop never met an elite's move); a stun breaks it
 	# (_interrupt).
-	if not dying and mode not in ["chase", "cast"]:
+	if not dying and mode not in ["chase", "cast", "pile"]:
 		if mode == "flee":
 			at_bay = true
-			fright_mark.visible = false
+			if fright_mark != null:
+				fright_mark.visible = false
 			_end_flinch()
 		mode = "chase"
 		if not hunting:
 			hunting = true
 			world.foes.on_enemy_noticed(self)
-	if not dying and ailments.inflict(infliction, GameState.roll):
+	# Nothing ails a pile of bones (PIX-489: poison would end it unseen).
+	if not dying and mode != "pile" and ailments.inflict(infliction, GameState.roll):
 		Sound.play("foe_afflicted")
 		# Said as it lands and only while this foe stands (PIX-476).
 		world.messages.log_now(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])], func() -> bool: return not dying)
 		if infliction["kind"] == "stun":
 			_interrupt()
+	if not dying and trick != null:
+		trick.hurt()
 
 
 ## A stun that took hold breaks what it was telling (PIX-440): its bite's or
@@ -1572,7 +1620,24 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 ## and it stands dazed for its turns, then chases again. The guard on stuns
 ## (Ailments.stun_guard) keeps this to one a window on a boss or an elite.
 func _interrupt() -> void:
-	var broke := tell_left >= 0.0 or aim_left >= 0.0
+	var broke := drop_tell()
+	if brain != null and brain.interrupt():
+		broke = true
+	if trick != null and trick.interrupt():
+		broke = true
+	# Its marks taken back, nothing will end its cast but this.
+	if mode == "cast":
+		mode = "chase"
+	if broke:
+		# In "dodged" and "blocked"'s blue: gold is lost on sand and straw.
+		world.fx.float_text(Text.t("Interrupted!"), global_position + Vector2(0, minf(-26.0, _over_head)), Color(0.75, 0.9, 1.0), true)
+
+
+## Its bite's or its shot's tell let go, the sprite back to its own shape;
+## true if one was being told. A stun's (_interrupt), and a trick's that
+## takes the foe out of its bite (PIX-489).
+func drop_tell() -> bool:
+	var told := tell_left >= 0.0 or aim_left >= 0.0
 	tell_left = -1.0
 	aim_left = -1.0
 	Telegraph.cancel(_tell_mark)
@@ -1582,14 +1647,15 @@ func _interrupt() -> void:
 		sprite.scale = _rest_scale
 		sprite.position = _rest_at
 		sprite.skew = 0.0
-	if brain != null and brain.interrupt():
-		broke = true
-	# Its marks taken back, nothing will end its cast but this.
-	if mode == "cast":
-		mode = "chase"
-	if broke:
-		# In "dodged" and "blocked"'s blue: gold is lost on sand and straw.
-		world.fx.float_text(Text.t("Interrupted!"), global_position + Vector2(0, minf(-26.0, _over_head)), Color(0.75, 0.9, 1.0), true)
+	return told
+
+
+## Fights as its kind did before it had a trick (PIX-489): the story's own
+## foes, staged to teach one thing (the Night of Ash's slime and hounds).
+func plain() -> void:
+	if trick != null:
+		trick.free()
+		trick = null
 
 
 ## A blow from someone else's hand (PIX-253 step 9: Ulla's old guard on the
@@ -1643,7 +1709,13 @@ func stand_down() -> void:
 
 
 func _die() -> void:
+	# Its trick may make this no death yet (PIX-489: a skeleton's bones), and
+	# has its say before the world pays out (a slime's halves, a goblin's loot).
+	if trick != null and trick.falls():
+		return
 	dying = true
+	if trick != null:
+		trick.died()
 	world.foes.on_enemy_died(self)
 	lie_down()
 

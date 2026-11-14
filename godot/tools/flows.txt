@@ -192,6 +192,22 @@ spoils | fight kill | floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* logged=0 | combat
 # where it fell, on one line, while the rest still stand (PIX-343: v0.256
 # held them to the fight's end).
 pack-tags | fight kill pack --foe goblin --wait 0.8 | tags=1 mobs=0 rising=[1-9] floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* | combat
+# Common foes come alive (PIX-489): six kinds each show a trick of their
+# own, and tricks= counts what they did. A slain slime bursts into two small
+# ones; a dire wolf darts in from its circle to bite, and falls to the blows
+# it meets there; a goblin whose bite lands snatches gold (2 of the 30
+# carried) and runs with it; a skeleton felled and left alone rises from its
+# bones, and one whose bones are struck is done; a ghost struck twice fades
+# out of reach and comes back; a crab lifts its claws, and an elite one does
+# too, besides its family's lunge.
+trick-slime | fight kill --foe slime --wait 1 | mobs=2 tricks=split:1 | combat
+trick-wolf | fight kill --foe wolf --wait 0.5 | mobs=0 tricks=dart:[0-9]+ | combat
+trick-goblin | fight hurt --foe goblin --wait 3 | mobs=1 gold=28 tricks=snatch:1 | combat
+trick-skeleton | fight slay --foe skeleton --wait 4 | mobs=1 tricks=pile:1,rose:1 | combat
+trick-bones | fight kill --foe skeleton --wait 0.5 | mobs=0 tricks=pile:1 | combat
+trick-ghost | fight kill --foe ghost --wait 0.5 | mobs=0 tricks=fade:[0-9]+ | combat
+trick-crab | fight kill --foe crab --wait 0.5 | mobs=0 tricks=shell:[0-9]+ | combat
+trick-elite | fight kill elite --foe crab --wait 0.5 | mobs=0 tricks=shell:[0-9]+ | combat
 # Each skill plays its own strips, the bow its arrow (PIX-396): a mage's
 # Fireball flies a fireball that bursts on the foe, a cleric's Mend rises
 # round her, a necromancer's Grave Chill an ice arrow and crystals, and a

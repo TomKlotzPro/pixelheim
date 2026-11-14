@@ -332,6 +332,27 @@ func fish(spot_id: String) -> Dictionary:
 	return {"message": "", "lines": lines, "gains": gains}
 
 
+## A foe of `level` snatches gold (PIX-489, Tricks.snatched): what it took,
+## out of the purse; nothing on the night of the fire.
+func snatch(level: int, trick: Dictionary) -> int:
+	if owner.progression.prologue != Prologue.DONE:
+		return 0
+	var taken := Tricks.snatched(owner.pack.gold, level, trick)
+	if taken > 0:
+		owner.pack.gold -= taken
+		owner.gold_changed.emit(owner.pack.gold)
+		owner.mark_dirty()
+	return taken
+
+
+## A kind's trick seen for the first time (PIX-489): the Bestiary says it
+## from now on.
+func saw_trick(monster_id: String) -> void:
+	if monster_id not in owner.progression.tricks:
+		owner.progression.tricks.append(monster_id)
+		owner.mark_dirty()
+
+
 ## The gold a fall costs now: a tenth of what's carried (economy.json
 ## deathGoldShare), but never less than a night at the inn (PIX-206: a fall
 ## is no cheaper heal than a bed), as far as the purse goes; nothing on the

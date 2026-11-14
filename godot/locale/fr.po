@@ -8341,6 +8341,10 @@ msgid "Berserk costs only 4 HP."
 msgstr "Furie ne coûte que 4 PV."
 
 #: assets/data/combat.json
+msgid "Bites and runs. A pack takes turns."
+msgstr "Mord et file. La meute se relaie."
+
+#: assets/data/combat.json
 msgid "Black Harvest"
 msgstr "Moisson noire"
 
@@ -8419,6 +8423,10 @@ msgstr "Braises"
 #: assets/data/combat.json
 msgid "Clarity"
 msgstr "Clarté"
+
+#: assets/data/combat.json
+msgid "Claws up: strike its side or back."
+msgstr "Pinces levées : frappez de côté ou de dos."
 
 #: assets/data/combat.json
 msgid "Cleave"
@@ -8861,6 +8869,10 @@ msgid "It knows the way."
 msgstr "Elle connaît le chemin."
 
 #: assets/data/combat.json
+msgid "Its bite snatches gold. Slay it for more."
+msgstr "Sa morsure vole de l'or. Mort, il rend plus."
+
+#: assets/data/combat.json
 msgid "Judgement II"
 msgstr "Jugement II"
 
@@ -9273,6 +9285,10 @@ msgid "Rips the life from a foe: heavy INT damage, and half of it heals you."
 msgstr "Arrache la vie d'un ennemi : lourds dégâts d'INT, dont la moitié vous soigne."
 
 #: assets/data/combat.json
+msgid "Rises once. Strike the bones."
+msgstr "Se relève une fois. Frappez les os."
+
+#: assets/data/combat.json
 msgid "Rot given ambition."
 msgstr "La pourriture prend de l'ambition."
 
@@ -9405,6 +9421,10 @@ msgid "Spellweaver"
 msgstr "Tisse-sort"
 
 #: assets/data/combat.json
+msgid "Splits in two when slain."
+msgstr "Se scinde en deux à sa mort."
+
+#: assets/data/combat.json
 msgid "Stalwart"
 msgstr "Inflexible"
 
@@ -9439,6 +9459,10 @@ msgstr "Fouet d'orage"
 #: assets/data/combat.json
 msgid "Strike a vital spot."
 msgstr "Frappe un point vital."
+
+#: assets/data/combat.json
+msgid "Struck twice, it fades away."
+msgstr "Touché deux fois, il s'efface."
 
 #: assets/data/combat.json
 msgid "Sun Incarnate"
@@ -19592,6 +19616,10 @@ msgstr "Hilda trempe la pièce dans l'eau noire des profondeurs : +1 %s."
 msgid "Hilda reforges it: %s."
 msgstr "Hilda reforge la pièce : %s."
 
+#: scripts/state/tricks.gd
+msgid "Small %s"
+msgstr "Petite %s"
+
 #: scripts/state/upkeep.gd
 msgid " Restored %s."
 msgstr " Vous récupérez %s."
@@ -19807,6 +19835,10 @@ msgstr "Chantiers du village"
 #: scripts/town_hall_screen.gd
 msgid "When it's done: %s."
 msgstr "Une fois terminé : %s."
+
+#: scripts/trick_brain.gd
+msgid "-%d gold"
+msgstr "-%d or"
 
 #: scripts/ui_style.gd
 msgid "Arrows"

@@ -8341,6 +8341,10 @@ msgid "Berserk costs only 4 HP."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Bites and runs. A pack takes turns."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Black Harvest"
 msgstr ""
 
@@ -8418,6 +8422,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Clarity"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Claws up: strike its side or back."
 msgstr ""
 
 #: assets/data/combat.json
@@ -8861,6 +8869,10 @@ msgid "It knows the way."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Its bite snatches gold. Slay it for more."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Judgement II"
 msgstr ""
 
@@ -9273,6 +9285,10 @@ msgid "Rips the life from a foe: heavy INT damage, and half of it heals you."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Rises once. Strike the bones."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Rot given ambition."
 msgstr ""
 
@@ -9405,6 +9421,10 @@ msgid "Spellweaver"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Splits in two when slain."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Stalwart"
 msgstr ""
 
@@ -9438,6 +9458,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Strike a vital spot."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Struck twice, it fades away."
 msgstr ""
 
 #: assets/data/combat.json
@@ -19592,6 +19616,10 @@ msgstr ""
 msgid "Hilda reforges it: %s."
 msgstr ""
 
+#: scripts/state/tricks.gd
+msgid "Small %s"
+msgstr ""
+
 #: scripts/state/upkeep.gd
 msgid " Restored %s."
 msgstr ""
@@ -19806,6 +19834,10 @@ msgstr ""
 
 #: scripts/town_hall_screen.gd
 msgid "When it's done: %s."
+msgstr ""
+
+#: scripts/trick_brain.gd
+msgid "-%d gold"
 msgstr ""
 
 #: scripts/ui_style.gd

@@ -1066,6 +1066,13 @@ func field_tracked() -> String:
 	return tracked if tracked != "" else "none"
 
 
+func field_tricks() -> String:
+	var shown: Dictionary = world.foes.tricks_shown
+	var kinds := shown.keys()
+	kinds.sort()
+	return ",".join(kinds.map(func(kind: String) -> String: return "%s:%d" % [kind, shown[kind]]))
+
+
 func field_turns() -> String:
 	return noted("turns")
 
