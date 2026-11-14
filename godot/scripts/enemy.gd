@@ -1572,7 +1572,8 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	if fell:
 		Sound.play(Sound.of_family("kill", String(fighter["id"])))
 		Sound.play(Sound.voice_for(String(fighter["id"]), "death"))
-	elif not blocked:
+	# A skeleton fallen to its pile has had its thud and its call (falls).
+	elif not blocked and mode != "pile":
 		Sound.play(Sound.voice_for(String(fighter["id"]), "hurt"))
 	# A named monster falls as a boss does (PIX-232), not just a boss.
 	if fell and Bestiary.fights_like_boss(fighter):

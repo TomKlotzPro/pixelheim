@@ -188,6 +188,18 @@ func test_a_boss_or_a_named_monster_has_none_and_an_elite_has_it_besides_its_mov
 	assert_null(staged.trick, "the story's own foes fight plain")
 
 
+func test_the_foes_a_boss_calls_fight_plain() -> void:
+	# Its fight was tuned on plain adds, and it counts each to its end (a
+	# slime's halves would be nobody's).
+	var caller := _foe("crab", true)
+	caller.brain._howl({"count": 2, "max": 2, "monsterId": "slime"})
+	assert_eq(caller.brain.called.size(), 2, "it called them")
+	for add: Node in caller.brain.called:
+		assert_null(add.trick, "a called slime doesn't split")
+		add.take_hit(99999, add.global_position + Vector2.LEFT)
+	assert_eq(_standing().size(), 1, "only the caller stands")
+
+
 # --- The slime splits --------------------------------------------------------
 
 func test_a_small_slime_is_a_quarter_of_its_kind_and_never_splits_again() -> void:
@@ -247,7 +259,7 @@ func test_a_wolf_keeps_to_its_circle_and_bites_only_on_its_dart() -> void:
 	var ring := HERO_AT + Vector2(0, -28)
 	assert_almost_eq(wolf.trick.stand(ring, HERO_AT - wolf.global_position), HERO_AT + Vector2(0, -32), Vector2(0.01, 0.01), "in a pack, its place in the ring, out at the circle")
 	# Its turn comes: the crouch is the tell, then the dart.
-	_run(wolf, 1.0)
+	_run(wolf, 0.5)
 	assert_eq(wolf.trick.state, "crouch", "it crouches first")
 	assert_false(wolf.trick.may_bite(), "no bite out of the crouch")
 	assert_eq(wolf.trick.stand(Vector2.INF, Vector2.LEFT), wolf.global_position, "holding where it is")
@@ -259,6 +271,7 @@ func test_a_wolf_keeps_to_its_circle_and_bites_only_on_its_dart() -> void:
 	assert_gt(wolf.pace, pace, "fast")
 	wolf.trick.bit(true)
 	assert_false(wolf.trick.may_bite(), "one bite a dart")
+	assert_eq(wolf.trick.stand(ring, Vector2.LEFT), Vector2.INF, "it stays on the hero a moment: a blow's shove doesn't put it out of reach")
 	_run(wolf, float(trick["linger"]) + TrickBrainScript.AWAY_SECONDS + 0.1)
 	assert_eq(wolf.trick.state, "", "and out again")
 	assert_almost_eq(wolf.pace, pace, 0.001, "at its own pace")

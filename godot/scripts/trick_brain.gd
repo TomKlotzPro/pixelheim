@@ -68,7 +68,7 @@ func _ready() -> void:
 	trick = Tricks.of(enemy.fighter)
 	kind = String(trick["trick"])
 	# The first one a little into the fight, never as it opens.
-	ready_in = 0.8 if kind == "hitrun" else 1.2
+	ready_in = 0.4 if kind == "hitrun" else 1.2
 
 
 func _physics_process(delta: float) -> void:
@@ -95,9 +95,11 @@ func stand(spot: Vector2, to_player: Vector2) -> Vector2:
 	if kind != "hitrun":
 		return spot
 	match state:
-		"in":
+		# Its bite done it stays on the hero a moment: a blow's shove doesn't
+		# put it out of the blade's reach, where no fight could be had with it.
+		"in", "back":
 			return Vector2.INF
-		"crouch", "back":
+		"crouch":
 			return enemy.global_position
 	var hero := enemy.global_position + to_player
 	var out := Tricks.circle_spot(hero, enemy.global_position, spot, _turn, trick)

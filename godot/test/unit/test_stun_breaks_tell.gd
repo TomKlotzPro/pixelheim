@@ -108,13 +108,15 @@ func after_each() -> void:
 	_lent.free()
 
 
-## A wolf, its physics stopped: the test does the stepping.
+## A wolf, its physics stopped: the test does the stepping. Without its
+## kind's trick (PIX-489): these are the brains' moves alone.
 func _foe() -> Node:
 	var foe: Node = Enemy.new()
 	foe.world = _world
 	foe.fighter = Bestiary.spawn("wolf")
 	_world.add_child(foe)
 	foe.set_physics_process(false)
+	foe.plain()
 	return foe
 
 

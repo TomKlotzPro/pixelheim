@@ -1164,6 +1164,8 @@ fit-skills-path-en | --map town skills --role mage --level 10 --path pyromancer 
 fit-skills-path-pseudo | --map town skills --role rogue --level 20 --path trickster,phantom_jester overflow --pseudo | open=skills_screen overflow=0 | screen lang rank
 fit-stats-en | --map town --keys c overflow --lang en | open=stats_screen overflow=0 | screen lang
 fit-bestiary | --map town codex bestiary overflow --lang fr | open=codex_screen overflow=0 | screen lang
+# Its second page too (PIX-489): the crab's line, the longest row there.
+fit-bestiary-crab | --map town codex bestiary --keys s overflow --lang fr | open=codex_screen overflow=0 | screen lang
 fit-bestiary-en | --map town codex bestiary overflow --lang en | open=codex_screen overflow=0 | screen lang
 fit-shop-en | --map town_shop shop overflow --lang en | open=shop_screen overflow=0 | screen lang trade
 fit-hall-en | --map town_hall hall overflow --lang en | open=town_hall_screen overflow=0 reading= | screen lang town
