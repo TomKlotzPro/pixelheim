@@ -966,6 +966,10 @@ func _add_wood(piece: Dictionary, cell: Vector2i) -> void:
 	sprite.offset = Vector2(0, -rect.size.y / 2.0)
 	sprite.material = woods_sway if piece["own"] else decor_sway
 	sprite.add_to_group("decor")
+	# A tree or a rock blocks the lantern's light, however small its
+	# picture (PIX-490, NightShadowsLayer).
+	if piece.get("tall", false):
+		sprite.set_meta("tall", true)
 	actors.add_child(sprite)
 	# The Medieval Age's trees and bushes have no shadow drawn under them;
 	# Shade's free ones do (PIX-449).
@@ -1240,6 +1244,8 @@ func furnish() -> void:
 ## layer, then a band of rows a unit (a band of its physics quadrants).
 func _blockers_setup() -> void:
 	tile_layer = tile_layer_of(_blockers())
+	# The ruins' stone is floor (Lights.FLOOR): a shadow lies on it.
+	tile_layer.light_mask |= Lights.FLOOR
 	under.add_child(tile_layer)
 
 

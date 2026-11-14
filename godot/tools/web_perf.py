@@ -25,9 +25,12 @@ import time
 
 EXPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "export", "web")
 # The desktop's cpu-night and cpu-line flows (flows.txt), with PerfProbe's
-# sample and the crossing's frames. test_harness_flags reads these lines.
+# sample and the crossing's frames, and cpu-town's City at night, where the
+# lamps cast shadows beside the lantern (PIX-490). test_harness_flags reads
+# these lines.
 RUNS = {
     "night": "--fixed-fps 60 -- --screenshot --map overworld night cpu perf --wait 2 --shot user://web_perf.png",
+    "town": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night cpu perf --wait 2 --shot user://web_perf.png",
     "line": "--fixed-fps 60 -- --screenshot --map overworld --at 93,33 seamless --walk r,r,r cpu crossing --wait 1 --shot user://web_perf.png",
 }
 

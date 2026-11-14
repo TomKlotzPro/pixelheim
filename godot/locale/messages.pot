@@ -18085,6 +18085,10 @@ msgid "Reset keys to defaults"
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "Shadows"
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "Sound"
 msgstr ""
 

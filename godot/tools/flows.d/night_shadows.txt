@@ -1,0 +1,14 @@
+# The night shadows' flows (PIX-490: a feature's flows, read after
+# tools/flows.txt as its own, scripts/features/night_shadows/), a line each
+# as in flows.txt.
+# At night the hero's lantern and the lamps nearest them cast shadows: on
+# the City's square, where far more lamps burn than may cast, the lantern
+# and the cap of three, no more, a second after arriving (they fade in);
+# occluders at the feet of what stands and round the houses' feet and the
+# walls. By day none casts (the sun's shadows alone, PIX-449). In the
+# Deepwood the lantern and the camps' fires near it; in the sea cave the
+# lantern and its wall torches, the rock round its floors blocking them.
+night-shadows-town | --map town --town-tier 4 --at 40,24 night --wait 1 | map=town nightshadows=lights 4 of 4 lamps (?![0-3] )\d+ feet [1-9]\d* walls [1-9]\d* | town night
+night-shadows-day | --map town --town-tier 4 --at 40,24 | map=town nightshadows=lights 0 of 4 lamps 0 feet [1-9]\d* walls [1-9]\d* | town
+night-shadows-wood | --map deepwood night --wait 1 | map=deepwood nightshadows=lights [1-4] of 4 lamps \d+ feet [1-9]\d* walls \d+ | field night
+night-shadows-cave | --map seacave --wait 1 | map=seacave nightshadows=lights [1-4] of 4 lamps \d+ feet \d+ walls [1-9]\d* | dungeon

@@ -33,6 +33,8 @@ var large_text := false
 var clear_warnings := false
 ## Bright things bloom softly (PIX-222).
 var glow := true
+## The lantern and the lamps cast shadows at night (PIX-490).
+var shadows := true
 var hints := true
 var hints_seen: Array[String] = []
 ## Quest marks over people, and where the active step leads (PIX-240).
@@ -67,6 +69,7 @@ func load_file() -> void:
 	large_text = config.get_value(SECTION, "large_text", large_text)
 	clear_warnings = config.get_value(SECTION, "clear_warnings", clear_warnings)
 	glow = config.get_value(SECTION, "glow", glow)
+	shadows = config.get_value(SECTION, "shadows", shadows)
 	hints = config.get_value(SECTION, "hints", hints)
 	quest_marks = config.get_value(SECTION, "quest_marks", quest_marks)
 	language = str(config.get_value(SECTION, "language", language))
@@ -96,6 +99,7 @@ func save_file() -> void:
 	config.set_value(SECTION, "large_text", large_text)
 	config.set_value(SECTION, "clear_warnings", clear_warnings)
 	config.set_value(SECTION, "glow", glow)
+	config.set_value(SECTION, "shadows", shadows)
 	config.set_value(SECTION, "language", language)
 	config.set_value(SECTION, "hints", hints)
 	config.set_value(SECTION, "quest_marks", quest_marks)

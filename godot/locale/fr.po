@@ -18085,6 +18085,10 @@ msgid "Reset keys to defaults"
 msgstr "Rétablir les touches par défaut"
 
 #: scripts/options_screen.gd
+msgid "Shadows"
+msgstr "Ombres"
+
+#: scripts/options_screen.gd
 msgid "Sound"
 msgstr "Son"
 

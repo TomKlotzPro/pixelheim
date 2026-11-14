@@ -77,7 +77,11 @@ const PER_ITEM := 15
 ## layers answer to it besides the world's lights (MapView), and a light
 ## that lights only it (`range_item_cull_mask`) falls on the floor alone -
 ## a boss's glow round its feet, under every actor and pickup standing in
-## it, none of them tinted.
+## it, none of them tinted. It is the bit a shadow falls on too (PIX-490,
+## NightShadows): a canvas item takes a light's shadows only when its light
+## bits meet the light's shadow bits, in both renderers, so the lantern's
+## shadows lie on the floor and never black out the tree that casts them,
+## nor anyone standing there.
 const FLOOR := 1 << 10
 
 
@@ -144,6 +148,11 @@ static func make(at: Vector2, radius: float, color: Color, energy: float, flicke
 	light.set_meta("tint", color)
 	light.color = DesktopLook.canvas_color(color, DesktopLook.linear)
 	light.energy = 0.0
+	# Ready to cast shadows, soft-edged, on the floor alone, when the
+	# LightRig says so (PIX-490, NightShadows).
+	light.shadow_filter = Light2D.SHADOW_FILTER_PCF5
+	light.shadow_filter_smooth = NightShadows.SOFT
+	light.shadow_item_cull_mask = NightShadows.SCENERY | NightShadows.FOLK
 	light.position = at
 	light.set_meta("energy", energy)
 	light.set_meta("flicker", flicker)
