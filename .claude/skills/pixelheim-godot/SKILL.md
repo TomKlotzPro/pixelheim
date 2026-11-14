@@ -23,6 +23,7 @@ Pixelheim is a Godot 4.7 game (`godot/`), live at the GitHub Pages root and as a
 - **The desktop canvas is linear light**: a shader doing colour maths over the world includes `shaders/linear.gdshaderinc` (`art.md`).
 - **No backward compatibility until the beta**: legacy paths can go; don't add migrations.
 - macOS has no `timeout`; don't wrap commands in it.
+- **General game-making skills** (game-feel, game-ai, hud-system, rpg… in `.claude/skills/`, and the godot-* ones installed globally) are background: where one disagrees with this skill or its topic pages (tests are GUT and flows, perf budgets, art, how to verify), this skill wins.
 
 ## How a feature plugs in
 
