@@ -2313,6 +2313,14 @@ msgid "A foe's level plate and health bar fade while your hero stands under them
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A ghost struck twice fades and comes back beside you; a crab with its claws up takes little from the front, so strike its side or back"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A goblin's bite snatches a few coins and it runs off; slay it and you get them back with half again"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr ""
 
@@ -2474,6 +2482,14 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A settler with something to ask still heals you or plays first, then asks"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A skeleton falls to a pile of bones and rises once, unless you strike the pile"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A slain slime bursts into two small slimes; the Dire Wolf darts in to bite and runs back out, one of the pack at a time"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3810,6 +3826,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Foes Come Alive"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5774,6 +5794,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Signposted"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Six common foes have a trick of their own, each shown before it lands, and the Bestiary names it once you have seen it"
 msgstr ""
 
 #: assets/data/changelog.json
