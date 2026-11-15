@@ -71,7 +71,7 @@ const FIRST := 0.3
 ## The lightning's colour, and its energy by day (the sun is behind the
 ## clouds, the flash whitens the view) and at night (it is the only light).
 const SKY := Color(0.84, 0.91, 1.0)
-const DAY_ENERGY := 0.55
+const DAY_ENERGY := 0.35
 const NIGHT_ENERGY := 1.25
 ## A strike at the horizon flashes this share as bright as one overhead.
 const FAR_LIGHT := 0.55
@@ -131,6 +131,10 @@ func _process(delta: float) -> void:
 	var want := Weather.storm_at(steps) if open or inside else 0.0
 	var arrived := map != _map_of
 	_map_of = map
+	# A flash or a rumble doesn't follow the hero into a map with no storm.
+	if arrived and want == 0.0:
+		_showing.clear()
+		_thunder.clear()
 	storm = want if arrived else move_toward(storm, want, EASE * delta)
 	# What the rain leaves lies wherever it rains on the map, whatever air
 	# the hero stands in: the sheet's mask keeps the Ash, the snow and the
@@ -188,7 +192,7 @@ func strike(spec: Dictionary) -> void:
 		var view: Array[Vector2] = world.lights.world_view()
 		bolt.global_position = view[0] + view[1] / 2.0 + Vector2.UP.rotated(float(spec["from"])) * BOLT_OFF
 	var event := "thunder_near" if far < Weather.THUNDER_NEAR else "thunder_far"
-	_thunder.append([now + Weather.thunder_delay(far), "thunder_inside" if inside else event])
+	_thunder.append([now + Weather.thunder_delay(far), event])
 
 
 ## The flash now: under the open sky the sky's light, and the bolt's with
@@ -240,7 +244,8 @@ func _notification(what: int) -> void:
 func _roll(now: float) -> void:
 	for due: Array in _thunder.filter(func(one: Array) -> bool: return now >= float(one[0])):
 		_thunder.erase(due)
-		match String(due[1]):
+		# Muffled if the hero is under a roof when it reaches them, not when it fell.
+		match "thunder_inside" if inside else String(due[1]):
 			"thunder_near":
 				Sound.play("thunder_near", false)
 			"thunder_far":

@@ -145,6 +145,8 @@ void light() {
 	vec3 got = LIGHT_COLOR.rgb * COLOR.rgb * LIGHT_ENERGY;
 	// Every other row of art pixels, each on its own slow beat.
 	vec2 px = floor(world_pos);
+	// Out here, not in the branch below: derivatives need every pixel alike.
+	float per_px = abs(dFdx(world_pos.x));
 	float row = step(0.5, fract(px.y * 0.5));
 	float shift = floor(world_time * 1.3 + hash(px.yy) * 4.0);
 	if (mirror > 0.0) {
@@ -158,7 +160,7 @@ void light() {
 			// streak hangs straight down the screen from it. The bolt's
 			// flat light is no flame to mirror (its texture's alpha is
 			// under GLEAM_NEAR, storm.gd): the sky's glint is the flash's.
-			vec2 from = (LIGHT_VERTEX.xy - LIGHT_POSITION.xy) * abs(dFdx(world_pos.x)) + px + 0.5 - world_pos;
+			vec2 from = (LIGHT_VERTEX.xy - LIGHT_POSITION.xy) * per_px + px + 0.5 - world_pos;
 			float far = clamp(from.y / STREAK_LONG, 0.0, 1.0);
 			float wide = STREAK.x + STREAK.y * hash(vec2(px.y, shift));
 			float off = from.x + 2.0 * (hash(vec2(shift, px.y)) - 0.5);
