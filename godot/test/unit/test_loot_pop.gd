@@ -6,6 +6,13 @@ extends GutTest
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 
+## A world as LootPop reads it: the map shown and the hero.
+class Place:
+	extends Node2D
+	var view: Variant = RefCounted.new()
+	var player: Node2D = null
+
+
 var _still: bool
 
 
@@ -93,7 +100,7 @@ func test_the_float_counts_up_to_the_gold_as_the_coins_land() -> void:
 	assert_eq(_purse(fx), "+7 XP", "the XP first")
 	var seen := {}
 	while fx.loot.gold_counted < 23 and seen.size() < 400:
-		await wait_frames(1)
+		await wait_process_frames(1)
 		seen[_purse(fx)] = true
 	assert_gt(seen.size(), 3, "it counted up, coin by coin: %s" % [seen.keys()])
 	assert_eq(_purse(fx), "+23 gold · +7 XP", "and ends on what the kill paid")
@@ -119,3 +126,66 @@ func test_past_the_most_they_land_at_once() -> void:
 		fx.burst_gains(_win(40, 30), Vector2(100, 80))
 	assert_eq(fx.loot.gold_counted + fx.loot._bits.reduce(func(sum: int, bit: Dictionary) -> int: return sum + int(bit.get("win", {}).get("gold", 0)), 0), 800, "none lost")
 	assert_lte(fx.loot._bits.size(), LootPop.MOST + LootBurst.COINS + LootBurst.SPARKS)
+
+
+## A pack of five felled in one frame: under the pool's most, so every coin
+## flies (none landed undrawn) and the one float counts them all.
+func test_five_felled_at_once_all_fly() -> void:
+	var fx: WorldFx = add_child_autofree(WorldFx.new())
+	for i in 5:
+		fx.burst_gains(_win(40, 30), Vector2(100 + i * 16, 80))
+	assert_eq(fx.loot.gold_counted, 0, "none landed at once")
+	assert_eq(fx.loot._bits.size(), 5 * (LootBurst.COINS + LootBurst.SPARKS))
+	await wait_seconds(2.0)
+	assert_string_ends_with(fx.loot.summary(), "flying 0 sparks 25 drops 0 counted 200/200")
+
+
+## The first kill past a door (review of PIX-492): LootPop slept between the
+## two, and the new map's burst is kept, its float counting to its gold;
+## what was still in the air on the old map stays behind, uncounted.
+func test_a_burst_on_the_next_map_counts_as_the_first_did() -> void:
+	var stage: Place = add_child_autofree(Place.new())
+	var fx := WorldFx.new()
+	fx.world = stage
+	stage.add_child(fx)
+	fx.burst_gains(_win(10, 5), Vector2(100, 80))
+	await wait_seconds(2.0)
+	assert_eq(fx.loot.gold_counted, 10, "the first map's")
+	assert_false(fx.loot.is_processing(), "asleep between kills")
+	stage.view = RefCounted.new()
+	fx.burst_gains(_win(10, 5), Vector2(100, 80))
+	await wait_seconds(2.0)
+	assert_eq(fx.loot.gold_counted, 20, "the next map's first kill counted too")
+	# Through a door with coins in the air: they stay behind, the new
+	# map's fly.
+	fx.burst_gains(_win(10, 5), Vector2(100, 80))
+	stage.view = RefCounted.new()
+	fx.burst_gains(_win(7, 5), Vector2(100, 80))
+	await wait_seconds(2.0)
+	assert_eq(fx.loot.gold_counted, 27, "only the new map's landed")
+	assert_string_contains(fx.loot.summary(), "flying 0 ")
+
+
+## The purse rings as the coins land, not at the kill as well: gold paid
+## while the soundscape is told to keep quiet is heard, never played.
+func test_a_kills_gold_is_quiet_until_its_coins_land() -> void:
+	var ears: Soundscape = autofree(Soundscape.new())
+	Sound._played_at.clear()
+	ears.quiet_gold = true
+	ears.hear_gold(50)
+	assert_eq(ears.heard_gold, 50, "heard")
+	assert_true(Sound._played_at.is_empty(), "not rung")
+	ears.quiet_gold = false
+	ears.hear_gold(60)
+	assert_false(Sound._played_at.is_empty(), "the purse rings as ever otherwise")
+
+
+## A boss's coins land closer together than Sound lets one take through:
+## only the heard ticks count, so the run still climbs a step a tick.
+func test_a_run_of_ticks_counts_only_the_heard_ones() -> void:
+	var fx: WorldFx = add_child_autofree(WorldFx.new())
+	var loot := fx.loot
+	for i in 6:
+		loot._clock = 1.0 + i * 0.025
+		loot._land({"kind": LootPop.COIN, "at": Vector2.ZERO})
+	assert_eq(loot._streak, 2, "three heard of six: the first, then two steps up")

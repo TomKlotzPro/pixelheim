@@ -40,11 +40,11 @@ var _spare: Array[Dictionary] = []
 var _clock := 0.0
 var _dice := RandomNumberGenerator.new()
 var _glows: Node2D
-var _view: Variant
 var _streak := 0
 var _ticked := -1.0
 
-## This visit's bursts, for the harness (loot=): coins and sparks sprung,
+## This session's bursts (never reset on a new map, as WorldFx.floated
+## isn't), for the harness (loot=): coins and sparks sprung,
 ## each drop's rarity, a boss's burst seen, and the gold the floats were due
 ## and have counted.
 var coins := 0
@@ -65,6 +65,8 @@ func _ready() -> void:
 	_glows = Node2D.new()
 	_glows.material = Lights.glow()
 	_glows.draw.connect(_draw_glows)
+	# Onto the world under the coins and the drop, never over them.
+	_glows.show_behind_parent = true
 	add_child(_glows)
 	set_process(false)
 
@@ -151,23 +153,25 @@ func _bit(kind: int, now: float, at: Vector2) -> Dictionary:
 	bit["height"] = 0.0
 	bit["spin"] = _dice.randf() * 4.0
 	bit["lands"] = now
+	# Its place: left behind when the hero goes to another.
+	bit["view"] = world.view if world != null else null
 	_bits.append(bit)
 	return bit
 
 
 func _process(delta: float) -> void:
 	_clock += delta
-	# Another place: what flew stays behind with it (all of it was paid).
-	if world != null and world.view != _view:
-		if _view != null:
-			_spare.append_array(_bits)
-			_bits.clear()
-		_view = world.view
+	var view: Variant = world.view if world != null else null
 	var i := 0
 	# Oldest first, so a float counts up in the order its coins left.
 	while i < _bits.size():
 		var bit := _bits[i]
-		if _clock >= float(bit["lands"]):
+		# Another place: what flew stays behind with it (all of it was paid).
+		# Each by the place it sprang in, so a new map's first burst is kept.
+		if bit["view"] != view:
+			_bits.remove_at(i)
+			_spare.append(bit)
+		elif _clock >= float(bit["lands"]):
 			_bits.remove_at(i)
 			_land(bit)
 			_spare.append(bit)
@@ -187,6 +191,9 @@ func _settle() -> void:
 		if bit["kind"] != FLASH:
 			_land(bit, true)
 		_spare.append(bit)
+	# The kill's own ring was held for the coins (Soundscape.quiet_gold).
+	if flying.any(func(bit: Dictionary) -> bool: return bit["kind"] == COIN):
+		Sound.play("coin_gain")
 
 
 ## One reached the hero: its share goes on the float; a coin ticks, a
@@ -204,11 +211,15 @@ func _land(bit: Dictionary, quiet := false) -> void:
 	var tone: Color = UiStyle.GOLD
 	var strength := 0.6
 	if kind == COIN:
-		_streak = mini(_streak + 1, TICK_MOST) if _clock - _ticked <= TICK_RUN_S else 0
-		_ticked = _clock
+		# Only a tick that is heard counts in the run (Sound lets the same
+		# take through once in SAME_GAP_MS): a boss's sixteen land closer
+		# than that, and the pitch still climbs a step a tick.
+		if _clock - _ticked >= Sound.SAME_GAP_MS / 1000.0:
+			_streak = mini(_streak + 1, TICK_MOST) if _clock - _ticked <= TICK_RUN_S else 0
+			_ticked = _clock
+			# Off the game's dice: a tick's pitch is its place in the run.
+			Sound.play("coin_gain", false, 1.0 + TICK_STEP * _streak)
 		strength = 0.45 + 0.55 * _streak / TICK_MOST
-		# Off the game's dice: a tick's pitch is its place in the run.
-		Sound.play("coin_gain", false, 1.0 + TICK_STEP * _streak)
 	elif kind == SPARK:
 		tone = WorldFx.GAIN_TONES["xp"]
 	else:
@@ -297,7 +308,7 @@ func _draw() -> void:
 
 
 ## A drop's glow and beam where it lies, a spark's halo, a landing's light:
-## added onto the world under them.
+## added onto the world under them (`_glows` draws behind this node).
 func _draw_glows() -> void:
 	for bit in _bits:
 		var age: float = _clock - float(bit["born"])
