@@ -2485,6 +2485,10 @@ msgid "A settler with something to ask still heals you or plays first, then asks
 msgstr "Un nouvel habitant qui a quelque chose à demander vous soigne ou joue toujours d'abord, puis demande"
 
 #: assets/data/changelog.json
+msgid "A shadow is never pitch black, and what stands keeps its light on the side facing the flame"
+msgstr "Une ombre n'est jamais d'un noir complet, et ce qui se dresse reste éclairé du côté de la flamme"
+
+#: assets/data/changelog.json
 msgid "A skeleton falls to a pile of bones and rises once, unless you strike the pile"
 msgstr "Un squelette tombe en un tas d'os et se relève une fois, à moins de frapper le tas"
 
@@ -2695,6 +2699,10 @@ msgstr "En pleine santé, une potion ou un repas est gardé et une ligne dit pou
 #: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
 msgstr "La nuit, ses fenêtres et ses lanternes s'allument, et la fumée monte de ses toits"
+
+#: assets/data/changelog.json
+msgid "At night your lantern and the three nearest lamps, torches or fires cast soft shadows on the ground"
+msgstr "La nuit, votre lanterne et les trois lampes, torches ou feux les plus proches projettent des ombres douces au sol"
 
 #: assets/data/changelog.json
 msgid "At night, lanterns light the bridge's north end and the four forks past the town gate"
@@ -4385,6 +4393,10 @@ msgid "Lantern Night keeps its promises: if it begins while you're in town, the 
 msgstr "La Nuit des Lanternes tient ses promesses : si elle commence pendant que vous êtes au village, les étals se montent aussitôt autour de vous, et si une époque s'achève le même soir, vous avez à la fois la fête et le vol de Fafnyr"
 
 #: assets/data/changelog.json
+msgid "Lantern Shadows"
+msgstr "Les ombres de la lanterne"
+
+#: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
 msgstr "Terrains de chasse de fin de partie : trolls et golems sous les arbres, fantômes et mimiques dans la tourbière - les élites y pullulent"
 
@@ -5773,6 +5785,10 @@ msgid "Shadows became a tone, not a hole: half-strength and shorter under a high
 msgstr "Les ombres deviennent une teinte, plus un trou : moitié moins fortes et plus courtes sous un soleil plus haut - fini les longues traînées noires"
 
 #: assets/data/changelog.json
+msgid "Shadows can be turned off in Options, next to Glow"
+msgstr "Les Ombres se désactivent dans les Options, à côté de Lueurs"
+
+#: assets/data/changelog.json
 msgid "Shadowstep now crosses up to four cells: the rogue fades, slips past the foe and strikes from behind"
 msgstr "Pas de l'ombre franchit désormais jusqu'à quatre cases : le voleur s'efface, passe derrière l'ennemi et frappe dans son dos"
 
@@ -5923,6 +5939,10 @@ msgstr "Butin en l'air"
 #: assets/data/changelog.json
 msgid "Stakes"
 msgstr "Enjeux"
+
+#: assets/data/changelog.json
+msgid "Stalls, benches, crates, trees, rocks, walls and passers-by block the light, and their shadows turn as you walk past"
+msgstr "Étals, bancs, caisses, arbres, rochers, murs et passants arrêtent la lumière, et leurs ombres tournent quand vous passez"
 
 #: assets/data/changelog.json
 msgid "Standing at a station, the Craft tab says so in green: craft freely"
