@@ -15,6 +15,8 @@ The game runs as the web build in a headless Chrome, driven by `godot/tools/play
 
 The players run on Fable (since 2026-11-13), the newcomer and the explorer on Sonnet until `lessons.md` compares them. The orchestrator and the triage run on Opus: they set these rules, confirm every finding before it reaches Linear, and change the rules after each run.
 
+**A focus run** (`args.focus`) points the players at one change. The orchestrator writes the focus from the code as built. It checks every claim against the code and the config (for foes, combat.json's `tricks.about`), gives each trick's rest and when a screen shows it, and asks its questions of taste (fair, fun, too long) as summary verdicts, not findings.
+
 ## Safety, always
 
 - **Play only through `play.py`.** Never run godot with a window, `godot/tools/shot.sh`, `flows.sh` without `--quiet`, `lookbook.sh`, or any harness `--slot` (it writes Tom's real saves).
@@ -39,7 +41,7 @@ Each turn is one command: `look`, then think, then `keys`. The game runs only du
 - **After a key that starts a fade or a reload, wait.** `keys` answers as soon as its last key is done. After Enter on Begin, Quit to title, the Language row or a paste, add `wait:0.5` before you trust the state.
 - **Reading a talk with E in a loop**: stop once `open` no longer lists the talk. The next E acts on whatever opened next, and a shop's counter opens on Buy.
 - **A caption types for up to 9 s.** Send `wait:3` until `text` no longer ends in `[still typing]`, look, then press E once.
-- **Spend your looks.** Your brief gives a budget, about 60 to 80 looks. Look after every move that could change something: a door, a fight, a menu, a line of text. Between looks, `keys`' own state is often enough to know you moved. Don't stop before your budget while your route or checklist has items left: few findings mean keep looking, not stop. When one step holds you more than six looks, report it and go past it the way your brief says, instead of trying it again.
+- **Spend your looks.** Your brief gives a budget, about 60 to 80 looks. `start`'s first picture counts as a look: read it. Look after every move that could change something: a door, a fight, a menu, a line of text. Between looks, `keys`' own state is often enough to know you moved. Don't stop before your budget while your route or checklist has items left: few findings mean keep looking, not stop. In a run with a focus, once the focus is covered, spend the looks left on your page's route, its unreached items first. When one step holds you more than six looks, report it and go past it the way your brief says, instead of trying it again.
 - **The state says where you are, the picture says how it looks.** Trust the state for map, cell, health and quest, and quote `text` and `hud` for on-screen words. Trust the screenshot for what a player sees. When the two disagree, that is a finding.
 - **Walk with short holds** (0.2 to 0.5 s) near things, and longer ones to travel: `right:1` walks one second of the game. If two holds don't change `cell`, you are blocked: look at why before you push again.
 - **Keep a log as you go**: the `start` line and each `keys` you sent, in order. A finding's steps come from it, and triage replays them as they are.
@@ -87,7 +89,7 @@ A text field (the hero's name) types every one-letter key, `e`, `w` and `s` too:
 Every finding has a **kind**:
 
 - **bug**: the game does something wrong. A freeze, a crash, an error in `look`'s errors. A number on screen that disagrees with the state. A hero stuck on nothing, or walking through a wall, a house or water. A sprite drawn over or under the wrong thing. A seam, gap, flicker or black band in the world. Text cut off or spilling out of its frame: a line cut with no …, mid-word or mid-sentence, is a bug, but a list row that ends in … while its whole words show elsewhere on the same screen gives way by design (`ui.md`). A key that doesn't do what its footer says. A quest step that never completes.
-- **confusing**: a player wouldn't know what to do or what just happened. You spent more than three looks unsure where to go. A message that doesn't say what it means. A foe's big attack that gives no warning before it lands (no glow, band, circle or drawn bow). How long the warning lasts is Tom's call: a player that moves in steps of a few tenths of a second can't time a human's reaction.
+- **confusing**: a player wouldn't know what to do or what just happened. You spent more than three looks unsure where to go. A message that doesn't say what it means. A foe's tell that is missing altogether: a big attack, a guard, a fade or a rise that gives no warning before it costs you (no glow, band, circle, drawn bow, raised claws or shimmer). How strong or how long a tell is, is Tom's call: a player that moves in steps of a few tenths of a second can't time a human's reaction. A tell that moves or sounds (a shake, a flash, a shimmer, a rattle) needs two or three looks across it before you call it missing; one still can't show it.
 - **polish**: it works, but it feels off. Text too long to read in a box, a moment that drags, a screen that looks unlike the others, a reward that goes unnoticed.
 
 And a **severity**:
@@ -105,10 +107,10 @@ When unsure between two, pick the lower one. Triage re-rates anyway.
 
 A finding without proof is not reported.
 
-- **A screenshot** that shows it (the path `look` gave). For something that moves, two or three in a row.
+- **A screenshot** that shows it (the path `look` gave). For something that moves, two or three in a row. Cite only screenshots you have read.
 - **The state** at that moment (the JSON `look` printed, or the part that matters).
 - **The steps**: the `start` options and every `keys` from the start to the moment you saw it, from your log. Triage replays exactly these.
-- **For a bug, try it twice.** Say whether it happened again (`seen twice: yes/no`). If you could only guess at it, it is not a bug: report it as confusing or polish (S4 when unsure), with its screenshot. The summary is for your route and the tool, never for things you saw. A "seen but too weak" list in the summary is a list of findings you didn't send: send each one at S4 with its screenshot, and triage drops what's weak.
+- **For a bug, try it twice.** Say whether it happened again (`seen twice: yes/no`). If you could only guess at it, it is not a bug: report it as confusing or polish (S4 when unsure), with its screenshot. The summary is for your route, the tool and, in a run with a focus, the verdicts the focus asks for (fair, fun, readable, drags), with their numbers. Those verdicts are not findings; anything else you saw is a finding or nothing. A "seen but too weak" list in the summary is a list of findings you didn't send: send each one at S4 with its screenshot, and triage drops what's weak.
 
 ## Don't report
 
@@ -116,6 +118,7 @@ A finding without proof is not reported.
 - **Speed in the headless Chrome**: frame rate, stutter and load times. Its drawing isn't a player's machine, and the turn-by-turn pause is the tool's, not the game's.
 - **What the game means to do:**
   - Gold and XP numbers floating up after a kill: Tom likes them.
+  - How hard a fight is and what it pays: time to kill, health lost, the XP and gold, a foe above your level being hard. The `fight` preset's foe takes the level of the region it stands in, not the hero's. Give those numbers in the summary when your brief or the focus asks. Two numbers on screen that disagree (the Bestiary's xp against the float, PIX-494) are still a finding.
   - A sword, axe, hammer, dagger or fist reaches only the cell in front; a bow or a staff reaches three cells, with its shot flying (v0.322).
   - The seven skills whose blow falls from the sky (thunder, a divine sword...) are ranged.
   - On the web, a door's fade starts about 0.17 s after the key.
