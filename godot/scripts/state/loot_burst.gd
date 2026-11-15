@@ -26,6 +26,9 @@ const BOUNCE_S := 0.16
 const REST_S := 0.3
 const FLY_S := 0.24
 const STAGGER_S := 0.05
+## From a burst's first coin leaving to its last, at most: a boss's sixteen
+## are in as soon as a rich foe's eight.
+const SWEEP_S := 0.4
 ## A spark rises this long over the foe before it sweeps in: the first
 ## lands well before the first coin, so the float is up (its XP) when the
 ## gold starts to count.

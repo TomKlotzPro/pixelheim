@@ -628,8 +628,9 @@ func on_enemy_died(enemy: Node) -> void:
 		# A drop rings by its rarity (PIX-413, PIX-492): an epic piece rings
 		# out, a fine one chimes, a common one says nothing.
 		var rarity := String(GameState.pack.gear[-1].get("rarity", "common"))
+		var epic := rarity == "epic"
 		if rarity != "common":
-			Sound.play("rare_drop" if rarity == "epic" else "loot_drop")
+			Sound.play("rare_drop" if epic else "loot_drop")
 	if cleared != "":
 		world.messages.log_lines([Text.t("Pack scattered: another comes after a long walk or a night's rest.")], true)
 

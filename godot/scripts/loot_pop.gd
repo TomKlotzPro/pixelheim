@@ -85,7 +85,7 @@ func burst(gains: Dictionary, at: Vector2, feet: Vector2, grand := false) -> voi
 		var bit := _bit(SPARK, now, at)
 		bit["from"] = feet + Vector2(0, -8)
 		bit["rest"] = bit["from"] + Vector2(_dice.randf_range(-12, 12) * wide, _dice.randf_range(-20, -10) * wide)
-		bit["leave"] = now + LootBurst.RISE_S + i * LootBurst.STAGGER_S
+		bit["leave"] = now + LootBurst.RISE_S + i * minf(LootBurst.STAGGER_S, LootBurst.SWEEP_S / xp.size())
 		bit["win"] = {"xp": xp[i], "gold": 0, "items": []}
 		bit["whole"] = gains
 		purse.append(bit)
@@ -101,7 +101,7 @@ func burst(gains: Dictionary, at: Vector2, feet: Vector2, grand := false) -> voi
 		bit["rest"] = (feet + Vector2(cos(way), sin(way) * 0.55) * _dice.randf_range(9, 18) * wide).round()
 		bit["height"] = _dice.randf_range(10, 16) * wide
 		bit["out"] = LootBurst.OUT_S + _dice.randf_range(0.0, 0.06)
-		bit["leave"] = now + LootBurst.OUT_S + 0.06 + LootBurst.BOUNCE_S + LootBurst.REST_S + i * LootBurst.STAGGER_S
+		bit["leave"] = now + LootBurst.OUT_S + 0.06 + LootBurst.BOUNCE_S + LootBurst.REST_S + i * minf(LootBurst.STAGGER_S, LootBurst.SWEEP_S / gold.size())
 		bit["win"] = {"xp": 0, "gold": gold[i], "items": []}
 		bit["whole"] = gains
 		purse.append(bit)
@@ -343,7 +343,8 @@ func summary() -> String:
 		return ""
 	var flying := _bits.filter(func(bit: Dictionary) -> bool: return bit["kind"] != FLASH).size()
 	var fell := "%d:%s" % [drops.size(), "+".join(drops)] if not drops.is_empty() else "0"
-	return "coins %d flying %d sparks %d drops %s counted %d/%d%s" % [coins, flying, sparks, fell, gold_counted, gold_due, " big" if big else ""]
+	var said: Array = ["coins", coins, "flying", flying, "sparks", sparks, "drops", fell, "counted", "%d/%d" % [gold_counted, gold_due]]
+	return " ".join(said.map(str)) + (" big" if big else "")
 
 
 # --- The art: drawn here at the world's scale, a pixel a world pixel ---------
