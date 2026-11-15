@@ -10,6 +10,109 @@ Each entry holds:
 
 ## Runs
 
+### 2026-11-15, v0.369.0 (the fourth run: a focus on the tricks)
+
+**Players:** the fighter alone, on Fable, with 90 looks and a focus: the six foe tricks of PIX-489 (v0.368), with the night shadows of PIX-490 (v0.369) on the side. There was no comparison (`compare: "none"`). It ran through a copy of the workflow that adds `args.focus` to the brief (scratchpad/playtest-focus.js). Triage and the replay ran on Opus.
+
+**Findings:** 14 sent. 6 held and 8 dropped. Triage dropped one more line from the summary. Triage replayed 1 bug and confirmed it in 2 of 2 tries. Filed, all at Low:
+- S3, confirmed by replay:
+  - PIX-496: a console error from light_rig.gd on every map change at night. A freed lamp fails `_cast_shadows`' typed filter.
+- S3, judged from screenshots:
+  - PIX-493: roll away twice and the wolves walk home and heal to full. PIX-489's run back out carries a wolf past the 8-cell leash (giveUpTiles), and a common foe is made whole at home. The fix is Tom's call: a longer leash mid-fight, or wounds kept for a while.
+  - PIX-494: the Bestiary says 23 xp, but the kill floats +7 XP. The wild share and the level gap are applied but not explained.
+  - PIX-495: the camp torch throws a hard-edged wedge of light at night. It is new with PIX-490.
+- S4: PIX-497 lists 2 nits:
+  - the split slimes' marks float far above them, and one stands on the hero;
+  - the biting wolf and its spark cover the hero.
+
+| session | looks | sent | held | dropped |
+|---|---|---|---|---|
+| fighter (fable) | 75 of 90 (25 of them `start`'s first picture) | 14 | 6 (PIX-493, 494, 495; 496 confirmed; 2 nits) | 8, and 1 from the summary |
+
+**False alarms, and the rule that stops each:**
+- Three came from the focus text itself, which the orchestrator wrote:
+  - "A level-1 hero barely survives one Dire Wolf, for +7 XP". The focus asked: "a level-1 hero takes about 14 s for a lone wolf: too long?". The `fight` preset's foe takes the level of its region, so this wolf is level 4. How hard a fight is, is Tom's call. Rule: a focus's questions of taste get answered in the summary's verdict, never as findings.
+  - "The Bestiary names the trick only after a kill". The focus said it "names a trick once seen". In fact the row appears with the first kill (spoils.gd), and the trick's line comes with it. Rule: the orchestrator checks every design claim in a focus against the code before the run.
+  - "The ghost fades after two strikes once, then takes nine in a row". The focus left out the ghost's 5 s rest (combat.json tricks.ghost `every`). Rule: same as above, and a focus gives each trick's rest.
+- Three stretched rules that SKILL.md already has, because the focus asked "is each tell readable" and "does the bone pile read":
+  - "The crab's raised claws are hard to see". How strong a warning is, is Tom's call. But the rule says "a foe's big attack", and a guard is not an attack. Rule: the rule covers every tell (an attack, a guard, a fade, a rise).
+  - "The bone pile looks like a dead skeleton". In its last 1.8 s the pile shakes, flashes and rattles, and one still picture can't show that. Rule: before calling a tell missing, take two or three looks across it.
+  - "'10 gold lighter' while the gold goes up by one". It was seen once: a wolf's gold landed in the same moment, and the second fall matched its message. The try-it-twice rule already covers this.
+- Two were already ticketed and open:
+  - the goblin's "-N gold" float on the sand road belongs with PIX-484's float nit (to add there);
+  - the slain goblin's coins are part of PIX-492.
+  - Players don't check Linear, so no rule changes.
+- From the summary: `seconds` moved about 2 s with the codex open. GameClock counts physics frames while a screen pauses the tree. This is a tool line for PIX-485.
+
+**Stuck or wasted looks:**
+- No step held it more than six looks. The first wolf (s1, level 1) took the most: 10 looks, while it learned the hit-and-run.
+- It played 25 short sessions, mostly through its own scripts (brawl.py, until.py, mode.py, rollfight.py). They sent 1,053 `keys` commands in 23 minutes and read `foes[].mode` (`pile`, `cast`, `flee`, `homeward`) and the cells without a look. That is how every verdict came with seconds and health lost. Worth keeping, like the French reader's typo.py. Its times are a script's, sharper than a player's: the level-1 wolf took 10 s with clean timing and 20 s with swings at empty cells.
+- It stopped at 75 of its 90 looks with its page's items left. The focus said "the fights are the focus", and nothing said what to do once the focus was covered.
+- 25 of the 75 looks were `start`'s first picture. Nothing says whether that picture counts as a look.
+- It never opened three of its screenshots (s11 look-004, s13 look-005, s22 look-002). One finding cited s13 look-005 on its state alone.
+- Six play.py daemons from another agent (ports 8901 to 8906) ran at the same time. Its own port kept them apart, and none is left running.
+
+**Checklist items nobody reached:**
+- In the focus:
+  - skills against the tricks: a skill on a faded ghost, on a guarding crab's front, on a bone pile;
+  - an elite's own move beside its trick (an elite wolf's `cast` was seen, not measured);
+  - any role but the warrior beyond one or three fights (a ranger once, a rogue once, a mage three times).
+- On the fighter's page:
+  - the elite's cleave measured: unreached for the third fighter run;
+  - the cleric, the paladin and the necromancer: also the third run;
+  - keys 5 and 6 at level 20: the second run;
+  - the ranged shot at four cells and the shooters' glow (outside this focus).
+
+**Fable, against its last run (no comparison this run):**
+
+| player | 2026-11-13 | 2026-11-15, focus |
+|---|---|---|
+| fighter (fable) | 69 of 70 looks, 8 sent, 8 held, 2 bugs confirmed | 75 of 90 looks, 14 sent, 6 held, 1 bug confirmed, 8 dropped |
+
+- What it did well:
+  - It gave a measured verdict for each trick.
+  - It found PIX-493: PIX-489's dart running into the old leash, a clash no scripted flow tests.
+  - It caught the night-shadow seam (PIX-495) and the light_rig error (PIX-496), though the fights were the focus.
+  - Every held finding's picture showed what it said.
+- Where it fell short:
+  - It stopped 15 looks early with items left.
+  - It left three pictures unread.
+  - It left two observations in its summary: the wolves are black on dark at night, and a roll into the river bank goes nowhere.
+- The drops trace to the focus text (3), to the focus's questions of taste (3) and to Linear (2), not to misread pictures.
+- **Verdict:** the fighter stays on Fable. No other player moves. The newcomer comparison (Fable against Sonnet) planned on 2026-11-13 is still owed, so the next full run keeps the default `compare`.
+
+**Verdicts for Tom (the summary's, not findings):**
+- The goblin is the best of the six.
+- The ghost drags most: 10.4 s and 52 of 74 hp lost at one level under.
+- The crab's tell is the weakest. Its claws stay up about 2 s every 4.4 s, and walking round takes about 1 s of that.
+- The wolf is fair at its own level and harsh below it. At night the wolves are black on dark, and their crouch can't be read.
+- Rolling into the river bank goes nowhere and the bite lands: a wall, by design.
+
+**Tool (lines for PIX-485):**
+- `foes[].mode` shows nothing for the wolf's crouch. The ghost's fade, the crab's guard and an elite's move all show as `cast`.
+- `seconds` keeps running while a screen pauses the tree (about 2 s with the codex open), so it does not measure time in play.
+
+**Rules changed:**
+- SKILL.md:
+  - the confusing rule covers every tell, and a moving tell needs two or three looks;
+  - how hard a fight is and what it pays is a verdict, not a finding;
+  - the summary holds a focus's verdicts;
+  - cite only screenshots you read;
+  - `start`'s picture counts as a look;
+  - once a focus is covered, the looks left go to the page's route;
+  - the orchestrator checks a focus against the code.
+- players/fighter.md:
+  - the tricks as built (rests, Bestiary on the first kill, `foes[].mode`);
+  - the `fight` foe takes its region's level;
+  - start with the gaps: level 20 elite, then the cleric, paladin or necromancer;
+  - skills against the tricks;
+  - scripts to time, pictures to judge.
+- triage.md: a drop made by design names the brief or focus line that misled the player.
+- pixelheim-playtest.js:
+  - `args.focus` folded in, with the "once covered" line;
+  - `compare: "none"` means no comparison;
+  - models unchanged.
+
 ### 2026-11-13, v0.360.0 (the third run: Fable players)
 
 **Players:** fighter, french and menus, all three on Fable. Tom said on 2026-11-13: « utilise fable autant que tu veux ». They ran through a copy of the workflow with `args.model` (scratchpad/playtest-fable.js). There was no comparison run. Triage and replays ran on Opus. The second run (2026-11-12: newcomer and explorer on Sonnet) is the entry below.
@@ -245,7 +348,7 @@ Each entry holds:
 - Don't report the day clock standing still while the hero does (PIX-246): folded into `SKILL.md`.
 - A greyed button or row is one you can't use yet, not a finding: folded into `SKILL.md`.
 - Don't report the headless Chrome's WebGL warnings in `errors`: folded into `SKILL.md`.
-- Confusing means a big attack with no warning at all, not a warning judged too short: folded into `SKILL.md`.
+- Confusing means a tell (an attack, a guard, a fade, a rise) with no warning at all, not a warning judged too short: folded into `SKILL.md` (widened from attacks on 2026-11-15).
 - Use the whole budget, and after six looks stuck on one step, report it and go past it: folded into `SKILL.md`.
 - A text field types every one-letter key; face someone before you press E: folded into `SKILL.md`.
 - Send what you saw as a finding (S4 when unsure) instead of leaving it in the summary: folded into `SKILL.md`.
@@ -259,7 +362,12 @@ Each entry holds:
 - The players run on Fable, the newcomer and explorer on Sonnet until compared: folded into `SKILL.md` and `.claude/workflows/pixelheim-playtest.js`.
 - `wait:0.5` after a key that starts a fade, stop an E loop once the talk has closed, and wait out a typing caption: folded into `SKILL.md`.
 - A row's … with its words elsewhere, a footer key that says where, an undoable choice and the `--level` kit's look are not findings: folded into `SKILL.md`.
-- The summary holds no observations, and triage replays any left there that can cost the player: folded into `SKILL.md` and `triage.md`.
+- The summary holds no observations (a focus run's verdicts are the one exception, since 2026-11-15), and triage replays any left there that can cost the player: folded into `SKILL.md` and `triage.md`.
 - The fighter plays one role at level 20, an elite with a ranged role, a measured cleave and a shot at four cells: folded into `players/fighter.md`.
 - The French reader judges typography against release.md's house style only, and starts the night's steps beside their place: folded into `players/french.md`.
 - The menu tester spends points from `--flags stats` and `--flags skills`, visits every counter, and leaves the dock alone: folded into `players/menus.md`.
+- A focus states the design as built (each trick's rest, when a screen shows it) and asks its questions of taste as summary verdicts: folded into `SKILL.md` and `.claude/workflows/pixelheim-playtest.js`.
+- The confusing rule covers every tell; a moving tell needs two or three looks: folded into `SKILL.md`.
+- How hard a fight is and what it pays is a verdict, not a finding: folded into `SKILL.md`.
+- `start`'s picture counts as a look; a covered focus leaves its looks to the page's route: folded into `SKILL.md` and `.claude/workflows/pixelheim-playtest.js`.
+- The fighter knows the tricks as built and starts with its page's gaps (level 20 elite, cleric, paladin, necromancer): folded into `players/fighter.md`.
