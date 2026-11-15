@@ -8426,7 +8426,7 @@ msgstr "Clarté"
 
 #: assets/data/combat.json
 msgid "Claws up: strike its side or back."
-msgstr "Pinces levées : frappez flanc ou dos."
+msgstr "Pinces levées : frappez-le de côté ou de dos."
 
 #: assets/data/combat.json
 msgid "Cleave"
@@ -8870,7 +8870,7 @@ msgstr "Elle connaît le chemin."
 
 #: assets/data/combat.json
 msgid "Its bite snatches gold. Slay it for more."
-msgstr "Mord et vole de l'or. Tué, il rend plus."
+msgstr "Sa morsure vole de l'or. Tuez-le, il rend plus."
 
 #: assets/data/combat.json
 msgid "Judgement II"

@@ -516,3 +516,12 @@ func test_a_trick_seen_is_kept_once_and_saved() -> void:
 	var fresh := {"quests": {}}
 	ProgressionState.new().write_into(fresh)
 	assert_false(fresh.has("tricks"), "saved only once there is one")
+
+
+func test_a_small_slime_does_not_tick_a_slime_bounty() -> void:
+	_lent.progression.quests["slime_trouble"] = {"progress": 0, "done": false}
+	var slime := Bestiary.spawn("slime")
+	_lent.spoils.defeat_monster(Tricks.small(slime, Bestiary.trick("slime")), "", "", 1)
+	assert_eq(int(_lent.progression.quests["slime_trouble"]["progress"]), 0, "its small ones are not three kills")
+	_lent.spoils.defeat_monster(slime, "", "", 1)
+	assert_eq(int(_lent.progression.quests["slime_trouble"]["progress"]), 1)

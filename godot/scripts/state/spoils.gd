@@ -67,7 +67,8 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 		var objective: Dictionary = quest["objective"]
 		if entry.is_empty() or entry["done"]:
 			continue
-		var counts: bool = (objective["kind"] == "kill" and objective["monsterId"] == fighter["id"] and not fighter.has("named")) \
+		# A slime's small ones (PIX-489) don't count: a bounty would go three times as fast.
+		var counts: bool = (objective["kind"] == "kill" and objective["monsterId"] == fighter["id"] and not fighter.has("named") and not fighter.get("small", false)) \
 			or (objective["kind"] == "hunt" and objective["named"] == fighter.get("named", ""))
 		if not counts:
 			continue
