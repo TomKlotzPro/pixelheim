@@ -536,6 +536,8 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/mirefen/feature.gd` — The Mirefen alive in the harness (PIX-401)
 - `scripts/features/mirefen/mire_art.gd` — What the Mirefen stands in that Shade's sheets don't draw (PIX-401)
 - `scripts/features/mirefen/mire_dressing.gd` — The Mirefen alive (PIX-401, the v0.307 world audit: « a uniform fen of puddles and a few shrubs, one ruin and two camps »)
+- `scripts/features/night_shadows/feature.gd` — The lantern's and the lamps' shadows in the harness (PIX-490)
+- `scripts/features/night_shadows/night_shadows_layer.gd` — What blocks the lantern's and the lamps' light on a map (PIX-490), once everything stands
 - `scripts/features/waysides/feature.gd` — The Reach's wayside lanterns in the harness (PIX-397, step 4)
 - `scripts/features/waysides/waysides.gd` — Wayside lanterns on the Reach's main roads (PIX-397, step 4; the v0.307 world audit: « at night the Reach is unlit beyond the town »)
 - `scripts/fire_art.gd` — The fires of a burning house (PIX-327): the Night of Ash's ruins and the Night of Bells' roofs.
@@ -657,6 +659,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/state/lamps.gd` — The land heals round the lamps (PIX-323, Something to Come Back To's step 4)
 - `scripts/state/letters.gd` — Maren's five letters (PIX-253, the main story's new beginning).
 - `scripts/state/main_quest.gd` — The main quest (PIX-144): chapters of steps read from the save, so the game can always say what comes next
+- `scripts/state/night_shadows.gd` — The rules of the shadows the lantern and the lamps cast in the dark (PIX-490): what blocks their light, from what footprint, and which few lights cast.
 - `scripts/state/packs.gd` — Wild packs with homes (PIX-142): each pack lives at its spawn's home, wanders a few tiles from it, notices a hero it can see, gives up a chase that strays too far and walks home healed
 - `scripts/state/post.gd` — The Pixelheim Post (PIX-320, Something to Come Back To's first step)
 - `scripts/state/post_state.gd` — The Pixelheim Post as the hero has kept it (PIX-320): only what they did.

@@ -96,6 +96,9 @@ func _ready() -> void:
 	gait = Gait.new(sprite, art)
 	_play("idle")
 	_lay_shadow()
+	# The hero's feet block the lamps' light, never their own lantern's
+	# (PIX-490).
+	add_child(NightShadowsLayer.occluder_of(NightShadows.FEET, NightShadows.FOLK))
 	GameState.inventory_changed.connect(dress)
 
 	var shape := CollisionShape2D.new()

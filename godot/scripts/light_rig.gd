@@ -60,8 +60,18 @@ var time := 0.0
 var wind := 1.0
 ## How dark a cloud's shadow is at its heart, in full day.
 const CLOUD_SHADE := 0.17
+## Where the hero carries the lantern, from their feet: at their feet
+## since it casts shadows (PIX-490; it was 6 pixels up, at the chest), as
+## the hero's body keeps their feet out of every wall, and a light inside a
+## wall's cell is shut in, its whole pool gone dark under a north wall.
+const LANTERN_AT := Vector2.ZERO
 ## How far the hero's lantern reaches untrimmed, in pixels.
 const LANTERN_REACH := 96.0
+## The lights casting shadows now (PIX-490, NightShadows): the lantern
+## and the lamps nearest the hero, up to the cap; and how many of the
+## flames burning could (the report's nightshadows=).
+var casting: Array[PointLight2D] = []
+var candidates := 0
 ## No cloud shadows while true: the harness's motion check (PIX-275) finds
 ## the hero by its shirt's exact reds, which a shadow drifting over it changes.
 var clear_sky := false
@@ -161,7 +171,9 @@ func _screen_pass(layer: CanvasLayer, shader: Shader) -> ColorRect:
 ## `lantern` share), and it reaches that much further, from the moment he
 ## comes home.
 func give_lantern(player: Node2D) -> void:
-	lantern = Lights.make(Vector2(0, -6), lantern_reach(GameState.holdings.settler_share("lantern")), Lights.LANTERN, Lights.LANTERN_ENERGY, true)
+	lantern = Lights.make(LANTERN_AT, lantern_reach(GameState.holdings.settler_share("lantern")), Lights.LANTERN, Lights.LANTERN_ENERGY, true)
+	# The hero never blocks their own lantern (PIX-490).
+	lantern.shadow_item_cull_mask = NightShadows.SCENERY
 	player.add_child(lantern)
 	GameState.settlers_changed.connect(_trim_lantern)
 
@@ -244,6 +256,7 @@ func _process(delta: float) -> void:
 	# The day through a room's window follows the sky, not the room's dark
 	# (PIX-311), and dims under rain.
 	var day := (1.0 - Lights.darkness(Lights.outdoor(GameState.world.steps))) * (1.0 - 0.5 * rain)
+	var flames: Array[PointLight2D] = []
 	for node in get_tree().get_nodes_in_group("lights"):
 		var lamp := node as PointLight2D
 		if lamp.has_meta("tint"):
@@ -256,6 +269,53 @@ func _process(delta: float) -> void:
 			energy *= 1.0 + Lights.PULSE_DEPTH * sin(t * Lights.PULSE_SPEED)
 		lamp.energy = energy
 		lamp.visible = energy > 0.01
+		if lamp.visible and lamp.has_meta("casts"):
+			flames.append(lamp)
+	_cast_shadows(flames, delta)
+
+
+## The lantern and the nearest of `flames` (the map's lamps, torches and
+## fires burning now) cast shadows (PIX-490, NightShadows): on the floor
+## alone (Lights.FLOOR), each leaving a share of its light in its shadow,
+## a lamp's fading in and out as the hero nears and leaves it. Only where
+## the map has occluders (not in a room), in the dark, and with the
+## Shadows setting on.
+func _cast_shadows(flames: Array[PointLight2D], delta: float) -> void:
+	var on: bool = GameState.settings.shadows and is_instance_valid(lantern) and world.get("view") != null \
+		and not NightShadowsLayer.laid(world.view).is_empty()
+	var cap := NightShadows.LAMPS if on else 0
+	candidates = flames.size()
+	var wanted: Array[PointLight2D] = []
+	if on:
+		var hero: Vector2 = (lantern.get_parent() as Node2D).global_position
+		var far := PackedFloat32Array()
+		for flame in flames:
+			far.append(flame.global_position.distance_to(hero))
+		for i in NightShadows.nearest(far, cap):
+			wanted.append(flames[i])
+	# Those casting already, then those wanted: each a step on.
+	var now: Array[PointLight2D] = []
+	var lamps := casting.filter(func(light: PointLight2D) -> bool: return is_instance_valid(light) and light != lantern)
+	for light: PointLight2D in wanted:
+		if not light in lamps:
+			lamps.append(light)
+	var busy := casting.size() - int(lantern in casting)
+	for light: PointLight2D in lamps:
+		var before := float(light.get_meta("shade", 0.0))
+		# A lamp gone out (the day, a doused fire) stops at once.
+		var strength := NightShadows.faded(before, light in wanted, busy < cap, delta) if on and light.visible else 0.0
+		busy += int(before == 0.0 and strength > 0.0)
+		light.set_meta("shade", strength)
+		light.shadow_enabled = strength > 0.0
+		if strength > 0.0:
+			light.shadow_color = NightShadows.left_in_shadow(light.color, light.energy, strength)
+			now.append(light)
+	if is_instance_valid(lantern):
+		lantern.shadow_enabled = on and lantern.visible
+		if lantern.shadow_enabled:
+			lantern.shadow_color = NightShadows.left_in_shadow(lantern.color, lantern.energy, 1.0)
+			now.push_front(lantern)
+	casting = now
 
 
 ## The world's clock and the wind, for the shaders: with reduced motion the

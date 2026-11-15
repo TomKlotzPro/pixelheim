@@ -135,7 +135,8 @@ static func look_at(map: MapData, cell: Vector2i) -> String:
 ## .choice), in the woods' `look` (look_at; "" for Shade's free tree as
 ## picked), with the paid pack or not: [{"sheet", "rect" (on the sheet), "foot"
 ## (from the cell's top-left, in pixels), "own" (drawn in its own colours, not
-## the region's tone)}], back to front.
+## the region's tone), "tall" (a tree or a rock, not undergrowth)}], back to
+## front.
 static func pieces(tile: String, cell: Vector2i, choice: int, look: String, paid: bool) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	if choice < 0:
@@ -148,7 +149,7 @@ static func pieces(tile: String, cell: Vector2i, choice: int, look: String, paid
 		return out
 	if choice == 702:
 		# A rock stays a rock.
-		out.append(_free(choice, foot))
+		out.append(_tall(_free(choice, foot)))
 		return out
 	var stand := thickness(cell) if tile == FOREST else 0.5
 	var thick := stand >= THICKET
@@ -168,7 +169,7 @@ static func pieces(tile: String, cell: Vector2i, choice: int, look: String, paid
 ## small one in a glade), or Shade's free one picked.
 static func _tree(cell: Vector2i, salt: int, foot: Vector2, look: String, medieval: bool, choice: int, big: bool, small := false) -> Dictionary:
 	if not medieval:
-		return _free(choice, foot) if salt == 4 else _free(_free_partner(cell, choice), foot)
+		return _tall(_free(choice, foot) if salt == 4 else _free(_free_partner(cell, choice), foot))
 	var h := _hash(cell, salt)
 	var kinds: Array = LOOKS[look][0]
 	var kind: String = kinds[h % kinds.size()]
@@ -176,12 +177,19 @@ static func _tree(cell: Vector2i, salt: int, foot: Vector2, look: String, mediev
 		kind = "autumn"
 	if big and look != SNOWY:
 		var at: Vector2i = BIG[(h >> 8) % BIG.size()]
-		return {"sheet": SHEET, "rect": Rect2(at * 16, Vector2(32, 32)), "foot": foot, "own": true}
+		return {"sheet": SHEET, "rect": Rect2(at * 16, Vector2(32, 32)), "foot": foot, "own": true, "tall": true}
 	var short := small or (h >> 12) % 100 < 22
 	var from: Dictionary = SMALL if short else TALL
 	var trees: Array = from[kind]
 	var at: Vector2i = trees[(h >> 8) % trees.size()]
-	return {"sheet": SHEET, "rect": Rect2(at * 16, Vector2(16, 16 if short else 32)), "foot": foot, "own": true}
+	return {"sheet": SHEET, "rect": Rect2(at * 16, Vector2(16, 16 if short else 32)), "foot": foot, "own": true, "tall": true}
+
+
+## `piece` as a tree or a rock: tall enough to block a lantern's light
+## (PIX-490, NightShadows), as the undergrowth isn't.
+static func _tall(piece: Dictionary) -> Dictionary:
+	piece["tall"] = true
+	return piece
 
 
 ## A second free tree for a thicket: another of Scatter's forest picks.

@@ -2485,6 +2485,10 @@ msgid "A settler with something to ask still heals you or plays first, then asks
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A shadow is never pitch black, and what stands keeps its light on the side facing the flame"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A skeleton falls to a pile of bones and rises once, unless you strike the pile"
 msgstr ""
 
@@ -2694,6 +2698,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "At night your lantern and the three nearest lamps, torches or fires cast soft shadows on the ground"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4385,6 +4393,10 @@ msgid "Lantern Night keeps its promises: if it begins while you're in town, the 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Lantern Shadows"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
 msgstr ""
 
@@ -5773,6 +5785,10 @@ msgid "Shadows became a tone, not a hole: half-strength and shorter under a high
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Shadows can be turned off in Options, next to Glow"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Shadowstep now crosses up to four cells: the rogue fades, slips past the foe and strikes from behind"
 msgstr ""
 
@@ -5922,6 +5938,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Stakes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Stalls, benches, crates, trees, rocks, walls and passers-by block the light, and their shadows turn as you walk past"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -18130,6 +18150,10 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "Reset keys to defaults"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Shadows"
 msgstr ""
 
 #: scripts/options_screen.gd

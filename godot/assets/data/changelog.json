@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.369.0",
+      "date": "2026-11-15",
+      "codename": "Lantern Shadows",
+      "notes": [
+        "At night your lantern and the three nearest lamps, torches or fires cast soft shadows on the ground",
+        "Stalls, benches, crates, trees, rocks, walls and passers-by block the light, and their shadows turn as you walk past",
+        "A shadow is never pitch black, and what stands keeps its light on the side facing the flame",
+        "Shadows can be turned off in Options, next to Glow"
+      ]
+    },
+    {
       "version": "0.368.0",
       "date": "2026-11-15",
       "codename": "Foes Come Alive",
