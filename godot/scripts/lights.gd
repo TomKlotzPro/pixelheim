@@ -152,7 +152,7 @@ static func make(at: Vector2, radius: float, color: Color, energy: float, flicke
 	# LightRig says so (PIX-490, NightShadows).
 	light.shadow_filter = Light2D.SHADOW_FILTER_PCF5
 	light.shadow_filter_smooth = NightShadows.SOFT
-	light.shadow_item_cull_mask = NightShadows.SCENERY | NightShadows.FOLK
+	light.shadow_item_cull_mask = NightShadows.LAMP
 	light.position = at
 	light.set_meta("energy", energy)
 	light.set_meta("flicker", flicker)

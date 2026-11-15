@@ -3833,6 +3833,10 @@ msgid "Fixed: the first night's line about your skill showed a raw key token ins
 msgstr "Corrigé : la ligne de la première nuit sur votre compétence affichait un code brut au lieu de sa touche"
 
 #: assets/data/changelog.json
+msgid "Flashes can be turned off in Options; off, or with Reduce motion, a strike is one soft brightening"
+msgstr "Les Éclairs se désactivent dans les Options ; désactivés, ou avec Réduire les animations, un éclair n'est qu'une douce lueur"
+
+#: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
 msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la surprise a disparu"
 
@@ -4481,6 +4485,10 @@ msgid "Lighter Load"
 msgstr "Bagage léger"
 
 #: assets/data/changelog.json
+msgid "Lightning flashes over the land and, at night, throws the shadows of trees, stalls and folk for an instant"
+msgstr "Les éclairs illuminent le pays et, la nuit, projettent un instant les ombres des arbres, des étals et des passants"
+
+#: assets/data/changelog.json
 msgid "Lights Along the Roads"
 msgstr "Lumières sur les routes"
 
@@ -4887,6 +4895,10 @@ msgstr "Rien de perdu"
 #: assets/data/changelog.json
 msgid "Now and then a shower crosses the open land: rain slants down and splashes, the light turns grey, the lamps come up, the birds fall quiet and you hear the rain"
 msgstr "De temps en temps, une averse traverse les terres : la pluie tombe en biais et éclabousse, la lumière se fait grise, les lampes s'allument, les oiseaux se taisent et l'on entend la pluie"
+
+#: assets/data/changelog.json
+msgid "Now and then a shower is a thunderstorm: heavier slanted rain, a darker sky and a harder wind in the trees"
+msgstr "De temps en temps, une averse tourne à l'orage : pluie plus drue et oblique, ciel plus sombre, vent plus fort dans les arbres"
 
 #: assets/data/changelog.json
 msgid "OLD GEAR BACK TO THE FORGE: Hilda's new Salvage tab breaks a piece down into half of what it was made of (or ember shards), and from Smithing 8 her Reforge tab rolls a piece's rarity again - never down - with fresh bonus stats"
@@ -5379,6 +5391,10 @@ msgstr "Promesses et toits"
 #: assets/data/changelog.json
 msgid "Property That Pays"
 msgstr "Des biens qui rapportent"
+
+#: assets/data/changelog.json
+msgid "Puddles gather on the paths and mirror the lamps, and the ground dries over the next hour"
+msgstr "Des flaques se forment sur les chemins et reflètent les lampes, et le sol sèche dans l'heure qui suit"
 
 #: assets/data/changelog.json
 msgid "QUESTS on the coast: the smugglers' story and the Tidecaller for Wenna, crabs on the jetty and the lighthouse lens for Brin, your first catch for Ola, the smugglers' captain for Rook - and in Pixelheim, Pip's cat wants fresh fish"
@@ -7435,6 +7451,14 @@ msgstr "À portée de pouce"
 #: assets/data/changelog.json
 msgid "Thumbs Up"
 msgstr "Pouce levé"
+
+#: assets/data/changelog.json
+msgid "Thunder Over the Reach"
+msgstr "L'orage sur la Reach"
+
+#: assets/data/changelog.json
+msgid "Thunder follows the flash, later the farther the strike, and muffled under a roof"
+msgstr "Le tonnerre suit l'éclair, d'autant plus tard qu'il est tombé loin, et assourdi sous un toit"
 
 #: assets/data/changelog.json
 msgid "Tidy Up"
@@ -18087,6 +18111,10 @@ msgstr "Commandes"
 #: scripts/options_screen.gd
 msgid "Effects volume"
 msgstr "Volume des effets"
+
+#: scripts/options_screen.gd
+msgid "Flashes"
+msgstr "Éclairs"
 
 #: scripts/options_screen.gd
 msgid "Fullscreen"

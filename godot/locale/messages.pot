@@ -3833,6 +3833,10 @@ msgid "Fixed: the first night's line about your skill showed a raw key token ins
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Flashes can be turned off in Options; off, or with Reduce motion, a strike is one soft brightening"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
 msgstr ""
 
@@ -4481,6 +4485,10 @@ msgid "Lighter Load"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Lightning flashes over the land and, at night, throws the shadows of trees, stalls and folk for an instant"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Lights Along the Roads"
 msgstr ""
 
@@ -4886,6 +4894,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Now and then a shower crosses the open land: rain slants down and splashes, the light turns grey, the lamps come up, the birds fall quiet and you hear the rain"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Now and then a shower is a thunderstorm: heavier slanted rain, a darker sky and a harder wind in the trees"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5378,6 +5390,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Property That Pays"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Puddles gather on the paths and mirror the lamps, and the ground dries over the next hour"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7434,6 +7450,14 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Thumbs Up"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Thunder Over the Reach"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Thunder follows the flash, later the farther the strike, and muffled under a roof"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -18086,6 +18110,10 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "Effects volume"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Flashes"
 msgstr ""
 
 #: scripts/options_screen.gd
