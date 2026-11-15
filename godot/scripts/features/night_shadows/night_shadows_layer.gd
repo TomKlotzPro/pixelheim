@@ -127,7 +127,7 @@ static func _foot(node: Node, lights: PackedVector2Array, flames: Array) -> bool
 	if NightShadows.holds_light(stands, lights):
 		return false
 	for i in lights.size():
-		if NightShadows.holds_light(stands, lights.slice(i, i + 1), NightShadows.AGAINST):
+		if stands.grow(NightShadows.AGAINST).has_point(lights[i]):
 			(flames[i] as PointLight2D).remove_meta("casts")
 	var occluder := occluder_of(box.size, NightShadows.SCENERY)
 	occluder.position = box.get_center()

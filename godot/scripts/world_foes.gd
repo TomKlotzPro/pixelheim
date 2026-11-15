@@ -296,6 +296,7 @@ func _process(_delta: float) -> void:
 	for index in shown.size():
 		if leads[index] != index:
 			shown[index].level_tag.visible = false
+			shown[index].lead_tag(false)
 			continue
 		shown[index].show_level(top[index])
 		kept.append(shown[index])

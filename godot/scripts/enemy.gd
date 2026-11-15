@@ -150,6 +150,8 @@ var health_bar: ColorRect
 var health_bar_back: ColorRect
 ## "Lv N" beside the health bar (PIX-188).
 var level_tag: PanelContainer
+## Its tag is the one its pack shows (Foes hides the others': PIX-340).
+var tag_led := false
 ## A named foe's name over its head, or null.
 var name_plate: Label
 ## Poison, burn and stun from the hero's afflicting passives.
@@ -444,9 +446,19 @@ func make_way(hero: Vector2, delta: float) -> void:
 			words.modulate.a = alpha
 
 
+## Whether its tag is its pack's one; a mark up moves with it (a half's
+## "!" stands over a tag it shows, PIX-497).
+func lead_tag(leads: bool) -> void:
+	if tag_led == leads:
+		return
+	tag_led = leads
+	_turned()
+
+
 ## The level its tag reads (PIX-340: in a fight a pack's one tag reads the
 ## pack's highest), coloured by the gap to the hero's.
 func show_level(level: int) -> void:
+	lead_tag(true)
 	var words: Label = level_tag.get_child(0)
 	var text := Text.t("Lv %d") % level
 	if words.text != text:
@@ -855,10 +867,10 @@ func _place_mark(burst: Sprite2D) -> void:
 ## (PIX-188; a named foe's tag stands over its name), or over where the tag
 ## stands before it is laid out.
 func mark_foot() -> float:
-	# A slime's half wears its mark right over it (PIX-497): a tag's height
-	# up, over a blob 8 px tall whose tag its pack's one tag mostly hides,
-	# the "!" belonged to nothing.
-	if fighter.get("small", false):
+	# A slime's half whose tag its pack's one tag hides wears its mark right
+	# over it (PIX-497): a tag's height up, over a blob 8 px tall, the "!"
+	# belonged to nothing. The half showing the tag keeps it over the tag.
+	if fighter.get("small", false) and not tag_led:
 		return floorf(_over_head - MARK_CLEAR)
 	var tag_top := _over_head - TAG_HEIGHT
 	if level_tag != null and level_tag.size.y > 0.0:
