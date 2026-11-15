@@ -240,6 +240,9 @@ func _howl(move: Dictionary) -> void:
 			spot = cell
 		var wolf: Node = world.foes.spawn_enemy(move["monsterId"], spot, enemy.region, "", false, true, Vector2i((enemy.home / TILE).floor()))
 		wolf.called = true
+		# A boss's fight was tuned on plain adds (PIX-489): no splitting, rising
+		# or hit and run from the foes it calls, and each is counted to its end.
+		wolf.plain()
 		called.append(wolf)
 		world.fx.appear(wolf)
 		wolf.notice()

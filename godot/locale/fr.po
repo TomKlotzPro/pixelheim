@@ -2313,6 +2313,14 @@ msgid "A foe's level plate and health bar fade while your hero stands under them
 msgstr "La plaque de niveau et la barre de vie d'un ennemi s'effacent quand votre héros passe dessous, et les chiffres de vos coups montent par-dessus les plaques"
 
 #: assets/data/changelog.json
+msgid "A ghost struck twice fades and comes back beside you; a crab with its claws up takes little from the front, so strike its side or back"
+msgstr "Un fantôme frappé deux fois s'efface et revient à vos côtés ; un crabe aux pinces levées encaisse de face, frappez-le de côté ou de dos"
+
+#: assets/data/changelog.json
+msgid "A goblin's bite snatches a few coins and it runs off; slay it and you get them back with half again"
+msgstr "La morsure d'un gobelin vole quelques pièces et il s'enfuit ; tuez-le et il les rend avec la moitié en plus"
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr "Un « ! » doré au-dessus de qui a une quête pour vous, un « ? » doré au-dessus de qui attend que vous en remettiez une, et un « ? » gris tant qu'une quête prise auprès de lui est en cours ; les Options peuvent les masquer (Marqueurs de quête)"
 
@@ -2475,6 +2483,14 @@ msgstr "Une sauvegarde que le jeu ne sait pas lire n'est plus jamais affichée c
 #: assets/data/changelog.json
 msgid "A settler with something to ask still heals you or plays first, then asks"
 msgstr "Un nouvel habitant qui a quelque chose à demander vous soigne ou joue toujours d'abord, puis demande"
+
+#: assets/data/changelog.json
+msgid "A skeleton falls to a pile of bones and rises once, unless you strike the pile"
+msgstr "Un squelette tombe en un tas d'os et se relève une fois, à moins de frapper le tas"
+
+#: assets/data/changelog.json
+msgid "A slain slime bursts into two small slimes; the Dire Wolf darts in to bite and runs back out, one of the pack at a time"
+msgstr "Un slime vaincu éclate en deux petits slimes ; le loup sinistre s'élance pour mordre puis recule, un seul de la meute à la fois"
 
 #: assets/data/changelog.json
 msgid "A small quill writes by the clock whenever the game saves at a moment that matters, and the pause menu says how long ago it last saved"
@@ -3811,6 +3827,10 @@ msgstr "Corrigé : la ligne de la première nuit sur votre compétence afficha
 #: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
 msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la surprise a disparu"
+
+#: assets/data/changelog.json
+msgid "Foes Come Alive"
+msgstr "Les monstres s'éveillent"
 
 #: assets/data/changelog.json
 msgid "Foes chasing you go round the well, the fountain or a villager in the way, instead of standing against it"
@@ -5775,6 +5795,10 @@ msgstr "Les boutiques s'ouvrent désormais sur leurs marchandises, les titres de
 #: assets/data/changelog.json
 msgid "Signposted"
 msgstr "Balisé"
+
+#: assets/data/changelog.json
+msgid "Six common foes have a trick of their own, each shown before it lands, and the Bestiary names it once you have seen it"
+msgstr "Six monstres communs ont chacun leur ruse, toujours annoncée avant de frapper, et le Bestiaire la nomme une fois vue"
 
 #: assets/data/changelog.json
 msgid "Six new places to wear something: helmet, gloves, boots, collar, and TWO rings"
@@ -8341,6 +8365,10 @@ msgid "Berserk costs only 4 HP."
 msgstr "Furie ne coûte que 4 PV."
 
 #: assets/data/combat.json
+msgid "Bites and runs. A pack takes turns."
+msgstr "Mord et file. La meute se relaie."
+
+#: assets/data/combat.json
 msgid "Black Harvest"
 msgstr "Moisson noire"
 
@@ -8419,6 +8447,10 @@ msgstr "Braises"
 #: assets/data/combat.json
 msgid "Clarity"
 msgstr "Clarté"
+
+#: assets/data/combat.json
+msgid "Claws up: strike its side or back."
+msgstr "Pinces levées : frappez-le de côté ou de dos."
 
 #: assets/data/combat.json
 msgid "Cleave"
@@ -8861,6 +8893,10 @@ msgid "It knows the way."
 msgstr "Elle connaît le chemin."
 
 #: assets/data/combat.json
+msgid "Its bite snatches gold. Slay it for more."
+msgstr "Sa morsure vole de l'or. Tuez-le, il rend plus."
+
+#: assets/data/combat.json
 msgid "Judgement II"
 msgstr "Jugement II"
 
@@ -9273,6 +9309,10 @@ msgid "Rips the life from a foe: heavy INT damage, and half of it heals you."
 msgstr "Arrache la vie d'un ennemi : lourds dégâts d'INT, dont la moitié vous soigne."
 
 #: assets/data/combat.json
+msgid "Rises once. Strike the bones."
+msgstr "Se relève une fois. Frappez les os."
+
+#: assets/data/combat.json
 msgid "Rot given ambition."
 msgstr "La pourriture prend de l'ambition."
 
@@ -9405,6 +9445,10 @@ msgid "Spellweaver"
 msgstr "Tisse-sort"
 
 #: assets/data/combat.json
+msgid "Splits in two when slain."
+msgstr "Se scinde en deux à sa mort."
+
+#: assets/data/combat.json
 msgid "Stalwart"
 msgstr "Inflexible"
 
@@ -9439,6 +9483,10 @@ msgstr "Fouet d'orage"
 #: assets/data/combat.json
 msgid "Strike a vital spot."
 msgstr "Frappe un point vital."
+
+#: assets/data/combat.json
+msgid "Struck twice, it fades away."
+msgstr "Touché deux fois, il s'efface."
 
 #: assets/data/combat.json
 msgid "Sun Incarnate"
@@ -19592,6 +19640,10 @@ msgstr "Hilda trempe la pièce dans l'eau noire des profondeurs : +1 %s."
 msgid "Hilda reforges it: %s."
 msgstr "Hilda reforge la pièce : %s."
 
+#: scripts/state/tricks.gd
+msgid "Small %s"
+msgstr "Petite %s"
+
 #: scripts/state/upkeep.gd
 msgid " Restored %s."
 msgstr " Vous récupérez %s."
@@ -19807,6 +19859,10 @@ msgstr "Chantiers du village"
 #: scripts/town_hall_screen.gd
 msgid "When it's done: %s."
 msgstr "Une fois terminé : %s."
+
+#: scripts/trick_brain.gd
+msgid "-%d gold"
+msgstr "-%d or"
 
 #: scripts/ui_style.gd
 msgid "Arrows"

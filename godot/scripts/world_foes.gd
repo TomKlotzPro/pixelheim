@@ -71,6 +71,13 @@ var stood := 0
 ## reports it), and when the last did.
 var fled := 0
 var frightened_at := -100.0
+## The tricks foes showed on this visit (PIX-489), each counted by what it
+## did (split, dart, snatch, pile, rose, fade, shell); the harness reports it.
+var tricks_shown := {}
+## Whose turn it is to dart in (a pack of wolves takes turns, PIX-489), and
+## when the next may start.
+var _turn: Variant = null
+var _turn_free_at := -100.0
 ## The ring round the hero (ring_spot): each hunter's spot, the physics
 ## tick it was worked out on, and where the hero stood.
 var _ring := {}
@@ -103,6 +110,51 @@ func spawn_enemy(species: String, cell: Vector2i, region := "", spawn_id := "", 
 	enemy.add_to_group("mobs")
 	world.actors.add_child(enemy)
 	return enemy
+
+
+## A foe that comes of another (PIX-489: the halves of a slain slime):
+## `fighter` as it is, at `at`, of its parent's pack and home - one more for
+## the pack to lose before it is scattered.
+func spawn_of(parent: Node, fighter: Dictionary, at: Vector2) -> Node:
+	var enemy := preload("res://scripts/enemy.gd").new()
+	enemy.world = world
+	enemy.fighter = fighter
+	enemy.region = parent.region
+	enemy.spawn_id = parent.spawn_id
+	enemy.position = at
+	enemy.home = parent.home
+	# One of a night's wave is still one (the night counts them).
+	for key: StringName in parent.get_meta_list():
+		enemy.set_meta(key, parent.get_meta(key))
+	enemy.add_to_group("mobs")
+	world.actors.add_child(enemy)
+	if parent.spawn_id != "":
+		pack_alive[parent.spawn_id] = int(pack_alive.get(parent.spawn_id, 1)) + 1
+	return enemy
+
+
+## A foe's trick shown (PIX-489): counted for this visit by `what` it did,
+## and its kind's line kept for the Bestiary.
+func showed(foe: Node, what: String) -> void:
+	tricks_shown[what] = int(tricks_shown.get(what, 0)) + 1
+	GameState.spoils.saw_trick(String(foe.fighter["id"]))
+
+
+## Whether `foe` may dart in now (PIX-489: a pack of wolves takes turns, so
+## never two bites at once): its turn from then until end_turn.
+func take_turn(foe: Node) -> bool:
+	var taken: bool = is_instance_valid(_turn) and _turn != foe and not _turn.dying and _turn.mode == "chase"
+	if _turn != foe and not Tricks.may_dart(taken, GameClock.seconds(), _turn_free_at):
+		return false
+	_turn = foe
+	return true
+
+
+## `foe`'s dart is over: the next may start `gap` seconds from now.
+func end_turn(foe: Node, gap: float) -> void:
+	if _turn == foe:
+		_turn = null
+		_turn_free_at = GameClock.seconds() + gap
 
 
 ## The named monsters the board has posted, each in its lair on this map

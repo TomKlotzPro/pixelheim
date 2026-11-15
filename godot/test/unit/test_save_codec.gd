@@ -99,6 +99,7 @@ func test_every_field_a_hero_can_have_finds_its_place_and_comes_back() -> void:
 	game.progression.deeds.assign(["full_set"])
 	game.progression.firsts.assign(["fafnyr_scale"])
 	game.progression.met = {"wolf": 3}
+	game.progression.tricks.assign(["slime", "crab"])
 	game.progression.crafted = {"potion_hp": 2}
 	game.progression.tracked = "cheese_run"
 	game.progression.bells = Bells.EMBERS

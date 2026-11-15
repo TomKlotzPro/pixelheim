@@ -22,8 +22,12 @@ const KILL_SECONDS := 300.0
 
 func step_clear() -> void:
 	# Fell every foe on the map at once (a floor of the Kings' Vault, PIX-257).
-	for foe in h.get_tree().get_nodes_in_group("mobs"):
-		foe.take_hit(99999, foe.global_position + Vector2.LEFT)
+	# Twice more for what a blow leaves (PIX-489: a slime's halves, a
+	# skeleton's bones), each once the halves can be struck.
+	for again in 3:
+		for foe in h.get_tree().get_nodes_in_group("mobs"):
+			foe.take_hit(99999, foe.global_position + Vector2.LEFT)
+		await h.get_tree().create_timer(preload("res://scripts/trick_brain.gd").BURST_SECONDS + 0.05).timeout
 	await h.get_tree().create_timer(0.6).timeout
 
 

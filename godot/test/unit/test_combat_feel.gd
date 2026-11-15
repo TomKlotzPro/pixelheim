@@ -272,6 +272,7 @@ class FakeFoe extends Node2D:
 	var fighter := Bestiary.spawn("wolf")
 	var edge := 14.0
 	var dying := false
+	var faded := false
 	var hits := 0
 
 	func _ready() -> void:

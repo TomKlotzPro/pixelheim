@@ -664,6 +664,8 @@ static func look_of(spec: Dictionary) -> String:
 	var worn := dye.keys().filter(func(part: String) -> bool: return parts.has(part))
 	worn.sort()
 	var look := "%s|%s" % [spec["sheet"], ",".join(worn.map(func(part: String) -> String: return "%s=%s" % [part, dye[part]]))]
+	if spec.get("small", false):
+		look += "|small"
 	return look + "|child" if spec.get("child", false) else look
 
 
@@ -740,6 +742,13 @@ static func monster(id: String) -> Dictionary:
 	return MONSTERS.get(id, MONSTERS["slime"])
 
 
+## `spec` at half its size (PIX-489: the two a slain slime bursts into): its
+## sheet with every other pixel kept, so the small one's pixels are the
+## world's own, whole and square, as a sprite scaled by half never is.
+static func small(spec: Dictionary) -> Dictionary:
+	return spec.merged({"small": true, "frame": frame_size(spec) / 2}, true)
+
+
 static func frame_size(spec: Dictionary) -> int:
 	return int(spec.get("frame", FAMILIES[spec["family"]]["frame"]))
 
@@ -750,6 +759,11 @@ static func sheet_texture(spec: Dictionary) -> Texture2D:
 	if spec.has("head"):
 		return outfit_texture(spec["head"], spec["body"], spec.get("weapon_tint", Color.WHITE), spec.get("gear", {}))
 	var drawn: Texture2D = load(path(spec["sheet"]))
+	if spec.get("small", false):
+		var half := drawn.get_image().duplicate() as Image
+		half.decompress()
+		half.resize(half.get_width() / 2, half.get_height() / 2, Image.INTERPOLATE_NEAREST)
+		return ImageTexture.create_from_image(half)
 	if RESTYLED.has(spec["sheet"]):
 		return ImageTexture.create_from_image(restyle(drawn.get_image(), frame_size(spec), RESTYLED[spec["sheet"]]))
 	var image: Image = null

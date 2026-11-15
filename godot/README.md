@@ -681,6 +681,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/state/town.gd` — Pixelheim's growth and money that works, ported from src/game/economy/ {town,bank}.ts and settlers.ts
 - `scripts/state/trade.gd` — The hero at the counter (PIX-261, out of game_state.gd)
 - `scripts/state/training.gd` — The hero's skills and stats (PIX-261, out of game_state.gd)
+- `scripts/state/tricks.gd` — A common foe's one trick (PIX-489), by its kind, so every fight reads differently
 - `scripts/state/upkeep.gd` — The hero's body and kit (PIX-261, out of game_state.gd)
 - `scripts/state/vault.gd` — The Kings' Vault (PIX-257, the main story's step 11): what comes after the story.
 - `scripts/state/world_state.gd` — Where the hero stands and what they have explored (web WorldState plus the top-level worldSteps).
@@ -695,6 +696,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/touch.gd` — The phone version (PIX-162): whether to play by touch, and how the game's 1280x720 canvas sits on a screen of another shape.
 - `scripts/touch_controls.gd` — On-screen controls for a phone (PIX-162)
 - `scripts/town_hall_screen.gd` — The village's projects (PIX-145), across the mayor's counter or at the board on the square
+- `scripts/trick_brain.gd` — A common foe's own trick as it plays (PIX-489), riding on the enemy (its parent) as an elite's brain does
 - `scripts/ui_style.gd` — The game's one look (PIX-138): pages of a village ledger.
 - `scripts/waypoints.gd` — Fast travel's choice on the map screen (PIX-241: "on a waypoint, show where it takes you")
 - `scripts/ways.gd` — The ways between maps (PIX-269: "it isn't clear where to walk to go on").

@@ -681,7 +681,7 @@ func _steal_life(damage: int) -> void:
 
 ## Every foe still standing.
 func _living_foes() -> Array:
-	return get_tree().get_nodes_in_group("mobs").filter(func(enemy: Node) -> bool: return not enemy.dying)
+	return get_tree().get_nodes_in_group("mobs").filter(func(enemy: Node) -> bool: return not enemy.dying and not enemy.faded)
 
 
 ## Where they stand, and how wide either side of their feet their bodies
