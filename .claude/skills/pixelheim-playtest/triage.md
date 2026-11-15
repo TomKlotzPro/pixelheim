@@ -40,5 +40,6 @@ Each kept finding becomes one issue in the Pixelheim team, project **Pixelheim: 
 Return, for the orchestrator:
 - the issues filed, each with its identifier, title and severity;
 - what was dropped, and why, one line each;
+- for each drop by design, the line of the player's brief or of the focus that said otherwise, if any;
 - per player: findings sent, confirmed, flaky, dropped;
 - what in the rules or the tool led a player wrong. The orchestrator turns that into `lessons.md` and rule changes.

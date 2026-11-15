@@ -1,7 +1,7 @@
 export const meta = {
   name: 'pixelheim-playtest',
   description: 'Agents play Pixelheim unseen (the web build in a headless Chrome) on Fable or Sonnet; an Opus triage replays every bug and files what holds in Linear',
-  whenToUse: 'A playtest after a big release, or when Tom asks for one. args: {run: "2026-11-07", players?: ["newcomer","fighter","explorer","french","menus"], compare?: "newcomer" | null, model?: "fable", looks?: 70, file?: true}. compare plays that player on its other model too; model puts every player on one model. Needs godot/tools/play.py (PIX-423) and the pixelheim-playtest skill on main. The main session applies the lessons it returns.',
+  whenToUse: 'A playtest after a big release, or when Tom asks for one. args: {run: "2026-11-07", players?: ["newcomer","fighter","explorer","french","menus"], compare?: "newcomer" | "none", model?: "fable", focus?: string, looks?: 70, file?: true}. compare plays that player on its other model too, and "none" compares nobody; model puts every player on one model; focus points the players at one change, written from the code as built. Needs godot/tools/play.py (PIX-423) and the pixelheim-playtest skill on main. The main session applies the lessons it returns.',
   phases: [
     { title: 'Build', detail: 'one web export of main, with the private art, shared by every player' },
     { title: 'Play', detail: 'each player plays its own session and reports findings with proof' },
@@ -32,7 +32,7 @@ const RUN_DIR = `/Users/klotztom/playground/pixelheim-playtests/${a.run}`
 const LOOKS = a.looks || 70
 const FILE = a.file !== false
 const chosen = a.players || Object.keys(PLAYERS)
-const compare = a.compare === undefined ? 'newcomer' : a.compare
+const compare = a.compare === undefined ? 'newcomer' : a.compare === 'none' ? null : a.compare
 
 const SAFETY = [
   'Never run godot with a window, shot.sh, flows.sh without --quiet, lookbook.sh, or any --slot.',
@@ -121,7 +121,9 @@ const reports = await parallel(sessions.map((s) => () =>
     `${REPO}/.claude/skills/pixelheim-godot/playtest.md (play.py's commands and options). Run play.py from ${REPO}.\n\n` +
     `The game: v${build.version}, exported at ${build.export}. Run play.py as \`${build.python} godot/tools/play.py\`, always with \`--port ${s.port}\`, and \`--dir\` under ${s.dir} on each start ` +
     `(a new subfolder per session if your brief starts several). Keep your log of commands in ${s.dir} too. ` +
-    `Your budget: ${LOOKS} looks. Look at each screenshot yourself with the Read tool.\n\nRules:\n- ${SAFETY}`,
+    `Your budget: ${LOOKS} looks. Look at each screenshot yourself with the Read tool.\n\n` +
+    (a.focus ? `This run's focus: ${a.focus}\nOnce it is covered, spend the looks left on your page's route, its unreached items first.\n\n` : '') +
+    `Rules:\n- ${SAFETY}`,
     { label: s.label, phase: 'Play', schema: REPORT, model: s.model },
   ).then((r) => (r ? { ...s, ...r } : { ...s, looks: 0, reached: 'nothing', summary: 'the agent returned nothing', findings: [] })),
 ))
