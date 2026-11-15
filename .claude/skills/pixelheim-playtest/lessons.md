@@ -348,7 +348,7 @@ Each entry holds:
 - Don't report the day clock standing still while the hero does (PIX-246): folded into `SKILL.md`.
 - A greyed button or row is one you can't use yet, not a finding: folded into `SKILL.md`.
 - Don't report the headless Chrome's WebGL warnings in `errors`: folded into `SKILL.md`.
-- Confusing means a big attack with no warning at all, not a warning judged too short: folded into `SKILL.md`.
+- Confusing means a tell (an attack, a guard, a fade, a rise) with no warning at all, not a warning judged too short: folded into `SKILL.md` (widened from attacks on 2026-11-15).
 - Use the whole budget, and after six looks stuck on one step, report it and go past it: folded into `SKILL.md`.
 - A text field types every one-letter key; face someone before you press E: folded into `SKILL.md`.
 - Send what you saw as a finding (S4 when unsure) instead of leaving it in the summary: folded into `SKILL.md`.
@@ -362,7 +362,7 @@ Each entry holds:
 - The players run on Fable, the newcomer and explorer on Sonnet until compared: folded into `SKILL.md` and `.claude/workflows/pixelheim-playtest.js`.
 - `wait:0.5` after a key that starts a fade, stop an E loop once the talk has closed, and wait out a typing caption: folded into `SKILL.md`.
 - A row's … with its words elsewhere, a footer key that says where, an undoable choice and the `--level` kit's look are not findings: folded into `SKILL.md`.
-- The summary holds no observations, and triage replays any left there that can cost the player: folded into `SKILL.md` and `triage.md`.
+- The summary holds no observations (a focus run's verdicts are the one exception, since 2026-11-15), and triage replays any left there that can cost the player: folded into `SKILL.md` and `triage.md`.
 - The fighter plays one role at level 20, an elite with a ranged role, a measured cleave and a shot at four cells: folded into `players/fighter.md`.
 - The French reader judges typography against release.md's house style only, and starts the night's steps beside their place: folded into `players/french.md`.
 - The menu tester spends points from `--flags stats` and `--flags skills`, visits every counter, and leaves the dock alone: folded into `players/menus.md`.
