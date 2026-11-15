@@ -461,7 +461,8 @@ func test_every_event_resolves() -> void:
 			if take.begins_with("blip/"):
 				assert_true(Sound.UI_SOUNDS.has(take.trim_prefix("blip/")), "%s: %s" % [event, take])
 			else:
-				assert_true(take.begins_with("sfx/") and ResourceLoader.exists("res://assets/audio/%s.wav" % take), "%s: %s" % [event, take])
+				# A stinger, or the weather's own render (the thunder, PIX-491).
+				assert_true((take.begins_with("sfx/") or take.begins_with("ambience/")) and ResourceLoader.exists("res://assets/audio/%s.wav" % take), "%s: %s" % [event, take])
 	for table: String in ["blows", "casts", "steps", "swings", "gathers"]:
 		for key: String in doc[table]:
 			assert_true(doc["events"].has(doc[table][key]), "%s: %s" % [table, key])

@@ -1,0 +1,6 @@
+# The thunderstorms' harness flags (PIX-491): `flag | takes | does`, as the
+# core's (scripts/harness_flags.txt), in its table after feature.gd's
+# flags_after().
+storm |  | a thunderstorm at its height (PIX-491): the world's clock on the first one that pours by day, or with night at that night's hour, before the first map is drawn; the report adds storm=
+--strike | <now|held|n> | lightning strikes close by, now (PIX-491): its flash, its shadows, its thunder; held keeps the flash at its brightest for the shot; a number strikes that many times at once, which the cap cuts to three flashes; before cpu, which then times the frames of a flash held | strike | 145
+drying |  | half an hour after a thunderstorm has gone, by day (PIX-491): the ground half dry, the puddles shrinking; the report adds storm=

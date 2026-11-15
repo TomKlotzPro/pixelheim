@@ -50,6 +50,8 @@ var respawn_check := 0.0
 var lights: Node
 ## Each region's air and the weather (PIX-224).
 var atmosphere: Node
+## A thunderstorm's lightning, thunder and what the rain leaves (PIX-491).
+var storm: Node
 ## A `--screenshot` run: the harness drives, nobody else.
 var harness := false
 ## The way the story kept shut that last stopped the hero (`barred`: true
@@ -824,6 +826,10 @@ func _spawn_player() -> void:
 	atmosphere = preload("res://scripts/atmosphere.gd").new()
 	atmosphere.world = self
 	add_child(atmosphere)
+	# After the LightRig, whose windows' light it flashes (PIX-491).
+	storm = preload("res://scripts/storm.gd").new()
+	storm.world = self
+	add_child(storm)
 
 	camera_rig = CameraRig.new()
 	camera_rig.world = self

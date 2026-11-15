@@ -13,7 +13,8 @@
     "world": {"bus": "SFX", "voices": 3, "db": 0, "peak": -18, "loudness": -38, "rate": 22050},
     "jingle": {"bus": "Jingle", "voices": 2, "db": 0, "duck": true, "peak": -16, "loudness": -31, "rate": 22050},
     "ambience": {"bus": "Ambience", "voices": 1, "db": 0, "peak": -24, "loudness": -40, "rate": 16000},
-    "sprinkle": {"bus": "Ambience", "voices": 2, "db": 0, "peak": -30, "loudness": -50, "rate": 22050}
+    "sprinkle": {"bus": "Ambience", "voices": 2, "db": 0, "peak": -30, "loudness": -50, "rate": 22050},
+    "thunder": {"bus": "Ambience", "voices": 2, "db": 0, "peak": -16, "loudness": -34, "rate": 22050}
   },
   "events": {
     "ui_open": {"family": "ui", "takes": ["blip/open"]},
@@ -251,6 +252,9 @@
     "amb_rain": {"family": "ambience", "takes": []},
     "amb_rain_forest": {"family": "ambience", "takes": []},
     "amb_rain_inside": {"family": "ambience", "takes": []},
+    "thunder_near": {"family": "thunder", "takes": ["ambience/thunder_near"]},
+    "thunder_far": {"family": "thunder", "takes": ["ambience/thunder_far"]},
+    "thunder_inside": {"family": "thunder", "takes": ["ambience/thunder_inside"]},
     "amb_crypt": {"family": "ambience", "takes": []},
     "amb_ice_cave": {"family": "ambience", "takes": []},
     "amb_smithy": {"family": "ambience", "takes": []},
@@ -643,6 +647,9 @@
     "ambience/bed_wind": 0,
     "ambience/bed_deepwind": 0,
     "ambience/bed_rain": 0,
+    "ambience/thunder_near": 0,
+    "ambience/thunder_far": 0,
+    "ambience/thunder_inside": 0,
     "ambience/greenwood_0": 0,
     "ambience/greenwood_1": 12,
     "ambience/deepforest_0": 0,

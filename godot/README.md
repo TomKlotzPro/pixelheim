@@ -539,6 +539,8 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/mirefen/mire_dressing.gd` — The Mirefen alive (PIX-401, the v0.307 world audit: « a uniform fen of puddles and a few shrubs, one ruin and two camps »)
 - `scripts/features/night_shadows/feature.gd` — The lantern's and the lamps' shadows in the harness (PIX-490)
 - `scripts/features/night_shadows/night_shadows_layer.gd` — What blocks the lantern's and the lamps' light on a map (PIX-490), once everything stands
+- `scripts/features/storm/feature.gd` — Thunderstorms in the harness (PIX-491): `storm`, `drying` and `--strike`, the puddles' layer (PuddlesLayer) and the report's storm=, their rows beside this script and their flows in tools/flows.d/storm.txt.
+- `scripts/features/storm/puddles_layer.gd` — What the rain leaves on a map under the sky (PIX-491)
 - `scripts/features/waysides/feature.gd` — The Reach's wayside lanterns in the harness (PIX-397, step 4)
 - `scripts/features/waysides/waysides.gd` — Wayside lanterns on the Reach's main roads (PIX-397, step 4; the v0.307 world audit: « at night the Reach is unlit beyond the town »)
 - `scripts/fire_art.gd` — The fires of a burning house (PIX-327): the Night of Ash's ruins and the Night of Bells' roofs.
@@ -693,6 +695,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/state/world_state.gd` — Where the hero stands and what they have explored (web WorldState plus the top-level worldSteps).
 - `scripts/stats_screen.gd` — The stat sheet (WorldHud's sheet + statInfo): who the hero is, the pools and defenses, and the five stats with what each point would buy, spent here with E.
 - `scripts/stone_walls.gd` — The walls standing in the open that are neither a ruin nor Pixelheim's rampart (PIX-386, Tom on PIX-381's ruins: the other walls built from the same pale pieces)
+- `scripts/storm.gd` — A thunderstorm over the hero, frame by frame (PIX-491)
 - `scripts/streets.gd` — Paving in the Medieval Age's stone (PIX-307).
 - `scripts/telegraph.gd` — A danger marked on the ground before it lands (PIX-150, shared by the bosses and, PIX-155, the elites)
 - `scripts/throne_screen.gd` — Morvax's choice (PIX-253 step 10; the old throne's choice, PIX-157, re-aimed): the courier's last word.

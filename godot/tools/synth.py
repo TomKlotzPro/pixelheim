@@ -6,7 +6,7 @@
 #   a boss's way out opening where it fell (PIX-339);
 # - ambience/: one-shots for birds, crickets, town chatter and fire, a few
 #   variants each, the looping wind beds of the mountain's floors and the
-#   rain's (PIX-224);
+#   rain's (PIX-224), and thunder near, far and under a roof (PIX-491);
 # - music/theme_*.wav: the short story themes, from the notes in
 #   assets/data/audio.json "themes".
 # Seeded, so a rerun writes the same files.
@@ -292,6 +292,42 @@ def rain():
     return body
 
 
+def thunder(kind):
+    """Thunder (PIX-491): stepped noise through a low-pass that closes as it
+    rolls away. `near` cracks at once - a bright burst, two smaller ones on
+    its heels - then rumbles; `far` only rumbles, swelling in slowly and
+    rolling on in a few waves; `inside` is the far one through a roof,
+    duller and shorter. A low hum under each, so it is felt."""
+    rng = random.Random({"near": 4910, "far": 4911, "inside": 4912}[kind])
+    seconds = {"near": 3.6, "far": 4.6, "inside": 3.8}[kind]
+    top, floor = {"near": (520.0, 70.0), "far": (240.0, 55.0), "inside": (130.0, 45.0)}[kind]
+    count = int(seconds * MUSIC_RATE)
+    # The rolls: a few swells, each later one smaller.
+    rolls = [(rng.uniform(0.25, seconds * 0.7), rng.uniform(0.25, 0.6), rng.uniform(0.35, 0.8)) for _ in range(5)]
+    out, level, lower, held, phase = [], 0.0, 0.0, 0.0, 0.0
+    for i in range(count):
+        t = i / MUSIC_RATE
+        before = phase
+        phase = (phase + 5200 / MUSIC_RATE) % 1.0
+        if phase < before:
+            held = rng.uniform(-1.0, 1.0)
+        cutoff = floor + (top - floor) * math.exp(-t / (seconds * 0.3))
+        alpha = 1 - math.exp(-2 * math.pi * cutoff / MUSIC_RATE)
+        level += alpha * (held - level)
+        lower += alpha * (level - lower)
+        swell = min(1.0, t / (0.04 if kind == "near" else 0.45)) * math.exp(-t / (seconds * 0.34))
+        for at, wide, high in rolls:
+            swell += high * math.exp(-((t - at) / wide) ** 2) * math.exp(-t / (seconds * 0.5))
+        hum = 0.1 * math.sin(2 * math.pi * 43 * t) * math.exp(-t / (seconds * 0.4))
+        out.append((lower * 2.2 + hum) * swell * min(1.0, (seconds - t) / 0.5))
+    if kind == "near":
+        for at, vol in [(0.0, 1.0), (0.07, 0.55), (0.19, 0.4)]:
+            crack = tone(0.11, "noise", 6000, 1400, vol * max(abs(s) for s in out) * 0.9, MUSIC_RATE, attack=0.002, release=0.85, rng=rng)
+            for j, s in enumerate(crack):
+                out[int(at * MUSIC_RATE) + j] += s
+    return out
+
+
 # ---- themes ----------------------------------------------------------------
 
 def theme(spec):
@@ -333,6 +369,8 @@ def main():
     for name in doc["beds"]:
         bed, peak = (rain(), 1300) if name == "rain" else (wind(name == "deepwind"), 900)
         write(os.path.join(AUDIO, "ambience", "bed_%s.wav" % name), bed, MUSIC_RATE, peak, loop=True)
+    for kind, peak in [("near", 4800), ("far", 2600), ("inside", 1700)]:
+        write(os.path.join(AUDIO, "ambience", "thunder_%s.wav" % kind), thunder(kind), MUSIC_RATE, peak)
     for name, spec in doc["themes"].items():
         write(os.path.join(AUDIO, "music", "theme_%s.wav" % name), theme(spec), MUSIC_RATE, 4000, rms=520)
     print("wrote the effects, %d ambience sets, %d beds and %d themes" % (len(doc["ambienceExtras"]), len(doc["beds"]), len(doc["themes"])))

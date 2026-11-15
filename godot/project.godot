@@ -97,6 +97,14 @@ sun={
 "type": "vec4",
 "value": Vector4(0, 0, 0, 0)
 }
+; What the rain leaves (PIX-491, shaders/puddles.gdshader): how wet the
+; ground is (x), how full its puddles (y), how hard it rains now (z) and
+; how dark the hour is (w), 0..1; set each frame by scripts/storm.gd from
+; Weather's clock and the LightRig's dark.
+ground_wet={
+"type": "vec4",
+"value": Vector4(0, 0, 0, 0)
+}
 
 [rendering]
 

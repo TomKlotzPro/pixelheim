@@ -137,7 +137,7 @@ func raining() -> bool:
 ## A shower on the roof of a village house (PIX-414): the inn on a rainy
 ## night hears what falls on the village outside.
 func rain_on_roof() -> bool:
-	return world.map.id.begins_with("town_") and Weather.village_rains() and Weather.rain_at(GameState.world.steps) > RAIN_HEARD
+	return Weather.under_roof(world.map) and Weather.rain_at(GameState.world.steps) > RAIN_HEARD
 
 
 ## A camp's torch within a few tiles of the hero.

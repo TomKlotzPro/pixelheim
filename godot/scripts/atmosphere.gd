@@ -29,6 +29,8 @@ const BURST_POOL := 3
 ## How fast an air or the rain comes and goes, per second.
 const AIR_EASE := 0.7
 const RAIN_EASE := 0.5
+## How much thicker the rain's veil is under a thunderstorm (PIX-491).
+const STORM_VEIL := 0.4
 ## The particles cover the view and this much more each side, so nothing
 ## pops in at its edges; they draw over the actors, under the world's words.
 const MARGIN := 24.0
@@ -120,7 +122,8 @@ func _shade() -> void:
 	shader.set_shader_parameter("view_size", view[1])
 	for kind: String in Weather.DRAWN:
 		shader.set_shader_parameter(kind, weights[kind])
-	shader.set_shader_parameter("rain", rain)
+	# A storm's veil is thicker (PIX-491).
+	shader.set_shader_parameter("rain", rain * (1.0 + STORM_VEIL * lights.gale))
 	var light: Color = lights.light
 	shader.set_shader_parameter("light", Vector3(light.r, light.g, light.b))
 	var tint: Color = mood[0]
@@ -136,7 +139,7 @@ func _fall(arrived: bool) -> void:
 	var still: bool = GameState.settings.reduce_motion
 	var map: MapData = world.map
 	var amounts := {
-		"drops": rain, "splashes": rain, "snow": weights["frost"],
+		"drops": rain, "splashes": rain, "gale": world.lights.gale, "snow": weights["frost"],
 		"embers": weights["ash"], "ash": weights["ash"], "spray": weights["coast"],
 		"fireflies": Motes.fireflies(map, air, world.lights.dark, rain),
 		"leaves": weights["woods"] * (1.0 - 0.5 * rain),
@@ -148,13 +151,15 @@ func _fall(arrived: bool) -> void:
 	# The Ash's ash (PIX-308) made the first time it's breathed: a particle
 	# system draws from the game's dice as it's made, and one made up front
 	# shifted every seeded harness fight after it.
-	if amounts["ash"] > 0.05 and not particles.has("ash"):
-		var ash := _ash()
-		ash.emitting = false
-		ash.z_index = Z
-		world.add_child(ash)
-		particles["ash"] = ash
-		arrived = true
+	# A storm's driven rain (PIX-491) the same way, with its first storm.
+	for late: String in ["ash", "gale"]:
+		if amounts[late] > 0.05 and not particles.has(late):
+			var node := _ash() if late == "ash" else _gale()
+			node.emitting = false
+			node.z_index = Z
+			world.add_child(node)
+			particles[late] = node
+			arrived = true
 	for name: String in particles:
 		var node: CPUParticles2D = particles[name]
 		var amount: float = amounts[name]
@@ -226,6 +231,16 @@ static func _drops() -> CPUParticles2D:
 	node.texture = picture(["x", "x", "x", "x"])
 	node.particle_flag_align_y = true
 	node.color = Color(0.78, 0.86, 1.0, 0.5)
+	return node
+
+
+## A thunderstorm's rain (PIX-491), over the shower's own: longer streaks
+## driven hard aslant by the wind, faster and thicker.
+static func _gale() -> CPUParticles2D:
+	var node := Motes.over_view(320, 0.42, Vector2(0.62, 1.0), 3.0, Vector2(340, 420), Vector2(60, 240))
+	node.texture = picture(["x", "x", "x", "x", "x", "x"])
+	node.particle_flag_align_y = true
+	node.color = Color(0.8, 0.88, 1.0, 0.55)
 	return node
 
 
