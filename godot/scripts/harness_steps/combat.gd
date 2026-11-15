@@ -115,8 +115,9 @@ func step_fight() -> void:
 	# `pack` (PIX-340): the rest of its pack round it, all on the hunt.
 	var pack: Array[Node] = [opponent]
 	if flags.has("pack"):
-		for i in Foes.PACK_SIZE - 1:
-			pack.append(world.foes.spawn_enemy(foe, at + [Vector2i.DOWN, Vector2i.UP][i % 2], world.map.region_at(at)))
+		# `--pack-size N` (PIX-492): that many, a second pair a cell on.
+		for i in int(flags.value("--pack-size", str(Foes.PACK_SIZE))) - 1:
+			pack.append(world.foes.spawn_enemy(foe, at + [Vector2i.DOWN, Vector2i.UP][i % 2] + Vector2i(i / 2, 0), world.map.region_at(at)))
 		for member in pack:
 			member.notice()
 	# `--foe-left S` (PIX-288): the fight already on, the foe hunting the

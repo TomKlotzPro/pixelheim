@@ -510,6 +510,9 @@ func hand_over(beside: Dictionary, arrival: Vector2i) -> void:
 	var followed: Variant = hud.boss_bar.target
 	if is_instance_valid(followed) and leaving.has(followed):
 		hud.boss_bar.let_go()
+	# A kill's coins still in the air land now (PIX-492): its float is up
+	# before the world moves under it.
+	fx.loot.settle()
 	_shift_world(by)
 	camera_rig.shift(by)
 	last_player_position += by

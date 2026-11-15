@@ -134,6 +134,7 @@ elite |  | with fight: an elite foe
 slay |  | with fight: the foe felled outright, for what its death pays
 kill |  | with fight: swing until it drops (five minutes of play at most, PIX-379: a level-1 hero fells the Hollow King), or until it stands down
 pack |  | with fight: the foe's pack round it, Foes.PACK_SIZE of its kind all on the hunt; with kill, swings at the nearest until the whole pack is down (PIX-340)
+--pack-size | <n> | with pack: n foes in it in place of Foes.PACK_SIZE (PIX-492: five felled in one fight)
 flee |  | run for the map's first way out mid-fight (PIX-232) | flee | 690
 chapter |  | chapter cards on (harness runs skip them otherwise): the card of the chapter the story is at, as the world shows it once free, waited for with its entrance; the report adds chapter= and rose= (PIX-253 step 2) | chapter | 700
 --keys | <k,k> | real key presses, one at a time, at whatever the run opened (e, esc, space, enter, w, a, s, d...; a pad's back, pad_up, pad_down; wait: half a second with no key, PIX-486) | keys | 710

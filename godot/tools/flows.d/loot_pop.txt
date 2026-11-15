@@ -15,8 +15,11 @@ loot-pack | fight kill pack --foe goblin --wait 2 | mobs=0 loot=coins [1-9]\d* f
 # A boss's win is a bigger burst: more coins than a common foe may have.
 loot-boss | --map icecave_glass fight slay --foe rimefang --wait 2.5 | fell=1 loot=coins (?![1-8] )\d+ flying 0 sparks (?![1-5] )\d+ drops \S+ counted ([1-9]\d*)/\1 big | combat dungeon
 # With Reduce motion nothing flies: the float as it always was, at once.
-loot-still | still fight kill | loot= rising= floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* | combat
+loot-still | still fight kill | loot= floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* | combat
 # A drop lies in its rarity's light (a staged win: no run is sure of a fine
 # or an epic piece): its rarity told, the sword's row in the float.
 loot-fine | --loot fine --wait 0.8 --lang en | loot=coins 4 flying [1-9]\d* sparks 1 drops 1:fine counted \d/8 floats=\+8 gold . \+4 XP;Fine Iron Sword.* | combat
 loot-epic | --loot epic --wait 0.8 --lang en | loot=coins 4 flying [1-9]\d* sparks 1 drops 1:epic counted \d/8 floats=\+8 gold . \+4 XP;Epic Iron Sword.* | combat
+# A pack of five felled in one fight stays smooth: cpu-fight's ranger and
+# its budget (flows.txt), five goblins' coins and sparks on their way.
+loot-five | --role ranger --level 10 cpu fight kill pack --pack-size 5 --foe goblin | mobs=0 cpu=(?!2\.[5-9])[0-2]\.\d\d/\d+\.\d\d paced=(?!7\.[2-9])[0-7]\.\d\d loot=coins [1-9]\d* flying \d+ sparks \d+ drops \S+ counted \d+/[1-9]\d* | combat

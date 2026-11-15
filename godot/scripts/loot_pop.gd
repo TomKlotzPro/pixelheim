@@ -120,7 +120,6 @@ func burst(gains: Dictionary, at: Vector2, feet: Vector2, grand := false) -> voi
 		bit["out"] = LootBurst.OUT_S + 0.04
 		bit["shine"] = LootBurst.shine(rarity)
 		bit["tone"] = WorldFx.GAIN_TONES.get(rarity, UiStyle.CREAM)
-		bit["art"] = ItemIcons.texture(String(item["id"]))
 		bit["leave"] = now + float(bit["out"]) + LootBurst.BOUNCE_S + (LootBurst.BEAM_S if bit["shine"] == "beam" else LootBurst.LIE_S)
 		# It only goes to the pack: its row is the purse's first lander's.
 		bit["lands"] = float(bit["leave"]) + LootBurst.FLY_S
@@ -138,7 +137,7 @@ func burst(gains: Dictionary, at: Vector2, feet: Vector2, grand := false) -> voi
 		fx.skill_flash(feet, UiStyle.GOLD)
 	# Past the most: landed at once.
 	if _bits.size() > MOST:
-		_settle()
+		settle()
 	set_process(not _bits.is_empty())
 
 
@@ -183,8 +182,10 @@ func _process(delta: float) -> void:
 		set_process(false)
 
 
-## Everything in the air lands now, its shares counted (too many at once).
-func _settle() -> void:
+## Everything in the air lands now, its shares counted: too many at once,
+## or the hero stepping over a seamless edge (world.gd: the place changes
+## with no door, and the kill's float would never have come up).
+func settle() -> void:
 	var flying := _bits.duplicate()
 	_bits.clear()
 	for bit: Dictionary in flying:
@@ -292,15 +293,13 @@ func _draw() -> void:
 				draw_rect(Rect2(at.round() - Vector2.ONE, Vector2(2, 2)), tone)
 				draw_rect(Rect2(at.round() - Vector2.ONE, Vector2.ONE), UiStyle.KEY_LIGHT)
 			DROP:
-				var art: Texture2D = bit["art"] if bit["art"] != null else _pouch()
-				# Its icon as the float beside it shows it (WorldFx.GAIN_ICON:
-				# two screen pixels an art pixel, on the screen's grid); at the
-				# world's own scale an apple stood as tall as the hero.
-				var size := art.get_size() * WorldFx.GAIN_ICON
+				# A pouch on the world's own grid, rimmed in its rarity's
+				# colour: what it holds is told by the float's row above (an
+				# item's icon is the UI's, its pixels aren't the world's).
 				if age < float(bit["out"]) + LootBurst.BOUNCE_S:
 					var ground: Vector2 = LootBurst.hop(bit["from"], bit["rest"], 0.0, age / float(bit["out"]))
 					draw_rect(Rect2(roundf(ground.x) - 3, roundf(ground.y), 7, 1), shade)
-				draw_texture_rect(art, Rect2(((at - Vector2(size.x / 2.0, size.y - 2.0)) * CameraRig.ZOOM).round() / CameraRig.ZOOM, size), false)
+				draw_texture(_pouch(bit["tone"]), (at - Vector2(4, 7)).round())
 			FLASH:
 				var strength: float = bit["strength"]
 				var fade := 1.0 - age / FLASH_S
@@ -372,9 +371,22 @@ static func _coin(turn: int) -> Texture2D:
 	return _drawn("coin%d" % turn, faces[turn])
 
 
-## A tied pouch, for a drop with no icon of its own.
-static func _pouch() -> Texture2D:
-	return _drawn("pouch", ["..ooo..", ".oWWWo.", "..oCo..", ".oLWWo.", "oLWWWDo", "oWWWDDo", ".ooooo."])
+## A tied pouch, what a drop is on the ground, a pixel of `rim` (its
+## rarity's colour) all round it: nine pixels square.
+static func _pouch(rim: Color) -> Texture2D:
+	var key := "pouch" + rim.to_html()
+	if not _art.has(key):
+		var bare := _drawn("pouch", ["..ooo..", ".oWWWo.", "..oCo..", ".oLWWo.", "oLWWWDo", "oWWWDDo", ".ooooo."]).get_image()
+		var inked := func(x: int, y: int) -> bool: return x >= 0 and y >= 0 and x < 7 and y < 7 and bare.get_pixel(x, y).a > 0.0
+		var art := Image.create(9, 9, false, Image.FORMAT_RGBA8)
+		for y in 9:
+			for x in 9:
+				if inked.call(x - 1, y - 1):
+					art.set_pixel(x, y, bare.get_pixel(x - 1, y - 1))
+				elif inked.call(x - 2, y - 1) or inked.call(x, y - 1) or inked.call(x - 1, y - 2) or inked.call(x - 1, y):
+					art.set_pixel(x, y, rim)
+		_art[key] = ImageTexture.create_from_image(art)
+	return _art[key]
 
 
 static func _drawn(key: String, rows: Array) -> Texture2D:

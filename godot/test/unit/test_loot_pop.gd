@@ -68,6 +68,18 @@ func test_a_drop_shines_by_its_rarity() -> void:
 	assert_eq(["common", "fine", "epic"].map(LootBurst.shine), ["", "glow", "beam"])
 
 
+## On the ground a drop is on the world's grid (review of PIX-492: never
+## the float's icon, two screen pixels an art pixel): a pouch nine pixels
+## square, rimmed in its rarity's colour.
+func test_a_drop_on_the_ground_is_a_pouch_rimmed_in_its_rarity() -> void:
+	var epic: Color = WorldFx.GAIN_TONES["epic"]
+	var pouch := LootPop._pouch(epic).get_image()
+	assert_eq(pouch.get_size(), Vector2i(9, 9))
+	assert_eq(pouch.get_pixel(4, 0), epic, "the rim over its knot")
+	assert_eq(pouch.get_pixel(0, 0).a, 0.0, "its corners clear")
+	assert_eq(pouch.get_pixel(4, 1), UiStyle.NIGHT, "its own outline inside the rim")
+
+
 ## The kill pays whole and at once, whatever the look does after: the purse
 ## the same with motion or without, and nothing the burst does touches it.
 func test_the_credit_is_the_kills_and_unchanged() -> void:
