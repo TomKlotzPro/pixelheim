@@ -454,6 +454,16 @@ func field_floor() -> String:
 ## hung in its holder's colour, its pieces two tiles tall standing whole
 ## (Hamlet.TOPS) and its paved cells worn:
 ## turncoats:houses5,red2,tops4,worn35 (PIX-399).
+func field_foes() -> String:
+	if not flags.has("rollaway"):
+		return ""
+	var out: Array[String] = []
+	for mob: Node in world.get_tree().get_nodes_in_group("mobs"):
+		if not mob.dying and int(mob.fighter["hp"]) < int(mob.fighter["maxHp"]):
+			out.append("%d/%d %s" % [mob.fighter["hp"], mob.fighter["maxHp"], mob.mode])
+	return ",".join(out) if not out.is_empty() else "none"
+
+
 func field_fort() -> String:
 	if world.map == null or world.view == null:
 		return ""

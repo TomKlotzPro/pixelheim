@@ -77,6 +77,21 @@ func test_a_kill_pays_less_the_further_the_hero_stands_above_it() -> void:
 	assert_eq(Bestiary.xp_for(orc, 20), 3, "never under a tenth")
 
 
+## PIX-494: the Bestiary read "23 xp" for a Dire Wolf whose kill floated
+## "+7 XP" over a new hero. Its row shows what the kill pays this hero.
+func test_the_bestiarys_xp_is_what_a_kill_pays_the_hero() -> void:
+	for case: Array in [["wolf", 1, 7], ["slime", 1, 2], ["goblin", 2, 3]]:
+		var kind: String = case[0]
+		assert_eq(Bestiary.xp_shown(kind, Bestiary.monster(kind), case[1]), case[2], "%s, to a level-%d hero" % [kind, case[1]])
+		var region: String = Bestiary.home_of(kind)["region"]
+		assert_eq(Bestiary.xp_shown(kind, Bestiary.monster(kind), case[1]), Bestiary.xp_for(Bestiary.wild(Bestiary.spawn(kind), region), case[1]), "as the kill's own float")
+	assert_eq(int(Bestiary.monster("wolf")["xp"]), 23, "the row's own figure is left as it was")
+	# A boss lives in no pack: its row's figure, by the gap alone.
+	var boss := "dragon"
+	assert_true(Bestiary.home_of(boss).is_empty())
+	assert_eq(Bestiary.xp_shown(boss, Bestiary.monster(boss), int(Bestiary.monster(boss)["level"])), int(Bestiary.monster(boss)["xp"]))
+
+
 ## A quarter of a kill's XP in the fields (PIX-294: a third before, and the
 ## levels came too fast), two thirds of its gold.
 func test_the_wilds_pay_xp_more_thinly_than_gold() -> void:

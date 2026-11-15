@@ -160,10 +160,26 @@ func test_a_hurt_foe_with_no_way_goes_home_still_hurt() -> void:
 	assert_eq(int(foe.fighter["hp"]), 1, "as hurt as it left the fight")
 
 
-func test_a_hurt_foe_led_too_far_goes_home_and_heals() -> void:
+## PIX-493: led too far, a pack's foe walked home whole (two rolls away
+## from a wolf wiped out the hero's blows). It keeps its wounds as a boss
+## does, and mends only after a while with the hero out of its notice.
+func test_a_hurt_foe_led_too_far_goes_home_still_hurt_and_mends_in_peace() -> void:
 	var foe := _goblin("homeward")
 	foe.global_position = MapView.center(FOE + Vector2i(-2, 0))
 	foe.fighter["hp"] = 1
 	await _run(foe, 6.0, foe.home, 0.0)
 	assert_eq(foe.mode, "idle", "home and watching")
-	assert_eq(int(foe.fighter["hp"]), int(foe.fighter["maxHp"]), "whole again")
+	assert_eq(int(foe.fighter["hp"]), 1, "as hurt as it left the fight")
+	var mend := float(Packs.rules()["mendSeconds"])
+	assert_false(Packs.mends(mend - 0.1))
+	assert_true(Packs.mends(mend))
+	# The hero at its home, in its notice wherever it wanders: it mends none.
+	_world.player.global_position = foe.home
+	await _run(foe, mend + 1.0, Vector2.INF, 0.0)
+	assert_eq(int(foe.fighter["hp"]), 1, "not while the hero stands by")
+	_world.player.global_position = foe.home + Vector2(-11 * 16, 0)
+	await _run(foe, mend - 1.0, Vector2.INF, 0.0)
+	assert_eq(int(foe.fighter["hp"]), 1, "nor at once when they leave")
+	await _run(foe, 2.0, Vector2.INF, 0.0)
+	assert_eq(int(foe.fighter["hp"]), int(foe.fighter["maxHp"]), "whole again after half a minute in peace")
+	assert_false(foe.health_bar.visible)

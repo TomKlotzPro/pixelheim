@@ -211,6 +211,34 @@ func test_a_lamp_casts_and_never_blocks_itself() -> void:
 			assert_false(window.get_meta("casts", false), "a window's spill casts none")
 
 
+func test_a_flame_against_what_stands_lights_softly() -> void:
+	# PIX-495: the camp's torch east of the gate burns 8 px from its tent's
+	# foot, whose shadow was a hard-edged wedge a quarter of the pool wide.
+	assert_true(NightShadows.holds_light(Rect2(0, 0, 18, 11), PackedVector2Array([Vector2(-7, 15)]), NightShadows.AGAINST), "a torch against a tent")
+	assert_false(NightShadows.holds_light(Rect2(0, 0, 18, 11), PackedVector2Array([Vector2(-23, 5)]), NightShadows.AGAINST), "one a cell and a half off")
+	var view := _draw("overworld")
+	var torch: PointLight2D = null
+	var casting := 0
+	var feet: Array[Rect2] = []
+	for occluder: LightOccluder2D in view.actors.find_children("*", "LightOccluder2D", true, false):
+		var size := (occluder.occluder.polygon[0] * 2.0).abs()
+		feet.append(Rect2(NightShadowsLayer._place(occluder, view.actors) - size / 2.0, size))
+	for root: Node in [view.under, view.actors]:
+		for light: PointLight2D in root.find_children("*", "PointLight2D", true, false):
+			var at := NightShadowsLayer._place(light, root)
+			if Vector2i((at / MapView.TILE).floor()) == Vector2i(63, 35):
+				torch = light
+			if not light.get_meta("casts", false):
+				continue
+			casting += 1
+			for foot in feet:
+				assert_false(NightShadows.holds_light(foot, PackedVector2Array([at]), NightShadows.AGAINST), "no flame at %s casts from against a foot" % at)
+	assert_not_null(torch, "the camp's torch by its tent")
+	assert_false(torch.get_meta("casts", false), "casts nothing: a round, soft pool")
+	assert_gt(casting, 0, "the Reach's other flames still cast")
+	assert_gt(feet.size(), 0, "and the tent still blocks the lantern")
+
+
 func test_shadows_fall_on_the_ground_and_never_on_what_stands() -> void:
 	var view := _draw("town")
 	for flat: TileMapLayer in [view.ground_layer, view.wear_layer, view.verge_layer, view.detail_layer]:
@@ -304,6 +332,29 @@ func test_the_lantern_and_no_more_than_the_cap_of_lamps_cast() -> void:
 	assert_eq(rig.casting.size(), 0)
 	assert_eq(_shadowed(), 0, "the Shadows setting off")
 	GameState.settings.shadows = true
+
+
+func test_a_lamp_freed_with_its_map_stops_no_other() -> void:
+	# PIX-496: a map left at night frees its lamps while the rig still
+	# holds them. The filter that asked for each by its type failed on the
+	# freed one, with an error a map change, and came back empty: the lamps
+	# fading out were let go still casting.
+	GameState.settings.shadows = true
+	var view := _draw("town")
+	var flames := _flames(view)
+	var rig := _rig(view, MapView.center(Vector2i(40, 24)))
+	for i in 90:
+		rig._cast_shadows(flames, 1.0 / 60.0)
+	assert_eq(rig.casting.size(), 1 + NightShadows.LAMPS)
+	var gone: PointLight2D = rig.casting[1]
+	flames.erase(gone)
+	gone.free()
+	# The hero far from every lamp: those left fade out.
+	(rig.lantern.get_parent() as Node2D).position = Vector2(-4000, -4000)
+	for i in 90:
+		rig._cast_shadows(flames, 1.0 / 60.0)
+	assert_eq(rig.casting.size(), 1, "the lantern alone")
+	assert_eq(_shadowed(), 1, "and no lamp left casting behind it")
 
 
 func test_by_day_and_in_a_room_nothing_casts() -> void:

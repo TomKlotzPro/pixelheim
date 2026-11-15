@@ -15,9 +15,20 @@ extends Node
 const TILE := 16.0
 ## A faded ghost, see-through.
 const FADED := 0.3
-## A crab's claws up: its shell's cold shine, and how far it rears.
+## A crab's claws up: its shell's cold shine, how far it rears and how
+## tall it stands as it does (the claws thrown up, then held), and where
+## the glint catches them, over its sprite's top (PIX-493's playtest: the
+## weakest of the six tells, a slow 2 px lift and a tint).
 const SHELL_TINT := Color(0.75, 0.9, 1.4)
-const SHELL_LIFT := 2.0
+const SHELL_LIFT := 3.0
+const SHELL_THROWN := Vector2(1.0, 1.3)
+const SHELL_HELD := Vector2(1.0, 1.15)
+const GLINT_SIZE := 5
+## A crouching wolf's eyes, as its sheet draws them, and how bright they
+## shine in the dark (PIX-493's playtest: black on dark, the crouch could
+## not be read at night).
+const EYE := Color8(243, 214, 0)
+const EYE_SHINE := Color(1.0, 0.95, 0.55)
 ## Where a goblin holds the coin it took, from its feet.
 const COIN_AT := Vector2(7, -9)
 ## A slime's halves can't be struck for this long as they burst out.
@@ -60,6 +71,10 @@ var _mask := 0
 ## The way a crab's claws are raised, and the pose's tween.
 var _front := Vector2.ZERO
 var _pose: Tween
+## A crouching wolf's eyes, shining over its sprite.
+var _eyes: Sprite2D
+static var _eye_masks := {}
+static var _star: ImageTexture
 
 
 func _ready() -> void:
@@ -102,20 +117,32 @@ func stand(spot: Vector2, to_player: Vector2) -> Vector2:
 		"crouch":
 			return enemy.global_position
 	var hero := enemy.global_position + to_player
-	var out := Tricks.circle_spot(hero, enemy.global_position, spot, _turn, trick)
+	var out := _on_leash(Tricks.circle_spot(hero, enemy.global_position, spot, _turn, trick))
 	if Packs.walks_straight(world.map, hero, out):
 		return out
 	# A wall where its circle runs: its place in the ring as it is, or alone
 	# round the other way, or where it stands.
 	if spot != Vector2.INF:
-		return spot
+		return _on_leash(spot)
 	_turn = -_turn
-	out = Tricks.circle_spot(hero, enemy.global_position, spot, _turn, trick)
+	out = _on_leash(Tricks.circle_spot(hero, enemy.global_position, spot, _turn, trick))
 	return out if Packs.walks_straight(world.map, hero, out) else enemy.global_position
 
 
-## Whether it may tell a bite now: a wolf only on its dart.
+## A wolf's place out on its circle never takes it past its leash
+## (PIX-493: its run back out past a hero who had rolled away carried it
+## too far from home, and it gave the fight up); at bay it has none.
+func _on_leash(spot: Vector2) -> Vector2:
+	return spot if enemy.at_bay else Tricks.leashed(spot, enemy.home)
+
+
+## Whether it may tell a bite now: a wolf only on its dart; a ghost come
+## back beside the hero (most often behind them) only `holds` seconds after,
+## so with the bite's own tell the hero has time to turn (it bit 0.45 s
+## after it showed).
 func may_bite() -> bool:
+	if kind == "fade":
+		return GameClock.seconds() - _faded_at >= float(trick["holds"])
 	return kind != "hitrun" or state == "in"
 
 
@@ -214,8 +241,13 @@ func died() -> void:
 		"split":
 			world.foes.showed(enemy, "split")
 			var count := int(trick["count"])
+			# Side by side across the way to the hero, never toward them: of two
+			# left and right of a slime beside the hero, one came out inside
+			# them (PIX-497).
+			var hero: Vector2 = world.player.global_position
+			var across := (enemy.global_position - hero).orthogonal().normalized() if enemy.global_position != hero else Vector2.RIGHT
 			for i in count:
-				var at := enemy.global_position + Vector2((i - (count - 1) / 2.0) * 10.0, 0)
+				var at := enemy.global_position + across * (i - (count - 1) / 2.0) * 10.0
 				if not world.map.is_walkable(Packs.cell_of(at)):
 					at = enemy.global_position
 				var half: Node = world.foes.spawn_of(enemy, Tricks.small(enemy.fighter, trick), at)
@@ -272,8 +304,11 @@ func _hit_and_run(delta: float) -> void:
 				_pose = enemy.sprite.create_tween()
 				_pose.tween_property(enemy.sprite, "scale", enemy._rest_scale * Vector2(1.15, 0.85), left * 0.7)
 				_pose.tween_property(enemy.sprite, "scale", enemy._rest_scale, left * 0.3)
+				_shine()
 		"crouch":
+			_shine()
 			if left <= 0.0:
+				_eyes.visible = false
 				state = "in"
 				left = float(trick["seconds"])
 				_dash(true)
@@ -299,9 +334,41 @@ func _dash(on: bool) -> void:
 	enemy.pace *= float(trick["dash"]) if on else 1.0 / float(trick["dash"])
 
 
+## A crouching wolf's eyes shine (the tell, by night as by day): the eyes
+## of the frame it shows, drawn again over it and never darkened.
+func _shine() -> void:
+	var sprite: AnimatedSprite2D = enemy.sprite
+	if _eyes == null:
+		_eyes = Sprite2D.new()
+		_eyes.material = Lights.unshaded()
+		_eyes.modulate = EYE_SHINE
+		sprite.add_child(_eyes)
+	_eyes.texture = eyes_of(sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame))
+	_eyes.flip_h = sprite.flip_h
+	_eyes.visible = true
+
+
+## The eyes alone of a wolf's frame `drawn` (its sheet's EYE pixels, in
+## white), kept by frame; a frame showing none (its back) gives an empty one.
+static func eyes_of(drawn: Texture2D) -> ImageTexture:
+	if not _eye_masks.has(drawn):
+		var frame := drawn.get_image()
+		frame.decompress()
+		frame.convert(Image.FORMAT_RGBA8)
+		var eyes := Image.create(frame.get_width(), frame.get_height(), false, Image.FORMAT_RGBA8)
+		for y in frame.get_height():
+			for x in frame.get_width():
+				if frame.get_pixel(x, y).is_equal_approx(EYE):
+					eyes.set_pixel(x, y, Color.WHITE)
+		_eye_masks[drawn] = ImageTexture.create_from_image(eyes)
+	return _eye_masks[drawn]
+
+
 func _end_dart() -> void:
 	if state == "":
 		return
+	if _eyes != null:
+		_eyes.visible = false
 	_dash(false)
 	if _pose != null and _pose.is_running():
 		_pose.kill()
@@ -461,9 +528,14 @@ func _shell(delta: float) -> void:
 		sprite.play(PunyArt.pick(sprite.sprite_frames, "walk", enemy.facing))
 		sprite.pause()
 		sprite.frame = mini(1, sprite.sprite_frames.get_frame_count(sprite.animation) - 1)
+		# Thrown up in the tell's first half and held: as long a tell, read
+		# from its first frames.
 		_pose = sprite.create_tween().set_parallel()
-		_pose.tween_property(sprite, "position", enemy._rest_at + Vector2(0, -SHELL_LIFT), left)
-		_pose.tween_property(sprite, "modulate", SHELL_TINT, left)
+		_pose.tween_property(sprite, "position", enemy._rest_at + Vector2(0, -SHELL_LIFT), left * 0.5).set_ease(Tween.EASE_OUT)
+		_pose.tween_property(sprite, "modulate", SHELL_TINT, left * 0.5)
+		_pose.tween_property(sprite, "scale", enemy._rest_scale * SHELL_THROWN, left * 0.5).set_ease(Tween.EASE_OUT)
+		_pose.chain().tween_property(sprite, "scale", enemy._rest_scale * SHELL_HELD, left * 0.5)
+		_glint()
 		return
 	left -= delta
 	if left > 0.0:
@@ -475,6 +547,33 @@ func _shell(delta: float) -> void:
 		_lower()
 
 
+## A glint off the claws as they rise: a small star over the crab's top
+## opening and going out within the tell, bright at night too.
+func _glint() -> void:
+	var star := Sprite2D.new()
+	star.texture = star_texture()
+	star.material = Lights.unshaded()
+	star.position = Vector2(0, enemy.crown_of(enemy.sprite.sprite_frames, enemy._rest_at, enemy._rest_scale.x) - SHELL_LIFT)
+	star.z_index = 10
+	star.scale = Vector2.ONE * 0.4
+	enemy.add_child(star)
+	var flash := star.create_tween()
+	flash.tween_property(star, "scale", Vector2.ONE * 1.4, left * 0.5).set_ease(Tween.EASE_OUT)
+	flash.tween_property(star, "modulate:a", 0.0, left * 0.5)
+	flash.tween_callback(star.queue_free)
+
+
+## The glint's star: a cross GLINT_SIZE pixels across, white.
+static func star_texture() -> ImageTexture:
+	if _star == null:
+		var image := Image.create(GLINT_SIZE, GLINT_SIZE, false, Image.FORMAT_RGBA8)
+		for i in GLINT_SIZE:
+			image.set_pixel(i, GLINT_SIZE / 2, Color.WHITE)
+			image.set_pixel(GLINT_SIZE / 2, i, Color.WHITE)
+		_star = ImageTexture.create_from_image(image)
+	return _star
+
+
 func _lower() -> void:
 	state = ""
 	ready_in = float(trick["every"])
@@ -482,6 +581,7 @@ func _lower() -> void:
 		_pose.kill()
 	_pose = enemy.sprite.create_tween().set_parallel()
 	_pose.tween_property(enemy.sprite, "position", enemy._rest_at, 0.12)
+	_pose.tween_property(enemy.sprite, "scale", enemy._rest_scale, 0.12)
 	_pose.tween_property(enemy.sprite, "modulate", Color.WHITE, 0.12)
 	if enemy.mode == "cast":
 		enemy.mode = "chase"

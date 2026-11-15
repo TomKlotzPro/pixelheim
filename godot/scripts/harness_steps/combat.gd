@@ -200,6 +200,19 @@ func step_breath() -> void:
 		await h.get_tree().create_timer(0.2).timeout
 
 
+func step_rollaway() -> void:
+	# Two rolls away from the foe (PIX-493: they sent a wolf home, whole
+	# again), each once the last is over.
+	var hero: Vector2 = world.player.global_position
+	var away := Vector2.LEFT
+	for mob: Node2D in h.get_tree().get_nodes_in_group("mobs"):
+		if mob.hunting and not mob.dying:
+			away = (hero - mob.global_position).normalized()
+	for i in 2:
+		world.player.dodge(away)
+		await h.get_tree().create_timer(0.6).timeout
+
+
 func step_flee() -> void:
 	# Run for the way out mid-fight (PIX-232): whatever hunts the hero
 	# has seen them, then the map's first portal is taken.

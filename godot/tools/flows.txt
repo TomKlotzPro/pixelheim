@@ -208,6 +208,11 @@ trick-bones | fight kill --foe skeleton --wait 0.5 | mobs=0 tricks=pile:1 | comb
 trick-ghost | fight kill --foe ghost --wait 0.5 | mobs=0 tricks=fade:[0-9]+ | combat
 trick-crab | fight kill --foe crab --wait 0.5 | mobs=0 tricks=shell:[0-9]+ | combat
 trick-elite | fight kill elite --foe crab --wait 0.5 | mobs=0 tricks=shell:[0-9]+ | combat
+# A wolf keeps its wounds (PIX-493): struck to half its health and once
+# more, the hero rolls twice away from it; ten seconds on, fighting still
+# or gone home for its leash, it is as hurt as the blows left it (it
+# walked home whole).
+wolf-keeps-wounds | --map overworld fight rollaway --foe wolf --foe-distance 2 --foe-left 0.5 --wait 10 | map=overworld foes=(?!122/)\d+/122 \w+ | combat field
 # Each skill plays its own strips, the bow its arrow (PIX-396): a mage's
 # Fireball flies a fireball that bursts on the foe, a cleric's Mend rises
 # round her, a necromancer's Grave Chill an ice arrow and crystals, and a
