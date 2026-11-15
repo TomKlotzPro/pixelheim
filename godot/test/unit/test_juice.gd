@@ -15,6 +15,10 @@ func test_each_fighter_flashes_on_its_own() -> void:
 	assert_eq(float(one.get_shader_parameter("flash")), 1.0, "pure white at the blow")
 	var code: String = Juice.FIGHTER_SHADER.code
 	assert_string_contains(code, "TEXTURE_PIXEL_SIZE", "it dissolves by the art's own pixels")
+	assert_eq(float(one.get_shader_parameter("keep")), 0.0, "a foe flashes whole")
+	var hero := Juice.fighter_material(Juice.HERO_KEEP)
+	assert_eq(float(hero.get_shader_parameter("keep")), Juice.HERO_KEEP, "the hero keeps their outline (PIX-497)")
+	assert_between(Juice.HERO_KEEP, 4.0 / 255.0, 19.0 / 255.0, "Shade's outline and nothing lighter")
 
 
 func test_the_slash_wears_the_weapons_colour() -> void:

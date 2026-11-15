@@ -10,6 +10,9 @@ shader_type canvas_item;
 #include "res://shaders/linear.gdshaderinc"
 
 uniform float flash : hint_range(0.0, 1.0) = 0.0;
+// Texels darker than this keep their colour through a flash (PIX-497: the
+// hero's outline, so they read under a bite's spark); 0 flashes all.
+uniform float keep : hint_range(0.0, 1.0) = 0.0;
 uniform float dissolve : hint_range(0.0, 1.0) = 0.0;
 uniform vec3 ember : source_color = vec3(1.0, 0.55, 0.2);
 // How wide the glowing rim of the dissolve is.
@@ -21,7 +24,8 @@ float hash(vec2 p) {
 
 void fragment() {
 	vec4 c = COLOR;  // already the texel times the modulate
-	c.rgb = to_canvas(mix(to_display(c.rgb), vec3(1.0), flash));
+	vec3 shown = to_display(c.rgb);
+	c.rgb = to_canvas(mix(shown, vec3(1.0), flash * step(keep, max(shown.r, max(shown.g, shown.b)))));
 	if (dissolve > 0.0) {
 		float h = hash(floor(UV / TEXTURE_PIXEL_SIZE));
 		if (h < dissolve) {

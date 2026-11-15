@@ -90,8 +90,8 @@ func _ready() -> void:
 	sprite.sprite_frames = PunyArt.frames(art)
 	sprite.position = Vector2(0, PunyArt.lift(art))
 	sprite.self_modulate = art["tint"]
-	# A clean white flash when struck (PIX-226).
-	sprite.material = Juice.fighter_material()
+	# A clean white flash when struck (PIX-226), the outline kept (PIX-497).
+	sprite.material = Juice.fighter_material(Juice.HERO_KEEP)
 	add_child(sprite)
 	gait = Gait.new(sprite, art)
 	_play("idle")

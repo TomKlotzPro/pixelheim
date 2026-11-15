@@ -10,6 +10,10 @@ const FIGHTER_SHADER := preload("res://shaders/fighter.gdshader")
 const FLASH_SECONDS := 0.1
 const KILL_FLASH_SECONDS := 0.18
 const DISSOLVE_SECONDS := 0.45
+## The hero's flash leaves texels darker than this as they are (PIX-497):
+## Shade's outline, (4, 4, 4) of 255, so the hero keeps their shape under a
+## bite's spark where a foe goes white whole.
+const HERO_KEEP := 0.05
 ## The hero's shapes: setting off (taller, with the walk's first frame, the
 ## rise off the back foot: PIX-243), settling when the walk stops (a little
 ## wider, the weight coming down onto both feet), landing a roll (wider), a
@@ -35,9 +39,10 @@ const ARCANE := Color(0.72, 0.56, 1.0)
 
 
 ## A fighter's own copy of the flash-and-dissolve material.
-static func fighter_material() -> ShaderMaterial:
+static func fighter_material(keep := 0.0) -> ShaderMaterial:
 	var material := ShaderMaterial.new()
 	material.shader = FIGHTER_SHADER
+	material.set_shader_parameter("keep", keep)
 	return material
 
 

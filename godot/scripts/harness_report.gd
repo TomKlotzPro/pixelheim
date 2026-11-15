@@ -450,10 +450,7 @@ func field_floor() -> String:
 	return "%d/%d" % [int(entry["number"]), Depths.count(entry["dungeon"])]
 
 
-## On a held place (Hamlet.HELD): who holds it, its houses, the banners
-## hung in its holder's colour, its pieces two tiles tall standing whole
-## (Hamlet.TOPS) and its paved cells worn:
-## turncoats:houses5,red2,tops4,worn35 (PIX-399).
+## After a roll away (PIX-493): every hurt foe still standing, its hp and mode.
 func field_foes() -> String:
 	if not flags.has("rollaway"):
 		return ""
@@ -464,6 +461,10 @@ func field_foes() -> String:
 	return ",".join(out) if not out.is_empty() else "none"
 
 
+## On a held place (Hamlet.HELD): who holds it, its houses, the banners
+## hung in its holder's colour, its pieces two tiles tall standing whole
+## (Hamlet.TOPS) and its paved cells worn:
+## turncoats:houses5,red2,tops4,worn35 (PIX-399).
 func field_fort() -> String:
 	if world.map == null or world.view == null:
 		return ""
