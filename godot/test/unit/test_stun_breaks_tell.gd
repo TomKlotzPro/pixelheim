@@ -23,7 +23,7 @@ var _world: StubWorld
 
 
 class StubSkills extends RefCounted:
-	func impact(_on: Node) -> void:
+	func impact(_on: Node, _alpha := 0.0) -> void:
 		pass
 
 
