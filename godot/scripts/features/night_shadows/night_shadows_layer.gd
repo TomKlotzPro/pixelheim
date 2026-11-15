@@ -16,8 +16,7 @@ extends MapLayer
 ## fixed count, as what stands is laid by the units before (PIX-304).
 const UNITS := 12
 ## What was laid, kept on the blockers' layer under this name: {"feet",
-## "walls"}, and "solid", the cells that block a light (where the
-## lightning's may not stand, PIX-491).
+## "walls"}.
 const LAID := "night_shadows"
 
 ## The feet's outlines, one a size.
@@ -32,7 +31,6 @@ func build(view: MapView, slices: Slicer) -> void:
 		var near := view.data.id not in PunyTerrain.SKYLINE_MAPS
 		var solid := NightShadows.solid(view.data.grid, view.outdoor_props.get("drawn", {}),
 			PunyTown.houses(view.data.grid).map(func(house: Dictionary) -> Rect2i: return house["rect"]) if near else [], view.layers.has("pieces"))
-		seen["solid"] = solid
 		seen["walls"] = _walls(view, solid)
 		seen["lights"] = _flames(view, solid))
 	slices.add_each("nightshadows", UNITS, func(i: int) -> void:
@@ -41,7 +39,7 @@ func build(view: MapView, slices: Slicer) -> void:
 			seen["feet"] += int(_foot(standing[k], seen["lights"]))
 		if i == UNITS - 1:
 			_flatten(view)
-			view.tile_layer.set_meta(LAID, {"feet": seen["feet"], "walls": seen["walls"], "solid": seen["solid"]}))
+			view.tile_layer.set_meta(LAID, {"feet": seen["feet"], "walls": seen["walls"]}))
 
 
 ## An occluder round each block of the map's cells that block a light

@@ -33,6 +33,9 @@ const MOODS := {
 	"coast": [Color(0.98, 1.0, 1.0), 1.06, 1.02],
 	"woods": [Color(0.96, 1.0, 0.95), 1.04, 1.03],
 }
+## The airs no rain falls through: the Ash's heat, the Frostgate's snow,
+## the Mire's fog.
+const DRY_AIRS := ["ash", "frost", "mire"]
 ## The night takes some colour from everything.
 const NIGHT_SATURATION := 0.82
 ## How many days in a hundred bring a shower; how long one lasts and how
@@ -244,7 +247,7 @@ static func next_shower(steps: float) -> float:
 ## not on the Ash's heat, the Frostgate's snow or the Mire's fog, nor on the
 ## village the night it burns or the night it holds (PIX-253 step 9).
 static func rains_in(map: MapData, air: String) -> bool:
-	if map == null or not Lights.under_sky(map) or air in ["ash", "frost", "mire"]:
+	if map == null or not Lights.under_sky(map) or air in DRY_AIRS:
 		return false
 	return map.id != "town" or village_rains()
 

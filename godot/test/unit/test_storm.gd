@@ -190,6 +190,22 @@ func test_the_storm_holds_its_strikes_to_the_cap() -> void:
 	assert_false(storm.soft)
 
 
+func test_the_storm_keeps_its_own_time_and_dims_behind_a_screen() -> void:
+	var storm := _storm()
+	storm._now = 100.0
+	storm.strike({"gap": 0.0, "far": 1.0, "flashes": 1, "from": 0.0})
+	# By its own seconds, which stand still while a Screen holds the world:
+	# GameClock's run on, and a strike and its thunder fell the moment a
+	# menu shut.
+	assert_eq(float(storm._showing[0]["at"]), 100.0, "the flash by the storm's own clock")
+	assert_almost_eq(float(storm._thunder[0][0]), 100.0 + Weather.THUNDER_FAR_S, 0.001, "and its thunder")
+	assert_false(storm.casts, "nothing laid to cast from: the strike still flashes")
+	storm.sky.visible = true
+	storm.bolt.visible = true
+	storm.notification(Node.NOTIFICATION_PAUSED)
+	assert_false(storm.sky.visible or storm.bolt.visible, "no flash left lit behind a menu")
+
+
 func test_flashes_off_or_reduce_motion_is_one_soft_brightening() -> void:
 	for setting: String in ["flashes", "reduce_motion"]:
 		GameState.settings.flashes = setting != "flashes"
@@ -228,9 +244,37 @@ func test_puddles_gather_on_paths_and_less_on_grass_never_on_water_or_under_a_ro
 			assert_between(gathers, 0.3, 0.7, "grass at %s" % cell)
 		elif tile in ["water", "roof", "wall", "mountain", "forest", "bridge"]:
 			assert_eq(gathers, 0.0, "%s at %s" % [tile, cell])
-		# Round a lamp's foot the ground is trodden hollow: its own mark.
-		assert_eq(mask.get_pixelv(cell).g, float(tile == "lamp"), "%s at %s" % [tile, cell])
+		# Round a lamp's foot the ground is trodden hollow: its own mark, on
+		# its cell and the open one before it, where the flame is mirrored.
+		var before: bool = town.grid.get(cell + Vector2i.UP, "") == "lamp" and gathers > 0.0
+		assert_eq(mask.get_pixelv(cell).g, float(tile == "lamp" or before), "%s at %s" % [tile, cell])
+		# The wet ground's veil: never on open water or a house.
+		if tile in ["path", "grass", "sand", "lamp"]:
+			assert_eq(mask.get_pixelv(cell).b, 1.0, "%s at %s wets" % [tile, cell])
+		elif tile == "water" or tile.begins_with("roof") or tile == "wall":
+			assert_eq(mask.get_pixelv(cell).b, 0.0, "%s at %s stays dry" % [tile, cell])
 	assert_true(seen.has("path") and seen.has("water") and seen.has("roof"))
 	for tile: String in PuddlesLayer.GATHERS:
 		assert_true(WorldTiles.TILE_INFO.has(tile), "%s is a tile" % tile)
 	assert_false(PuddlesLayer.GATHERS.has("ash"), "no rain on the Ash")
+
+
+func test_nothing_wets_where_no_rain_falls() -> void:
+	var reach := MapData.load_by_id("overworld")
+	var mask := PuddlesLayer.mask(reach).get_image()
+	var dry := 0
+	var wet := 0
+	for cell: Vector2i in reach.grid:
+		var air: String = Weather.AIRS.get(reach.regions.get(cell, ""), "")
+		if air in Weather.DRY_AIRS or reach.grid[cell] in ["ash", "snow", "water"]:
+			assert_eq(mask.get_pixelv(cell), Color(0, 0, 0), "%s in %s at %s: no veil, no puddle" % [reach.grid[cell], air, cell])
+			dry += 1
+		else:
+			wet += int(mask.get_pixelv(cell).b == 1.0)
+	assert_gt(dry, 0, "the Reach has land no rain falls on")
+	assert_gt(wet, 0, "and land it does")
+	for air: String in Weather.DRY_AIRS:
+		assert_false(Weather.rains_in(reach, air), air)
+	# The whole map's leavings follow the map, not the air the hero stands
+	# in: Storm reads rains_in(map, "").
+	assert_true(Weather.rains_in(reach, ""))

@@ -17,7 +17,8 @@ extends Node
 
 var world: Node
 ## How hard the storm blows here, and how much of the rain's leavings show
-## (1 where it rains, 0 in a room or under the Ash's heat), both eased.
+## (1 on a map it rains on, 0 in a room: where on the map is the sheet's
+## mask's), both eased.
 var storm := 0.0
 var rained := 0.0
 ## How wet the ground is here and how full its puddles, 0..1.
@@ -34,11 +35,19 @@ var inside := false
 var held := false
 ## The sky's light, over everything alike (a DirectionalLight2D's shadows
 ## fall on what stands too, whatever its light bits: it casts none), and
-## the bolt's, a far point light that casts; whether the strike showing
-## has a place to cast from.
+## the bolt's, a far point light that casts; whether the map has anything
+## laid to cast from.
 var sky: DirectionalLight2D
 var bolt: PointLight2D
 var casts := false
+## The storm's own seconds: they stand still with the Storm while a Screen
+## holds the world (GameClock's run on), so no strike or thunder piles up
+## behind a menu to fall the moment it shuts; stepped with the frames, the
+## same every run of the harness.
+var _now := 0.0
+## The windows a flash lit, as the LightRig had set them: [pane, colour,
+## energy], put back when the world is held mid-flash.
+var _panes: Array = []
 ## Whether the storm strikes by itself: not in a run of the harness's
 ## that strikes when it says (`--strike`), so its report reads the same
 ## however long the run took.
@@ -72,6 +81,9 @@ const FAR_LIGHT := 0.55
 const BOLT_OFF := 330.0
 const BOLT_REACH := 720.0
 const SHADOW_SOFT := 1.2
+## The bolt's texture is this dense (under puddles.gdshader's GLEAM_NEAR:
+## no flame to mirror), its energy as much the more.
+const BOLT_ALPHA := 0.25
 ## The bolt's share of the flash: what a shadow takes away. The sky keeps
 ## the rest, so a shadow, which runs on to the edge of the view, is a
 ## tone, and a strike with nowhere to cast from flashes all the same.
@@ -85,8 +97,11 @@ func _ready() -> void:
 	sky.energy = 0.0
 	sky.visible = false
 	world.add_child(sky)
+	# Flat, and mostly clear (BOLT_ALPHA), its energy the more for it: the
+	# same light on everything, and the puddles' shader, which mirrors a
+	# flame where its texture is dense, takes it for no flame.
 	var flat := Image.create(4, 4, false, Image.FORMAT_RGBA8)
-	flat.fill(Color.WHITE)
+	flat.fill(Color(1, 1, 1, BOLT_ALPHA))
 	bolt = PointLight2D.new()
 	bolt.texture = ImageTexture.create_from_image(flat)
 	bolt.texture_scale = BOLT_REACH * 2.0 / 4.0
@@ -108,7 +123,8 @@ func _process(delta: float) -> void:
 	var map: MapData = world.map
 	if map == null or world.get("atmosphere") == null:
 		return
-	var now := GameClock.seconds()
+	_now += delta
+	var now := _now
 	var steps: float = GameState.world.steps
 	var open := Weather.rains_in(map, world.atmosphere.air)
 	inside = Weather.under_roof(map)
@@ -116,10 +132,15 @@ func _process(delta: float) -> void:
 	var arrived := map != _map_of
 	_map_of = map
 	storm = want if arrived else move_toward(storm, want, EASE * delta)
-	rained = float(open) if arrived else move_toward(rained, float(open), EASE * delta)
+	# What the rain leaves lies wherever it rains on the map, whatever air
+	# the hero stands in: the sheet's mask keeps the Ash, the snow and the
+	# fog dry cell by cell (PuddlesLayer), so crossing into them dries
+	# nothing still in view.
+	var falls := float(Weather.rains_in(map, ""))
+	rained = falls if arrived else move_toward(rained, falls, EASE * delta)
 	wet = Weather.wet_at(steps) * rained
 	puddles = Weather.puddles_at(steps) * rained
-	RenderingServer.global_shader_parameter_set("ground_wet", Vector3(wet, puddles, world.atmosphere.rain))
+	RenderingServer.global_shader_parameter_set("ground_wet", Vector4(wet, puddles, world.atmosphere.rain, world.lights.dark))
 	for layer: CanvasItem in get_tree().get_nodes_in_group(PuddlesLayer.GROUP):
 		layer.visible = wet > 0.004 or puddles > 0.004
 	if storm < STRIKES_FROM or not wild:
@@ -144,7 +165,7 @@ func is_soft() -> bool:
 ## it flickers, each only if the cap lets it; then its thunder, later the
 ## farther it fell. A strike the cap holds back whole makes no sound.
 func strike(spec: Dictionary) -> void:
-	var now := GameClock.seconds()
+	var now := _now
 	soft = is_soft()
 	_shown = _shown.filter(func(at: float) -> bool: return now - at < Weather.FLASH_WINDOW)
 	var far := float(spec["far"])
@@ -160,32 +181,14 @@ func strike(spec: Dictionary) -> void:
 		began = true
 	if not began:
 		return
-	var from := _bolt_at(float(spec["from"]))
-	casts = from.is_finite()
+	# The bolt's light stands beyond the top of the view, the way the strike
+	# falls; it casts wherever the map has occluders laid.
+	casts = not NightShadowsLayer.laid(world.get("view")).is_empty()
 	if casts:
-		bolt.global_position = from
+		var view: Array[Vector2] = world.lights.world_view()
+		bolt.global_position = view[0] + view[1] / 2.0 + Vector2.UP.rotated(float(spec["from"])) * BOLT_OFF
 	var event := "thunder_near" if far < Weather.THUNDER_NEAR else "thunder_far"
 	_thunder.append([now + Weather.thunder_delay(far), "thunder_inside" if inside else event])
-
-
-## Where the bolt's light stands for a strike falling `from` (radians off
-## straight down the screen): beyond the top of the view, BOLT_OFF from
-## its middle, never in or against a block of tall cells, where its light
-## would be shut in (NightShadows.shut_in, as a lamp's): a little further
-## out then, or from the other side. Vector2.INF where the map lays no
-## occluders or nowhere near is open: the strike casts nothing.
-func _bolt_at(from: float) -> Vector2:
-	var laid := NightShadowsLayer.laid(world.get("view"))
-	if laid.is_empty():
-		return Vector2.INF
-	var view: Array[Vector2] = world.lights.world_view()
-	var origin: Vector2 = world.view.under.global_position
-	for way: float in [from, -from]:
-		for further in 4:
-			var at := view[0] + view[1] / 2.0 + Vector2.UP.rotated(way) * (BOLT_OFF + further * 2.0 * MapView.TILE)
-			if not NightShadows.shut_in(laid["solid"], (at - origin) / MapView.TILE):
-				return at
-	return Vector2.INF
 
 
 ## The flash now: under the open sky the sky's light, and the bolt's with
@@ -206,16 +209,31 @@ func _shine(now: float) -> void:
 	sky.color = color
 	bolt.color = color
 	sky.energy = energy * (1.0 - SHADOW_DEPTH) if bolt.visible else energy
-	bolt.energy = energy * SHADOW_DEPTH
+	bolt.energy = energy * SHADOW_DEPTH / BOLT_ALPHA
+	_panes.clear()
 	if inside and flash > 0.0:
 		# After the LightRig has set them for the hour: the day through the
 		# windows (`by_day`), cold and bright for the instant.
 		for node in get_tree().get_nodes_in_group("lights"):
 			var pane := node as PointLight2D
 			if pane.get_meta("by_day", false):
+				_panes.append([pane, pane.color, pane.energy])
 				pane.color = pane.color.lerp(color, minf(1.0, flash * 2.0))
 				pane.energy += flash * WINDOW_FLASH * float(pane.get_meta("energy", 1.0))
 				pane.visible = true
+
+
+## A Screen holds the world: no flash stays lit behind it, frozen at its
+## brightest. What is left of it shows when the world runs again.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PAUSED and sky != null:
+		sky.visible = false
+		bolt.visible = false
+		for lit: Array in _panes:
+			if is_instance_valid(lit[0]):
+				lit[0].color = lit[1]
+				lit[0].energy = lit[2]
+		_panes.clear()
 
 
 ## The thunder whose time has come.
