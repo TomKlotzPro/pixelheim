@@ -362,8 +362,10 @@ func _tick_unless_heard(asked_then: int) -> void:
 ## "coin_gain", "ui_tick"...): one of its takes, never the one it played
 ## last, at its family's level on its family's voices; a rendered stinger a
 ## little different each time unless `vary` is false, a family with "feet"
-## left foot then right. An event with no take here is silent.
-func play(event: String, vary := true) -> void:
+## left foot then right; one played at its own pitch instead is `tuned`
+## (PIX-492: a run of coins, each tick a little higher), off the game's dice
+## with `vary` false. An event with no take here is silent.
+func play(event: String, vary := true, tuned := 1.0) -> void:
 	var entry: Dictionary = _doc["events"].get(event, {})
 	if entry.is_empty():
 		return
@@ -379,7 +381,7 @@ func play(event: String, vary := true) -> void:
 		return
 	_played_at[heard] = now
 	var family: Dictionary = _doc["families"][entry["family"]]
-	var pitch := 1.0
+	var pitch := tuned
 	var level := float(family.get("db", 0.0))
 	if family.has("feet"):
 		_foot = 1 - _foot

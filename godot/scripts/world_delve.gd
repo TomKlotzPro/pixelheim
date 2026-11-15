@@ -57,8 +57,8 @@ func open_shortcut(fell := Depths.NOWHERE, boss: Node = null) -> void:
 
 
 ## The way out where a boss fell (PIX-339, Tom: « ça fait bizarre de tuer
-## un boss et qu'un escalier pop »): once its body has gone and the spoils
-## over it have risen and faded, so the two never fight, the floor where
+## un boss et qu'un escalier pop »): once its body has gone, its coins have
+## flown (PIX-492) and the spoils over it have risen and faded, so the two never fight, the floor where
 ## it fell (or beside it, never under the hero) cracks and gives into a
 ## stair up (StairRise), the view shaking and the dust rising as its slabs
 ## sink; once open it gets its plate and its words. Nothing if the hero has
@@ -67,7 +67,7 @@ func _rise(fell: Vector2i, door: Dictionary, boss: Node) -> void:
 	var visit: MapView = world.view
 	waiting = true
 	var waited := 0.0
-	while waited < SETTLE_MOST_S and (is_instance_valid(boss) or world.fx.rising_now() > 0):
+	while waited < SETTLE_MOST_S and (is_instance_valid(boss) or world.fx.rising_now() > 0 or world.fx.loot.is_processing()):
 		await get_tree().create_timer(SETTLE_STEP_S).timeout
 		waited += SETTLE_STEP_S
 	waiting = false

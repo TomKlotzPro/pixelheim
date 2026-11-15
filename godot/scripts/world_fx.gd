@@ -10,12 +10,18 @@ extends Node2D
 var world: Node2D
 ## The skills' and weapons' strips (PIX-396).
 var skills: SkillFx
+## A kill's coins, sparks and drops on their way to the hero (PIX-492).
+var loot: LootPop
 
 
 func _ready() -> void:
 	skills = SkillFx.new()
 	# Internal: not one of the words and wins its children are.
 	add_child(skills, false, Node.INTERNAL_MODE_FRONT)
+	loot = LootPop.new()
+	loot.world = world
+	loot.fx = self
+	add_child(loot, false, Node.INTERNAL_MODE_FRONT)
 
 
 ## A win's colours over the world (PIX-245): XP in a sea-glass green no
@@ -184,6 +190,15 @@ func reach() -> Array[Rect2]:
 	var out: Array[Rect2] = []
 	for rect in shown():
 		out.append(rect.grow_individual(0.0, REACH, 0.0, 0.0))
+	# A kill's float not up yet, its coins still on their way (PIX-492):
+	# the room its rows will take over where it fell.
+	for due: Dictionary in loot.to_come():
+		var rows := Gains.rows(due["gains"])
+		var wide := 0.0
+		for row in rows:
+			wide = maxf(wide, Ink.of_text(Gains.line(row), UiStyle.bold_font(), UiStyle.BODY_PX).size.x + GAIN_ROW)
+		var at: Vector2 = due["at"]
+		out.append(Rect2(at.x - wide / 2.0, at.y - GAIN_ROW * rows.size(), wide, GAIN_ROW * rows.size()).grow_individual(0.0, REACH, 0.0, 0.0))
 	return out
 
 
@@ -330,11 +345,13 @@ func level_up_burst() -> void:
 ## nothing rises or bursts: the rows fade in where they stand (a little
 ## higher, GAIN_STILL_LIFT), then out. A kill's win rises as it falls, in a
 ## fight too (PIX-343: Tom liked seeing the gold come; v0.256 held it to the
-## fight's end), stepped up clear of the pack's tags (keep_clear).
-func show_gains(gains: Dictionary, at: Vector2) -> void:
+## fight's end), stepped up clear of the pack's tags (keep_clear). Not
+## `tallied` when it is a share of a win already counted (burst_gains).
+func show_gains(gains: Dictionary, at: Vector2, tallied := true) -> void:
 	if Gains.is_empty(gains):
 		return
-	Gains.merge(floated, gains)
+	if tallied:
+		Gains.merge(floated, gains)
 	var now := GameClock.seconds()
 	for i in range(_rising.size() - 1, -1, -1):
 		var gone: Variant = _rising[i]["box"]
@@ -345,7 +362,11 @@ func show_gains(gains: Dictionary, at: Vector2) -> void:
 		if Gains.joins(rising["at"], rising["joined"], at, now):
 			win = rising
 			break
+	var late := false
 	if win.is_empty():
+		# A kill's float comes up as its first spark lands (PIX-492), among
+		# words born since the blow: it steps clear of them as it comes.
+		late = not tallied
 		var box := Node2D.new()
 		box.position = (at - Vector2(0, GAIN_STILL_LIFT if GameState.settings.reduce_motion else 0.0)).round()
 		box.z_index = Foes.OVER_TAGS
@@ -355,7 +376,31 @@ func show_gains(gains: Dictionary, at: Vector2) -> void:
 	win["joined"] = now
 	Gains.merge(win["gains"], gains)
 	_lay_out(win)
-	_hold(win)
+	if late:
+		var words: Array[Rect2] = _reserved.duplicate()
+		for stand: Node in get_children():
+			if stand.has_meta("word") and not stand.is_queued_for_deletion() and is_instance_valid(stand.get_meta("word")):
+				words.append(_drawn(stand.get_meta("word")))
+		_lift_win(win, words, _over)
+	_hold(win, tallied)
+
+
+## A kill's win, from the foe that stood at `feet` (PIX-492): its coins
+## burst out and fly to the hero, its XP rises as sparks, its drops hop out
+## (LootPop; more of it for a `grand` win, a boss's or a named monster's),
+## and the float over where it fell counts up as each lands, to the same
+## words it showed at once before. The win is tallied here, whole, as it was
+## paid: only the look takes its time. With motion reduced nothing flies:
+## the float as show_gains gives it.
+func burst_gains(gains: Dictionary, feet: Vector2, grand := false) -> void:
+	if GameState.settings.reduce_motion or Gains.is_empty(gains):
+		show_gains(gains, feet + OVER_FOE)
+		# The kill's ring, held for the coins (world_foes.gd), off the dice.
+		if int(gains.get("gold", 0)) > 0:
+			Sound.play("coin_gain", false)
+		return
+	Gains.merge(floated, gains)
+	loot.burst(gains, feet + OVER_FOE, feet, grand)
 
 
 ## A win's rows from the bottom up, each centred over the spot: a row it
@@ -370,8 +415,10 @@ func _lay_out(win: Dictionary) -> void:
 	var rows := Gains.rows(win["gains"])
 	# A row whose key went (XP alone, then gold beside it: one purse row,
 	# Gains.rows) gives way.
+	var purse_went := false
 	for key: String in shown.keys():
 		if not rows.any(func(row: Dictionary) -> bool: return row["key"] == key):
+			purse_went = purse_went or key in ["xp", "gold"]
 			(shown[key] as Node).queue_free()
 			shown.erase(key)
 	for row: Dictionary in rows:
@@ -380,9 +427,15 @@ func _lay_out(win: Dictionary) -> void:
 			line = _gain_row(row)
 			box.add_child(line)
 			shown[row["key"]] = line
-			_come_in(line, delay, row["tone"] in ["fine", "epic"])
-			if not still:
-				delay += GAIN_STAGGER
+			if purse_went and row["key"] == "gold+xp":
+				# The purse's line carries on, its gold beside its XP now
+				# (PIX-492: a spark landed, then a coin): counted up where it
+				# stands, never a second entrance.
+				_bump(line)
+			else:
+				_come_in(line, delay, row["tone"] in ["fine", "epic"])
+				if not still:
+					delay += GAIN_STAGGER
 		elif (line.get_node("text") as Label).text != row["text"] or _then(line) != row.get("then", ""):
 			(line.get_node("text") as Label).text = row["text"]
 			if line.has_node("then"):
@@ -485,16 +538,20 @@ func _bump(line: Node2D) -> void:
 
 
 ## A win stays up GAIN_LIFE from the last that joined it, rising GAIN_RISE
-## as it goes (in place with motion reduced), then fades away.
-func _hold(win: Dictionary) -> void:
+## as it goes (in place with motion reduced), then fades away. A share of
+## a win already counted (PIX-492: a coin landing) holds it up without
+## `anew`: it rises on to where it was going, never a little further a coin.
+func _hold(win: Dictionary, anew := true) -> void:
 	var box: Node2D = win["box"]
 	var held: Variant = win["tween"]
 	if held != null and (held as Tween).is_valid():
 		(held as Tween).kill()
 	box.modulate.a = 1.0
 	var tween := box.create_tween().set_parallel()
+	if anew or not win.has("top"):
+		win["top"] = box.position.y - GAIN_RISE
 	if not GameState.settings.reduce_motion:
-		tween.tween_property(box, "position:y", box.position.y - GAIN_RISE, GAIN_LIFE).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		tween.tween_property(box, "position:y", float(win["top"]), GAIN_LIFE).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_property(box, "modulate:a", 0.0, 0.45).set_delay(GAIN_LIFE - 0.45)
 	tween.chain().tween_callback(box.queue_free)
 	win["tween"] = tween
