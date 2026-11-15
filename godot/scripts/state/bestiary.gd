@@ -46,6 +46,12 @@ static func boss_attack(move: String) -> Dictionary:
 	return _data()["bossAttacks"][move]
 
 
+## A kind's own trick (PIX-489, combat.json's "tricks"), {} for a kind without.
+static func trick(monster_id: String) -> Dictionary:
+	var found: Variant = _data()["tricks"].get(monster_id)
+	return found if found is Dictionary else {}
+
+
 ## An elite family's moves, {} for a family without.
 static func elite_moves(family: String) -> Dictionary:
 	return _data()["eliteMoves"].get(family, {})

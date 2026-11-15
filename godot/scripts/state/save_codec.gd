@@ -45,7 +45,7 @@ const SKILLS := {"skillDock": "dock", "beyond": "beyond", "forgot": "forgot", "p
 ## (town); anything else in it rides along in town.invested.
 const INVESTED := {"savings": "bank", "tills": "tills", "expansions": "expansions", "venture": "venture"}
 ## The quest records: the state's key -> the file's (quests).
-const RECORDS := {"tracked": "tracked", "deeds": "deeds", "firsts": "firsts", "crafted": "crafted", "hunted": "named", "met": "met"}
+const RECORDS := {"tracked": "tracked", "deeds": "deeds", "firsts": "firsts", "crafted": "crafted", "hunted": "named", "met": "met", "tricks": "tricks"}
 
 static var _game := ""
 

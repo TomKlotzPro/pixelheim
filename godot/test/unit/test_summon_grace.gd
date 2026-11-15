@@ -75,6 +75,9 @@ class StubSummon extends Node:
 	func notice() -> void:
 		pass
 
+	func plain() -> void:
+		pass
+
 
 class StubFoes extends Node:
 	func spawn_enemy(_species: String, _cell: Vector2i, _region := "", _spawn_id := "", _elite := false, _wild := true, _home := Vector2i(-1, -1)) -> Node:
