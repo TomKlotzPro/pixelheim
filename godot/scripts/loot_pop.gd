@@ -162,6 +162,7 @@ func _process(delta: float) -> void:
 	_clock += delta
 	var view: Variant = world.view if world != null else null
 	var i := 0
+	var left_coins := false
 	# Oldest first, so a float counts up in the order its coins left.
 	while i < _bits.size():
 		var bit := _bits[i]
@@ -169,6 +170,7 @@ func _process(delta: float) -> void:
 		# Each by the place it sprang in, so a new map's first burst is kept.
 		if bit["view"] != view:
 			_bits.remove_at(i)
+			left_coins = left_coins or bit["kind"] == COIN
 			_spare.append(bit)
 		elif _clock >= float(bit["lands"]):
 			_bits.remove_at(i)
@@ -176,6 +178,9 @@ func _process(delta: float) -> void:
 			_spare.append(bit)
 		else:
 			i += 1
+	# The purse still rings once for coins left behind through a door.
+	if left_coins:
+		Sound.play("coin_gain", false)
 	queue_redraw()
 	_glows.queue_redraw()
 	if _bits.is_empty():
@@ -194,7 +199,7 @@ func settle() -> void:
 		_spare.append(bit)
 	# The kill's own ring was held for the coins (Soundscape.quiet_gold).
 	if flying.any(func(bit: Dictionary) -> bool: return bit["kind"] == COIN):
-		Sound.play("coin_gain")
+		Sound.play("coin_gain", false)
 
 
 ## One reached the hero: its share goes on the float; a coin ticks, a

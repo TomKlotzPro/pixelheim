@@ -395,6 +395,9 @@ func show_gains(gains: Dictionary, at: Vector2, tallied := true) -> void:
 func burst_gains(gains: Dictionary, feet: Vector2, grand := false) -> void:
 	if GameState.settings.reduce_motion or Gains.is_empty(gains):
 		show_gains(gains, feet + OVER_FOE)
+		# The kill's ring, held for the coins (world_foes.gd), off the dice.
+		if int(gains.get("gold", 0)) > 0:
+			Sound.play("coin_gain", false)
 		return
 	Gains.merge(floated, gains)
 	loot.burst(gains, feet + OVER_FOE, feet, grand)

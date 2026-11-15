@@ -123,12 +123,25 @@ func test_the_float_counts_up_to_the_gold_as_the_coins_land() -> void:
 
 func test_with_motion_reduced_nothing_flies() -> void:
 	GameState.settings.reduce_motion = true
+	Sound._played_at.clear()
 	var fx: WorldFx = add_child_autofree(WorldFx.new())
 	fx.burst_gains(_win(23, 7), Vector2(100, 80), true)
 	assert_eq(fx.loot.summary(), "", "no burst")
 	assert_false(fx.loot.is_processing(), "nothing to move")
 	assert_eq(_purse(fx), "+23 gold · +7 XP", "the float as it always was, at once")
 	assert_eq(Gains.summary(fx.floated), "+23 gold · +7 XP")
+	assert_false(Sound._played_at.is_empty(), "and the kill's held ring, once")
+
+
+func test_reduce_motion_never_moves_the_games_dice() -> void:
+	var next := []
+	for still: bool in [false, true]:
+		GameState.settings.reduce_motion = still
+		var fx: WorldFx = add_child_autofree(WorldFx.new())
+		seed(4920)
+		fx.burst_gains(_win(23, 7), Vector2(100, 80))
+		next.append(randf())
+	assert_eq(next[0], next[1], "the same draw comes next whichever way the win shows")
 
 
 ## A crowd past the pool lands at once: every share is still counted.

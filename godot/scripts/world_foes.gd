@@ -602,8 +602,9 @@ func on_enemy_died(enemy: Node) -> void:
 	# keeps only what the world doesn't show. The Kings' Vault forges its
 	# gear deep, a tier a floor or two (PIX-257).
 	# The purse keeps quiet for it: its coins ring as they land (PIX-492),
-	# not before one has flown. With Reduce motion, the one ring as ever.
-	world.soundscape.quiet_gold = not GameState.settings.reduce_motion
+	# not before one has flown; with Reduce motion burst_gains rings once.
+	# Either way off the game's dice, so the setting never moves them.
+	world.soundscape.quiet_gold = true
 	var won := GameState.spoils.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, Depths.forged(world.map.id))
 	world.soundscape.quiet_gold = false
 	# Its count, a level, a bounty: they wait out the fight (PIX-334).
