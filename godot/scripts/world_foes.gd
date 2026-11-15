@@ -604,7 +604,9 @@ func on_enemy_died(enemy: Node) -> void:
 	var won := GameState.spoils.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, Depths.forged(world.map.id))
 	# Its count, a level, a bounty: they wait out the fight (PIX-334).
 	world.messages.log_lines(won["lines"], true)
-	world.fx.show_gains(won["gains"], enemy.global_position + WorldFx.OVER_FOE)
+	# They burst out of it and fly to the hero, the float counting up as
+	# they land (PIX-492); all of it is paid already.
+	world.fx.burst_gains(won["gains"], enemy.global_position, fights_like_boss(enemy))
 	if enemy.has_meta("prologue"):
 		world.messages.flash(GameState.questing.prologue_pouch())
 	# The last of a wave of the night's foes: on to the next beat.
@@ -623,9 +625,11 @@ func on_enemy_died(enemy: Node) -> void:
 		# has finished falling (PIX-339).
 		world.delve.open_shortcut(Vector2i((enemy.position / MapView.TILE).floor()), enemy)
 	if GameState.pack.gear.size() > gear_before:
-		# An epic piece rings out of the drop (PIX-413).
-		var epic: bool = GameState.pack.gear[-1].get("rarity", "") == "epic"
-		Sound.play("rare_drop" if epic else "loot_drop")
+		# A drop rings by its rarity (PIX-413, PIX-492): an epic piece rings
+		# out, a fine one chimes, a common one says nothing.
+		var rarity := String(GameState.pack.gear[-1].get("rarity", "common"))
+		if rarity != "common":
+			Sound.play("rare_drop" if rarity == "epic" else "loot_drop")
 	if cleared != "":
 		world.messages.log_lines([Text.t("Pack scattered: another comes after a long walk or a night's rest.")], true)
 

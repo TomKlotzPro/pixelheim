@@ -730,7 +730,8 @@ cpu-town | --map town --town-tier 4 night cpu --wait 2 | map=town cpu=(?!2\.[5-9
 # level-10 ranger shooting a pack of goblins down in the village, every
 # arrow and impact from the pool; 0.27-0.29 ms on the laptop (0.40 with
 # Reduce motion, none drawn); CI 3.40-3.93 paces (4.33 once, a runner's
-# neighbours busy), held under 7.20 (PIX-445).
+# neighbours busy), held under 7.20 (PIX-445). With each kill's coins and
+# sparks on their way (PIX-492: one node draws them) 0.38-0.40 ms.
 cpu-fight | --role ranger --level 10 cpu fight kill pack --foe goblin | cpu=(?!2\.[5-9])[0-2]\.\d\d/\d+\.\d\d paced=(?!7\.[2-9])[0-7]\.\d\d skillfx=arrow,impact drawn \d+ | combat
 # Out of Blackiron along the north lane of its road, where a rock stood in
 # the way and only the road's middle went through (PIX-332): the hero walks

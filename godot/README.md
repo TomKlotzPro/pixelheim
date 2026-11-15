@@ -533,6 +533,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/lookout/feature.gd` — The lookout on the mountain road in the harness (PIX-363)
 - `scripts/features/lookout/lookout.gd` — The lookout on the mountain road (PIX-363, the Post's step 6b): a brass spyglass on a tripod beside the road where it turns under Morvax's forge, over the drop.
 - `scripts/features/lookout/lookout_screen.gd` — The view from the lookout on the mountain road at night (PIX-363)
+- `scripts/features/loot_pop/feature.gd` — Loot that pops, in the harness (PIX-492): `--loot` and the report's loot=, their rows beside this script and their flows in tools/flows.d/loot_pop.txt.
 - `scripts/features/mirefen/feature.gd` — The Mirefen alive in the harness (PIX-401)
 - `scripts/features/mirefen/mire_art.gd` — What the Mirefen stands in that Shade's sheets don't draw (PIX-401)
 - `scripts/features/mirefen/mire_dressing.gd` — The Mirefen alive (PIX-401, the v0.307 world audit: « a uniform fen of puddles and a few shrubs, one ruin and two camps »)
@@ -576,6 +577,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/light_rig.gd` — The world's light, frame by frame (PIX-221)
 - `scripts/lights.gd` — Light and darkness (PIX-221).
 - `scripts/lookbook.gd` — The look book (PIX-220): the same scenes, staged the same way every time
+- `scripts/loot_pop.gd` — A kill's win on its way to the hero (PIX-492)
 - `scripts/map_data.gd` — A world map loaded from its JSON (assets/maps/<id>.json, edited by hand or drawn as a sketch in maps-src and run through tools/mapgen.py)
 - `scripts/map_ground.gd` — The map screen's ground (PIX-403): each cell painted from the terrain the world draws it with, Shade's CC0 overworld tiles (PunyTerrain) shrunk to the page's pixels a cell, so the woods, the water, the snow, the Ash and the village read on the page as they do underfoot.
 - `scripts/map_layers/camps_layer.gd` — The packs' camps, the town's boards, stalls, tents and post box, and the houses on fire (PIX-142, PIX-145, PIX-197, PIX-327)
@@ -658,6 +660,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/state/journal.gd` — The journal's quest page as rows (PIX-239, after Tom's playtest: "le journal c'est pas clair")
 - `scripts/state/lamps.gd` — The land heals round the lamps (PIX-323, Something to Come Back To's step 4)
 - `scripts/state/letters.gd` — Maren's five letters (PIX-253, the main story's new beginning).
+- `scripts/state/loot_burst.gd` — What a kill's win looks like on its way to the hero (PIX-492)
 - `scripts/state/main_quest.gd` — The main quest (PIX-144): chapters of steps read from the save, so the game can always say what comes next
 - `scripts/state/night_shadows.gd` — The rules of the shadows the lantern and the lamps cast in the dark (PIX-490): what blocks their light, from what footprint, and which few lights cast.
 - `scripts/state/packs.gd` — Wild packs with homes (PIX-142): each pack lives at its spawn's home, wanders a few tiles from it, notices a hero it can see, gives up a chase that strays too far and walks home healed

@@ -1,0 +1,4 @@
+# Loot that pops' harness flag (PIX-492): `flag | takes | does`, as the
+# core's (scripts/harness_flags.txt), in its table after feature.gd's
+# flags_after().
+--loot | <rarity> | a staged win bursts two cells right of the hero, as a kill's does (PIX-492): 8 gold, 4 XP and an iron sword of that rarity (common, fine, epic), or with `big` a boss's burst of 120 gold and 60 XP; nothing is paid, only shown (a run can't be sure of a fine or an epic drop otherwise); after fight, before --wait | loot | 675

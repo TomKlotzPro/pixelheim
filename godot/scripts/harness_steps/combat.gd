@@ -180,7 +180,9 @@ func step_fight() -> void:
 			break
 		# The wins rising while some of the pack still stand (PIX-343:
 		# at each kill, not held to the fight's end).
-		if world.foes.kills > kills_before and report.noted("rising") == "":
+		# Once one is up: a kill's float rises as its first spark lands
+		# (PIX-492), a breath after the fall.
+		if world.foes.kills > kills_before and report.noted("rising") == "" and world.fx.rising_now() > 0:
 			report.note("rising", str(world.fx.rising_now()))
 	GameState.hp_changed.disconnect(count)
 	if flags.has("kill"):

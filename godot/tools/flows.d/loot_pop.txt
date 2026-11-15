@@ -1,0 +1,22 @@
+# Loot that pops' flows (PIX-492: a feature's flows, read after
+# tools/flows.txt as its own, scripts/features/loot_pop/), a line each as in
+# flows.txt.
+# A kill bursts into its win: coins for its gold (never more than 8 for a
+# common foe) and sparks for its XP spring out and fly to the hero, and two
+# seconds on every one has landed, the float having counted all the gold it
+# was due (counted N/N); the purse and floats= are what the kill paid, at
+# the kill.
+loot-kill | fight kill --wait 2 | loot=coins [2-8] flying 0 sparks [1-5] drops \S+ counted ([1-9]\d*)/\1 floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* | combat
+# Caught a breath after the kill: its coins are still on their way.
+loot-flying | fight kill | loot=coins [2-8] flying [1-9]\d* sparks [1-5] drops \S+ counted \d+/[1-9]\d* | combat
+# A pack felled together: each one bursts, one float counts them all up,
+# and nothing is left in the air.
+loot-pack | fight kill pack --foe goblin --wait 2 | mobs=0 loot=coins [1-9]\d* flying 0 sparks [1-9]\d* drops \S+ counted ([1-9]\d*)/\1 | combat
+# A boss's win is a bigger burst: more coins than a common foe may have.
+loot-boss | --map icecave_glass fight slay --foe rimefang --wait 2.5 | fell=1 loot=coins (?![1-8] )\d+ flying 0 sparks (?![1-5] )\d+ drops \S+ counted ([1-9]\d*)/\1 big | combat dungeon
+# With Reduce motion nothing flies: the float as it always was, at once.
+loot-still | still fight kill | loot= rising= floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* | combat
+# A drop lies in its rarity's light (a staged win: no run is sure of a fine
+# or an epic piece): its rarity told, the sword's row in the float.
+loot-fine | --loot fine --wait 0.8 --lang en | loot=coins 4 flying [1-9]\d* sparks 1 drops 1:fine counted \d/8 floats=\+8 gold . \+4 XP;Fine Iron Sword.* | combat
+loot-epic | --loot epic --wait 0.8 --lang en | loot=coins 4 flying [1-9]\d* sparks 1 drops 1:epic counted \d/8 floats=\+8 gold . \+4 XP;Epic Iron Sword.* | combat
