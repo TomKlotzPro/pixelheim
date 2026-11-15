@@ -53,6 +53,17 @@ const FEET := Vector2(8, 3)
 ## shadow bits say what blocks it and what its shadows fall on, both.
 const SCENERY := Lights.FLOOR
 const FOLK := 1 << 11
+## The outlines round the blocks of tall cells (cliffs, ramparts, houses)
+## have a bit of their own: they block the lamps and the lantern, whose
+## pools are small, and not the lightning's light (PIX-491), which reaches
+## the whole view from beyond it - a shadow runs on to the end of its
+## light, so one house laid a whole square in shadow, and the ring of rock
+## round a valley the whole valley.
+const WALLS := 1 << 12
+## What blocks a lamp's light, the hero's lantern's and the lightning's.
+const LAMP := SCENERY | FOLK | WALLS
+const LANTERN := SCENERY | WALLS
+const SKY := SCENERY | FOLK
 
 
 ## Whether `tile` stands tall and blocks a light by its cell.

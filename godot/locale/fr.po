@@ -18089,6 +18089,10 @@ msgid "Effects volume"
 msgstr "Volume des effets"
 
 #: scripts/options_screen.gd
+msgid "Flashes"
+msgstr "Éclairs"
+
+#: scripts/options_screen.gd
 msgid "Fullscreen"
 msgstr "Plein écran"
 

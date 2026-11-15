@@ -192,6 +192,11 @@ func test_a_map_lays_its_occluders_from_what_stands() -> void:
 	for occluder: Node in view.under.get_children():
 		if occluder is LightOccluder2D:
 			assert_eq((occluder as LightOccluder2D).occluder.cull_mode, OccluderPolygon2D.CULL_COUNTER_CLOCKWISE, "a wall facing the light stays lit")
+			# A block's outline blocks the lamps and the lantern, never the
+			# lightning (PIX-491): one house laid the whole square in shadow.
+			assert_eq((occluder as LightOccluder2D).occluder_light_mask & NightShadows.SKY, 0)
+			assert_ne((occluder as LightOccluder2D).occluder_light_mask & NightShadows.LANTERN, 0)
+			assert_ne((occluder as LightOccluder2D).occluder_light_mask & NightShadows.LAMP, 0)
 
 
 func test_a_lamp_casts_and_never_blocks_itself() -> void:
@@ -235,7 +240,7 @@ func test_a_dungeon_blocks_by_its_walls_and_a_room_not_at_all() -> void:
 func test_every_light_is_ready_to_cast_on_the_floor_alone() -> void:
 	var lamp: PointLight2D = autofree(Lights.make(Vector2.ZERO, 72.0, Lights.LAMP, Lights.LAMP_ENERGY, true))
 	assert_false(lamp.shadow_enabled, "none casts until the LightRig says so")
-	assert_eq(lamp.shadow_item_cull_mask, NightShadows.SCENERY | NightShadows.FOLK)
+	assert_eq(lamp.shadow_item_cull_mask, NightShadows.SCENERY | NightShadows.FOLK | NightShadows.WALLS)
 	assert_eq(lamp.shadow_item_cull_mask & 1, 0, "what stands (Godot's first light bit) takes no shadow")
 	assert_ne(lamp.shadow_filter, Light2D.SHADOW_FILTER_NONE, "soft-edged")
 
@@ -290,7 +295,7 @@ func test_the_lantern_and_no_more_than_the_cap_of_lamps_cast() -> void:
 	assert_eq(rig.casting.size(), 1 + NightShadows.LAMPS, "the lantern and the cap of lamps")
 	assert_eq(most, 1 + NightShadows.LAMPS, "never more, while they fade in")
 	assert_true(rig.lantern in rig.casting and rig.lantern.shadow_enabled, "the lantern always")
-	assert_eq(rig.lantern.shadow_item_cull_mask, NightShadows.SCENERY, "which the hero never blocks")
+	assert_eq(rig.lantern.shadow_item_cull_mask & NightShadows.FOLK, 0, "which the hero never blocks")
 	assert_eq(_shadowed(), rig.casting.size(), "every other light as before")
 	# Walked up the street, other lamps take over: still no more.
 	(rig.lantern.get_parent() as Node2D).position = MapView.center(Vector2i(47, 13))

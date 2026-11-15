@@ -58,6 +58,9 @@ var _wide_layer: CanvasLayer
 var _layer: CanvasLayer
 var time := 0.0
 var wind := 1.0
+## How hard a thunderstorm blows over the open air here, 0..1 (PIX-491,
+## the Storm node's): the sky darker, the wind harder.
+var gale := 0.0
 ## How dark a cloud's shadow is at its heart, in full day.
 const CLOUD_SHADE := 0.17
 ## Where the hero carries the lantern, from their feet: at their feet
@@ -173,7 +176,7 @@ func _screen_pass(layer: CanvasLayer, shader: Shader) -> ColorRect:
 func give_lantern(player: Node2D) -> void:
 	lantern = Lights.make(LANTERN_AT, lantern_reach(GameState.holdings.settler_share("lantern")), Lights.LANTERN, Lights.LANTERN_ENERGY, true)
 	# The hero never blocks their own lantern (PIX-490).
-	lantern.shadow_item_cull_mask = NightShadows.SCENERY
+	lantern.shadow_item_cull_mask = NightShadows.LANTERN
 	player.add_child(lantern)
 	GameState.settlers_changed.connect(_trim_lantern)
 
@@ -227,6 +230,10 @@ func _process(delta: float) -> void:
 		rain = world.atmosphere.rain
 		overcast = maxf(rain, maxf(world.atmosphere.weights.get("mire", 0.0), world.atmosphere.weights.get("frost", 0.0)))
 	light = light.lerp(light * Weather.RAIN_LIGHT, rain)
+	# A thunderstorm's clouds are darker still (PIX-491), and its wind blows
+	# harder: the trees lean further, the grass ripples more.
+	gale = world.storm.storm if world.get("storm") != null and Lights.under_sky(world.map) else 0.0
+	light = light.lerp(light * Weather.STORM_LIGHT, gale)
 	darkness.color = light
 	dark = Lights.darkness(light)
 	bloom.visible = GameState.settings.glow
@@ -324,7 +331,7 @@ func tick(delta: float) -> void:
 	var still: bool = GameState.settings.reduce_motion
 	if not still:
 		time += delta
-	wind = 0.0 if still else 1.0
+	wind = 0.0 if still else 1.0 + Weather.STORM_WIND * gale
 	RenderingServer.global_shader_parameter_set("world_time", time)
 	RenderingServer.global_shader_parameter_set("world_wind", wind)
 

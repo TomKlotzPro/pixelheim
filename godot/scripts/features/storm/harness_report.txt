@@ -1,0 +1,4 @@
+# The thunderstorms' report field (PIX-491): `field | says`, as the core's
+# (scripts/harness_report.txt), which it joins after its head, by name; its
+# function is `field_storm(report)` in feature.gd.
+storm | under a thunderstorm, or while what the rain left is drying: how hard the storm blows here (0 under a plain shower), the flashes shown so far, how full the puddles are in a hundred and how wet the ground; `inside` first under a roof, `soft` after a flash that was the soft kind (Flashes off, Reduce motion), `cast` while the sky's light throws shadows: rain 1.0 flashes 1 puddles 100 wet 1.0 cast (PIX-491)
