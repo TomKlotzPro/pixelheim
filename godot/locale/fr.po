@@ -2217,6 +2217,10 @@ msgid "A boss you run from gives up at last: lose it for a few seconds, or leave
 msgstr "Un boss que vous fuyez finit par lâcher : semez-le quelques secondes, ou laissez-le sans chemin jusqu'à vous, et il rentre chez lui pendant que sa barre s'efface"
 
 #: assets/data/changelog.json
+msgid "A boss's fall throws twice the coins"
+msgstr "La chute d'un boss fait jaillir deux fois plus de pièces"
+
+#: assets/data/changelog.json
 msgid "A boss's health bar now goes away when it falls, however it falls"
 msgstr "La barre de vie d'un boss disparaît désormais quand il tombe, quelle que soit la façon dont il tombe"
 
@@ -2263,6 +2267,10 @@ msgstr "Une livraison indique où elle en est à mesure que les marchandises arr
 #: assets/data/changelog.json
 msgid "A dozen new items: bows, war hammers, wands, cloaks, tower shields..."
 msgstr "Une douzaine de nouveaux objets : arcs, marteaux de guerre, baguettes, capes, pavois..."
+
+#: assets/data/changelog.json
+msgid "A drop hops out and lands; a fine one glows, an epic one stands in a short beam of light"
+msgstr "Un objet bondit hors du monstre et retombe ; un objet de qualité brille, un objet épique se dresse dans un court rayon de lumière"
 
 #: assets/data/changelog.json
 msgid "A dungeon floor's patch grows once a day, somewhere new in its first hall"
@@ -3095,6 +3103,10 @@ msgstr "Routes coupées"
 #: assets/data/changelog.json
 msgid "Cloud shadows drift slowly over the open land by day, never indoors or underground"
 msgstr "L'ombre des nuages glisse lentement sur les terres le jour, jamais à l'intérieur ni sous terre"
+
+#: assets/data/changelog.json
+msgid "Coins burst from a slain foe, bounce and fly to you, each landing with a tick a little higher than the last"
+msgstr "Les pièces jaillissent d'un monstre vaincu, rebondissent et filent vers vous, chacune tintant un peu plus haut que la précédente"
 
 #: assets/data/changelog.json
 msgid "Come Home"
@@ -4535,6 +4547,10 @@ msgstr "Petites retouches"
 #: assets/data/changelog.json
 msgid "Loot That Fits"
 msgstr "Un butin à sa place"
+
+#: assets/data/changelog.json
+msgid "Loot That Pops"
+msgstr "Le butin qui gicle"
 
 #: assets/data/changelog.json
 msgid "Loras the Bard sings to trees in the Deepwood, but a hamlet is beneath him - fund the Village first, pay his 150g, and his marching song sharpens your next hunt (+12% crit)"
@@ -6941,6 +6957,10 @@ msgid "The goal arrow no longer sits on your hero at a dungeon's first step"
 msgstr "La flèche d'objectif ne se pose plus sur votre héros à la première marche d'un donjon"
 
 #: assets/data/changelog.json
+msgid "The gold float counts up as the coins land, and XP sparks rise to you as the XP float fills"
+msgstr "Le gain d'or se cumule à mesure que les pièces arrivent, et des étincelles d'XP montent vers vous"
+
+#: assets/data/changelog.json
 msgid "The ground healed around a lamp now frays where it meets the ash instead of ending in a clean disc"
 msgstr "La terre guérie autour d'une lanterne s'effiloche désormais au contact de la cendre, au lieu de s'arrêter en un disque net"
 
@@ -7811,6 +7831,10 @@ msgstr "Avec « Réduire les animations », le vent tombe, et l'eau et les n
 #: assets/data/changelog.json
 msgid "With Reduce motion the scene holds still, and the world behind the title rests, so the title costs no more to draw than before"
 msgstr "Avec Réduire les animations, la scène reste immobile, et le monde derrière l'écran titre se repose : l'écran titre ne coûte pas plus à afficher qu'avant"
+
+#: assets/data/changelog.json
+msgid "With Reduce motion, nothing flies and the floats show at once, as before"
+msgstr "Avec Réduire les animations, rien ne vole et les gains s'affichent d'un coup, comme avant"
 
 #: assets/data/changelog.json
 msgid "With Reduce motion, the ruin stands a moment and then the building is there"

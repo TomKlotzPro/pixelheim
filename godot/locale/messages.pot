@@ -2217,6 +2217,10 @@ msgid "A boss you run from gives up at last: lose it for a few seconds, or leave
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A boss's fall throws twice the coins"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A boss's health bar now goes away when it falls, however it falls"
 msgstr ""
 
@@ -2262,6 +2266,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A dozen new items: bows, war hammers, wands, cloaks, tower shields..."
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A drop hops out and lands; a fine one glows, an epic one stands in a short beam of light"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3094,6 +3102,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Cloud shadows drift slowly over the open land by day, never indoors or underground"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Coins burst from a slain foe, bounce and fly to you, each landing with a tick a little higher than the last"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4534,6 +4546,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Loot That Fits"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Loot That Pops"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6941,6 +6957,10 @@ msgid "The goal arrow no longer sits on your hero at a dungeon's first step"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The gold float counts up as the coins land, and XP sparks rise to you as the XP float fills"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The ground healed around a lamp now frays where it meets the ash instead of ending in a clean disc"
 msgstr ""
 
@@ -7810,6 +7830,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "With Reduce motion the scene holds still, and the world behind the title rests, so the title costs no more to draw than before"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "With Reduce motion, nothing flies and the floats show at once, as before"
 msgstr ""
 
 #: assets/data/changelog.json
