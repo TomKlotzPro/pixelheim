@@ -156,8 +156,11 @@ func _open() -> void:
 
 ## The keys along the bottom, only those that act on the chosen row
 ## (PIX-484: the Craft tab offered to equip, drop and sort its recipes): a
-## recipe is crafted, the guide travels home when a gate is open, and only
-## what the pack holds is used, dropped or sorted.
+## recipe is crafted where its row says E crafts it (at its station, with
+## what it takes: elsewhere E only says where), the guide travels home when
+## a gate is open, and only what the pack holds is used, dropped or sorted.
+## While the description pages, R's sort gives its place to the page keys:
+## all of them and the pack's eight ran past the canvas in French.
 func _set_footer() -> void:
 	var kind := String(rows[selected]["kind"]) if not rows.is_empty() else ""
 	var acts := ""
@@ -168,13 +171,14 @@ func _set_footer() -> void:
 			if not _town_gate().is_empty() and world != null:
 				acts = "{key:interact}  travel      "
 		"recipe":
-			acts = "{key:interact}  craft      "
+			if _primary_label(rows[selected]) != "":
+				acts = "{key:interact}  craft      "
 		_:
 			acts = "{key:interact}  equip / use      X  drop      Z  drop all      "
-	if TABS[tab][0] != "craft":
-		acts += "R  sort      "
-	footer = UiStyle.refooted(self, footer, Layout.footer_for(reader,
-		"{key:move_left}/{key:move_right}  tabs      {key:move_up}/{key:move_down}  choose      " + acts + "{key:inventory} / Esc  close"))
+	var sort := "R  sort      " if TABS[tab][0] != "craft" else ""
+	var head := "{key:move_left}/{key:move_right}  tabs      {key:move_up}/{key:move_down}  choose      " + acts
+	var close := "{key:inventory} / Esc  close"
+	footer = UiStyle.refooted(self, footer, Layout.footer_for(reader, head + sort + close, head + close))
 
 
 func _hands_changed() -> void:

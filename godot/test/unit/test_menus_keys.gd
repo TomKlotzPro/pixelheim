@@ -123,6 +123,15 @@ func test_the_right_stick_pages_once_a_push() -> void:
 	assert_eq(Controls.paged(_stick(0.0)), 0, "let go")
 	assert_eq(Controls.paged(_stick(-1.0)), -1, "pushed up: a page back")
 	assert_eq(Controls.paged(_stick(0.2)), 0, "its drift is no push")
+	Controls._page_held = 0
+	assert_eq(Controls.paged(_stick(0.55)), 1, "a slow push, just past the mark")
+	assert_eq(Controls.paged(_stick(0.45)), 0, "trembling back under it")
+	assert_eq(Controls.paged(_stick(0.55)), 0, "and over again: still the one push")
+	assert_eq(Controls.paged(_stick(0.2)), 0, "let go, lower than it was pushed")
+	assert_eq(Controls.paged(_stick(0.55)), 1, "the next push pages")
+	assert_eq(Controls.paged(_stick(-0.4)), 0, "half back the other way lets it go")
+	assert_eq(Controls.paged(_stick(0.4)), 0, "and half a push is none")
+	assert_eq(Controls.paged(_stick(0.8)), 1)
 	var left := _stick(1.0)
 	left.axis = JOY_AXIS_LEFT_Y
 	assert_eq(Controls.paged(left), 0, "the left stick is the rows'")
@@ -130,6 +139,19 @@ func test_the_right_stick_pages_once_a_push() -> void:
 	key.keycode = KEY_PAGEDOWN
 	key.pressed = true
 	assert_eq(Controls.paged(key), 1, "Page Down as ever")
+
+
+func test_a_stick_let_go_in_the_world_is_let_go_at_the_next_screen() -> void:
+	assert_eq(Controls.paged(_stick(1.0)), 1, "a page, and the screen closes on the push")
+	# No screen reads the stick now: the game's own ear hears it let go.
+	Controls.note_device(_stick(0.0))
+	assert_eq(Controls.paged(_stick(1.0)), 1, "the next screen's first push pages")
+	Controls.note_device(_stick(0.9))
+	assert_eq(Controls.paged(_stick(1.0)), 0, "held is still held")
+	var left := _stick(0.0)
+	left.axis = JOY_AXIS_LEFT_Y
+	Controls.note_device(left)
+	assert_eq(Controls.paged(_stick(1.0)), 0, "and the left stick at rest lets nothing go")
 
 
 func test_a_long_card_pages_by_the_stick_and_the_footer_wears_the_hands_caps() -> void:
@@ -231,12 +253,79 @@ func test_the_packs_craft_tab_offers_what_a_recipe_takes() -> void:
 		assert_does_not_have(_says(pack.footer), word, "the guide, in town: nothing for E, X, Z or R")
 	pack._select(1)
 	var recipe := _says(pack.footer)
-	assert_has(recipe, "craft", "E crafts a recipe")
+	assert_eq(pack._primary_label(pack.rows[1]), "", "away from its station the row offers no E")
+	assert_does_not_have(recipe, "craft", "nor does the footer: E only says where it's made")
 	assert_does_not_have(recipe, "equip / use")
 	assert_does_not_have(recipe, "drop")
+	# At the house's workbench, with what the first recipe takes.
+	var map_id := GameState.world.map_id
+	GameState.world.map_id = "town_house"
+	GameState.settlement.house["workbench"] = true
+	pack._refresh()
+	var at: int = pack.rows.find_custom(func(row: Dictionary) -> bool:
+		return row["kind"] == "recipe" and int(row["entry"]["job"]["level"]) <= int(GameState.hero.jobs[row["entry"]["job"]["id"]]["level"]))
+	assert_gt(at, 0, "a recipe of a trade's first level")
+	GameState.pack.items.merge(pack.rows[at]["entry"]["needs"], true)
+	pack._select(at)
+	assert_ne(pack._primary_label(pack.rows[at]), "", "there the row says E crafts")
+	assert_has(_says(pack.footer), "craft", "and so does the footer")
+	GameState.world.map_id = map_id
 	pack._switch(0)
+	# Laid out: the description's window knows whether its words run long.
+	await wait_process_frames(3)
 	for word in ["equip / use", "drop", "drop all", "sort"]:
 		assert_has(_says(pack.footer), word, "the pack's own keys on what it holds")
+
+
+func test_the_pack_gives_sorts_place_to_the_page_keys() -> void:
+	GameState.settings.large_text = true
+	var pack: Screen = _open(InventoryScreen.new())
+	await wait_process_frames(3)
+	assert_has(_says(pack.footer), "sort")
+	Layout.read(pack.reader, " ".join(range(200).map(func(_at: int) -> String: return "words")), 3)
+	await wait_process_frames(3)
+	assert_true(Layout.runs_long(pack.reader), "a description past three lines of the big type")
+	var paged := _says(pack.footer)
+	assert_has(paged, "read", "the page keys")
+	assert_does_not_have(paged, "sort", "in the place of R's sort, not on top of the pack's eight")
+	assert_has(paged, "drop all", "every key of the row still")
+	assert_lte(pack.footer.get_combined_minimum_size().x, 1280.0, "and the line needs no closing up")
+	assert_eq(Layout.footer_for(pack.reader, "A  one      B  two"), Layout.paged_footer("A  one      B  two"), "a screen with no shorter line keeps its own")
+
+
+func test_a_footer_closed_up_stands_in_the_canvas() -> void:
+	# The first line of short hints too wide for the canvas: by less than
+	# closing up its many gaps wins back.
+	var row: HBoxContainer
+	for hints in range(8, 60):
+		row = UiStyle.screen_footer("      ".join(range(hints).map(func(_at: int) -> String: return "K  go")))
+		if row.get_combined_minimum_size().x > 1280.0:
+			break
+		row.free()
+	add_child_autofree(row)
+	assert_gt(row.get_combined_minimum_size().x, 1280.0)
+	await wait_process_frames(3)
+	assert_lte(row.get_combined_minimum_size().x, 1280.0, "closed up, its words fit")
+	assert_eq(row.size.x, 1280.0, "and it is the canvas's width again, its words about the middle")
+
+
+func test_the_skills_footer_names_the_keys_the_card_takes() -> void:
+	var hero := GameState.hero
+	hero.skill_points = 1
+	var skills: Screen = _open(SkillsScreen.new())
+	var first: Vector2i = skills.cells.keys().filter(func(cell: Vector2i) -> bool: return Skills.can_buy(hero, skills.cells[cell]["entry"]))[0]
+	skills.selected = first
+	skills._layout()
+	var open := _says(skills.footer)
+	assert_has(open, "learn", "E on a skill a point can buy")
+	assert_does_not_have(open, "set key", "no key takes a skill not yet known")
+	assert_has(open, "forget")
+	assert_true(GameState.training.buy_skill_node(skills.cells[first]["entry"]["id"]))
+	skills._layout()
+	var known := _says(skills.footer)
+	assert_does_not_have(known, "learn", "learned: E has nothing more to do")
+	assert_eq("set key" in known, skills.cells[first]["entry"]["kind"] == "active", "1-6 on a skill that is cast")
+	assert_does_not_have(known, "walk")
 
 
 func test_the_stats_footer_counts_the_points_and_drops_e_with_none() -> void:

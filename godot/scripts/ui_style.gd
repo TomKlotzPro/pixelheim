@@ -984,6 +984,10 @@ static func _fit_footer(id: int, centered: bool) -> void:
 	for child in row.get_children():
 		if child.get_class() == "Control":
 			child.custom_minimum_size.x = 4
+	# A row keeps the width its words first asked for: back to what they
+	# need now, or a centred one stood past the canvas's edge, its words
+	# off the middle (a paged pack in French, the big type).
+	row.reset_size()
 	if not centered and row.get_combined_minimum_size().x > room:
 		row.position.x = maxf(16.0, 1280.0 - 16.0 - row.get_combined_minimum_size().x)
 

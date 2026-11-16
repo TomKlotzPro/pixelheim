@@ -19065,8 +19065,8 @@ msgid "forget"
 msgstr "oublier"
 
 #: scripts/skills_screen.gd
-msgid "learn / walk"
-msgstr "apprendre / suivre"
+msgid "learn"
+msgstr "apprendre"
 
 #: scripts/skills_screen.gd
 msgid "locked"
@@ -19075,6 +19075,10 @@ msgstr "bloqué"
 #: scripts/skills_screen.gd
 msgid "set key"
 msgstr "assigner"
+
+#: scripts/skills_screen.gd
+msgid "walk"
+msgstr "suivre"
 
 #: scripts/sound.gd
 msgid "Ambience"
@@ -19882,11 +19886,11 @@ msgstr "Votre arbre est complet : %d point%s de compétence à dépenser au-
 
 #: scripts/stats_screen.gd
 msgid "spend a point (%d left)"
-msgstr "dépenser un point (sur %d)"
+msgstr "dépenser un point (reste %d)"
 
 #: scripts/stats_screen.gd
 msgid "spend a skill point (%d left)"
-msgstr "dépenser un point de compétence (sur %d)"
+msgstr "dépenser un point de compétence (reste %d)"
 
 #: scripts/throne_screen.gd
 msgid "answer"

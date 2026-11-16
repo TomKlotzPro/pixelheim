@@ -192,9 +192,14 @@ static func paged_footer(line: String) -> String:
 	return "%s  %s      %s" % [PAGE_KEYS, Text.t("read"), line]
 
 
-## A screen's footer `line`, the page keys before it while `scroll` runs long.
-static func footer_for(scroll: ScrollContainer, line: String) -> String:
-	return paged_footer(line) if runs_long(scroll) else line
+## A screen's footer `line`, the page keys before it while `scroll` runs
+## long: before `paging_line` then, when the screen has one, its line with
+## a key or two left out for the two the page keys take (the pack's eight
+## keys and the page's ran past the canvas in French, the big type).
+static func footer_for(scroll: ScrollContainer, line: String, paging_line := "") -> String:
+	if not runs_long(scroll):
+		return line
+	return paged_footer(paging_line if paging_line != "" else line)
 
 
 ## A window on `label`'s words, `width` wide, for a description that keeps

@@ -1180,6 +1180,13 @@ fit-pack-large | --map town large inventory overflow --lang fr | open=inventory_
 fit-pack-large-en | --map town large inventory overflow --lang en | open=inventory_screen overflow=0 | screen lang
 fit-pack-craft-large | --map town large inventory --tab 7 --keys s,s overflow --lang fr | open=inventory_screen overflow=0 | screen lang
 fit-pack-craft-large-en | --map town large inventory --tab 7 --keys s,s overflow --lang en | open=inventory_screen overflow=0 | screen lang
+# A pack whose first row's description runs past three lines of the big
+# type (the frostweave boots, in French: its page keys join the footer,
+# which must still fit; English says it in three, so nothing pages there);
+# and a path's card in the long tongue, as paged.
+fit-pack-long-large | --load res://test/fixtures/frostweave_mage.json --map town large --keys i overflow --lang fr | open=inventory_screen overflow=0 reading=\d+/\d+ keyed | screen lang save
+fit-pack-long-large-en | --load res://test/fixtures/frostweave_mage.json --map town large --keys i overflow --lang en | open=inventory_screen overflow=0 | screen lang save
+fit-skills-path-large-pseudo | --map town large skills --role rogue --level 20 --path trickster,phantom_jester overflow --pseudo | open=skills_screen overflow=0 | screen lang rank
 fit-journal-large | --map town large journal --hunted seam_warden overflow --lang fr | open=journal_screen overflow=0 | screen lang quest
 fit-journal-large-en | --map town large journal --hunted seam_warden overflow --lang en | open=journal_screen overflow=0 | screen lang quest
 fit-skills-large | --map town large skills --level 20 overflow --lang fr | open=skills_screen overflow=0 | screen lang rank

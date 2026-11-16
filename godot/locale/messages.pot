@@ -19065,7 +19065,7 @@ msgid "forget"
 msgstr ""
 
 #: scripts/skills_screen.gd
-msgid "learn / walk"
+msgid "learn"
 msgstr ""
 
 #: scripts/skills_screen.gd
@@ -19074,6 +19074,10 @@ msgstr ""
 
 #: scripts/skills_screen.gd
 msgid "set key"
+msgstr ""
+
+#: scripts/skills_screen.gd
+msgid "walk"
 msgstr ""
 
 #: scripts/sound.gd

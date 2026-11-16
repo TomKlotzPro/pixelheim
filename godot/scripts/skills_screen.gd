@@ -271,10 +271,21 @@ func _claimable(cell: Dictionary) -> bool:
 
 
 ## The keys along the bottom, the description's page keys first while it
-## runs long, in the caps of the hands on the game (PIX-487).
+## runs long, in the caps of the hands on the game (PIX-487), and only
+## those that act on the chosen card (PIX-484): E where it learns a skill
+## or walks a path, 1-6 where a key can take it. Every card's keys and the
+## page's ran a path's footer off the canvas in a long tongue, the big type.
 func _set_footer() -> void:
+	var cell: Dictionary = cells.get(selected, {})
+	var acts := ""
+	if _claimable(cell):
+		acts = "{key:interact}  walk      "
+	elif cell.get("kind", "") == "node" and Skills.can_buy(GameState.hero, cell["entry"]):
+		acts = "{key:interact}  learn      "
+	if _docked_as(cell) != "":
+		acts += "1-6  set key      "
 	footer = UiStyle.refooted(self, footer, Layout.footer_for(reader,
-		"Arrows  choose      {key:interact}  learn / walk      1-6  set key      F  forget      {key:skills} / Esc  close"))
+		"Arrows  choose      " + acts + "F  forget      {key:skills} / Esc  close"))
 
 
 func _hands_changed() -> void:
@@ -288,6 +299,7 @@ func _hands_changed() -> void:
 func _describe() -> void:
 	Layout.read(reader, _described(), 2 if GameState.settings.large_text else 3, 2)
 	reader.position = Vector2(COLUMN_X[0], PAGE.end.y - UiStyle.INSET - 2 * Layout.line_of(reader))
+	_set_footer()
 
 
 func _described() -> String:
@@ -356,18 +368,22 @@ func _bind_next() -> void:
 	_bind(_key_of(key_id) % Skills.DOCK_SIZE)
 
 
+## What `cell` goes on a key as: a known active skill's id, "path" for the
+## signature of the path walked last, "" for a card no key takes.
+func _docked_as(cell: Dictionary) -> String:
+	var hero := GameState.hero
+	if cell.get("kind", "") == "node" and cell["entry"]["kind"] == "active" and cell["entry"]["id"] in hero.skill_nodes:
+		return cell["entry"]["id"]
+	if cell.get("kind", "") == "path" and not HeroRules.walked(hero).is_empty() and HeroRules.walked(hero)[-1] == cell["entry"]["id"]:
+		return "path"
+	return ""
+
+
 ## 1-6: the selected known skill (or the walked path's signature) onto that key.
 func _bind(index: int) -> void:
 	var cell: Dictionary = cells.get(selected, {})
-	var hero := GameState.hero
-	var key := ""
-	var name := ""
-	if cell.get("kind", "") == "node" and cell["entry"]["kind"] == "active" and cell["entry"]["id"] in hero.skill_nodes:
-		key = cell["entry"]["id"]
-		name = cell["entry"]["name"]
-	elif cell.get("kind", "") == "path" and not HeroRules.walked(hero).is_empty() and HeroRules.walked(hero)[-1] == cell["entry"]["id"]:
-		key = "path"
-		name = cell["entry"]["signature"]["name"]
+	var key := _docked_as(cell)
+	var name: String = "" if key == "" else (cell["entry"]["signature"]["name"] if key == "path" else cell["entry"]["name"])
 	if key == "":
 		status.text = "Only a skill you know can go on a key."
 		return
