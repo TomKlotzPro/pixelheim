@@ -71,7 +71,7 @@ func _open() -> void:
 	catcher.size = VIEW
 	catcher.mouse_filter = Control.MOUSE_FILTER_STOP
 	catcher.gui_input.connect(func(event: InputEvent) -> void:
-		if event is InputEventMouseButton and event.pressed:
+		if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
 			advance = true)
 	add_child(catcher)
 	still = GameState.settings.reduce_motion

@@ -42,7 +42,7 @@ func _process(_delta: float) -> void:
 
 
 ## Every frame drawn from now on (`--draw-every`), this one too.
-func _draw_every_frame() -> void:
+func draw_every_frame() -> void:
 	_draw_all = true
 	RenderingServer.render_loop_enabled = true
 
@@ -65,7 +65,7 @@ func _input(event: InputEvent) -> void:
 
 
 ## `--keys e,e,esc,...` presses real keys, one at a time, as a player would.
-func _keys(flags: HarnessFlags) -> void:
+func keys(flags: HarnessFlags) -> void:
 	if not flags.has("--keys"):
 		return
 	var codes := {
@@ -84,15 +84,15 @@ func _keys(flags: HarnessFlags) -> void:
 			await get_tree().create_timer(Screen.SETTLE + 0.1).timeout
 			continue
 		if sticks.has(key):
-			await _tap(KEY_NONE, JOY_BUTTON_INVALID, sticks[key])
+			await tap(KEY_NONE, JOY_BUTTON_INVALID, sticks[key])
 			continue
-		await _tap(KEY_NONE if pad.has(key) else codes[key], pad.get(key, JOY_BUTTON_INVALID))
+		await tap(KEY_NONE if pad.has(key) else codes[key], pad.get(key, JOY_BUTTON_INVALID))
 	await get_tree().create_timer(0.2).timeout
 
 
 ## One key (or a pad's `button`, or its right stick pushed `push` up or
 ## down) pressed and let go, as a hand would.
-func _tap(keycode: Key, button := JOY_BUTTON_INVALID, push := 0.0) -> void:
+func tap(keycode: Key, button := JOY_BUTTON_INVALID, push := 0.0) -> void:
 	for pressed: bool in [true, false]:
 		_press(keycode, pressed, button, push)
 		# Held through two physics ticks too: walking and facing are read
@@ -108,10 +108,10 @@ func _tap(keycode: Key, button := JOY_BUTTON_INVALID, push := 0.0) -> void:
 
 
 ## The villager `id` standing on this map, or null when they aren't here.
-func _villager(id: String) -> Npc:
-	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
-		if not villager.away and String(villager.data.get("id", "")) == id:
-			return villager
+func villager(id: String) -> Npc:
+	for npc: Npc in get_tree().get_nodes_in_group("npcs"):
+		if not npc.away and String(npc.data.get("id", "")) == id:
+			return npc
 	return null
 
 
@@ -160,15 +160,15 @@ var _rise_phase := "none"
 
 
 ## The building rising on the town's tour, while it's there.
-func _rise() -> RebuildRise:
-	var rise := get_tree().get_first_node_in_group(RebuildRise.GROUP) as RebuildRise
-	if rise != null:
-		_rise_phase = rise.phase
-	return rise
+func rise() -> RebuildRise:
+	var node := get_tree().get_first_node_in_group(RebuildRise.GROUP) as RebuildRise
+	if node != null:
+		_rise_phase = node.phase
+	return node
 
 
 ## The ascension (PIX-244), while it's open.
-func _ascension() -> RankupScreen:
+func ascension() -> RankupScreen:
 	for node in world.get_children():
 		if node is RankupScreen:
 			return node
@@ -256,7 +256,7 @@ func _run_test_harness() -> void:
 	var line := report.line()
 	# A quiet run (--headless: no window, nothing drawn) has no picture.
 	if DisplayServer.get_name() != "headless":
-		_draw_every_frame()
+		draw_every_frame()
 		await RenderingServer.frame_post_draw
 		# As the screen shows it (the desktop app's canvas is linear light),
 		# where `--shot` says (PIX-270): the flows run side by side, and one

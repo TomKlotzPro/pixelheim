@@ -47,7 +47,7 @@ var _oldest := 0
 ## A skill's strips as it's cast: round the hero for a heal; for a blow, its
 ## bolt to each foe struck then what lands on it (on the foe at once without
 ## a bolt). False when nothing could be drawn.
-func cast(skill: Dictionary, hero: Node2D, targets: Array) -> bool:
+func cast(skill: Dictionary, hero: Player, targets: Array) -> bool:
 	var look := ItemIcons.skill_look(String(skill["name"]))
 	if skill["kind"] == "heal":
 		_note(look["self"])

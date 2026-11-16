@@ -293,9 +293,9 @@ func _notes(group: String, empty: bool) -> Array[String]:
 			var next := Hunts.next_notice(floors)
 			if Hunts.notices(floors, GameState.progression.hunted).is_empty():
 				if not next.is_empty():
-					out.append(Text.t("No notices on the bounty board yet. The first goes up when %s.") % BountyScreen._when(next))
+					out.append(Text.t("No notices on the bounty board yet. The first goes up when %s.") % BountyScreen.goes_up_when(next))
 			elif not next.is_empty():
-				out.append(Text.t("Another notice goes up when %s.") % BountyScreen._when(next))
+				out.append(Text.t("Another notice goes up when %s.") % BountyScreen.goes_up_when(next))
 	return out
 
 

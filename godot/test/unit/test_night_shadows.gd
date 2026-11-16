@@ -281,7 +281,7 @@ func _rig(view: MapView, at: Vector2) -> Node:
 	var world := _World.new()
 	add_child_autofree(world)
 	world.view = view
-	var hero := Node2D.new()
+	var hero: Player = preload("res://test/bare_hero.gd").new()
 	hero.position = at
 	world.add_child(hero)
 	var rig: Node = autofree(preload("res://scripts/light_rig.gd").new())

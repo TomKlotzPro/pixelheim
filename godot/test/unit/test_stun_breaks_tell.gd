@@ -61,17 +61,8 @@ class StubMessages extends Messages:
 
 
 ## The hero as a foe needs one: never built or stepped.
-class StubHero extends Player:
+class StubHero extends "res://test/bare_hero.gd":
 	var hits := 0
-
-	func _ready() -> void:
-		pass
-
-	func _physics_process(_delta: float) -> void:
-		pass
-
-	func _unhandled_input(_event: InputEvent) -> void:
-		pass
 
 	func take_hit(_damage: int, _from: Vector2, _inflicts: Variant = null, _grace := true) -> void:
 		hits += 1

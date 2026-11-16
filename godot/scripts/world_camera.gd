@@ -76,7 +76,7 @@ func _ready() -> void:
 
 
 ## The camera on `player`, fitted to the window, cut to where they stand.
-func attach(player: Node2D) -> void:
+func attach(player: Player) -> void:
 	camera = Camera2D.new()
 	camera.limit_left = 0
 	camera.limit_top = 0

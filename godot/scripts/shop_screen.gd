@@ -132,7 +132,7 @@ func _open() -> void:
 	tab_row.custom_minimum_size.y = TAB_HEIGHT
 	tab_row.add_theme_constant_override("separation", 4)
 	for index in tabs.size():
-		var button := UiStyle.button(tabs[index], _switch.bind(index))
+		var button := UiStyle.button(tabs[index], switch.bind(index))
 		tab_buttons.append(button)
 		tab_row.add_child(button)
 	add_child(tab_row)
@@ -274,9 +274,9 @@ func _command(event: InputEvent) -> Callable:
 			if event.is_action_pressed(action):
 				return _select.bind(selected)
 	if event.is_action_pressed("move_left"):
-		command = _switch.bind(tab - 1)
+		command = switch.bind(tab - 1)
 	elif event.is_action_pressed("move_right"):
-		command = _switch.bind(tab + 1)
+		command = switch.bind(tab + 1)
 	elif event.is_action_pressed("move_up"):
 		command = _select.bind(selected - 1)
 	elif event.is_action_pressed("move_down"):
@@ -322,7 +322,7 @@ func _other() -> void:
 		_ask(_stack_count())
 
 
-func _switch(index: int) -> void:
+func switch(index: int) -> void:
 	_chosen[tabs[tab]] = selected
 	tab = wrapi(index, 0, tabs.size())
 	selected = int(_chosen.get(tabs[tab], 0))
@@ -873,7 +873,7 @@ func _on_row_input(event: InputEvent, tab_name: String, index: int) -> void:
 	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 		# A row of the list beside the chosen one: its tab first.
 		if tab_name != tabs[tab]:
-			_switch(tabs.find(tab_name))
+			switch(tabs.find(tab_name))
 			_select(index)
 		elif click.double_click and index == selected:
 			_act()

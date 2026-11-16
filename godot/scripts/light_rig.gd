@@ -174,7 +174,7 @@ func _screen_pass(layer: CanvasLayer, shader: Shader) -> ColorRect:
 ## lives in Pixelheim he keeps it trimmed (PIX-255: his perk, the settlers'
 ## `lantern` share), and it reaches that much further, from the moment he
 ## comes home.
-func give_lantern(player: Node2D) -> void:
+func give_lantern(player: Player) -> void:
 	lantern = Lights.make(LANTERN_AT, lantern_reach(GameState.holdings.settler_share("lantern")), Lights.LANTERN, Lights.LANTERN_ENERGY, true)
 	# The hero never blocks their own lantern (PIX-490).
 	lantern.shadow_item_cull_mask = NightShadows.LANTERN

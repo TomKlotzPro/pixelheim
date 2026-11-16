@@ -472,7 +472,7 @@ func _draw() -> void:
 	for action: String in ["continue", "duplicate", "copy"]:
 		planks[action].disabled = kind != SaveSlots.HERO
 	planks["delete"].disabled = kind == SaveSlots.EMPTY
-	planks["restore"].visible = not _slots[selected]["deleted"].is_empty()
+	planks["restore"].visible = not (_slots[selected]["deleted"] as Dictionary).is_empty()
 	_set_footer()
 
 

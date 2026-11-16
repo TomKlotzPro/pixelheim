@@ -72,7 +72,7 @@ func step_brew() -> void:
 	# there gives nothing.
 	GameState.pack.add_item("forest_herb")
 	GameState.pack.add_item("marsh_reed")
-	var vex: Node = h._villager("alchemist_vex")
+	var vex: Node = h.villager("alchemist_vex")
 	if vex != null and world.map.id == "town":
 		GameState.trade.stall_shop = Economy.station_shop("alchemy")
 	GameState.trade.craft("brew_potion_hp")
@@ -106,7 +106,7 @@ func step_talk_to() -> void:
 		return
 	world.interaction.talk(npc)
 	await h.get_tree().create_timer(0.3).timeout
-	await h._keys(flags)
+	await h.keys(flags)
 
 
 func step_talk() -> void:
@@ -171,7 +171,7 @@ func step_rise() -> void:
 		GameState.reveals.assign(["project:" + project_id])
 		world.stage.after_board()
 		for frame in 300:
-			var rise: RebuildRise = h._rise()
+			var rise: RebuildRise = h.rise()
 			if rise != null and rise.phase != "ruin":
 				break
 			await h.get_tree().process_frame
@@ -238,7 +238,7 @@ func _word_with(villager: Npc) -> void:
 	for press in 12:
 		if not world.get_children().any(func(node: Node) -> bool: return node is DialogueBox):
 			return
-		await h._tap(KEY_E)
+		await h.tap(KEY_E)
 
 
 ## The Pixelheim Post's step (PIX-320; world.gd opened the Post before the
@@ -291,7 +291,7 @@ func _post(step: String) -> void:
 				Post.hand_over(post, String(before["id"]))
 			if step not in post.bag:
 				post.bag.append(step)
-			var villager: Npc = h._villager(Post.addressee(entry))
+			var villager: Npc = h.villager(Post.addressee(entry))
 			if villager != null:
 				_face(villager)
 				world.interaction.interact()
@@ -310,4 +310,4 @@ func _below_first_villager() -> void:
 		world.interaction.interact()
 	await h.get_tree().create_timer(0.3).timeout
 	# The way a player leaves it (the report lists what stays open).
-	await h._keys(flags)
+	await h.keys(flags)

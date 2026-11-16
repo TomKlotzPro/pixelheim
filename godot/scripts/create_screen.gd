@@ -106,7 +106,7 @@ func _open() -> void:
 	name_field.add_theme_color_override("font_color", UiStyle.INK)
 	name_field.add_theme_color_override("font_placeholder_color", UiStyle.FADED)
 	name_field.add_theme_color_override("caret_color", UiStyle.INK)
-	name_field.text_changed.connect(func(_text: String) -> void: _refresh())
+	name_field.text_changed.connect(func(_text: String) -> void: refresh())
 	name_field.text_submitted.connect(func(_text: String) -> void: _begin())
 	bottom.add_child(name_field)
 	# Between the two, wrapping rather than running off (all the slots full
@@ -125,7 +125,7 @@ func _open() -> void:
 		add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  role    {key:move_left}/{key:move_right}  read skills    {key:inventory}  first night    Enter  begin    Esc  close"))
 	else:
 		add_child(UiStyle.screen_footer("Up/Down  role    PgUp/PgDn  read skills    Tab  first night    Enter  begin    Esc  close"))
-	_refresh()
+	refresh()
 	name_field.grab_focus.call_deferred()
 
 
@@ -184,7 +184,7 @@ func _role() -> String:
 	return ROLES[role_index]
 
 
-func _refresh() -> void:
+func refresh() -> void:
 	Layout.clear(roles_box)
 	Layout.clear(details)
 	for index in ROLES.size():
@@ -446,12 +446,12 @@ func _start_tag() -> Control:
 func _pick_role(index: int) -> void:
 	role_index = wrapi(index, 0, ROLES.size())
 	skill_index = 0
-	_refresh()
+	refresh()
 
 
 func _pick_skill(index: int) -> void:
 	skill_index = wrapi(index, 0, skill_chips.size())
-	_refresh()
+	refresh()
 
 
 ## The first night on or off: on for a first hero, a choice after that.

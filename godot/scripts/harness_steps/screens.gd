@@ -30,7 +30,7 @@ func step_rankup() -> void:
 	else:
 		await h.get_tree().create_timer(1.6).timeout
 	if flags.has("walk-path"):
-		h._ascension()._walk()
+		h.ascension()._walk()
 		await h.get_tree().create_timer(0.3).timeout
 
 
@@ -59,7 +59,7 @@ func step_create() -> void:
 	world.add_child(creation)
 	await h.get_tree().create_timer(0.1).timeout
 	creation.name_field.text = flags.value("--name", "Robin")
-	creation._refresh()
+	creation.refresh()
 	await h.get_tree().create_timer(0.4).timeout
 
 
@@ -75,7 +75,7 @@ func step_title() -> void:
 		if title.entrance != null:
 			title.entrance.hold(at)
 	if not flags.has("talk"):
-		await h._keys(flags)
+		await h.keys(flags)
 
 
 func step_whatsnew() -> void:
@@ -174,7 +174,7 @@ func step_shop() -> void:
 	var screen := ShopScreen.new()
 	world.add_child(screen)
 	if flags.has("--tab"):
-		screen._switch(int(flags.value("--tab")))
+		screen.switch(int(flags.value("--tab")))
 	await h.get_tree().create_timer(0.3).timeout
 
 
@@ -212,7 +212,7 @@ func step_saves() -> void:
 ## `inventory --keys esc` checks it closes and lets the world go.
 func step_keys() -> void:
 	if not flags.has("talk") and not flags.has("--talk-to") and not flags.has("title"):
-		await h._keys(flags)
+		await h.keys(flags)
 
 
 ## How far into each of the ascension's beats `--rank-beat` holds it: the
@@ -225,7 +225,7 @@ const RANK_BEAT_INTO := {"hush": 0.5, "lift": 0.8, "flare": 0.3, "named": 0.45, 
 ## motion playing on), then holds it there for the picture. Asked as the
 ## moment opens, before its first beat.
 func _hold_rank_beat(beat: String) -> void:
-	var opened := h._ascension()
+	var opened := h.ascension()
 	if opened == null:
 		return
 	opened.hold_at(beat)
@@ -259,7 +259,7 @@ func _pause_menu() -> void:
 	pause.world = world
 	world.add_child(pause)
 	if flags.has("options"):
-		pause._options()
+		pause.open_options()
 	await h.get_tree().create_timer(0.3).timeout
 
 

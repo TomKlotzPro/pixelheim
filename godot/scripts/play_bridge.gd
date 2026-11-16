@@ -24,7 +24,7 @@ extends Node
 ## then for that frame to be drawn, so `look`'s state and picture agree.
 
 ## A tap is held this many ticks, and the keys of a step let go this many
-## before the next, as harness.gd's _tap: a screen that ignores the press
+## before the next, as harness.gd's tap: a screen that ignores the press
 ## that opened it would miss the next.
 const TAP_TICKS := 3
 const AFTER_TICKS := 5

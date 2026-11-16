@@ -141,6 +141,6 @@ func test_gulp_is_posted_at_the_town_age() -> void:
 	var gulp := Hunts.named("gulp")
 	assert_eq(Hunts.status(gulp, Hunts.board_floors(4, 2), []), "", "not in the Village")
 	assert_eq(Hunts.status(gulp, Hunts.board_floors(4, 3), []), "wanted", "the Town posts her")
-	assert_eq(preload("res://scripts/bounty_screen.gd")._when(gulp), "Pixelheim has grown into a town")
+	assert_eq(preload("res://scripts/bounty_screen.gd").goes_up_when(gulp), "Pixelheim has grown into a town")
 	state.settlement.town_tier = 3
 	assert_has(Hunts.notices(state.questing.board_floors(), []).map(func(entry: Dictionary) -> String: return entry["id"]), "gulp")

@@ -54,7 +54,7 @@ func step_motion() -> void:
 	# walks; and the river stops the walk, the camera catching up as a
 	# step back, so frames count only while the hero still walks.
 	world.lights.clear_sky = true
-	h._draw_every_frame()
+	h.draw_every_frame()
 	world.player.scripted_dir = Vector2.RIGHT
 	world.player.sprite.speed_scale = 0.0
 	var hero_x: Array[float] = []

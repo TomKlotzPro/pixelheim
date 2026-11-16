@@ -140,7 +140,7 @@ func test_held_impacts_and_reduced_motion() -> void:
 	fx.impacts_held = false
 	var was: bool = GameState.settings.reduce_motion
 	GameState.settings.reduce_motion = true
-	var hero: Node2D = add_child_autofree(Node2D.new())
+	var hero: Player = add_child_autofree(preload("res://test/bare_hero.gd").new())
 	assert_false(fx.cast({"name": "Mend", "kind": "heal"}, hero, []), "still: nothing drawn")
 	assert_null(fx.play("impact", hero))
 	GameState.settings.reduce_motion = was

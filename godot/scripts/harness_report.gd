@@ -201,7 +201,7 @@ func field_ailing() -> String:
 func field_ascension() -> String:
 	if not flags.has("rankup"):
 		return ""
-	var screen := harness._ascension()
+	var screen := harness.ascension()
 	return screen.phase if screen != null else "closed"
 
 
@@ -726,7 +726,7 @@ func field_maps() -> String:
 
 
 func field_morvax() -> String:
-	var villager: Npc = harness._villager(Homecoming.MORVAX)
+	var villager: Npc = harness.villager(Homecoming.MORVAX)
 	if villager == null:
 		return ""
 	return "%s%s" % [villager.cell, " bench" if villager.data.get("bench", false) else ""]
@@ -735,7 +735,7 @@ func field_morvax() -> String:
 func field_motes() -> String:
 	if not flags.has("rankup"):
 		return ""
-	var screen := harness._ascension()
+	var screen := harness.ascension()
 	var flying := 0
 	if screen != null:
 		for node in screen.find_children("*", "CPUParticles2D", true, false):
@@ -852,7 +852,7 @@ func field_reading() -> String:
 func field_rise() -> String:
 	if not flags.has("--rise"):
 		return ""
-	var rise: RebuildRise = harness._rise()
+	var rise: RebuildRise = harness.rise()
 	return rise.phase if rise != null else ("built" if harness._rise_phase != "none" else "none")
 
 
