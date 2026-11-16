@@ -127,3 +127,23 @@ func test_nothing_of_the_hud_stands_under_a_cutscene_bar() -> void:
 	tree.paused = false
 	assert_false(under, "the sign's plate under the top bar")
 	assert_true(back, "the HUD back once the scene ends")
+
+
+## A click on the opening went through to the title's planks under it (crash
+## hunt, 2026-11-16): the scene takes it and moves on.
+func test_a_click_moves_the_scene_on_and_reaches_nothing_under_it() -> void:
+	var scene := Cutscene.new()
+	get_tree().root.add_child(scene)
+	var catchers := scene.get_children().filter(func(node: Node) -> bool:
+		return node is Control and (node as Control).mouse_filter == Control.MOUSE_FILTER_STOP and (node as Control).size == Cutscene.VIEW)
+	assert_eq(catchers.size(), 1, "one control over the whole view takes the mouse")
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	scene.advance = false
+	(catchers[0] as Control).gui_input.emit(click)
+	assert_true(scene.advance, "and a click moves the scene on")
+	scene.finish()
+	await get_tree().process_frame
+	await get_tree().process_frame
+	get_tree().paused = false

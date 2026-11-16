@@ -1,6 +1,27 @@
 {
   "releases": [
     {
+      "version": "0.377.0",
+      "date": "2026-11-16",
+      "codename": "Every Key Says True",
+      "notes": [
+        "On a pad, the right stick turns the page of a long card, and the footer shows the pad's keys while you play with one",
+        "Large reading text now grows every text you read: the pack, the journal, the skills and the counter's card",
+        "Footers only name the keys that do something there",
+        "In Saves from the title, E plays the hero at once, and the last one played is tagged as such",
+        "Stats says how many points you have left to spend; in Options, left and right move between a key row's columns and only E rebinds"
+      ]
+    },
+    {
+      "version": "0.376.0",
+      "date": "2026-11-16",
+      "codename": "A Clean Start",
+      "notes": [
+        "A click during the opening moves the story on, and no longer presses the title's buttons under it (no more second opening or two hero creations)",
+        "In hero creation, the name field keeps taking letters after Enter on an empty name, and Esc goes back to the title"
+      ]
+    },
+    {
       "version": "0.375.0",
       "date": "2026-11-16",
       "codename": "Told in Time",

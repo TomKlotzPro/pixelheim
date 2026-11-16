@@ -24,6 +24,11 @@ var cells := {}
 var selected := Vector2i(0, 2)
 var view: Control
 var details: Label
+## Its window at the page's foot: two lines, paged past that (PIX-484: the
+## description stayed small with Large reading text; the tree's rows then
+## close up to leave two lines of the big type their room).
+var reader: ScrollContainer
+var footer: HBoxContainer
 var status: Label
 
 
@@ -42,15 +47,15 @@ func _open() -> void:
 	add_child(view)
 	# The selected card in full, on the page under the tree (one line a node
 	# leaves the room).
-	details = UiStyle.label("", 13, UiStyle.INK, Vector2(COLUMN_X[0], 576))
-	details.custom_minimum_size = Vector2(PAGE.size.x - 2 * UiStyle.INSET, 0)
-	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	add_child(details)
+	details = UiStyle.label("", UiStyle.reading(13), UiStyle.INK)
+	reader = Layout.reader(details, PAGE.size.x - 2 * UiStyle.INSET)
+	reader.get_v_scroll_bar().changed.connect(_set_footer)
+	add_child(reader)
 	# Clear of the title's end in French (« Compétences »).
 	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(330, 30))
 	status.custom_minimum_size = Vector2(650, 0)
 	add_child(status)
-	add_child(UiStyle.screen_footer("Arrows  choose      {key:interact}  learn / walk      1-6  set key      F  forget      {key:skills} / Esc  close"))
+	_set_footer()
 	var rule := UiStyle.label("A point each level, one more each rank.", 13, UiStyle.DUSK, Vector2(PAGE.end.x - 416, 6))
 	rule.custom_minimum_size = Vector2(416, 0)
 	rule.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -108,7 +113,7 @@ func _layout() -> void:
 			var cell := Vector2i(branch, 2 + int(entry["tier"]))
 			cells[cell] = {"kind": "node", "entry": entry}
 			var card := _node_card(entry, cell == selected)
-			card.position = Vector2(COLUMN_X[branch], top + 24 + int(entry["tier"]) * (NODE_CARD.y + 5))
+			card.position = Vector2(COLUMN_X[branch], top + 24 + int(entry["tier"]) * (NODE_CARD.y + (1 if GameState.settings.large_text else 5)))
 			view.add_child(card)
 	_describe()
 
@@ -265,16 +270,45 @@ func _claimable(cell: Dictionary) -> bool:
 	return Ranks.path_choices(GameState.hero).any(func(node: Dictionary) -> bool: return node["id"] == cell["entry"]["id"])
 
 
-## The selected card in full at the foot of the screen.
+## The keys along the bottom, the description's page keys first while it
+## runs long, in the caps of the hands on the game (PIX-487), and only
+## those that act on the chosen card (PIX-484): E where it learns a skill
+## or walks a path, 1-6 where a key can take it. Every card's keys and the
+## page's ran a path's footer off the canvas in a long tongue, the big type.
+func _set_footer() -> void:
+	var cell: Dictionary = cells.get(selected, {})
+	var acts := ""
+	if _claimable(cell):
+		acts = "{key:interact}  walk      "
+	elif cell.get("kind", "") == "node" and Skills.can_buy(GameState.hero, cell["entry"]):
+		acts = "{key:interact}  learn      "
+	if _docked_as(cell) != "":
+		acts += "1-6  set key      "
+	footer = UiStyle.refooted(self, footer, Layout.footer_for(reader,
+		"Arrows  choose      " + acts + "F  forget      {key:skills} / Esc  close"))
+
+
+func _hands_changed() -> void:
+	_set_footer()
+
+
+## The selected card in full at the foot of the page, its second line on
+## the page's inset. A third of the small type still stands on the page, as
+## it did (a path's card in a long tongue: paged, its keys ran the footer
+## off the canvas); the big type pages past two.
 func _describe() -> void:
+	Layout.read(reader, _described(), 2 if GameState.settings.large_text else 3, 2)
+	reader.position = Vector2(COLUMN_X[0], PAGE.end.y - UiStyle.INSET - 2 * Layout.line_of(reader))
+	_set_footer()
+
+
+func _described() -> String:
 	var cell: Dictionary = cells.get(selected, {})
 	if cell.is_empty():
-		details.text = ""
-		return
+		return ""
 	var entry: Dictionary = cell["entry"]
 	if cell["kind"] == "path":
-		details.text = Text.t("%s: %s  Signature: %s - %s") % [entry["name"], entry["blurb"], entry["signature"]["name"], entry["signature"]["description"]]
-		return
+		return Text.t("%s: %s  Signature: %s - %s") % [entry["name"], entry["blurb"], entry["signature"]["name"], entry["signature"]["description"]]
 	var hero := GameState.hero
 	var owned: bool = entry["id"] in hero.skill_nodes
 	var parts: Array[String] = [Text.t("%s: %s") % [entry["name"], entry["description"]]]
@@ -286,11 +320,13 @@ func _describe() -> void:
 		parts.append(Text.t("On key %d - press 1-6 to move it.") % key if key > 0 else Text.t("Not on the dock - press 1-6 to put it on that key."))
 	elif not owned:
 		parts.append(Text.t("Learn it for 1 point.") if Skills.can_buy(hero, entry) else _why_not(entry) + ".")
-	details.text = "  ".join(parts)
+	return "  ".join(parts)
 
 
 func _command(event: InputEvent) -> Callable:
-	var command := Callable()
+	var command := Layout.paging(reader, event)
+	if command.is_valid():
+		return command
 	if event.is_action_pressed("move_up"):
 		command = _move.bind(Vector2i.UP)
 	elif event.is_action_pressed("move_down"):
@@ -332,18 +368,22 @@ func _bind_next() -> void:
 	_bind(_key_of(key_id) % Skills.DOCK_SIZE)
 
 
+## What `cell` goes on a key as: a known active skill's id, "path" for the
+## signature of the path walked last, "" for a card no key takes.
+func _docked_as(cell: Dictionary) -> String:
+	var hero := GameState.hero
+	if cell.get("kind", "") == "node" and cell["entry"]["kind"] == "active" and cell["entry"]["id"] in hero.skill_nodes:
+		return cell["entry"]["id"]
+	if cell.get("kind", "") == "path" and not HeroRules.walked(hero).is_empty() and HeroRules.walked(hero)[-1] == cell["entry"]["id"]:
+		return "path"
+	return ""
+
+
 ## 1-6: the selected known skill (or the walked path's signature) onto that key.
 func _bind(index: int) -> void:
 	var cell: Dictionary = cells.get(selected, {})
-	var hero := GameState.hero
-	var key := ""
-	var name := ""
-	if cell.get("kind", "") == "node" and cell["entry"]["kind"] == "active" and cell["entry"]["id"] in hero.skill_nodes:
-		key = cell["entry"]["id"]
-		name = cell["entry"]["name"]
-	elif cell.get("kind", "") == "path" and not HeroRules.walked(hero).is_empty() and HeroRules.walked(hero)[-1] == cell["entry"]["id"]:
-		key = "path"
-		name = cell["entry"]["signature"]["name"]
+	var key := _docked_as(cell)
+	var name: String = "" if key == "" else (cell["entry"]["signature"]["name"] if key == "path" else cell["entry"]["name"])
 	if key == "":
 		status.text = "Only a skill you know can go on a key."
 		return
