@@ -586,7 +586,7 @@ func _build_doll() -> void:
 	for stat: String in ["strength", "intelligence", "dexterity"]:
 		var granted := pack.granted_stat(stat)
 		lines.append("%s %d%s" % [Text.t(Skills.ABBR[stat]), hero.stats[stat], "  +%d" % granted if granted > 0 else ""])
-	lines.append(Text.t("Carry %d/%d") % [pack.carried_weight(), Skills.carry_capacity(hero, pack)])
+	lines.append(Text.t("Weight %d/%d") % [pack.carried_weight(), Skills.carry_capacity(hero, pack)])
 	var numbers := UiStyle.label("\n".join(lines), 15, UiStyle.INK, Vector2(UiStyle.INSET, 350))
 	doll.add_child(numbers)
 

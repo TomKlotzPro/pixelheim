@@ -53,5 +53,29 @@ class ReferenceTest(unittest.TestCase):
                 i18n.ROOT = saved
 
 
+class SetLineTest(unittest.TestCase):
+    """A line's rules, written into the catalogues (PIX-478, PIX-484)."""
+
+    def test_the_dash_holds_and_a_questions_last_word_stays_whole(self):
+        nbsp, narrow, hyphen = "\u00a0", "\u202f", "\u2011"
+        self.assertEqual(i18n.set_line("Inferno - the room burns"), "Inferno" + nbsp + "- the room burns")
+        self.assertEqual(i18n.set_line("well-made, -5 HP"), "well-made, -5 HP", "a hyphen in a word or a number is no dash")
+        self.assertEqual(i18n.set_line("Qui êtes-vous" + narrow + "?"), "Qui êtes" + hyphen + "vous" + narrow + "?")
+        asked = "Peut-être, mais où est-il passé" + narrow + "?"
+        self.assertEqual(i18n.set_line(asked), asked, "only the last word's hyphen")
+        once = i18n.set_line("Quel temps fait-il" + narrow + "? - Maren")
+        self.assertEqual(i18n.set_line(once), once, "a set line stays as it is")
+
+    def test_every_catalogue_line_is_set(self):
+        self.assertEqual(i18n.unset_lines(os.path.join(LOCALE, "fr.po")), [])
+        english = i18n.read_po(os.path.join(LOCALE, "en.po"))
+        self.assertGreater(len(english), 100)
+        for source, said in english.items():
+            if source == "":
+                continue  # the header
+            self.assertEqual(said, i18n.set_line(source))
+            self.assertNotEqual(said, source, "only the strings a rule changes")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -33,7 +33,7 @@ func test_the_datas_words_translate_as_they_load_and_ids_never_do() -> void:
 	assert_eq(quest["giver"], "innkeeper", "an id stays an id")
 	assert_eq(quest["objective"]["monsterId"], "slime")
 	assert_eq(Economy._data()["shops"]["odo"]["keeper"], "Marchand Odo")
-	assert_eq(quest["brief"], "Slimes have crept into what's left of Sela's stores. Thin the forest's supply of them.", "untranslated words stay English")
+	assert_eq(quest["brief"], "Slimes have crept into what's left of Sela's stores. Thin their numbers in the fields east of the town gate.", "untranslated words stay English")
 
 
 func test_a_format_is_translated_before_it_is_filled() -> void:
@@ -59,6 +59,11 @@ func test_the_language_follows_the_choice_or_the_system() -> void:
 			assert_has(registered, "res://locale/%s.po" % code, "%s's catalogue is loaded" % code)
 
 
+## The data's words as the source types them: loaded, their dash is held (PIX-484).
+func _typed(said: String) -> String:
+	return said.replace("\u00a0- ", " - ")
+
+
 func test_the_catalogue_holds_the_datas_words() -> void:
 	var catalogue := {}
 	for line in FileAccess.get_file_as_string("res://locale/messages.pot").split("\n"):
@@ -66,10 +71,10 @@ func test_the_catalogue_holds_the_datas_words() -> void:
 			catalogue[JSON.parse_string(line.substr(6))] = true
 	for quest: Dictionary in Quests.all():
 		assert_true(catalogue.has(quest["name"]), "the quest %s" % quest["name"])
-		assert_true(catalogue.has(quest["brief"]), "its brief")
+		assert_true(catalogue.has(_typed(quest["brief"])), "its brief")
 	for npc: Dictionary in Npcs._data()["npcs"]:
 		for line: String in npc.get("lines", []):
-			assert_true(catalogue.has(line), "%s's line" % npc["id"])
+			assert_true(catalogue.has(_typed(line)), "%s's line" % npc["id"])
 	assert_true(catalogue.has("Quest accepted: %s."), "a format the game fills")
 	assert_true(catalogue.has("close"), "a footer's word")
 

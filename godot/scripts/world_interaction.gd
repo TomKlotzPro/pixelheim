@@ -579,8 +579,8 @@ func _forget(skills: bool) -> String:
 		return ""
 	Sound.play("forget")
 	if skills:
-		return Text.t("Forgotten: %d skill point%s to spend again.") % [points, "" if points == 1 else "s"]
-	return Text.t("Forgotten: %d stat point%s to spend again.") % [points, "" if points == 1 else "s"]
+		return Text.t("Forgotten: %d skill point%s to spend again.") % [points, Text.s(points)]
+	return Text.t("Forgotten: %d stat point%s to spend again.") % [points, Text.s(points)]
 
 
 func _points(count: int) -> String:

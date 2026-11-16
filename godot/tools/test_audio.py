@@ -148,6 +148,22 @@ class AudioTest(unittest.TestCase):
             self.assertLessEqual(track["peak"], MUSIC["peak"] + 0.2, slot)
             self.assertLess(track["peak"] + bus, 0.0, "%s peaks at %.1f dBFS through its bus" % (slot, track["peak"] + bus))
 
+    def test_a_track_written_in_notes_is_its_whole_loop(self):
+        # PIX-498: a track tools/synth.py renders from its "voices" (the Night
+        # of Ash's) is its "beats" at its "bpm", not a sample more: Sound
+        # loops it at "seconds", and a tail there would be a gap every pass.
+        written = {name: track for name, track in DOC["tracks"].items() if "voices" in track}
+        self.assertIn("ashnight", written)
+        for name, track in written.items():
+            self.assertAlmostEqual(track["beats"] * 60 / track["bpm"], track["seconds"], msg=name)
+            with wave.open(os.path.join(GODOT, "assets", "audio", "music", name + ".wav")) as f:
+                self.assertEqual(f.getnframes(), round(track["seconds"] * f.getframerate()), name)
+            for voice in track["voices"]:
+                beats = sum(float(note.split(":")[1]) for note in voice["notes"].split())
+                self.assertAlmostEqual(beats, track["beats"], msg="%s: a voice ends with the loop" % name)
+                # A loop keeps its offset (synth.write), so no narrow square.
+                self.assertEqual(voice.get("duty", 0.5), 0.5, name)
+
     def test_the_bundles_tracks_play_at_the_musics_loudness(self):
         # PIX-416: as the v0.307 tracks are heard (-37.5 LUFS off their mono
         # renders, 3 LU more on both channels), so a place changing its
