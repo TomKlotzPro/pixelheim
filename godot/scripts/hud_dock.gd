@@ -29,6 +29,15 @@ const BARS := {
 	"en": [Color("5cbf4a"), Color("a6ea8a")],
 	"xp": [Color("e8b33a"), Color("ffe08a")],
 }
+## The HP bar while an ailment wears on the hero (PIX-484: poison drained
+## them with nothing on the bar): the colour of its numbers over their head.
+const AILING := {
+	"poison": [Color("b455c9"), Color("e8b0f2")],
+	"burn": [Color("e8862a"), Color("ffc27a")],
+}
+## A slot whose key did nothing (refuse): lit red, back in this long.
+const REFUSED := Color(1.9, 0.75, 0.7)
+const REFUSED_S := 0.3
 ## Below a quarter of health (PIX-210) the bar beats like a heart (held
 ## bright under reduced motion) and, in a fight, a quiet heartbeat sounds.
 const LOW_HP := 0.25
@@ -471,6 +480,10 @@ func toggle_menu() -> void:
 
 func _process(delta: float) -> void:
 	_warn_low_hp(delta)
+	var colors := hp_colors()
+	if bars["hp"]["fill"].color != colors[0]:
+		bars["hp"]["fill"].color = colors[0]
+		bars["hp"]["shine"].color = colors[1]
 	# The keys a pad or a keyboard shows follow the hands (PIX-388: the Menu's cap).
 	if Controls.pad != _pad_shown:
 		refresh()
@@ -518,6 +531,28 @@ func _process(delta: float) -> void:
 		if has:
 			UiStyle.tag_text(cost, costs[index][0])
 			(cost.get_node("words") as Label).add_theme_color_override("font_color", BARS["hp"][1] if costs[index][1] else UiStyle.CREAM)
+
+
+## The HP bar's fill and shine now: an ailment's while one wears on the
+## hero, else its own red.
+func hp_colors() -> Array:
+	var player: Variant = world.get("player") if world != null else null
+	return AILING.get(player.ailments.wearing() if player != null else "", BARS["hp"])
+
+
+## A skill's key pressed for nothing (PIX-484: not ready, too dear, no foe):
+## its slot flashes red, whole, and settles.
+func refuse(index: int) -> void:
+	if index < 0 or index >= slots.size():
+		return
+	var slot: Control = slots[index]["slot"]
+	var last: Tween = slots[index].get("flash")
+	if last != null and last.is_valid():
+		last.kill()
+	slot.modulate = REFUSED
+	var flash := slot.create_tween()
+	flash.tween_property(slot, "modulate", Color.WHITE, REFUSED_S)
+	slots[index]["flash"] = flash
 
 
 ## The skills' shared turn after a cast (Player.SKILL_TURN): a veil over
@@ -601,7 +636,7 @@ func refresh() -> void:
 	rank_label.text = Text.t("Lv %d %s") % [hero.level, Ranks.title(hero.role_id, hero.level)]
 	UiStyle.purse_set(purse, pack.gold)
 	var resource := Skills.resource_label(hero.role_id)
-	_set_bar("hp", Text.t("HP"), hero.hp, int(hero.stats["maxHp"]), BARS["hp"])
+	_set_bar("hp", Text.t("HP"), hero.hp, int(hero.stats["maxHp"]), hp_colors())
 	var stamina: bool = Catalog.role(hero.role_id)["resource"] == "endurance"
 	_set_bar("res", resource, hero.mp, int(hero.stats["maxMp"]), BARS["en"] if stamina else BARS["mp"])
 	_set_xp(hero.xp, hero.xp_to_next)

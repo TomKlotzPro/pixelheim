@@ -75,6 +75,17 @@ bank-city-night | --map town --town-tier 4 --at 40,35 night | map=town cell=\(40
 feet-south | --map town --at 24,35 --walk d,d,d | map=town cell=\(24, 35\) feet=dry | town
 feet-north | --map town --at 71,14 --walk u,u,u | map=town cell=\(71, 14\) feet=dry | town
 feet-mire | --map mirefen --at 25,15 --walk d,d,d | map=mirefen cell=\(25, 15\) feet=dry | field
+# The 2026-11-13 playtest's fight and world nits (PIX-484). The hero stood
+# half over Vex talking from the side: walked into her at her stall on the
+# Ashes' square, their feet stop 15 px off, clear of her figure. A goblin's
+# poison drained the hero with no word: afflicted, the hero's sprite and the
+# HP bar wear its colour and the log says it, one line. And a line of the log
+# (a first-time hint is one) stayed half hidden behind a conversation's box:
+# it is put away while Maren speaks, and back when she is done.
+stand-beside | --map town --town-tier 0 --at 36,27 --walk l,l,l | map=town cell=\(35, 27\) standoff=15,0 prompt=shown | town
+hero-poisoned | --map town --ail poison | map=town ailing=poison:tint,bar toast=1 box, 1 line, fits hudclash=none | town combat
+log-away-talking | --map town --ail poison talk | open=dialogue_box ailing=poison:tint,bar toast=hidden | town combat story
+log-back-after | --map town --ail poison talk --keys esc | open=none toast=1 box, 1 line, fits | town combat story
 # Pixelheim's yards and square by its age (PIX-382): what each household
 # keeps by its house, the square's rims, the City's bunting lit at night;
 # with the paid pack (on Shade's CC0 art alone, none).

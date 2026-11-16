@@ -1,6 +1,27 @@
 {
   "releases": [
     {
+      "version": "0.376.0",
+      "date": "2026-11-16",
+      "codename": "A Clean Start",
+      "notes": [
+        "A click during the opening moves the story on, and no longer presses the title's buttons under it (no more second opening or two hero creations)",
+        "In hero creation, the name field keeps taking letters after Enter on an empty name, and Esc goes back to the title"
+      ]
+    },
+    {
+      "version": "0.375.0",
+      "date": "2026-11-16",
+      "codename": "Told in Time",
+      "notes": [
+        "When poison, a burn or a stun takes hold of you, a line says so, and your figure and health bar wear its colour while it lasts",
+        "A skill pressed just after a swing or another skill is kept and goes as soon as you can; if it can't, its slot flashes",
+        "A melee skill reaches a foe anywhere in the cell in front of you",
+        "Gold and damage numbers have a full dark outline, so they read on the sand",
+        "The log steps away while you talk, and you no longer stand over the villager you talk to"
+      ]
+    },
+    {
       "version": "0.374.0",
       "date": "2026-11-16",
       "codename": "Every Word in Place",

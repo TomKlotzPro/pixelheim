@@ -185,6 +185,18 @@ func field_mobs() -> String:
 
 # --- The rest, by name -------------------------------------------------------
 
+func field_ailing() -> String:
+	var kind: String = world.player.ailments.wearing()
+	if kind == "":
+		return ""
+	var shows: PackedStringArray = []
+	if world.player.sprite.modulate != Color(1, 1, 1, world.player.sprite.modulate.a):
+		shows.append("tint")
+	if world.hud.dock.bars["hp"]["fill"].color == world.hud.dock.AILING[kind][0]:
+		shows.append("bar")
+	return "%s:%s" % [kind, ",".join(shows)]
+
+
 func field_ascension() -> String:
 	if not flags.has("rankup"):
 		return ""
@@ -957,6 +969,17 @@ func field_stamps() -> String:
 	return ",".join(out)
 
 
+func field_standoff() -> String:
+	if not flags.has("--walk"):
+		return ""
+	var nearest := Vector2.INF
+	for villager: Node2D in harness.get_tree().get_nodes_in_group("npcs"):
+		var off: Vector2 = (world.player.position - villager.position).abs()
+		if not villager.away and off.length() < nearest.length():
+			nearest = off
+	return "%d,%d" % [roundi(nearest.x), roundi(nearest.y)] if nearest.length() <= 2.0 * world.TILE else ""
+
+
 func field_stood() -> String:
 	return str(world.foes.stood) if world.foes.stood > 0 else ""
 
@@ -1014,6 +1037,9 @@ func field_toast() -> String:
 	var chips: Array = messages.log_box.get_children().filter(func(chip: Node) -> bool: return not chip.is_queued_for_deletion())
 	if chips.is_empty():
 		return ""
+	# Put away while a conversation or screen holds the world (PIX-484).
+	if not messages.log_box.visible:
+		return "hidden"
 	var wrong: PackedStringArray = []
 	var lines := 0
 	for chip: Control in chips:
