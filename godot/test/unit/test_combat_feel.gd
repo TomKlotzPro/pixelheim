@@ -239,6 +239,12 @@ class FakeFx extends RefCounted:
 
 
 class FakeMessages extends RefCounted:
+	## The lines of the moment said (log_now).
+	var said: Array[String] = []
+
+	func log_now(text: String, _holds := Callable()) -> void:
+		said.append(text)
+
 	func withdraw(_text: String) -> void:
 		pass
 
@@ -249,7 +255,20 @@ class FakeMessages extends RefCounted:
 		pass
 
 
+## The dock, as far as the hero asks it: the slots it was told to flash.
+class FakeDock extends RefCounted:
+	var refused: Array[int] = []
+
+	func refuse(index: int) -> void:
+		refused.append(index)
+
+
+class FakeHud extends RefCounted:
+	var dock := FakeDock.new()
+
+
 class FakeWorld extends Node2D:
+	var hud := FakeHud.new()
 	var fx := FakeFx.new()
 	var messages := FakeMessages.new()
 	var map := MapData.new()
@@ -633,3 +652,96 @@ func test_a_roll_goes_through_the_foes_round_the_hero() -> void:
 	assert_gt(hero.global_position.y, at.y + 20.0, "out through the yeti below")
 	for ghost: Node in get_children().filter(func(node: Node) -> bool: return node is Sprite2D):
 		ghost.free()
+
+
+## PIX-484: "1" right after a swing did nothing, with no word why. A skill's
+## key waits for the hero as a roll's does, through the swing.
+func test_a_skill_pressed_during_a_swing_fires_when_the_hero_is_free() -> void:
+	var hero := _rogue()
+	_foe(MapView.center(Vector2i(8, 5)))
+	hero.attack()
+	hero.press_skill(0)
+	assert_false(hero.casting, "mid-swing: not yet")
+	assert_almost_eq(hero._kept_until, GameClock.seconds() + hero.SKILL_KEPT_SECONDS, 0.01, "the press waits, longer than a roll's")
+	hero._end_swing()
+	hero._fire_kept()
+	assert_true(hero.casting, "it goes as the swing ends")
+	assert_eq(hero.world.hud.dock.refused, [] as Array[int], "and nothing was refused")
+
+
+## PIX-484: "2" 0.6 s into skill 1's turn did nothing. Late in the turn the
+## press waits it out; early, its slot says no at once.
+func test_a_skill_pressed_in_the_turn_waits_late_and_is_refused_early() -> void:
+	var hero := _rogue()
+	_foe(MapView.center(Vector2i(8, 5)))
+	var dock: FakeDock = hero.world.hud.dock
+	hero.skill_ready = false
+	hero._skill_ready_at = GameClock.seconds() + 0.8
+	hero.press_skill(0)
+	assert_eq(dock.refused, [0] as Array[int], "0.8 s to go: its slot flashes now")
+	assert_eq(hero._kept_until, -1.0, "and no press waits")
+	hero._skill_ready_at = GameClock.seconds() + 0.4
+	hero.press_skill(0)
+	assert_eq(dock.refused.size(), 1, "0.4 s to go: no refusal")
+	assert_gt(hero._kept_until, 0.0, "the press waits")
+	hero.skill_ready = true
+	hero._fire_kept()
+	assert_true(hero.casting, "and goes when the turn is over")
+
+
+## A skill pressed while stunned is refused at once, not as the stun ends.
+func test_a_skill_pressed_while_stunned_is_refused_at_once() -> void:
+	var hero := _rogue()
+	_foe(MapView.center(Vector2i(8, 5)))
+	var dock: FakeDock = hero.world.hud.dock
+	hero.ailments.stun_for(2)
+	assert_true(hero.ailments.is_stunned())
+	hero.press_skill(0)
+	assert_eq(dock.refused, [0] as Array[int], "its slot flashes now")
+	assert_eq(hero._kept_until, -1.0, "and no press waits out the stun")
+
+
+## PIX-484: a press kept that still can't go when its wait is up says so,
+## once; a cast refused (no foe in reach) flashes its slot too.
+func test_a_skill_that_cant_go_flashes_its_slot_once() -> void:
+	var hero := _rogue()
+	var dock: FakeDock = hero.world.hud.dock
+	hero.skill_ready = false
+	hero._skill_ready_at = GameClock.seconds() + 0.4
+	hero.press_skill(0)
+	hero._kept_until = GameClock.seconds() - 0.01
+	hero._fire_kept()
+	hero._fire_kept()
+	assert_eq(dock.refused, [0] as Array[int], "the wait up, the turn still running: said once")
+	assert_false(hero.casting)
+	hero.skill_ready = true
+	hero.press_skill(0)
+	assert_eq(hero.refused, "No foe in reach for Shadowstep.", "no foe: the plate says why")
+	assert_eq(dock.refused, [0, 0] as Array[int], "and its slot flashes")
+	hero.dead = true
+	hero.press_skill(0)
+	assert_eq(dock.refused.size(), 2, "a fallen hero's keys say nothing")
+
+
+## PIX-484: a goblin's poison drained the hero with no word. It is told as
+## it takes hold, not again when renewed, and the hero wears its colour
+## until it is gone; a stun has no colour.
+func test_the_hero_is_told_of_poison_once_and_wears_its_colour() -> void:
+	var hero := _hero()
+	var poison := {"kind": "poison", "chance": 1.0, "turns": 3, "power": 1}
+	assert_false(hero.afflict(null), "a blow with no ailment")
+	assert_true(hero.afflict(poison))
+	assert_eq(hero.world.messages.said, ["You are poisoned!"] as Array[String])
+	assert_eq(hero.sprite.modulate, hero.AILING_TINTS["poison"], "the hero in poison's green")
+	assert_true(hero.afflict(poison))
+	assert_eq(hero.world.messages.said.size(), 1, "renewed: not said again")
+	hero.sprite.modulate.a = 0.45
+	hero.afflict({"kind": "stun", "chance": 1.0, "turns": 1, "power": 0})
+	assert_eq(hero.world.messages.said[-1], "You are stunned!")
+	assert_eq(hero.sprite.modulate, Color(hero.AILING_TINTS["poison"], 0.45), "a roll's blur keeps its alpha")
+	hero.ailments.clear()
+	hero._show_ailment()
+	assert_eq(hero.sprite.modulate, Color(1, 1, 1, 0.45), "cured: their own colours")
+	hero.afflict({"kind": "stun", "chance": 1.0, "turns": 1, "power": 0})
+	assert_eq(hero.sprite.modulate, Color(1, 1, 1, 0.45), "a stun alone wears on no health")
+	assert_eq(Ailments.told("burn"), "You are burning!")

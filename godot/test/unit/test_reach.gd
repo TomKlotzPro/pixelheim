@@ -155,3 +155,27 @@ func test_every_swing_drawn_has_a_reach() -> void:
 		assert_true(swings.has(attack), "a %s's swing" % attack)
 	for role: String in PunyArt.HEROES:
 		assert_true(swings.has(PunyArt.hero(role)["attack"]), "%s bare-handed" % role)
+
+
+## PIX-484: « No foe in reach for Poison Blade. » with the gunner in the cell
+## in front: the hero stood at the foot of their cell and the gunner at the
+## top of the next, 30 px apart, past a blade's contact. A melee skill
+## reaches a foe wherever it stands in the cell in front; the swing keeps to
+## contact, so a pack's waiting foes stay out of a sweep (PIX-377).
+func test_a_melee_skill_reaches_anywhere_in_the_cell_in_front() -> void:
+	var melee := {"reach": "melee"}
+	var radii: Array[float] = [BODY]
+	# The foot of cell (2, 2), facing up.
+	var hero := Vector2(2 * CELL + 8, 3 * CELL - 1)
+	for foe: Vector2 in [Vector2(2 * CELL + 8, CELL + 1), Vector2(2 * CELL + 15, CELL + 1), Vector2(2 * CELL, CELL + 1)]:
+		var spots: Array[Vector2] = [foe]
+		assert_gt(hero.distance_to(foe) - BODY, CELL, "%s: past contact" % foe)
+		assert_eq(Reach.targets(hero, Vector2.UP, spots, radii, melee), [0], "%s: the skill lands" % foe)
+		assert_eq(Reach.targets(hero, Vector2.RIGHT, spots, radii, melee), [], "%s: not the cell in front, facing right" % foe)
+		assert_eq(Reach.struck(hero, Vector2.UP, spots, radii, Reach.swing("sword")), [], "%s: the swing is contact still" % foe)
+	var beyond: Array[Vector2] = [Vector2(2 * CELL + 8, CELL - 1)]
+	assert_eq(Reach.targets(hero, Vector2.UP, beyond, radii, melee), [], "two cells up: never")
+	var close: Array[Vector2] = [hero + Vector2(0, -CELL)]
+	assert_eq(Reach.targets(hero, Vector2.RIGHT, close, radii, melee), [0], "at contact, whichever way they face, as before")
+	for kind: String in ["ranged", "burst", "step"]:
+		assert_false(Reach.skill({"reach": kind}).has("front"), "%s: its own cells, no cell in front" % kind)

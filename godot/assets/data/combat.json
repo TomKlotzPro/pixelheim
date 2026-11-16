@@ -1531,7 +1531,7 @@
     "cooldown": 0.7
   },
   "reach": {
-    "about": "PIX-410 (Tom: « je peux toucher les ennemis de loin mais ça fait pas sens si je suis un guerrier »): how far every blow reaches, in cells (16 px) on the ground, read by Reach. The hero's reach runs from their feet to the near edge of a foe's body (a common foe's is half a cell either side of its feet, an elite's or a boss's wider), within `arc` degrees about the way they face (widened by the body's own breadth: a body half in the arc is in it). Melee is contact, the cell in front and its corners, never two cells off; a bow, a staff, a spell or a foe's shot reaches from afar and is seen flying there.",
+    "about": "PIX-410 (Tom: « je peux toucher les ennemis de loin mais ça fait pas sens si je suis un guerrier »): how far every blow reaches, in cells (16 px) on the ground, read by Reach. The hero's reach runs from their feet to the near edge of a foe's body (a common foe's is half a cell either side of its feet, an elite's or a boss's wider), within `arc` degrees about the way they face (widened by the body's own breadth: a body half in the arc is in it). Melee is contact, the cell in front and its corners, never two cells off; a bow, a staff, a spell or a foe's shot reaches from afar and is seen flying there. A reach with `front` (a melee skill) also lands on a foe standing anywhere in the cell in front of the hero's, the way they face (PIX-484: the hero at the foot of their cell, a gunner at the top of the next); the blade's swing has none, so a pack's waiting foes stay out of a sweep (PIX-377).",
     "swings": {
       "about": "The hero's swing by the swing drawn (PunyArt.WEAPON_ATTACKS: a sword, an axe, a hammer, a dagger and a bare hand swing the sword's; the bow; the staff and the wand the staff's). A blade lands on every foe it reaches; a shot (the bow's arrow, the staff's bolt) on the nearest it reaches, flying to it, a little further than a foe's shot.",
       "sword": {
@@ -1552,7 +1552,8 @@
     "skills": {
       "about": "A damage skill's reach by its kind (each names its `reach`): the hero turns to the nearest foe it reaches (those ahead first) and strikes it. An area skill strikes every foe in its area: a melee one every foe its blow reaches, a burst every foe within its cells round the hero, a ranged one every foe within `around` cells of the foe it flies to. A step (Shadowstep, PIX-455) crosses to the far side of the foe it reaches, where that foe would stand by the hero (Reach.landing), and strikes it there.",
       "melee": {
-        "cells": 1.0
+        "cells": 1.0,
+        "front": true
       },
       "ranged": {
         "cells": 5.0,

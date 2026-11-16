@@ -128,6 +128,7 @@ fight |  | a foe where the swing reaches (a step off for a blade, two for a bow 
 --foe-at | <x,y> | with fight: the foe on that cell, its home there (PIX-288: a boss across water from the hero)
 --foe-left | <share> | with fight: the foe already hunting the hero, its bar up, then struck down to that share of its health before the swings (PIX-288)
 --foe-ail | <kind> | with fight: the foe afflicted (poison, burn), sure to take, its next tick as strong as the health it has left (PIX-288)
+--ail | <kind> | the hero afflicted (poison, burn), sure to take, as a foe's blow would; the report adds ailing= (PIX-484) | ail | 115
 wounded |  | the hero at a quarter of their health as the run starts (PIX-322: a waystation's bench mends them) | wounded | 110
 hurt |  | with fight or --bells: the foe may bite back (the throwaway hero is untouchable otherwise)
 elite |  | with fight: an elite foe
