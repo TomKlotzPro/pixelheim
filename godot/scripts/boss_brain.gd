@@ -19,6 +19,9 @@ var pattern: Dictionary
 var phase := 0
 var cooldown := 2.0
 var turn := 0
+## The attack it last cast, by name: what tools/play.py's state calls its
+## cast (PlayBridge.mode_of, PIX-485).
+var telling := ""
 ## The marks on the ground now, freed when they strike.
 var marks: Array[Node2D] = []
 ## Marks of this cast still to strike; at none the boss moves again.
@@ -76,6 +79,7 @@ static func phase_at(share: float) -> int:
 func _cast(move: String) -> void:
 	var attack: Dictionary = Bestiary.boss_attack(move)
 	enemy.mode = "cast"
+	telling = move
 	enemy.velocity = Vector2.ZERO
 	var hero: Vector2 = world.player.global_position
 	var at: Vector2 = enemy.global_position
