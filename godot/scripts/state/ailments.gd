@@ -22,6 +22,19 @@ static func label(kind: String) -> String:
 	return kind
 
 
+## What the hero is told as `kind` takes hold of them (PIX-484), in their
+## language.
+static func told(kind: String) -> String:
+	match kind:
+		"poison":
+			return Text.t("You are poisoned!")
+		"burn":
+			return Text.t("You are burning!")
+		"stun":
+			return Text.t("You are stunned!")
+	return ""
+
+
 ## {kind, turnsLeft, power}
 var effects: Array[Dictionary] = []
 var _clock := 0.0
@@ -102,6 +115,15 @@ func kinds() -> Array[String]:
 	for effect in effects:
 		out.append(effect["kind"])
 	return out
+
+
+## The ailment wearing on their health now (the first that ticks: poison or
+## burn, never a stun), or "".
+func wearing() -> String:
+	for effect in effects:
+		if effect["kind"] != "stun":
+			return effect["kind"]
+	return ""
 
 
 ## A remedy takes one ailment away (an antidote, a salve).
