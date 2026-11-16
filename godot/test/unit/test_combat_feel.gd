@@ -689,6 +689,18 @@ func test_a_skill_pressed_in_the_turn_waits_late_and_is_refused_early() -> void:
 	assert_true(hero.casting, "and goes when the turn is over")
 
 
+## A skill pressed while stunned is refused at once, not as the stun ends.
+func test_a_skill_pressed_while_stunned_is_refused_at_once() -> void:
+	var hero := _rogue()
+	_foe(MapView.center(Vector2i(8, 5)))
+	var dock: FakeDock = hero.world.hud.dock
+	hero.ailments.stun_for(2)
+	assert_true(hero.ailments.is_stunned())
+	hero.press_skill(0)
+	assert_eq(dock.refused, [0] as Array[int], "its slot flashes now")
+	assert_eq(hero._kept_until, -1.0, "and no press waits out the stun")
+
+
 ## PIX-484: a press kept that still can't go when its wait is up says so,
 ## once; a cast refused (no foe in reach) flashes its slot too.
 func test_a_skill_that_cant_go_flashes_its_slot_once() -> void:

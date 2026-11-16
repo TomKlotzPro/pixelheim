@@ -72,14 +72,8 @@ static func in_front(from: Vector2, facing: Vector2, to: Vector2) -> bool:
 ## on a body `radius` wide either side of its feet at `to`: within the
 ## reach's cells of the body's near edge and, with an `arc`, within its
 ## degrees about the facing, widened by the body's own breadth (a body half
-## in the arc is in it). A reach with `front` (a melee skill) also lands on a
-## foe anywhere in the cell in front (PIX-484: the hero at the foot of their
-## cell, a gunner at the top of the next, « No foe in reach for Poison
-## Blade. »); the swing has none, so the ring's waiting foes stay out of a
-## sweep (PIX-377).
+## in the arc is in it). A melee skill's `front` is targets()'s, not this.
 static func lands(from: Vector2, facing: Vector2, to: Vector2, radius: float, reach: Dictionary) -> bool:
-	if reach.get("front", false) and in_front(from, facing, to):
-		return true
 	var offset := to - from
 	var apart := offset.length()
 	if apart - radius > px(reach):

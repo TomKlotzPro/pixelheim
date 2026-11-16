@@ -386,7 +386,8 @@ static func tag_of(text: String, tags: Array) -> String:
 ## qui pop d'un coup »): the plate goes first, the log's line stepping
 ## aside for it, and the log's next waits until the plate has faded.
 func update() -> void:
-	log_box.visible = true
+	# Back only once no conversation or screen holds the world (PIX-484).
+	log_box.visible = Screen.holds() == 0
 	_drop_past()
 	_hold_hint_for_card()
 	var fighting := _fighting()

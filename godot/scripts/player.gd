@@ -284,8 +284,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func press_skill(index: int) -> void:
 	if dead:
 		return
-	# The skills' turn has longer to run than a press is kept: said now.
-	if not skill_ready and _skill_ready_at - GameClock.seconds() > SKILL_KEPT_SECONDS:
+	# The skills' turn has longer to run than a press is kept, or a stun
+	# holds the hero (its kept press would lapse only as it ends): said now.
+	if ailments.is_stunned() or (not skill_ready and _skill_ready_at - GameClock.seconds() > SKILL_KEPT_SECONDS):
 		_not_ready(index)
 		return
 	_press(_can_cast, cast.bind(index), SKILL_KEPT_SECONDS, _not_ready.bind(index))
