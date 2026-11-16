@@ -17,6 +17,10 @@ extends Node
 ## touches the tree's pause itself. In a harness run it answers only once
 ## the run's steps are done (Harness.stepping): the first look is the start
 ## the presets set, not a step mid-way.
+##
+## An answer is the frame the page is left showing (PIX-485): it waits out
+## a fade or a reload the keys set off (`fading` if one outlasts settle_ticks),
+## then for that frame to be drawn, so `look`'s state and picture agree.
 
 const Harness := preload("res://scripts/harness.gd")
 ## A tap is held this many ticks, and the keys of a step let go this many
@@ -26,11 +30,22 @@ const TAP_TICKS := 3
 const AFTER_TICKS := 5
 ## Foes, folk and doors this many cells from the hero, either way, are listed.
 const NEAR := 12
+## A fade or a reload still going after the keys is waited out this many
+## ticks at most (PIX-485: Enter on Begin answered mid-reload, and the next
+## key was lost); past them the answer says `fading`.
+var settle_ticks := 300
+## A trick's state (trick_brain.gd) as `foes[].mode` names it, where its own
+## name says little.
+const TRICK_MODES := {"in": "dart", "gone": "faded", "up": "guard"}
 
 ## window.pixelheimPlay, or a stand-in in the tests: `command` (a JSON
 ## string, or null), `state` (the answer, JSON) and `frozen`.
 var page: Variant
 var _busy := false
+## Ticks the tree wasn't paused for: `played`.
+var _played := 0
+## A world has stood: no scene at all is then the gap of a reload.
+var _had_world := false
 
 
 func _ready() -> void:
@@ -38,6 +53,8 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	if not get_tree().paused:
+		_played += 1
 	if _busy or page == null or page.command == null or Harness.stepping:
 		return
 	var command := String(page.command)
@@ -54,6 +71,18 @@ func run(command: String) -> void:
 	if problem == "":
 		for step: Dictionary in steps:
 			await _step(step)
+	for _tick in settle_ticks:
+		if not fading():
+			break
+		await get_tree().physics_frame
+	# physics_frame comes before the tick's own work, the picture after it
+	# (PIX-485: the picture showed the orc dead and gold 44, the state hp 11
+	# and gold 30): the state is read once the frame is drawn. A quiet run
+	# draws none: once its ticks are done.
+	if DisplayServer.get_name() == "headless":
+		await get_tree().process_frame
+	else:
+		await RenderingServer.frame_post_draw
 	var said := state()
 	if problem != "":
 		said["error"] = problem
@@ -113,6 +142,43 @@ func _ticks(count: int) -> void:
 		await get_tree().physics_frame
 
 
+## Whether the screen is on its way somewhere: the dark of a door, a sleep
+## or a new map (world.gd's _fade_rect), a change of place waiting on the
+## music's hush, a screen that asked for a reload (Screen.reload_world), no
+## world at all between two, or the title's veil lifting after one.
+func fading() -> bool:
+	var world := get_tree().current_scene
+	if world == null:
+		return _had_world
+	_had_world = true
+	if world.get("_passing") == true:
+		return true
+	var hud: Variant = world.get("hud")
+	if hud != null and hud.root != null and hud.root.get_children().any(func(node: Node) -> bool: return node is ColorRect and node.has_meta("fade")):
+		return true
+	return Screen._shown.any(func(screen: Screen) -> bool: return is_instance_valid(screen) and (
+		screen.process_mode == Node.PROCESS_MODE_DISABLED or screen.get_children().any(func(node: Node) -> bool: return node.has_meta("fade"))))
+
+
+## What a foe is doing, for `foes[].mode`: the enemy's own mode, but a
+## wind-up by its name (PIX-485: a fighter looked a dozen times to tell a
+## glow from a chase) - its trick's state, the move its brain tells, a
+## raised guard, a shot taking aim ("aim"), a bite told ("bite").
+static func mode_of(mob: Node) -> String:
+	var mode := String(mob.mode)
+	if mode not in ["chase", "cast"]:
+		return mode
+	if mob.trick != null and mob.trick.state != "":
+		return TRICK_MODES.get(mob.trick.state, mob.trick.state)
+	if mode == "cast":
+		return mob.brain.telling if mob.brain != null and mob.brain.telling != "" else mode
+	if mob.guarding:
+		return "guard"
+	if mob.aim_left >= 0.0:
+		return "aim"
+	return "bite" if mob.tell_left >= 0.0 else mode
+
+
 ## What the game knows now, for play.py's look: the hero, the hour, and on
 ## a world its place, the screens open, the words on them and the chosen
 ## one's, the HUD's words, the quest it leads to, and the foes, folk and
@@ -126,6 +192,7 @@ func state() -> Dictionary:
 		"mana": hero.mp, "maxMana": int(hero.stats.get("maxMp", 0)), "gold": GameState.pack.gold,
 		"hour": "%02d:%02d" % [hour.x, hour.y], "night": DayNight.is_night(steps),
 		"paused": get_tree().paused, "seconds": snappedf(GameClock.seconds(), 0.01),
+		"played": snappedf(_played / float(Engine.physics_ticks_per_second), 0.01), "fading": fading(),
 	}
 	var world := get_tree().current_scene
 	if world == null or world.get("hud") == null or world.map == null:
@@ -134,6 +201,8 @@ func state() -> Dictionary:
 	var cell: Vector2i = world.player_cell
 	said["map"] = world.map.id
 	said["cell"] = [cell.x, cell.y]
+	var player: Variant = world.get("player")
+	said["ailments"] = player.ailments.kinds() if player != null else []
 	var open: PackedStringArray = []
 	var text: PackedStringArray = []
 	var focus: Array = []
@@ -160,7 +229,7 @@ func state() -> Dictionary:
 			continue
 		var fighter: Dictionary = mob.fighter
 		foes.append({"name": fighter.get("name", ""), "id": fighter.get("named", fighter["id"]), "level": Bestiary.level_of(fighter),
-			"hp": int(fighter["hp"]), "maxHp": int(fighter["maxHp"]), "cell": [at.x, at.y], "mode": mob.mode})
+			"hp": int(fighter["hp"]), "maxHp": int(fighter["maxHp"]), "cell": [at.x, at.y], "mode": mode_of(mob), "ailments": mob.ailments.kinds()})
 	said["foes"] = foes
 	# Who to talk to (PIX-435: finding a villager took 40 calls) and the
 	# ways in and out, as near as the foes.
