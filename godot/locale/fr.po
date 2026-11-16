@@ -2301,6 +2301,10 @@ msgid "A foe that comes round below you steps back out fully, and a leaping beas
 msgstr "Un ennemi qui passe sous vous recule bien jusqu'au bout, et une bête qui bondit atterrit là où votre héros reste visible"
 
 #: assets/data/changelog.json
+msgid "A foe that gives up the fight walks home with its wounds and only heals after a while out of your sight; a wolf's dart back out never takes it past its leash"
+msgstr "Un monstre qui abandonne le combat rentre chez lui avec ses blessures et ne guérit qu'après un moment hors de votre vue ; le recul d'un loup ne l'entraîne jamais au-delà de sa laisse"
+
+#: assets/data/changelog.json
 msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
 msgstr "Un ennemi qui vous repère fait jaillir une étincelle rouge, un ennemi apeuré une bleue : le danger et la parole ne se confondent plus"
 
@@ -2541,6 +2545,10 @@ msgid "A title worth arriving at: the first launch comes down from the stars pas
 msgstr "Un écran titre digne d'une arrivée : au premier lancement, la caméra descend des étoiles en passant la lune, Fafnyr passe en crachant le feu, la montagne s'éveille et embrase la vallée, et une flamme écrit PIXELHEIM avant qu'il soit frappé et refroidisse en or ; n'importe quelle touche la passe"
 
 #: assets/data/changelog.json
+msgid "A torch beside a tent lights softly all round again"
+msgstr "Une torche près d'une tente éclaire de nouveau doucement tout autour"
+
+#: assets/data/changelog.json
 msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
 msgstr "Le nouvel âge d'une ville s'annonce par une fanfare et de la poussière sur la place, et chaque nouvelle carte sort de l'obscurité au lieu d'apparaître d'un coup (sauf avec les animations réduites)"
 
@@ -2551,6 +2559,10 @@ msgstr "Une truite, un brochet ou une anguille font l'affaire partout où l'on d
 #: assets/data/changelog.json
 msgid "A way out on a map's south edge no longer hides under the dock, and you arrive facing into the new map, on its road"
 msgstr "Une sortie au sud d'une carte ne se cache plus sous la barre, et vous arrivez face à la nouvelle carte, sur sa route"
+
+#: assets/data/changelog.json
+msgid "A wolf's eyes shine as it crouches to dart, the crab throws its claws up with a glint, and a ghost back beside you waits a moment before it bites"
+msgstr "Les yeux d'un loup brillent quand il s'accroupit pour bondir, le crabe lève ses pinces dans un éclat, et un fantôme revenu à vos côtés attend un instant avant de mordre"
 
 #: assets/data/changelog.json
 msgid "AGAINST THE CLOCK: Pell's canary can't breathe the shafts' bad air for long. Once she's in your pack you have a minute to get her to Pell - the clock shows top right - or she flies back to the west gallery and you fetch her again"
@@ -3713,6 +3725,10 @@ msgid "Fafnyr warms his belly on Hilda's new forge, and Maren has a last word fo
 msgstr "Fafnyr se chauffe le ventre sur la nouvelle forge de Hilda, et Maren a un dernier mot pour vous"
 
 #: assets/data/changelog.json
+msgid "Fair Fights"
+msgstr "Combats loyaux"
+
+#: assets/data/changelog.json
 msgid "Fair Trade"
 msgstr "Commerce honnête"
 
@@ -3811,6 +3827,10 @@ msgstr "Corrigé : une potion préparée avant d'accepter « Un premier breu
 #: assets/data/changelog.json
 msgid "Fixed: after funding a project on the square, the town's tour of what was built played behind a black screen; it shows in full now, and so do the ending's tour and the homecomings"
 msgstr "Corrigé : après avoir financé un projet sur la place, la visite de ce qui a été bâti se jouait derrière un écran noir ; elle s'affiche désormais en entier, tout comme la visite de la fin et les retours au pays"
+
+#: assets/data/changelog.json
+msgid "Fixed: an error each time you changed map at night; a slime's halves no longer come out inside you"
+msgstr "Corrigé : une erreur à chaque changement de carte la nuit ; les moitiés d'un slime n'apparaissent plus sur vous"
 
 #: assets/data/changelog.json
 msgid "Fixed: in French the map and the saves screen ran off the right of the screen; long lines now wrap and rows of buttons flow onto a second line, and every screen is checked to fit"
@@ -6475,6 +6495,10 @@ msgstr "L'Arrivée du barde"
 #: assets/data/changelog.json
 msgid "The Barred Gate"
 msgstr "La Porte barrée"
+
+#: assets/data/changelog.json
+msgid "The Bestiary shows the XP a kill pays you now"
+msgstr "Le Bestiaire indique l'XP qu'un monstre vous rapporte aujourd'hui"
 
 #: assets/data/changelog.json
 msgid "The Blackiron Shafts open as a real mine: timber posts, an ore cart, rails down the road and a winch at the pithead"
