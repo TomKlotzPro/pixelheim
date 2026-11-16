@@ -17429,11 +17429,11 @@ msgid "Interrupted!"
 msgstr ""
 
 #: scripts/enemy.gd
-msgid "Lv %d"
+msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd
-msgid "blocked"
+#: scripts/enemy_drawing.gd
+msgid "Lv %d"
 msgstr ""
 
 #: scripts/features/ash_fields/feature.gd
