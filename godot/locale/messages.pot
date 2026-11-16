@@ -2465,6 +2465,10 @@ msgid "A question in a conversation is answered with 1 or 2, or a click on the a
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A question mark or a dash never starts a line on its own any more, in French or in English"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A question's answers stack in a column so long French answers fit, and Ola and five other villagers no longer pace into the sea, a roof or a fence"
 msgstr ""
 
@@ -3529,6 +3533,10 @@ msgid "Every Voice"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every Word in Place"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every cleared depth opens a hole into the dark beside the way up: keep going, or climb out. The Undermountain's gate offers the first depth and the next one past your deepest"
 msgstr ""
 
@@ -3926,6 +3934,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "French lists now keep their narrow space before the semicolon"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "French percentages, « 0 point », « En rayon », « La forge de Hilda » and other small wording fixes"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5813,6 +5825,10 @@ msgid "Sela asks before she rents you a night in her tent"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Sela's slime hunt names one place, the fields east of town, and her helmet has one name"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Sell all your junk in one go, choose how many of a stack to sell, and buy back what you just sold at the price you got, until you leave the counter"
 msgstr ""
 
@@ -7278,6 +7294,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The slime's pouch now says to press I to open your pack instead of “I opens your pack”, and the other messages that name a key read right whatever the key is"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The smithy's button says Craft, its recipes fit their lines, and the Codex families read alike"
 msgstr ""
 
 #: assets/data/changelog.json

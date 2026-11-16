@@ -2465,6 +2465,10 @@ msgid "A question in a conversation is answered with 1 or 2, or a click on the a
 msgstr "On répond à une question en conversation avec 1 ou 2, ou d'un clic sur la réponse ; Esc la remet à plus tard"
 
 #: assets/data/changelog.json
+msgid "A question mark or a dash never starts a line on its own any more, in French or in English"
+msgstr "Un point d'interrogation ou un tiret ne commence plus jamais une ligne tout seul, en français comme en anglais"
+
+#: assets/data/changelog.json
 msgid "A question's answers stack in a column so long French answers fit, and Ola and five other villagers no longer pace into the sea, a roof or a fence"
 msgstr "Les réponses à une question s'empilent en colonne pour que les longues réponses en français tiennent, et Ola et cinq autres villageois ne marchent plus dans la mer, un toit ou une clôture"
 
@@ -3529,6 +3533,10 @@ msgid "Every Voice"
 msgstr "Chaque voix"
 
 #: assets/data/changelog.json
+msgid "Every Word in Place"
+msgstr "Chaque mot à sa place"
+
+#: assets/data/changelog.json
 msgid "Every cleared depth opens a hole into the dark beside the way up: keep going, or climb out. The Undermountain's gate offers the first depth and the next one past your deepest"
 msgstr "Chaque profondeur nettoyée ouvre un trou vers les ténèbres à côté du chemin de sortie : continuez, ou remontez. La porte du Sous-Mont propose la première profondeur et celle qui suit la plus profonde que vous ayez atteinte"
 
@@ -3927,6 +3935,10 @@ msgstr "Quatre rôles : Guerrier, Mage, Voleur, Clerc"
 #: assets/data/changelog.json
 msgid "French lists now keep their narrow space before the semicolon"
 msgstr "Les listes en français gardent désormais leur espace fine avant le point-virgule"
+
+#: assets/data/changelog.json
+msgid "French percentages, « 0 point », « En rayon », « La forge de Hilda » and other small wording fixes"
+msgstr "Les pourcentages en français, « 0 point », « En rayon », « La forge de Hilda » et d'autres petites retouches de texte"
 
 #: assets/data/changelog.json
 msgid "Fresh Ground"
@@ -5813,6 +5825,10 @@ msgid "Sela asks before she rents you a night in her tent"
 msgstr "Sela demande avant de vous louer une nuit sous sa tente"
 
 #: assets/data/changelog.json
+msgid "Sela's slime hunt names one place, the fields east of town, and her helmet has one name"
+msgstr "La chasse aux gelées de Sela ne cite plus qu'un lieu, les champs à l'est de la ville, et son casque n'a plus qu'un nom"
+
+#: assets/data/changelog.json
 msgid "Sell all your junk in one go, choose how many of a stack to sell, and buy back what you just sold at the price you got, until you leave the counter"
 msgstr "Vendez toute votre camelote d'un coup, choisissez combien d'une pile vendre, et rachetez ce que vous venez de vendre au prix obtenu, jusqu'à ce que vous quittiez le comptoir"
 
@@ -7279,6 +7295,10 @@ msgstr "L'écran des compétences tient aussi sur les écrans étroits ou hauts"
 #: assets/data/changelog.json
 msgid "The slime's pouch now says to press I to open your pack instead of “I opens your pack”, and the other messages that name a key read right whatever the key is"
 msgstr "La bourse de la gelée vous dit maintenant d'appuyer sur I pour ouvrir votre sac, au lieu de « I ouvre votre sac », et les autres messages qui nomment une touche se lisent bien, quelle que soit la touche"
+
+#: assets/data/changelog.json
+msgid "The smithy's button says Craft, its recipes fit their lines, and the Codex families read alike"
+msgstr "Le bouton de la forge dit Fabriquer, ses recettes tiennent sur leurs lignes, et les familles du Codex se lisent toutes pareil"
 
 #: assets/data/changelog.json
 msgid "The sound and settings buttons got proper glyphs, and loading is a big honest LOADING with marching dots"
