@@ -145,7 +145,12 @@ var home := Vector2.ZERO
 ## What it is doing (EnemyState, PIX-501): changed by enter() alone, which
 ## does the work of leaving one state and entering the next. `mode` is its
 ## name ("chase"), for the harness's report and whoever reads it by name.
-var state := EnemyState.IDLE
+var _state := EnemyState.IDLE
+var state: int:
+	get:
+		return _state
+	set(_value):
+		push_error("enemy.state is read only: enter(state) changes it")
 var mode: String:
 	get:
 		return EnemyState.name_of(state)
@@ -838,7 +843,7 @@ func enter(to: int) -> bool:
 				at_bay = true
 				drawing.hide_fright()
 				_end_flinch()
-	state = to
+	_state = to
 	match to:
 		EnemyState.IDLE:
 			# Home again, and watching, with its wounds: no walk home makes a
