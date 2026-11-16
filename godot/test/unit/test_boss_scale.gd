@@ -102,14 +102,14 @@ func test_a_bosses_words_sit_on_its_head() -> void:
 		var foe := _foe(fighter)
 		var who := String(fighter["name"])
 		var head: float = Ink.crown(foe.sprite.sprite_frames, ["idle_down", "walk_down"], foe.rest_at, foe.rest_scale)
-		var bar: float = foe.health_bar.position.y
+		var bar: float = foe.drawing.health_bar.position.y
 		assert_eq(bar, roundf(bar), "%s: its bar on a whole pixel" % who)
-		assert_lte(bar + foe.health_bar.size.y, head - 1.0, "%s: its bar clear of its head" % who)
+		assert_lte(bar + foe.drawing.health_bar.size.y, head - 1.0, "%s: its bar clear of its head" % who)
 		# Not out in the air twenty pixels a size put it (the Tidecaller's
 		# name floated two heads over it).
-		assert_lte(head - bar, Enemy.HEAD_CLEAR + 4.0, "%s: its bar just over its head (%s over it)" % [who, head - bar])
-		assert_eq(foe.health_bar_back.position, foe.health_bar.position, "%s: the bar's back under it" % who)
-		assert_lt(foe.mark_foot(), bar, "%s: a mark over the head over its words" % who)
+		assert_lte(head - bar, EnemyDrawing.HEAD_CLEAR + 4.0, "%s: its bar just over its head (%s over it)" % [who, head - bar])
+		assert_eq(foe.drawing.health_bar_back.position, foe.drawing.health_bar.position, "%s: the bar's back under it" % who)
+		assert_lt(foe.drawing.mark_foot(), bar, "%s: a mark over the head over its words" % who)
 
 
 func test_a_common_foe_keeps_its_bar_where_it_was() -> void:
@@ -117,10 +117,10 @@ func test_a_common_foe_keeps_its_bar_where_it_was() -> void:
 		var foe := _foe(Bestiary.spawn(species))
 		var head: float = Ink.crown(foe.sprite.sprite_frames, Array(foe.sprite.sprite_frames.get_animation_names()).filter(
 			func(anim: String) -> bool: return anim.begins_with("idle") or anim.begins_with("walk")), foe.rest_at, foe.rest_scale)
-		var bar: float = foe.health_bar.position.y
-		assert_lte(bar + foe.health_bar.size.y, head - 1.0, "%s: its bar clear of its head" % species)
-		if head > Enemy.BAR_Y + Enemy.HEAD_CLEAR:
-			assert_eq(bar, Enemy.BAR_Y, "%s: its bar where it always stood" % species)
+		var bar: float = foe.drawing.health_bar.position.y
+		assert_lte(bar + foe.drawing.health_bar.size.y, head - 1.0, "%s: its bar clear of its head" % species)
+		if head > EnemyDrawing.BAR_Y + EnemyDrawing.HEAD_CLEAR:
+			assert_eq(bar, EnemyDrawing.BAR_Y, "%s: its bar where it always stood" % species)
 
 
 func test_the_tidecallers_stewpot_is_the_worlds_size_and_under_its_name() -> void:
@@ -133,7 +133,7 @@ func test_the_tidecallers_stewpot_is_the_worlds_size_and_under_its_name() -> voi
 	assert_eq(pot.global_scale, Vector2.ONE, "the pot at the world's own 1x, as on a shelf")
 	var top: float = pot.global_position.y - foe.global_position.y - pot.texture.get_height() / 2.0 + pot.texture.get_image().get_used_rect().position.y
 	assert_eq(top, roundf(top), "its pixels on whole world pixels")
-	assert_lte(foe.health_bar.position.y + foe.health_bar.size.y, top - 1.0, "the bar and name over the pot")
+	assert_lte(foe.drawing.health_bar.position.y + foe.drawing.health_bar.size.y, top - 1.0, "the bar and name over the pot")
 
 
 func test_a_bosses_box_for_blows_is_its_body() -> void:
@@ -163,7 +163,7 @@ func test_a_boss_stands_on_its_shadow() -> void:
 	for fighter in _bosses():
 		var foe := _foe(fighter)
 		var who := String(fighter["name"])
-		var shadow: Sprite2D = foe._shadow
+		var shadow: Sprite2D = foe.drawing.shadow
 		assert_not_null(shadow, "%s: a shadow" % who)
 		assert_eq(shadow.scale, foe.sprite.scale, "%s: its shadow on its own pixels" % who)
 		var half := shadow.texture.get_size() * shadow.scale / 2.0
@@ -185,17 +185,17 @@ func test_a_bosses_glow_lights_the_floor_alone_round_its_feet() -> void:
 	for fighter in _bosses():
 		var foe := _foe(fighter)
 		var who := String(fighter["name"])
-		var aura: PointLight2D = foe._aura
+		var aura: PointLight2D = foe.drawing.aura
 		assert_not_null(aura, "%s: a glow of its own" % who)
 		assert_eq(aura.range_item_cull_mask, Lights.FLOOR, "%s: it lights the floor alone" % who)
 		assert_true(aura.is_in_group("lights") and aura.get_meta("pulse", false), "%s: lit in the dark, breathing" % who)
 		assert_eq(foe.sprite.light_mask & Lights.FLOOR, 0, "%s: not its own body" % who)
-		assert_eq(aura.position, foe._shadow.position, "%s: round its feet" % who)
+		assert_eq(aura.position, foe.drawing.shadow.position, "%s: round its feet" % who)
 		# Tight round them: a little past its body either side, half as far
 		# before and behind (the first one reached the hero five cells off).
 		var reach := aura.texture.get_size() * aura.texture_scale / 2.0
 		var body := _drawn(foe)
-		assert_lte(reach.x, body.size.x / 2.0 + Enemy.AURA_PAST + 1.0, "%s: no further than a little past its body" % who)
+		assert_lte(reach.x, body.size.x / 2.0 + EnemyDrawing.AURA_PAST + 1.0, "%s: no further than a little past its body" % who)
 		assert_eq(reach.y, reach.x / 2.0, "%s: an oval on the ground" % who)
 		# Stepped in whole pixels, as a wall torch's glow.
 		assert_eq(aura.texture_scale, 1.0, "%s: a texel a world pixel" % who)
@@ -204,7 +204,7 @@ func test_a_bosses_glow_lights_the_floor_alone_round_its_feet() -> void:
 		for y in image.get_height():
 			for x in image.get_width():
 				levels[image.get_pixel(x, y).r8] = true
-		assert_lte(levels.size(), Enemy.AURA_STEPS + 1, "%s: in %d steps (and none)" % [who, Enemy.AURA_STEPS])
+		assert_lte(levels.size(), EnemyDrawing.AURA_STEPS + 1, "%s: in %d steps (and none)" % [who, EnemyDrawing.AURA_STEPS])
 
 
 ## What stands in the glow answers to the world's lights only: the hero,
@@ -239,15 +239,15 @@ func test_only_the_floor_answers_to_a_bosses_glow() -> void:
 
 func test_a_common_foe_has_a_shadow_but_no_glow() -> void:
 	var foe := _foe(Bestiary.spawn("orc", true))
-	assert_not_null(foe._shadow, "on the ground like everyone (PIX-441)")
-	assert_true(foe._shadow.get_index() < foe.sprite.get_index(), "drawn under it")
-	assert_eq(foe.find_children("*", "Sprite2D", false, false).filter(func(node: Node) -> bool: return (node as Sprite2D).texture == foe._shadow.texture).size(), 1, "one shadow, no double")
-	assert_null(foe._aura, "an elite's weight is its gold")
+	assert_not_null(foe.drawing.shadow, "on the ground like everyone (PIX-441)")
+	assert_true(foe.drawing.shadow.get_index() < foe.sprite.get_index(), "drawn under it")
+	assert_eq(foe.find_children("*", "Sprite2D", false, false).filter(func(node: Node) -> bool: return (node as Sprite2D).texture == foe.drawing.shadow.texture).size(), 1, "one shadow, no double")
+	assert_null(foe.drawing.aura, "an elite's weight is its gold")
 
 
 func test_a_bosses_glow_is_its_own_colour() -> void:
-	var cinderjaw := Enemy.aura_color(Hunts.fighter("cinderjaw"))
+	var cinderjaw := EnemyDrawing.aura_color(Hunts.fighter("cinderjaw"))
 	assert_gt(cinderjaw.r, cinderjaw.b, "Cinderjaw's fire")
-	var rimefang := Enemy.aura_color(Hunts.fighter("rimefang"))
+	var rimefang := EnemyDrawing.aura_color(Hunts.fighter("rimefang"))
 	assert_gt(rimefang.b, rimefang.r, "Rimefang's ice")
-	assert_eq(Enemy.aura_color(Bells.fafnyr()), Lights.FIRE, "Fafnyr's fire")
+	assert_eq(EnemyDrawing.aura_color(Bells.fafnyr()), Lights.FIRE, "Fafnyr's fire")

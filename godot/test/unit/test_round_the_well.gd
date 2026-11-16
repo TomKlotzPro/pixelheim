@@ -184,4 +184,4 @@ func test_a_hurt_foe_led_too_far_goes_home_still_hurt_and_mends_in_peace() -> vo
 	assert_eq(int(foe.fighter["hp"]), 1, "nor at once when they leave")
 	await _run(foe, 2.0, Vector2.INF, 0.0)
 	assert_eq(int(foe.fighter["hp"]), int(foe.fighter["maxHp"]), "whole again after half a minute in peace")
-	assert_false(foe.health_bar.visible)
+	assert_false(foe.drawing.health_bar.visible)

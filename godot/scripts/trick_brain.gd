@@ -534,7 +534,7 @@ func _glint() -> void:
 	var star := Sprite2D.new()
 	star.texture = star_texture()
 	star.material = Lights.unshaded()
-	star.position = Vector2(0, enemy.crown_of(enemy.sprite.sprite_frames, enemy.rest_at, enemy.rest_scale.x) - SHELL_LIFT)
+	star.position = Vector2(0, EnemyDrawing.crown_of(enemy.sprite.sprite_frames, enemy.rest_at, enemy.rest_scale.x) - SHELL_LIFT)
 	star.z_index = 10
 	star.scale = Vector2.ONE * 0.4
 	enemy.add_child(star)

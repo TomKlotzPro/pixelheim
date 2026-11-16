@@ -335,29 +335,29 @@ func test_each_ailment_shows_its_own_icon_side_by_side_then_goes() -> void:
 	var foe := _foe()
 	foe.ailments.inflict(POISON, GameState.roll)
 	foe.ailments.inflict(BURN, GameState.roll)
-	foe._show_ailments()
-	assert_eq(foe._ailment_row.get_child_count(), 2, "one each")
-	var first: Sprite2D = foe._ailment_row.get_child(0)
-	var second: Sprite2D = foe._ailment_row.get_child(1)
+	foe.drawing.show_ailments()
+	assert_eq(foe.drawing.ailment_row.get_child_count(), 2, "one each")
+	var first: Sprite2D = foe.drawing.ailment_row.get_child(0)
+	var second: Sprite2D = foe.drawing.ailment_row.get_child(1)
 	assert_gt(second.position.x, first.position.x, "side by side")
 	foe.ailments.cure("poison")
-	foe._show_ailments()
-	assert_eq(foe._ailment_row.get_child_count(), 1, "cured, one left")
+	foe.drawing.show_ailments()
+	assert_eq(foe.drawing.ailment_row.get_child_count(), 1, "cured, one left")
 	foe.ailments.clear()
-	foe._show_ailments()
-	assert_eq(foe._ailment_row.get_child_count(), 0, "none left")
+	foe.drawing.show_ailments()
+	assert_eq(foe.drawing.ailment_row.get_child_count(), 0, "none left")
 
 
 func test_a_foe_nothing_ails_has_no_row_at_all() -> void:
 	var foe := _foe()
-	foe._show_ailments()
-	assert_null(foe._ailment_row, "no nodes for it in a big pack")
+	foe.drawing.show_ailments()
+	assert_null(foe.drawing.ailment_row, "no nodes for it in a big pack")
 
 
 func test_the_icons_go_with_the_foe() -> void:
 	var foe := _foe()
 	foe.ailments.inflict(POISON, GameState.roll)
-	foe._show_ailments()
+	foe.drawing.show_ailments()
 	foe.dying = true
-	foe._show_ailments()
-	assert_eq(foe._ailment_row.get_child_count(), 0, "gone as it falls")
+	foe.drawing.show_ailments()
+	assert_eq(foe.drawing.ailment_row.get_child_count(), 0, "gone as it falls")

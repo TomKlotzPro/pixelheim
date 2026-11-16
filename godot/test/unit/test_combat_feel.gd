@@ -156,7 +156,7 @@ func test_every_foe_stops_beside_the_hero_in_reach_of_both() -> void:
 		assert_lte(EnemyScript.HERO_HALF + foot - edge, foot / 2.0, "%s: beside the hero, not on them" % who)
 		assert_true(Reach.lands(hero, Vector2.RIGHT, at, body, Reach.swing("sword")), "%s: a blade reaches it" % who)
 		# PIX-463: its own reach, as Enemy works it out toward the hero.
-		var crown := EnemyScript.crown_of(PunyArt.frames(PunyArt.monster(fighter["id"])), Vector2(0, PunyArt.lift(PunyArt.monster(fighter["id"])) * size), size)
+		var crown := EnemyDrawing.crown_of(PunyArt.frames(PunyArt.monster(fighter["id"])), Vector2(0, PunyArt.lift(PunyArt.monster(fighter["id"])) * size), size)
 		var foe: CharacterBody2D = autofree(EnemyScript.new())
 		foe.edge = edge
 		foe.beyond = beyond

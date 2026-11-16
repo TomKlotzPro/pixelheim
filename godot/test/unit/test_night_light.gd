@@ -13,7 +13,7 @@ extends GutTest
 
 ## What moves among the lights a map lays: the hero's lantern and the
 ## flares of two spells landing at once; and where a boss can stand, its
-## glow on the floor round its feet (PIX-314, Enemy._weigh: it lights the
+## glow on the floor round its feet (PIX-314, EnemyDrawing._weigh: it lights the
 ## floor's blocks alone).
 const MOVING := 3
 const BOSS_GLOW := 1
