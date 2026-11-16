@@ -247,7 +247,7 @@ func died() -> void:
 			var hero: Vector2 = world.player.global_position
 			var across := (enemy.global_position - hero).orthogonal().normalized() if enemy.global_position != hero else Vector2.RIGHT
 			for i in count:
-				var at := enemy.global_position + across * (i - (count - 1) / 2.0) * 10.0
+				var at := enemy.global_position + across * (i - (count - 1) / 2.0) * 14.0
 				if not world.map.is_walkable(Packs.cell_of(at)):
 					at = enemy.global_position
 				var half: Node = world.foes.spawn_of(enemy, Tricks.small(enemy.fighter, trick), at)
@@ -268,6 +268,13 @@ func died() -> void:
 			if state == "pile":
 				world.fx.dust(enemy.global_position)
 				_pile.create_tween().tween_property(_pile, "modulate:a", 0.0, 0.3)
+		# Slain mid-crouch or mid-guard: no eyes over its fall, no stretch.
+		"hitrun":
+			_end_dart()
+		"shell":
+			if _pose != null:
+				_pose.kill()
+			enemy.sprite.scale = enemy._rest_scale
 
 
 ## A stun breaks what it was telling: a wolf's crouch, a crab's claws. True

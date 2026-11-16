@@ -324,6 +324,14 @@ func test_a_crouching_wolfs_eyes_shine() -> void:
 	assert_false(eyes.visible, "gone as it darts")
 
 
+func test_a_wolf_slain_mid_crouch_falls_with_no_eyes() -> void:
+	var wolf := _foe("wolf")
+	_run(wolf, 0.5)
+	assert_eq(wolf.trick.state, "crouch")
+	wolf.trick.died()
+	assert_false(wolf.trick._eyes.visible, "no eye-shine over its fall")
+
+
 func test_a_dart_the_hero_got_away_from_is_given_up() -> void:
 	var wolf := _foe("wolf")
 	_run(wolf, 1.0 + float(Bestiary.trick("wolf")["crouch"]))
