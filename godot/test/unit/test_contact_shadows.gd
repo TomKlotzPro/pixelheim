@@ -5,7 +5,6 @@ extends GutTest
 ## with a villager drawn over the hero (Npc.stands_over).
 
 const PlayerScript := preload("res://scripts/player.gd")
-const Enemy := preload("res://scripts/enemy.gd")
 
 
 func _hero() -> CharacterBody2D:

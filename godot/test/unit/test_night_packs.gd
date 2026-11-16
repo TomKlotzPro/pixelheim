@@ -7,7 +7,6 @@ extends GutTest
 ## No quest's quarry and no bounty goes missing at any hour.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const Enemy := preload("res://scripts/enemy.gd")
 const NOON := 12 * 60
 const MIDNIGHT := 0
 ## The wild maps under the sky, and those under the ground.
