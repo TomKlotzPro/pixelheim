@@ -150,7 +150,7 @@ func test_a_boss_that_gives_up_takes_its_bar_and_brings_it_back_as_it_was() -> v
 		bar._process(0.1)
 	assert_false(bar.showing(), "its bar goes")
 	assert_false(bar.following(), "and follows nothing, so the next hunt takes it up")
-	# Home with its wounds (enemy._settle), it takes the fight up again: the
+	# Home with its wounds (enter(IDLE)), it takes the fight up again: the
 	# soundscape gives the bar to a boss on the hunt it isn't following.
 	foe.hunting = true
 	bar.follow(foe)

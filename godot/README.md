@@ -512,6 +512,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/dungeon_look.gd` — Each dungeon dressed as its place (PIX-310, the audit's "five dungeons, one brick look": the sea cave, the shafts, the cellars, the ice cave and the Kings' Vault were the same cut-brick halls in a different tint, on one floor tile).
 - `scripts/elite_brain.gd` — An elite's one trick (PIX-155), by its family, told before it lands
 - `scripts/enemy.gd` — A monster in the field: wanders near its home, notices a hero it can see (a "!" and a hop first), chases, bites after a tell, and gives up a chase that strays too far, walking home to heal (PIX-142).
+- `scripts/enemy_drawing.gd` — What is drawn of a foe besides its body (PIX-501, out of enemy.gd)
 - `scripts/entrance_art.gd` — What a dungeon's way in looks like (PIX-290, Tom: « Pas super beau les entrées de donjon, porte du Fernoir et le premier »).
 - `scripts/escort.gd` — An escort (PIX-192): Gunnar's last wagon down the Frostgate - an old mammoth hauling the pass's last crates.
 - `scripts/features/ash_fields/ash_ruins.gd` — The Ash Fields' burnt farmsteads (PIX-397, step 2; the v0.307 world audit: « a flat grey plain with blobs, in a rectangle »).
@@ -646,6 +647,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/state/deeds.gd` — Deeds (PIX-219): long goals for a hero who has done the rest, read off what the save already knows
 - `scripts/state/depths.gd` — A region's dungeon in floors (PIX-255, after Tom: « Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple »).
 - `scripts/state/economy.gd` — The town economy's rules, ported from src/game/economy/{shop,jobs,recipes, rarity}.ts
+- `scripts/state/enemy_state.gd` — What a foe is doing, one state at a time, and which state may follow which (PIX-501).
 - `scripts/state/gains.gd` — What the hero wins, as things the world shows rather than words in the log (PIX-245: Tom found it "beaucoup d'écrit")
 - `scripts/state/game_settings.gd` — Device preferences (src/app/settings.ts), deliberately NOT part of the save so they never travel inside a save code
 - `scripts/state/game_state.gd` — The one game state (autoload `GameState`): typed sections for the hero, the pack, the settlement, progression and the explored world.
