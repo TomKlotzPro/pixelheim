@@ -13,6 +13,9 @@ var world: Node
 ## Sound's view of the hero: what changed is heard (coin, heal, hurt).
 var heard_gold := 0
 var heard_hp := 0
+## A kill's gold is paid in silence while this is set: its coins tick as
+## they land instead (PIX-492, Foes.on_enemy_died).
+var quiet_gold := false
 ## Until when the music keeps quiet after a boss falls (PIX-210).
 var hushed_until := 0.0
 ## Seconds until the soundscape is looked at again (PIX-158).
@@ -51,7 +54,7 @@ func hush(seconds: float) -> void:
 
 ## Gold that grows rings (SFX.coin); health heard rising or falling.
 func hear_gold(gold: int) -> void:
-	if gold > heard_gold:
+	if gold > heard_gold and not quiet_gold:
 		Sound.play("coin_gain")
 	heard_gold = gold
 
@@ -134,7 +137,7 @@ func raining() -> bool:
 ## A shower on the roof of a village house (PIX-414): the inn on a rainy
 ## night hears what falls on the village outside.
 func rain_on_roof() -> bool:
-	return world.map.id.begins_with("town_") and Weather.village_rains() and Weather.rain_at(GameState.world.steps) > RAIN_HEARD
+	return Weather.under_roof(world.map) and Weather.rain_at(GameState.world.steps) > RAIN_HEARD
 
 
 ## A camp's torch within a few tiles of the hero.

@@ -1,6 +1,30 @@
 {
   "releases": [
     {
+      "version": "0.371.0",
+      "date": "2026-11-15",
+      "codename": "Loot That Pops",
+      "notes": [
+        "Coins burst from a slain foe, bounce and fly to you, each landing with a tick a little higher than the last",
+        "The gold float counts up as the coins land, and XP sparks rise to you as the XP float fills",
+        "A drop hops out and lands; a fine one glows, an epic one stands in a short beam of light",
+        "A boss's fall throws twice the coins",
+        "With Reduce motion, nothing flies and the floats show at once, as before"
+      ]
+    },
+    {
+      "version": "0.370.0",
+      "date": "2026-11-15",
+      "codename": "Thunder Over the Reach",
+      "notes": [
+        "Now and then a shower is a thunderstorm: heavier slanted rain, a darker sky and a harder wind in the trees",
+        "Lightning flashes over the land and, at night, throws the shadows of trees, stalls and folk for an instant",
+        "Thunder follows the flash, later the farther the strike, and muffled under a roof",
+        "Puddles gather on the paths and mirror the lamps, and the ground dries over the next hour",
+        "Flashes can be turned off in Options; off, or with Reduce motion, a strike is one soft brightening"
+      ]
+    },
+    {
       "version": "0.369.0",
       "date": "2026-11-15",
       "codename": "Lantern Shadows",

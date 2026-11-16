@@ -56,7 +56,8 @@ static func _walls(view: MapView, solid: Dictionary) -> int:
 		outline.polygon = loop
 		var occluder := LightOccluder2D.new()
 		occluder.occluder = outline
-		occluder.occluder_light_mask = NightShadows.SCENERY
+		# The lamps' and the lantern's, never the lightning's (PIX-491).
+		occluder.occluder_light_mask = NightShadows.WALLS
 		view.under.add_child(occluder)
 	return loops.size()
 

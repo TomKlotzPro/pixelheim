@@ -1,0 +1,4 @@
+# Loot that pops (PIX-492): `field | says`, as the core's
+# (scripts/harness_report.txt), which it joins after its head, by name; its
+# function is `field_loot(report)` in feature.gd.
+loot | once a kill burst into its win (never with still): the coins and sparks sprung this visit, what is still on its way to the hero, each drop's rarity, the gold the floats have counted of what they were due, and big after a boss's or a named monster's burst: coins 6 flying 3 sparks 4 drops 1:epic counted 5/8 big (PIX-492)

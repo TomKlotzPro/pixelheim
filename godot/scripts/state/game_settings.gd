@@ -35,6 +35,9 @@ var clear_warnings := false
 var glow := true
 ## The lantern and the lamps cast shadows at night (PIX-490).
 var shadows := true
+## Lightning flashes (PIX-491): off, a strike is one slow soft brightening,
+## as it is with Reduce motion.
+var flashes := true
 var hints := true
 var hints_seen: Array[String] = []
 ## Quest marks over people, and where the active step leads (PIX-240).
@@ -70,6 +73,7 @@ func load_file() -> void:
 	clear_warnings = config.get_value(SECTION, "clear_warnings", clear_warnings)
 	glow = config.get_value(SECTION, "glow", glow)
 	shadows = config.get_value(SECTION, "shadows", shadows)
+	flashes = config.get_value(SECTION, "flashes", flashes)
 	hints = config.get_value(SECTION, "hints", hints)
 	quest_marks = config.get_value(SECTION, "quest_marks", quest_marks)
 	language = str(config.get_value(SECTION, "language", language))
@@ -100,6 +104,7 @@ func save_file() -> void:
 	config.set_value(SECTION, "clear_warnings", clear_warnings)
 	config.set_value(SECTION, "glow", glow)
 	config.set_value(SECTION, "shadows", shadows)
+	config.set_value(SECTION, "flashes", flashes)
 	config.set_value(SECTION, "language", language)
 	config.set_value(SECTION, "hints", hints)
 	config.set_value(SECTION, "quest_marks", quest_marks)

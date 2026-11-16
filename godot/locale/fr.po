@@ -2217,6 +2217,10 @@ msgid "A boss you run from gives up at last: lose it for a few seconds, or leave
 msgstr "Un boss que vous fuyez finit par lâcher : semez-le quelques secondes, ou laissez-le sans chemin jusqu'à vous, et il rentre chez lui pendant que sa barre s'efface"
 
 #: assets/data/changelog.json
+msgid "A boss's fall throws twice the coins"
+msgstr "La chute d'un boss fait jaillir deux fois plus de pièces"
+
+#: assets/data/changelog.json
 msgid "A boss's health bar now goes away when it falls, however it falls"
 msgstr "La barre de vie d'un boss disparaît désormais quand il tombe, quelle que soit la façon dont il tombe"
 
@@ -2263,6 +2267,10 @@ msgstr "Une livraison indique où elle en est à mesure que les marchandises arr
 #: assets/data/changelog.json
 msgid "A dozen new items: bows, war hammers, wands, cloaks, tower shields..."
 msgstr "Une douzaine de nouveaux objets : arcs, marteaux de guerre, baguettes, capes, pavois..."
+
+#: assets/data/changelog.json
+msgid "A drop hops out and lands; a fine one glows, an epic one stands in a short beam of light"
+msgstr "Un objet bondit hors du monstre et retombe ; un objet de qualité brille, un objet épique se dresse dans un court rayon de lumière"
 
 #: assets/data/changelog.json
 msgid "A dungeon floor's patch grows once a day, somewhere new in its first hall"
@@ -3097,6 +3105,10 @@ msgid "Cloud shadows drift slowly over the open land by day, never indoors or un
 msgstr "L'ombre des nuages glisse lentement sur les terres le jour, jamais à l'intérieur ni sous terre"
 
 #: assets/data/changelog.json
+msgid "Coins burst from a slain foe, bounce and fly to you, each landing with a tick a little higher than the last"
+msgstr "Les pièces jaillissent d'un monstre vaincu, rebondissent et filent vers vous, chacune tintant un peu plus haut que la précédente"
+
+#: assets/data/changelog.json
 msgid "Come Home"
 msgstr "Rentrer au foyer"
 
@@ -3833,6 +3845,10 @@ msgid "Fixed: the first night's line about your skill showed a raw key token ins
 msgstr "Corrigé : la ligne de la première nuit sur votre compétence affichait un code brut au lieu de sa touche"
 
 #: assets/data/changelog.json
+msgid "Flashes can be turned off in Options; off, or with Reduce motion, a strike is one soft brightening"
+msgstr "Les Éclairs se désactivent dans les Options ; désactivés, ou avec Réduire les animations, un éclair n'est qu'une douce lueur"
+
+#: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
 msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la surprise a disparu"
 
@@ -4481,6 +4497,10 @@ msgid "Lighter Load"
 msgstr "Bagage léger"
 
 #: assets/data/changelog.json
+msgid "Lightning flashes over the land and, at night, throws the shadows of trees, stalls and folk for an instant"
+msgstr "Les éclairs illuminent le pays et, la nuit, projettent un instant les ombres des arbres, des étals et des passants"
+
+#: assets/data/changelog.json
 msgid "Lights Along the Roads"
 msgstr "Lumières sur les routes"
 
@@ -4527,6 +4547,10 @@ msgstr "Petites retouches"
 #: assets/data/changelog.json
 msgid "Loot That Fits"
 msgstr "Un butin à sa place"
+
+#: assets/data/changelog.json
+msgid "Loot That Pops"
+msgstr "Le butin qui gicle"
 
 #: assets/data/changelog.json
 msgid "Loras the Bard sings to trees in the Deepwood, but a hamlet is beneath him - fund the Village first, pay his 150g, and his marching song sharpens your next hunt (+12% crit)"
@@ -4887,6 +4911,10 @@ msgstr "Rien de perdu"
 #: assets/data/changelog.json
 msgid "Now and then a shower crosses the open land: rain slants down and splashes, the light turns grey, the lamps come up, the birds fall quiet and you hear the rain"
 msgstr "De temps en temps, une averse traverse les terres : la pluie tombe en biais et éclabousse, la lumière se fait grise, les lampes s'allument, les oiseaux se taisent et l'on entend la pluie"
+
+#: assets/data/changelog.json
+msgid "Now and then a shower is a thunderstorm: heavier slanted rain, a darker sky and a harder wind in the trees"
+msgstr "De temps en temps, une averse tourne à l'orage : pluie plus drue et oblique, ciel plus sombre, vent plus fort dans les arbres"
 
 #: assets/data/changelog.json
 msgid "OLD GEAR BACK TO THE FORGE: Hilda's new Salvage tab breaks a piece down into half of what it was made of (or ember shards), and from Smithing 8 her Reforge tab rolls a piece's rarity again - never down - with fresh bonus stats"
@@ -5379,6 +5407,10 @@ msgstr "Promesses et toits"
 #: assets/data/changelog.json
 msgid "Property That Pays"
 msgstr "Des biens qui rapportent"
+
+#: assets/data/changelog.json
+msgid "Puddles gather on the paths and mirror the lamps, and the ground dries over the next hour"
+msgstr "Des flaques se forment sur les chemins et reflètent les lampes, et le sol sèche dans l'heure qui suit"
 
 #: assets/data/changelog.json
 msgid "QUESTS on the coast: the smugglers' story and the Tidecaller for Wenna, crabs on the jetty and the lighthouse lens for Brin, your first catch for Ola, the smugglers' captain for Rook - and in Pixelheim, Pip's cat wants fresh fish"
@@ -6925,6 +6957,10 @@ msgid "The goal arrow no longer sits on your hero at a dungeon's first step"
 msgstr "La flèche d'objectif ne se pose plus sur votre héros à la première marche d'un donjon"
 
 #: assets/data/changelog.json
+msgid "The gold float counts up as the coins land, and XP sparks rise to you as the XP float fills"
+msgstr "Le gain d'or se cumule à mesure que les pièces arrivent, et des étincelles d'XP montent vers vous"
+
+#: assets/data/changelog.json
 msgid "The ground healed around a lamp now frays where it meets the ash instead of ending in a clean disc"
 msgstr "La terre guérie autour d'une lanterne s'effiloche désormais au contact de la cendre, au lieu de s'arrêter en un disque net"
 
@@ -7437,6 +7473,14 @@ msgid "Thumbs Up"
 msgstr "Pouce levé"
 
 #: assets/data/changelog.json
+msgid "Thunder Over the Reach"
+msgstr "L'orage sur la Reach"
+
+#: assets/data/changelog.json
+msgid "Thunder follows the flash, later the farther the strike, and muffled under a roof"
+msgstr "Le tonnerre suit l'éclair, d'autant plus tard qu'il est tombé loin, et assourdi sous un toit"
+
+#: assets/data/changelog.json
 msgid "Tidy Up"
 msgstr "Grand ménage"
 
@@ -7787,6 +7831,10 @@ msgstr "Avec « Réduire les animations », le vent tombe, et l'eau et les n
 #: assets/data/changelog.json
 msgid "With Reduce motion the scene holds still, and the world behind the title rests, so the title costs no more to draw than before"
 msgstr "Avec Réduire les animations, la scène reste immobile, et le monde derrière l'écran titre se repose : l'écran titre ne coûte pas plus à afficher qu'avant"
+
+#: assets/data/changelog.json
+msgid "With Reduce motion, nothing flies and the floats show at once, as before"
+msgstr "Avec Réduire les animations, rien ne vole et les gains s'affichent d'un coup, comme avant"
 
 #: assets/data/changelog.json
 msgid "With Reduce motion, the ruin stands a moment and then the building is there"
@@ -18087,6 +18135,10 @@ msgstr "Commandes"
 #: scripts/options_screen.gd
 msgid "Effects volume"
 msgstr "Volume des effets"
+
+#: scripts/options_screen.gd
+msgid "Flashes"
+msgstr "Éclairs"
 
 #: scripts/options_screen.gd
 msgid "Fullscreen"

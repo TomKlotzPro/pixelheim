@@ -115,8 +115,9 @@ func step_fight() -> void:
 	# `pack` (PIX-340): the rest of its pack round it, all on the hunt.
 	var pack: Array[Node] = [opponent]
 	if flags.has("pack"):
-		for i in Foes.PACK_SIZE - 1:
-			pack.append(world.foes.spawn_enemy(foe, at + [Vector2i.DOWN, Vector2i.UP][i % 2], world.map.region_at(at)))
+		# `--pack-size N` (PIX-492): that many, a second pair a cell on.
+		for i in int(flags.value("--pack-size", str(Foes.PACK_SIZE))) - 1:
+			pack.append(world.foes.spawn_enemy(foe, at + [Vector2i.DOWN, Vector2i.UP][i % 2] + Vector2i(i / 2, 0), world.map.region_at(at)))
 		for member in pack:
 			member.notice()
 	# `--foe-left S` (PIX-288): the fight already on, the foe hunting the
@@ -180,7 +181,9 @@ func step_fight() -> void:
 			break
 		# The wins rising while some of the pack still stand (PIX-343:
 		# at each kill, not held to the fight's end).
-		if world.foes.kills > kills_before and report.noted("rising") == "":
+		# Once one is up: a kill's float rises as its first spark lands
+		# (PIX-492), a breath after the fall.
+		if world.foes.kills > kills_before and report.noted("rising") == "" and world.fx.rising_now() > 0:
 			report.note("rising", str(world.fx.rising_now()))
 	GameState.hp_changed.disconnect(count)
 	if flags.has("kill"):
