@@ -512,6 +512,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/dungeon_look.gd` — Each dungeon dressed as its place (PIX-310, the audit's "five dungeons, one brick look": the sea cave, the shafts, the cellars, the ice cave and the Kings' Vault were the same cut-brick halls in a different tint, on one floor tile).
 - `scripts/elite_brain.gd` — An elite's one trick (PIX-155), by its family, told before it lands
 - `scripts/enemy.gd` — A monster in the field: wanders near its home, notices a hero it can see (a "!" and a hop first), chases, bites after a tell, and gives up a chase that strays too far, walking home to heal (PIX-142).
+- `scripts/enemy_drawing.gd` — What is drawn of a foe besides its body (PIX-501, out of enemy.gd)
 - `scripts/entrance_art.gd` — What a dungeon's way in looks like (PIX-290, Tom: « Pas super beau les entrées de donjon, porte du Fernoir et le premier »).
 - `scripts/escort.gd` — An escort (PIX-192): Gunnar's last wagon down the Frostgate - an old mammoth hauling the pass's last crates.
 - `scripts/features/ash_fields/ash_ruins.gd` — The Ash Fields' burnt farmsteads (PIX-397, step 2; the v0.307 world audit: « a flat grey plain with blobs, in a rectangle »).
