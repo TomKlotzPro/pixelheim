@@ -4,8 +4,8 @@ extends Node
 ## What the hero hears (Solid Ground, PIX-260: moved out of world.gd as it
 ## was): the place's theme, the fight's or the boss's while something hunts
 ## the hero, the Night of Ash's own while it runs (PIX-498), a fallen boss's
-## silence; the place's ambience, birds or
-## crickets, the town's chatter, fire close by, wind or rain underneath
+## silence; the place's ambience, birds or crickets, the town's chatter,
+## fire close by, wind or rain underneath
 ## (PIX-158, PIX-224), or the place's own bed from the packs (PIX-413); and
 ## coins, hurts and heals as they happen. The fight's clock it reads (and
 ## keeps) is Foes': hunted_at, hunted_by_boss.
