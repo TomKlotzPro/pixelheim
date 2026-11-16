@@ -15,7 +15,7 @@ const EDGE := Color(1.0, 0.62, 0.2, 0.95)
 ## after `tell` seconds. Returns the mark (freed by itself after the strike).
 ## A mark is heard as it's drawn and as it strikes (PIX-210), unless `heard`
 ## is false (a bite's band under clear warnings, whose foe blips its own tell).
-static func mark(world: Node, shape: PackedVector2Array, tell: float, strike: Callable, heard := true) -> Polygon2D:
+static func mark(world: World, shape: PackedVector2Array, tell: float, strike: Callable, heard := true) -> Polygon2D:
 	var shown := Polygon2D.new()
 	shown.polygon = shape
 	shown.color = COLOR
@@ -107,6 +107,6 @@ static func band(from: Vector2, toward: Vector2, length: float, width: float) ->
 
 
 ## Whether the hero stands in a struck shape.
-static func catches(world: Node, shape: PackedVector2Array) -> bool:
-	var player: CharacterBody2D = world.player
+static func catches(world: World, shape: PackedVector2Array) -> bool:
+	var player: Player = world.player
 	return not player.dead and Geometry2D.is_point_in_polygon(player.global_position, shape)

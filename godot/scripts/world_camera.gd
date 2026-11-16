@@ -11,7 +11,7 @@ extends Node
 ## keeps an art pixel a whole number of screen pixels at any window size.
 ## world.gd calls update() each frame, in the order it always did.
 
-var world: Node
+var world: World
 var camera: Camera2D
 ## False while something else frames the shot (the harness overview, the
 ## dawn and reveal tours).
@@ -184,7 +184,7 @@ func update(delta: float) -> void:
 ## The hero was placed, not walked: no interpolating from the old spot, and
 ## the camera cuts there.
 func cut() -> void:
-	var player: Node2D = world.player
+	var player: Player = world.player
 	player.reset_physics_interpolation()
 	_hero_tick_from = player.position
 	_hero_tick_to = player.position
@@ -309,7 +309,7 @@ func in_view(at: Vector2, margin := 0.0) -> bool:
 
 ## Where the dock begins on the 1280x720 canvas (the bottom, before it is built).
 func dock_top() -> float:
-	var dock: Node = world.hud.dock if world.hud != null else null
+	var dock: HudDock = world.hud.dock if world.hud != null else null
 	return dock.top() if dock != null and dock.top() > 0 else 720.0
 
 

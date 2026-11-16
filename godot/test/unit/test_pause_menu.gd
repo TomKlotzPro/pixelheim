@@ -5,9 +5,6 @@ extends GutTest
 ## again over the menu on the row they were left on (PIX-428). Runs against
 ## a throwaway user:// folder, with no hero in hand to save.
 
-const PauseScreen := preload("res://scripts/pause_screen.gd")
-const OptionsScreen := preload("res://scripts/options_screen.gd")
-const TitleScreen := preload("res://scripts/title_screen.gd")
 const DIR := "user://test_pause_menu"
 
 var _kept: SaveSlots

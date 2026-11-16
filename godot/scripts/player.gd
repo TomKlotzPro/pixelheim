@@ -1,3 +1,4 @@
+class_name Player
 extends CharacterBody2D
 ## areas: combat town title
 ## The action hero, drawn from Shade's Puny sheet for the hero's role
@@ -34,7 +35,7 @@ const STRIKE_FRAMES := {"sword": [1, 2], "staff": [1, 2], "bow": [2, 3]}
 ## waiting for them (PIX-439); only the last press does.
 const PRESS_KEPT_SECONDS := 0.15
 
-var world: Node2D
+var world: World
 ## Mirrors GameState.hero.hp, the web hero's real health (PIX-126).
 var hp := 0
 var facing := Vector2.DOWN

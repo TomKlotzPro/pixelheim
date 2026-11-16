@@ -7,7 +7,6 @@ extends GutTest
 ## they happened. The heads are read off the art here, apart from Ink, so the
 ## two check each other.
 
-const Npc := preload("res://scripts/npc.gd")
 const Enemy := preload("res://scripts/enemy.gd")
 
 

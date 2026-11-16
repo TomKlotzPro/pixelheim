@@ -9,8 +9,8 @@ extends RefCounted
 ## flags it was given in their order, awaiting each.
 
 ## The harness (harness.gd): its tree, its key presses and what's open.
-var h: Node
-var world: Node
+var h: Harness
+var world: World
 var flags: HarnessFlags
 ## The report line's fields; a value known only part-way through is noted
 ## as it's known.
@@ -30,7 +30,7 @@ func step_rankup() -> void:
 	else:
 		await h.get_tree().create_timer(1.6).timeout
 	if flags.has("walk-path"):
-		world.get_children().filter(func(node: Node) -> bool: return node.has_method("_walk"))[0]._walk()
+		h._ascension()._walk()
 		await h.get_tree().create_timer(0.3).timeout
 
 
@@ -68,7 +68,7 @@ func step_create() -> void:
 ## (PIX-392), before any keys.
 func step_title() -> void:
 	if flags.has("--title-at"):
-		var title: Node = world.get_children().filter(func(node: Node) -> bool: return node.has_method("_whats_new"))[0]
+		var title := _title()
 		var at := float(flags.value("--title-at"))
 		while title.entrance != null and title.entrance.t < at:
 			await h.get_tree().process_frame
@@ -82,7 +82,7 @@ func step_whatsnew() -> void:
 	if not flags.has("title"):
 		return
 	# What's new over the title, as the version line opens it.
-	world.get_children().filter(func(node: Node) -> bool: return node.has_method("_whats_new"))[0]._whats_new()
+	_title()._whats_new()
 	await h.get_tree().create_timer(0.3).timeout
 
 
@@ -95,7 +95,7 @@ func step_pause() -> void:
 func step_options() -> void:
 	if flags.has("title"):
 		# Options over the title, before any hero is made.
-		world.get_children().filter(func(node: Node) -> bool: return node.has_method("_whats_new"))[0]._options()
+		_title()._options()
 		await h.get_tree().create_timer(0.3).timeout
 	else:
 		await _pause_menu()
@@ -113,7 +113,7 @@ func step_inventory() -> void:
 	world.open_inventory()
 	# `--tab N` opens another tab (7 is Craft).
 	if flags.has("--tab"):
-		world.get_children().filter(func(node: Node) -> bool: return node.has_method("_craft_rows"))[-1]._switch(int(flags.value("--tab")))
+		(world.get_children().filter(func(node: Node) -> bool: return node is InventoryScreen)[-1] as InventoryScreen)._switch(int(flags.value("--tab")))
 	await h.get_tree().create_timer(0.3).timeout
 
 
@@ -171,7 +171,7 @@ func step_shop() -> void:
 	# keeps, old boots (`--wear iron_sword` leaves the rusty one as junk).
 	GameState.pack.gold = 500
 	GameState.pack.items.merge({"wolf_pelt": 3, "forest_herb": 10, "old_boot": 2})
-	var screen: Node = preload("res://scripts/shop_screen.gd").new()
+	var screen := ShopScreen.new()
 	world.add_child(screen)
 	if flags.has("--tab"):
 		screen._switch(int(flags.value("--tab")))
@@ -225,7 +225,7 @@ const RANK_BEAT_INTO := {"hush": 0.5, "lift": 0.8, "flare": 0.3, "named": 0.45, 
 ## motion playing on), then holds it there for the picture. Asked as the
 ## moment opens, before its first beat.
 func _hold_rank_beat(beat: String) -> void:
-	var opened: Node = h._ascension()
+	var opened := h._ascension()
 	if opened == null:
 		return
 	opened.hold_at(beat)
@@ -274,3 +274,8 @@ func _ledger(ledger: String) -> void:
 			GameState.holdings.investments()["tills"][map_id] = {"gold": 0, "earned": 900, "at": GameState.holdings.steps_now() - 480 * 4}
 	world.add_child(load("res://scripts/%s.gd" % ledger).new())
 	await h.get_tree().create_timer(0.3).timeout
+
+
+## The title over the world.
+func _title() -> TitleScreen:
+	return world.get_children().filter(func(node: Node) -> bool: return node is TitleScreen)[0]

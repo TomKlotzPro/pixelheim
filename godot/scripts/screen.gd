@@ -176,13 +176,13 @@ func dim(alpha := UiStyle.BACKDROP.a) -> ColorRect:
 ## title, key or caption stands on them. Counted like the holds: it comes
 ## back, as it was, when the last of them goes.
 func _put_hud_aside() -> void:
-	var scene := get_tree().current_scene
-	var hud: Variant = scene.get("hud") if scene != null else null
-	if _aside or not hud is Hud or (hud as Hud).root == null:
+	var scene := get_tree().current_scene as World
+	var hud: Hud = scene.hud if scene != null else null
+	if _aside or hud == null or hud.root == null:
 		return
 	_aside = true
 	if _asides == 0:
-		_hud_layer = (hud as Hud).root
+		_hud_layer = hud.root
 		_hud_showed = _hud_layer.visible
 	_asides += 1
 	_hud_layer.visible = false

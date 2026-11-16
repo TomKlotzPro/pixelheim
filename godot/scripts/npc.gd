@@ -1,3 +1,4 @@
+class_name Npc
 extends AnimatableBody2D
 ## areas: town story
 ## A villager: their Puny sheet (PunyArt, PIX-130), a body the hero bumps
@@ -20,7 +21,7 @@ const LOOK_SECONDS := 0.5
 const BENCH: Array[int] = [1659, 1661]
 const BENCH_AT := Vector2(0, 3)
 
-var world: Node2D
+var world: World
 var data: Dictionary
 var home := Vector2i.ZERO
 ## The tile the villager occupies (or is stepping onto).

@@ -120,11 +120,7 @@ func test_a_bolt_lands_in_the_blows_time() -> void:
 ## (PIX-221): only the soft burst gives way to them.
 func test_the_ground_is_lit_under_the_strips() -> void:
 	var fx: WorldFx = add_child_autofree(WorldFx.new())
-	var stub := GDScript.new()
-	stub.source_code = "extends Node2D\nvar lights = null\n"
-	stub.reload()
-	fx.world = autofree(Node2D.new())
-	fx.world.set_script(stub)
+	fx.world = autofree(preload("res://test/bare_world.gd").new())
 	for glow: bool in [false, true]:
 		var before := fx.get_child_count()
 		fx.skill_flash(Vector2.ZERO, Color.ORANGE, glow)

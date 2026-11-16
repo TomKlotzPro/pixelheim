@@ -8,8 +8,8 @@ extends RefCounted
 ## flags it was given in their order, awaiting each.
 
 ## The harness (harness.gd): its tree, its key presses and what's open.
-var h: Node
-var world: Node
+var h: Harness
+var world: World
 var flags: HarnessFlags
 ## The report line's fields; a value known only part-way through is noted
 ## as it's known.
@@ -87,8 +87,9 @@ func step_station() -> void:
 	world.player.face(Vector2.UP)
 	world.interaction.interact()
 	await h.get_tree().create_timer(0.3).timeout
-	var counters: Array = world.get_children().filter(func(node: Node) -> bool: return node.has_method("_craft_job"))
-	report.note("tab", counters[-1].tabs[counters[-1].tab] if not counters.is_empty() else "none")
+	var counters: Array = world.get_children().filter(func(node: Node) -> bool: return node is ShopScreen)
+	var counter: ShopScreen = counters[-1] if not counters.is_empty() else null
+	report.note("tab", counter.tabs[counter.tab] if counter != null else "none")
 
 
 func step_sleep() -> void:
@@ -139,7 +140,7 @@ func _lineup() -> void:
 	var y := 0
 	for row: Array in rows:
 		for line in range(0, row.size(), 20):
-			for dir in ["down", "right"]:
+			for dir: String in ["down", "right"]:
 				var x := 0
 				for entry: Array in row.slice(line, line + 20):
 					var spec: Dictionary = entry[1]

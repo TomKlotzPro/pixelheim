@@ -20,7 +20,7 @@ const SETTLE_MOST_S := 4.0
 const SINK_SHAKE := 3.0
 const SINK_SHAKE_S := 0.3
 
-var world: Node
+var world: World
 ## The way out rising where a boss fell (PIX-339), while this visit lasts;
 ## `waiting` from the fall until it begins.
 var rise: StairRise
@@ -80,7 +80,7 @@ func _rise(fell: Vector2i, door: Dictionary, boss: Node) -> void:
 	rise.sinking.connect(func() -> void:
 		world.camera_rig.shake(SINK_SHAKE, SINK_SHAKE_S)
 		if not rise.still:
-			for across in [-6, 0, 6]:
+			for across: int in [-6, 0, 6]:
 				world.fx.dust(MapView.center(cell) + Vector2(across, 4)))
 	rise.risen.connect(func() -> void:
 		world.view.sign_way_out(cell)

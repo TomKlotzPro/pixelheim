@@ -1,3 +1,4 @@
+class_name MapScreen
 extends Screen
 ## areas: travel
 ## The map screen (M/Tab): a map in a window, painted with the tiles' map
@@ -37,7 +38,7 @@ const PAGE_AT := Vector2(UiStyle.TITLE_AT.x, 72)
 ## How far up or down reads the list while there's nothing to choose.
 const SCROLL_STEP := 60
 
-var world: Node2D
+var world: World
 ## The chosen open waypoint, by its place in `usable`; -1 while none is
 ## (none on the page shown, and choosing one turns the page).
 var selected := -1
@@ -215,7 +216,8 @@ func _command(event: InputEvent) -> Callable:
 ## A click on the card already chosen (pointing at it chose it) travels;
 ## on another (a tap, with no pointer to hover) it chooses that one first.
 func _on_card_input(event: InputEvent, index: int) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	var click := event as InputEventMouseButton
+	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 		get_viewport().set_input_as_handled()
 		if index == selected:
 			_travel()
@@ -501,7 +503,7 @@ class Painting extends Control:
 	const PLATE_DARK := 0.6
 	const PLATE_LIGHT := 0.72
 	const LIGHT_GROUND := 0.5
-	var world: Node2D
+	var world: World
 	## The page shown, by the map it's named for: the hero's map, or another
 	## the hero has found (the Ashenreach for the Reach's page).
 	var map: MapData
@@ -543,9 +545,9 @@ class Painting extends Control:
 
 	## The villagers here with a word for the hero (PIX-171): a quest to
 	## offer, or one ready to turn in.
-	static func givers(on: Node2D) -> Array[Node]:
-		var out: Array[Node] = []
-		for villager in on.get_tree().get_nodes_in_group("npcs"):
+	static func givers(on: Node2D) -> Array[Npc]:
+		var out: Array[Npc] = []
+		for villager: Npc in on.get_tree().get_nodes_in_group("npcs"):
 			if not villager.away and Quests.awaits_word(villager.data["id"], GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open):
 				out.append(villager)
 		return out
@@ -934,7 +936,7 @@ class Painting extends Control:
 	## The HUD's lead `which` ("bearing", or "story" behind it), or {} where
 	## there's no saying: no HUD, no page, the quest marks turned off.
 	func _lead(which: String) -> Dictionary:
-		var hud: Variant = world.get("hud") if world != null else null
+		var hud: Hud = world.hud if world != null else null
 		if hud == null or map == null or not GameState.settings.quest_marks:
 			return {}
 		var lead: Variant = hud.get(which)
@@ -948,7 +950,7 @@ class Painting extends Control:
 		if lead.is_empty():
 			return Bearing.NOWHERE
 		if home and String(lead["who"]) != "":
-			for villager in world.get_tree().get_nodes_in_group("npcs"):
+			for villager: Npc in world.get_tree().get_nodes_in_group("npcs"):
 				if not villager.away and String(villager.data.get("id", "")) == lead["who"]:
 					return Vector2i((villager.position / 16.0).floor()) + at_of(world.map.id)
 		var to := String(lead["map_id"])
@@ -1005,7 +1007,7 @@ class Painting extends Control:
 
 	func _person_cell(npc_id: String) -> Vector2i:
 		if home:
-			for villager in world.get_tree().get_nodes_in_group("npcs"):
+			for villager: Npc in world.get_tree().get_nodes_in_group("npcs"):
 				if not villager.away and String(villager.data.get("id", "")) == npc_id:
 					return Vector2i((villager.position / 16.0).floor()) + at_of(world.map.id)
 		var at := Post.spot(npc_id, GameState.progression, GameState.settlement)

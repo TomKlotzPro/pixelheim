@@ -7,10 +7,10 @@ extends Node
 ## the town's reveals after the board, an escort's wagon and the clock of a
 ## quest against time. The screens and scenes it plays stand on the world.
 
-var world: Node
+var world: World
 ## An escort under way on this map (PIX-192): its wagon waits at the start
 ## of the route, or comes back there a few breaths after it was lost.
-var escort: Node2D
+var escort: Escort
 var escort_lost_at := -100.0
 ## A quest against the clock (PIX-192): its time ticks while the world runs,
 ## shown top right, red in its last half minute; a lapse closes the chest the

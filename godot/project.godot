@@ -27,6 +27,19 @@ boot_splash/use_filter=false
 GameState="*res://scripts/state/game_state.gd"
 Sound="*res://scripts/sound.gd"
 
+[debug]
+
+; The checker says where a script reaches for something it can't see
+; (PIX-499): a property or a method the type doesn't have, a value handed on
+; as a narrower type, a `for` with no type. Warnings, counted in the editor
+; and by its language server; they become errors only once none is left.
+; Most of what's left reads the game's dictionaries (`int(hero["hp"])` is
+; an unsafe argument to the checker) or a foe, whose script has no class yet.
+gdscript/warnings/untyped_declaration=1
+gdscript/warnings/unsafe_property_access=1
+gdscript/warnings/unsafe_method_access=1
+gdscript/warnings/unsafe_call_argument=1
+
 [display]
 
 window/size/viewport_width=1280

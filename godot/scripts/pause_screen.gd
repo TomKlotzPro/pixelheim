@@ -1,3 +1,4 @@
+class_name PauseScreen
 extends Screen
 ## areas: screen
 ## The Escape menu (PauseMenu.tsx): resume, the saves (slots and codes),
@@ -6,7 +7,7 @@ extends Screen
 
 const Options := preload("res://scripts/options_screen.gd")
 
-var world: Node
+var world: World
 var options: Array[Dictionary] = []
 var selected := 0
 var menu: VBoxContainer

@@ -5,7 +5,6 @@ extends GutTest
 ## the walking hero's screen is still more than half a second from it.
 
 const Enemy := preload("res://scripts/enemy.gd")
-const Player := preload("res://scripts/player.gd")
 ## The screen at play zoom: 1280x720 over three.
 const VIEW := Rect2(0, 0, 1280.0 / 3.0, 240)
 

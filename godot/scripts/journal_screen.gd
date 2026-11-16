@@ -1,3 +1,4 @@
+class_name JournalScreen
 extends Screen
 ## areas: quest
 ## The journal (Journal.tsx; PIX-171, redone for PIX-239 after Tom's
@@ -32,7 +33,6 @@ extends Screen
 ## Q or Esc closes it.
 ## The world holds still while it is open.
 
-const BountyScreen := preload("res://scripts/bounty_screen.gd")
 ## The Post's tab (PIX-320) and the courier's book's (PIX-321) show once
 ## the Post is open (`_tabs`).
 const TABS := ["quests", "letters", "post", "book", "feats"]
@@ -153,7 +153,8 @@ func _switch_to(id: String) -> void:
 
 ## A click on a tab opens it.
 func _on_tab_input(event: InputEvent, id: String) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	var click := event as InputEventMouseButton
+	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 		get_viewport().set_input_as_handled()
 		_switch_to(id)
 
@@ -346,7 +347,8 @@ func _card(index: int, heading: Control) -> Control:
 
 
 func _on_row_input(event: InputEvent, index: int) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	var click := event as InputEventMouseButton
+	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 		get_viewport().set_input_as_handled()
 		_follow(index)
 
@@ -416,17 +418,16 @@ func _mark_rows() -> void:
 ## The HUD looks again now - the line above the dock, the arrow, the map's
 ## goal - rather than at its next half-second.
 func _tell_hud() -> void:
-	var hud: Variant = _hud()
+	var hud := _hud()
 	if hud != null:
 		hud.look_again()
 
 
 ## The world's HUD (the journal stands on the world), or null where there's
 ## none (a test's stand-in).
-func _hud() -> Variant:
-	var world := get_parent()
-	var hud: Variant = world.get("hud") if world != null else null
-	return hud if hud is Object and (hud as Object).get("bearing") is Dictionary else null
+func _hud() -> Hud:
+	var world := get_parent() as World
+	return world.hud if world != null else null
 
 
 ## The top: what you're on now, as the line above the dock says it, on one
@@ -454,8 +455,8 @@ func _fill_now() -> void:
 	# On the night of the fire the line above the dock is the night's.
 	if progression.prologue != Prologue.DONE:
 		# A bucket in hand says so here too (PIX-461), as the dock's line does.
-		var interaction: Variant = get_parent().get("interaction") if get_parent() != null else null
-		var bucket: bool = interaction is Object and bool((interaction as Object).get("prologue_bucket"))
+		var world := get_parent() as World
+		var bucket: bool = world != null and world.interaction != null and world.interaction.prologue_bucket
 		step = Prologue.objective(progression.prologue, progression.prologue_doused.size(), GameState.questing.first_skill_heals(), bucket)
 		place = ""
 		progress = ""
@@ -697,7 +698,8 @@ func _place_row(index: VBoxContainer, place: String) -> PanelContainer:
 	var count := Post.delivered_at(post, place).size()
 	line.add_child(UiStyle.label(str(count) if count > 0 else "-", 14, UiStyle.FADED))
 	row.gui_input.connect(func(event: InputEvent) -> void:
-		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var click := event as InputEventMouseButton
+		if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 			get_viewport().set_input_as_handled()
 			_open_place(places.find(place)))
 	index.add_child(row)
@@ -787,7 +789,7 @@ func _recipe_line(recipe_id: String) -> String:
 ## until the last is in view (then W turns back at once, not after the ones
 ## it couldn't).
 func _turn(by: int) -> void:
-	var bottom := int(pages[0].get_parent().size.y - scroll.size.y)
+	var bottom := int((pages[0].get_parent() as Control).size.y - scroll.size.y)
 	if by > 0 and scroll.scroll_vertical >= bottom:
 		return
 	from = clampi(from + by, 0, pages.size() - 1)

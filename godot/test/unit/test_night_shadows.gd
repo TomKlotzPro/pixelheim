@@ -302,8 +302,7 @@ func _flames(view: MapView) -> Array[PointLight2D]:
 
 
 class _World:
-	extends Node2D
-	var view: MapView
+	extends "res://test/bare_world.gd"
 
 
 func _shadowed() -> int:

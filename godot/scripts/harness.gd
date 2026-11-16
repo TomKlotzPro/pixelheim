@@ -1,3 +1,4 @@
+class_name Harness
 extends Node
 ## areas: all
 ## The agent verification harness, loaded only for `--screenshot` runs
@@ -15,7 +16,7 @@ extends Node
 ## The device id the harness stamps on the keys it presses (`--keys`).
 const DEVICE := 77
 
-var world: Node
+var world: World
 ## `--draw-every N` (PIX-276): a windowed run draws one frame in N, and
 ## every frame where it reads the screen (the motion check's walk, the
 ## picture at the end). Stepped (tools/flows.sh), the game is the same
@@ -101,8 +102,8 @@ func _tap(keycode: Key, button := JOY_BUTTON_INVALID) -> void:
 
 
 ## The villager `id` standing on this map, or null when they aren't here.
-func _villager(id: String) -> Node:
-	for villager in get_tree().get_nodes_in_group("npcs"):
+func _villager(id: String) -> Npc:
+	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
 		if not villager.away and String(villager.data.get("id", "")) == id:
 			return villager
 	return null
@@ -156,9 +157,9 @@ func _rise() -> RebuildRise:
 
 
 ## The ascension (PIX-244), while it's open.
-func _ascension() -> Node:
+func _ascension() -> RankupScreen:
 	for node in world.get_children():
-		if node.get_script() == preload("res://scripts/rankup_screen.gd"):
+		if node is RankupScreen:
 			return node
 	return null
 

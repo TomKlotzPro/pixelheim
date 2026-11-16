@@ -8,7 +8,6 @@ extends GutTest
 ## far enough away.
 
 const Enemy := preload("res://scripts/enemy.gd")
-const Escort := preload("res://scripts/escort.gd")
 const TILE := 16.0
 
 

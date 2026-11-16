@@ -1,3 +1,4 @@
+class_name PlayBridge
 extends Node
 ## areas: none
 ## The bridge tools/play.py plays the web build through (PIX-423): an agent's
@@ -22,7 +23,6 @@ extends Node
 ## a fade or a reload the keys set off (`fading` if one outlasts settle_ticks),
 ## then for that frame to be drawn, so `look`'s state and picture agree.
 
-const Harness := preload("res://scripts/harness.gd")
 ## A tap is held this many ticks, and the keys of a step let go this many
 ## before the next, as harness.gd's _tap: a screen that ignores the press
 ## that opened it would miss the next.
@@ -147,13 +147,14 @@ func _ticks(count: int) -> void:
 ## music's hush, a screen that asked for a reload (Screen.reload_world), no
 ## world at all between two, or the title's veil lifting after one.
 func fading() -> bool:
-	var world := get_tree().current_scene
-	if world == null:
+	var scene := get_tree().current_scene
+	if scene == null:
 		return _had_world
 	_had_world = true
-	if world.get("_passing") == true:
+	var world := scene as World
+	if world != null and world._passing:
 		return true
-	var hud: Variant = world.get("hud")
+	var hud: Hud = world.hud if world != null else null
 	if hud != null and hud.root != null and hud.root.get_children().any(func(node: Node) -> bool: return node is ColorRect and node.has_meta("fade")):
 		return true
 	return Screen._shown.any(func(screen: Screen) -> bool: return is_instance_valid(screen) and (
@@ -194,15 +195,14 @@ func state() -> Dictionary:
 		"paused": get_tree().paused, "seconds": snappedf(GameClock.seconds(), 0.01),
 		"played": snappedf(_played / float(Engine.physics_ticks_per_second), 0.01), "fading": fading(),
 	}
-	var world := get_tree().current_scene
-	if world == null or world.get("hud") == null or world.map == null:
+	var world := get_tree().current_scene as World
+	if world == null or world.hud == null or world.map == null:
 		return said
-	var hud: Hud = world.hud
-	var cell: Vector2i = world.player_cell
+	var hud := world.hud
+	var cell := world.player_cell
 	said["map"] = world.map.id
 	said["cell"] = [cell.x, cell.y]
-	var player: Variant = world.get("player")
-	said["ailments"] = player.ailments.kinds() if player != null else []
+	said["ailments"] = world.player.ailments.kinds() if world.player != null else []
 	var open: PackedStringArray = []
 	var text: PackedStringArray = []
 	var focus: Array = []
@@ -234,7 +234,7 @@ func state() -> Dictionary:
 	# Who to talk to (PIX-435: finding a villager took 40 calls) and the
 	# ways in and out, as near as the foes.
 	var folk: Array = []
-	for npc in get_tree().get_nodes_in_group("npcs"):
+	for npc: Npc in get_tree().get_nodes_in_group("npcs"):
 		var at := Vector2i((npc.global_position / MapView.TILE).floor())
 		if not npc.away and npc.visible and maxi(absi(at.x - cell.x), absi(at.y - cell.y)) <= NEAR:
 			folk.append({"name": tr(String(npc.data.get("name", ""))), "cell": [at.x, at.y]})

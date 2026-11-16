@@ -8,21 +8,20 @@ const TILE := 16.0
 const Enemy := preload("res://scripts/enemy.gd")
 
 
-class StubHud extends RefCounted:
+class StubHud extends Hud:
 	func plates_over() -> Array[Rect2]:
 		return []
 
 
-## What Foes' pass over the words asks of the world.
-class StubWorld extends Node2D:
-	var player := Node2D.new()
-	var map: RefCounted = null
-	## Out of the tree: it has no world to follow.
-	var camera_rig := CameraRig.new()
-	var fx := WorldFx.new()
-	var hud := StubHud.new()
-
+## What Foes' pass over the words asks of the world. The camera and the HUD
+## stand out of the tree (the camera has no world to follow): the bare world
+## frees them with itself.
+class StubWorld extends "res://test/bare_world.gd":
 	func _init() -> void:
+		player = preload("res://test/bare_hero.gd").new()
+		camera_rig = CameraRig.new()
+		fx = WorldFx.new()
+		hud = StubHud.new()
 		for part: Node in [player, fx]:
 			add_child(part)
 

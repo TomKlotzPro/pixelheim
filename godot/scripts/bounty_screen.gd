@@ -1,4 +1,5 @@
-extends "res://scripts/ledger_screen.gd"
+class_name BountyScreen
+extends LedgerScreen
 ## areas: quest
 ## The bounty board on the square (PIX-156): the named monsters posted so far,
 ## the wanted first, then the slain. The card tells the chosen one's tale,

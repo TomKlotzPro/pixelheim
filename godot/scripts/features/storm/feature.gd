@@ -33,8 +33,8 @@ func layers() -> Dictionary[String, MapLayer]:
 ## `--strike now|held|<n>`: lightning strikes close by, now; `held` holds
 ## its flash at its brightest for the shot; a number strikes that many
 ## times at once, which the cap cuts to Weather.FLASH_CAP flashes.
-func step_strike(h: Node) -> void:
-	var storm: Node = h.world.storm
+func step_strike(h: Harness) -> void:
+	var storm: Storm = h.world.storm
 	var asked := String(h.flags.value("--strike"))
 	for i in maxi(1, int(asked)):
 		storm.strike({"gap": 0.0, "far": 0.1, "flashes": 1, "from": -0.6})
@@ -47,7 +47,7 @@ func step_strike(h: Node) -> void:
 # --- The report's fields, by name ---------------------------------------------
 
 func field_storm(report: HarnessReport) -> String:
-	var storm: Node = report.world.get("storm")
+	var storm: Storm = report.world.storm
 	if storm == null or (storm.storm <= 0.0 and storm.wet <= 0.0 and storm.puddles <= 0.0 and storm.flashes == 0):
 		return ""
 	return "%srain %.1f flashes %d puddles %d wet %.1f%s%s" % ["inside " if storm.inside else "", storm.storm, storm.flashes,

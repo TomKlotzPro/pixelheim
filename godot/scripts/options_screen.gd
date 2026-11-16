@@ -1,3 +1,4 @@
+class_name OptionsScreen
 extends Screen
 ## areas: screen
 ## Options (Options.tsx): sound (music, effects and ambience, PIX-411), the
@@ -11,7 +12,7 @@ extends Screen
 ## the title or the pause menu opens them again there. -1: none.
 static var back_at := -1
 
-var world: Node
+var world: World
 var rows: Array[Dictionary] = []
 var selected := 0
 ## The action waiting for its new key, "" when none.
@@ -175,7 +176,8 @@ func _choosable() -> Array[int]:
 
 
 func _on_row_click(event: InputEvent, index: int) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	var click := event as InputEventMouseButton
+	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 		selected = _choosable().find(index)
 		_act(1)
 
@@ -183,10 +185,11 @@ func _on_row_click(event: InputEvent, index: int) -> void:
 func _input(event: InputEvent) -> void:
 	# While a rebind is armed the next key is the binding, before anything
 	# else can take it (Escape cancels).
-	if listening == "" or not (event is InputEventKey) or not event.pressed or event.echo:
+	var pressed := event as InputEventKey
+	if listening == "" or pressed == null or not pressed.pressed or pressed.echo:
 		return
 	get_viewport().set_input_as_handled()
-	var key: int = event.physical_keycode if event.physical_keycode != 0 else event.keycode
+	var key: int = pressed.physical_keycode if pressed.physical_keycode != 0 else pressed.keycode
 	# A key with a fixed job keeps it (PIX-201): one key, one thing.
 	var taken := Controls.fixed_use(key, listening)
 	if key != KEY_ESCAPE and taken != "":

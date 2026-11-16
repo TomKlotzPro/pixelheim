@@ -24,7 +24,7 @@ var over := false
 ## Each second (world.gd): Lantern Night's festival begun, and his pass
 ## played once the hero is on the Reach after dark with a lamp built there
 ## to light. Harness runs skip it but with `--lantern fly`.
-static func watch(world: Node) -> void:
+static func watch(world: World) -> void:
 	if world.harness and HarnessFlags.given().value("--lantern") != "fly":
 		return
 	var day := Gathering.day_of(GameState.world.steps)
@@ -41,7 +41,7 @@ static func watch(world: Node) -> void:
 		play(world, day)
 
 
-static func play(world: Node, day: int) -> void:
+static func play(world: World, day: int) -> void:
 	var moment := LanternPass.new()
 	moment.view = world.view
 	moment.day = day

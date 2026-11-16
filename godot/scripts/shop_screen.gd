@@ -1,3 +1,4 @@
+class_name ShopScreen
 extends Screen
 ## areas: trade
 ## A keeper's counter (talk to anyone in a shop): Buy, Sell, the Forge at the
@@ -402,7 +403,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				})
 			var picked_here := trade.owned_shop_map(shop_id) != ""
 			var stock: Array = Economy.shop_stock(shop_id, trade.stock_stage(), GameState.town_tier())
-			for item_id in trade.shop_wares(shop_id):
+			for item_id: Variant in trade.shop_wares(shop_id):
 				var price := trade.price_of(item_id)
 				# What only Pixelheim sells, since the age that brought it (PIX-159).
 				var signature: bool = Catalog.item(item_id).get("signature", false)
@@ -596,7 +597,7 @@ func _refresh() -> void:
 		var index := selected
 		var reveal := func() -> void:
 			if index < lists[side].get_child_count():
-				scrolls[side].ensure_control_visible(lists[side].get_child(index))
+				scrolls[side].ensure_control_visible(lists[side].get_child(index) as Control)
 		reveal.call_deferred()
 
 
@@ -860,12 +861,13 @@ static func _coins(row: HBoxContainer, words: String, sum: int, color: Color) ->
 
 
 func _on_row_input(event: InputEvent, tab_name: String, index: int) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	var click := event as InputEventMouseButton
+	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 		# A row of the list beside the chosen one: its tab first.
 		if tab_name != tabs[tab]:
 			_switch(tabs.find(tab_name))
 			_select(index)
-		elif event.double_click and index == selected:
+		elif click.double_click and index == selected:
 			_act()
 		else:
 			_select(index)

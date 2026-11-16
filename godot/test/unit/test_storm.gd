@@ -4,7 +4,6 @@ extends GutTest
 ## shape hard and soft, the thunder's delay, how the ground wets and dries
 ## and the puddles fill; the Storm node's strikes; where puddles may lie.
 
-const Storm := preload("res://scripts/storm.gd")
 const DAY := float(DayNight.DAY_CYCLE_STEPS)
 
 var _flashes := true
@@ -172,7 +171,7 @@ func test_thunder_follows_by_the_strikes_distance() -> void:
 
 ## A Storm on a bare world, not running by itself.
 func _storm() -> Node:
-	var world := Node2D.new()
+	var world: World = preload("res://test/bare_world.gd").new()
 	add_child_autofree(world)
 	var storm: Node = Storm.new()
 	storm.world = world

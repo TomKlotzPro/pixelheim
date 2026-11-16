@@ -1,3 +1,4 @@
+class_name SavesScreen
 extends Screen
 ## areas: save
 ## The saves screen (Esc, and Saves on the title): the heroes you have, in
@@ -127,8 +128,9 @@ func _command(event: InputEvent) -> Callable:
 	# nothing, it closes.
 	if pending != "" and _closes_on(event):
 		return _keep
-	if event is InputEventKey and event.pressed and not event.echo:
-		match event.physical_keycode:
+	var key := event as InputEventKey
+	if key != null and key.pressed and not key.echo:
+		match key.physical_keycode:
 			KEY_D:
 				return _duplicate
 			KEY_X:
@@ -149,8 +151,9 @@ func _select(index: int) -> void:
 
 
 func _on_card_input(event: InputEvent, index: int) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.double_click and index == selected:
+	var click := event as InputEventMouseButton
+	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
+		if click.double_click and index == selected:
 			_continue()
 		else:
 			_select(index)

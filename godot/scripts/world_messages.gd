@@ -9,7 +9,7 @@ extends Node
 ## where these always stood among its pieces; world.gd calls update() each
 ## frame.
 
-var world: Node
+var world: World
 ## The battle log's lines (bottom-left, over the dock).
 var log_box: VBoxContainer
 ## The message's plate and its tag (PIX-194): "Quest accepted", "Level up"...
@@ -245,13 +245,13 @@ func _say(entry: Dictionary) -> void:
 ## and the level's plate came up under its Victory card, LEVEL UP rising
 ## over the hero already said it). No world (a test's): never.
 func _fighting() -> bool:
-	if world == null or world.get("foes") == null:
+	if world == null or world.foes == null:
 		return false
 	return world.foes.in_fight(Foes.CALM_S) or _card_up()
 
 
 func _card_up() -> bool:
-	return world != null and world.get("hud") != null and world.hud.card_up()
+	return world != null and world.hud != null and world.hud.card_up()
 
 
 ## The message's plate, shrunk round its words (a container only grows).
@@ -428,7 +428,7 @@ func _drop_past() -> void:
 	for entry: Dictionary in _log.showing + _log.waiting:
 		var past := false
 		if entry.has("hint"):
-			past = world != null and world.get("hud") != null and not world.hud.hint_there(entry["hint"])
+			past = world != null and world.hud != null and not world.hud.hint_there(entry["hint"])
 		elif entry.has("at"):
 			var holds: Callable = entry["holds"]
 			past = (not holds.is_null() and not (holds.is_valid() and holds.call())) \

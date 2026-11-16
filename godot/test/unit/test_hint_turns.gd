@@ -17,9 +17,8 @@ const PLATE_LINES := 2
 
 
 ## Foes as the HUD asks them: the boss hunting the hero, and since when.
-class FakeFoes extends RefCounted:
+class FakeFoes extends Foes:
 	var boss: Node = null
-	var boss_noticed_at := -100.0
 	## A foe still on the map (Foes.about).
 	var left := true
 
@@ -34,20 +33,15 @@ class FakeFoes extends RefCounted:
 
 
 ## What rises over the world, as far as it may yet go (WorldFx.reach).
-class FakeFx extends RefCounted:
+class FakeFx extends WorldFx:
 	var rising: Array[Rect2] = []
 
 	func reach() -> Array[Rect2]:
 		return rising
 
 
-## The map the hero is on, by its id.
-class FakeMap extends RefCounted:
-	var id := "town"
-
-
 ## What the camera has on the screen, all or nothing, the dock at the foot.
-class FakeCamera extends RefCounted:
+class FakeCamera extends CameraRig:
 	var sees := true
 
 	func in_view(_at: Vector2, _margin := 0.0) -> bool:
@@ -57,13 +51,15 @@ class FakeCamera extends RefCounted:
 		return 720.0
 
 
-class FakeWorld extends Node:
-	var foes := FakeFoes.new()
-	var fx := FakeFx.new()
-	var map := FakeMap.new()
-	var camera_rig := FakeCamera.new()
-	var messages: Messages = null
-	var hud: Hud = null
+## Its foes, its floats and its camera stand nowhere in the tree: the bare
+## world frees them with itself. The map the hero is on is read by its id.
+class FakeWorld extends "res://test/bare_world.gd":
+	func _init() -> void:
+		foes = FakeFoes.new()
+		fx = FakeFx.new()
+		map = MapData.new()
+		map.id = "town"
+		camera_rig = FakeCamera.new()
 
 
 var world: FakeWorld
@@ -441,7 +437,7 @@ func _plate_lines(text: String) -> int:
 func test_on_a_phone_the_log_starts_past_the_stick() -> void:
 	hud.sky_overlay = ColorRect.new()
 	hud.root.add_child(hud.sky_overlay)
-	hud.hurt_edge = TextureRect.new()
+	hud.hurt_edge = HurtEdge.new()
 	hud.root.add_child(hud.hurt_edge)
 	Touch.forced = true
 	hud.place()

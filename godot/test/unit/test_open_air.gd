@@ -3,7 +3,6 @@ extends GutTest
 ## where the water lies for the foam and the reflections, cloud shadows only
 ## under the sky, and the world's clock, which stops with reduced motion.
 
-const LightRig := preload("res://scripts/light_rig.gd")
 
 var _reduce_motion: bool
 

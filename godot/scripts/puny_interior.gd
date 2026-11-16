@@ -196,19 +196,19 @@ static func interiors() -> Dictionary:
 static func reserved(data: MapData, placed: Array) -> Dictionary:
 	var out := {data.spawn: true}
 	for cell: Vector2i in data.portals:
-		for step in [Vector2i.ZERO, Vector2i.UP, Vector2i.UP * 2]:
+		for step: Vector2i in [Vector2i.ZERO, Vector2i.UP, Vector2i.UP * 2]:
 			out[cell + step] = true
 	for npc: Dictionary in Npcs.townsfolk():
 		if npc.get("mapId", "") == data.id:
 			var at := Vector2i(int(npc["x"]), int(npc["y"]))
-			for step in [Vector2i.ZERO, Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
+			for step: Vector2i in [Vector2i.ZERO, Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
 				out[at + step] = true
 	# A stairwell's carpet and the floor before it: the way down stays clear
 	# to walk up to (PIX-256).
 	for cell: Vector2i in data.grid:
 		if data.grid[cell] == "stairwell":
-			for dy in [-1, 0, 1, 2]:
-				for dx in [-1, 0, 1]:
+			for dy: int in [-1, 0, 1, 2]:
+				for dx: int in [-1, 0, 1]:
 					out[cell + Vector2i(dx, dy)] = true
 	for piece: Dictionary in placed:
 		out[Vector2i(int(piece["x"]), int(piece["y"]))] = true
@@ -384,8 +384,8 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 		if grid[cell] != "wall" or standing.has(cell):
 			continue
 		var touches := false
-		for dy in [-1, 0, 1]:
-			for dx in [-1, 0, 1]:
+		for dy: int in [-1, 0, 1]:
+			for dx: int in [-1, 0, 1]:
 				if inside.call(cell + Vector2i(dx, dy)):
 					touches = true
 		if touches:
@@ -472,8 +472,8 @@ static func plan_free(map_id: String, grid: Dictionary) -> Dictionary:
 		if grid[cell] != "wall":
 			continue
 		var touches := false
-		for dy in [-1, 0, 1]:
-			for dx in [-1, 0, 1]:
+		for dy: int in [-1, 0, 1]:
+			for dx: int in [-1, 0, 1]:
 				if inside.call(cell + Vector2i(dx, dy)):
 					touches = true
 		if touches:

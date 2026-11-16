@@ -3,9 +3,6 @@ extends GutTest
 ## showers from the world's clock, where rain may fall, the colour moods,
 ## and what falls over the view.
 
-const Atmosphere := preload("res://scripts/atmosphere.gd")
-const Lookbook := preload("res://scripts/lookbook.gd")
-
 
 func after_each() -> void:
 	GameState.progression.prologue = Prologue.DONE

@@ -80,7 +80,7 @@ func _open() -> void:
 	add_child(tint)
 	ash = _ash()
 	add_child(ash)
-	for top in [true, false]:
+	for top: bool in [true, false]:
 		var bar := _sheet(Color("050308"))
 		bar.size = Vector2(VIEW.x, BAR)
 		bar.position.y = 0 if top else VIEW.y - BAR
@@ -296,7 +296,7 @@ func _path() -> Control:
 				tile = [13, 14][absi(x + y) % 2]
 			PunyTerrain.place(ground, Vector2i(x, y), tile)
 	root.add_child(ground)
-	for x in [60, 240, 1080, 1210]:
+	for x: int in [60, 240, 1080, 1210]:
 		var pine := Sprite2D.new()
 		var region := AtlasTexture.new()
 		region.atlas = load(PunyTerrain.SHEET)

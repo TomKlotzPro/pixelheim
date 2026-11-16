@@ -1,3 +1,4 @@
+class_name CreateScreen
 extends Screen
 ## areas: title
 ## Hero creation (CharacterCreation.tsx): seven roles with their pitch, the
@@ -35,7 +36,7 @@ const FIELD_KEYS := [KEY_UP, KEY_DOWN, KEY_TAB, KEY_PAGEUP, KEY_PAGEDOWN]
 ## the card's columns and its padding, as tall as the roles' page.
 const RIGHT := Rect2(522, 82, 694, 520)
 
-var world: Node
+var world: World
 ## Begin with the Night of Ash, the first night and the tutorial (PIX-197).
 var play_night := true
 ## The first night's two states, Play and Skip (PIX-228): side by side on
@@ -172,7 +173,8 @@ func _night_choice(text: String, value: bool) -> PanelContainer:
 
 
 static func _clicked(event: InputEvent) -> bool:
-	return event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT
+	var click := event as InputEventMouseButton
+	return click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT
 
 
 func _role() -> String:

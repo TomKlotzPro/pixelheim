@@ -11,7 +11,7 @@ extends Node
 ## and a boss's fall. Monsters stand on the world's y-sorted actors layer, in
 ## the "mobs" group.
 
-var world: Node
+var world: World
 ## Monsters at each of the web's visible spawn points: a small pack of the
 ## species that lives there, so the real-time fight has bodies to swing at.
 const PACK_SIZE := 3
@@ -284,7 +284,7 @@ func _process(_delta: float) -> void:
 		return a.global_position.distance_squared_to(hero) < b.global_position.distance_squared_to(hero))
 	var fighting := in_fight()
 	var points: Array[Vector2] = []
-	for enemy in shown:
+	for enemy: Node2D in shown:
 		# A boss is in no pack (nowhere near one): its own tag, over it.
 		points.append(Vector2.INF if fights_like_boss(enemy) else enemy.global_position)
 	var leads: Array = Foes.packs(points, PACK_REACH) if fighting else range(shown.size())
@@ -418,7 +418,7 @@ func _spawn_pack(data: MapData, spawn: Dictionary, asleep := false) -> void:
 	var region := data.region_at(home)
 	var elite_chance := float(Bestiary.region(region)["eliteChance"])
 	var cells: Array[Vector2i] = [home]
-	for offset in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]:
+	for offset: Vector2i in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]:
 		var cell: Vector2i = home + offset
 		if cells.size() < PACK_SIZE and data.is_walkable(cell) and data.region_at(cell) != "" and not data.portals.has(cell):
 			cells.append(cell)

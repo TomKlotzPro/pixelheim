@@ -3,8 +3,6 @@ extends GutTest
 ## each place is, lights that come up with the dark and flicker if they
 ## burn, and the world's words that the dark doesn't touch.
 
-const LightRig := preload("res://scripts/light_rig.gd")
-
 
 func after_each() -> void:
 	GameState.progression.prologue = Prologue.DONE

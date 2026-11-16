@@ -3,7 +3,6 @@ extends GutTest
 ## and the row's stat line (economy/itemStats.ts, printed from the web).
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const InventoryScreen := preload("res://scripts/inventory_screen.gd")
 
 var state: Node
 
