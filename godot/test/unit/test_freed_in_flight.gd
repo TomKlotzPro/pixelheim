@@ -60,7 +60,7 @@ func test_a_freed_foes_line_leaves_the_log_unasked() -> void:
 	assert_true((messages._log.showing + messages._log.waiting).is_empty(), "and not kept waiting")
 
 
-func test_a_line_with_nobody_behind_it_is_still_asked() -> void:
+func test_a_standing_foes_line_is_still_asked() -> void:
 	var hud: CanvasLayer = add_child_autofree(CanvasLayer.new())
 	var messages: Messages = add_child_autofree(Messages.new())
 	messages.build_log(hud)
