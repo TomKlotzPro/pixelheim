@@ -5,7 +5,10 @@ extends GutTest
 ## own pause too, never touching it; not before a harness run's steps are
 ## done; a key Godot doesn't know plays nothing; a name field takes letters
 ## and Backspace; the words read off a screen are the ones a player sees,
-## the chosen ones' apart; and the folk and doors near are listed.
+## the chosen ones' apart; and the folk and doors near are listed. PIX-485:
+## a foe's wind-up by its name, ailments on the hero and each foe, the state
+## read after the tick's own work, a fade waited out or said, and `played`
+## counting no paused tick.
 
 const Bridge := preload("res://scripts/play_bridge.gd")
 const Harness := preload("res://scripts/harness.gd")
@@ -164,11 +167,164 @@ func test_the_chosen_ones_words() -> void:
 	root.free()
 
 
-## The world as state() reads it: its HUD, its map and the hero's cell.
+## The world as state() reads it: its HUD, its map, the hero and their cell.
 class FakeWorld extends Node2D:
 	var hud: Hud
 	var map := MapData.new()
 	var player_cell := Vector2i(10, 10)
+	var player: FakeFighter
+
+
+## A hero or a foe as state() reads one, its brain and its trick too.
+class FakeFighter extends Node2D:
+	var ailments := Ailments.new()
+	var fighter := {}
+	var dying := false
+	var mode := "chase"
+	var guarding := false
+	var aim_left := -1.0
+	var tell_left := -1.0
+	var trick: FakeBrain
+	var brain: FakeBrain
+
+
+class FakeBrain extends Node:
+	var state := ""
+	var telling := ""
+
+
+## A world of fakes as the scene, its HUD bare; _leave() puts the scene back.
+func _enter() -> FakeWorld:
+	var world := FakeWorld.new()
+	world.hud = autofree(Hud.new())
+	world.hud.root = CanvasLayer.new()
+	world.add_child(world.hud.root)
+	world.hud.objective_label = autofree(Label.new())
+	get_tree().root.add_child(world)
+	get_tree().current_scene = world
+	return world
+
+
+func _leave(world: FakeWorld) -> void:
+	get_tree().current_scene = null
+	world.free()
+
+
+## PIX-485 (a fighter spent a dozen looks telling a glow from a chase): a
+## wind-up by its name, where the enemy's own mode says "chase" or "cast".
+func test_a_foes_mode_names_its_wind_up() -> void:
+	var foe: FakeFighter = autofree(FakeFighter.new())
+	assert_eq(Bridge.mode_of(foe), "chase")
+	foe.tell_left = 0.2
+	assert_eq(Bridge.mode_of(foe), "bite", "a bite told")
+	foe.aim_left = 0.4
+	assert_eq(Bridge.mode_of(foe), "aim", "a shooter's glow")
+	foe.guarding = true
+	assert_eq(Bridge.mode_of(foe), "guard", "an undead elite's guard")
+	foe.brain = autofree(FakeBrain.new())
+	foe.brain.telling = "cleave"
+	assert_eq(Bridge.mode_of(foe), "guard", "a move told a while ago is no cast")
+	foe.mode = "cast"
+	assert_eq(Bridge.mode_of(foe), "cleave", "an elite's band")
+	foe.trick = autofree(FakeBrain.new())
+	for named: Array in [["crouch", "crouch"], ["in", "dart"], ["shimmer", "shimmer"], ["gone", "faded"], ["raise", "raise"], ["up", "guard"]]:
+		foe.trick.state = named[0]
+		assert_eq(Bridge.mode_of(foe), named[1], "a trick's " + named[0])
+	foe.mode = "flee"
+	assert_eq(Bridge.mode_of(foe), "flee", "any other mode is the enemy's own")
+	# The brains' own word for it: what an elite and a boss last told.
+	for brain: String in ["elite_brain", "boss_brain"]:
+		assert_eq(autofree(load("res://scripts/%s.gd" % brain).new()).telling, "", brain)
+
+
+## PIX-485 (the hero's poison was read off hp ticks): the ailments on the
+## hero and on each foe, and the foe's wind-up, in the state itself.
+func test_ailments_on_the_hero_and_each_foe() -> void:
+	var world := _enter()
+	world.player = FakeFighter.new()
+	world.add_child(world.player)
+	world.player.ailments.effects.append({"kind": "poison", "turnsLeft": 3, "power": 1})
+	var wolf := FakeFighter.new()
+	wolf.fighter = Bestiary.spawn("wolf")
+	wolf.position = MapView.center(Vector2i(12, 10))
+	wolf.ailments.stun_for(1)
+	wolf.ailments.effects.append({"kind": "burn", "turnsLeft": 2, "power": 1})
+	wolf.trick = FakeBrain.new()
+	wolf.trick.state = "crouch"
+	wolf.add_child(wolf.trick)
+	wolf.add_to_group("mobs")
+	world.add_child(wolf)
+	var said: Dictionary = bridge.state()
+	_leave(world)
+	assert_eq(said["ailments"], ["poison"])
+	assert_eq(said["foes"].size(), 1)
+	assert_eq(said["foes"][0]["ailments"], ["stun", "burn"])
+	assert_eq(said["foes"][0]["mode"], "crouch")
+
+
+## What a tick does to the game's numbers, as a blow that lands in it does.
+class Earner extends Node:
+	func _physics_process(_delta: float) -> void:
+		GameState.pack.gold = Engine.get_physics_frames()
+
+
+## PIX-485: the picture showed the orc dead and gold 44, the state hp 11 and
+## gold 30 - the state was read as a tick began, before the blow it held.
+func test_the_state_is_read_after_the_ticks_own_work() -> void:
+	var kept: int = GameState.pack.gold
+	add_child_autofree(Earner.new())
+	page.command = JSON.stringify([{"keys": [], "seconds": 0.1}])
+	var said: Dictionary = await _answer()
+	GameState.pack.gold = kept
+	assert_eq(int(said["gold"]), roundi(float(said["seconds"]) * 60) + GameClock.origin, "the gold of the tick the clock says")
+
+
+## PIX-485 (Enter on Begin answered mid-reload and the next key was lost):
+## a fade is waited out; one that outlasts the wait is said.
+func test_a_fade_is_waited_out_or_said() -> void:
+	var world := _enter()
+	var dark := ColorRect.new()
+	dark.set_meta("fade", true)
+	world.hud.root.add_child(dark)
+	page.command = JSON.stringify([{"keys": [], "seconds": 0.05}])
+	await wait_physics_frames(30)
+	assert_false(page.frozen, "no answer while the dark is up")
+	dark.free()
+	var said: Dictionary = await _answer()
+	assert_false(said["fading"], "answered once it has gone")
+	# A screen that asked for a reload takes nothing more till the world is new.
+	var leaving := Screen.new()
+	world.add_child(leaving)
+	leaving.process_mode = Node.PROCESS_MODE_DISABLED
+	bridge.settle_ticks = 10
+	page.frozen = false
+	page.command = JSON.stringify([{"keys": [], "seconds": 0.05}])
+	said = await _answer()
+	assert_true(said["fading"], "a fade that outlasts the wait is said, not hung on")
+	# The title back after a reload, its veil still lifting.
+	leaving.process_mode = Node.PROCESS_MODE_ALWAYS
+	assert_false(bridge.fading())
+	var veil := ColorRect.new()
+	veil.set_meta("fade", true)
+	leaving.add_child(veil)
+	assert_true(bridge.fading(), "a screen's own veil")
+	# No scene at all, after a world: the gap of a reload.
+	_leave(world)
+	assert_true(bridge.fading())
+	assert_false(add_child_autofree(Bridge.new()).fading(), "but nothing to wait for where no world ever stood")
+
+
+## PIX-485 (`seconds` moved 2 s with the codex open): `played` counts the
+## ticks in play, none while a screen pauses the tree.
+func test_played_counts_no_paused_tick() -> void:
+	page.command = JSON.stringify([{"keys": [], "seconds": 0.2}])
+	var before: Dictionary = await _answer()
+	get_tree().paused = true
+	page.frozen = false
+	page.command = JSON.stringify([{"keys": [], "seconds": 0.5}])
+	var said: Dictionary = await _answer()
+	assert_gt(float(said["seconds"]) - float(before["seconds"]), 0.45, "the clock ran on under the pause")
+	assert_almost_eq(float(said["played"]), float(before["played"]), 0.04, "play did not")
 
 
 ## A villager as state() reads one.
