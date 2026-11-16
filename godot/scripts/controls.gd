@@ -50,7 +50,19 @@ const PAD_NAMES := {
 	"move_up": "↑", "move_down": "↓", "move_left": "←", "move_right": "→",
 	"map": "Back", "journal": "Back", "stats": "Back", "skills": "Back", "codex": "Back",
 	"skill_4": "Back", "skill_5": "Back", "skill_6": "Back",
+	"page_up": "R↑", "page_down": "R↓",
 }
+## A card that runs long pages by these (PIX-487): Page Up and Page Down by
+## their key codes (fixed, as a footer names them), and on a pad the right
+## stick pushed up or down, one page a push. The one rule on every screen:
+## the shoulders are the fight's (the roll, the first skill) and the left
+## stick and the D-pad are the rows' and the tabs'.
+const PAGE_KEYS := {"page_up": KEY_PAGEUP, "page_down": KEY_PAGEDOWN}
+const PAD_PAGE_AXIS := JOY_AXIS_RIGHT_Y
+## How far the stick is pushed before it pages (as note_device counts a hand).
+const PAD_PUSH := 0.5
+## Which way the right stick is held: a page a push, not a page an event.
+static var _page_held := 0
 ## Keys named outright in footers, as the pad has them.
 const PAD_FOR_KEYS := {"Esc": "B", "Enter": "A"}
 ## Whether the last thing the player touched was a pad (PIX-215): keycaps
@@ -106,6 +118,22 @@ static func note_device(event: InputEvent) -> void:
 		pad = false
 	elif event is InputEventJoypadButton or (event is InputEventJoypadMotion and absf((event as InputEventJoypadMotion).axis_value) > 0.5):
 		pad = true
+
+
+## The pages `event` turns a card that runs long: 1 on, -1 back, 0 when it
+## isn't a paging key or the right stick's push (PIX-487).
+static func paged(event: InputEvent) -> int:
+	var key := event as InputEventKey
+	if key != null:
+		return (int(key.keycode == KEY_PAGEDOWN) - int(key.keycode == KEY_PAGEUP)) if key.pressed else 0
+	var push := event as InputEventJoypadMotion
+	if push == null or push.axis != PAD_PAGE_AXIS:
+		return 0
+	var way := int(signf(push.axis_value)) if absf(push.axis_value) > PAD_PUSH else 0
+	if way == _page_held:
+		return 0
+	_page_held = way
+	return way
 
 
 ## A physical key's name for the screen, on the player's layout ("W", "Space",
@@ -170,6 +198,8 @@ static func say(text: String, bindings: Variant = null) -> String:
 			out = out.replace(found.get_string(), PAD_NAMES[action])
 		elif BINDABLE.has(action):
 			out = out.replace(found.get_string(), key_label(key_for(action, bound)))
+		elif PAGE_KEYS.has(action):
+			out = out.replace(found.get_string(), key_label(PAGE_KEYS[action]))
 		elif action.begins_with("skill_") and int(action.substr(6)) in range(1, SKILL_KEYS.size() + 1):
 			out = out.replace(found.get_string(), key_label(SKILL_KEYS[int(action.substr(6)) - 1]))
 	return out

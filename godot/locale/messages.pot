@@ -18053,19 +18053,11 @@ msgid "Up"
 msgstr ""
 
 #: scripts/layout.gd
-msgid "PgUp/PgDn"
-msgstr ""
-
-#: scripts/layout.gd
 msgid "read"
 msgstr ""
 
 #: scripts/ledger_screen.gd
 msgid "do it"
-msgstr ""
-
-#: scripts/ledger_screen.gd
-msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr ""
 
 #: scripts/map_layers/dungeon_layer.gd
@@ -18249,11 +18241,23 @@ msgid "adjust"
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "change"
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "keep the old one"
 msgstr ""
 
 #: scripts/options_screen.gd
-msgid "rebind / toggle"
+msgid "other column"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "rebind"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "reset"
 msgstr ""
 
 #: scripts/pause_screen.gd
@@ -18429,6 +18433,10 @@ msgid "Its last save couldn't be read: this is the one before it."
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Last played"
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "New Game, on the title screen, starts a hero."
 msgstr ""
 
@@ -18538,6 +18546,10 @@ msgstr ""
 
 #: scripts/saves_screen.gd
 msgid "You'll go back to the title."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "bring back"
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -18833,6 +18845,10 @@ msgid "Your pack"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "all"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "buy"
 msgstr ""
 
@@ -18841,7 +18857,15 @@ msgid "forge"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "how many"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "junk"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "keep"
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -18869,15 +18893,15 @@ msgid "sell"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "sell a stack"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "sold"
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
-msgstr ""
-
-#: scripts/shop_screen.gd
-msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close"
+msgid "tab"
 msgstr ""
 
 #: scripts/shop_sign.gd
@@ -19857,7 +19881,11 @@ msgid "Your tree is whole: %d skill point%s to spend beyond it, below."
 msgstr ""
 
 #: scripts/stats_screen.gd
-msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      {key:stats} / Esc  close"
+msgid "spend a point (%d left)"
+msgstr ""
+
+#: scripts/stats_screen.gd
+msgid "spend a skill point (%d left)"
 msgstr ""
 
 #: scripts/throne_screen.gd

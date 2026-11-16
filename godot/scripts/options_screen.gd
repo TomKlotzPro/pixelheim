@@ -2,14 +2,20 @@ extends Screen
 ## areas: screen
 ## Options (Options.tsx): sound (music, effects and ambience, PIX-411), the
 ## CRT scanlines, fullscreen, reduced motion, and the keys. W/S choose a
-## row, A/D move a slider or flip a switch, E rebinds a key (the next key
-## pressed takes it; Esc cancels). Everything is saved at once in
-## GameSettings. Esc closes.
+## row, A/D move a slider or flip a switch, E flips a switch too and
+## rebinds a key (the next key pressed takes it; Esc cancels); on a key's
+## row A/D cross to the other column (PIX-484). Everything is saved at once
+## in GameSettings. Esc closes.
 
 ## The row the next Options open on, set as a language rebuilds the world
 ## in it (PIX-428: the reload closed Options and every screen under them);
 ## the title or the pause menu opens them again there. -1: none.
 static var back_at := -1
+
+## The room over and under a row's words inside its rim: seventeen rows and
+## four headings down the left column then end above the keys (PIX-484: at
+## the box's own 6 the page ran under them, "Quest markers" behind the footer).
+const ROW_PAD := 3
 
 var world: Node
 var rows: Array[Dictionary] = []
@@ -47,11 +53,10 @@ func _open() -> void:
 	# In the Controls column's free foot (PIX-434: under the card it ran over
 	# the frame), two lines tall and read from the bottom: one line stays
 	# clear of the lit Reset row's rim, and two still end above the frame.
-	status = Layout.wrapped(UiStyle.label("", 14, UiStyle.LAMP, Vector2(660, 590)), 516)
+	status = Layout.wrapped(UiStyle.label("", 14, UiStyle.LAMP, Vector2(660, 556)), 516)
 	status.custom_minimum_size.y = 47
 	status.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	add_child(status)
-	_name_keys()
 	waiting_footer = UiStyle.screen_footer(Text.t("Press the new key") + "      Esc  " + Text.t("keep the old one"))
 	add_child(waiting_footer)
 	if back_at >= 0:
@@ -60,15 +65,32 @@ func _open() -> void:
 	_refresh()
 
 
-## The keys' footer, written again with the keys as they are now: on
-## opening, and the moment a rebind or a reset changes them (PIX-480: it
-## kept "W S choose" after Move up went to Q, till Options were reopened).
+## The keys' footer, written again with the keys as they are now (PIX-480:
+## it kept "W S choose" after Move up went to Q, till Options were
+## reopened), and only the keys that act on the chosen row (PIX-484): a
+## slider moves by left and right alone, a switch by those or E, and on a
+## key's row left and right cross to the other column and E rebinds.
 func _name_keys() -> void:
-	if footer != null:
-		remove_child(footer)
-		footer.queue_free()
-	footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  adjust      {key:interact}  rebind / toggle      Esc  close")
-	add_child(footer)
+	var row: Dictionary = rows[_choosable()[selected]]
+	var acts := "{key:move_left}/{key:move_right} / {key:interact}  change      "
+	if _slides(row):
+		acts = "{key:move_left}/{key:move_right}  adjust      "
+	elif row.has("rebind") or row.has("act"):
+		acts = "{key:move_left}/{key:move_right}  other column      " + ("{key:interact}  rebind      " if row.has("rebind") else "{key:interact}  reset      ")
+	footer = UiStyle.refooted(self, footer, "{key:move_up}/{key:move_down}  choose      " + acts + "Esc  close")
+	# The page keeps off its keys (Layout.crowded: a seventeenth row had
+	# grown it under them).
+	footer.set_meta(Layout.CLEAR, true)
+	footer.visible = listening == ""
+
+
+func _hands_changed() -> void:
+	_name_keys()
+
+
+## Whether `row` is a slider (a volume), which only left and right move.
+func _slides(row: Dictionary) -> bool:
+	return row.has("adjust") and (row["adjust"] as Callable).get_method() == &"_volume"
 
 
 ## The rows: section headings, then a control each.
@@ -109,11 +131,12 @@ func _build() -> Array[Dictionary]:
 
 
 func _refresh() -> void:
-	footer.visible = listening == ""
-	waiting_footer.visible = listening != ""
 	rows = _build()
 	var choosable := _choosable()
 	selected = clampi(selected, 0, choosable.size() - 1)
+	_name_keys()
+	footer.visible = listening == ""
+	waiting_footer.visible = listening != ""
 	for column in columns:
 		for child in column.get_children():
 			column.remove_child(child)
@@ -132,9 +155,10 @@ func _refresh() -> void:
 			continue
 		var chosen := index == choosable[selected]
 		var line := PanelContainer.new()
-		line.add_theme_stylebox_override("panel", UiStyle.box(
-			Color(UiStyle.CARD, 0.9) if chosen else Color(0, 0, 0, 0), UiStyle.LAMP if chosen else Color(0, 0, 0, 0), 4
-		))
+		var rim := UiStyle.box(Color(UiStyle.CARD, 0.9) if chosen else Color(0, 0, 0, 0), UiStyle.LAMP if chosen else Color(0, 0, 0, 0), 4)
+		rim.content_margin_top = ROW_PAD
+		rim.content_margin_bottom = ROW_PAD
+		line.add_theme_stylebox_override("panel", rim)
 		var inner := HBoxContainer.new()
 		line.add_child(inner)
 		var label := UiStyle.label(row["label"], 15, UiStyle.INK)
@@ -199,7 +223,6 @@ func _input(event: InputEvent) -> void:
 		settings.bindings = Controls.rebind(settings.bindings, listening, key)
 		settings.save_file()
 		Controls.apply(settings.bindings)
-		_name_keys()
 		status.text = Text.t("%s is now %s.") % [named, Controls.key_label(key)]
 		if swapped != "":
 			status.text = Text.t("%s is now %s, and %s takes %s.") % [named, Controls.key_label(key), Text.t(Controls.BINDABLE[swapped][0]), Controls.key_label(old_key)]
@@ -213,13 +236,45 @@ func _command(event: InputEvent) -> Callable:
 		command = _move.bind(-1)
 	elif event.is_action_pressed("move_down") or event.is_action_pressed("ui_down"):
 		command = _move.bind(1)
-	elif event.is_action_pressed("move_left"):
-		command = _act.bind(-1)
-	elif event.is_action_pressed("move_right"):
-		command = _act.bind(1)
+	elif event.is_action_pressed("move_left") or event.is_action_pressed("move_right"):
+		# A key's row has nothing to adjust (PIX-484: left and right armed a
+		# rebind, as E does): they cross to the other column.
+		command = _cross if rows[_choosable()[selected]].get("column", 0) == 1 else _act.bind(-1 if event.is_action_pressed("move_left") else 1)
 	elif event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
-		command = _act.bind(1)
+		command = _press
 	return command
+
+
+## E on the chosen row: a switch flips, a key waits for its new one. On a
+## slider it does nothing (PIX-484: it raised the volume a tenth, which
+## left and right are for).
+func _press() -> void:
+	if not _slides(rows[_choosable()[selected]]):
+		_act(1)
+
+
+## From a row of one column to the row level with it in the other.
+func _cross() -> void:
+	var choosable := _choosable()
+	var from: Dictionary = rows[choosable[selected]]
+	var level := _level(choosable[selected])
+	var best := selected
+	var off := 1000
+	for at in choosable.size():
+		if rows[choosable[at]].get("column", 0) != from.get("column", 0) and absi(_level(choosable[at]) - level) < off:
+			off = absi(_level(choosable[at]) - level)
+			best = at
+	selected = best
+	_refresh()
+
+
+## How far down its column the row at `index` stands, in lines.
+func _level(index: int) -> int:
+	var line := 0
+	for at in index:
+		if rows[at].get("column", 0) == rows[index].get("column", 0):
+			line += 1
+	return line
 
 
 func _move(step: int) -> void:

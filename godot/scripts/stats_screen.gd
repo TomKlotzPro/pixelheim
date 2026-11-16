@@ -52,9 +52,20 @@ func _info() -> String:
 	return "\n".join(lines)
 
 
+## What E buys on the chosen row and how many points are left for it
+## (PIX-484: "do it" said neither), "" with none to spend.
+func _verb() -> String:
+	var hero := GameState.hero
+	if selected < Skills.STATS.size():
+		return Text.t("spend a point (%d left)") % hero.stat_points if hero.stat_points > 0 else ""
+	if selected < rows.size() and rows[selected]["enabled"]:
+		return Text.t("spend a skill point (%d left)") % hero.skill_points
+	return ""
+
+
 ## Its own key closes it too, and says so (PIX-388), as the pack's does.
 func _footer() -> String:
-	return Text.t("{key:move_up}/{key:move_down}  choose      {key:interact}  %s      {key:stats} / Esc  close") % _verb()
+	return super().replace("Esc  close", "{key:stats} / Esc  close")
 
 
 func _rows() -> Array[Dictionary]:

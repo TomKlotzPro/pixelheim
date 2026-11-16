@@ -18053,20 +18053,12 @@ msgid "Up"
 msgstr "Up"
 
 #: scripts/layout.gd
-msgid "PgUp/PgDn"
-msgstr "PgUp/PgDn"
-
-#: scripts/layout.gd
 msgid "read"
 msgstr "lire"
 
 #: scripts/ledger_screen.gd
 msgid "do it"
 msgstr "valider"
-
-#: scripts/ledger_screen.gd
-msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
-msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
 
 #: scripts/map_layers/dungeon_layer.gd
 msgid "Way out"
@@ -18249,12 +18241,24 @@ msgid "adjust"
 msgstr "régler"
 
 #: scripts/options_screen.gd
+msgid "change"
+msgstr "changer"
+
+#: scripts/options_screen.gd
 msgid "keep the old one"
 msgstr "garder l'ancienne"
 
 #: scripts/options_screen.gd
-msgid "rebind / toggle"
-msgstr "réassigner / basculer"
+msgid "other column"
+msgstr "autre colonne"
+
+#: scripts/options_screen.gd
+msgid "rebind"
+msgstr "réassigner"
+
+#: scripts/options_screen.gd
+msgid "reset"
+msgstr "rétablir"
 
 #: scripts/pause_screen.gd
 msgid "Paused"
@@ -18429,6 +18433,10 @@ msgid "Its last save couldn't be read: this is the one before it."
 msgstr "Sa dernière sauvegarde était illisible : voici la précédente."
 
 #: scripts/saves_screen.gd
+msgid "Last played"
+msgstr "Dernière partie"
+
+#: scripts/saves_screen.gd
 msgid "New Game, on the title screen, starts a hero."
 msgstr "Nouvelle partie, sur l'écran titre, crée un héros."
 
@@ -18539,6 +18547,10 @@ msgstr "Vous avez supprimé %s. R annule la suppression, tant qu'aucun autre hé
 #: scripts/saves_screen.gd
 msgid "You'll go back to the title."
 msgstr "Vous reviendrez à l'écran titre."
+
+#: scripts/saves_screen.gd
+msgid "bring back"
+msgstr "ramener"
 
 #: scripts/saves_screen.gd
 msgid "continue"
@@ -18833,6 +18845,10 @@ msgid "Your pack"
 msgstr "Votre sac"
 
 #: scripts/shop_screen.gd
+msgid "all"
+msgstr "tout"
+
+#: scripts/shop_screen.gd
 msgid "buy"
 msgstr "acheter"
 
@@ -18841,8 +18857,16 @@ msgid "forge"
 msgstr "forger"
 
 #: scripts/shop_screen.gd
+msgid "how many"
+msgstr "combien"
+
+#: scripts/shop_screen.gd
 msgid "junk"
 msgstr "camelote"
+
+#: scripts/shop_screen.gd
+msgid "keep"
+msgstr "garder"
 
 #: scripts/shop_screen.gd
 msgid "max"
@@ -18869,16 +18893,16 @@ msgid "sell"
 msgstr "vendre"
 
 #: scripts/shop_screen.gd
+msgid "sell a stack"
+msgstr "vendre le lot"
+
+#: scripts/shop_screen.gd
 msgid "sold"
 msgstr "vendu"
 
 #: scripts/shop_screen.gd
-msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
-msgstr "{key:move_left}/{key:move_right}  onglet      {key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
-
-#: scripts/shop_screen.gd
-msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close"
-msgstr "{key:move_left}/{key:move_right}  onglet      {key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Z  vendre le lot      Esc  fermer"
+msgid "tab"
+msgstr "onglet"
 
 #: scripts/shop_sign.gd
 msgid "A house: %dg, at the door"
@@ -19857,8 +19881,12 @@ msgid "Your tree is whole: %d skill point%s to spend beyond it, below."
 msgstr "Votre arbre est complet : %d point%s de compétence à dépenser au-delà, ci-dessous."
 
 #: scripts/stats_screen.gd
-msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      {key:stats} / Esc  close"
-msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      {key:stats} / Esc  fermer"
+msgid "spend a point (%d left)"
+msgstr "dépenser un point (sur %d)"
+
+#: scripts/stats_screen.gd
+msgid "spend a skill point (%d left)"
+msgstr "dépenser un point de compétence (sur %d)"
 
 #: scripts/throne_screen.gd
 msgid "answer"

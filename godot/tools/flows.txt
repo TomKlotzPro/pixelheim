@@ -1166,6 +1166,29 @@ fit-craft-large | --map town_alchemist large shop --tab 2 --keys pgdn overflow -
 fit-craft-large-en | --map town_alchemist large shop --tab 2 --keys pgdn overflow --lang en | open=shop_screen overflow=0 reading=[1-9]\d*/\d+ keyed | screen lang trade
 fit-smith-large | --map town_smith large shop --tab 4 --keys pgdn overflow --lang fr | open=shop_screen overflow=0 reading=[1-9]\d*/\d+ keyed | screen lang trade
 fit-shop-large | --map town_shop large shop overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
+# A pad pages a card too (PIX-487): its right stick pushed down moves the
+# hall's card as PgDn does, and the footer then names the pad's caps, no
+# keyboard's (reading= paged, keyed pad). And every reading text grows with
+# Large reading text (PIX-484), each in a window that keeps to its page and
+# pages past it: the pack's description (its list five rows then), a
+# recipe's on its Craft tab, the journal's chosen quest, the Skills page's,
+# and every line of the counter's card: a piece's numbers under the hero at
+# the smithy, the price while it asks how many of a stack.
+pad-hall-large | --map town_hall large talk --keys e,e,e,pad_pgdn overflow --lang fr | open=town_hall_screen overflow=0 reading=[1-9]\d*/\d+ keyed pad | screen lang town
+pad-hall-large-en | --map town_hall large talk --keys e,e,e,pad_pgdn overflow --lang en | open=town_hall_screen overflow=0 reading=[1-9]\d*/\d+ keyed pad | screen lang town
+fit-pack-large | --map town large inventory overflow --lang fr | open=inventory_screen overflow=0 | screen lang
+fit-pack-large-en | --map town large inventory overflow --lang en | open=inventory_screen overflow=0 | screen lang
+fit-pack-craft-large | --map town large inventory --tab 7 --keys s,s overflow --lang fr | open=inventory_screen overflow=0 | screen lang
+fit-pack-craft-large-en | --map town large inventory --tab 7 --keys s,s overflow --lang en | open=inventory_screen overflow=0 | screen lang
+fit-journal-large | --map town large journal --hunted seam_warden overflow --lang fr | open=journal_screen overflow=0 | screen lang quest
+fit-journal-large-en | --map town large journal --hunted seam_warden overflow --lang en | open=journal_screen overflow=0 | screen lang quest
+fit-skills-large | --map town large skills --level 20 overflow --lang fr | open=skills_screen overflow=0 | screen lang rank
+fit-skills-large-en | --map town large skills --level 20 overflow --lang en | open=skills_screen overflow=0 | screen lang rank
+fit-shop-large-en | --map town_shop large shop overflow --lang en | open=shop_screen overflow=0 | screen lang trade
+fit-smith-buy-large | --map town_smith large shop --keys e overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
+fit-smith-buy-large-en | --map town_smith large shop --keys e overflow --lang en | open=shop_screen overflow=0 | screen lang trade
+fit-shop-ask-large | --map town_shop large shop --tab 1 --keys s,s,s,s,z overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
+fit-shop-ask-large-en | --map town_shop large shop --tab 1 --keys s,s,s,s,z overflow --lang en | open=shop_screen overflow=0 | screen lang trade
 fit-create-wide | create --name WWWWWWWWWWWWWWWW overflow --lang fr | open=create_screen overflow=0 | screen lang title
 fit-create-wide-en | create --name WWWWWWWWWWWWWWWW overflow --lang en | open=create_screen overflow=0 | screen lang title
 fit-skills-path | --map town skills --role mage --level 10 --path pyromancer overflow --lang fr | open=skills_screen overflow=0 | screen lang rank

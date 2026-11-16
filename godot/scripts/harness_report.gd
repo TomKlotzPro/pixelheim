@@ -815,14 +815,20 @@ func field_reading() -> String:
 	var shown: Array[CanvasLayer] = []
 	_screens_in(world, shown)
 	for screen in shown:
-		var card := (screen.get("info_scroll") if screen.get("info_scroll") != null else screen.get("about")) as ScrollContainer
+		var card: ScrollContainer = null
+		for name: String in ["info_scroll", "about", "reader"]:
+			if screen.get(name) is ScrollContainer:
+				card = screen.get(name)
+				break
 		if card == null or not Layout.runs_long(card):
 			continue
 		var bar := card.get_v_scroll_bar()
+		# The cap of the hands on the game: PgDn, or the pad's R↓ (PIX-487).
+		var cap := Controls.shown("{key:page_down}")
 		var keyed := screen.find_children("*", "Label", true, false).any(
-			func(label: Label) -> bool: return label.text == "PgDn" and label.is_visible_in_tree()
+			func(label: Label) -> bool: return label.text == cap and label.is_visible_in_tree()
 		)
-		return "%d/%d%s" % [card.scroll_vertical, bar.max_value - bar.page, " keyed" if keyed else ""]
+		return "%d/%d%s%s" % [card.scroll_vertical, bar.max_value - bar.page, " keyed" if keyed else "", " pad" if keyed and Controls.pad else ""]
 	return ""
 
 

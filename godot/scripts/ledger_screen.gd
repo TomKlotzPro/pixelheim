@@ -84,23 +84,19 @@ func _open() -> void:
 	add_child(status)
 	# The info card keeps off both (PIX-373: Layout.overflows checks it).
 	status.set_meta(Layout.CLEAR, true)
-	_set_keys()
 	_refresh()
 
 
-## The keys along the bottom, the info's page keys among them while its
-## words run past its card (PIX-477).
+## The keys along the bottom, as they act on the chosen row (PIX-484), the
+## info's page keys among them while its words run past its card (PIX-477),
+## in the caps of the hands on the game (PIX-487).
 func _set_keys() -> void:
-	var reads := Layout.runs_long(info_scroll)
-	if keys != null:
-		if reads == keys.get_meta(&"reads"):
-			return
-		remove_child(keys)
-		keys.queue_free()
-	keys = UiStyle.screen_footer(Layout.paged_footer(_footer()) if reads else _footer())
-	keys.set_meta(&"reads", reads)
+	keys = UiStyle.refooted(self, keys, Layout.footer_for(info_scroll, _footer()))
 	keys.set_meta(Layout.CLEAR, true)
-	add_child(keys)
+
+
+func _hands_changed() -> void:
+	_set_keys()
 
 
 ## Override: the screen's name, its one-line intro, the info column, the actions.
@@ -116,14 +112,15 @@ func _info() -> String:
 	return ""
 
 
-## What E does, for the footer.
+## What E does on the chosen row, for the footer; "" when it does nothing.
 func _verb() -> String:
 	return Text.t("do it")
 
 
-## The keys along the bottom.
+## The keys along the bottom: E only while it does something.
 func _footer() -> String:
-	return Text.t("{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close") % _verb()
+	var verb := _verb()
+	return "{key:move_up}/{key:move_down}  choose      " + ("{key:interact}  " + verb + "      " if verb != "" else "") + "Esc  close"
 
 
 ## Each row: {label, note, enabled, action: Callable returning a status line},
@@ -195,6 +192,7 @@ func _refresh() -> void:
 			top += int(list.get_child(index).get_combined_minimum_size().y) + list.get_theme_constant("separation")
 		var tall := int(list.get_child(selected).get_combined_minimum_size().y)
 		scroll.scroll_vertical = clampi(scroll.scroll_vertical, top + tall - int(LIST.size.y), top)
+	_set_keys()
 
 
 func _row(index: int) -> Control:
@@ -221,10 +219,10 @@ func _row(index: int) -> Control:
 	var name := UiStyle.label(row["label"], 16, color)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	line.add_child(Layout.ellipsis(name))
+	# A row's tag in the page's own ink, as the counter's rows wear theirs
+	# (PIX-484: a dark chip here read as a selection, its last letter cut).
 	if row.get("tag", "") != "":
-		var mark := UiStyle.tag(row["tag"])
-		mark.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		line.add_child(mark)
+		line.add_child(UiStyle.label(row["tag"], 16, UiStyle.FADED))
 	var note := Layout.narrowed(UiStyle.label(row.get("note", ""), 16, UiStyle.LAMP if row["enabled"] else UiStyle.FADED), NOTE_SHARE * LIST.size.x)
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	line.add_child(note)
