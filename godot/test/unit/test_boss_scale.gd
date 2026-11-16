@@ -101,7 +101,7 @@ func test_a_bosses_words_sit_on_its_head() -> void:
 	for fighter in _bosses():
 		var foe := _foe(fighter)
 		var who := String(fighter["name"])
-		var head: float = Ink.crown(foe.sprite.sprite_frames, ["idle_down", "walk_down"], foe._rest_at, foe._rest_scale)
+		var head: float = Ink.crown(foe.sprite.sprite_frames, ["idle_down", "walk_down"], foe.rest_at, foe.rest_scale)
 		var bar: float = foe.health_bar.position.y
 		assert_eq(bar, roundf(bar), "%s: its bar on a whole pixel" % who)
 		assert_lte(bar + foe.health_bar.size.y, head - 1.0, "%s: its bar clear of its head" % who)
@@ -116,7 +116,7 @@ func test_a_common_foe_keeps_its_bar_where_it_was() -> void:
 	for species: String in PunyArt.MONSTERS:
 		var foe := _foe(Bestiary.spawn(species))
 		var head: float = Ink.crown(foe.sprite.sprite_frames, Array(foe.sprite.sprite_frames.get_animation_names()).filter(
-			func(anim: String) -> bool: return anim.begins_with("idle") or anim.begins_with("walk")), foe._rest_at, foe._rest_scale)
+			func(anim: String) -> bool: return anim.begins_with("idle") or anim.begins_with("walk")), foe.rest_at, foe.rest_scale)
 		var bar: float = foe.health_bar.position.y
 		assert_lte(bar + foe.health_bar.size.y, head - 1.0, "%s: its bar clear of its head" % species)
 		if head > Enemy.BAR_Y + Enemy.HEAD_CLEAR:

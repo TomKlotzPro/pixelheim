@@ -536,7 +536,7 @@ func test_a_crabs_claws_come_up_and_go_down_and_its_back_is_open() -> void:
 	assert_true(crab.trick.posed(), "shown on its sprite")
 	assert_eq(crab.mode, "cast", "it stands to guard")
 	await wait_seconds(float(trick["tell"]) / 2.0)
-	assert_gt(crab.sprite.scale.y, crab._rest_scale.y * 1.1, "thrown up in the tell's first half")
+	assert_gt(crab.sprite.scale.y, crab.rest_scale.y * 1.1, "thrown up in the tell's first half")
 	assert_eq(crab.get_children().filter(func(child: Node) -> bool: return child is Sprite2D and (child as Sprite2D).texture == TrickBrainScript.star_texture()).size(), 1, "a glint off them as they rise")
 	_run(crab, float(trick["tell"]) + TICK)
 	assert_eq(crab.trick.state, "up")

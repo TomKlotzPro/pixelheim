@@ -78,9 +78,8 @@ static func phase_at(share: float) -> int:
 
 func _cast(move: String) -> void:
 	var attack: Dictionary = Bestiary.boss_attack(move)
-	enemy.mode = "cast"
+	enemy.begin_cast()
 	telling = move
-	enemy.velocity = Vector2.ZERO
 	var hero: Vector2 = world.player.global_position
 	var at: Vector2 = enemy.global_position
 	# Its sound warns with the mark (PIX-413): the takes' bodies (some 1.0 to
@@ -114,7 +113,7 @@ func _strike(shape: PackedVector2Array, attack: Dictionary) -> void:
 		world.camera_rig.shake(5.0, 0.3)
 	# The last mark of a cast lets the boss move again.
 	if pending <= 0:
-		enemy.mode = "chase"
+		enemy.end_cast()
 
 
 ## A stun broke the cast (PIX-440): the marks still to strike are taken back

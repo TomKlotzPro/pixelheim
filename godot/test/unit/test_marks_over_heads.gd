@@ -155,11 +155,11 @@ func test_a_monsters_marks_are_centred_on_its_head() -> void:
 			foe.sprite = autofree(AnimatedSprite2D.new())
 			foe.sprite.sprite_frames = frames
 			foe.sprite.play(PunyArt.pick(frames, "walk", way))
-			foe._rest_at = Vector2(0, PunyArt.lift(art) * size)
-			foe._rest_scale = Vector2.ONE * size
+			foe.rest_at = Vector2(0, PunyArt.lift(art) * size)
+			foe.rest_scale = Vector2.ONE * size
 			# Its words over its head as drawn (PIX-314).
-			foe._over_head = Enemy.over_head(frames, foe._rest_at, size)
-			var head := _head_middle(frames, PunyArt.pick(frames, "idle", way), foe._rest_at, size)
+			foe._over_head = Enemy.over_head(frames, foe.rest_at, size)
+			var head := _head_middle(frames, PunyArt.pick(frames, "idle", way), foe.rest_at, size)
 			for tone: String in Marks.BURST_TONES:
 				var burst: Sprite2D = autofree(Enemy.alert_mark(tone))
 				foe._place_mark(burst)

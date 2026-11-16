@@ -166,8 +166,11 @@ var brain: Node
 ## the foe stands (stand), whether it may bite (may_bite), what a blow does
 ## (takes, hurt) and what its fall is (falls, died).
 var trick: Node
-## Faded (a ghost's trick; a slime's half as it bursts out): no blow finds it.
+## Faded (a ghost's trick; a slime's half as it bursts out): no blow finds
+## it; and what it collides with when it isn't (vanish, appear).
 var faded := false
+var _layer := 0
+var _mask := 0
 ## PunyArt.monster spec, and the way it last faced.
 var art: Dictionary
 var facing := "down"
@@ -235,8 +238,8 @@ var _drop: Sprite2D
 ## blow cuts it short, so a bite's tell never takes a stretched shape for
 ## its rest).
 var _flinch_tween: Tween
-var _rest_scale := Vector2.ONE
-var _rest_at := Vector2.ZERO
+var rest_scale := Vector2.ONE
+var rest_at := Vector2.ZERO
 ## Its walk (PIX-243): stepping with the ground it covers, wandering slowly
 ## or hunting fast.
 var gait: Gait
@@ -338,13 +341,13 @@ func _ready() -> void:
 		bar_width = 28.0
 	sprite.scale = Vector2.ONE * size
 	sprite.position = Vector2(0, PunyArt.lift(art) * size)
-	_rest_scale = sprite.scale
-	_rest_at = sprite.position
+	rest_scale = sprite.scale
+	rest_at = sprite.position
 	# Its own flash and dissolve (PIX-226).
 	sprite.material = Juice.fighter_material()
 	gait = Gait.new(sprite, art, size)
-	_play("idle")
-	_shadow = ground_shadow(sprite, size, _rest_at.y)
+	play("idle")
+	_shadow = ground_shadow(sprite, size, rest_at.y)
 	add_child(_shadow)
 	var near := float(Packs.rules()["ring"]["near"])
 	edge = edge_of(_shadow.texture.get_width() * size / 2.0, body_of(fighter).x / 2.0)
@@ -355,12 +358,12 @@ func _ready() -> void:
 	add_child(sprite)
 	# Its words over its head as drawn, and over what it wears on it.
 	var worn := _wear_crown()
-	_over_head = over_head(sprite.sprite_frames, _rest_at, size, worn)
+	_over_head = over_head(sprite.sprite_frames, rest_at, size, worn)
 	# A slime's half stands far under its kind's line (PIX-497: its tag and
 	# its "!" floated a body's height over it, belonging to nothing).
 	if fighter.get("small", false):
-		_over_head = floorf(crown_of(sprite.sprite_frames, _rest_at, size, worn)) - SMALL_CLEAR
-	depth = HERO_FEET - crown_of(sprite.sprite_frames, _rest_at, size, worn)
+		_over_head = floorf(crown_of(sprite.sprite_frames, rest_at, size, worn)) - SMALL_CLEAR
+	depth = HERO_FEET - crown_of(sprite.sprite_frames, rest_at, size, worn)
 	sprite.animation_changed.connect(_turned)
 	# Fafnyr and Morvax fight with their own attacks too (PIX-150); an elite
 	# has its family's one trick (PIX-155), a named monster one of its own
@@ -490,7 +493,7 @@ func _physics_process(delta: float) -> void:
 				world.foes.boss_fell(self)
 			return
 	if ailments.is_stunned():
-		_play("idle")
+		play("idle")
 		return
 	var player: CharacterBody2D = world.player
 	var to_player := player.global_position - global_position
@@ -561,7 +564,7 @@ func _physics_process(delta: float) -> void:
 	if velocity.length() > 1:
 		gait.walk(facing, (global_position - from).length(), delta)
 	elif gait.rest(delta) or not gait.walking:
-		_play("idle")
+		play("idle")
 
 
 ## An icon for each thing ailing it, beside its level tag (PIX-440), gone
@@ -775,7 +778,7 @@ func notice() -> void:
 	_fresh_hunt()
 	alert_left = float(Packs.rules()["windUpSeconds"])
 	world.foes.on_enemy_noticed(self)
-	_play("idle")
+	play("idle")
 	if fright_mark != null:
 		fright_mark.visible = false
 	if mark == null:
@@ -825,7 +828,7 @@ func _wear_crown() -> float:
 	crown.use_parent_material = true
 	sprite.add_child(crown)
 	var ink := crown.texture.get_image().get_used_rect()
-	return _rest_at.y + top * _rest_scale.y + CROWN_SINK - crown.texture.get_height() / 2.0 + ink.position.y
+	return rest_at.y + top * rest_scale.y + CROWN_SINK - crown.texture.get_height() / 2.0 + ink.position.y
 
 
 ## A named monster's name over its head in the boss's red: the UI's type at
@@ -858,7 +861,7 @@ static func alert_mark(tone: String) -> Sprite2D:
 ## isn't always over its middle), its middle (the "!") on the head's in
 ## whole pixels, its foot over the level tag.
 func _place_mark(burst: Sprite2D) -> void:
-	var head := Ink.head(sprite.sprite_frames, Ink.rest_pose(sprite.sprite_frames, sprite.animation), _rest_at, _rest_scale)
+	var head := Ink.head(sprite.sprite_frames, Ink.rest_pose(sprite.sprite_frames, sprite.animation), rest_at, rest_scale)
 	var size := burst.texture.get_size()
 	burst.position = Vector2(Marks.centred(size.x, head.get_center().x), mark_foot() - size.y)
 
@@ -907,7 +910,7 @@ func take_fright(to_player: Vector2) -> void:
 	world.foes.on_enemy_frightened(self)
 	# It looks at what frightened it, then turns to run.
 	facing = Gait.dir_of(to_player)
-	_play("idle")
+	play("idle")
 	if mark != null:
 		mark.visible = false
 	if fright_mark == null:
@@ -955,20 +958,20 @@ func _fright_cue() -> Node2D:
 ## little before it runs.
 func _flinch(to_player: Vector2) -> void:
 	var shape := Juice.SET_OFF
-	var back := -to_player.normalized() * 2.0 + Vector2(0, Juice.FEET * _rest_scale.y * (1.0 - shape.y))
+	var back := -to_player.normalized() * 2.0 + Vector2(0, Juice.FEET * rest_scale.y * (1.0 - shape.y))
 	_flinch_tween = sprite.create_tween()
-	_flinch_tween.tween_property(sprite, "scale", _rest_scale * shape, 0.05)
-	_flinch_tween.parallel().tween_property(sprite, "position", _rest_at + back, 0.05).set_ease(Tween.EASE_OUT)
-	_flinch_tween.tween_property(sprite, "scale", _rest_scale, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	_flinch_tween.parallel().tween_property(sprite, "position", _rest_at, 0.2)
+	_flinch_tween.tween_property(sprite, "scale", rest_scale * shape, 0.05)
+	_flinch_tween.parallel().tween_property(sprite, "position", rest_at + back, 0.05).set_ease(Tween.EASE_OUT)
+	_flinch_tween.tween_property(sprite, "scale", rest_scale, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_flinch_tween.parallel().tween_property(sprite, "position", rest_at, 0.2)
 
 
 ## A flinch cut short (a blow lands): the sprite back to its own shape.
 func _end_flinch() -> void:
 	if _flinch_tween != null and _flinch_tween.is_valid():
 		_flinch_tween.kill()
-		sprite.scale = _rest_scale
-		sprite.position = _rest_at
+		sprite.scale = rest_scale
+		sprite.position = rest_at
 
 
 ## Away from the hero a cell at a time over open ground (Packs.flight_step);
@@ -1148,7 +1151,7 @@ func _loose(to_player: Vector2) -> void:
 	# its gun flashed to the left of a ball flying up).
 	facing = Gait.dir_of(to_player)
 	var drawn := sprite.sprite_frames.has_animation("attack_" + facing)
-	_play("attack" if drawn else "sword")
+	play("attack" if drawn else "sword")
 	var bolt := Firebolt.new()
 	# A sheet's own attack has its gun's flash drawn in (the gunner's): a
 	# second one from the chest a frame before it read as two shots.
@@ -1219,7 +1222,7 @@ func _bite(to_player: Vector2) -> void:
 		return
 	can_bite = false
 	Sound.play(Sound.voice_for(String(fighter["id"]), "attack", "foe_bite"))
-	_play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
+	play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
 	# At the wagon the bite lands on it (the escort counts it).
 	if _at_quarry:
 		get_tree().create_timer(CONTACT_COOLDOWN).timeout.connect(func() -> void: can_bite = true)
@@ -1662,8 +1665,7 @@ func _interrupt() -> void:
 	if trick != null and trick.interrupt():
 		broke = true
 	# Its marks taken back, nothing will end its cast but this.
-	if mode == "cast":
-		mode = "chase"
+	end_cast()
 	if broke:
 		# In "dodged" and "blocked"'s blue: gold is lost on sand and straw.
 		world.fx.float_text(Text.t("Interrupted!"), global_position + Vector2(0, minf(-26.0, _over_head)), Color(0.75, 0.9, 1.0), true)
@@ -1680,8 +1682,8 @@ func drop_tell() -> bool:
 	if _tell_tween != null and _tell_tween.is_running():
 		_tell_tween.kill()
 		sprite.modulate = Color.WHITE
-		sprite.scale = _rest_scale
-		sprite.position = _rest_at
+		sprite.scale = rest_scale
+		sprite.position = rest_at
 		sprite.skew = 0.0
 	return told
 
@@ -1692,6 +1694,103 @@ func plain() -> void:
 	if trick != null:
 		trick.free()
 		trick = null
+
+
+## What its brains ask of it (PIX-501): they tell and time their moves, and
+## the enemy alone changes what it is doing and what it holds.
+
+## Stands still while a move is told or a trick plays; whoever began it ends
+## it (end_cast), or a stun does (_interrupt).
+func begin_cast() -> void:
+	mode = "cast"
+	velocity = Vector2.ZERO
+
+
+## The move is done: on with the chase. Nothing to end for one a stun
+## already sent chasing.
+func end_cast() -> void:
+	if mode == "cast":
+		mode = "chase"
+
+
+## A skeleton falls to its bones (PIX-489) rather than dying: its body and
+## its bars gone, what it was telling and what ailed it too (poison would end
+## it unseen), until it rises (rise) or the pile is struck.
+func fall_to_pile() -> void:
+	mode = "pile"
+	drop_tell()
+	if brain != null:
+		brain.interrupt()
+	ailments.clear()
+	velocity = Vector2.ZERO
+	health_bar.visible = false
+	health_bar_back.visible = false
+	sprite.visible = false
+
+
+## Up from its pile with `hp` of its health, and at the hero again.
+func rise(hp: int) -> void:
+	fighter["hp"] = hp
+	sprite.visible = true
+	health_bar.size.x = bar_width * fighter["hp"] / fighter["maxHp"]
+	health_bar.visible = true
+	health_bar_back.visible = true
+	mode = "chase"
+
+
+## Gone (a ghost faded): no blow finds it and nothing meets it, until it
+## shows again (appear).
+func vanish() -> void:
+	faded = true
+	_layer = collision_layer
+	_mask = collision_mask
+	collision_layer = 0
+	collision_mask = 0
+
+
+func appear() -> void:
+	faded = false
+	collision_layer = _layer
+	collision_mask = _mask
+
+
+## A slime's half as it bursts out (PIX-489): no blow finds it for `seconds`,
+## so the one that burst its kind doesn't sweep it up.
+func burst_out(seconds: float) -> void:
+	faded = true
+	var out := create_tween()
+	out.tween_interval(seconds)
+	out.tween_callback(func() -> void: faded = false)
+
+
+## Turns on the hero from its run (a goblin done running with their gold):
+## it fights where it stands.
+func turn_back() -> void:
+	at_bay = true
+	mode = "chase"
+
+
+## An undead elite's guard up or down (PIX-155), a howl's call on it or off
+## (PIX-421), `times` its pace (a wolf's dash), the way it faces what lies
+## `to` away, and `amount` more gold on it (what a goblin took, given back).
+func set_guarding(on: bool) -> void:
+	guarding = on
+
+
+func set_called(on: bool) -> void:
+	called = on
+
+
+func quicken(times: float) -> void:
+	pace *= times
+
+
+func face(to: Vector2) -> void:
+	facing = Gait.dir_of(to)
+
+
+func add_gold(amount: int) -> void:
+	fighter["gold"] = int(fighter["gold"]) + amount
 
 
 ## A blow from someone else's hand (PIX-253 step 9: Ulla's old guard on the
@@ -1740,7 +1839,7 @@ func stand_down() -> void:
 		mark.visible = false
 	if fright_mark != null:
 		fright_mark.visible = false
-	_play("idle")
+	play("idle")
 	world.foes.stood_down(self)
 
 
@@ -1795,7 +1894,7 @@ func _dissolve() -> void:
 
 
 ## Anything but the walk (the gait's, PIX-243) takes it out of its stride.
-func _play(anim: String) -> void:
+func play(anim: String) -> void:
 	gait.halt()
 	var name := PunyArt.pick(sprite.sprite_frames, anim, facing)
 	if sprite.animation != name or not sprite.is_playing():
