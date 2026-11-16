@@ -9,7 +9,6 @@ extends GutTest
 ## sit on its head as drawn, its shadow under its feet, its box for blows
 ## over its body.
 
-const Enemy := preload("res://scripts/enemy.gd")
 
 
 static func _whole(value: float) -> bool:

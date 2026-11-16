@@ -57,7 +57,7 @@ const CROWNS := {"stewpot": PunyDungeon.POT}
 const CROWN_SINK := 3.0
 
 ## The enemy it draws for: every node here is a child of it.
-var foe: CharacterBody2D
+var foe: Enemy
 var health_bar: ColorRect
 var health_bar_back: ColorRect
 var bar_width := BAR_WIDTH
@@ -87,7 +87,7 @@ static var _shadows := {}
 static var _auras := {}
 
 
-func _init(of: CharacterBody2D) -> void:
+func _init(of: Enemy) -> void:
 	foe = of
 
 

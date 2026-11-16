@@ -8,7 +8,6 @@ extends GutTest
 ## boss's or a named monster's; an elite keeps its family's move besides.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const Enemy := preload("res://scripts/enemy.gd")
 const EliteBrainScript := preload("res://scripts/elite_brain.gd")
 const TrickBrainScript := preload("res://scripts/trick_brain.gd")
 const KINDS := {"slime": "split", "wolf": "hitrun", "goblin": "snatch", "skeleton": "rise", "ghost": "fade", "crab": "shell"}

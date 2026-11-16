@@ -7,7 +7,6 @@ extends GutTest
 ## strike: a leap lands beside the hero, not on them (PIX-468).
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const Enemy := preload("res://scripts/enemy.gd")
 const BossBrainScript := preload("res://scripts/boss_brain.gd")
 const EliteBrainScript := preload("res://scripts/elite_brain.gd")
 const STUN := {"kind": "stun", "chance": 2.0, "turns": 2, "power": 0}

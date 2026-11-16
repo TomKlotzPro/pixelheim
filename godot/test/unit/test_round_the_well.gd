@@ -7,7 +7,6 @@ extends GutTest
 ## (as a boss did since PIX-288), round whoever stands in its way, and with
 ## no way at all gives the chase up and takes up none.
 
-const Enemy := preload("res://scripts/enemy.gd")
 const TICK := 1.0 / 60.0
 ## The well, two cells wide as the village's, on the row the hero and the
 ## foe stand on.

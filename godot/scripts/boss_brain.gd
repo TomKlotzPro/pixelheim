@@ -13,7 +13,7 @@ const TILE := 16.0
 ## The shares of its health where each new phase begins (the boss bar's notches).
 const PHASES: Array[float] = [2.0 / 3.0, 1.0 / 3.0]
 
-var enemy: CharacterBody2D
+var enemy: Enemy
 var world: Node2D
 var pattern: Dictionary
 var phase := 0
@@ -29,7 +29,7 @@ var pending := 0
 
 
 func _ready() -> void:
-	enemy = get_parent()
+	enemy = get_parent() as Enemy
 	world = enemy.world
 	pattern = Bestiary.boss_pattern(enemy.fighter["id"])
 

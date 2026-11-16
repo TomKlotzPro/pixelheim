@@ -5,7 +5,6 @@ extends GutTest
 ## frame, and a foe's shot flies over them, a few pixels of it.
 
 const TILE := 16.0
-const Enemy := preload("res://scripts/enemy.gd")
 
 
 class StubHud extends RefCounted:

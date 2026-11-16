@@ -1,3 +1,4 @@
+class_name Enemy
 extends CharacterBody2D
 ## areas: combat field
 ## A monster in the field: wanders near its home, notices a hero it can see
@@ -124,7 +125,7 @@ var brain: Node
 ## Its kind's own trick (PIX-489, trick_brain.gd), or null: it says where
 ## the foe stands (stand), whether it may bite (may_bite), what a blow does
 ## (takes, hurt) and what its fall is (falls, died).
-var trick: Node
+var trick: TrickBrain
 ## Faded (a ghost's trick; a slime's half as it bursts out): no blow finds
 ## it; and what it collides with when it isn't (vanish, appear).
 var faded := false
@@ -304,13 +305,13 @@ func _ready() -> void:
 	var guards: Dictionary = Bestiary.stun_guard()
 	ailments.stun_guard = float(guards["boss"]) if Bestiary.is_boss(fighter["id"]) else (float(guards["elite"]) if fighter["elite"] or not named.is_empty() else 0.0)
 	if not Bestiary.boss_pattern(fighter["id"]).is_empty():
-		brain = preload("res://scripts/boss_brain.gd").new()
+		brain = BossBrain.new()
 		add_child(brain)
 	elif not named.is_empty() or (fighter["elite"] and not Bestiary.elite_moves(Bestiary.family_of(fighter["id"])).is_empty()):
-		brain = preload("res://scripts/elite_brain.gd").new()
+		brain = EliteBrain.new()
 		add_child(brain)
 	if not Tricks.of(fighter).is_empty():
-		trick = preload("res://scripts/trick_brain.gd").new()
+		trick = TrickBrain.new()
 		add_child(trick)
 
 	var shape := CollisionShape2D.new()

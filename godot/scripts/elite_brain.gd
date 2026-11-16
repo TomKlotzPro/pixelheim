@@ -1,3 +1,4 @@
+class_name EliteBrain
 extends Node
 ## areas: combat field
 ## An elite's one trick (PIX-155), by its family, told before it lands: beasts
@@ -14,7 +15,7 @@ const TILE := 16.0
 ## After any move, the others wait at least this long: never two at once.
 const BREATHER := 1.0
 
-var enemy: CharacterBody2D
+var enemy: Enemy
 var world: Node2D
 ## [{move: Dictionary, cooldown: float}], tried in order.
 var moves: Array[Dictionary] = []
@@ -31,7 +32,7 @@ var _shine: Tween
 
 
 func _ready() -> void:
-	enemy = get_parent()
+	enemy = get_parent() as Enemy
 	world = enemy.world
 	var family: Dictionary = Bestiary.elite_moves(Bestiary.family_of(enemy.fighter["id"]))
 	if not family.is_empty():

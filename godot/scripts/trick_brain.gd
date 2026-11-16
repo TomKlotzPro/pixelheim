@@ -1,3 +1,4 @@
+class_name TrickBrain
 extends Node
 ## areas: combat field
 ## A common foe's own trick as it plays (PIX-489), riding on the enemy (its
@@ -38,7 +39,7 @@ const BURST_SECONDS := 0.35
 const BACK_OUT := 4.0
 const AWAY_SECONDS := 1.0
 
-var enemy: CharacterBody2D
+var enemy: Enemy
 var world: Node2D
 ## Its kind's entry in combat.json's "tricks", and which trick that is.
 var trick: Dictionary
@@ -76,7 +77,7 @@ static var _star: ImageTexture
 
 
 func _ready() -> void:
-	enemy = get_parent()
+	enemy = get_parent() as Enemy
 	world = enemy.world
 	trick = Tricks.of(enemy.fighter)
 	kind = String(trick["trick"])

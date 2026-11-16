@@ -3,7 +3,6 @@ extends GutTest
 ## and falls as a boss does, and neither gives up the chase to walk home and
 ## heal while an ordinary foe still does.
 
-const Enemy := preload("res://scripts/enemy.gd")
 const HOME := Vector2.ZERO
 ## Far past any leash, from home and from the hero.
 const FAR := Vector2(4000, 0)
