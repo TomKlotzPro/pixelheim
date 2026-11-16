@@ -73,7 +73,8 @@
 # each by day and at night, headless. GUT never loads
 # the world's scripts, so a script that breaks only there fails here. Any
 # run fails on a SCRIPT ERROR, a Parse Error or a SHADER ERROR in its output
-# (headless Godot still compiles every shader it loads).
+# (headless Godot still compiles every shader it loads), and on a crash, even
+# one at the quit after its report (a batch's crash fails its last flow).
 #
 # Under GitHub Actions the results also go to the job's summary as a table,
 # and each failure as an error on the run (PIX-271).
@@ -263,8 +264,10 @@ judge() {
 	# A script error fails the flow even when the report looks right: a broken
 	# map build once logged errors on every map but the town while the report
 	# line stayed clean. So does a shader that doesn't compile: the run goes
-	# on without it.
-	errors=$(grep -m1 -E "SCRIPT ERROR|Parse Error|SHADER ERROR" <<<"$output")
+	# on without it. So does a crash, at the quit too: a GDScript Translation
+	# left in the TranslationServer crashed every run after its report, and
+	# each crash put up a macOS crash dialog.
+	errors=$(grep -m1 -E "Program crashed|SCRIPT ERROR|Parse Error|SHADER ERROR" <<<"$output")
 	if [[ -n $errors ]]; then
 		status=FAIL
 		line=$errors
