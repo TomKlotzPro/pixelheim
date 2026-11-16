@@ -376,3 +376,28 @@ func test_anything_else_is_no_save() -> void:
 	for text in ["", "hello", "PXH3.abcd", "[1, 2, 3]", "{ broken"]:
 		assert_eq(SaveCodec.pasted(text), {"state": {}, "problem": SaveCodec.NOT_A_SAVE}, text)
 	assert_eq(SaveCodec.pasted("PXH2.@@@not-base64@@@")["problem"], SaveCodec.DAMAGED)
+
+
+## PIX-504: a file edited by hand, one field of another type. `apply` took
+## it half-way (the hero unset, every save after refused).
+func test_a_field_of_another_type_is_a_damaged_save_never_a_hero_half_loaded() -> void:
+	var whole: Dictionary = SaveCodec.parse_json(FileAccess.get_file_as_string(FIXTURES + "slots/slot_1.save"))
+	assert_false(SaveCodec.from_file(whole).is_empty(), "the file as it was loads")
+	var wrong := [
+		["hero", "name", 7], ["hero", "level", "x"], ["hero", "stats", {"maxHp": "x"}], ["hero", "jobs", {"smithing": 1}],
+		["hero", "skills", {"nodes": [1]}], ["hero", "skills", {"nodes": [], "path": "x"}], ["hero", "skills", {"nodes": [], "mastery": 7}],
+		["pack", "gold", null], ["pack", "items", []], ["pack", "gear", [{"itemId": "steel_shield"}]], ["pack", "gear", [7]],
+		["pack", "worn", {"weapon": 7}], ["home", "storage", 7], ["town", "age", "x"], ["town", "settlers", [1]],
+		["town", "properties", {}], ["story", "seen", [{}]], ["quests", "ledger", []], ["quests", "ledger", {"a": 7}],
+		["quests", "tracked", 7], ["world", "chests", {}], ["world", "slain", [7]], ["world", "steps", "x"],
+		["world", "fog", {"town": {"x": "x"}}], ["world", "at", {"map": "keep", "x": null, "y": []}],
+	]
+	for field: Array in wrong:
+		var doc: Dictionary = whole.duplicate(true)
+		doc[field[0]][field[1]] = field[2]
+		assert_eq(SaveCodec.from_file(doc), {}, "%s.%s as %s: no hero to play" % field)
+		assert_false(SaveCodec.decodes(SaveCodec.serialize(doc)), "%s.%s as %s: no write lands" % field)
+	for seconds: Variant in [null, "x", []]:
+		var doc: Dictionary = whole.duplicate(true)
+		doc["playSeconds"] = seconds
+		assert_eq(SaveCodec.from_file(doc), {}, "playSeconds as %s" % [seconds])

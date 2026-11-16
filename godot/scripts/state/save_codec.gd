@@ -46,6 +46,35 @@ const SKILLS := {"skillDock": "dock", "beyond": "beyond", "forgot": "forgot", "p
 const INVESTED := {"savings": "bank", "tills": "tills", "expansions": "expansions", "venture": "venture"}
 ## The quest records: the state's key -> the file's (quests).
 const RECORDS := {"tracked": "tracked", "deeds": "deeds", "firsts": "firsts", "crafted": "crafted", "hunted": "named", "met": "met", "tricks": "tricks"}
+## What `well_typed` asks of a state's fields (PIX-504): a Variant.Type, NUMBER
+## (an int or a float), [a shape] (an Array of it), {"*": a shape} (a
+## Dictionary of it) or {key: shape} (a Dictionary whose keys, where it has
+## them, hold that; "+key": it must have it).
+const NUMBER := -1
+const TEXTS := [TYPE_STRING]
+const COUNTS := {"*": NUMBER}
+const SHAPE := {
+	"hero": {
+		"name": TYPE_STRING, "roleId": TYPE_STRING, "level": NUMBER, "xp": NUMBER, "xpToNext": NUMBER, "hp": NUMBER, "mp": NUMBER,
+		"stats": COUNTS, "statPoints": NUMBER, "skillPoints": NUMBER, "skillNodes": TEXTS, "skillDock": TEXTS, "beyond": COUNTS,
+		"forgot": TEXTS, "jobs": {"*": {"level": NUMBER, "xp": NUMBER}}, "path": TEXTS, "spec": TYPE_STRING, "mastery": COUNTS,
+	},
+	"playSeconds": NUMBER, "gold": NUMBER, "inventory": COUNTS, "equipped": {"*": TYPE_STRING},
+	"gear": [{"+uid": TYPE_STRING, "+itemId": TYPE_STRING, "bonus": NUMBER, "deep": NUMBER, "deepBonus": NUMBER}],
+	"house": {"storage": TYPE_DICTIONARY}, "properties": TEXTS, "townTier": NUMBER, "settlers": TEXTS, "projects": TEXTS,
+	"festival": TYPE_DICTIONARY, "storySeen": TEXTS, "prologue": NUMBER, "prologueDoused": [NUMBER],
+	"bells": {"beat": NUMBER, "lit": [NUMBER], "doused": [NUMBER], "embers": NUMBER},
+	"quests": {"*": {"done": TYPE_BOOL, "progress": NUMBER}}, "tracked": TYPE_STRING, "deeds": TEXTS, "firsts": TEXTS, "crafted": TYPE_DICTIONARY, "hunted": TEXTS,
+	"met": TYPE_DICTIONARY, "tricks": TEXTS, "worldSteps": NUMBER,
+	"world": {
+		"position": {"mapId": TYPE_STRING, "x": NUMBER, "y": NUMBER, "facing": TYPE_STRING},
+		"discovered": {"*": {"x": NUMBER, "y": NUMBER, "w": NUMBER, "h": NUMBER}}, "openedChests": TEXTS, "slain": TEXTS, "slainAt": COUNTS, "gatheredAt": COUNTS,
+	},
+	"post": {
+		"bag": TEXTS, "threads": COUNTS, "delivered": TEXTS, "taken": NUMBER, "stamps": COUNTS, "places": {"*": TYPE_STRING},
+		"routes": {"*": COUNTS}, "signs": {"*": TYPE_STRING}, "lit": COUNTS, "hubs": COUNTS,
+	},
+}
 
 static var _game := ""
 
@@ -229,7 +258,7 @@ static func from_file(raw: Variant) -> Dictionary:
 	_put(hero, "jobs", hero_in.get("jobs"))
 	if not valid_hero(hero):
 		return {}
-	var state := {"hero": hero, "playSeconds": int(doc.get("playSeconds", 0))}
+	var state := {"hero": hero, "playSeconds": doc.get("playSeconds", 0)}
 
 	var pack := _section(doc, "pack")
 	state["gold"] = pack.get("gold", 0)
@@ -272,10 +301,9 @@ static func from_file(raw: Variant) -> Dictionary:
 	var at := _section(world, "at")
 	state["worldSteps"] = world.get("steps", 0)
 	# A world with nowhere to stand wakes in town (normalize).
-	state["world"] = null
 	if at.get("map") is String:
 		state["world"] = {
-			"position": {"mapId": at["map"], "x": int(at.get("x", 0)), "y": int(at.get("y", 0)), "facing": at.get("facing", "down")},
+			"position": {"mapId": at["map"], "x": at.get("x", 0), "y": at.get("y", 0), "facing": at.get("facing", "down")},
 			"discovered": world.get("fog", {}),
 			"openedChests": world.get("chests", []),
 			"slain": world.get("slain", []),
@@ -284,7 +312,38 @@ static func from_file(raw: Variant) -> Dictionary:
 		_put(state["world"], "gatheredAt", world.get("gatheredAt"))
 	# The Post (PIX-320): a file without the section has none yet.
 	_put(state, "post", doc.get("post") if doc.get("post") is Dictionary else null)
+	# A field of another type (a file edited by hand: the game's own writes
+	# and a code's checksum keep theirs) would stop `apply` half-way, the
+	# hero part loaded and no save possible after (PIX-504): damaged, whole.
+	if not well_typed(state):
+		return {}
+	state["playSeconds"] = int(state["playSeconds"])
+	if state.has("world"):
+		var stands: Dictionary = state["world"]["position"]
+		stands.merge({"x": int(stands["x"]), "y": int(stands["y"])}, true)
 	return normalize(state)
+
+
+## Whether every field of a state (the game's keys) is of the type the
+## sections' `from_dict` take (SHAPE).
+static func well_typed(state: Dictionary) -> bool:
+	return _fits(state, SHAPE)
+
+
+static func _fits(value: Variant, shape: Variant) -> bool:
+	if shape is int:
+		return typeof(value) in [TYPE_INT, TYPE_FLOAT] if shape == NUMBER else typeof(value) == shape
+	if shape is Array:
+		return value is Array and value.all(func(each: Variant) -> bool: return _fits(each, shape[0]))
+	if not value is Dictionary:
+		return false
+	if shape.has("*"):
+		return value.values().all(func(each: Variant) -> bool: return _fits(each, shape["*"]))
+	for key: String in shape:
+		var field := key.trim_prefix("+")
+		if not _fits(value[field], shape[key]) if value.has(field) else field != key:
+			return false
+	return true
 
 
 ## What `raw` (a parsed file) is: CURRENT (a v5 file), NEWER (a later
@@ -315,15 +374,10 @@ static func decodes(text: String) -> bool:
 	if json.parse(text) != OK or age(json.data) != CURRENT:
 		return false
 	var doc: Dictionary = json.data
-	var hero := _section(doc, "hero")
 	return (
-		doc.get("card") is Dictionary and _section(hero, "skills").get("nodes") is Array
-		and valid_hero({
-			"name": hero.get("name"), "roleId": hero.get("role"), "level": hero.get("level"), "xp": hero.get("xp"),
-			"xpToNext": hero.get("xpToNext"), "hp": hero.get("hp"), "mp": hero.get("mp"), "stats": hero.get("stats"),
-			"statPoints": hero.get("statPoints"), "skillPoints": hero.get("skillPoints"), "jobs": hero.get("jobs"),
-		})
+		doc.get("card") is Dictionary and _section(_section(doc, "hero"), "skills").get("nodes") is Array
 		and _section(_section(doc, "world"), "at").get("map") is String
+		and not from_file(doc).is_empty()
 	)
 
 

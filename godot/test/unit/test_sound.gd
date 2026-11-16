@@ -834,6 +834,11 @@ func test_the_town_after_the_board_waits_on_the_hush() -> void:
 	stage.world = world
 	var kept: Array[String] = GameState.reveals.duplicate()
 	GameState.reveals.assign(["the_inn"])
+	# PIX-504: the game quit with the board open, its ledger leaving the tree
+	# after the world has.
+	await stage.after_board()
+	assert_eq([world.asked, world.drawn], [[], []], "no town drawn on a world out of the tree")
+	add_child(world)
 	world.hush_given = false
 	await stage.after_board()
 	assert_eq(world.drawn, [], "not drawn while another change of place holds the hush")
@@ -931,3 +936,20 @@ func test_a_track_with_an_intro_loops_from_its_loop_begin() -> void:
 	stream.loop_begin = 0
 	Sound.stop_music()
 
+
+
+## PIX-504: only a harness run let go of its sounds before quitting; a
+## window closed on a sound still playing left its stream "still in use at
+## exit". The close is now the game's to answer, after the same farewell.
+func test_a_closed_window_waits_for_every_sound_to_be_let_go() -> void:
+	assert_false(get_tree().auto_accept_quit, "the close is the game's to answer")
+	var sound: Node = preload("res://scripts/sound.gd").new()
+	add_child_autofree(sound)
+	sound.play("door")
+	var players := sound.find_children("*", "AudioStreamPlayer", false, false)
+	assert_true(players.any(func(player: AudioStreamPlayer) -> bool: return player.playing), "a sound playing at the close")
+	await sound.farewell()
+	get_tree().paused = false
+	assert_true(sound.released, "none played after")
+	for player: AudioStreamPlayer in players:
+		assert_false(player.playing or player.stream != null, "%s let go" % player.bus)

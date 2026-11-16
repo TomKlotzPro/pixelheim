@@ -19357,6 +19357,10 @@ msgid "Slot %d's save can't be read. It's kept as it is, in Saves."
 msgstr "La sauvegarde de l'emplacement %d est illisible. Elle est gardée telle quelle, dans Sauvegardes."
 
 #: scripts/state/game_state.gd
+msgid "The game couldn't save. It will keep trying."
+msgstr "Le jeu n'a pas pu sauvegarder. Il réessaiera."
+
+#: scripts/state/game_state.gd
 msgid "Wanderer"
 msgstr "Vagabond"
 

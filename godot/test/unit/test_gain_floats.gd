@@ -194,7 +194,7 @@ func test_xp_then_gold_comes_together_on_one_line() -> void:
 	var gold := Gains.none()
 	gold["gold"] = 36
 	fx.show_gains(gold, Vector2(100, 50))
-	await wait_frames(1)
+	await wait_physics_frames(1)
 	var rows: Array = fx.get_child(0).get_children().filter(func(row: Node) -> bool: return not row.is_queued_for_deletion())
 	assert_eq(rows.size(), 1, "one line, not two")
 	assert_eq((rows[0].get_node("then") as Label).text, "· +7 XP")

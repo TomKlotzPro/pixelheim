@@ -19357,6 +19357,10 @@ msgid "Slot %d's save can't be read. It's kept as it is, in Saves."
 msgstr ""
 
 #: scripts/state/game_state.gd
+msgid "The game couldn't save. It will keep trying."
+msgstr ""
+
+#: scripts/state/game_state.gd
 msgid "Wanderer"
 msgstr ""
 

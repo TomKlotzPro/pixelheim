@@ -468,13 +468,16 @@ func talk(npc: Dictionary) -> void:
 			npc = npc.duplicate()
 			npc["lines"] = [word] + Array(npc["lines"])
 	# Maren tells each relic's story once its boss is down, once each
-	# (PIX-153, PIX-170).
+	# (PIX-153, PIX-170), and again when the hero left before its end
+	# (PIX-504: Esc or a step on its first line marked it told for good).
 	if npc["id"] == "elder":
 		var told := Story.elder_story(GameState.progression.story_seen, GameState.progression.hunted)
 		if not told.is_empty():
 			npc = npc.duplicate()
 			npc["lines"] = told["lines"]
-			GameState.dialogue_closed.connect(func(_who: String) -> void: GameState.mark_seen(told["id"]), CONNECT_ONE_SHOT)
+			GameState.dialogue_closed.connect(func(_who: String) -> void:
+				if GameState.questing.heard_out:
+					GameState.mark_seen(told["id"]), CONNECT_ONE_SHOT)
 			box.npc = npc
 			world.add_child(box)
 			return
