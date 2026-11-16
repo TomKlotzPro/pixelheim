@@ -535,3 +535,37 @@ func test_a_plate_not_laid_out_leaves_the_arrow_room() -> void:
 	world.messages.message_box.position.y = 682.0 - world.messages.message_box.size.y
 	assert_gte(hud._words_top(), 0.0, "on the screen")
 	assert_gte(hud.arrow_area().size.y, 0.0, "never negative")
+
+
+## PIX-484: talking to Vex, « Press Q to open your journal. » stayed half
+## hidden behind her words. The log is put away while a conversation or a
+## screen holds the world, and back, its line in full, once the world runs.
+func test_the_log_is_put_away_while_a_conversation_is_open() -> void:
+	hud.hint("journal")
+	assert_eq(_lines().size(), 1, "the journal's hint up")
+	world.child_entered_tree.emit(autofree(Screen.new()))
+	assert_false(world.messages.log_box.visible, "a conversation opens: put away")
+	world.messages.update()
+	assert_true(world.messages.log_box.visible, "the world runs again: back")
+	assert_eq(_up(), "journal", "the same line")
+	world.child_entered_tree.emit(autofree(Node.new()))
+	assert_true(world.messages.log_box.visible, "anything else joining the world leaves it")
+
+
+## PIX-484: the journal's hint came up after the journal had been opened.
+## Opening it is the lesson learnt: the hint goes, showing or held back, and
+## never comes.
+func test_the_journals_hint_stops_once_the_journal_was_opened() -> void:
+	hud.hint("journal")
+	assert_eq(_up(), "journal")
+	hud.hint_learnt("journal")
+	assert_eq([_up(), _lines()], ["", []], "gone from the log")
+	assert_has(GameState.settings.hints_seen, "journal")
+	hud.hint("journal")
+	assert_eq(_up(), "", "and never said again")
+	hud._held_hints.append(["bank", {}, "bank"])
+	hud.hint_learnt("bank")
+	assert_eq(hud.hint_held(), "", "one held back goes too")
+	GameState.settings.hints = false
+	hud.hint_learnt("board")
+	assert_does_not_have(GameState.settings.hints_seen, "board", "hints off: nothing kept")

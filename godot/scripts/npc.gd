@@ -21,6 +21,9 @@ const LOOK_SECONDS := 0.5
 const BENCH: Array[int] = [1659, 1661]
 const BENCH_AT := Vector2(0, 3)
 
+## The body the hero bumps into (_ready says why this shape).
+const BODY := Vector2(20, 17)
+
 var world: World
 var data: Dictionary
 var home := Vector2i.ZERO
@@ -79,9 +82,14 @@ func _ready() -> void:
 	# walking past along that row, clears it by a pixel. From there the
 	# hero's head still hid a villager's feet (a Mini World one's whole
 	# lower half): they're drawn over the hero instead (stands_over).
+	# Either side it runs 10 px (PIX-484): the hero's feet stop 15 px off,
+	# a pixel clear of a figure 14 px wide, and still walk the next column.
+	# At 6 px (as wide as a Mini World villager, before everyone who talks
+	# got a Puny figure of the hero's size, PIX-405) the hero stopped 11 px
+	# off, half over Bram, Vex and Odo.
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
-	rect.size = Vector2(12, 17)
+	rect.size = BODY
 	shape.shape = rect
 	shape.position = Vector2(0, 5.5)
 	add_child(shape)

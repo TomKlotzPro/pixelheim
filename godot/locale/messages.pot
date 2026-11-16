@@ -2389,6 +2389,10 @@ msgid "A lost fight still wakes you tucked into the inn's bed"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A melee skill reaches a foe anywhere in the cell in front of you"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A mini-map rides in the corner of the world, fog included"
 msgstr ""
 
@@ -2506,6 +2510,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A skeleton falls to a pile of bones and rises once, unless you strike the pile"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A skill pressed just after a swing or another skill is kept and goes as soon as you can; if it can't, its slot flashes"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4014,6 +4022,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Gold With a Purpose"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Gold and damage numbers have a full dark outline, so they read on the sand"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7101,6 +7113,10 @@ msgid "The log keeps only what the world doesn't show: the story, quests, levels
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The log steps away while you talk, and you no longer stand over the villager you talk to"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The main story stands out: a gold ring around the \"!\" over a letter's recipient, the edge arrow in gold while it leads the story, and a hollow gold diamond on the map while you follow a side quest"
 msgstr ""
 
@@ -7561,6 +7577,10 @@ msgid "Told True"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Told in Time"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Tooltips and scrollbars now wear the game's parchment and brass, and the mouse is a little brass pointer that turns into a hand over buttons"
 msgstr ""
 
@@ -7830,6 +7850,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "When poison, a burn or a stun takes hold of you, a line says so, and your figure and health bar wear its colour while it lasts"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -19106,6 +19130,18 @@ msgstr ""
 
 #: scripts/state/ailments.gd
 msgid "The burn"
+msgstr ""
+
+#: scripts/state/ailments.gd
+msgid "You are burning!"
+msgstr ""
+
+#: scripts/state/ailments.gd
+msgid "You are poisoned!"
+msgstr ""
+
+#: scripts/state/ailments.gd
+msgid "You are stunned!"
 msgstr ""
 
 #: scripts/state/ailments.gd

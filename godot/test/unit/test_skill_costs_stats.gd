@@ -229,3 +229,41 @@ func test_every_stat_row_has_its_icon() -> void:
 	var screen: Screen = await _sheet()
 	for index in Skills.STATS.size():
 		assert_not_null(screen.rows[index]["icon"], Skills.STATS[index])
+
+
+## PIX-484: poison drained the hero with nothing on the HP bar. The bar
+## wears the ailment's colour while it lasts, through a refresh too.
+func test_the_hp_bar_wears_an_ailments_colour_while_it_lasts() -> void:
+	_lend("rogue")
+	var dock := _dock()
+	var fill: ColorRect = dock.bars["hp"]["fill"]
+	dock._process(0.0)
+	assert_eq(fill.color, HudDockScript.BARS["hp"][0], "whole: red")
+	var ailments: Ailments = dock.world.player.ailments
+	ailments.inflict({"kind": "stun", "chance": 1.0, "turns": 2, "power": 0}, func() -> float: return 0.0)
+	ailments.inflict({"kind": "poison", "chance": 1.0, "turns": 2, "power": 1}, func() -> float: return 0.0)
+	dock._process(0.0)
+	assert_eq(fill.color, HudDockScript.AILING["poison"][0], "poisoned: poison's colour, a stun aside")
+	assert_eq(dock.bars["hp"]["shine"].color, HudDockScript.AILING["poison"][1])
+	dock.refresh()
+	assert_eq(fill.color, HudDockScript.AILING["poison"][0], "a tick's refresh keeps it")
+	ailments.clear()
+	dock._process(0.0)
+	assert_eq(fill.color, HudDockScript.BARS["hp"][0], "cured: red again")
+	for kind: String in HudDockScript.AILING:
+		for bar: String in HudDockScript.BARS:
+			assert_ne(HudDockScript.AILING[kind][0], HudDockScript.BARS[bar][0], "%s: no other bar's colour (%s)" % [kind, bar])
+
+
+## PIX-484: a skill's key that does nothing flashes its slot and settles.
+func test_a_refused_slot_flashes_and_settles() -> void:
+	_lend("mage")
+	var dock := _dock()
+	var slot: Control = dock.slots[1]["slot"]
+	dock.refuse(1)
+	dock.refuse(1)
+	assert_eq(slot.modulate, HudDockScript.REFUSED, "lit at once")
+	assert_eq(dock.slots[0]["slot"].modulate, Color.WHITE, "its own slot only")
+	dock.refuse(9)
+	await wait_seconds(HudDockScript.REFUSED_S + 0.1)
+	assert_eq(slot.modulate, Color.WHITE, "and back")

@@ -301,3 +301,42 @@ func test_a_villager_is_drawn_over_the_hero_right_below() -> void:
 	assert_false(Npc.stands_over(at, at + Vector2(0, -15)), "above")
 	assert_false(Npc.stands_over(at, at + Vector2(16, 0)), "beside")
 	assert_false(Npc.stands_over(at, at + Vector2(0, 32)), "two cells down")
+
+
+## How far `frames`' idle reaches either side of the figure's middle, every
+## way it faces, at `scale`.
+func _half_width(frames: SpriteFrames, scale: float) -> float:
+	var widest := 0.0
+	for way: String in PunyArt.DIRS:
+		var frame := frames.get_frame_texture(PunyArt.pick(frames, "idle", way), 0)
+		var ink := Rect2(Ink.used(frame))
+		var middle := frame.get_width() / 2.0
+		widest = maxf(widest, maxf(middle - ink.position.x, ink.end.x - middle) * scale)
+	return widest
+
+
+## PIX-484: the hero stood half over Bram, Vex and Odo, talking from the
+## side: a villager's body ran 6 px either side, a Mini World farmer's
+## width, and since PIX-405 everyone who talks is as wide as the hero. Their
+## body keeps the hero's feet far enough off that the two figures stand
+## clear of each other, whoever they are, with the paid figures and without
+## (at most the two pixels of a thing held out: Loras's lute, the dog's
+## tail), and no further than the middle of the next cell, so the column
+## beside them is still walked.
+func test_the_hero_stops_clear_of_a_villager_from_the_side() -> void:
+	var player := preload("res://scripts/player.gd")
+	var apart: float = Npc.BODY.x / 2.0 + player.BODY.x / 2.0
+	assert_lt(apart, 16.0, "the next column's middle is free")
+	var was := PunyTown.withheld
+	for withheld: bool in [false, true]:
+		PunyTown.withheld = withheld
+		var hero := 0.0
+		for role: String in PunyArt.HEROES:
+			hero = maxf(hero, _half_width(PunyArt.frames(PunyArt.hero(role)), 1.0))
+		for sprite: String in PunyArt.VILLAGERS:
+			var art := PunyArt.villager(sprite)
+			var theirs := _half_width(PunyArt.frames(art), art.get("scale", 1.0))
+			assert_lte(theirs + hero - apart, 2.0, "%s (%s): %s px either side, the hero %s, their feet %s apart" % [sprite, "free" if withheld else "paid", theirs, hero, apart])
+			if sprite == "bram":
+				assert_gt(theirs + hero - 11.0, 2.0, "at the old 11 px Bram and the hero overlapped, as the playtest saw")
+	PunyTown.withheld = was

@@ -4,8 +4,9 @@ extends GutTest
 
 
 ## The world as a screen finds it (Screen._put_hud_aside): its HUD.
-class FakeWorld extends Node:
-	var hud: Hud
+## The scene a cutscene finds the HUD on: Screen reads it off a `World`.
+class FakeWorld extends "res://test/bare_world.gd":
+	pass
 
 
 func _press(action: StringName) -> InputEventAction:

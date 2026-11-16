@@ -198,6 +198,20 @@ func hint(id: String, values := {}, key := "") -> void:
 	world.messages.hint_line(seen_id, text)
 
 
+## What a hint teaches, done before it was said (PIX-484: the journal's
+## came up after the journal had been opened): seen, and gone from the log
+## and from those held back.
+func hint_learnt(seen_id: String) -> void:
+	var settings := GameState.settings
+	if not settings.hints:
+		return
+	if seen_id not in settings.hints_seen:
+		settings.hints_seen.append(seen_id)
+		settings.save_file()
+	_held_hints = _held_hints.filter(func(held: Array) -> bool: return held[2] != seen_id)
+	world.messages.drop_hint(seen_id)
+
+
 ## A hint held back shows once nothing holds it.
 func next_hint() -> void:
 	if not _held_hints.is_empty() and not hints_wait():

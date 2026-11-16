@@ -85,6 +85,13 @@ const MOST_LIFT := 36.0
 const REACH := 16.0 + MOST_LIFT
 
 
+## The eight ways a floating word's dark ring is drawn off it, a pixel each.
+const RING: Array[Vector2] = [
+	Vector2(-1, -1), Vector2(0, -1), Vector2(1, -1), Vector2(-1, 0),
+	Vector2(1, 0), Vector2(-1, 1), Vector2(0, 1), Vector2(1, 1),
+]
+
+
 ## A word that rises and fades over where it happened (PIX-155: "dodged",
 ## "blocked"). A `big` one (PIX-211: LEVEL UP, a bell's "Dong!"; a fine or
 ## epic drop's name now rises with the rest of a win, show_gains) bursts in
@@ -104,15 +111,23 @@ func float_text(text: String, at: Vector2, color: Color, big := false) -> void:
 	tween.chain().tween_callback(label.queue_free)
 
 
-## The UI's bold pixel face at its own size, outlined in the night (PIX-194).
+## The UI's bold pixel face at its own size, ringed in the night (PIX-194):
+## the words drawn again a pixel off every way under themselves. The face's
+## own outline drew only in the letters' hollows (PIX-484: on the sand path
+## a gold "+10" read "+11", a "30" "31").
 func _floating(text: String, color: Color) -> Label:
 	var label := Label.new()
 	label.text = text
-	label.add_theme_font_override("font", UiStyle.bold_font())
-	label.add_theme_font_size_override("font_size", UiStyle.BODY_PX)
-	label.add_theme_color_override("font_color", color)
-	label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
-	label.add_theme_constant_override("outline_size", 3)
+	var look := LabelSettings.new()
+	look.font = UiStyle.bold_font()
+	look.font_size = UiStyle.BODY_PX
+	look.font_color = color
+	look.stacked_shadow_count = RING.size()
+	for i in RING.size():
+		look.set_stacked_shadow_offset(i, RING[i])
+		look.set_stacked_shadow_color(i, UiStyle.NIGHT)
+		look.set_stacked_shadow_outline_size(i, 0)
+	label.label_settings = look
 	label.size = label.get_minimum_size()
 	# Bright at night too (PIX-221).
 	label.material = Lights.unshaded()

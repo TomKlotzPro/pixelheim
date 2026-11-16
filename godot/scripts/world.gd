@@ -380,6 +380,8 @@ func use_portal(target: Dictionary) -> void:
 func open_screen(screen: String) -> void:
 	if player.dead or get_tree().paused:
 		return
+	if screen == "journal":
+		hud.hint_learnt("journal")
 	match screen:
 		"inventory":
 			open_inventory()

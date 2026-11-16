@@ -46,6 +46,13 @@ func step_wounded() -> void:
 	world.player.heal()
 
 
+## `--ail poison` (PIX-484): the hero afflicted, sure to take, as a foe's
+## blow would.
+func step_ail() -> void:
+	world.player.afflict({"kind": flags.value("--ail"), "chance": 1.0, "turns": 30, "power": 1})
+	await h.get_tree().create_timer(0.3).timeout
+
+
 func step_mimic() -> void:
 	# Pair with `--map mirefen`: open the mire's mimic chest; `--wait`
 	# catches its shudder (under 0.6 s) or the ambush after.
