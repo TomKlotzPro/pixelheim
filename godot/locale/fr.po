@@ -2045,6 +2045,10 @@ msgid "A CAT, A DOG AND TWO CHILDREN: Pixelheim has a cat that judges you, a dog
 msgstr "UN CHAT, UN CHIEN ET DEUX ENFANTS : Pixelheim a un chat qui vous juge, un chien qui s'appuie contre vous et - une fois devenu village - Pip et Nell qui courent sur la place"
 
 #: assets/data/changelog.json
+msgid "A Clean Start"
+msgstr "Un bon départ"
+
+#: assets/data/changelog.json
 msgid "A DAWN YOU WATCH: when Maren has the letter, the Night of Ash ends on the town itself. The camera drifts from the shrine across Pixelheim as the fires gutter out one by one and the red night greys toward morning; the survivors stand together on the square and speak in their own voices - Maren, the mayor out of his hall, Bram and Sela beside you - and when Fafnyr is named, he roars, and his shadow sweeps over the town. Then the day begins: Pixelheim, day one"
 msgstr "UNE AUBE SOUS VOS YEUX : quand Maren a la lettre, la Nuit des Cendres s'achève sur la ville elle-même. La caméra glisse du sanctuaire à travers Pixelheim tandis que les feux s'éteignent un à un et que la nuit rouge pâlit vers le matin ; les survivants se rassemblent sur la place et parlent de leur propre voix - Maren, le maire sorti de sa mairie, Bram et Sela à vos côtés - et quand Fafnyr est nommé, il rugit, et son ombre balaie la ville. Puis le jour se lève : Pixelheim, premier jour"
 
@@ -2235,6 +2239,10 @@ msgstr "La porte d'une ferme brûlée montre désormais une petite étoile pâle
 #: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr "La première nuit d'un clerc lui dit de frapper les braises et de se soigner entre deux coups, puisque Soin n'est pas une arme"
+
+#: assets/data/changelog.json
+msgid "A click during the opening moves the story on, and no longer presses the title's buttons under it (no more second opening or two hero creations)"
+msgstr "Un clic pendant l'ouverture fait avancer l'histoire, et n'appuie plus sur les boutons du titre en dessous (fini la deuxième ouverture ou les deux créations de héros)"
 
 #: assets/data/changelog.json
 msgid "A code-quality pass under the floorboards: one panel system instead of seven scattered flags - menus are properly modal everywhere now, and a save taken with any panel open loads clean"
@@ -3529,6 +3537,10 @@ msgid "Every Face"
 msgstr "Chaque visage"
 
 #: assets/data/changelog.json
+msgid "Every Key Says True"
+msgstr "Chaque touche dit vrai"
+
+#: assets/data/changelog.json
 msgid "Every Lead True"
 msgstr "Chaque piste est juste"
 
@@ -3917,6 +3929,10 @@ msgid "Follow the Cry"
 msgstr "Suivre l'appel"
 
 #: assets/data/changelog.json
+msgid "Footers only name the keys that do something there"
+msgstr "Le bas de chaque écran ne nomme plus que les touches qui y font quelque chose"
+
+#: assets/data/changelog.json
 msgid "Footfalls"
 msgstr "Bruits de pas"
 
@@ -4289,6 +4305,10 @@ msgid "In Plain Sight"
 msgstr "Bien en vue de tous"
 
 #: assets/data/changelog.json
+msgid "In Saves from the title, E plays the hero at once, and the last one played is tagged as such"
+msgstr "Dans les sauvegardes depuis le titre, E lance le héros aussitôt, et le dernier joué est indiqué comme tel"
+
+#: assets/data/changelog.json
 msgid "In Their Own Words"
 msgstr "De leur propre voix"
 
@@ -4299,6 +4319,10 @@ msgstr "Dans une conversation, la touche Esc indique désormais « quitter �
 #: assets/data/changelog.json
 msgid "In caves and mines, water drips and stones tumble, where a hearth used to crackle"
 msgstr "Dans les grottes et les mines, l'eau goutte et des pierres dégringolent, là où crépitait un âtre"
+
+#: assets/data/changelog.json
+msgid "In hero creation, the name field keeps taking letters after Enter on an empty name, and Esc goes back to the title"
+msgstr "Dans la création du héros, le champ du nom accepte toujours les lettres après Entrée sur un nom vide, et Échap revient au titre"
 
 #: assets/data/changelog.json
 msgid "In the Ashes, Hilda's and Vex's crafts are at their stalls on the square; Sela's slimes are in her stores, Wren lost her stable to the fire, and Ana warns of the packs, not the grass"
@@ -4455,6 +4479,10 @@ msgstr "La Nuit des Lanternes tient ses promesses : si elle commence pendant q
 #: assets/data/changelog.json
 msgid "Lantern Shadows"
 msgstr "Les ombres de la lanterne"
+
+#: assets/data/changelog.json
+msgid "Large reading text now grows every text you read: the pack, the journal, the skills and the counter's card"
+msgstr "Le grand texte de lecture agrandit maintenant tout ce qui se lit : le sac, le journal, les compétences et la fiche du comptoir"
 
 #: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
@@ -5067,6 +5095,10 @@ msgstr "Sur ordinateur, rien ne change"
 #: assets/data/changelog.json
 msgid "On a gamepad, A answers and confirms, X swings, B goes back everywhere, Y opens the pack, the D-pad walks, and LB, LT and RT cast your first three skills"
 msgstr "À la manette, A répond et confirme, X frappe, B revient en arrière partout, Y ouvre le sac, la croix directionnelle fait marcher, et LB, LT et RT lancent vos trois premières compétences"
+
+#: assets/data/changelog.json
+msgid "On a pad, the right stick turns the page of a long card, and the footer shows the pad's keys while you play with one"
+msgstr "À la manette, le stick droit tourne la page d'une longue fiche, et le bas de l'écran montre les touches de la manette quand vous jouez avec"
 
 #: assets/data/changelog.json
 msgid "On a phone the controls are sized for a thumb on any screen, the attack, roll and use buttons show a drawn sword, arrow and hand instead of words, and all six skill keys are on screen, with each skill's icon"
@@ -6031,6 +6063,10 @@ msgstr "Devant un atelier, l'onglet Artisanat l'indique en vert : fabriquez à
 #: assets/data/changelog.json
 msgid "Stars twinkle, embers rise and chimneys smoke while it loads, then the title rises out of the same picture"
 msgstr "Les étoiles scintillent, les braises montent et les cheminées fument pendant le chargement, puis le titre surgit de la même image"
+
+#: assets/data/changelog.json
+msgid "Stats says how many points you have left to spend; in Options, left and right move between a key row's columns and only E rebinds"
+msgstr "Les stats disent combien de points il vous reste ; dans les options, gauche et droite passent d'une colonne à l'autre d'une touche et seul E la change"
 
 #: assets/data/changelog.json
 msgid "Status effects: poison and burn tick every turn, stun steals turns"
@@ -18105,20 +18141,12 @@ msgid "Up"
 msgstr "Up"
 
 #: scripts/layout.gd
-msgid "PgUp/PgDn"
-msgstr "PgUp/PgDn"
-
-#: scripts/layout.gd
 msgid "read"
 msgstr "lire"
 
 #: scripts/ledger_screen.gd
 msgid "do it"
 msgstr "valider"
-
-#: scripts/ledger_screen.gd
-msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
-msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
 
 #: scripts/map_layers/dungeon_layer.gd
 msgid "Way out"
@@ -18301,12 +18329,24 @@ msgid "adjust"
 msgstr "régler"
 
 #: scripts/options_screen.gd
+msgid "change"
+msgstr "changer"
+
+#: scripts/options_screen.gd
 msgid "keep the old one"
 msgstr "garder l'ancienne"
 
 #: scripts/options_screen.gd
-msgid "rebind / toggle"
-msgstr "réassigner / basculer"
+msgid "other column"
+msgstr "autre colonne"
+
+#: scripts/options_screen.gd
+msgid "rebind"
+msgstr "réassigner"
+
+#: scripts/options_screen.gd
+msgid "reset"
+msgstr "rétablir"
 
 #: scripts/pause_screen.gd
 msgid "Paused"
@@ -18481,6 +18521,10 @@ msgid "Its last save couldn't be read: this is the one before it."
 msgstr "Sa dernière sauvegarde était illisible : voici la précédente."
 
 #: scripts/saves_screen.gd
+msgid "Last played"
+msgstr "Dernière partie"
+
+#: scripts/saves_screen.gd
 msgid "New Game, on the title screen, starts a hero."
 msgstr "Nouvelle partie, sur l'écran titre, crée un héros."
 
@@ -18591,6 +18635,10 @@ msgstr "Vous avez supprimé %s. R annule la suppression, tant qu'aucun autre hé
 #: scripts/saves_screen.gd
 msgid "You'll go back to the title."
 msgstr "Vous reviendrez à l'écran titre."
+
+#: scripts/saves_screen.gd
+msgid "bring back"
+msgstr "ramener"
 
 #: scripts/saves_screen.gd
 msgid "continue"
@@ -18885,6 +18933,10 @@ msgid "Your pack"
 msgstr "Votre sac"
 
 #: scripts/shop_screen.gd
+msgid "all"
+msgstr "tout"
+
+#: scripts/shop_screen.gd
 msgid "buy"
 msgstr "acheter"
 
@@ -18893,8 +18945,16 @@ msgid "forge"
 msgstr "forger"
 
 #: scripts/shop_screen.gd
+msgid "how many"
+msgstr "combien"
+
+#: scripts/shop_screen.gd
 msgid "junk"
 msgstr "camelote"
+
+#: scripts/shop_screen.gd
+msgid "keep"
+msgstr "garder"
 
 #: scripts/shop_screen.gd
 msgid "max"
@@ -18921,16 +18981,16 @@ msgid "sell"
 msgstr "vendre"
 
 #: scripts/shop_screen.gd
+msgid "sell a stack"
+msgstr "vendre le lot"
+
+#: scripts/shop_screen.gd
 msgid "sold"
 msgstr "vendu"
 
 #: scripts/shop_screen.gd
-msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
-msgstr "{key:move_left}/{key:move_right}  onglet      {key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
-
-#: scripts/shop_screen.gd
-msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close"
-msgstr "{key:move_left}/{key:move_right}  onglet      {key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Z  vendre le lot      Esc  fermer"
+msgid "tab"
+msgstr "onglet"
 
 #: scripts/shop_sign.gd
 msgid "A house: %dg, at the door"
@@ -19097,8 +19157,8 @@ msgid "forget"
 msgstr "oublier"
 
 #: scripts/skills_screen.gd
-msgid "learn / walk"
-msgstr "apprendre / suivre"
+msgid "learn"
+msgstr "apprendre"
 
 #: scripts/skills_screen.gd
 msgid "locked"
@@ -19107,6 +19167,10 @@ msgstr "bloqué"
 #: scripts/skills_screen.gd
 msgid "set key"
 msgstr "assigner"
+
+#: scripts/skills_screen.gd
+msgid "walk"
+msgstr "suivre"
 
 #: scripts/sound.gd
 msgid "Ambience"
@@ -19929,8 +19993,12 @@ msgid "Your tree is whole: %d skill point%s to spend beyond it, below."
 msgstr "Votre arbre est complet : %d point%s de compétence à dépenser au-delà, ci-dessous."
 
 #: scripts/stats_screen.gd
-msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      {key:stats} / Esc  close"
-msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      {key:stats} / Esc  fermer"
+msgid "spend a point (%d left)"
+msgstr "dépenser un point (reste %d)"
+
+#: scripts/stats_screen.gd
+msgid "spend a skill point (%d left)"
+msgstr "dépenser un point de compétence (reste %d)"
 
 #: scripts/throne_screen.gd
 msgid "answer"

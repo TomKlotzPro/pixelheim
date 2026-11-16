@@ -76,19 +76,25 @@ func _keys(flags: HarnessFlags) -> void:
 	}
 	# A pad's buttons by name (PIX-388: Back opens the dock's menu, the D-pad steers it).
 	var pad := {"back": JOY_BUTTON_BACK, "pad_up": JOY_BUTTON_DPAD_UP, "pad_down": JOY_BUTTON_DPAD_DOWN}
+	# Its right stick, pushed up or down: a card's pages (PIX-487).
+	var sticks := {"pad_pgup": -1.0, "pad_pgdn": 1.0}
 	for key: String in flags.list("--keys"):
 		# A hand's pause: past the moment E does nothing after a talk (PIX-486).
 		if key == "wait":
 			await get_tree().create_timer(Screen.SETTLE + 0.1).timeout
 			continue
+		if sticks.has(key):
+			await _tap(KEY_NONE, JOY_BUTTON_INVALID, sticks[key])
+			continue
 		await _tap(KEY_NONE if pad.has(key) else codes[key], pad.get(key, JOY_BUTTON_INVALID))
 	await get_tree().create_timer(0.2).timeout
 
 
-## One key (or a pad's `button`) pressed and let go, as a hand would.
-func _tap(keycode: Key, button := JOY_BUTTON_INVALID) -> void:
+## One key (or a pad's `button`, or its right stick pushed `push` up or
+## down) pressed and let go, as a hand would.
+func _tap(keycode: Key, button := JOY_BUTTON_INVALID, push := 0.0) -> void:
 	for pressed: bool in [true, false]:
-		_press(keycode, pressed, button)
+		_press(keycode, pressed, button, push)
 		# Held through two physics ticks too: walking and facing are read
 		# there, and a run stepped faster than its ticks (`--fps`) draws
 		# frames between them.
@@ -113,9 +119,14 @@ func _villager(id: String) -> Npc:
 ## actions (what polling reads) and the event itself, straight to the
 ## viewport, which needs no window focus (an unfocused window's keys are
 ## dropped by the display server).
-func _press(keycode: Key, pressed: bool, button := JOY_BUTTON_INVALID) -> void:
+func _press(keycode: Key, pressed: bool, button := JOY_BUTTON_INVALID, push := 0.0) -> void:
 	var event: InputEvent
-	if button != JOY_BUTTON_INVALID:
+	if push != 0.0:
+		var stick := InputEventJoypadMotion.new()
+		stick.axis = Controls.PAD_PAGE_AXIS
+		stick.axis_value = push if pressed else 0.0
+		event = stick
+	elif button != JOY_BUTTON_INVALID:
 		var held := InputEventJoypadButton.new()
 		held.button_index = button
 		held.pressed = pressed

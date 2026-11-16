@@ -62,6 +62,7 @@ var on_play_current: Callable
 var _slots: Array[Dictionary] = []
 ## The hero a pasted code holds, while Paste asks before replacing one.
 var _pasting := {}
+var footer: HBoxContainer
 
 
 func _open() -> void:
@@ -113,8 +114,33 @@ func _open() -> void:
 
 	status = Layout.wrapped(UiStyle.label("", 14, UiStyle.LAMP), LINE_TEXT)
 	body.add_child(status)
-	add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  continue      D  duplicate      X  delete      C  copy      V  paste      Esc  close"))
 	_refresh()
+
+
+## Whether Saves stand over the title: no hero is being played yet.
+static func _over_title() -> bool:
+	return not GameState.title_seen
+
+
+## The keys along the bottom, only those that act on the chosen slot
+## (PIX-484: an empty slot listed E, D, X and C, which only say there's no
+## one there, and never R while a deleted hero waited): a hero's five, an
+## empty slot's Paste and the hero R brings back, and X on a save the game
+## can't read.
+func _set_footer() -> void:
+	var acts := "X  delete      "
+	match _kind():
+		SaveSlots.HERO:
+			acts = "{key:interact}  continue      D  duplicate      X  delete      C  copy      V  paste      "
+		SaveSlots.EMPTY:
+			acts = "V  paste      "
+			if not _slots[selected]["deleted"].is_empty():
+				acts += "R  bring back      "
+	footer = UiStyle.refooted(self, footer, "{key:move_up}/{key:move_down}  choose      " + acts + "Esc  close")
+
+
+func _hands_changed() -> void:
+	_set_footer()
 
 
 func _command(event: InputEvent) -> Callable:
@@ -204,6 +230,9 @@ func _continue() -> void:
 			on_play_current.call()
 		return
 	if GameState.play_slot(_target()):
+		# From the title too, the hero is played at once, as from the pause
+		# menu (PIX-484: it came back to the title, Continue to press again).
+		GameState.title_seen = true
 		reload_world()
 
 
@@ -245,7 +274,8 @@ func _delete() -> void:
 		SaveSlots.HERO:
 			var in_hand := _in_hand()
 			var question := SlotCard.asking(slot, in_hand)
-			if in_hand:
+			# Over the title there is nowhere to go back to (PIX-484).
+			if in_hand and not _over_title():
 				question += " " + Text.t("You'll go back to the title.")
 			if not _confirm("delete", "%s %s" % [question, Text.t("Press X again to delete. Esc: keep.")]):
 				return
@@ -443,6 +473,7 @@ func _draw() -> void:
 		planks[action].disabled = kind != SaveSlots.HERO
 	planks["delete"].disabled = kind == SaveSlots.EMPTY
 	planks["restore"].visible = not _slots[selected]["deleted"].is_empty()
+	_set_footer()
 
 
 func _fill_card(card: PanelContainer, index: int) -> void:
@@ -487,7 +518,8 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 	# The hero in hand plays here; a stand-in (no hero yet, or the slot a
 	# launch couldn't read) plays no one's slot.
 	var playing := index + 1 == GameState.slot and not GameState.standing_in
-	var tag := UiStyle.label("Playing" if playing else Text.t("Slot %d") % (index + 1), 12,
+	# Over the title no one plays yet: it's the hero Continue would take up.
+	var tag := UiStyle.label(("Last played" if _over_title() else "Playing") if playing else Text.t("Slot %d") % (index + 1), 12,
 		UiStyle.LAMP if playing else UiStyle.FADED)
 	tag.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	top.add_child(tag)

@@ -181,7 +181,8 @@ func test_stats_and_skills_fit_in_large_text() -> void:
 	var before: bool = GameState.settings.large_text
 	GameState.settings.large_text = true
 	# And every card that reads in it (PIX-477, PIX-483): it keeps its size.
-	var kinds: Array[String] = ["stats", "skills", "shop", "bank", "town_hall", "bounty", "home"]
+	# And the descriptions that grow with it (PIX-484): the pack's, the journal's.
+	var kinds: Array[String] = ["stats", "skills", "shop", "bank", "town_hall", "bounty", "home", "inventory", "journal"]
 	var out := await _fits(kinds)
 	GameState.settings.large_text = before
 	assert_eq(out.size(), 0, "\n".join(out))

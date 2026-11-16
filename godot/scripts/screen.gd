@@ -43,10 +43,13 @@ static var _quiet_until := 0
 var closing_actions: Array[StringName] = []
 var _holding := false
 var _aside := false
+## The hands this screen's keys were last named for (Controls.pad).
+var _pad := false
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_pad = Controls.pad
 	_shown.append(self)
 	# On a phone the canvas outgrows 1280x720: the screen keeps to the middle
 	# (PIX-162). On a desktop this is no offset at all.
@@ -71,6 +74,13 @@ func _open() -> void:
 	pass
 
 
+## The hands on the game changed (a pad taken up, or put down for the
+## keyboard) while the screen is open: a footer that names keys is written
+## again in their caps (PIX-487).
+func _hands_changed() -> void:
+	pass
+
+
 ## What this screen does for `event`, or an empty Callable to let it pass
 ## (on to closing, then to whatever is under the screen).
 func _command(_event: InputEvent) -> Callable:
@@ -80,6 +90,9 @@ func _command(_event: InputEvent) -> Callable:
 func _unhandled_input(event: InputEvent) -> void:
 	if not on_top():
 		return
+	if _pad != Controls.pad:
+		_pad = Controls.pad
+		_hands_changed()
 	if not _reads_at_once() and hushed(event):
 		get_viewport().set_input_as_handled()
 		return

@@ -14,9 +14,10 @@ const DECOR := &"layout_decor"
 ## ledger's info card grew under its status line and keys, still on the
 ## canvas in English). Opt-in, so no screen fails on a rule it never had.
 const CLEAR := &"layout_clear"
-## The keys `paging` takes, as a footer names them, and the line a page
-## turned keeps in sight where what scrolls has no words to measure.
-const PAGE_KEYS := "PgUp/PgDn"
+## The keys `paging` takes, as a footer names them (the pad's while a pad
+## plays: Controls, PIX-487), and the line a page turned keeps in sight
+## where what scrolls has no words to measure.
+const PAGE_KEYS := "{key:page_up}/{key:page_down}"
 const PAGE_LINE := 32
 ## What must never start a wrapped line, when a space stands before it.
 const MARKS := "?!:;»-"
@@ -178,17 +179,15 @@ static func runs_long(scroll: ScrollContainer) -> bool:
 	return bar.max_value - bar.page > SLACK
 
 
-## What Page Up or Page Down does to `scroll` when it runs long (PIX-483:
-## the counter's card drew a scrollbar no key moved), else nothing: the one
-## way a screen pages (What's new too). The keys by their codes, as hero
-## creation takes them, not Godot's ui_page actions, which are one
-## device's and so miss the harness's keys: they are named outright in the
-## footer (`PAGE_KEYS`), W/S and A/D being the rows' and the tabs'.
+## What Page Up or Page Down, or a pad's right stick pushed up or down
+## (PIX-487), does to `scroll` when it runs long (PIX-483: the counter's
+## card drew a scrollbar no key moved), else nothing: the one way a screen
+## pages (What's new too). `Controls.paged` reads them: the keys by their
+## codes, as hero creation takes them, not Godot's ui_page actions, which
+## are one device's and so miss the harness's keys. They are named outright
+## in the footer (`PAGE_KEYS`), W/S and A/D being the rows' and the tabs'.
 static func paging(scroll: ScrollContainer, event: InputEvent) -> Callable:
-	var key := event as InputEventKey
-	if key == null or not key.pressed:
-		return Callable()
-	return turned(scroll, int(key.keycode == KEY_PAGEDOWN) - int(key.keycode == KEY_PAGEUP))
+	return turned(scroll, Controls.paged(event))
 
 
 ## `scroll` turned `pages` on (back, below zero) when it runs long, else
@@ -219,6 +218,48 @@ static func line_of(scroll: ScrollContainer) -> int:
 ## whose card runs long.
 static func paged_footer(line: String) -> String:
 	return "%s  %s      %s" % [PAGE_KEYS, Text.t("read"), line]
+
+
+## A screen's footer `line`, the page keys before it while `scroll` runs
+## long: before `paging_line` then, when the screen has one, its line with
+## a key or two left out for the two the page keys take (the pack's eight
+## keys and the page's ran past the canvas in French, the big type).
+static func footer_for(scroll: ScrollContainer, line: String, paging_line := "") -> String:
+	if not runs_long(scroll):
+		return line
+	return paged_footer(paging_line if paging_line != "" else line)
+
+
+## A window on `label`'s words, `width` wide, for a description that keeps
+## its place on a page (PIX-484: the pack's, the journal's, the Skills
+## page's): the words wrap in it, beside its scrollbar when they run past
+## it, and it pages as a card does (`paging`). `read` gives it its words.
+static func reader(label: Label, width: float) -> ScrollContainer:
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.custom_minimum_size.x = width
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.custom_minimum_size.x = 0
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(label)
+	return scroll
+
+
+## `text` in a `reader`, from its top, the window as tall as its lines:
+## `least` at least (a place that mustn't move as the words change), `most`
+## at most, past which it pages. Measured in the label's own type, so Large
+## reading text has its taller lines.
+static func read(scroll: ScrollContainer, text: String, most: int, least := 0) -> void:
+	var label := scroll.get_child(0) as Label
+	if label.text != text:
+		scroll.scroll_vertical = 0
+	label.text = text
+	var font := label.get_theme_font("font")
+	var size := label.get_theme_font_size("font_size")
+	var tall := font.get_multiline_string_size(label.tr(text), HORIZONTAL_ALIGNMENT_LEFT, scroll.custom_minimum_size.x, size).y if text != "" else 0.0
+	var lines := clampi(ceili(tall / font.get_height(size) - 0.01), least, most)
+	scroll.custom_minimum_size.y = lines * (label.get_line_height() + label.get_theme_constant("line_spacing"))
+	scroll.size.y = scroll.custom_minimum_size.y
 
 
 ## Empties `container` for a redraw: the old pieces leave at once, not at the

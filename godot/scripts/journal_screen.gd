@@ -83,6 +83,10 @@ var now_step: Label
 var now_place: Label
 ## The chosen row's longer word, under the list.
 var detail: Label
+## Its window: two lines, three of the big type, paged past that (PIX-484:
+## the chosen quest's words stayed small with Large reading text, and a
+## third line was cut).
+var reader: ScrollContainer
 ## The Letters page: what W/S turn to - each letter, then each of Liane's
 ## pages - and the first one in view.
 var from := 0
@@ -119,6 +123,10 @@ func _open() -> void:
 
 
 func _command(event: InputEvent) -> Callable:
+	if tab == "quests" and is_instance_valid(reader):
+		var page := Layout.paging(reader, event)
+		if page.is_valid():
+			return page
 	if event.is_action_pressed("move_left") or event.is_action_pressed("move_right"):
 		return _switch.bind(-1 if event.is_action_pressed("move_left") else 1)
 	var by := -1 if event.is_action_pressed("move_up") else (1 if event.is_action_pressed("move_down") else 0)
@@ -190,19 +198,22 @@ func _show() -> void:
 
 
 func _set_footer() -> void:
-	if footer != null:
-		remove_child(footer)
-		footer.queue_free()
+	var line := "{key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close"
 	match tab:
 		"quests":
-			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  follow      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
+			line = "{key:move_up}/{key:move_down}  choose      {key:interact}  follow      " + line
+			# The chosen quest's words page when they run long (PIX-484).
+			if is_instance_valid(reader):
+				line = Layout.footer_for(reader, line)
 		"letters", "post", "feats":
-			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  turn     {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
+			line = "{key:move_up}/{key:move_down}  turn      " + line
 		"book":
-			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
-		_:
-			footer = UiStyle.screen_footer("{key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
-	add_child(footer)
+			line = "{key:move_up}/{key:move_down}  choose      " + line
+	footer = UiStyle.refooted(self, footer, line)
+
+
+func _hands_changed() -> void:
+	_set_footer()
 
 
 ## The quests: what you're on now at the top, then every thread open,
@@ -256,13 +267,12 @@ func _quests() -> void:
 			last.append(quest["name"])
 		list.add_child(Layout.wrapped(UiStyle.label(Text.t("Done: %d quests, the latest %s.") % [kept.size(), ", ".join(last)], 14, UiStyle.FADED), ROW_TEXT))
 	column.add_child(_rule())
-	# Two lines, always: the list keeps its height as the choice moves, so
-	# the row scrolled into view stays in view.
-	detail = Layout.wrapped(UiStyle.label("", 14, UiStyle.FADED), TEXT_WIDTH)
-	detail.max_lines_visible = 2
-	detail.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	column.add_child(detail)
-	detail.custom_minimum_size.y = detail.get_line_height() * 2 + detail.get_theme_constant("line_spacing")
+	# Two lines, always (three of the big type): the list keeps its height
+	# as the choice moves, so the row scrolled into view stays in view.
+	detail = UiStyle.label("", UiStyle.reading(14), UiStyle.FADED)
+	reader = Layout.reader(detail, TEXT_WIDTH)
+	reader.get_v_scroll_bar().changed.connect(_set_footer)
+	column.add_child(reader)
 	# The choice starts on the thread followed.
 	var ids := rows.map(func(row: Dictionary) -> String: return row["id"])
 	_choose(maxi(0, ids.find(followed)))
@@ -365,7 +375,8 @@ func _choose(index: int, reveal := true) -> void:
 		cards[at]["card"].add_theme_stylebox_override("panel", UiStyle.box(
 			UiStyle.CARD if chosen else Color(UiStyle.CARD, 0.5), UiStyle.LAMP if chosen else UiStyle.RIM, 8
 		))
-	detail.text = rows[index]["detail"]
+	var lines := 3 if GameState.settings.large_text else 2
+	Layout.read(reader, rows[index]["detail"], lines, lines)
 	_mark_rows()
 	if reveal:
 		_reveal(true)
