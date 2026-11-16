@@ -649,6 +649,24 @@ static func screen_footer(line: String) -> HBoxContainer:
 	return footer(line, Vector2(0, FOOTER_Y), true)
 
 
+## `screen`'s footer saying `line` (PIX-484, PIX-487): `was` itself while it
+## says that already for the hands on the game, else a new one in its
+## place. A footer names only the keys that act where the choice stands, in
+## the caps of the keyboard or the pad, so a screen asks again whenever
+## either may have changed.
+static func refooted(screen: Node, was: Control, line: String) -> HBoxContainer:
+	var says := "%s|%s" % [Controls.say(line), Controls.pad]
+	if was != null and was.get_meta(&"says", "") == says:
+		return was
+	if was != null:
+		screen.remove_child(was)
+		was.queue_free()
+	var row := screen_footer(line)
+	row.set_meta(&"says", says)
+	screen.add_child(row)
+	return row
+
+
 ## The hero's gold, the one way it's shown (PIX-213): the coin and the sum;
 ## every price at the counter too, in ink on the page (PIX-336).
 static func purse(amount: int, font_size := 16, color := GOLD) -> HBoxContainer:
@@ -966,6 +984,10 @@ static func _fit_footer(id: int, centered: bool) -> void:
 	for child in row.get_children():
 		if child.get_class() == "Control":
 			child.custom_minimum_size.x = 4
+	# A row keeps the width its words first asked for: back to what they
+	# need now, or a centred one stood past the canvas's edge, its words
+	# off the middle (a paged pack in French, the big type).
+	row.reset_size()
 	if not centered and row.get_combined_minimum_size().x > room:
 		row.position.x = maxf(16.0, 1280.0 - 16.0 - row.get_combined_minimum_size().x)
 

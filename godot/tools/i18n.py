@@ -96,6 +96,10 @@ LITERAL = r'"((?:[^"\\\n]|\\.)*)"'
 CALLED = re.compile(r'(?:Text\.t|(?<![\w.])tr|tr_n)\(\s*' + LITERAL)
 ANY = re.compile(LITERAL)
 FOOTER = re.compile(r"UiStyle\.(?:screen_)?footer\(\s*" + LITERAL)
+# A footer's line, or a piece of one a screen puts together (PIX-484: its
+# keys by the chosen row): keys, two spaces, what they do.
+KEYS = r"(?:\{key:[a-z_0-9]+\}|[A-Z0-9][A-Za-z0-9-]*)"
+FOOTER_PIECE = re.compile(r"^%s(?:(?: ?/ ?)%s)*  \S" % (KEYS, KEYS))
 HINTS = re.compile(r'UiStyle\.hints\(\s*\[([^\]]*)\]')
 
 
@@ -147,6 +151,12 @@ def from_scripts(out):
                     out.setdefault(unescape(word), where)
             for match in ANY.finditer(line):
                 text = match.group(1)
+                if FOOTER_PIECE.match(text):
+                    for command in re.split(r" {4,}", unescape(text).strip()):
+                        word = command.split("  ", 1)[1].strip() if "  " in command else ""
+                        if word and "%" not in word:
+                            out.setdefault(word, where)
+                    continue
                 rest = line[match.end():].lstrip()
                 if rest.startswith("%") or rest.startswith(":") and stripped.startswith(("\"", "{")) is False:
                     continue

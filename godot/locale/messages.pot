@@ -2045,6 +2045,10 @@ msgid "A CAT, A DOG AND TWO CHILDREN: Pixelheim has a cat that judges you, a dog
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A Clean Start"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A DAWN YOU WATCH: when Maren has the letter, the Night of Ash ends on the town itself. The camera drifts from the shrine across Pixelheim as the fires gutter out one by one and the red night greys toward morning; the survivors stand together on the square and speak in their own voices - Maren, the mayor out of his hall, Bram and Sela beside you - and when Fafnyr is named, he roars, and his shadow sweeps over the town. Then the day begins: Pixelheim, day one"
 msgstr ""
 
@@ -2234,6 +2238,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A click during the opening moves the story on, and no longer presses the title's buttons under it (no more second opening or two hero creations)"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3529,6 +3537,10 @@ msgid "Every Face"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every Key Says True"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every Lead True"
 msgstr ""
 
@@ -3917,6 +3929,10 @@ msgid "Follow the Cry"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Footers only name the keys that do something there"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Footfalls"
 msgstr ""
 
@@ -4289,6 +4305,10 @@ msgid "In Plain Sight"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "In Saves from the title, E plays the hero at once, and the last one played is tagged as such"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "In Their Own Words"
 msgstr ""
 
@@ -4298,6 +4318,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "In caves and mines, water drips and stones tumble, where a hearth used to crackle"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "In hero creation, the name field keeps taking letters after Enter on an empty name, and Esc goes back to the title"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4454,6 +4478,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Lantern Shadows"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Large reading text now grows every text you read: the pack, the journal, the skills and the counter's card"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5066,6 +5094,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On a gamepad, A answers and confirms, X swings, B goes back everywhere, Y opens the pack, the D-pad walks, and LB, LT and RT cast your first three skills"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "On a pad, the right stick turns the page of a long card, and the footer shows the pad's keys while you play with one"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6030,6 +6062,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Stars twinkle, embers rise and chimneys smoke while it loads, then the title rises out of the same picture"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Stats says how many points you have left to spend; in Options, left and right move between a key row's columns and only E rebinds"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -18105,19 +18141,11 @@ msgid "Up"
 msgstr ""
 
 #: scripts/layout.gd
-msgid "PgUp/PgDn"
-msgstr ""
-
-#: scripts/layout.gd
 msgid "read"
 msgstr ""
 
 #: scripts/ledger_screen.gd
 msgid "do it"
-msgstr ""
-
-#: scripts/ledger_screen.gd
-msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr ""
 
 #: scripts/map_layers/dungeon_layer.gd
@@ -18301,11 +18329,23 @@ msgid "adjust"
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "change"
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "keep the old one"
 msgstr ""
 
 #: scripts/options_screen.gd
-msgid "rebind / toggle"
+msgid "other column"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "rebind"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "reset"
 msgstr ""
 
 #: scripts/pause_screen.gd
@@ -18481,6 +18521,10 @@ msgid "Its last save couldn't be read: this is the one before it."
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Last played"
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "New Game, on the title screen, starts a hero."
 msgstr ""
 
@@ -18590,6 +18634,10 @@ msgstr ""
 
 #: scripts/saves_screen.gd
 msgid "You'll go back to the title."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "bring back"
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -18885,6 +18933,10 @@ msgid "Your pack"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "all"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "buy"
 msgstr ""
 
@@ -18893,7 +18945,15 @@ msgid "forge"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "how many"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "junk"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "keep"
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -18921,15 +18981,15 @@ msgid "sell"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "sell a stack"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "sold"
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
-msgstr ""
-
-#: scripts/shop_screen.gd
-msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close"
+msgid "tab"
 msgstr ""
 
 #: scripts/shop_sign.gd
@@ -19097,7 +19157,7 @@ msgid "forget"
 msgstr ""
 
 #: scripts/skills_screen.gd
-msgid "learn / walk"
+msgid "learn"
 msgstr ""
 
 #: scripts/skills_screen.gd
@@ -19106,6 +19166,10 @@ msgstr ""
 
 #: scripts/skills_screen.gd
 msgid "set key"
+msgstr ""
+
+#: scripts/skills_screen.gd
+msgid "walk"
 msgstr ""
 
 #: scripts/sound.gd
@@ -19929,7 +19993,11 @@ msgid "Your tree is whole: %d skill point%s to spend beyond it, below."
 msgstr ""
 
 #: scripts/stats_screen.gd
-msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      {key:stats} / Esc  close"
+msgid "spend a point (%d left)"
+msgstr ""
+
+#: scripts/stats_screen.gd
+msgid "spend a skill point (%d left)"
 msgstr ""
 
 #: scripts/throne_screen.gd

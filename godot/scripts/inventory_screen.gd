@@ -26,6 +26,11 @@ const PAGE := Rect2(416, 96, 784, 536)
 ## The list's window, the page's inset in: six rows and a half, leaving the
 ## strip under it room for a whole name, three lines about it and the news.
 const LIST := Vector2(PAGE.size.x - 2 * UiStyle.INSET, 390)
+## What the list gives the strip under it with Large reading text (PIX-484):
+## five rows, and three lines of the big type about the chosen one.
+const LIST_LARGE := 294
+## The most lines about the chosen row before they page.
+const ABOUT_LINES := 3
 const LIST_TOP := PAGE.position.y + UiStyle.INSET
 ## A row: two lines of type in its frame (the list scrolls by it).
 const ROW_HEIGHT := 56
@@ -53,8 +58,13 @@ var scroll: ScrollContainer
 var header: Label
 var sort_label: Label
 var purse: HBoxContainer
-## The chosen row in full: an item's description, a recipe's station.
+## The chosen row in full: an item's description, a recipe's station; in
+## the reading size, in a window that pages when it runs long (PIX-484).
 var about: Label
+var reader: ScrollContainer
+## The list's height: LIST.y, or LIST_LARGE.
+var list_tall := LIST.y
+var footer: HBoxContainer
 ## The chosen row's whole name, over `about`, when the row shortened it.
 var about_name: Label
 ## Which rows shortened their names to fit (PIX-298), by index.
@@ -111,10 +121,11 @@ func _open() -> void:
 	tab_row.custom_minimum_size.y = TAB_HEIGHT
 	tab_row.add_theme_constant_override("separation", 0)
 	add_child(tab_row)
+	list_tall = LIST_LARGE if GameState.settings.large_text else LIST.y
 	scroll = ScrollContainer.new()
 	scroll.position = Vector2(LIST_LEFT, LIST_TOP)
-	scroll.custom_minimum_size = LIST
-	scroll.size = LIST
+	scroll.custom_minimum_size = Vector2(LIST.x, list_tall)
+	scroll.size = scroll.custom_minimum_size
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(scroll)
 	list = VBoxContainer.new()
@@ -123,23 +134,55 @@ func _open() -> void:
 	scroll.add_child(list)
 	var rule := ColorRect.new()
 	rule.color = UiStyle.RIM
-	rule.position = Vector2(LIST_LEFT, LIST_TOP + LIST.y + 4)
+	rule.position = Vector2(LIST_LEFT, LIST_TOP + list_tall + 4)
 	rule.size = Vector2(LIST.x, 2)
 	add_child(rule)
 	# Under the list, one after the other: the chosen row's whole name when
 	# its row had to shorten it, what it is, then what just happened.
 	var notes := Layout.hugging(VBoxContainer.new())
-	notes.position = Vector2(LIST_LEFT, LIST_TOP + LIST.y + 10)
+	notes.position = Vector2(LIST_LEFT, LIST_TOP + list_tall + 10)
 	notes.add_theme_constant_override("separation", 0)
 	add_child(notes)
 	about_name = Layout.wrapped(UiStyle.strong("", 14, UiStyle.INK), LIST.x)
 	notes.add_child(about_name)
-	about = Layout.wrapped(UiStyle.label("", 14, UiStyle.FADED), LIST.x)
-	notes.add_child(about)
+	about = UiStyle.label("", UiStyle.reading(14), UiStyle.FADED)
+	reader = Layout.reader(about, LIST.x)
+	reader.get_v_scroll_bar().changed.connect(_set_footer)
+	notes.add_child(reader)
 	status = Layout.wrapped(UiStyle.label("", 14, UiStyle.LAMP), LIST.x)
 	notes.add_child(status)
-	add_child(UiStyle.screen_footer("{key:move_left}/{key:move_right}  tabs      {key:move_up}/{key:move_down}  choose      {key:interact}  equip / use      X  drop      Z  drop all      R  sort      {key:inventory} / Esc  close"))
 	_refresh()
+
+
+## The keys along the bottom, only those that act on the chosen row
+## (PIX-484: the Craft tab offered to equip, drop and sort its recipes): a
+## recipe is crafted where its row says E crafts it (at its station, with
+## what it takes: elsewhere E only says where), the guide travels home when
+## a gate is open, and only what the pack holds is used, dropped or sorted.
+## While the description pages, R's sort gives its place to the page keys:
+## all of them and the pack's eight ran past the canvas in French.
+func _set_footer() -> void:
+	var kind := String(rows[selected]["kind"]) if not rows.is_empty() else ""
+	var acts := ""
+	match kind:
+		"":
+			pass
+		"guide":
+			if not _town_gate().is_empty() and world != null:
+				acts = "{key:interact}  travel      "
+		"recipe":
+			if _primary_label(rows[selected]) != "":
+				acts = "{key:interact}  craft      "
+		_:
+			acts = "{key:interact}  equip / use      X  drop      Z  drop all      "
+	var sort := "R  sort      " if TABS[tab][0] != "craft" else ""
+	var head := "{key:move_left}/{key:move_right}  tabs      {key:move_up}/{key:move_down}  choose      " + acts
+	var close := "{key:inventory} / Esc  close"
+	footer = UiStyle.refooted(self, footer, Layout.footer_for(reader, head + sort + close, head + close))
+
+
+func _hands_changed() -> void:
+	_set_footer()
 
 
 func _refresh() -> void:
@@ -175,7 +218,7 @@ func _refresh() -> void:
 	cut.resize(rows.size())
 	for index in rows.size():
 		list.add_child(_row(index))
-	about.text = _about(rows[selected]) if not rows.is_empty() else ""
+	Layout.read(reader, _about(rows[selected]) if not rows.is_empty() else "", ABOUT_LINES)
 	# A name its row cut short is read whole here (PIX-298).
 	about_name.text = _row_name(rows[selected]) if not rows.is_empty() and cut[selected] else ""
 	about_name.add_theme_color_override("font_color", _rarity_color(rows[selected]) if not rows.is_empty() else UiStyle.INK)
@@ -185,7 +228,8 @@ func _refresh() -> void:
 		# of type and the frame stand taller than ROW_HEIGHT, so counting by
 		# it let a row far down the list be chosen out of sight.
 		var pitch := int(list.get_child(0).get_combined_minimum_size().y) + list.get_theme_constant("separation")
-		scroll.scroll_vertical = clampi(scroll.scroll_vertical, (selected + 1) * pitch - int(LIST.y), selected * pitch)
+		scroll.scroll_vertical = clampi(scroll.scroll_vertical, (selected + 1) * pitch - int(list_tall), selected * pitch)
+	_set_footer()
 
 
 ## Gear first, then stacks, each by category then name; the tab filters.
@@ -579,7 +623,9 @@ func _slot(slot: String, label: String) -> Control:
 
 
 func _command(event: InputEvent) -> Callable:
-	var command := Callable()
+	var command := Layout.paging(reader, event)
+	if command.is_valid():
+		return command
 	if event.is_action_pressed("move_left"):
 		command = _switch.bind(tab - 1)
 	elif event.is_action_pressed("move_right"):

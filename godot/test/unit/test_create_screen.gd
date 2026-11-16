@@ -277,3 +277,15 @@ func test_a_wide_name_leaves_the_cards_their_size() -> void:
 	await wait_process_frames(2)
 	assert_eq(screen.details.size.x, width, "the hero's card as wide as with no name")
 	assert_eq(Layout.overflows(get_tree().root, Vector2(1280, 720)).size(), 0, "nothing off the canvas")
+
+
+## Enter on a blank name, or one Esc, left the name field taking no letters
+## and saying nothing (crash hunt, 2026-11-16).
+func test_a_refused_name_keeps_the_field_and_esc_closes() -> void:
+	_open()
+	assert_true(screen.name_field.keep_editing_on_text_submit, "a refused Enter keeps the caret")
+	var esc := InputEventKey.new()
+	esc.keycode = KEY_ESCAPE
+	esc.pressed = true
+	assert_has(screen.FIELD_KEYS, KEY_ESCAPE, "Esc is the screen's before the field swallows it")
+	assert_eq(screen._key_command(esc).get_method(), &"close")

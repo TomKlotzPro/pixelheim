@@ -63,17 +63,16 @@ var footer: HBoxContainer
 var pages: Array[Panel] = []
 var headings: Array[Label] = []
 var scrolls: Array[ScrollContainer] = []
-## The card's window (PIX-214), and whether its words run past it: the
-## footer then names the keys that page it (PIX-483).
+## The card's window (PIX-214): while its words run past it the footer
+## names the keys that page it (PIX-483).
 var about: ScrollContainer
-var reads := false
 var lists: Array[VBoxContainer] = []
 var card: PanelContainer
 var card_head: HBoxContainer
 var card_icon: TextureRect
 var card_name: Label
 ## The hero wearing the chosen piece, beside its numbers against what's worn.
-var card_body: HBoxContainer
+var card_body: BoxContainer
 var card_doll: PanelContainer
 var card_numbers: VBoxContainer
 ## What's worn there, the set, and the like, under the numbers.
@@ -190,7 +189,11 @@ func _open() -> void:
 	card_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card_name.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	card_head.add_child(card_name)
-	card_body = HBoxContainer.new()
+	# Every word on the card is reading (PIX-484: only the flavour line grew
+	# with Large reading text, twice the size of the lines round it); the
+	# numbers then stand under the hero, having no room beside.
+	card_body = BoxContainer.new()
+	card_body.vertical = GameState.settings.large_text
 	card_body.add_theme_constant_override("separation", 12)
 	info.add_child(card_body)
 	card_doll = PanelContainer.new()
@@ -203,7 +206,7 @@ func _open() -> void:
 	card_numbers.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card_numbers.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	card_body.add_child(card_numbers)
-	card_extra = UiStyle.label("", 14, UiStyle.INK)
+	card_extra = UiStyle.label("", UiStyle.reading(14), UiStyle.INK)
 	card_extra.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_child(card_extra)
 	# Large text reaches the counter's words too (PIX-214).
@@ -248,6 +251,10 @@ func _open() -> void:
 
 
 func _command(event: InputEvent) -> Callable:
+	# The card pages whatever it asks: the price is at its foot.
+	var command := Layout.paging(about, event)
+	if command.is_valid():
+		return command
 	# A question asked (how many, all the junk): E answers, Esc puts it down.
 	if amount > 0 or asking_junk:
 		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu"):
@@ -261,9 +268,6 @@ func _command(event: InputEvent) -> Callable:
 		if amount > 0 and event.is_action_pressed("drop_all"):
 			return _pick.bind(_stack_count())
 		return Callable()
-	var command := Layout.paging(about, event)
-	if command.is_valid():
-		return command
 	if resting:
 		for action: String in ["move_up", "move_down", "interact"]:
 			if event.is_action_pressed(action):
@@ -331,22 +335,25 @@ func _switch(index: int) -> void:
 
 
 ## The footer (PIX-374): what E does on this tab, a verb (a tab's name is
-## a noun in French: « Forge », « Artisanat »), and Z only where a stack sells.
+## a noun in French: « Forge », « Artisanat »), and Z only on a stack that
+## sells. While the counter asks (how many, all the junk) it names the
+## question's keys alone (PIX-484: it went on offering the tabs and the
+## rows, which do nothing then). The card's page keys come first while its
+## words run past it, in the caps of the hands on the game (PIX-487).
 func _set_footer() -> void:
-	var long := Layout.runs_long(about)
-	if footer != null:
-		if long == reads and footer.get_meta(&"tab") == tab:
-			return
-		remove_child(footer)
-		footer.queue_free()
-	var verb: String = {"Buy": Text.t("buy"), "Sell": Text.t("sell"), "Forge": Text.t("forge"), "Salvage": Text.t("salvage"),
-		"Reforge": Text.t("reforge"), "Quench": Text.t("quench"), "Craft": Text.t("craft")}[tabs[tab]]
-	var line := Text.t("{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close") if tabs[tab] == "Sell" \
-		else Text.t("{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close")
-	reads = long
-	footer = UiStyle.screen_footer(Layout.paged_footer(line % verb) if reads else line % verb)
-	footer.set_meta(&"tab", tab)
-	add_child(footer)
+	var line := "{key:interact}  sell      Esc  keep"
+	if amount > 0:
+		line = "{key:move_left}/{key:move_right}  how many      Z  all      " + line
+	elif not asking_junk:
+		var verb: String = {"Buy": Text.t("buy"), "Sell": Text.t("sell"), "Forge": Text.t("forge"), "Salvage": Text.t("salvage"),
+			"Reforge": Text.t("reforge"), "Quench": Text.t("quench"), "Craft": Text.t("craft")}[tabs[tab]]
+		var stack := not resting and not rows.is_empty() and rows[selected].has("stack")
+		line = "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  " + verb + "      " + ("Z  sell a stack      " if stack else "") + "Esc  close"
+	footer = UiStyle.refooted(self, footer, Layout.footer_for(about, line))
+
+
+func _hands_changed() -> void:
+	_set_footer()
 
 
 func _select(index: int) -> void:
@@ -598,6 +605,7 @@ func _refresh() -> void:
 			if index < lists[side].get_child_count():
 				scrolls[side].ensure_control_visible(lists[side].get_child(index))
 		reveal.call_deferred()
+	_set_footer()
 
 
 ## The pages, lists and card where this tab has them: Buy and Sell three
@@ -823,11 +831,11 @@ func _numbers(item_id: String, piece: Dictionary) -> String:
 		line.add_theme_constant_override("separation", 6)
 		var value := int(mine.get(key, 0))
 		var said := Text.t("Damage %d") % value if key == "damage" else (Text.t("Armor %d") % value if key == "armor" else "+%d %s" % [value, Text.t(Skills.ABBR.get(key, key))])
-		line.add_child(UiStyle.label(said, 14, UiStyle.INK))
+		line.add_child(UiStyle.label(said, UiStyle.reading(14), UiStyle.INK))
 		var step := int(steps[key])
 		if step != 0:
 			line.add_child(UiStyle.trend(step > 0))
-			line.add_child(UiStyle.label("+%d" % step if step > 0 else str(step), 14, UiStyle.GAIN if step > 0 else UiStyle.LAMP))
+			line.add_child(UiStyle.label("+%d" % step if step > 0 else str(step), UiStyle.reading(14), UiStyle.GAIN if step > 0 else UiStyle.LAMP))
 		card_numbers.add_child(line)
 	var item := Catalog.item(item_id)
 	var lines: Array[String] = [Text.t("Worn: %s") % InventoryState.gear_name(worn) if not worn.is_empty() else Text.t("Worn: nothing there")]
@@ -853,10 +861,10 @@ static func _lot_line(lot: Dictionary) -> String:
 ## A price line on the card: its words, then the coin and the sum.
 static func _coins(row: HBoxContainer, words: String, sum: int, color: Color) -> void:
 	Layout.clear(row)
-	var said := UiStyle.label(words, 14, UiStyle.FADED)
+	var said := UiStyle.label(words, UiStyle.reading(14), UiStyle.FADED)
 	said.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(said)
-	row.add_child(UiStyle.purse(sum, 16, color))
+	row.add_child(UiStyle.purse(sum, UiStyle.reading(16), color))
 
 
 func _on_row_input(event: InputEvent, tab_name: String, index: int) -> void:
