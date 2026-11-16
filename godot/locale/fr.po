@@ -6705,6 +6705,10 @@ msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and re
 msgstr "Les mares des Marais de Fange sont d'une eau olive trouble avec nénuphars, lentilles d'eau et roseaux, le lac des Bois-Profonds sarcelle sombre et l'eau de la Porte-Givre glacée"
 
 #: assets/data/changelog.json
+msgid "The Night Burns"
+msgstr "La nuit brûle"
+
+#: assets/data/changelog.json
 msgid "The Night of Ash"
 msgstr "La Nuit des Cendres"
 
@@ -6715,6 +6719,10 @@ msgstr "La Nuit des Cendres ne peut plus se bloquer : le casque de Sela ne peu
 #: assets/data/changelog.json
 msgid "The Night of Ash finally looks like a fire: flames climb the burnt frames and corner posts and lick the rubble, a blaze roars where each house fell in, smoke drifts downwind and sparks fly over glowing coals; on the Night of Bells, flames run along the roof and out of the windows; Reduce motion keeps it all calm"
 msgstr "La Nuit des Cendres ressemble enfin à un incendie : les flammes grimpent le long des charpentes brûlées et des poteaux, lèchent les décombres, un brasier gronde là où chaque maison s'est effondrée, la fumée part avec le vent et les étincelles volent au-dessus des braises ; pendant la Nuit des Cloches, les flammes courent sur le toit et sortent des fenêtres ; « Réduire les animations » garde tout calme"
+
+#: assets/data/changelog.json
+msgid "The Night of Ash has its own dramatic music while the village burns, from the road to the dawn"
+msgstr "La Nuit des cendres a sa propre musique dramatique pendant que le village brûle, de la route jusqu'à l'aube"
 
 #: assets/data/changelog.json
 msgid "The Open World"
@@ -7139,6 +7147,10 @@ msgstr "La porte de la montagne s'ouvre sur la route de la montagne, cendres et 
 #: assets/data/changelog.json
 msgid "The night classes stepped into the light: the necromancer's robes and the rogue's leathers brightened so they read on every lawn"
 msgstr "Les classes de la nuit sortent de l'ombre : les robes du nécromancien et les cuirs du voleur s'éclaircissent pour rester lisibles sur toutes les pelouses"
+
+#: assets/data/changelog.json
+msgid "The night's fights stay under it, and the town's tune comes back once the fire is out"
+msgstr "Les combats de la nuit se jouent dessous, et l'air de la ville revient une fois le feu éteint"
 
 #: assets/data/changelog.json
 msgid "The north pays its way: Frostgate, the ice cave and Greyhold's foes now carry about twice the gold, and the Mirefen's mimics a little less"
