@@ -269,6 +269,15 @@ func _apply_shake(delta: float) -> void:
 	camera.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * power
 
 
+## The stop's timer goes with the rig (a reload: the title, another slot, a
+## language), and the engine's clock is everyone's: handed back as the rig
+## leaves (PIX-503: the title and the next world ran at a quarter speed).
+func _exit_tree() -> void:
+	if _stopped:
+		Engine.time_scale = 1.0
+		_stopped = false
+
+
 func hit_stop(seconds: float, scale := 0.08) -> void:
 	if _stopped or GameState.settings.reduce_motion:
 		return
