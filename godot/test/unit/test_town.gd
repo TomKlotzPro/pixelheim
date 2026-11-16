@@ -133,7 +133,7 @@ func test_the_last_project_of_an_age_raises_the_town() -> void:
 	assert_eq(state.pack.items["marsh_reed"], 5)
 	assert_eq(state.town_tier(), 1, "one of three")
 	state.holdings.fund_project("market_stalls")
-	assert_eq(state.holdings.fund_project("thatch_cottage"), "A thatched cottage: built - and Pixelheim is a village now.")
+	assert_eq(state.holdings.fund_project("thatch_cottage"), "A thatched cottage: built\u00a0- and Pixelheim is a village now.")
 	assert_eq(state.town_tier(), 2)
 	assert_eq(state.pack.gold, 5000 - 150 - 250 - 400)
 	assert_eq(state.holdings.fund_project("thatch_cottage"), "", "once")
@@ -280,7 +280,7 @@ func test_finer_folk_hold_out_for_a_finer_town() -> void:
 func test_settlers_speak_for_the_towns_age() -> void:
 	var at := func(tier: int) -> Array:
 		return Npcs.on_map("town", tier, ["settler_iva"]).filter(func(npc: Dictionary) -> bool: return npc["id"] == "settler_iva")[0]["lines"]
-	assert_eq(at.call(1)[0], "Sit. Breathe. There - whole again. My door is always open to the town's patron.")
+	assert_eq(at.call(1)[0], "Sit. Breathe. There\u00a0- whole again. My door is always open to the town's patron.")
 	assert_string_contains(at.call(3)[0], "fountain")
 	assert_string_contains(at.call(4)[0], "city")
 

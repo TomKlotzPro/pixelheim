@@ -8745,6 +8745,10 @@ msgid "Fireball burns brighter."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Fireborn"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Firestorm"
 msgstr ""
 
@@ -9629,10 +9633,6 @@ msgid "The Drowned Knight points, and the bog reaches for you!"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "The Fireborn"
-msgstr ""
-
-#: assets/data/combat.json
 msgid "The Hollow Captain rises from his chair. \"None pass. Not till Oskar comes home.\""
 msgstr ""
 
@@ -9662,10 +9662,6 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "The Unbroken"
-msgstr ""
-
-#: assets/data/combat.json
-msgid "The Undead"
 msgstr ""
 
 #: assets/data/combat.json
@@ -9910,6 +9906,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Two answers to one question."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Undead"
 msgstr ""
 
 #: assets/data/combat.json
@@ -15221,7 +15221,7 @@ msgid "Slimes flattened"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Slimes have crept into what's left of Sela's stores. Thin the forest's supply of them."
+msgid "Slimes have crept into what's left of Sela's stores. Thin their numbers in the fields east of the town gate."
 msgstr ""
 
 #: assets/data/progression.json
@@ -17625,10 +17625,6 @@ msgid "Body"
 msgstr ""
 
 #: scripts/inventory_screen.gd
-msgid "Carry %d/%d"
-msgstr ""
-
-#: scripts/inventory_screen.gd
 msgid "Craft"
 msgstr ""
 
@@ -18577,10 +18573,6 @@ msgid "\nThe workshop's own, since Pixelheim became a %s."
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "  %s  (have %d)"
-msgstr ""
-
-#: scripts/shop_screen.gd
 msgid "  (worn)"
 msgstr ""
 
@@ -18601,7 +18593,7 @@ msgid "%s hands you the till: +%d gold."
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "%s level %d - you are %s"
+msgid "%s level %d"
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -18653,10 +18645,6 @@ msgid "Deed: %s"
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "For sale"
-msgstr ""
-
-#: scripts/shop_screen.gd
 msgid "Forge"
 msgstr ""
 
@@ -18666,6 +18654,10 @@ msgstr ""
 
 #: scripts/shop_screen.gd
 msgid "Hilda tempers it: +1."
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "In stock"
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -18829,6 +18821,10 @@ msgid "Yes"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "You: %s"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "Your pack"
 msgstr ""
 
@@ -18882,6 +18878,10 @@ msgstr ""
 
 #: scripts/shop_sign.gd
 msgid "A house: %dg, at the door"
+msgstr ""
+
+#: scripts/shop_sign.gd
+msgid "For sale"
 msgstr ""
 
 #: scripts/shop_sign.gd
@@ -19677,6 +19677,10 @@ msgid "Your garden ripens: %s."
 msgstr ""
 
 #: scripts/state/text.gd
+msgid "%d%%"
+msgstr ""
+
+#: scripts/state/text.gd
 msgid "English"
 msgstr ""
 
@@ -19821,7 +19825,7 @@ msgid "Beyond the tree: %s"
 msgstr ""
 
 #: scripts/stats_screen.gd
-msgid "DEF %d    Carry %d/%d"
+msgid "DEF %d    Weight %d/%d"
 msgstr ""
 
 #: scripts/stats_screen.gd

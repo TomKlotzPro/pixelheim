@@ -88,9 +88,19 @@ _CLOSE_QUOTE = re.compile(r"[ \u00a0\u202f]*»")
 _BARE_MARK = re.compile(r"(?<=[^\s:;!?(\[])(?=[;!?]|:(?:\s|$))")
 # What --check refuses: a plain or no-break space where U+202F belongs.
 _BAD_SPACE = re.compile(r"[ \u00a0](?=[:;!?»])|(?<=«)[ \u00a0]")
+# A percent sign after its number (PIX-484: « 70% » and « +5 % » stood side
+# by side): a digit or a format's %d or %s, any space, then the sign, written
+# %% in a format; never a format's own % (%d, %02d, %s).
+_PERCENT = re.compile(r"(?:(?<=\d)|(?<=%d)|(?<=%s))[ \u00a0\u202f]*(?=%%|%(?![A-Za-z0-9.%+-]))")
+
+
+def percent(text):
+    """French's percent: a narrow no-break space between the number and its sign."""
+    return _PERCENT.sub(NNBSP, text)
 
 
 def _french_words(text):
+    text = percent(text)
     text = _OPEN_QUOTE.sub("«" + NNBSP, text)
     text = _CLOSE_QUOTE.sub(NNBSP + "»", text)
     text = _SPACED_MARK.sub(NNBSP, text)
@@ -100,9 +110,9 @@ def _french_words(text):
 def french(text):
     """French in the house style, whatever it was typed with.
 
-    Straight apostrophes; a narrow no-break space (U+202F) before : ; ! ? and
-    inside « », replacing a plain or no-break space or added where there was
-    none. Links, clocks, placeholders and runs of marks keep their own.
+    Straight apostrophes; a narrow no-break space (U+202F) before : ; ! ? %,
+    and inside « », replacing a plain or no-break space or added where there
+    was none. Links, clocks, placeholders and runs of marks keep their own.
     """
     text = text.replace("\u2019", "'")
     out = []
@@ -350,6 +360,8 @@ def check():
             problems.append(
                 "fr.po: %d plain or no-break space%s (␣) where U+202F belongs, before : ; ! ? or inside « »: %s"
                 % (len(spots), "" if len(spots) == 1 else "s", marked))
+        if percent(text) != text:
+            problems.append("fr.po: a percent sign without U+202F before it: %s" % text)
     return problems, entries
 
 
@@ -365,7 +377,7 @@ def check_main():
     print("release check: v%s \"%s\" is whole" % (newest["version"], newest["codename"]))
     print("  README.md: Currently v%s" % major_minor(newest["version"]))
     print("  fr.po: every codename and note of %d releases (%d notes) translated" % (len(entries), notes))
-    print("  fr.po: U+202F before : ; ! ? and inside « » throughout")
+    print("  fr.po: U+202F before : ; ! ? % and inside « » throughout")
     return 0
 
 

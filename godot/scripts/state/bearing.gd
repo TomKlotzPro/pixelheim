@@ -303,7 +303,8 @@ static func line(lead: Dictionary) -> String:
 	if (place != "" and place not in text) or progress != "":
 		text = text.trim_suffix(".")
 	if place != "" and place not in text:
-		text += " - " + place
+		# The dash holds to the step, as the catalogues' do (i18n.py's set_line).
+		text += "\u00a0- " + place
 	if progress != "":
 		text += " (%s)" % progress
 	return text

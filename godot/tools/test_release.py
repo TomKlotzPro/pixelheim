@@ -55,6 +55,12 @@ class FrenchTest(unittest.TestCase):
     def test_apostrophes_are_straight(self):
         self.assertEqual(release.french("l\u2019écran s\u2019ouvre"), "l'écran s'ouvre")
 
+    def test_a_percent_keeps_to_its_number(self):
+        self.assertEqual(release.french("70% du volume"), "70" + N + "% du volume")
+        self.assertEqual(release.french("+%d%% de dégâts, %s %% par jour"), "+%d" + N + "%% de dégâts, %s" + N + "%% par jour")
+        for text in ("%d:%02d", "%d %s", "Niveau %d", "+5" + N + "%"):
+            self.assertEqual(release.french(text), text)
+
     def test_it_is_idempotent(self):
         for text in ("Attention : le pont !", "« Garde-le »", "Quoi ?!", "à 06:00 : fin", "un « ? » gris ; bien"):
             once = release.french(text)

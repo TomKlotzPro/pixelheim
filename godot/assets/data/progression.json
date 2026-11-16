@@ -4,7 +4,7 @@
       "id": "slime_trouble",
       "giver": "innkeeper",
       "name": "Slime Trouble",
-      "brief": "Slimes have crept into what's left of Sela's stores. Thin the forest's supply of them.",
+      "brief": "Slimes have crept into what's left of Sela's stores. Thin their numbers in the fields east of the town gate.",
       "objective": {
         "kind": "kill",
         "monsterId": "slime",

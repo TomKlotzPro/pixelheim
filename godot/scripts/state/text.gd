@@ -38,6 +38,8 @@ static func mid(name: String) -> String:
 
 
 ## `text` in the player's language (itself where there's no translation).
+## A line's rules (the dash held to the word before it, PIX-484) are already
+## in the catalogues' words, English's too (`tools/i18n.py`'s `set_line`).
 static func t(text: String) -> String:
 	return TranslationServer.translate(text) if text != "" else text
 
@@ -53,6 +55,18 @@ static func listed(parts: PackedStringArray) -> String:
 ## A compact gold amount, as costs show it: "55g", « 55 o ».
 static func coins(amount: int) -> String:
 	return t("%dg") % amount
+
+
+## A share out of a hundred (PIX-484): "70%", « 70 % » with French's narrow
+## no-break space.
+static func percent(amount: int) -> String:
+	return Text.t("%d%%") % amount
+
+
+## The "s" of so many of a thing, or "" (PIX-484): English's one alone is
+## singular, French's none too, « 0 point ».
+static func s(amount: int) -> String:
+	return "" if amount == 1 or (amount == 0 and TranslationServer.get_locale().begins_with("fr")) else "s"
 
 
 ## A number with decimals as the player's language writes it (PIX-347):
@@ -79,8 +93,6 @@ static func is_words(key: String, value: String) -> bool:
 
 ## The data's words translated in place, as a document loads.
 static func localize(doc: Variant) -> Variant:
-	if TranslationServer.get_locale().begins_with("en") and not TranslationServer.pseudolocalization_enabled:
-		return doc
 	_walk(doc, "")
 	return doc
 

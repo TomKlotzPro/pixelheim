@@ -48,7 +48,7 @@ func test_the_stat_sheet_reads_like_the_webs() -> void:
 		for row: Array in expected[role]:
 			var info := Skills.info(row[0], kit[0], kit[1])
 			assert_eq([info["now"], info["next"]], [row[1], row[2]], "%s %s" % [role, row[0]])
-			assert_eq(info["blurb"], Skills.BLURBS[row[0]])
+			assert_eq(info["blurb"], Text.t(Skills.BLURBS[row[0]]))
 
 
 func test_stat_points_buy_their_stat_and_its_pools() -> void:

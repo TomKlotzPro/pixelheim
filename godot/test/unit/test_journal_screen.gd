@@ -290,7 +290,7 @@ func test_the_letters_tab_reads_a_letter_only_once_it_is_delivered() -> void:
 	GameState.questing.open_tin()
 	GameState.questing.deliver("saltmere_wenna")
 	_open("letters")
-	assert_true(_says("Maren's letters - 1 of 4 delivered"))
+	assert_true(_says("Maren's letters\u00a0- 1 of 4 delivered"))
 	assert_eq(screen.pages.size(), 5, "four letters and the fifth")
 	var wenna: Dictionary = Quests.by_id("letter_wenna")
 	for line: String in wenna["letter"]:
