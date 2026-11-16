@@ -13,7 +13,7 @@ const TILE := 16.0
 ## The shares of its health where each new phase begins (the boss bar's notches).
 const PHASES: Array[float] = [2.0 / 3.0, 1.0 / 3.0]
 
-var enemy: CharacterBody2D
+var enemy: Enemy
 var world: Node2D
 var pattern: Dictionary
 var phase := 0
@@ -29,7 +29,7 @@ var pending := 0
 
 
 func _ready() -> void:
-	enemy = get_parent()
+	enemy = get_parent() as Enemy
 	world = enemy.world
 	pattern = Bestiary.boss_pattern(enemy.fighter["id"])
 
@@ -37,10 +37,10 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# Stunned, it casts nothing (PIX-186); a blow's stun broke what it was
 	# telling (interrupt, PIX-440), a bell's lets it land (Ailments.stun_for).
-	if enemy.dying or enemy.mode not in ["chase", "cast"] or enemy.ailments.is_stunned():
+	if enemy.dying or not EnemyState.fighting(enemy.state) or enemy.ailments.is_stunned():
 		return
 	_check_phase()
-	if enemy.mode == "cast":
+	if enemy.state == EnemyState.CAST:
 		return
 	cooldown -= delta
 	if cooldown > 0:
@@ -78,9 +78,8 @@ static func phase_at(share: float) -> int:
 
 func _cast(move: String) -> void:
 	var attack: Dictionary = Bestiary.boss_attack(move)
-	enemy.mode = "cast"
+	enemy.begin_cast()
 	telling = move
-	enemy.velocity = Vector2.ZERO
 	var hero: Vector2 = world.player.global_position
 	var at: Vector2 = enemy.global_position
 	# Its sound warns with the mark (PIX-413): the takes' bodies (some 1.0 to
@@ -114,7 +113,7 @@ func _strike(shape: PackedVector2Array, attack: Dictionary) -> void:
 		world.camera_rig.shake(5.0, 0.3)
 	# The last mark of a cast lets the boss move again.
 	if pending <= 0:
-		enemy.mode = "chase"
+		enemy.end_cast()
 
 
 ## A stun broke the cast (PIX-440): the marks still to strike are taken back

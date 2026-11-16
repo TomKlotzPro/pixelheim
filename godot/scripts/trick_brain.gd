@@ -1,3 +1,4 @@
+class_name TrickBrain
 extends Node
 ## areas: combat field
 ## A common foe's own trick as it plays (PIX-489), riding on the enemy (its
@@ -38,7 +39,7 @@ const BURST_SECONDS := 0.35
 const BACK_OUT := 4.0
 const AWAY_SECONDS := 1.0
 
-var enemy: CharacterBody2D
+var enemy: Enemy
 var world: Node2D
 ## Its kind's entry in combat.json's "tricks", and which trick that is.
 var trick: Dictionary
@@ -61,13 +62,11 @@ var risen := false
 var _pile: Sprite2D
 var _pile_at := Vector2.ZERO
 var _rattled := false
-## When the last blows landed on a ghost, when it last came back, where it
-## stood as it faded, and what it collides with when it isn't.
+## When the last blows landed on a ghost, when it last came back, and where
+## it stood as it faded.
 var _struck: Array[float] = []
 var _faded_at := -100.0
 var _from := Vector2.ZERO
-var _layer := 0
-var _mask := 0
 ## The way a crab's claws are raised, and the pose's tween.
 var _front := Vector2.ZERO
 var _pose: Tween
@@ -78,7 +77,7 @@ static var _star: ImageTexture
 
 
 func _ready() -> void:
-	enemy = get_parent()
+	enemy = get_parent() as Enemy
 	world = enemy.world
 	trick = Tricks.of(enemy.fighter)
 	kind = String(trick["trick"])
@@ -200,7 +199,7 @@ func hurt() -> void:
 	state = "shimmer"
 	left = float(trick["tell"])
 	enemy.drop_tell()
-	enemy.mode = "cast"
+	enemy.begin_cast()
 	_from = enemy.global_position
 	world.foes.showed(enemy, "fade")
 	Sound.play("dodge")
@@ -216,15 +215,7 @@ func falls() -> bool:
 		return false
 	state = "pile"
 	left = float(trick["seconds"])
-	enemy.mode = "pile"
-	enemy.drop_tell()
-	if enemy.brain != null:
-		enemy.brain.interrupt()
-	enemy.ailments.clear()
-	enemy.velocity = Vector2.ZERO
-	enemy.health_bar.visible = false
-	enemy.health_bar_back.visible = false
-	enemy.sprite.visible = false
+	enemy.fall_to_pile()
 	_lay_pile()
 	world.foes.showed(enemy, "pile")
 	Sound.play(Sound.of_family("kill", String(enemy.fighter["id"])))
@@ -252,17 +243,14 @@ func died() -> void:
 					at = enemy.global_position
 				var half: Node = world.foes.spawn_of(enemy, Tricks.small(enemy.fighter, trick), at)
 				# The blow that burst it doesn't sweep them up as they come out.
-				half.faded = true
-				var out: Tween = half.create_tween()
-				out.tween_interval(BURST_SECONDS)
-				out.tween_callback(func() -> void: half.faded = false)
+				half.burst_out(BURST_SECONDS)
 				# They come at the hero after the "!" and the hop, as any foe
 				# (one far below them runs on its own).
 				if not enemy.flees_from(half.fighter, GameState.hero.level, half.held_to_fight()):
 					half.notice()
 		"snatch":
 			if carried > 0:
-				enemy.fighter["gold"] = int(enemy.fighter["gold"]) + Tricks.given_back(carried, trick)
+				enemy.add_gold(Tricks.given_back(carried, trick))
 				_coin.visible = false
 		"rise":
 			if state == "pile":
@@ -274,7 +262,7 @@ func died() -> void:
 		"shell":
 			if _pose != null:
 				_pose.kill()
-			enemy.sprite.scale = enemy._rest_scale
+			enemy.sprite.scale = enemy.rest_scale
 
 
 ## A stun breaks what it was telling: a wolf's crouch, a crab's claws. True
@@ -293,7 +281,7 @@ func interrupt() -> bool:
 ## The wolf: out on its circle until its turn, then a crouch (the tell), the
 ## dart in, the bite (told as any bite), a moment there and out again fast.
 func _hit_and_run(delta: float) -> void:
-	if enemy.mode != "chase" or enemy.ailments.is_stunned():
+	if enemy.state != EnemyState.CHASE or enemy.ailments.is_stunned():
 		_end_dart()
 		return
 	var hero: Vector2 = world.player.global_position
@@ -309,8 +297,8 @@ func _hit_and_run(delta: float) -> void:
 				world.foes.showed(enemy, "dart")
 				Sound.play(Sound.of_family("foe_noticed", String(enemy.fighter["id"])))
 				_pose = enemy.sprite.create_tween()
-				_pose.tween_property(enemy.sprite, "scale", enemy._rest_scale * Vector2(1.15, 0.85), left * 0.7)
-				_pose.tween_property(enemy.sprite, "scale", enemy._rest_scale, left * 0.3)
+				_pose.tween_property(enemy.sprite, "scale", enemy.rest_scale * Vector2(1.15, 0.85), left * 0.7)
+				_pose.tween_property(enemy.sprite, "scale", enemy.rest_scale, left * 0.3)
 				_shine()
 		"crouch":
 			_shine()
@@ -338,7 +326,7 @@ func _dash(on: bool) -> void:
 	if on == _dashing:
 		return
 	_dashing = on
-	enemy.pace *= float(trick["dash"]) if on else 1.0 / float(trick["dash"])
+	enemy.quicken(float(trick["dash"]) if on else 1.0 / float(trick["dash"]))
 
 
 ## A crouching wolf's eyes shine (the tell, by night as by day): the eyes
@@ -379,7 +367,7 @@ func _end_dart() -> void:
 	_dash(false)
 	if _pose != null and _pose.is_running():
 		_pose.kill()
-		enemy.sprite.scale = enemy._rest_scale
+		enemy.sprite.scale = enemy.rest_scale
 	state = ""
 	ready_in = float(trick["every"])
 	world.foes.end_turn(enemy, float(trick["gap"]))
@@ -391,12 +379,11 @@ func _run_with_gold(delta: float) -> void:
 	if state != "run":
 		return
 	left -= delta
-	if enemy.mode != "flee":
+	if enemy.state != EnemyState.FLEE:
 		state = ""
 	elif left <= 0.0:
 		state = ""
-		enemy.at_bay = true
-		enemy.mode = "chase"
+		enemy.turn_back()
 
 
 ## The pile rattles, harder as it is about to stand (the tell: strike it
@@ -418,17 +405,12 @@ func _rattle(delta: float) -> void:
 		return
 	state = ""
 	risen = true
-	enemy.fighter["hp"] = Tricks.risen(int(enemy.fighter["maxHp"]), trick)
 	_pile.queue_free()
-	enemy.sprite.visible = true
-	enemy.health_bar.size.x = enemy.bar_width * enemy.fighter["hp"] / enemy.fighter["maxHp"]
-	enemy.health_bar.visible = true
-	enemy.health_bar_back.visible = true
-	enemy.mode = "chase"
+	enemy.rise(Tricks.risen(int(enemy.fighter["maxHp"]), trick))
 	world.foes.showed(enemy, "rose")
 	Sound.play(Sound.of_family("foe_noticed", String(enemy.fighter["id"])))
 	world.fx.dust(enemy.global_position)
-	var rest: Vector2 = enemy._rest_at
+	var rest: Vector2 = enemy.rest_at
 	var hop: Tween = enemy.sprite.create_tween()
 	hop.tween_property(enemy.sprite, "position:y", rest.y - 5, 0.15).set_ease(Tween.EASE_OUT)
 	hop.tween_property(enemy.sprite, "position:y", rest.y, 0.2).set_ease(Tween.EASE_IN)
@@ -441,12 +423,12 @@ func _lay_pile() -> void:
 	var frame := frames.get_frame_texture(PunyArt.pick(frames, "idle", "down"), 0)
 	var drawn := frame.get_image()
 	var image := pile_image(drawn)
-	var size: Vector2 = enemy._rest_scale
+	var size: Vector2 = enemy.rest_scale
 	_pile = Sprite2D.new()
 	_pile.texture = ImageTexture.create_from_image(image)
 	_pile.centered = false
 	_pile.scale = size
-	var ground: float = enemy._rest_at.y + (drawn.get_used_rect().end.y - drawn.get_height() / 2.0) * size.y
+	var ground: float = enemy.rest_at.y + (drawn.get_used_rect().end.y - drawn.get_height() / 2.0) * size.y
 	_pile_at = Vector2(-roundf(image.get_width() * size.x / 2.0), ground - image.get_height() * size.y)
 	_pile.position = _pile_at
 	enemy.add_child(_pile)
@@ -481,14 +463,10 @@ func _fade(delta: float) -> void:
 			return
 		state = "gone"
 		left = float(trick["seconds"])
-		enemy.faded = true
-		_layer = enemy.collision_layer
-		_mask = enemy.collision_mask
-		enemy.collision_layer = 0
-		enemy.collision_mask = 0
+		enemy.vanish()
 		enemy.sprite.modulate = Color.WHITE
 	# Whatever else moved it on (a stun wearing off), it bides until it is back.
-	enemy.mode = "cast"
+	enemy.begin_cast()
 	enemy.modulate.a = FADED
 	if left > 0.0:
 		return
@@ -499,11 +477,9 @@ func _fade(delta: float) -> void:
 			enemy.reset_physics_interpolation()
 			break
 	state = ""
-	enemy.faded = false
-	enemy.collision_layer = _layer
-	enemy.collision_mask = _mask
+	enemy.appear()
 	enemy.modulate.a = 1.0
-	enemy.mode = "chase"
+	enemy.end_cast()
 	_faded_at = GameClock.seconds()
 	_struck.clear()
 	Sound.play("whiff")
@@ -515,7 +491,7 @@ func _fade(delta: float) -> void:
 ## them: the guard comes and goes, and its side and back are open all along.
 func _shell(delta: float) -> void:
 	if state == "":
-		if enemy.mode != "chase" or enemy.ailments.is_stunned():
+		if enemy.state != EnemyState.CHASE or enemy.ailments.is_stunned():
 			return
 		ready_in -= delta
 		var to_hero: Vector2 = world.player.global_position - enemy.global_position
@@ -524,9 +500,8 @@ func _shell(delta: float) -> void:
 		state = "raise"
 		left = float(trick["tell"])
 		_front = to_hero.normalized()
-		enemy.mode = "cast"
-		enemy.velocity = Vector2.ZERO
-		enemy.facing = Gait.dir_of(to_hero)
+		enemy.begin_cast()
+		enemy.face(to_hero)
 		world.foes.showed(enemy, "shell")
 		Sound.play("guard_raise")
 		# Its claws at their highest: the walk's second frame, held.
@@ -538,10 +513,10 @@ func _shell(delta: float) -> void:
 		# Thrown up in the tell's first half and held: as long a tell, read
 		# from its first frames.
 		_pose = sprite.create_tween().set_parallel()
-		_pose.tween_property(sprite, "position", enemy._rest_at + Vector2(0, -SHELL_LIFT), left * 0.5).set_ease(Tween.EASE_OUT)
+		_pose.tween_property(sprite, "position", enemy.rest_at + Vector2(0, -SHELL_LIFT), left * 0.5).set_ease(Tween.EASE_OUT)
 		_pose.tween_property(sprite, "modulate", SHELL_TINT, left * 0.5)
-		_pose.tween_property(sprite, "scale", enemy._rest_scale * SHELL_THROWN, left * 0.5).set_ease(Tween.EASE_OUT)
-		_pose.chain().tween_property(sprite, "scale", enemy._rest_scale * SHELL_HELD, left * 0.5)
+		_pose.tween_property(sprite, "scale", enemy.rest_scale * SHELL_THROWN, left * 0.5).set_ease(Tween.EASE_OUT)
+		_pose.chain().tween_property(sprite, "scale", enemy.rest_scale * SHELL_HELD, left * 0.5)
 		_glint()
 		return
 	left -= delta
@@ -560,7 +535,7 @@ func _glint() -> void:
 	var star := Sprite2D.new()
 	star.texture = star_texture()
 	star.material = Lights.unshaded()
-	star.position = Vector2(0, enemy.crown_of(enemy.sprite.sprite_frames, enemy._rest_at, enemy._rest_scale.x) - SHELL_LIFT)
+	star.position = Vector2(0, EnemyDrawing.crown_of(enemy.sprite.sprite_frames, enemy.rest_at, enemy.rest_scale.x) - SHELL_LIFT)
 	star.z_index = 10
 	star.scale = Vector2.ONE * 0.4
 	enemy.add_child(star)
@@ -587,9 +562,8 @@ func _lower() -> void:
 	if _pose != null:
 		_pose.kill()
 	_pose = enemy.sprite.create_tween().set_parallel()
-	_pose.tween_property(enemy.sprite, "position", enemy._rest_at, 0.12)
-	_pose.tween_property(enemy.sprite, "scale", enemy._rest_scale, 0.12)
+	_pose.tween_property(enemy.sprite, "position", enemy.rest_at, 0.12)
+	_pose.tween_property(enemy.sprite, "scale", enemy.rest_scale, 0.12)
 	_pose.tween_property(enemy.sprite, "modulate", Color.WHITE, 0.12)
-	if enemy.mode == "cast":
-		enemy.mode = "chase"
-	enemy._play("idle")
+	enemy.end_cast()
+	enemy.play("idle")

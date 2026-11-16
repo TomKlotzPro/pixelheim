@@ -17465,12 +17465,12 @@ msgid "Interrupted!"
 msgstr "Interrompu !"
 
 #: scripts/enemy.gd
-msgid "Lv %d"
-msgstr "Niv. %d"
-
-#: scripts/enemy.gd
 msgid "blocked"
 msgstr "paré"
+
+#: scripts/enemy_drawing.gd
+msgid "Lv %d"
+msgstr "Niv. %d"
 
 #: scripts/features/ash_fields/feature.gd
 msgid "In the ash: %s. Carry it home to %s."

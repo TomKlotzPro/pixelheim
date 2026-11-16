@@ -180,7 +180,7 @@ class FakeFighter extends Node2D:
 	var ailments := Ailments.new()
 	var fighter := {}
 	var dying := false
-	var mode := "chase"
+	var state := EnemyState.CHASE
 	var guarding := false
 	var aim_left := -1.0
 	var tell_left := -1.0
@@ -224,14 +224,27 @@ func test_a_foes_mode_names_its_wind_up() -> void:
 	foe.brain = autofree(FakeBrain.new())
 	foe.brain.telling = "cleave"
 	assert_eq(Bridge.mode_of(foe), "guard", "a move told a while ago is no cast")
-	foe.mode = "cast"
+	foe.state = EnemyState.CAST
 	assert_eq(Bridge.mode_of(foe), "cleave", "an elite's band")
 	foe.trick = autofree(FakeBrain.new())
 	for named: Array in [["crouch", "crouch"], ["in", "dart"], ["shimmer", "shimmer"], ["gone", "faded"], ["raise", "raise"], ["up", "guard"]]:
 		foe.trick.state = named[0]
 		assert_eq(Bridge.mode_of(foe), named[1], "a trick's " + named[0])
-	foe.mode = "flee"
+	foe.state = EnemyState.FLEE
 	assert_eq(Bridge.mode_of(foe), "flee", "any other mode is the enemy's own")
+	# PIX-501: the enemy's state is an enum now; every one reads by the name
+	# it always had, and out of a fight no trick or wind-up renames it.
+	for named: String in ["idle", "alert", "pile", "homeward", "flee"]:
+		foe.state = EnemyState.named(named)
+		assert_eq(Bridge.mode_of(foe), named, "the enemy's own " + named)
+	foe.trick.state = ""
+	foe.brain = null
+	foe.guarding = false
+	foe.aim_left = -1.0
+	foe.tell_left = -1.0
+	for named: String in ["chase", "cast"]:
+		foe.state = EnemyState.named(named)
+		assert_eq(Bridge.mode_of(foe), named, "a plain " + named)
 	# The brains' own word for it: what an elite and a boss last told.
 	for brain: String in ["elite_brain", "boss_brain"]:
 		assert_eq(autofree(load("res://scripts/%s.gd" % brain).new()).telling, "", brain)

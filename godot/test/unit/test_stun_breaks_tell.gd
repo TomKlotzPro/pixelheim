@@ -7,7 +7,6 @@ extends GutTest
 ## strike: a leap lands beside the hero, not on them (PIX-468).
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const Enemy := preload("res://scripts/enemy.gd")
 const BossBrainScript := preload("res://scripts/boss_brain.gd")
 const EliteBrainScript := preload("res://scripts/elite_brain.gd")
 const STUN := {"kind": "stun", "chance": 2.0, "turns": 2, "power": 0}
@@ -117,6 +116,8 @@ func _foe() -> Node:
 	_world.add_child(foe)
 	foe.set_physics_process(false)
 	foe.plain()
+	# On the hunt: a move is told from the chase alone (EnemyState).
+	foe.enter(EnemyState.CHASE)
 	return foe
 
 
@@ -160,7 +161,7 @@ func _boss_attack() -> Dictionary:
 func test_a_stun_takes_a_bosss_marks_back_and_leaves_it_waiting_for_none() -> void:
 	var foe := _foe()
 	var brain := _boss_brain(foe)
-	foe.mode = "cast"
+	foe.begin_cast()
 	# Two marks of one cast, as his embers.
 	brain._tell(_over_hero(), _boss_attack())
 	brain._tell(_over_hero(), _boss_attack())
@@ -177,7 +178,7 @@ func test_a_stun_takes_a_bosss_marks_back_and_leaves_it_waiting_for_none() -> vo
 func test_a_mark_already_struck_is_no_tell_to_break() -> void:
 	var foe := _foe()
 	var brain := _boss_brain(foe)
-	foe.mode = "cast"
+	foe.begin_cast()
 	brain._tell(_over_hero(), _boss_attack())
 	await wait_seconds(TELL + 0.05)
 	assert_eq(_world.player.hits, 1, "it struck")
@@ -189,7 +190,7 @@ func test_a_mark_already_struck_is_no_tell_to_break() -> void:
 func test_a_stun_breaks_an_elites_mark_and_its_blow_never_lands() -> void:
 	var foe := _foe()
 	var brain := _elite_brain(foe)
-	foe.mode = "cast"
+	foe.begin_cast()
 	brain._tell({"move": "cleave", "tell": TELL, "power": 1.0}, _over_hero(), "")
 	_stun(foe)
 	assert_eq(foe.mode, "chase")
@@ -229,9 +230,9 @@ func test_a_blow_that_turned_it_to_the_chase_first_still_breaks_the_tell() -> vo
 	# chasing before PIX-451): the stun still takes it back.
 	var foe := _foe()
 	var brain := _elite_brain(foe)
-	foe.mode = "cast"
+	foe.begin_cast()
 	brain._tell({"move": "stamp", "tell": TELL, "power": 1.0}, _over_hero(), "")
-	foe.mode = "chase"
+	foe.end_cast()
 	_stun(foe)
 	await wait_seconds(STRUCK_BY)
 	assert_eq(_world.player.hits, 0, "the stamp never came")
@@ -244,11 +245,11 @@ func test_a_blow_that_turned_it_to_the_chase_first_still_breaks_the_tell() -> vo
 func test_a_blow_without_a_stun_leaves_the_tell_to_land() -> void:
 	var elite := _foe()
 	var cleave := _elite_brain(elite)
-	elite.mode = "cast"
+	elite.begin_cast()
 	cleave._tell({"move": "cleave", "tell": TELL, "power": 1.0}, _over_hero(), "")
 	var boss := _foe()
 	var breath := _boss_brain(boss)
-	boss.mode = "cast"
+	boss.begin_cast()
 	breath._tell(_over_hero(), _boss_attack())
 	elite.take_hit(1, Vector2.ZERO)
 	boss.take_hit(1, Vector2.ZERO)
@@ -263,7 +264,7 @@ func test_a_stun_breaks_a_told_bolt_its_glow_and_its_marks() -> void:
 	var foe := _foe()
 	var brain := _elite_brain(foe)
 	var flown := [false]
-	foe.mode = "cast"
+	foe.begin_cast()
 	brain._keep(Telegraph.mark(_world, _over_hero(), TELL, Callable(), false))
 	brain._flash({"tell": TELL}, func() -> void: flown[0] = true)
 	_stun(foe)
@@ -287,7 +288,6 @@ func test_a_stun_drops_a_raised_guard() -> void:
 func test_a_stun_breaks_a_common_foes_bite_and_the_foe_stands_as_it_was() -> void:
 	var foe := _foe()
 	var at: Vector2 = foe.sprite.position
-	foe.mode = "chase"
 	foe._tell_bite(Vector2.RIGHT)
 	await wait_seconds(0.05)
 	_stun(foe)
@@ -309,7 +309,6 @@ func test_a_mark_long_gone_is_no_tell_either() -> void:
 
 func test_a_foe_telling_nothing_shows_no_word() -> void:
 	var foe := _foe()
-	foe.mode = "chase"
 	_stun(foe)
 	assert_true(foe.ailments.is_stunned())
 	assert_eq(_world.fx.words.size(), 0)
@@ -322,7 +321,7 @@ func test_a_stun_the_guard_shrugs_off_breaks_nothing() -> void:
 	var one_turn := {"kind": "stun", "chance": 2.0, "turns": 1, "power": 0}
 	foe.ailments.inflict(one_turn, GameState.roll)
 	foe.ailments.effects.clear()
-	foe.mode = "cast"
+	foe.begin_cast()
 	brain._tell(_over_hero(), _boss_attack())
 	# A second within the guard's window: halved to nothing.
 	foe.take_hit(1, Vector2.ZERO, one_turn)
@@ -335,29 +334,29 @@ func test_each_ailment_shows_its_own_icon_side_by_side_then_goes() -> void:
 	var foe := _foe()
 	foe.ailments.inflict(POISON, GameState.roll)
 	foe.ailments.inflict(BURN, GameState.roll)
-	foe._show_ailments()
-	assert_eq(foe._ailment_row.get_child_count(), 2, "one each")
-	var first: Sprite2D = foe._ailment_row.get_child(0)
-	var second: Sprite2D = foe._ailment_row.get_child(1)
+	foe.drawing.show_ailments()
+	assert_eq(foe.drawing.ailment_row.get_child_count(), 2, "one each")
+	var first: Sprite2D = foe.drawing.ailment_row.get_child(0)
+	var second: Sprite2D = foe.drawing.ailment_row.get_child(1)
 	assert_gt(second.position.x, first.position.x, "side by side")
 	foe.ailments.cure("poison")
-	foe._show_ailments()
-	assert_eq(foe._ailment_row.get_child_count(), 1, "cured, one left")
+	foe.drawing.show_ailments()
+	assert_eq(foe.drawing.ailment_row.get_child_count(), 1, "cured, one left")
 	foe.ailments.clear()
-	foe._show_ailments()
-	assert_eq(foe._ailment_row.get_child_count(), 0, "none left")
+	foe.drawing.show_ailments()
+	assert_eq(foe.drawing.ailment_row.get_child_count(), 0, "none left")
 
 
 func test_a_foe_nothing_ails_has_no_row_at_all() -> void:
 	var foe := _foe()
-	foe._show_ailments()
-	assert_null(foe._ailment_row, "no nodes for it in a big pack")
+	foe.drawing.show_ailments()
+	assert_null(foe.drawing.ailment_row, "no nodes for it in a big pack")
 
 
 func test_the_icons_go_with_the_foe() -> void:
 	var foe := _foe()
 	foe.ailments.inflict(POISON, GameState.roll)
-	foe._show_ailments()
+	foe.drawing.show_ailments()
 	foe.dying = true
-	foe._show_ailments()
-	assert_eq(foe._ailment_row.get_child_count(), 0, "gone as it falls")
+	foe.drawing.show_ailments()
+	assert_eq(foe.drawing.ailment_row.get_child_count(), 0, "gone as it falls")

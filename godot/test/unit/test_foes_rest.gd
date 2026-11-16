@@ -4,7 +4,6 @@ extends GutTest
 ## screen, hunting, hurt or a boss never rests; and one resting wakes while
 ## the walking hero's screen is still more than half a second from it.
 
-const Enemy := preload("res://scripts/enemy.gd")
 const Player := preload("res://scripts/player.gd")
 ## The screen at play zoom: 1280x720 over three.
 const VIEW := Rect2(0, 0, 1280.0 / 3.0, 240)
@@ -33,11 +32,12 @@ func test_a_far_foe_rests_and_a_hunting_or_hurt_one_never() -> void:
 	var foe := _foe(Vector2(2000, 120))
 	foe.rest(VIEW)
 	assert_true(foe.resting, "at home, far off")
-	foe.mode = "chase"
+	foe.enter(EnemyState.CHASE)
 	foe.hunting = true
 	foe.rest(VIEW)
 	assert_false(foe.resting, "chasing")
-	foe.mode = "idle"
+	foe.enter(EnemyState.HOMEWARD)
+	foe.enter(EnemyState.IDLE)
 	foe.hunting = false
 	foe.fighter["hp"] = int(foe.fighter["maxHp"]) - 1
 	foe.rest(VIEW)
