@@ -231,3 +231,32 @@ func test_with_motion_reduced_a_win_fades_in_where_it_stands() -> void:
 		assert_eq(row.scale, Vector2.ONE, "no burst")
 		assert_almost_eq(row.modulate.a, 1.0, 0.01, "just a fade in")
 	GameState.settings.reduce_motion = was
+
+
+## PIX-484: on the sand path a gold "+10" read "+11" and a "30" "31": the
+## face's own outline drew only inside the letters. Every word over the
+## world (a number, a word, a win's rows) is ringed in the dark, a pixel off
+## every way.
+func test_every_floating_word_is_ringed_in_the_dark() -> void:
+	var fx: WorldFx = add_child_autofree(WorldFx.new())
+	var win := Gains.none()
+	win["gold"] = 10
+	win["xp"] = 7
+	fx.show_gains(win, Vector2(100, 50))
+	fx.float_number(30, Vector2(40, 40), Color(1, 0.35, 0.35))
+	fx.float_text("-10 gold", Vector2(60, 40), UiStyle.GOLD)
+	var labels := fx.find_children("*", "Label", true, false)
+	assert_eq(labels.size(), 4, "the gold, its XP, a number and a word")
+	for label: Label in labels:
+		var look := label.label_settings
+		var ways: Array[Vector2] = []
+		for i in look.stacked_shadow_count:
+			ways.append(look.get_stacked_shadow_offset(i))
+			assert_eq(look.get_stacked_shadow_color(i), UiStyle.NIGHT, "%s: dark" % label.text)
+		for x in [-1, 0, 1]:
+			for y in [-1, 0, 1]:
+				if x != 0 or y != 0:
+					assert_has(ways, Vector2(x, y), "%s: ringed at (%d, %d)" % [label.text, x, y])
+		assert_eq(look.font, UiStyle.bold_font(), "%s: the same face" % label.text)
+		assert_eq(look.font_size, UiStyle.BODY_PX, "%s: at its own size" % label.text)
+	assert_eq((labels[0] as Label).label_settings.font_color, WorldFx.GAIN_TONES["gold"], "in its own colour still")

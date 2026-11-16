@@ -33,6 +33,14 @@ const STRIKE_FRAMES := {"sword": [1, 2], "staff": [1, 2], "bow": [2, 3]}
 ## How long a roll, swing or skill pressed while the hero can't act yet stays
 ## waiting for them (PIX-439); only the last press does.
 const PRESS_KEPT_SECONDS := 0.15
+## A skill's key is kept longer (PIX-484: "1" right after a swing, "2" 0.6 s
+## into skill 1's turn did nothing, with no word why): through a swing and
+## the last half of the skills' shared turn. Pressed sooner than that, or
+## still unable when the wait is up, its slot says so (_not_ready).
+const SKILL_KEPT_SECONDS := 0.5
+## The hero's sprite while an ailment wears on their health (PIX-484: the
+## paid icon over the head is a few pixels, and the CC0 build has none).
+const AILING_TINTS := {"poison": Color(0.66, 1.0, 0.55), "burn": Color(1.0, 0.7, 0.5)}
 
 var world: Node2D
 ## Mirrors GameState.hero.hp, the web hero's real health (PIX-126).
@@ -44,6 +52,8 @@ var attacking := false
 ## A skill's cast: the attack animation plays, the blade stays still.
 var casting := false
 var skill_ready := true
+## When the skills' shared turn ends, on the game's clock.
+var _skill_ready_at := 0.0
 ## The last cast refused, said on the plate until a cast goes (PIX-444).
 var refused := ""
 var regen_clock := 0.0
@@ -272,23 +282,46 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## A skill's key or its slot on the dock pressed.
 func press_skill(index: int) -> void:
-	_press(_can_cast, cast.bind(index))
+	if dead:
+		return
+	# The skills' turn has longer to run than a press is kept: said now.
+	if not skill_ready and _skill_ready_at - GameClock.seconds() > SKILL_KEPT_SECONDS:
+		_not_ready(index)
+		return
+	_press(_can_cast, cast.bind(index), SKILL_KEPT_SECONDS, _not_ready.bind(index))
 
 
-## A press (PIX-439): done now if the hero can, else kept a moment in place
-## of any press before it, so a roll pressed mid-swing isn't lost.
-func _press(can: Callable, act: Callable) -> void:
+## A press (PIX-439): done now if the hero can, else kept `seconds` in place
+## of any press before it, so a roll pressed mid-swing isn't lost; `lapse`
+## when the wait runs out and the hero still couldn't.
+func _press(can: Callable, act: Callable, seconds := PRESS_KEPT_SECONDS, lapse := Callable()) -> void:
 	_kept_can = can
 	_kept_act = act
-	_kept_until = GameClock.seconds() + PRESS_KEPT_SECONDS
+	_kept_lapse = lapse
+	_kept_until = GameClock.seconds() + seconds
 	_fire_kept()
 
 
-## The kept press, the moment the hero can act on it.
+## The kept press, the moment the hero can act on it, or let go once its
+## wait is up.
 func _fire_kept() -> void:
-	if GameClock.seconds() <= _kept_until and _kept_can.call():
+	if _kept_until < 0.0:
+		return
+	if GameClock.seconds() > _kept_until:
+		_kept_until = -1.0
+		if _kept_lapse.is_valid():
+			_kept_lapse.call()
+	elif _kept_can.call():
 		_kept_until = -1.0
 		_kept_act.call()
+
+
+## A skill's key that did nothing (PIX-484): its slot on the dock flashes
+## and the refusal's click is heard. No words.
+func _not_ready(index: int) -> void:
+	Sound.play("skill_refused")
+	if world.hud.dock != null:
+		world.hud.dock.refuse(index)
 
 
 ## A screen opening holds the world still: the press kept goes, or it would
@@ -418,6 +451,22 @@ const PRIMED_SECONDS := 2.0
 var _nipped_until := 0.0
 
 
+## An ailment's roll on the hero (a blow's, the harness's `--ail`); true when
+## it took. Told as a foe's is (PIX-484: a goblin's poison drained the hero
+## with no word): a line of the log as it takes hold, not each time it is
+## renewed, and the hero and their HP bar in its colour while it lasts.
+func afflict(infliction: Variant) -> bool:
+	var had := ailments.kinds()
+	if not ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
+		return false
+	Sound.play("afflicted")
+	_show_ailment()
+	var kind := String(infliction["kind"])
+	if kind not in had:
+		world.messages.log_now(Ailments.told(kind), func() -> bool: return kind in ailments.kinds())
+	return true
+
+
 ## A blow lands; `infliction` is the attacker's ailment roll, if it carries
 ## one. Without `grace` (a summon's bite, PIX-421) it starts no half-second
 ## of invulnerability, so the boss's own bite right after still lands, only
@@ -446,10 +495,8 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, grace := t
 	world.fx.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35), false, self)
 	world.camera_rig.shake(3.0, 0.2)
 	world.camera_rig.hit_stop(0.05)
-	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
-		Sound.play("afflicted")
-		# Its icon over the hero says it; the log doesn't again (PIX-334).
-		_show_ailment()
+	if hp > 0:
+		afflict(infliction)
 	velocity = (global_position - from).normalized() * 180
 	move_and_slide()
 	if hp == 0:
@@ -521,12 +568,12 @@ func cast(index: int) -> void:
 	# The skill on that key of the dock (PIX-190), not the Nth one known.
 	var skills := Skills.docked(GameState.hero)
 	if index >= skills.size() or skills[index].is_empty():
-		_refuse("No skill on that key yet. Learn more, or set the keys, in Skills.")
+		_refuse("No skill on that key yet. Learn more, or set the keys, in Skills.", index)
 		return
 	var skill: Dictionary = skills[index]
 	var block := Skills.cast_block(GameState.hero, skill)
 	if block != "":
-		_refuse(block)
+		_refuse(block, index)
 		return
 	var targets: Array = []
 	var landing := global_position
@@ -542,7 +589,7 @@ func cast(index: int) -> void:
 			if landing == global_position:
 				targets = _targets(skill.merged({"reach": "melee"}, true), foes)
 		if targets.is_empty():
-			_refuse(Text.t("No foe in reach for %s.") % skill["name"])
+			_refuse(Text.t("No foe in reach for %s.") % skill["name"], index)
 			return
 		face(targets[0].global_position - global_position)
 	# It went: the last refusal no longer holds.
@@ -550,6 +597,7 @@ func cast(index: int) -> void:
 	refused = ""
 	GameState.training.pay_for_skill(skill)
 	skill_ready = false
+	_skill_ready_at = GameClock.seconds() + SKILL_TURN
 	get_tree().create_timer(SKILL_TURN).timeout.connect(func() -> void: skill_ready = true)
 	attacking = true
 	casting = true
@@ -665,11 +713,11 @@ func _step_to(spot: Vector2, skill: Dictionary, targets: Array, open: Callable) 
 	step.tween_property(sprite, "modulate:a", 1.0, 0.08)
 
 
-## A cast refused: said on the plate, and heard.
-func _refuse(text: String) -> void:
+## A cast refused: said on the plate, heard, and shown on its slot.
+func _refuse(text: String, index: int) -> void:
 	refused = text
 	world.messages.flash(text)
-	Sound.play("skill_refused")
+	_not_ready(index)
 
 
 ## Some passives heal the hero a share of the damage they deal (PIX-190).
@@ -753,6 +801,8 @@ func _show_ailment() -> void:
 	ailment_icon.visible = not kinds.is_empty()
 	if ailment_icon.visible:
 		ailment_icon.texture = ItemIcons.ailment(kinds[0])
+	# The roll's and a hit's blinks tween the alpha alone.
+	sprite.modulate = Color(AILING_TINTS.get(ailments.wearing(), Color.WHITE), sprite.modulate.a)
 
 func respawn(at: Vector2) -> void:
 	ailments.clear()
@@ -888,6 +938,7 @@ func _shape() -> void:
 ## it does, and until when it waits (-1: none waits).
 var _kept_can := Callable()
 var _kept_act := Callable()
+var _kept_lapse := Callable()
 var _kept_until := -1.0
 
 

@@ -62,12 +62,24 @@ static func _bite_px() -> Vector2:
 	return _bite
 
 
+## Whether the feet at `to` stand in the cell in front of the one `from`
+## stands in, the way `facing` looks.
+static func in_front(from: Vector2, facing: Vector2, to: Vector2) -> bool:
+	return facing != Vector2.ZERO and Vector2i((to / TILE).floor()) == Vector2i((from / TILE).floor()) + Vector2i(facing.round())
+
+
 ## Whether a blow from `from`, facing `facing` (ZERO: whichever way), lands
 ## on a body `radius` wide either side of its feet at `to`: within the
 ## reach's cells of the body's near edge and, with an `arc`, within its
 ## degrees about the facing, widened by the body's own breadth (a body half
-## in the arc is in it).
+## in the arc is in it). A reach with `front` (a melee skill) also lands on a
+## foe anywhere in the cell in front (PIX-484: the hero at the foot of their
+## cell, a gunner at the top of the next, « No foe in reach for Poison
+## Blade. »); the swing has none, so the ring's waiting foes stay out of a
+## sweep (PIX-377).
 static func lands(from: Vector2, facing: Vector2, to: Vector2, radius: float, reach: Dictionary) -> bool:
+	if reach.get("front", false) and in_front(from, facing, to):
+		return true
 	var offset := to - from
 	var apart := offset.length()
 	if apart - radius > px(reach):
@@ -101,7 +113,8 @@ static func targets(from: Vector2, facing: Vector2, spots: Array[Vector2], radii
 	var first := -1
 	var best := INF
 	for i in spots.size():
-		if not lands(from, Vector2.ZERO, spots[i], radii[i], reach):
+		# Whichever way they face, and the cell in front where the reach has it.
+		if not lands(from, Vector2.ZERO, spots[i], radii[i], reach) and not (reach.get("front", false) and in_front(from, facing, spots[i])):
 			continue
 		var offset := spots[i] - from
 		var score := offset.length() - (12.0 if offset.normalized().dot(facing) > 0.5 else 0.0)

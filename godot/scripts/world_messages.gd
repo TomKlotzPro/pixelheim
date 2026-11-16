@@ -64,6 +64,13 @@ func build_log(hud: CanvasLayer) -> void:
 	log_box.custom_minimum_size = Vector2(700, 0)
 	log_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(log_box)
+	# Gone while a conversation or screen holds the world (PIX-484: the
+	# journal's hint stayed half hidden behind Vex's words, only "Press Q"
+	# sticking out); update() shows it again once the world runs.
+	if world != null:
+		world.child_entered_tree.connect(func(node: Node) -> void:
+			if node is Screen:
+				log_box.visible = false)
 
 
 ## The message's plate, among the HUD's pieces where it always stood.
@@ -143,6 +150,14 @@ func log_now(line: String, holds := Callable()) -> void:
 func hint_line(id: String, text: String) -> void:
 	_log.add(text)["hint"] = id
 	update()
+
+
+## A first-time hint gone from the log for good, showing or waiting
+## (Hud.hint_learnt).
+func drop_hint(id: String) -> void:
+	for entry: Dictionary in _log.showing + _log.waiting:
+		if entry.get("hint", "") == id:
+			_drop(entry)
 
 
 ## The hint on the log, showing or waiting its turn, by its id, or "".
@@ -371,6 +386,7 @@ static func tag_of(text: String, tags: Array) -> String:
 ## qui pop d'un coup »): the plate goes first, the log's line stepping
 ## aside for it, and the log's next waits until the plate has faded.
 func update() -> void:
+	log_box.visible = true
 	_drop_past()
 	_hold_hint_for_card()
 	var fighting := _fighting()

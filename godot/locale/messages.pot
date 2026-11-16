@@ -19077,6 +19077,18 @@ msgid "The burn"
 msgstr ""
 
 #: scripts/state/ailments.gd
+msgid "You are burning!"
+msgstr ""
+
+#: scripts/state/ailments.gd
+msgid "You are poisoned!"
+msgstr ""
+
+#: scripts/state/ailments.gd
+msgid "You are stunned!"
+msgstr ""
+
+#: scripts/state/ailments.gd
 msgid "burn"
 msgstr ""
 
