@@ -45,6 +45,13 @@ const FOOT_DEEP := 3.0
 ## How near a tall cell a light may burn and still cast, in cells (an
 ## eighth: two pixels; a dungeon's wall torch burns three below its wall).
 const NEAR_WALL := 0.125
+## A flame burning within this many pixels of a standing thing's foot (a
+## cell: a camp's torch against its tent, a lantern hung under a tree)
+## casts nothing (PIX-495): so near, the foot's shadow took a quarter of
+## the pool in one hard-edged wedge as far as the light reached. Its light
+## is soft all round as before, and the hero's lantern still casts from
+## the thing.
+const AGAINST := 16.0
 ## A villager's or the hero's feet, in pixels.
 const FEET := Vector2(8, 3)
 ## The occluders' light bits: the scenery blocks every casting light, the

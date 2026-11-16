@@ -99,6 +99,8 @@ const REST_MARGIN := 6.0 * MapView.TILE
 ## or HEAD_CLEAR over the top of a head that reaches higher (over_head).
 const BAR_Y := -20.0
 const HEAD_CLEAR := 6.0
+## A slime's half keeps its bar this near its top instead (PIX-497).
+const SMALL_CLEAR := 2.0
 ## Its body for blows at its kind's size, from its feet up (grown with its
 ## drawing); an elite's a little bigger, as it was when it was drawn so
 ## (PIX-314 drew it its kind's size: whole sizes only). A blow reaches it at
@@ -148,6 +150,8 @@ var health_bar: ColorRect
 var health_bar_back: ColorRect
 ## "Lv N" beside the health bar (PIX-188).
 var level_tag: PanelContainer
+## Its tag is the one its pack shows (Foes hides the others': PIX-340).
+var tag_led := false
 ## A named foe's name over its head, or null.
 var name_plate: Label
 ## Poison, burn and stun from the hero's afflicting passives.
@@ -243,10 +247,9 @@ var lost_for := 0.0
 var blocked_for := 0.0
 var held_for := 0.0
 var bound_until := -100.0
-## It gave the chase up for want of a way to the hero (_lets_go): home, it
-## keeps its wounds, as a boss does (PIX-232, PIX-475), or a ranger across
-## a river could never finish it off.
-var _no_way := false
+## How long it has stood at home wounded with the hero out of its notice
+## (_mend, PIX-493): a pack's foe is whole again only after Packs.mends.
+var out_for := 0.0
 ## A boss or a named monster (Bestiary.fights_like_boss), and one of the
 ## wilds that keeps to its ground (Hunts.of_the_wilds): known from the start.
 var boss_like := false
@@ -353,6 +356,10 @@ func _ready() -> void:
 	# Its words over its head as drawn, and over what it wears on it.
 	var worn := _wear_crown()
 	_over_head = over_head(sprite.sprite_frames, _rest_at, size, worn)
+	# A slime's half stands far under its kind's line (PIX-497: its tag and
+	# its "!" floated a body's height over it, belonging to nothing).
+	if fighter.get("small", false):
+		_over_head = floorf(crown_of(sprite.sprite_frames, _rest_at, size, worn)) - SMALL_CLEAR
 	depth = HERO_FEET - crown_of(sprite.sprite_frames, _rest_at, size, worn)
 	sprite.animation_changed.connect(_turned)
 	# Fafnyr and Morvax fight with their own attacks too (PIX-150); an elite
@@ -439,9 +446,19 @@ func make_way(hero: Vector2, delta: float) -> void:
 			words.modulate.a = alpha
 
 
+## Whether its tag is its pack's one; a mark up moves with it (a half's
+## "!" stands over a tag it shows, PIX-497).
+func lead_tag(leads: bool) -> void:
+	if tag_led == leads:
+		return
+	tag_led = leads
+	_turned()
+
+
 ## The level its tag reads (PIX-340: in a fight a pack's one tag reads the
 ## pack's highest), coloured by the gap to the hero's.
 func show_level(level: int) -> void:
+	lead_tag(true)
 	var words: Label = level_tag.get_child(0)
 	var text := Text.t("Lv %d") % level
 	if words.text != text:
@@ -454,6 +471,7 @@ func _physics_process(delta: float) -> void:
 	# global ones), so the drops and blows they decide come out as before;
 	# called to a fight since Foes last looked, it is up this tick.
 	if resting and mode == "idle":
+		_mend(delta)
 		_wander(delta)
 		return
 	# A falling foe's tag goes with it (PIX-340: it stayed up over the body,
@@ -489,7 +507,7 @@ func _physics_process(delta: float) -> void:
 			if player.dead or (not _hunts_wagon() and gives_up(fighter, leash, global_position, player.global_position)):
 				_give_up()
 			elif _lets_go(delta):
-				_give_up(true)
+				_give_up()
 			else:
 				_chase(aim, delta)
 		"cast", "pile":
@@ -516,6 +534,7 @@ func _physics_process(delta: float) -> void:
 				else:
 					notice()
 			else:
+				_mend(delta)
 				_wander(delta)
 	var walk := velocity
 	var shove := _shove(delta)
@@ -848,6 +867,11 @@ func _place_mark(burst: Sprite2D) -> void:
 ## (PIX-188; a named foe's tag stands over its name), or over where the tag
 ## stands before it is laid out.
 func mark_foot() -> float:
+	# A slime's half whose tag its pack's one tag hides wears its mark right
+	# over it (PIX-497): a tag's height up, over a blob 8 px tall, the "!"
+	# belonged to nothing. The half showing the tag keeps it over the tag.
+	if fighter.get("small", false) and not tag_led:
+		return floorf(_over_head - MARK_CLEAR)
 	var tag_top := _over_head - TAG_HEIGHT
 	if level_tag != null and level_tag.size.y > 0.0:
 		tag_top = level_tag.position.y
@@ -1223,10 +1247,9 @@ func run_off() -> void:
 
 
 ## Too far from home or behind, or far enough from a hero it ran from
-## (PIX-251): back home, deaf to the hero on the way. `no_way`: it let go
-## (_lets_go), and heals none on settling.
-func _give_up(no_way := false) -> void:
-	_no_way = no_way
+## (PIX-251): back home, deaf to the hero on the way, with its wounds
+## (_settle).
+func _give_up() -> void:
 	mode = "homeward"
 	aim_left = -1.0
 	hunting = false
@@ -1416,16 +1439,28 @@ func _home_at_last() -> void:
 	_settle()
 
 
-## Home again, and watching: a pack's foe whole again; a boss or a named
-## monster keeps its wounds (PIX-232: walking off never made one whole
-## again), so its bar comes back as it was when the fight does (PIX-288),
-## and so does any foe that let go for want of a way (PIX-475).
+## Home again, and watching, with its wounds: no walk home makes a foe
+## whole (a boss's since PIX-232, one with no way to the hero since
+## PIX-475, every foe's since PIX-493: two rolls away from a wolf's dart
+## sent it home, whole again before the hero had turned round).
 func _settle() -> void:
 	mode = "idle"
 	woken = false
+	out_for = 0.0
 	_fresh_hunt()
-	if boss_like or _no_way:
+
+
+## At home and out of the fight a pack's foe mends (PIX-493): whole again
+## once the hero has kept out of its notice long enough (Packs.mends),
+## counted from the start whenever they come near. Never a boss or a named
+## monster (PIX-232); leaving the map makes the pack anew, as it always did.
+func _mend(delta: float) -> void:
+	if boss_like or int(fighter["hp"]) >= int(fighter["maxHp"]):
 		return
+	out_for = 0.0 if Packs.within_notice(global_position, world.player.global_position) else out_for + delta
+	if not Packs.mends(out_for):
+		return
+	out_for = 0.0
 	fighter["hp"] = fighter["maxHp"]
 	health_bar.visible = false
 	health_bar_back.visible = false

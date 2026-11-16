@@ -302,11 +302,17 @@ func _cast_shadows(flames: Array[PointLight2D], delta: float) -> void:
 			wanted.append(flames[i])
 	# Those casting already, then those wanted: each a step on.
 	var now: Array[PointLight2D] = []
-	var lamps := casting.filter(func(light: PointLight2D) -> bool: return is_instance_valid(light) and light != lantern)
+	# A lamp freed with its map is still in `casting` (PIX-496): asked for by
+	# its type, it stopped the whole filter with an error, and the lamps
+	# fading out were dropped still casting.
+	var lamps: Array[PointLight2D] = []
+	for light: Variant in casting:
+		if is_instance_valid(light) and light != lantern:
+			lamps.append(light)
+	var busy := lamps.size()
 	for light: PointLight2D in wanted:
 		if not light in lamps:
 			lamps.append(light)
-	var busy := casting.size() - int(lantern in casting)
 	for light: PointLight2D in lamps:
 		var before := float(light.get_meta("shade", 0.0))
 		# A lamp gone out (the day, a doused fire) stops at once.

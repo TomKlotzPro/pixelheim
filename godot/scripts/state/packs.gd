@@ -61,6 +61,13 @@ static func gives_up(home: Vector2, at: Vector2, hero: Vector2) -> bool:
 	return at.distance_to(home) > leash or at.distance_to(hero) > leash
 
 
+## A wounded foe home from a chase is whole again once the hero has kept
+## out of its notice for `out_for` seconds (PIX-493: it walked home whole,
+## so the roll the first hint teaches wiped out the hero's blows).
+static func mends(out_for: float) -> bool:
+	return out_for >= float(rules()["mendSeconds"])
+
+
 ## Too weak to face the hero (PIX-251): a monster fleeLevels or more below
 ## the hero runs instead of charging. An elite counts fleeEliteLevels above
 ## its kind, as it hits half again as hard and lasts longer: a slime (level

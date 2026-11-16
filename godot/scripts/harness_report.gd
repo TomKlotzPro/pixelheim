@@ -450,6 +450,17 @@ func field_floor() -> String:
 	return "%d/%d" % [int(entry["number"]), Depths.count(entry["dungeon"])]
 
 
+## After a roll away (PIX-493): every hurt foe still standing, its hp and mode.
+func field_foes() -> String:
+	if not flags.has("rollaway"):
+		return ""
+	var out: Array[String] = []
+	for mob: Node in world.get_tree().get_nodes_in_group("mobs"):
+		if not mob.dying and int(mob.fighter["hp"]) < int(mob.fighter["maxHp"]):
+			out.append("%d/%d %s" % [mob.fighter["hp"], mob.fighter["maxHp"], mob.mode])
+	return ",".join(out) if not out.is_empty() else "none"
+
+
 ## On a held place (Hamlet.HELD): who holds it, its houses, the banners
 ## hung in its holder's colour, its pieces two tiles tall standing whole
 ## (Hamlet.TOPS) and its paved cells worn:

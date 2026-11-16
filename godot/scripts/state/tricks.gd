@@ -96,6 +96,13 @@ static func circle_spot(hero: Vector2, at: Vector2, ring_spot: Vector2, turn: fl
 	return hero + out.rotated(CIRCLE_STEP * turn) * radius
 
 
+## `spot` brought back within a wolf's leash of its `home` (hitrun): a
+## cell inside where a chase is given up (Packs.gives_up), so circling out
+## there it still fights.
+static func leashed(spot: Vector2, home: Vector2) -> Vector2:
+	return home + (spot - home).limit_length(Packs.tiles("giveUpTiles") - TILE)
+
+
 ## Whether a wolf may dart now (a pack takes turns): nobody else's turn
 ## (`taken`), and the breath after the last one over (`free_at`).
 static func may_dart(taken: bool, now: float, free_at: float) -> bool:

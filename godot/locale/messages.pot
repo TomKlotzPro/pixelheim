@@ -2301,6 +2301,10 @@ msgid "A foe that comes round below you steps back out fully, and a leaping beas
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe that gives up the fight walks home with its wounds and only heals after a while out of your sight; a wolf's dart back out never takes it past its leash"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
 msgstr ""
 
@@ -2541,6 +2545,10 @@ msgid "A title worth arriving at: the first launch comes down from the stars pas
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A torch beside a tent lights softly all round again"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
 msgstr ""
 
@@ -2550,6 +2558,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A way out on a map's south edge no longer hides under the dock, and you arrive facing into the new map, on its road"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A wolf's eyes shine as it crouches to dart, the crab throws its claws up with a glint, and a ghost back beside you waits a moment before it bites"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3713,6 +3725,10 @@ msgid "Fafnyr warms his belly on Hilda's new forge, and Maren has a last word fo
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fair Fights"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fair Trade"
 msgstr ""
 
@@ -3810,6 +3826,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Fixed: after funding a project on the square, the town's tour of what was built played behind a black screen; it shows in full now, and so do the ending's tour and the homecomings"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Fixed: an error each time you changed map at night; a slime's halves no longer come out inside you"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6474,6 +6494,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Barred Gate"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Bestiary shows the XP a kill pays you now"
 msgstr ""
 
 #: assets/data/changelog.json

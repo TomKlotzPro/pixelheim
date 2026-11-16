@@ -339,7 +339,7 @@ static func _learn_places() -> void:
 		var rank: int = {"": 0, "day": 1}.get(String(spawn.get("hours", "")), 2)
 		if rank < int(home_rank.get(species, 99)):
 			home_rank[species] = rank
-			_homes[species] = {"mapId": spawn["mapId"], "x": int(spawn["x"]), "y": int(spawn["y"])}
+			_homes[species] = {"mapId": spawn["mapId"], "x": int(spawn["x"]), "y": int(spawn["y"]), "region": region_id}
 	for species: String in by_day:
 		var places: Array[String] = []
 		var at_night: Array[String] = []
@@ -398,6 +398,20 @@ static func xp_for(fighter: Dictionary, hero_level: int) -> int:
 	var share := clampf(1.0 - float(gap["falloff"]) * maxi(0, above), float(gap["floor"]), 1.0)
 	share += minf(float(gap["aboveBonus"]) * maxi(0, -above), float(gap["aboveCap"]))
 	return roundi(int(fighter["xp"]) * share)
+
+
+## The XP the Bestiary's row shows for a kind (PIX-494): what a kill of it
+## as `seen` (the monster's row, lifted to where it was met) pays a hero of
+## `hero_level` now - the wild's share where its pack lives (home_of) and
+## the gap between their levels, as the "+N XP" over a kill - not the row's
+## own figure (a Dire Wolf read "23 xp" and paid a new hero 7). A kind of no
+## pack (a boss) pays its row's.
+static func xp_shown(monster_id: String, seen: Dictionary, hero_level: int) -> int:
+	var fighter := seen.merged({"id": monster_id}, true)
+	var home := home_of(monster_id)
+	if not home.is_empty():
+		fighter = wild(fighter, home["region"])
+	return xp_for(fighter, hero_level)
 
 
 static func variance(base: float, roll: Callable) -> int:

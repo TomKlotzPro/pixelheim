@@ -18,7 +18,7 @@ var _world: StubWorld
 ## What a blow on the hero asks of the world: its floats, its flash, the
 ## camera's shake and the screen's red edges.
 class StubSkills extends RefCounted:
-	func impact(_on: Node) -> void:
+	func impact(_on: Node, _alpha := 0.0) -> void:
 		pass
 
 

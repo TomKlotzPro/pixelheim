@@ -90,8 +90,8 @@ func _ready() -> void:
 	sprite.sprite_frames = PunyArt.frames(art)
 	sprite.position = Vector2(0, PunyArt.lift(art))
 	sprite.self_modulate = art["tint"]
-	# A clean white flash when struck (PIX-226).
-	sprite.material = Juice.fighter_material()
+	# A clean white flash when struck (PIX-226), the outline kept (PIX-497).
+	sprite.material = Juice.fighter_material(Juice.HERO_KEEP)
 	add_child(sprite)
 	gait = Gait.new(sprite, art)
 	_play("idle")
@@ -442,7 +442,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, grace := t
 	hp = GameState.hero.hp
 	Juice.flash(sprite)
 	world.hud.hurt_edge.struck(float(was - hp) / float(GameState.hero.stats["maxHp"]))
-	world.fx.skills.impact(self)
+	world.fx.skills.impact(self, SkillFx.HERO_IMPACT_ALPHA)
 	world.fx.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35), false, self)
 	world.camera_rig.shake(3.0, 0.2)
 	world.camera_rig.hit_stop(0.05)

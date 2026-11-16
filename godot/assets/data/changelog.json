@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.372.0",
+      "date": "2026-11-16",
+      "codename": "Fair Fights",
+      "notes": [
+        "A foe that gives up the fight walks home with its wounds and only heals after a while out of your sight; a wolf's dart back out never takes it past its leash",
+        "The Bestiary shows the XP a kill pays you now",
+        "A wolf's eyes shine as it crouches to dart, the crab throws its claws up with a glint, and a ghost back beside you waits a moment before it bites",
+        "A torch beside a tent lights softly all round again",
+        "Fixed: an error each time you changed map at night; a slime's halves no longer come out inside you"
+      ]
+    },
+    {
       "version": "0.371.0",
       "date": "2026-11-15",
       "codename": "Loot That Pops",

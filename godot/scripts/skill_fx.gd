@@ -27,6 +27,9 @@ const Z := 6
 const FLIGHT := Juice.FLASH_SECONDS
 ## The impact sits under the blow's flash, knockback and stop.
 const IMPACT_ALPHA := 0.8
+## On the hero it is fainter still (PIX-497: with their own flash and blink
+## it hid them whole under a bite), so they show through it.
+const HERO_IMPACT_ALPHA := 0.45
 
 ## Held while a skill deals its blows (Player.cast): its own strips are its
 ## impact.
@@ -86,12 +89,12 @@ func swing(weapon: String, from: Vector2, target: Node2D, end: Vector2, seconds:
 
 ## A landed blow's small impact on whoever took it (Enemy.take_hit,
 ## Player.take_hit), a little faint under its flash.
-func impact(who: Node2D) -> void:
+func impact(who: Node2D, alpha := IMPACT_ALPHA) -> void:
 	if impacts_held:
 		return
 	var strip := String(ItemIcons.skill_fx().get("impact", ""))
 	_note(strip)
-	play(strip, who, Vector2.ZERO, IMPACT_ALPHA)
+	play(strip, who, Vector2.ZERO, alpha)
 
 
 ## A strip played once on the fighter `on`, following it as it's knocked

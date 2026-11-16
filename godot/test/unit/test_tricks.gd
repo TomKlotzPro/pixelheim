@@ -21,7 +21,7 @@ var _world: StubWorld
 
 
 class StubSkills extends RefCounted:
-	func impact(_on: Node) -> void:
+	func impact(_on: Node, _alpha := 0.0) -> void:
 		pass
 
 
@@ -135,6 +135,7 @@ func _foe(kind: String, elite := false, at := HERO_AT + Vector2(16, 0)) -> Node:
 	foe.world = _world
 	foe.fighter = Bestiary.spawn(kind, elite)
 	foe.position = at
+	foe.home = at
 	foe.add_to_group("mobs")
 	_world.add_child(foe)
 	foe.set_physics_process(false)
@@ -228,6 +229,13 @@ func test_a_slain_slime_bursts_into_two_small_ones() -> void:
 		assert_true(half.fighter["small"])
 		assert_null(half.trick, "which never split")
 		assert_true(half.faded, "the blow that burst it doesn't sweep them up")
+		assert_gte(half.global_position.distance_to(HERO_AT), slime.global_position.distance_to(HERO_AT), "never nearer the hero than the slime stood (PIX-497)")
+		assert_gt(half._over_head, Enemy.BAR_Y, "its tag sits just over it, not at its kind's height")
+		assert_gt(half.mark_foot(), Enemy.BAR_Y, "and its \"!\" right over it")
+		var low: float = half.mark_foot()
+		half.lead_tag(true)
+		assert_lte(half.mark_foot(), low - Enemy.TAG_HEIGHT, "over its tag when it is the one showing the pack's")
+		half.lead_tag(false)
 		assert_eq(half.mode, "alert", "they come after the \"!\"")
 		assert_lt(half.sprite.sprite_frames.get_frame_texture("idle", 0).get_size().x, slime.sprite.sprite_frames.get_frame_texture("idle", 0).get_size().x, "drawn smaller")
 	assert_eq(_world.foes.tricks_shown, {"split": 1})
@@ -276,6 +284,52 @@ func test_a_wolf_keeps_to_its_circle_and_bites_only_on_its_dart() -> void:
 	assert_eq(wolf.trick.state, "", "and out again")
 	assert_almost_eq(wolf.pace, pace, 0.001, "at its own pace")
 	assert_eq(_world.foes.tricks_shown, {"dart": 1})
+
+
+func test_a_wolfs_circle_never_takes_it_past_its_leash() -> void:
+	# PIX-493: the hero rolled twice away from a wolf's dart, the wolf's run
+	# back out to its circle led past them, over its leash, and it gave the
+	# fight up and walked home.
+	var leash := Packs.tiles("giveUpTiles")
+	var home := Vector2(100, 40)
+	assert_eq(Tricks.leashed(home + Vector2(30, 0), home), home + Vector2(30, 0), "within its leash, where it would stand")
+	assert_almost_eq(Tricks.leashed(home + Vector2(-200, 0), home), home + Vector2(-(leash - 16.0), 0), Vector2(0.01, 0.01), "past it, a cell inside")
+	# The hero six cells west of its home, the wolf beyond them.
+	var wolf := _foe("wolf", false, HERO_AT + Vector2(-16, 0))
+	wolf.home = HERO_AT + Vector2(6 * 16, 0)
+	for ring: Vector2 in [Vector2.INF, HERO_AT + Vector2(-28, 0)]:
+		var spot: Vector2 = wolf.trick.stand(ring, HERO_AT - wolf.global_position)
+		assert_lte(spot.distance_to(wolf.home), leash - 15.9, "its place out there is on its leash")
+		assert_false(Enemy.gives_up(wolf.fighter, wolf.home, spot, HERO_AT), "so it fights on from it")
+	wolf.at_bay = true
+	assert_almost_eq(wolf.trick.stand(HERO_AT + Vector2(-28, 0), HERO_AT - wolf.global_position), HERO_AT + Vector2(-32, 0), Vector2(0.01, 0.01), "at bay it has no leash")
+
+
+func test_a_crouching_wolfs_eyes_shine() -> void:
+	var wolf := _foe("wolf")
+	_run(wolf, 0.5)
+	assert_eq(wolf.trick.state, "crouch")
+	var eyes: Sprite2D = wolf.trick._eyes
+	assert_true(eyes.visible, "while it crouches")
+	assert_eq((eyes.material as CanvasItemMaterial).light_mode, CanvasItemMaterial.LIGHT_MODE_UNSHADED, "bright in the dark")
+	# Facing the hero to its left, its frame shows an eye or two: those pixels alone.
+	var lit := 0
+	var image := eyes.texture.get_image()
+	for y in image.get_height():
+		for x in image.get_width():
+			lit += int(image.get_pixel(x, y).a > 0.0)
+	assert_between(lit, 1, 4, "two pixels or so of eye-shine")
+	_run(wolf, float(Bestiary.trick("wolf")["crouch"]) + TICK)
+	assert_eq(wolf.trick.state, "in")
+	assert_false(eyes.visible, "gone as it darts")
+
+
+func test_a_wolf_slain_mid_crouch_falls_with_no_eyes() -> void:
+	var wolf := _foe("wolf")
+	_run(wolf, 0.5)
+	assert_eq(wolf.trick.state, "crouch")
+	wolf.trick.died()
+	assert_false(wolf.trick._eyes.visible, "no eye-shine over its fall")
 
 
 func test_a_dart_the_hero_got_away_from_is_given_up() -> void:
@@ -439,6 +493,13 @@ func test_a_faded_ghost_cant_be_struck_and_comes_back_beside_the_hero() -> void:
 	assert_almost_eq(ghost.modulate.a, 1.0, 0.001)
 	assert_eq(ghost.mode, "chase")
 	assert_almost_eq(ghost.global_position, HERO_AT + Vector2(-(ghost.edge + 3.0), 0), Vector2(0.01, 0.01), "beside the hero, on their far side")
+	# Behind them: it holds its bite's tell, the hero's time to turn.
+	assert_false(ghost.trick.may_bite(), "no bite told as it shows")
+	var origin := GameClock.origin
+	GameClock.origin -= ceili(float(trick["holds"]) * 60.0) + 1
+	assert_true(ghost.trick.may_bite(), "then its bite, told as any")
+	assert_almost_eq(float(trick["holds"]) + float(Packs.rules()["biteTellSeconds"]), 0.8, 0.05, "about 0.8 s from showing to the blow")
+	GameClock.origin = origin
 	ghost.take_hit(1, HERO_AT)
 	ghost.take_hit(1, HERO_AT)
 	assert_eq(ghost.trick.state, "", "not again so soon")
@@ -474,8 +535,13 @@ func test_a_crabs_claws_come_up_and_go_down_and_its_back_is_open() -> void:
 	assert_eq(crab.trick.state, "raise", "claws coming up: the tell")
 	assert_true(crab.trick.posed(), "shown on its sprite")
 	assert_eq(crab.mode, "cast", "it stands to guard")
+	await wait_seconds(float(trick["tell"]) / 2.0)
+	assert_gt(crab.sprite.scale.y, crab._rest_scale.y * 1.1, "thrown up in the tell's first half")
+	assert_eq(crab.get_children().filter(func(child: Node) -> bool: return child is Sprite2D and (child as Sprite2D).texture == TrickBrainScript.star_texture()).size(), 1, "a glint off them as they rise")
 	_run(crab, float(trick["tell"]) + TICK)
 	assert_eq(crab.trick.state, "up")
+	assert_almost_eq(float(trick["tell"]), 0.3, 0.001, "the tell no longer than it was")
+	assert_almost_eq(float(trick["seconds"]), 1.6, 0.001, "nor the guard")
 	hp = int(crab.fighter["hp"])
 	crab.take_hit(8, HERO_AT)
 	assert_eq(int(crab.fighter["hp"]), hp - 2, "from the front, a quarter")

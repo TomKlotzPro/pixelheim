@@ -26,17 +26,17 @@ static var _outlines := {}
 func build(view: MapView, slices: Slicer) -> void:
 	if not NightShadows.on_map(view.data):
 		return
-	var seen := {"feet": 0, "walls": 0, "lights": PackedVector2Array()}
+	var seen := {"feet": 0, "walls": 0, "lights": PackedVector2Array(), "flames": []}
 	slices.add("nightshadows_walls", func() -> void:
 		var near := view.data.id not in PunyTerrain.SKYLINE_MAPS
 		var solid := NightShadows.solid(view.data.grid, view.outdoor_props.get("drawn", {}),
 			PunyTown.houses(view.data.grid).map(func(house: Dictionary) -> Rect2i: return house["rect"]) if near else [], view.layers.has("pieces"))
 		seen["walls"] = _walls(view, solid)
-		seen["lights"] = _flames(view, solid))
+		seen["lights"] = _flames(view, solid, seen["flames"]))
 	slices.add_each("nightshadows", UNITS, func(i: int) -> void:
 		var standing := view.actors.get_children()
 		for k in range(standing.size() * i / UNITS, standing.size() * (i + 1) / UNITS):
-			seen["feet"] += int(_foot(standing[k], seen["lights"]))
+			seen["feet"] += int(_foot(standing[k], seen["lights"], seen["flames"]))
 		if i == UNITS - 1:
 			_flatten(view)
 			view.tile_layer.set_meta(LAID, {"feet": seen["feet"], "walls": seen["walls"]}))
@@ -72,8 +72,9 @@ static func laid(view: MapView) -> Dictionary:
 ## The map's flames (lamps, torches, fires: every light that flickers but a
 ## burning house's), where they burn in the map's pixels; each marked to
 ## cast unless it burns in or against a `solid` cell, where its light would
-## be shut in (NightShadows.shut_in).
-static func _flames(view: MapView, solid: Dictionary) -> PackedVector2Array:
+## be shut in (NightShadows.shut_in). The lights themselves go in `flames`,
+## in the same order.
+static func _flames(view: MapView, solid: Dictionary, flames: Array) -> PackedVector2Array:
 	var out := PackedVector2Array()
 	for root: Node in [view.under, view.actors]:
 		for node: Node in root.find_children("*", "", true, false):
@@ -82,6 +83,7 @@ static func _flames(view: MapView, solid: Dictionary) -> PackedVector2Array:
 				continue
 			var at := _place(light, root)
 			out.append(at)
+			flames.append(light)
 			if not NightShadows.shut_in(solid, at / TILE):
 				light.set_meta("casts", true)
 	return out
@@ -99,8 +101,10 @@ static func _place(node: Node2D, root: Node) -> Vector2:
 
 ## An occluder at the foot of `node`, one of the actors' standing things:
 ## its body's box when it has one, else the bottom of its picture; whether
-## it got one (no: too low, or a light burns there).
-static func _foot(node: Node, lights: PackedVector2Array) -> bool:
+## it got one (no: too low, or a light burns there). A flame burning
+## against it (one of `flames`, at `lights`: NightShadows.AGAINST) casts no
+## more: its light is soft all round, as before it could cast.
+static func _foot(node: Node, lights: PackedVector2Array, flames: Array) -> bool:
 	if not node is Node2D:
 		return false
 	var body: Node = node if node is StaticBody2D else _first(node, func(child: Node) -> bool: return child is StaticBody2D)
@@ -120,8 +124,12 @@ static func _foot(node: Node, lights: PackedVector2Array) -> bool:
 		box = Rect2(Vector2(drawn.get_center().x - foot.x / 2.0, drawn.end.y - foot.y), foot)
 	else:
 		return false
-	if NightShadows.holds_light(Rect2((node as Node2D).position + box.position, box.size), lights):
+	var stands := Rect2((node as Node2D).position + box.position, box.size)
+	if NightShadows.holds_light(stands, lights):
 		return false
+	for i in lights.size():
+		if stands.grow(NightShadows.AGAINST).has_point(lights[i]):
+			(flames[i] as PointLight2D).remove_meta("casts")
 	var occluder := occluder_of(box.size, NightShadows.SCENERY)
 	occluder.position = box.get_center()
 	node.add_child(occluder)
