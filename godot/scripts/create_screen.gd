@@ -30,7 +30,7 @@ const FIGURE := Vector2(24, 26)
 ## The stats' and the role's words beside the figure.
 const SHEET_WIDTH := 440.0
 ## The keys the name field would take for itself (PIX-207).
-const FIELD_KEYS := [KEY_UP, KEY_DOWN, KEY_TAB, KEY_PAGEUP, KEY_PAGEDOWN]
+const FIELD_KEYS := [KEY_UP, KEY_DOWN, KEY_TAB, KEY_PAGEUP, KEY_PAGEDOWN, KEY_ESCAPE]
 ## The right column, the hero's card above the first night's: as wide as
 ## the card's columns and its padding, as tall as the roles' page.
 const RIGHT := Rect2(522, 82, 694, 520)
@@ -93,6 +93,9 @@ func _open() -> void:
 	bottom.add_child(name_label)
 	name_field = LineEdit.new()
 	name_field.max_length = 16
+	# A refused Enter (no name yet) keeps the caret: Godot let go of the field
+	# and it took no more letters, with nothing said.
+	name_field.keep_editing_on_text_submit = true
 	name_field.placeholder_text = "Dragonsbane..."
 	name_field.custom_minimum_size = Vector2(320, 38)
 	name_field.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -508,6 +511,9 @@ func _key_command(event: InputEventKey) -> Callable:
 			return _toggle_night
 		KEY_ENTER, KEY_KP_ENTER:
 			return _begin
+		# Taken before the field, which ate the first Esc to stop editing.
+		KEY_ESCAPE:
+			return close
 	return Callable()
 
 

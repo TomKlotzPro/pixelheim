@@ -64,6 +64,16 @@ func _open() -> void:
 	# The letterbox has the whole canvas: the HUD steps aside until the scene
 	# ends, so no sign's plate or card stands half under a bar (PIX-368).
 	_put_hud_aside()
+	# Every control of the scene lets the mouse through, so a click went to
+	# the title's planks under the opening: a second opening, two hero
+	# creations (crash hunt, 2026-11-16). This one takes it, and moves on as E.
+	var catcher := Control.new()
+	catcher.size = VIEW
+	catcher.mouse_filter = Control.MOUSE_FILTER_STOP
+	catcher.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed:
+			advance = true)
+	add_child(catcher)
 	still = GameState.settings.reduce_motion
 	steps = scenes().get(scene_id, [])
 	shaker = Control.new()
