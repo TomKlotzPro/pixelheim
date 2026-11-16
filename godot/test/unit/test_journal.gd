@@ -155,9 +155,9 @@ func test_another_quest_done_leaves_the_one_followed() -> void:
 
 func test_a_step_that_is_a_sentence_drops_its_stop_before_the_place() -> void:
 	var lead := {"step": "Hand it in to Bram.", "place": "Pixelheim", "progress": ""}
-	assert_eq(Bearing.line(lead), "Hand it in to Bram - Pixelheim")
+	assert_eq(Bearing.line(lead), "Hand it in to Bram\u00a0- Pixelheim")
 	lead["progress"] = "3/3"
-	assert_eq(Bearing.line(lead), "Hand it in to Bram - Pixelheim (3/3)")
+	assert_eq(Bearing.line(lead), "Hand it in to Bram\u00a0- Pixelheim (3/3)")
 	lead["place"] = ""
 	lead["progress"] = ""
 	assert_eq(Bearing.line(lead), "Hand it in to Bram.", "alone, it keeps it")

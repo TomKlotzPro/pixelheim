@@ -1878,9 +1878,9 @@
   "familyNames": {
     "beasts": "Beasts",
     "greenskins": "Greenskins",
-    "undead": "The Undead",
+    "undead": "Undead",
     "constructs": "Constructs",
-    "fireborn": "The Fireborn",
+    "fireborn": "Fireborn",
     "outlaws": "Outlaws"
   },
   "masteryTiers": [

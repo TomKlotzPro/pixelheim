@@ -95,7 +95,7 @@ func test_the_fifth_letter_leads_up_the_road_and_home() -> void:
 
 func test_the_line_names_the_place_once() -> void:
 	var lead := {"step": "Ask Sela the innkeeper for work", "place": "Pixelheim", "progress": ""}
-	assert_eq(Bearing.line(lead), "Ask Sela the innkeeper for work - Pixelheim")
+	assert_eq(Bearing.line(lead), "Ask Sela the innkeeper for work\u00a0- Pixelheim")
 	lead["step"] = "Go back to Pixelheim"
 	assert_eq(Bearing.line(lead), "Go back to Pixelheim", "a place the step names isn't said twice")
 

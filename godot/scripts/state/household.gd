@@ -62,7 +62,7 @@ func buy_house_upgrade() -> String:
 	owner.pack_changed()
 	var line := Text.t("The %s deed is signed. Your house grew while you were out.") % String(next["name"])
 	if moved > 0:
-		line += Text.t(" %d piece%s of furniture had to move: it's back in your pack.") % [moved, "" if moved == 1 else "s"]
+		line += Text.t(" %d piece%s of furniture had to move: it's back in your pack.") % [moved, Text.s(moved)]
 	return line
 
 

@@ -18,13 +18,18 @@ const CLEAR := &"layout_clear"
 ## turned keeps in sight where what scrolls has no words to measure.
 const PAGE_KEYS := "PgUp/PgDn"
 const PAGE_LINE := 32
+## What must never start a wrapped line, when a space stands before it.
+const MARKS := "?!:;»-"
+## A plain, a no-break and a narrow no-break space.
+const SPACES := " \u00a0\u202f"
 
 
 ## Every visible Control under the open screens of `root` whose rect runs
 ## past a `view`-sized canvas, or a list wider than it was laid out
 ## (`spills`): "screen path rect" lines, the outermost culprit of each branch
-## only; a line cut short with no ellipsis (`cut`); and every piece standing
-## on one its screen keeps clear (`crowded`).
+## only; a line cut short with no ellipsis (`cut`); a wrapped line that
+## starts with a mark (`stranded`, said as "^ ?!:;-"); and every piece standing on one
+## its screen keeps clear (`crowded`).
 static func overflows(root: Node, view: Vector2) -> Array[String]:
 	var out: Array[String] = []
 	var bounds := Rect2(Vector2.ZERO, view).grow(SLACK)
@@ -68,6 +73,9 @@ static func _scan(node: Node, layer: CanvasLayer, bounds: Rect2, out: Array[Stri
 			if control is Label and cut(control as Label):
 				out.append("%s %s %d < %d" % [layer.get_script().resource_path.get_file(), layer.get_path_to(control), control.size.x, words_width(control as Label)])
 				continue
+			if control is Label and stranded(control as Label):
+				out.append("%s %s ^ ?!:;-" % [layer.get_script().resource_path.get_file(), layer.get_path_to(control)])
+				continue
 			var spill := spills(control)
 			if spill != "":
 				out.append("%s %s %s" % [layer.get_script().resource_path.get_file(), layer.get_path_to(control), spill])
@@ -108,6 +116,26 @@ static func _on_a_panel(label: Label, screen: Screen, spot: Rect2) -> bool:
 			if Rect2(panel.position + screen.offset, panel.size).encloses(spot):
 				return true
 		node = node.get_parent()
+	return false
+
+
+## Whether a wrapped `label` starts a line with a mark that belongs to the
+## word before it (PIX-478: « Qui êtes-vous » and, alone on the next line,
+## « ? »): a mark after a space, the hyphen only as a dash (a space after it
+## too, so "-5" may start a line). The catalogues hold the dash and French's
+## marks to their word (`tools/i18n.py`'s `set_line`, release.py's spaces);
+## this finds a line typed or built without them.
+static func stranded(label: Label) -> bool:
+	if label.autowrap_mode == TextServer.AUTOWRAP_OFF:
+		return false
+	var said := label.atr(label.text) if label.can_auto_translate() else label.text
+	for at in range(2, said.length()):
+		if not (said[at] in MARKS and said[at - 1] in SPACES and said[at - 2] not in SPACES + "\n"):
+			continue
+		if said[at] == "-" and (at + 1 >= said.length() or said[at + 1] != " "):
+			continue
+		if label.get_character_bounds(at).position.y > label.get_character_bounds(at - 2).position.y + 1.0:
+			return true
 	return false
 
 
