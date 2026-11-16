@@ -149,6 +149,7 @@ film |  | with lookbook: each shot filmed for a moment too
 --out | <dir> | with lookbook: where it saves (res://lookbook)
 --wait | <s> | hold the shot s seconds (an entrance still playing) | wait | 760
 overflow |  | every piece of an open screen past the canvas, as OVERFLOW lines; the report adds overflow= (works headless) | overflow | 770
+music |  | the report adds music=, the track playing: ashnight while the Night of Ash runs, the place's after it (PIX-498)
 --draw-every | <n> | a windowed run draws one frame in n, and every frame of the motion check's walk and of the picture at the end: stepped, the game is the same drawn or not, and software rendering takes most of a second a frame (tools/flows.sh: 60 in a window, a frame a second of the game's time, PIX-276)
 --shot | <file> | save the picture there, not res://screenshot.png: runs side by side each keep their own (tools/flows.sh, PIX-270)
 -NSAppSleepDisabled | YES | macOS's, not the game's: no napping a run whose window is hidden (tools/lookbook.sh)

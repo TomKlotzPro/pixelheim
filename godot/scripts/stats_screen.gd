@@ -12,11 +12,11 @@ func _title() -> String:
 func _intro() -> String:
 	var points := GameState.hero.stat_points
 	if Skills.beyond_open(GameState.hero):
-		return Text.t("Your tree is whole: %d skill point%s to spend beyond it, below.") % [GameState.hero.skill_points, "" if GameState.hero.skill_points == 1 else "s"]
+		return Text.t("Your tree is whole: %d skill point%s to spend beyond it, below.") % [GameState.hero.skill_points, Text.s(GameState.hero.skill_points)]
 	if points == 0:
 		return Text.t("Every level brings %d stat points to spend.") % Bestiary.stat_points_per_level()
 	# Only the shrine's keeper takes them back (PIX-331), for a price.
-	return Text.t("%d stat point%s to spend. %s at the shrine can undo it, for a price.") % [points, "" if points == 1 else "s", Npcs.by_id(Skills.FORGETTER, [])["name"]]
+	return Text.t("%d stat point%s to spend. %s at the shrine can undo it, for a price.") % [points, Text.s(points), Npcs.by_id(Skills.FORGETTER, [])["name"]]
 
 
 func _info() -> String:
@@ -30,7 +30,7 @@ func _info() -> String:
 		Text.t("Lv %d %s") % [hero.level, Ranks.title(hero.role_id, hero.level)],
 		"",
 		Text.t("HP %d/%d    %s %d/%d") % [hero.hp, hero.stats["maxHp"], resource, hero.mp, hero.stats["maxMp"]],
-		Text.t("DEF %d    Carry %d/%d") % [HeroRules.total_defense(hero, pack), pack.carried_weight(), Skills.carry_capacity(hero, pack)],
+		Text.t("DEF %d    Weight %d/%d") % [HeroRules.total_defense(hero, pack), pack.carried_weight(), Skills.carry_capacity(hero, pack)],
 	]
 	# Armour sets worn (PIX-166): what each gives at the pieces worn.
 	var sets := pack.set_counts()

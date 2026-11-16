@@ -80,7 +80,7 @@ mapped | the Post's roads drawn in gold on the map's page while the map is open,
 maps | the maps drawn on the map's page, while the map is open: 7 on the Reach's with every region found (PIX-269)
 morvax | Morvax on the hero's map: his cell, and bench when he sits on his bench by the fountain (PIX-253 step 10)
 motes | with rankup: the ascension's motes and sparks flying (PIX-244)
-music | with fled: the track playing (PIX-251)
+music | with fled or music: the track playing (PIX-251), ashnight while the Night of Ash runs (PIX-498)
 next | the main quest's next step, by id, once the Night of Ash is over: shield (PIX-255)
 overflow | with overflow: pieces of an open screen running off the canvas (Solid Ground), or its words on the HUD's dock, clock or quill (PIX-346)
 paced | with cpu: cpu='s median frame in rounds of a fixed piece of work timed between the frames (PerfProbe.Pace), which the runner's speed doesn't move: 5.80 (PIX-445)

@@ -741,7 +741,7 @@ func field_motes() -> String:
 
 
 func field_music() -> String:
-	return str(Sound.track) if world.foes.fled > 0 else ""
+	return str(Sound.track) if world.foes.fled > 0 or HarnessFlags.given().has("music") else ""
 
 
 func field_next() -> String:

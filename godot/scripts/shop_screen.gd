@@ -148,7 +148,7 @@ func _open() -> void:
 		var page := UiStyle.page(GOODS)
 		pages.append(page)
 		frame.add_child(page)
-		var heading := UiStyle.heading("For sale" if side == 0 else "Your pack", 14, UiStyle.INK)
+		var heading := UiStyle.heading("In stock" if side == 0 else "Your pack", 14, UiStyle.INK)
 		headings.append(heading)
 		frame.add_child(heading)
 		var scroll := ScrollContainer.new()
@@ -565,7 +565,8 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 					"label": Catalog.item_name(entry["itemId"]), "icon": entry["itemId"],
 					"price": "%s %d" % [Economy.job_name(entry["job"]["id"]), entry["job"]["level"]],
 					# Written when the row is chosen, not for every row each move (PIX-207).
-					"detail_of": _describe_recipe.bind(entry), "verb": "Craft",
+					# The footer's verb, with its capital: the tab's name is a noun in French (PIX-484).
+					"detail_of": _describe_recipe.bind(entry), "verb": Text.t("craft").capitalize(),
 					"enabled": Economy.can_craft(entry, pack.items, GameState.hero.jobs),
 					# What it still lacks, said when E is pressed on it (PIX-234).
 					"why_of": func() -> String: return Economy.craft_refusal(entry, GameState.pack.items, GameState.hero.jobs),
@@ -1000,12 +1001,14 @@ static func _describe_recipe(entry: Dictionary) -> String:
 	var lines: Array[String] = [_describe(entry["itemId"]), "", Text.t("Needs:")]
 	for need: String in entry["needs"]:
 		var have := Catalog.held(GameState.pack.items, need)
-		lines.append(Text.t("  %s  (have %d)") % [Text.count(int(entry["needs"][need]), Catalog.item_name(need)), have])
+		# As the pack's Craft tab counts them, the count held to the name (PIX-484).
+		lines.append("  %s" % Catalog.item_name(need) + char(0xa0) + "%d/%d" % [mini(have, entry["needs"][need]), entry["needs"][need]])
 		# Where a missing one comes from (PIX-143).
 		if have < int(entry["needs"][need]):
 			var sources := Economy.material_sources(need, GameState.town_tier(), GameState.trade.stock_stage())
 			if not sources.is_empty():
 				lines.append("    " + String(sources[0]["text"]))
 	var job: String = entry["job"]["id"]
-	lines.append(Text.t("%s level %d - you are %s") % [Economy.job_name(job), entry["job"]["level"], Economy.job_line(GameState.hero.jobs, job)])
+	lines.append(Text.t("%s level %d") % [Economy.job_name(job), entry["job"]["level"]])
+	lines.append(Text.t("You: %s") % Economy.job_line(GameState.hero.jobs, job))
 	return "\n".join(lines)

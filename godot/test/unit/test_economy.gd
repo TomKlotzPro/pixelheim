@@ -298,7 +298,7 @@ func test_a_refused_craft_says_what_it_lacks() -> void:
 	assert_eq(Economy.craft_refusal(stew, stocked, green), "That takes Alchemy 3.")
 	assert_eq(Economy.craft_refusal(stew, {"fresh_fish": 1}, green), "That takes Alchemy 3. Still missing: 2 × Forest Herb.")
 	assert_eq(Economy.craft_refusal(stew, stocked, skilled), "", "it can be made")
-	assert_eq(Economy.craft_refusal(stew, stocked, skilled, false, ["vexs_brewery"]), "Craft at Vex's cauldron - the BREWS door in town.")
+	assert_eq(Economy.craft_refusal(stew, stocked, skilled, false, ["vexs_brewery"]), "Craft at Vex's cauldron\u00a0- the BREWS door in town.")
 	assert_eq(Economy.craft_refusal(stew, stocked, skilled, false, []), "Craft at Vex's stall on the square.", "in the Ashes")
 
 

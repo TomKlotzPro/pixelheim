@@ -62,7 +62,7 @@ func test_turning_in_pays_and_closes_the_quest() -> void:
 	var xp: int = state.hero.xp
 	assert_eq(
 		state.questing.resolve_quests("innkeeper"),
-		"Quest complete: Slime Trouble. +60 gold, +20 XP. \u201cThe stores thank you. So does my nose. Here - you've earned it.\u201d",
+		"Quest complete: Slime Trouble. +60 gold, +20 XP. \u201cThe stores thank you. So does my nose. Here\u00a0- you've earned it.\u201d",
 		"the reward, said (PIX-294: three slimes and the reward no longer make a level)"
 	)
 	assert_eq(state.pack.gold, gold + 60)

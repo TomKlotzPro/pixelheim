@@ -1,6 +1,26 @@
 {
   "releases": [
     {
+      "version": "0.374.0",
+      "date": "2026-11-16",
+      "codename": "Every Word in Place",
+      "notes": [
+        "A question mark or a dash never starts a line on its own any more, in French or in English",
+        "Sela's slime hunt names one place, the fields east of town, and her helmet has one name",
+        "The smithy's button says Craft, its recipes fit their lines, and the Codex families read alike",
+        "French percentages, « 0 point », « En rayon », « La forge de Hilda » and other small wording fixes"
+      ]
+    },
+    {
+      "version": "0.373.0",
+      "date": "2026-11-16",
+      "codename": "The Night Burns",
+      "notes": [
+        "The Night of Ash has its own dramatic music while the village burns, from the road to the dawn",
+        "The night's fights stay under it, and the town's tune comes back once the fire is out"
+      ]
+    },
+    {
       "version": "0.372.0",
       "date": "2026-11-16",
       "codename": "Fair Fights",

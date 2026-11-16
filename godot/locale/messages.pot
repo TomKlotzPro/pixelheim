@@ -2465,6 +2465,10 @@ msgid "A question in a conversation is answered with 1 or 2, or a click on the a
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A question mark or a dash never starts a line on its own any more, in French or in English"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A question's answers stack in a column so long French answers fit, and Ola and five other villagers no longer pace into the sea, a roof or a fence"
 msgstr ""
 
@@ -3529,6 +3533,10 @@ msgid "Every Voice"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every Word in Place"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every cleared depth opens a hole into the dark beside the way up: keep going, or climb out. The Undermountain's gate offers the first depth and the next one past your deepest"
 msgstr ""
 
@@ -3926,6 +3934,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "French lists now keep their narrow space before the semicolon"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "French percentages, « 0 point », « En rayon », « La forge de Hilda » and other small wording fixes"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5813,6 +5825,10 @@ msgid "Sela asks before she rents you a night in her tent"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Sela's slime hunt names one place, the fields east of town, and her helmet has one name"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Sell all your junk in one go, choose how many of a stack to sell, and buy back what you just sold at the price you got, until you leave the counter"
 msgstr ""
 
@@ -6705,6 +6721,10 @@ msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and re
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Night Burns"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Night of Ash"
 msgstr ""
 
@@ -6714,6 +6734,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Night of Ash finally looks like a fire: flames climb the burnt frames and corner posts and lick the rubble, a blaze roars where each house fell in, smoke drifts downwind and sparks fly over glowing coals; on the Night of Bells, flames run along the roof and out of the windows; Reduce motion keeps it all calm"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Night of Ash has its own dramatic music while the village burns, from the road to the dawn"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7141,6 +7165,10 @@ msgid "The night classes stepped into the light: the necromancer's robes and the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The night's fights stay under it, and the town's tune comes back once the fire is out"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The north pays its way: Frostgate, the ice cave and Greyhold's foes now carry about twice the gold, and the Mirefen's mimics a little less"
 msgstr ""
 
@@ -7266,6 +7294,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The slime's pouch now says to press I to open your pack instead of “I opens your pack”, and the other messages that name a key read right whatever the key is"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The smithy's button says Craft, its recipes fit their lines, and the Codex families read alike"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8745,6 +8777,10 @@ msgid "Fireball burns brighter."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Fireborn"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Firestorm"
 msgstr ""
 
@@ -9629,10 +9665,6 @@ msgid "The Drowned Knight points, and the bog reaches for you!"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "The Fireborn"
-msgstr ""
-
-#: assets/data/combat.json
 msgid "The Hollow Captain rises from his chair. \"None pass. Not till Oskar comes home.\""
 msgstr ""
 
@@ -9662,10 +9694,6 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "The Unbroken"
-msgstr ""
-
-#: assets/data/combat.json
-msgid "The Undead"
 msgstr ""
 
 #: assets/data/combat.json
@@ -9910,6 +9938,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Two answers to one question."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Undead"
 msgstr ""
 
 #: assets/data/combat.json
@@ -15221,7 +15253,7 @@ msgid "Slimes flattened"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Slimes have crept into what's left of Sela's stores. Thin the forest's supply of them."
+msgid "Slimes have crept into what's left of Sela's stores. Thin their numbers in the fields east of the town gate."
 msgstr ""
 
 #: assets/data/progression.json
@@ -17625,10 +17657,6 @@ msgid "Body"
 msgstr ""
 
 #: scripts/inventory_screen.gd
-msgid "Carry %d/%d"
-msgstr ""
-
-#: scripts/inventory_screen.gd
 msgid "Craft"
 msgstr ""
 
@@ -18577,10 +18605,6 @@ msgid "\nThe workshop's own, since Pixelheim became a %s."
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "  %s  (have %d)"
-msgstr ""
-
-#: scripts/shop_screen.gd
 msgid "  (worn)"
 msgstr ""
 
@@ -18601,7 +18625,7 @@ msgid "%s hands you the till: +%d gold."
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "%s level %d - you are %s"
+msgid "%s level %d"
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -18653,10 +18677,6 @@ msgid "Deed: %s"
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "For sale"
-msgstr ""
-
-#: scripts/shop_screen.gd
 msgid "Forge"
 msgstr ""
 
@@ -18666,6 +18686,10 @@ msgstr ""
 
 #: scripts/shop_screen.gd
 msgid "Hilda tempers it: +1."
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "In stock"
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -18829,6 +18853,10 @@ msgid "Yes"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "You: %s"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "Your pack"
 msgstr ""
 
@@ -18882,6 +18910,10 @@ msgstr ""
 
 #: scripts/shop_sign.gd
 msgid "A house: %dg, at the door"
+msgstr ""
+
+#: scripts/shop_sign.gd
+msgid "For sale"
 msgstr ""
 
 #: scripts/shop_sign.gd
@@ -19689,6 +19721,10 @@ msgid "Your garden ripens: %s."
 msgstr ""
 
 #: scripts/state/text.gd
+msgid "%d%%"
+msgstr ""
+
+#: scripts/state/text.gd
 msgid "English"
 msgstr ""
 
@@ -19833,7 +19869,7 @@ msgid "Beyond the tree: %s"
 msgstr ""
 
 #: scripts/stats_screen.gd
-msgid "DEF %d    Carry %d/%d"
+msgid "DEF %d    Weight %d/%d"
 msgstr ""
 
 #: scripts/stats_screen.gd

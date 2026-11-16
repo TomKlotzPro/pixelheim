@@ -935,6 +935,16 @@ catch-prompt-back | --map deepwood --at 7,7 --keys d,e --wait 2.5 --zoom play | 
 prompt-under-spot | --map deepwood --at 7,7 --zoom play | map=deepwood hudclash=none | gathering field
 # The Night of Ash's dawn (PIX-197).
 dawn | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5 | open=dawn_screen | story screen
+# The Night of Ash's own music (PIX-498): its track while the village
+# burns, on the road in and under its fights too, never the town's cheerful
+# tune; the town's once the night is over. With the bundle and on the game's
+# own chiptune (cc0).
+ash-music | --map town --prologue 4 music | map=town night=4 music=ashnight | story night town
+ash-music-cc0 | --map town --prologue 4 music cc0 | map=town night=4 music=ashnight | story night town
+ash-music-road | --prologue 1 music | map=overworld night=1 music=ashnight | story night travel
+ash-music-hounds | --map town --prologue 6 music --zoom play --wait 2 | night=6 mobs=2 music=ashnight | story night combat
+ash-music-over | --map town music | map=town night=0 music=town | story town
+ash-music-over-cc0 | --map town music cc0 | map=town night=0 music=town | story town
 # Walking without the camera shake (PIX-135): needs a window, so --quiet skips it.
 motion | --map town motion --fps 144 | backsteps=[01] | motion
 # Turning in the walk (PIX-293): down then right holding both keys a moment,
@@ -1134,6 +1144,10 @@ fit-aegis | --map town_smith --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s,s,s,s,s
 fit-everflask | --map town_alchemist --town-tier 4 shop --keys s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,w overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
 fit-craft | --map town_alchemist shop --tab 2 overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
 fit-refusal | --map town_alchemist station --keys e overflow --lang fr | open=shop_screen tab=Craft overflow=0 | screen lang trade
+# The smithy's Craft tab (PIX-484): « E Fabriquer » on the button, a need as the pack counts it
+# (« Roseau des marais 0/3 »), the trade on a line and the hero's on the next: no line breaks mid-phrase.
+fit-craft-smith | --map town_smith shop --tab 4 overflow --lang fr | open=shop_screen overflow=0 | screen lang trade
+fit-craft-smith-en | --map town_smith shop --tab 4 overflow --lang en | open=shop_screen overflow=0 | screen lang trade
 fit-rankup | --map town rankup --rank-beat unlocks overflow --lang fr | open=rankup_screen overflow=0 | screen lang rank
 # The hall at the normal size holds its card whole (reading= empty, PIX-488:
 # the French one ran a line long and hid the chosen work's last words).
@@ -1194,6 +1208,9 @@ fit-bank-en | --map town bank overflow --lang en | open=bank_screen overflow=0 |
 fit-workbench-en | --map town_house home --mode workbench overflow --lang en | open=home_screen overflow=0 | screen lang rooms
 fit-dawn | --map town --prologue 5 --at 11,8 --keys w,e,esc --dawn-beat 2 overflow --lang fr | open=dawn_screen overflow=0 hour=04:48 sun | story screen lang
 fit-dawn-en | --map town --prologue 5 --at 11,8 --keys w,e,esc --dawn-beat 2 overflow --lang en | open=dawn_screen overflow=0 hour=04:48 sun | story screen lang
+# Maren's first line on the Night of Ash (PIX-478): « Qui êtes-vous ? » wraps, and no line starts with
+# its mark (`Layout.stranded`, in every flow's overflow=; a web build without ICU's data put the « ? » alone).
+fit-maren | --map town --prologue 5 --at 11,8 --keys w,e overflow --lang fr | open=dialogue_box overflow=0 | story screen lang
 # Tom's level-15 mage in Frostweave with the longest names a piece carries
 # worn (PIX-298): the pack's rows ran past its page, "E retirer" under the
 # scrollbar; its weapons tab with a deep-forged greataxe worn; English;

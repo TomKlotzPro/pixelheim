@@ -76,7 +76,7 @@ func _layout() -> void:
 	view.add_child(UiStyle.title("Skills"))
 	var points := hero.skill_points
 	var count := UiStyle.label(
-		Text.t("%d skill point%s") % [points, "" if points == 1 else "s"], 18, UiStyle.GOLD if points > 0 else UiStyle.DUSK,
+		Text.t("%d skill point%s") % [points, Text.s(points)], 18, UiStyle.GOLD if points > 0 else UiStyle.DUSK,
 		Vector2(PAGE.end.x - 400, 30)
 	)
 	count.custom_minimum_size = Vector2(400, 0)

@@ -34,6 +34,9 @@ extends Node
 ## the crypts, the ice cave, the coast, the Frostgate, Greyhold, Fernoir, the
 ## mountain road, the dragon) play their "fallback"'s then: the same as before
 ## but for the mountain road, the Reach's now, not the rooms' tune.
+## PIX-498: the Night of Ash has a track of its own ("ashnight"), the
+## bundle's or the game's own minor march (tools/synth.py, from its notes in
+## audio.json), until the dawn's theme and the town's tune.
 ## Autoload `Sound`.
 
 const FADE_S := 0.35
@@ -851,8 +854,13 @@ func _ambient_file(path: String, level: float) -> void:
 
 
 ## Which theme a moment deserves (trackForState): places, then a fight on top.
-## `fight` is "" (none), "battle" or "boss".
-static func track_for(map_id: String, fight: String) -> String:
+## `fight` is "" (none), "battle" or "boss". The Night of Ash (`ash_night`,
+## PIX-498: the town's cheerful tune played over the village burning) has
+## one track from the road to the dawn, its fights under it too: the night
+## is one long breath, and its foes come every other beat.
+static func track_for(map_id: String, fight: String, ash_night := false) -> String:
+	if ash_night:
+		return "ashnight"
 	# The one boss the square ever holds is the Night of Bells' dragon (PIX-416).
 	if fight == "boss" and map_id == "town":
 		return "dragon"

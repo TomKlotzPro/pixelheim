@@ -77,9 +77,9 @@ func _build() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	out.append({"heading": "Sound"})
 	out.append({"label": "Sound", "value": "Muted" if settings.muted else "On", "adjust": _flip.bind("muted")})
-	out.append({"label": "Music volume", "value": "%d%%" % roundi(settings.music_volume * 100), "adjust": _volume.bind("music")})
-	out.append({"label": "Effects volume", "value": "%d%%" % roundi(settings.sfx_volume * 100), "adjust": _volume.bind("sfx")})
-	out.append({"label": "Ambience volume", "value": "%d%%" % roundi(settings.ambience_volume * 100), "adjust": _volume.bind("ambience")})
+	out.append({"label": "Music volume", "value": Text.percent(roundi(settings.music_volume * 100)), "adjust": _volume.bind("music")})
+	out.append({"label": "Effects volume", "value": Text.percent(roundi(settings.sfx_volume * 100)), "adjust": _volume.bind("sfx")})
+	out.append({"label": "Ambience volume", "value": Text.percent(roundi(settings.ambience_volume * 100)), "adjust": _volume.bind("ambience")})
 	out.append({"heading": "Video"})
 	out.append({"label": "CRT scanlines", "value": "On" if settings.scanlines else "Off", "adjust": _flip.bind("scanlines")})
 	out.append({"label": "Fullscreen", "value": "On" if settings.fullscreen else "Off", "adjust": _flip.bind("fullscreen")})
