@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.376.0",
+      "date": "2026-11-16",
+      "codename": "A Clean Start",
+      "notes": [
+        "A click during the opening moves the story on, and no longer presses the title's buttons under it (no more second opening or two hero creations)",
+        "In hero creation, the name field keeps taking letters after Enter on an empty name, and Esc goes back to the title"
+      ]
+    },
+    {
       "version": "0.375.0",
       "date": "2026-11-16",
       "codename": "Told in Time",

@@ -2045,6 +2045,10 @@ msgid "A CAT, A DOG AND TWO CHILDREN: Pixelheim has a cat that judges you, a dog
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A Clean Start"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A DAWN YOU WATCH: when Maren has the letter, the Night of Ash ends on the town itself. The camera drifts from the shrine across Pixelheim as the fires gutter out one by one and the red night greys toward morning; the survivors stand together on the square and speak in their own voices - Maren, the mayor out of his hall, Bram and Sela beside you - and when Fafnyr is named, he roars, and his shadow sweeps over the town. Then the day begins: Pixelheim, day one"
 msgstr ""
 
@@ -2234,6 +2238,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A click during the opening moves the story on, and no longer presses the title's buttons under it (no more second opening or two hero creations)"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4298,6 +4306,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "In caves and mines, water drips and stones tumble, where a hearth used to crackle"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "In hero creation, the name field keeps taking letters after Enter on an empty name, and Esc goes back to the title"
 msgstr ""
 
 #: assets/data/changelog.json

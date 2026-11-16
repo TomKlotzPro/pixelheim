@@ -2045,6 +2045,10 @@ msgid "A CAT, A DOG AND TWO CHILDREN: Pixelheim has a cat that judges you, a dog
 msgstr "UN CHAT, UN CHIEN ET DEUX ENFANTS : Pixelheim a un chat qui vous juge, un chien qui s'appuie contre vous et - une fois devenu village - Pip et Nell qui courent sur la place"
 
 #: assets/data/changelog.json
+msgid "A Clean Start"
+msgstr "Un bon départ"
+
+#: assets/data/changelog.json
 msgid "A DAWN YOU WATCH: when Maren has the letter, the Night of Ash ends on the town itself. The camera drifts from the shrine across Pixelheim as the fires gutter out one by one and the red night greys toward morning; the survivors stand together on the square and speak in their own voices - Maren, the mayor out of his hall, Bram and Sela beside you - and when Fafnyr is named, he roars, and his shadow sweeps over the town. Then the day begins: Pixelheim, day one"
 msgstr "UNE AUBE SOUS VOS YEUX : quand Maren a la lettre, la Nuit des Cendres s'achève sur la ville elle-même. La caméra glisse du sanctuaire à travers Pixelheim tandis que les feux s'éteignent un à un et que la nuit rouge pâlit vers le matin ; les survivants se rassemblent sur la place et parlent de leur propre voix - Maren, le maire sorti de sa mairie, Bram et Sela à vos côtés - et quand Fafnyr est nommé, il rugit, et son ombre balaie la ville. Puis le jour se lève : Pixelheim, premier jour"
 
@@ -2235,6 +2239,10 @@ msgstr "La porte d'une ferme brûlée montre désormais une petite étoile pâle
 #: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr "La première nuit d'un clerc lui dit de frapper les braises et de se soigner entre deux coups, puisque Soin n'est pas une arme"
+
+#: assets/data/changelog.json
+msgid "A click during the opening moves the story on, and no longer presses the title's buttons under it (no more second opening or two hero creations)"
+msgstr "Un clic pendant l'ouverture fait avancer l'histoire, et n'appuie plus sur les boutons du titre en dessous (fini la deuxième ouverture ou les deux créations de héros)"
 
 #: assets/data/changelog.json
 msgid "A code-quality pass under the floorboards: one panel system instead of seven scattered flags - menus are properly modal everywhere now, and a save taken with any panel open loads clean"
@@ -4299,6 +4307,10 @@ msgstr "Dans une conversation, la touche Esc indique désormais « quitter �
 #: assets/data/changelog.json
 msgid "In caves and mines, water drips and stones tumble, where a hearth used to crackle"
 msgstr "Dans les grottes et les mines, l'eau goutte et des pierres dégringolent, là où crépitait un âtre"
+
+#: assets/data/changelog.json
+msgid "In hero creation, the name field keeps taking letters after Enter on an empty name, and Esc goes back to the title"
+msgstr "Dans la création du héros, le champ du nom accepte toujours les lettres après Entrée sur un nom vide, et Échap revient au titre"
 
 #: assets/data/changelog.json
 msgid "In the Ashes, Hilda's and Vex's crafts are at their stalls on the square; Sela's slimes are in her stores, Wren lost her stable to the fire, and Ana warns of the packs, not the grass"
