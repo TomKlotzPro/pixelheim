@@ -117,6 +117,8 @@ func _foe() -> Node:
 	_world.add_child(foe)
 	foe.set_physics_process(false)
 	foe.plain()
+	# On the hunt: a move is told from the chase alone (EnemyState).
+	foe.enter(EnemyState.CHASE)
 	return foe
 
 
@@ -160,7 +162,7 @@ func _boss_attack() -> Dictionary:
 func test_a_stun_takes_a_bosss_marks_back_and_leaves_it_waiting_for_none() -> void:
 	var foe := _foe()
 	var brain := _boss_brain(foe)
-	foe.mode = "cast"
+	foe.begin_cast()
 	# Two marks of one cast, as his embers.
 	brain._tell(_over_hero(), _boss_attack())
 	brain._tell(_over_hero(), _boss_attack())
@@ -177,7 +179,7 @@ func test_a_stun_takes_a_bosss_marks_back_and_leaves_it_waiting_for_none() -> vo
 func test_a_mark_already_struck_is_no_tell_to_break() -> void:
 	var foe := _foe()
 	var brain := _boss_brain(foe)
-	foe.mode = "cast"
+	foe.begin_cast()
 	brain._tell(_over_hero(), _boss_attack())
 	await wait_seconds(TELL + 0.05)
 	assert_eq(_world.player.hits, 1, "it struck")
@@ -189,7 +191,7 @@ func test_a_mark_already_struck_is_no_tell_to_break() -> void:
 func test_a_stun_breaks_an_elites_mark_and_its_blow_never_lands() -> void:
 	var foe := _foe()
 	var brain := _elite_brain(foe)
-	foe.mode = "cast"
+	foe.begin_cast()
 	brain._tell({"move": "cleave", "tell": TELL, "power": 1.0}, _over_hero(), "")
 	_stun(foe)
 	assert_eq(foe.mode, "chase")
@@ -229,9 +231,9 @@ func test_a_blow_that_turned_it_to_the_chase_first_still_breaks_the_tell() -> vo
 	# chasing before PIX-451): the stun still takes it back.
 	var foe := _foe()
 	var brain := _elite_brain(foe)
-	foe.mode = "cast"
+	foe.begin_cast()
 	brain._tell({"move": "stamp", "tell": TELL, "power": 1.0}, _over_hero(), "")
-	foe.mode = "chase"
+	foe.end_cast()
 	_stun(foe)
 	await wait_seconds(STRUCK_BY)
 	assert_eq(_world.player.hits, 0, "the stamp never came")
@@ -244,11 +246,11 @@ func test_a_blow_that_turned_it_to_the_chase_first_still_breaks_the_tell() -> vo
 func test_a_blow_without_a_stun_leaves_the_tell_to_land() -> void:
 	var elite := _foe()
 	var cleave := _elite_brain(elite)
-	elite.mode = "cast"
+	elite.begin_cast()
 	cleave._tell({"move": "cleave", "tell": TELL, "power": 1.0}, _over_hero(), "")
 	var boss := _foe()
 	var breath := _boss_brain(boss)
-	boss.mode = "cast"
+	boss.begin_cast()
 	breath._tell(_over_hero(), _boss_attack())
 	elite.take_hit(1, Vector2.ZERO)
 	boss.take_hit(1, Vector2.ZERO)
@@ -263,7 +265,7 @@ func test_a_stun_breaks_a_told_bolt_its_glow_and_its_marks() -> void:
 	var foe := _foe()
 	var brain := _elite_brain(foe)
 	var flown := [false]
-	foe.mode = "cast"
+	foe.begin_cast()
 	brain._keep(Telegraph.mark(_world, _over_hero(), TELL, Callable(), false))
 	brain._flash({"tell": TELL}, func() -> void: flown[0] = true)
 	_stun(foe)
@@ -287,7 +289,6 @@ func test_a_stun_drops_a_raised_guard() -> void:
 func test_a_stun_breaks_a_common_foes_bite_and_the_foe_stands_as_it_was() -> void:
 	var foe := _foe()
 	var at: Vector2 = foe.sprite.position
-	foe.mode = "chase"
 	foe._tell_bite(Vector2.RIGHT)
 	await wait_seconds(0.05)
 	_stun(foe)
@@ -309,7 +310,6 @@ func test_a_mark_long_gone_is_no_tell_either() -> void:
 
 func test_a_foe_telling_nothing_shows_no_word() -> void:
 	var foe := _foe()
-	foe.mode = "chase"
 	_stun(foe)
 	assert_true(foe.ailments.is_stunned())
 	assert_eq(_world.fx.words.size(), 0)
@@ -322,7 +322,7 @@ func test_a_stun_the_guard_shrugs_off_breaks_nothing() -> void:
 	var one_turn := {"kind": "stun", "chance": 2.0, "turns": 1, "power": 0}
 	foe.ailments.inflict(one_turn, GameState.roll)
 	foe.ailments.effects.clear()
-	foe.mode = "cast"
+	foe.begin_cast()
 	brain._tell(_over_hero(), _boss_attack())
 	# A second within the guard's window: halved to nothing.
 	foe.take_hit(1, Vector2.ZERO, one_turn)

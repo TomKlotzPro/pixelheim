@@ -44,12 +44,12 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# Fallen, stood down or gone home, it calls no one: what it called fights
 	# on as any wild foe, its bites giving the hero grace again (PIX-421).
-	if enemy.dying or enemy.mode == "homeward":
+	if enemy.dying or enemy.state == EnemyState.HOMEWARD:
 		for wolf: Variant in called:
 			if is_instance_valid(wolf):
 				wolf.set_called(false)
 	# Stunned, it tries no trick (PIX-186).
-	if enemy.dying or enemy.mode != "chase" or enemy.ailments.is_stunned():
+	if enemy.dying or enemy.state != EnemyState.CHASE or enemy.ailments.is_stunned():
 		return
 	for slot in moves:
 		slot["cooldown"] -= delta

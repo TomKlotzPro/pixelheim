@@ -280,7 +280,7 @@ func interrupt() -> bool:
 ## The wolf: out on its circle until its turn, then a crouch (the tell), the
 ## dart in, the bite (told as any bite), a moment there and out again fast.
 func _hit_and_run(delta: float) -> void:
-	if enemy.mode != "chase" or enemy.ailments.is_stunned():
+	if enemy.state != EnemyState.CHASE or enemy.ailments.is_stunned():
 		_end_dart()
 		return
 	var hero: Vector2 = world.player.global_position
@@ -378,7 +378,7 @@ func _run_with_gold(delta: float) -> void:
 	if state != "run":
 		return
 	left -= delta
-	if enemy.mode != "flee":
+	if enemy.state != EnemyState.FLEE:
 		state = ""
 	elif left <= 0.0:
 		state = ""
@@ -490,7 +490,7 @@ func _fade(delta: float) -> void:
 ## them: the guard comes and goes, and its side and back are open all along.
 func _shell(delta: float) -> void:
 	if state == "":
-		if enemy.mode != "chase" or enemy.ailments.is_stunned():
+		if enemy.state != EnemyState.CHASE or enemy.ailments.is_stunned():
 			return
 		ready_in -= delta
 		var to_hero: Vector2 = world.player.global_position - enemy.global_position

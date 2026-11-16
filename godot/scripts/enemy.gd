@@ -182,11 +182,15 @@ var quarry: Node2D = null
 var _at_quarry := false
 ## Where it lives: wanders around it, gives up a chase too far from it.
 var home := Vector2.ZERO
-## "idle" (at home), "alert" (the "!" wind-up), "chase", "homeward",
-## "flee" (running from a hero far above it, PIX-251), for a boss "cast"
-## (standing still while its attack is told, PIX-150), and "pile" (a
-## skeleton's bones, waiting to rise: PIX-489).
-var mode := "idle"
+## What it is doing (EnemyState, PIX-501): changed by enter() alone, which
+## does the work of leaving one state and entering the next. `mode` is its
+## name ("chase"), for the harness's report and whoever reads it by name.
+var state := EnemyState.IDLE
+var mode: String:
+	get:
+		return EnemyState.name_of(state)
+	set(_name):
+		push_error("enemy.mode is read only: ask the enemy (enter, notice, begin_cast...)")
 var alert_left := 0.0
 ## Seconds until a told bite lands; negative while no bite is coming.
 var tell_left := -1.0
@@ -473,14 +477,14 @@ func _physics_process(delta: float) -> void:
 	# Resting (rest), it stands still but throws its wander's dice (the
 	# global ones), so the drops and blows they decide come out as before;
 	# called to a fight since Foes last looked, it is up this tick.
-	if resting and mode == "idle":
+	if resting and state == EnemyState.IDLE:
 		_mend(delta)
 		_wander(delta)
 		return
 	# A falling foe's tag goes with it (PIX-340: it stayed up over the body,
 	# and as the nearest kept the pack's living tags hidden).
 	if level_tag != null:
-		level_tag.visible = not dying and mode != "pile" and (hunting or health_bar.visible or Packs.within_notice(global_position, world.player.global_position))
+		level_tag.visible = not dying and state != EnemyState.PILE and (hunting or health_bar.visible or Packs.within_notice(global_position, world.player.global_position))
 		_show_ailments()
 	if dying:
 		return
@@ -497,37 +501,37 @@ func _physics_process(delta: float) -> void:
 		return
 	var player: CharacterBody2D = world.player
 	var to_player := player.global_position - global_position
-	match mode:
-		"alert":
+	match state:
+		EnemyState.ALERT:
 			velocity = Vector2.ZERO
 			alert_left -= delta
 			if alert_left <= 0:
-				mode = "chase"
-		"chase":
+				enter(EnemyState.CHASE)
+		EnemyState.CHASE:
 			var aim := _aim(to_player)
 			# At bay, the fight is where it stands, not a leash from home.
 			var leash := global_position if at_bay else home
 			if player.dead or (not _hunts_wagon() and gives_up(fighter, leash, global_position, player.global_position)):
-				_give_up()
+				enter(EnemyState.HOMEWARD)
 			elif _lets_go(delta):
-				_give_up()
+				enter(EnemyState.HOMEWARD)
 			else:
 				_chase(aim, delta)
-		"cast", "pile":
+		EnemyState.CAST, EnemyState.PILE:
 			velocity = Vector2.ZERO
-		"homeward":
+		EnemyState.HOMEWARD:
 			var back := home - global_position
 			velocity = _heading(back, delta) * HOMEWARD_SPEED
 			if back.length() < 4:
-				_settle()
-		"flee":
+				enter(EnemyState.IDLE)
+		EnemyState.FLEE:
 			if alert_left > 0:
 				# The flinch: a start before it runs.
 				velocity = Vector2.ZERO
 				alert_left -= delta
 			elif player.dead or Packs.calmed(global_position, player.global_position):
 				# Far enough: it calms down and walks home, as from a chase.
-				_give_up()
+				enter(EnemyState.HOMEWARD)
 			else:
 				_flee(to_player)
 		_:
@@ -548,7 +552,7 @@ func _physics_process(delta: float) -> void:
 	if shove != Vector2.ZERO:
 		# Shoved, it still faces (and walks) the way it meant to.
 		velocity = walk
-	if mode == "flee" and alert_left <= 0:
+	if state == EnemyState.FLEE and alert_left <= 0:
 		stuck_for = stuck_for + delta if get_real_velocity().length() < FLEE_SPEED * 0.25 else 0.0
 	_measure_held(walk, to_player, delta)
 	# Heading off at an angle, it holds its facing rather than flickering
@@ -770,10 +774,15 @@ static func ground_shadow(sprite: AnimatedSprite2D, size: float, rest_y: float) 
 
 
 ## The hero is seen: the danger mark over the head and a hop, then the
-## chase.
+## chase. Seen again in its wind-up (its pack's alarm), it starts over.
 func notice() -> void:
+	enter(EnemyState.ALERT)
+
+
+## The alert's entry work (enter): awake and hunting from here, heard, the
+## "!" up over its head and the hop.
+func _alerted() -> void:
 	_wake()
-	mode = "alert"
 	hunting = true
 	_fresh_hunt()
 	alert_left = float(Packs.rules()["windUpSeconds"])
@@ -902,11 +911,9 @@ func _place_fright() -> void:
 ## no growl, no fight's clock, so the music stays the place's.
 func take_fright(to_player: Vector2) -> void:
 	_wake()
-	mode = "flee"
+	if not enter(EnemyState.FLEE):
+		return
 	alert_left = FLINCH_SECONDS
-	stuck_for = 0.0
-	_step = Vector2i.ZERO
-	_fled_from = NO_CELL
 	world.foes.on_enemy_frightened(self)
 	# It looks at what frightened it, then turns to run.
 	facing = Gait.dir_of(to_player)
@@ -1197,7 +1204,7 @@ func _tell_bite(toward: Vector2) -> void:
 ## sent at a wagon, nor one that shoots (PIX-410: it keeps its distance),
 ## nor an elite whose trick is told nearer than the ring waits (PIX-422).
 func in_ring() -> bool:
-	return hunting and not dying and mode in ["chase", "cast"] and not boss_like and not _hunts_wagon() and shot.is_empty() and waits_in_ring
+	return hunting and not dying and EnemyState.fighting(state) and not boss_like and not _hunts_wagon() and shot.is_empty() and waits_in_ring
 
 
 ## Where the chase goes: the hero, or the wagon when it's the nearer.
@@ -1242,23 +1249,75 @@ func _bite(to_player: Vector2) -> void:
 ## gold): the flight of a foe far below them, without the fright.
 func run_off() -> void:
 	drop_tell()
-	mode = "flee"
-	alert_left = 0.0
-	stuck_for = 0.0
-	_step = Vector2i.ZERO
-	_fled_from = NO_CELL
+	if enter(EnemyState.FLEE):
+		alert_left = 0.0
 
 
-## Too far from home or behind, or far enough from a hero it ran from
-## (PIX-251): back home, deaf to the hero on the way, with its wounds
-## (_settle).
-func _give_up() -> void:
-	mode = "homeward"
-	aim_left = -1.0
-	hunting = false
-	at_bay = false
-	tell_left = -1.0
-	_fresh_hunt()
+## On to `to` (EnemyState, PIX-501): the work of leaving the state it is in,
+## then of entering the next. The one place its state changes: a change the
+## table doesn't know (EnemyState.allowed) is a bug, refused and said aloud.
+## False, and nothing done, for that or for a foe already fallen.
+func enter(to: int) -> bool:
+	if dying:
+		return false
+	if not EnemyState.allowed(state, to):
+		push_error("enemy %s: no way from %s to %s" % [fighter.get("id", ""), mode, EnemyState.name_of(to)])
+		return false
+	match state:
+		EnemyState.PILE:
+			# Up from its bones: its body and its bar back, at the health it has.
+			sprite.visible = true
+			health_bar.size.x = bar_width * fighter["hp"] / fighter["maxHp"]
+			health_bar.visible = true
+			health_bar_back.visible = true
+		EnemyState.FLEE:
+			# Struck as it ran, or done running: it stands and fights where it
+			# is (PIX-251), the fright's cue and its start back cut short.
+			if to == EnemyState.CHASE:
+				at_bay = true
+				if fright_mark != null:
+					fright_mark.visible = false
+				_end_flinch()
+	state = to
+	match to:
+		EnemyState.IDLE:
+			# Home again, and watching, with its wounds: no walk home makes a
+			# foe whole (a boss's since PIX-232, one with no way to the hero
+			# since PIX-475, every foe's since PIX-493: two rolls away from a
+			# wolf's dart sent it home, whole again before the hero had turned
+			# round).
+			woken = false
+			out_for = 0.0
+			_fresh_hunt()
+		EnemyState.ALERT:
+			_alerted()
+		EnemyState.CAST:
+			velocity = Vector2.ZERO
+		EnemyState.PILE:
+			# Its body and its bars gone, what it was telling and what ailed it
+			# too (PIX-489: poison would end a pile of bones unseen).
+			drop_tell()
+			if brain != null:
+				brain.interrupt()
+			ailments.clear()
+			velocity = Vector2.ZERO
+			health_bar.visible = false
+			health_bar_back.visible = false
+			sprite.visible = false
+		EnemyState.HOMEWARD:
+			# Too far from home or behind, or far enough from a hero it ran
+			# from (PIX-251): back home, deaf to the hero on the way.
+			aim_left = -1.0
+			hunting = false
+			at_bay = false
+			tell_left = -1.0
+			_fresh_hunt()
+		EnemyState.FLEE:
+			# A flight just begun: no step taken yet, nowhere fled from.
+			stuck_for = 0.0
+			_step = Vector2i.ZERO
+			_fled_from = NO_CELL
+	return true
 
 
 ## Whether `fighter` gives up the chase: too far from its home or the hero
@@ -1422,10 +1481,10 @@ func _can_reach(to_player: Vector2) -> bool:
 ## home - where, stuck long enough, it is home at last.
 func _measure_held(walk: Vector2, to_player: Vector2, delta: float) -> void:
 	var pressing := walk.length() > 1.0
-	if mode == "chase":
+	if state == EnemyState.CHASE:
 		pressing = pressing and tell_left < 0 and to_player.length() > bite_lands(to_player)
 		held_for = held_for + delta if pressing and get_real_velocity().length() < CHASE_SPEED * pace * 0.25 else 0.0
-	elif mode == "homeward":
+	elif state == EnemyState.HOMEWARD:
 		held_for = held_for + delta if get_real_velocity().length() < HOMEWARD_SPEED * 0.25 else 0.0
 		if held_for > HOME_STUCK_SECONDS:
 			_home_at_last()
@@ -1439,18 +1498,7 @@ func _home_at_last() -> void:
 	if Packs.lost(global_position, hero) and Packs.lost(home, hero):
 		global_position = home
 		reset_physics_interpolation()
-	_settle()
-
-
-## Home again, and watching, with its wounds: no walk home makes a foe
-## whole (a boss's since PIX-232, one with no way to the hero since
-## PIX-475, every foe's since PIX-493: two rolls away from a wolf's dart
-## sent it home, whole again before the hero had turned round).
-func _settle() -> void:
-	mode = "idle"
-	woken = false
-	out_for = 0.0
-	_fresh_hunt()
+	enter(EnemyState.IDLE)
 
 
 ## At home and out of the fight a pack's foe mends (PIX-493): whole again
@@ -1531,7 +1579,7 @@ static func rests(view: Rect2, at: Vector2, peaceful: bool) -> bool:
 ## named monster: few, and where it stands when its hunt starts is its
 ## fight's timing.
 func at_peace() -> bool:
-	return mode == "idle" and not boss_like and not hunting and not dying and not stood_down and quarry == null and knock_left <= 0 and ailments.effects.is_empty() and int(fighter["hp"]) >= int(fighter["maxHp"])
+	return state == EnemyState.IDLE and not boss_like and not hunting and not dying and not stood_down and quarry == null and knock_left <= 0 and ailments.effects.is_empty() and int(fighter["hp"]) >= int(fighter["maxHp"])
 
 
 ## Rests or wakes by `view`, the screen (Foes asks every frame): resting,
@@ -1611,7 +1659,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 		Sound.play(Sound.of_family("kill", String(fighter["id"])))
 		Sound.play(Sound.voice_for(String(fighter["id"]), "death"))
 	# A skeleton fallen to its pile has had its thud and its call (falls).
-	elif not blocked and mode != "pile":
+	elif not blocked and state != EnemyState.PILE:
 		Sound.play(Sound.voice_for(String(fighter["id"]), "hurt"))
 	# A named monster falls as a boss does (PIX-232), not just a boss.
 	if fell and Bestiary.fights_like_boss(fighter):
@@ -1633,18 +1681,13 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	# through its cleave, whose blow the bite's grace then took, so a hero
 	# swinging nonstop never met an elite's move); a stun breaks it
 	# (_interrupt).
-	if not dying and mode not in ["chase", "cast", "pile"]:
-		if mode == "flee":
-			at_bay = true
-			if fright_mark != null:
-				fright_mark.visible = false
-			_end_flinch()
-		mode = "chase"
+	if not dying and not EnemyState.fighting(state) and state != EnemyState.PILE:
+		enter(EnemyState.CHASE)
 		if not hunting:
 			hunting = true
 			world.foes.on_enemy_noticed(self)
 	# Nothing ails a pile of bones (PIX-489: poison would end it unseen).
-	if not dying and mode != "pile" and ailments.inflict(infliction, GameState.roll):
+	if not dying and state != EnemyState.PILE and ailments.inflict(infliction, GameState.roll):
 		Sound.play("foe_afflicted")
 		# Said as it lands and only while this foe stands (PIX-476).
 		world.messages.log_now(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])], func() -> bool: return not dying)
@@ -1702,40 +1745,28 @@ func plain() -> void:
 ## Stands still while a move is told or a trick plays; whoever began it ends
 ## it (end_cast), or a stun does (_interrupt).
 func begin_cast() -> void:
-	mode = "cast"
-	velocity = Vector2.ZERO
+	if state != EnemyState.CAST:
+		enter(EnemyState.CAST)
 
 
 ## The move is done: on with the chase. Nothing to end for one a stun
 ## already sent chasing.
 func end_cast() -> void:
-	if mode == "cast":
-		mode = "chase"
+	if state == EnemyState.CAST:
+		enter(EnemyState.CHASE)
 
 
 ## A skeleton falls to its bones (PIX-489) rather than dying: its body and
 ## its bars gone, what it was telling and what ailed it too (poison would end
 ## it unseen), until it rises (rise) or the pile is struck.
 func fall_to_pile() -> void:
-	mode = "pile"
-	drop_tell()
-	if brain != null:
-		brain.interrupt()
-	ailments.clear()
-	velocity = Vector2.ZERO
-	health_bar.visible = false
-	health_bar_back.visible = false
-	sprite.visible = false
+	enter(EnemyState.PILE)
 
 
 ## Up from its pile with `hp` of its health, and at the hero again.
 func rise(hp: int) -> void:
 	fighter["hp"] = hp
-	sprite.visible = true
-	health_bar.size.x = bar_width * fighter["hp"] / fighter["maxHp"]
-	health_bar.visible = true
-	health_bar_back.visible = true
-	mode = "chase"
+	enter(EnemyState.CHASE)
 
 
 ## Gone (a ghost faded): no blow finds it and nothing meets it, until it
@@ -1766,8 +1797,7 @@ func burst_out(seconds: float) -> void:
 ## Turns on the hero from its run (a goblin done running with their gold):
 ## it fights where it stands.
 func turn_back() -> void:
-	at_bay = true
-	mode = "chase"
+	enter(EnemyState.CHASE)
 
 
 ## An undead elite's guard up or down (PIX-155), a howl's call on it or off
@@ -1828,10 +1858,11 @@ func _lose(damage: int, color: Color, crit := false) -> void:
 func stand_down() -> void:
 	if dying:
 		return
+	if state != EnemyState.IDLE:
+		enter(EnemyState.IDLE)
 	dying = true
 	stood_down = true
 	hunting = false
-	mode = "idle"
 	velocity = Vector2.ZERO
 	tell_left = -1.0
 	knock_left = 0.0

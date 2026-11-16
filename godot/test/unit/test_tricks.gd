@@ -139,7 +139,7 @@ func _foe(kind: String, elite := false, at := HERO_AT + Vector2(16, 0)) -> Node:
 	foe.add_to_group("mobs")
 	_world.add_child(foe)
 	foe.set_physics_process(false)
-	foe.mode = "chase"
+	foe.enter(EnemyState.CHASE)
 	foe.hunting = true
 	if foe.trick != null:
 		foe.trick.set_physics_process(false)

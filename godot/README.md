@@ -646,6 +646,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/state/deeds.gd` — Deeds (PIX-219): long goals for a hero who has done the rest, read off what the save already knows
 - `scripts/state/depths.gd` — A region's dungeon in floors (PIX-255, after Tom: « Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple »).
 - `scripts/state/economy.gd` — The town economy's rules, ported from src/game/economy/{shop,jobs,recipes, rarity}.ts
+- `scripts/state/enemy_state.gd` — What a foe is doing, one state at a time, and which state may follow which (PIX-501).
 - `scripts/state/gains.gd` — What the hero wins, as things the world shows rather than words in the log (PIX-245: Tom found it "beaucoup d'écrit")
 - `scripts/state/game_settings.gd` — Device preferences (src/app/settings.ts), deliberately NOT part of the save so they never travel inside a save code
 - `scripts/state/game_state.gd` — The one game state (autoload `GameState`): typed sections for the hero, the pack, the settlement, progression and the explored world.

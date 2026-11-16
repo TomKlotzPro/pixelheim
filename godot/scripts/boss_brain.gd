@@ -37,10 +37,10 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# Stunned, it casts nothing (PIX-186); a blow's stun broke what it was
 	# telling (interrupt, PIX-440), a bell's lets it land (Ailments.stun_for).
-	if enemy.dying or enemy.mode not in ["chase", "cast"] or enemy.ailments.is_stunned():
+	if enemy.dying or not EnemyState.fighting(enemy.state) or enemy.ailments.is_stunned():
 		return
 	_check_phase()
-	if enemy.mode == "cast":
+	if enemy.state == EnemyState.CAST:
 		return
 	cooldown -= delta
 	if cooldown > 0:

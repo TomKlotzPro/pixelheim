@@ -83,8 +83,10 @@ func _goblin(mode := "chase") -> CharacterBody2D:
 	_world.add_child(foe)
 	foe.set_physics_process(false)
 	foe.home = foe.position
-	foe.mode = mode
-	foe.hunting = mode == "chase"
+	foe.enter(EnemyState.CHASE)
+	foe.hunting = true
+	if mode == "homeward":
+		foe.enter(EnemyState.HOMEWARD)
 	foe.can_bite = false
 	return foe
 
