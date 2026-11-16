@@ -226,6 +226,7 @@ func _arrive() -> void:
 		enter(_veil(true, false))
 		return
 	var veil := _veil(launch, true)
+	veil.set_meta("fade", true)  # till it lifts, tools/play.py's keys wait (PlayBridge.fading)
 	var lift := veil.create_tween()
 	lift.tween_property(veil, "modulate:a", 0.0, 0.6).set_trans(Tween.TRANS_SINE)
 	lift.tween_callback(veil.queue_free)

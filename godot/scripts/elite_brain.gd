@@ -24,6 +24,9 @@ var called: Array[Node] = []
 ## marks on the ground, its glow, its raised guard.
 var marks: Array[Node2D] = []
 var _glow: Tween
+## The move it last told, by name: what tools/play.py's state calls its
+## cast (PlayBridge.mode_of, PIX-485).
+var telling := ""
 var _shine: Tween
 
 
@@ -126,6 +129,7 @@ static func cleave_band(move: Dictionary, at: Vector2, hero: Vector2, beyond := 
 ## to the mark's far end, a leap to beside its middle.
 func _tell(move: Dictionary, shape: PackedVector2Array, jump: String) -> void:
 	enemy.mode = "cast"
+	telling = String(move.get("move", ""))
 	enemy.velocity = Vector2.ZERO
 	_keep(Telegraph.mark(world, shape, float(move["tell"]), _strike.bind(move, jump)))
 
@@ -173,6 +177,7 @@ func _guard(move: Dictionary) -> void:
 ## Stands still and glows for the tell, then does `then`.
 func _flash(move: Dictionary, then: Callable) -> void:
 	enemy.mode = "cast"
+	telling = String(move.get("move", ""))
 	enemy.velocity = Vector2.ZERO
 	_glow = enemy.sprite.create_tween()
 	_glow.tween_property(enemy.sprite, "modulate", Color(1.8, 1.0, 0.5), float(move["tell"]))
