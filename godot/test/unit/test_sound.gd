@@ -35,7 +35,7 @@ func test_every_rendered_sound_is_shipped() -> void:
 			for variant in int(doc["ambience"][place][index].get("variants", 0)):
 				assert_true(ResourceLoader.exists("res://assets/audio/ambience/%s_%d_%d.wav" % [place, index, variant]))
 	assert_eq(stingers.size(), 22, "the web's 17 SFX, then the dodge, the roar and the bounty (PIX-158), Teo's bell (PIX-253 step 9), and a way out rising where a boss fell (PIX-339), every one some moment's")
-	assert_eq(doc["tracks"].size(), 19, "the web's 10, then nine places with their own in the bundle (PIX-416)")
+	assert_eq(doc["tracks"].size(), 20, "the web's 10, nine places with their own in the bundle (PIX-416), the Night of Ash's (PIX-498)")
 
 
 ## The sound pass (PIX-158): every render tools/synth.py makes is shipped.
@@ -171,6 +171,56 @@ func test_places_and_fights_choose_the_webs_themes() -> void:
 	assert_eq(Sound.track_for("shafts", ""), "descent")
 	assert_eq(Sound.track_for("overworld", "battle"), "battle", "a hunt takes over")
 	assert_eq(Sound.track_for("vault_5", "boss"), "boss")
+
+
+## What the soundscape reads of a world, with nothing of the world built.
+class NightWorld extends Node:
+	var map := MapData.load_by_id("town")
+	var player_cell := Vector2i(30, 30)
+	var atmosphere: Node = null
+	var foes := {"hunted_at": -100.0, "hunted_by_boss": false}
+	var view := {"camps": {}}
+
+
+## PIX-498: while the Night of Ash runs the village burns to a track of its
+## own, its fights under it, the bundle's or the game's own; the dawn's
+## theme, then the town's tune, each crossfaded in as a change of place is.
+func test_the_night_of_ash_plays_its_own_track_until_the_dawn() -> void:
+	assert_eq(Sound.track_for("town", "", true), "ashnight")
+	assert_eq(Sound.track_for("overworld", "", true), "ashnight", "from the road in")
+	assert_eq(Sound.track_for("town", "battle", true), "ashnight", "the night's fights are the night's")
+	assert_eq(Sound.track_for("town", "", false), "town")
+	var world: NightWorld = add_child_autofree(NightWorld.new())
+	var ears: Soundscape = add_child_autofree(Soundscape.new())
+	ears.world = world
+	var seen: bool = GameState.title_seen
+	var step: int = GameState.progression.prologue
+	GameState.title_seen = true
+	for held: bool in [true, false]:
+		Sound.withheld = held
+		Sound.stop_music()
+		GameState.progression.prologue = Prologue.SELA
+		ears.refresh()
+		assert_eq(Sound.track, "ashnight", "held back: %s" % held)
+		assert_eq(Sound._heard, "ashnight", "a track of its own with the bundle and without")
+		assert_true(Sound._music.playing)
+		assert_has(ears._soundscape(), "fire", "the fire is still heard")
+		world.foes["hunted_at"] = GameClock.seconds()
+		ears.refresh()
+		assert_eq(Sound.track, "ashnight", "a hound on the hunt doesn't take it")
+		world.foes["hunted_at"] = -100.0
+		# The dawn's theme (dawn_screen.gd), then the day.
+		Sound.play_theme("dawn")
+		assert_eq(Sound.track, "theme:dawn")
+		GameState.progression.prologue = Prologue.DONE
+		ears.refresh()
+		assert_eq(Sound.track, "town", "the town's tune once the night is over")
+		assert_eq(Sound._heard, "town")
+		assert_true(Sound._fade.is_running(), "crossfaded, as a change of place is")
+	GameState.title_seen = seen
+	GameState.progression.prologue = step
+	Sound.stop_all()
+	Sound._resume_at.clear()
 
 
 ## PIX-416: a place with an identity of its own has its own slot, which

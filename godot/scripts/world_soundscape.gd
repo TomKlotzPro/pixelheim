@@ -3,7 +3,8 @@ extends Node
 ## areas: town field
 ## What the hero hears (Solid Ground, PIX-260: moved out of world.gd as it
 ## was): the place's theme, the fight's or the boss's while something hunts
-## the hero, a fallen boss's silence; the place's ambience, birds or
+## the hero, the Night of Ash's own while it runs (PIX-498), a fallen boss's
+## silence; the place's ambience, birds or
 ## crickets, the town's chatter, fire close by, wind or rain underneath
 ## (PIX-158, PIX-224), or the place's own bed from the packs (PIX-413); and
 ## coins, hurts and heals as they happen. The fight's clock it reads (and
@@ -88,7 +89,7 @@ func refresh() -> void:
 		world.foes.hunted_by_boss = false
 	# A fallen boss's silence holds a moment before the place's music.
 	if now >= hushed_until and (Sound.track != "victory" or fight != ""):
-		Sound.play_track(Sound.track_for(world.map.id, fight))
+		Sound.play_track(Sound.track_for(world.map.id, fight, GameState.progression.prologue != Prologue.DONE))
 	# By the ground underfoot, the Reach's ash or its marsh (PIX-413); a
 	# shower heard, running water near (PIX-414).
 	var cell: Vector2i = world.player_cell

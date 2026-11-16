@@ -924,6 +924,16 @@ catch-prompt-back | --map deepwood --at 7,7 --keys d,e --wait 2.5 --zoom play | 
 prompt-under-spot | --map deepwood --at 7,7 --zoom play | map=deepwood hudclash=none | gathering field
 # The Night of Ash's dawn (PIX-197).
 dawn | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5 | open=dawn_screen | story screen
+# The Night of Ash's own music (PIX-498): its track while the village
+# burns, on the road in and under its fights too, never the town's cheerful
+# tune; the town's once the night is over. With the bundle and on the game's
+# own chiptune (cc0).
+ash-music | --map town --prologue 4 music | map=town night=4 music=ashnight | story night town
+ash-music-cc0 | --map town --prologue 4 music cc0 | map=town night=4 music=ashnight | story night town
+ash-music-road | --prologue 1 music | map=overworld night=1 music=ashnight | story night travel
+ash-music-hounds | --map town --prologue 6 music --zoom play --wait 2 | night=6 mobs=2 music=ashnight | story night combat
+ash-music-over | --map town music | map=town night=0 music=town | story town
+ash-music-over-cc0 | --map town music cc0 | map=town night=0 music=town | story town
 # Walking without the camera shake (PIX-135): needs a window, so --quiet skips it.
 motion | --map town motion --fps 144 | backsteps=[01] | motion
 # Turning in the walk (PIX-293): down then right holding both keys a moment,
