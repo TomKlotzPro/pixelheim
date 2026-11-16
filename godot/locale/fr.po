@@ -3537,6 +3537,10 @@ msgid "Every Face"
 msgstr "Chaque visage"
 
 #: assets/data/changelog.json
+msgid "Every Key Says True"
+msgstr "Chaque touche dit vrai"
+
+#: assets/data/changelog.json
 msgid "Every Lead True"
 msgstr "Chaque piste est juste"
 
@@ -3925,6 +3929,10 @@ msgid "Follow the Cry"
 msgstr "Suivre l'appel"
 
 #: assets/data/changelog.json
+msgid "Footers only name the keys that do something there"
+msgstr "Le bas de chaque écran ne nomme plus que les touches qui y font quelque chose"
+
+#: assets/data/changelog.json
 msgid "Footfalls"
 msgstr "Bruits de pas"
 
@@ -4297,6 +4305,10 @@ msgid "In Plain Sight"
 msgstr "Bien en vue de tous"
 
 #: assets/data/changelog.json
+msgid "In Saves from the title, E plays the hero at once, and the last one played is tagged as such"
+msgstr "Dans les sauvegardes depuis le titre, E lance le héros aussitôt, et le dernier joué est indiqué comme tel"
+
+#: assets/data/changelog.json
 msgid "In Their Own Words"
 msgstr "De leur propre voix"
 
@@ -4467,6 +4479,10 @@ msgstr "La Nuit des Lanternes tient ses promesses : si elle commence pendant q
 #: assets/data/changelog.json
 msgid "Lantern Shadows"
 msgstr "Les ombres de la lanterne"
+
+#: assets/data/changelog.json
+msgid "Large reading text now grows every text you read: the pack, the journal, the skills and the counter's card"
+msgstr "Le grand texte de lecture agrandit maintenant tout ce qui se lit : le sac, le journal, les compétences et la fiche du comptoir"
 
 #: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
@@ -5079,6 +5095,10 @@ msgstr "Sur ordinateur, rien ne change"
 #: assets/data/changelog.json
 msgid "On a gamepad, A answers and confirms, X swings, B goes back everywhere, Y opens the pack, the D-pad walks, and LB, LT and RT cast your first three skills"
 msgstr "À la manette, A répond et confirme, X frappe, B revient en arrière partout, Y ouvre le sac, la croix directionnelle fait marcher, et LB, LT et RT lancent vos trois premières compétences"
+
+#: assets/data/changelog.json
+msgid "On a pad, the right stick turns the page of a long card, and the footer shows the pad's keys while you play with one"
+msgstr "À la manette, le stick droit tourne la page d'une longue fiche, et le bas de l'écran montre les touches de la manette quand vous jouez avec"
 
 #: assets/data/changelog.json
 msgid "On a phone the controls are sized for a thumb on any screen, the attack, roll and use buttons show a drawn sword, arrow and hand instead of words, and all six skill keys are on screen, with each skill's icon"
@@ -6043,6 +6063,10 @@ msgstr "Devant un atelier, l'onglet Artisanat l'indique en vert : fabriquez à
 #: assets/data/changelog.json
 msgid "Stars twinkle, embers rise and chimneys smoke while it loads, then the title rises out of the same picture"
 msgstr "Les étoiles scintillent, les braises montent et les cheminées fument pendant le chargement, puis le titre surgit de la même image"
+
+#: assets/data/changelog.json
+msgid "Stats says how many points you have left to spend; in Options, left and right move between a key row's columns and only E rebinds"
+msgstr "Les stats disent combien de points il vous reste ; dans les options, gauche et droite passent d'une colonne à l'autre d'une touche et seul E la change"
 
 #: assets/data/changelog.json
 msgid "Status effects: poison and burn tick every turn, stun steals turns"

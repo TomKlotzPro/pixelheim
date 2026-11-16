@@ -3537,6 +3537,10 @@ msgid "Every Face"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every Key Says True"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every Lead True"
 msgstr ""
 
@@ -3925,6 +3929,10 @@ msgid "Follow the Cry"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Footers only name the keys that do something there"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Footfalls"
 msgstr ""
 
@@ -4297,6 +4305,10 @@ msgid "In Plain Sight"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "In Saves from the title, E plays the hero at once, and the last one played is tagged as such"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "In Their Own Words"
 msgstr ""
 
@@ -4466,6 +4478,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Lantern Shadows"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Large reading text now grows every text you read: the pack, the journal, the skills and the counter's card"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5078,6 +5094,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On a gamepad, A answers and confirms, X swings, B goes back everywhere, Y opens the pack, the D-pad walks, and LB, LT and RT cast your first three skills"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "On a pad, the right stick turns the page of a long card, and the footer shows the pad's keys while you play with one"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6042,6 +6062,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Stars twinkle, embers rise and chimneys smoke while it loads, then the title rises out of the same picture"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Stats says how many points you have left to spend; in Options, left and right move between a key row's columns and only E rebinds"
 msgstr ""
 
 #: assets/data/changelog.json
