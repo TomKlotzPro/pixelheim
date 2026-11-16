@@ -2389,6 +2389,10 @@ msgid "A lost fight still wakes you tucked into the inn's bed"
 msgstr "Un combat perdu vous réveille toujours bordé dans le lit de l'auberge"
 
 #: assets/data/changelog.json
+msgid "A melee skill reaches a foe anywhere in the cell in front of you"
+msgstr "Une compétence de mêlée atteint un ennemi n'importe où dans la case devant vous"
+
+#: assets/data/changelog.json
 msgid "A mini-map rides in the corner of the world, fog included"
 msgstr "Une mini-carte s'installe dans un coin du monde, brouillard compris"
 
@@ -2507,6 +2511,10 @@ msgstr "Une ombre n'est jamais d'un noir complet, et ce qui se dresse reste écl
 #: assets/data/changelog.json
 msgid "A skeleton falls to a pile of bones and rises once, unless you strike the pile"
 msgstr "Un squelette tombe en un tas d'os et se relève une fois, à moins de frapper le tas"
+
+#: assets/data/changelog.json
+msgid "A skill pressed just after a swing or another skill is kept and goes as soon as you can; if it can't, its slot flashes"
+msgstr "Une compétence pressée juste après un coup ou une autre compétence est gardée et part dès que possible ; sinon, sa case clignote"
 
 #: assets/data/changelog.json
 msgid "A slain slime bursts into two small slimes; the Dire Wolf darts in to bite and runs back out, one of the pack at a time"
@@ -4015,6 +4023,10 @@ msgstr "L'or revient"
 #: assets/data/changelog.json
 msgid "Gold With a Purpose"
 msgstr "De l'or qui sert"
+
+#: assets/data/changelog.json
+msgid "Gold and damage numbers have a full dark outline, so they read on the sand"
+msgstr "Les chiffres d'or et de dégâts ont un contour sombre complet, lisible même sur le sable"
 
 #: assets/data/changelog.json
 msgid "Gold at Work"
@@ -7101,6 +7113,10 @@ msgid "The log keeps only what the world doesn't show: the story, quests, levels
 msgstr "Le journal ne garde que ce que le monde ne montre pas : l'histoire, les quêtes, les niveaux, la maîtrise, les primes et l'avantage du Tueur de boss"
 
 #: assets/data/changelog.json
+msgid "The log steps away while you talk, and you no longer stand over the villager you talk to"
+msgstr "Le journal s'efface pendant une conversation, et vous ne vous tenez plus sur le villageois à qui vous parlez"
+
+#: assets/data/changelog.json
 msgid "The main story stands out: a gold ring around the \"!\" over a letter's recipient, the edge arrow in gold while it leads the story, and a hollow gold diamond on the map while you follow a side quest"
 msgstr "L'histoire principale se distingue : un anneau doré autour du « ! » au-dessus du destinataire d'une lettre, la flèche en bord d'écran dorée quand elle mène l'histoire, et un losange doré creux sur la carte quand vous suivez une quête secondaire"
 
@@ -7561,6 +7577,10 @@ msgid "Told True"
 msgstr "Au plus juste"
 
 #: assets/data/changelog.json
+msgid "Told in Time"
+msgstr "Dit à temps"
+
+#: assets/data/changelog.json
 msgid "Tooltips and scrollbars now wear the game's parchment and brass, and the mouse is a little brass pointer that turns into a hand over buttons"
 msgstr "Les infobulles et les barres de défilement portent désormais le parchemin et le laiton du jeu, et la souris est un petit pointeur de laiton qui devient une main au-dessus des boutons"
 
@@ -7831,6 +7851,10 @@ msgstr "Quand une compétence est refusée, son message disparaît désormais d�
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
 msgstr "Quand toutes les voix sont prises, les sons qui comptent (une blessure, un niveau, une victoire) passent quand même"
+
+#: assets/data/changelog.json
+msgid "When poison, a burn or a stun takes hold of you, a line says so, and your figure and health bar wear its colour while it lasts"
+msgstr "Quand un poison, une brûlure ou un étourdissement vous saisit, une ligne le dit, et votre silhouette et votre barre de vie en prennent la couleur tant qu'il dure"
 
 #: assets/data/changelog.json
 msgid "Where It Leads"
