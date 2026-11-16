@@ -281,11 +281,13 @@ func _hands_changed() -> void:
 	_set_footer()
 
 
-## The selected card in full at the foot of the page, its last line on the
-## page's inset.
+## The selected card in full at the foot of the page, its second line on
+## the page's inset. A third of the small type still stands on the page, as
+## it did (a path's card in a long tongue: paged, its keys ran the footer
+## off the canvas); the big type pages past two.
 func _describe() -> void:
-	Layout.read(reader, _described(), 2, 2)
-	reader.position = Vector2(COLUMN_X[0], PAGE.end.y - UiStyle.INSET - reader.custom_minimum_size.y)
+	Layout.read(reader, _described(), 2 if GameState.settings.large_text else 3, 2)
+	reader.position = Vector2(COLUMN_X[0], PAGE.end.y - UiStyle.INSET - 2 * Layout.line_of(reader))
 
 
 func _described() -> String:
