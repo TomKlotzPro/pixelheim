@@ -101,6 +101,11 @@
       "runnerUp": "V02 06_Upbeat_Medieval_Retro_1",
       "why": "the ending's festival on the square, looping"
     },
+    "ashnight": {
+      "from": ["LEOHPAZ_RPG-Music-V02_Retro.zip", "LEOHPAZ_RPG-Music-V02_Retro/RPG-Music-V02_Retro/14_NarrowEscape_Retro.wav"],
+      "runnerUp": "V03 04_MountainStrongholdBattle_Retro (C minor, 115 s, half as big again), then V03 06b_NorthSeaBattle_Retro_Loop alone (D minor, 83 s; its intro rings past the handover)",
+      "why": "the Night of Ash, the village burning, from the road to the dawn (PIX-498): the bundle's flight from danger, A minor, 75 s, the steadiest of the tense ones (2.5 LU of range, so the fire and the bells stay over it), and no fight's track already heard"
+    },
     "theme_dawn": {
       "from": ["LEOHPAZ_RPG-Music-V02_Retro.zip", "LEOHPAZ_RPG-Music-V02_Retro/RPG-Music-V02_Retro/03_Melancholic_Theme_Retro.wav"],
       "runnerUp": "V03 10_BardMelody_2_Retro",

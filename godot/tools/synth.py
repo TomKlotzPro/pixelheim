@@ -8,7 +8,8 @@
 #   variants each, the looping wind beds of the mountain's floors and the
 #   rain's (PIX-224), and thunder near, far and under a roof (PIX-491);
 # - music/theme_*.wav: the short story themes, from the notes in
-#   assets/data/audio.json "themes".
+#   assets/data/audio.json "themes"; and a track written the same way (one
+#   of "tracks" with "voices": the Night of Ash's, PIX-498), as its loop.
 # Seeded, so a rerun writes the same files.
 #   python3 godot/tools/synth.py
 import json
@@ -330,9 +331,10 @@ def thunder(kind):
 
 # ---- themes ----------------------------------------------------------------
 
-def theme(spec):
+def theme(spec, loop=False):
     """A short story theme: voices of notes ("D4:1", "-:0.5" a rest, "x:1" a
-    drum hit) at `bpm`, each voice its wave, duty and volume."""
+    drum hit) at `bpm`, each voice its wave, duty and volume. A `loop` ends
+    on its last beat, no tail: it plays round from there."""
     beat = 60.0 / spec["bpm"]
     parts, end = [], 0.0
     for voice in spec["voices"]:
@@ -351,7 +353,7 @@ def theme(spec):
                 parts.append((at, body, MUSIC_RATE))
             at += length
         end = max(end, at)
-    return mix(int((end + 0.4) * MUSIC_RATE), *parts)
+    return mix(round(end * MUSIC_RATE) if loop else int((end + 0.4) * MUSIC_RATE), *parts)
 
 
 def main():
@@ -373,6 +375,10 @@ def main():
         write(os.path.join(AUDIO, "ambience", "thunder_%s.wav" % kind), thunder(kind), MUSIC_RATE, peak)
     for name, spec in doc["themes"].items():
         write(os.path.join(AUDIO, "music", "theme_%s.wav" % name), theme(spec), MUSIC_RATE, 4000, rms=520)
+    # A loop keeps its offset (write), so a looped track's squares are duty 0.5.
+    for name, spec in doc["tracks"].items():
+        if "voices" in spec:
+            write(os.path.join(AUDIO, "music", "%s.wav" % name), theme(spec, loop=True), MUSIC_RATE, 4000, rms=520, loop=True)
     print("wrote the effects, %d ambience sets, %d beds and %d themes" % (len(doc["ambienceExtras"]), len(doc["beds"]), len(doc["themes"])))
 
 

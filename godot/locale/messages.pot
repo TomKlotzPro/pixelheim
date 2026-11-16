@@ -6705,6 +6705,10 @@ msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and re
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Night Burns"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Night of Ash"
 msgstr ""
 
@@ -6714,6 +6718,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Night of Ash finally looks like a fire: flames climb the burnt frames and corner posts and lick the rubble, a blaze roars where each house fell in, smoke drifts downwind and sparks fly over glowing coals; on the Night of Bells, flames run along the roof and out of the windows; Reduce motion keeps it all calm"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Night of Ash has its own dramatic music while the village burns, from the road to the dawn"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7138,6 +7146,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The night classes stepped into the light: the necromancer's robes and the rogue's leathers brightened so they read on every lawn"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The night's fights stay under it, and the town's tune comes back once the fire is out"
 msgstr ""
 
 #: assets/data/changelog.json
