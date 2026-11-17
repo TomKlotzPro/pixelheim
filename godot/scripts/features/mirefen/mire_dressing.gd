@@ -4,28 +4,33 @@ extends MapLayer
 ## The Mirefen alive (PIX-401, the v0.307 world audit: « a uniform fen of
 ## puddles and a few shrubs, one ruin and two camps »): dead trees standing
 ## in the mud, reed beds thick by the water and here and there in the fen,
-## boardwalks from the bridges' ends out over the wet ground and from the
-## ruin's door down to the road, and the road west of the middle bridge
-## going on as one to a stilt hut, another hut by the south bridge, and
-## will-o'-wisps drifting over the fen at night, each a soft light. The
-## walks and huts are placed by hand (WALKS, HUTS), the trees and reeds by
-## the cell's own dice (`lay`, pure). What stands blocks only open ground
-## off the paths, never a pack's home, a chest, a lair, today's patches nor
-## a walk (no patch grows under it after), and never so as to close a way
-## (Hamlet.fits); a walk lies flat and blocks nothing; reeds are walked
-## through, as the woods are. The map itself is untouched. All drawn in
-## code (MireArt), so the same without the paid pack.
+## boardwalks over the fen's water from the bridges' ends to the road and
+## the huts and from the ruin's door down to the road, and the road west of
+## the middle bridge going on as one to a stilt hut, another hut by the
+## south bridge, and will-o'-wisps drifting over the fen at night, each a
+## soft light. The walks and huts are placed by hand (WALKS, HUTS), the
+## trees and reeds by the cell's own dice (`lay`, pure). What stands blocks
+## only open ground off the paths, never a pack's home, a chest, a lair,
+## today's patches nor a walk (no patch grows under it after), and never so
+## as to close a way (Hamlet.fits); a walk blocks nothing, the fen's water
+## along its sides as a tree does; reeds are walked through, as the woods
+## are. The map itself is untouched. A walk is drawn as a bridge and its
+## sides as water (MapView.drawn_as, PIX-519: in code it read as a ladder
+## lying in the grass): Shade's pier planks the way it runs
+## (PunyTerrain.object_at) over the fen's own water, his CC0 sheet; the rest
+## is drawn in code (MireArt), so all the same without the paid pack.
 
 const MAP := "mirefen"
-## The boardwalks: each a strip two cells thick along its length, drawn down
-## its middle (the line between its two rows or columns) so it runs on from
-## a road or a bridge two cells wide: the middle road's west end to the
-## west hut; from the south bridge's ends out over the fen, west to
-## Grandmother Gulp's lair and east past the south hut to the grass; from
-## the north bridge's west end out to the grass; the ruin's doorway down to
-## the road.
+## The boardwalks, each two cells wide as the road or the bridge it runs on
+## from, landing at both ends on a road, a bridge, a door or another walk
+## (PIX-519): the middle road's west end to the west hut's ladder; down the
+## river's west bank from the middle road to the south bridge; from the
+## south bridge's east end to the south hut's; from the north bridge's west
+## end over the fen, then down to the middle road (two runs); the ruin's
+## doorway down to the road.
 const WALKS: Array[Rect2i] = [
-	Rect2i(4, 24, 8, 2), Rect2i(8, 34, 10, 2), Rect2i(26, 34, 6, 2), Rect2i(14, 14, 4, 2), Rect2i(44, 18, 2, 6),
+	Rect2i(5, 24, 7, 2), Rect2i(16, 26, 2, 10), Rect2i(26, 34, 4, 2), Rect2i(14, 14, 4, 2), Rect2i(14, 16, 2, 8),
+	Rect2i(44, 18, 2, 6),
 ]
 ## The stilt huts, by their left cell (two cells wide, facing a walk).
 const HUTS: Array[Vector2i] = [Vector2i(5, 23), Vector2i(28, 33)]
@@ -52,22 +57,23 @@ const LAIR_CLEAR := 2
 
 
 ## What the Mirefen stands in, as it is laid: {"walks": [Rect2i],
-## "huts": [cell], "trees": {cell: variant}, "reeds": {cell: variant},
-## "blocks": [cells]}. `kept`: cells nothing may stand on (Hamlet.kept_on
+## "wet": [cells of water beside them], "huts": [cell], "trees": {cell:
+## variant}, "reeds": {cell: variant}, "blocks": [cells]}. `kept`: cells nothing may stand on (Hamlet.kept_on
 ## without the patches' decks, today's patches, where the hero arrives);
 ## `opened`: the field decor that blocks, which a walk lifts off its cells.
 static func lay(map: MapData, kept: Dictionary, opened := {}) -> Dictionary:
 	var blocks: Array[Vector2i] = []
-	var out := {"walks": [] as Array[Rect2i], "huts": [] as Array[Vector2i], "trees": {}, "reeds": {}, "blocks": blocks}
+	var out := {"walks": [] as Array[Rect2i], "wet": [] as Array[Vector2i], "huts": [] as Array[Vector2i], "trees": {}, "reeds": {}, "blocks": blocks}
 	if map.id != MAP:
 		return out
-	var clear := kept.duplicate()
+	var lairs := {}
 	for entry: Dictionary in Hunts.all():
 		if String(entry.get("mapId", "")) == map.id and entry.has("lair"):
 			var lair := Hunts.lair(entry)
 			for dy in range(-LAIR_CLEAR, LAIR_CLEAR + 1):
 				for dx in range(-LAIR_CLEAR, LAIR_CLEAR + 1):
-					clear[lair + Vector2i(dx, dy)] = true
+					lairs[lair + Vector2i(dx, dy)] = true
+	var clear := kept.merged(lairs)
 	for walk in WALKS:
 		if _all_open(map, walk, opened):
 			out["walks"].append(walk)
@@ -80,6 +86,16 @@ static func lay(map: MapData, kept: Dictionary, opened := {}) -> Dictionary:
 			blocks.append_array(foot)
 			for cell in _cells(Rect2i(hut - Vector2i.ONE, Vector2i(4, 3))):
 				clear[cell] = true
+	# The fen's water along each walk's sides, so it reads as planks over the
+	# bog (PIX-519: water only under them showed nowhere): a cell at a time
+	# where Hamlet.fits lets it block, as a dead tree, never a hut's nor by a
+	# lair.
+	for walk: Rect2i in out["walks"]:
+		for cell in _sides(walk):
+			var one: Array[Vector2i] = [cell]
+			if not lairs.has(cell) and not _on_walk(out["walks"], cell) and Hamlet.fits(map, one, kept, blocks):
+				out["wet"].append(cell)
+				blocks.append(cell)
 	# Column by column, the order the cells sort in, without sorting them.
 	for x in map.size.x:
 		for y in map.size.y:
@@ -120,6 +136,17 @@ static func _cells(rect: Rect2i) -> Array[Vector2i]:
 	return out
 
 
+## The cells along a walk's two long sides.
+static func _sides(walk: Rect2i) -> Array[Vector2i]:
+	if walk.size.x >= walk.size.y:
+		return _cells(Rect2i(walk.position.x, walk.position.y - 1, walk.size.x, 1)) + _cells(Rect2i(walk.position.x, walk.end.y, walk.size.x, 1))
+	return _cells(Rect2i(walk.position.x - 1, walk.position.y, 1, walk.size.y)) + _cells(Rect2i(walk.end.x, walk.position.y, 1, walk.size.y))
+
+
+static func _on_walk(walks: Array, cell: Vector2i) -> bool:
+	return walks.any(func(walk: Rect2i) -> bool: return walk.has_point(cell))
+
+
 static func _by_water(map: MapData, cell: Vector2i) -> bool:
 	for dy in range(-REEDS_NEAR, REEDS_NEAR + 1):
 		for dx in range(-REEDS_NEAR, REEDS_NEAR + 1):
@@ -140,12 +167,16 @@ func plan(view: MapView, slices: Slicer) -> void:
 		kept.merge(view.patches)
 		kept[view.arrival] = true
 		var laid := lay(view.data, kept, view.solid_scatter)
+		view.drawn_as = {}
 		for walk: Rect2i in laid["walks"]:
 			for cell in _cells(walk):
 				view.bare[cell] = true
+				view.drawn_as[cell] = "bridge"
 				if view.solid_scatter.has(cell):
 					view.solid_scatter.erase(cell)
 					view.data.covered.erase(cell)
+		for cell: Vector2i in laid["wet"]:
+			view.drawn_as[cell] = "water"
 		for cell: Vector2i in laid["blocks"]:
 			view.data.covered[cell] = true
 		# No field decor under what the fen grows.
@@ -158,9 +189,13 @@ func build(view: MapView, slices: Slicer) -> void:
 	if not view.has_meta("mire"):
 		return
 	var laid: Dictionary = view.get_meta("mire")
-	slices.add("decor_mire_walks", func() -> void:
-		for walk: Rect2i in laid["walks"]:
-			_lay_walk(view, walk))
+	# The water beside the walks stops the hero at its edge as the map's own
+	# water does: the blockers' whole-cell box, not a prop's foot.
+	slices.add("decor_mire_wet", func() -> void:
+		for cell: Vector2i in laid["wet"]:
+			view.tile_layer.set_cell(cell, MapView.BLOCKER_SOURCE, Vector2i.ZERO)
+		if view.sliced:
+			view.tile_layer.update_internals())
 	slices.add("decor_mire_huts", func() -> void:
 		for hut: Vector2i in laid["huts"]:
 			_raise_hut(view, hut))
@@ -187,22 +222,6 @@ func build(view: MapView, slices: Slicer) -> void:
 		for at: Vector2i in WISPS:
 			wisps.append(_wisp(view, at))
 		view.set_meta("mire_wisps", wisps))
-
-
-## A walk's planks along its middle, flat on the ground.
-func _lay_walk(view: MapView, walk: Rect2i) -> void:
-	var across := walk.size.x >= walk.size.y
-	var length := walk.size.x if across else walk.size.y
-	for i in length:
-		var cell := walk.position + (Vector2i(i, 0) if across else Vector2i(0, i))
-		var n := absi(hash(Vector3i(cell.x, cell.y, 4011))) % MireArt.PLANKINGS
-		var planks := _sprite(MireArt.texture("walk_%d%s" % [n, "" if across else "_down"]))
-		# The planks' middle on the line between the strip's two rows (or
-		# columns).
-		var half := MireArt.WALK_ACROSS / 2
-		planks.position = Vector2(cell * TILE) + (Vector2(0, TILE - half) if across else Vector2(TILE - (MireArt.WALK_SIZE.y - half), 0))
-		planks.add_to_group("decor")
-		view.ground.add_child(planks)
 
 
 ## A stilt hut on its two cells, its pool and ladder reaching down onto the

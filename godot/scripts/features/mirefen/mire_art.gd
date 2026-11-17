@@ -2,11 +2,11 @@ class_name MireArt
 ## areas: field night +mirefen*
 ## What the Mirefen stands in that Shade's sheets don't draw (PIX-401): its
 ## dead trees (AshArt's snags, their foot in the mud and moss, not the
-## ash), reed beds of cattails, boardwalks of grey planks on posts, a stilt
-## hut over its pool with a ladder down, and the will-o'-wisps' glow. Drawn
-## here in code in Shade's palette (HamletArt.INKS) with his dark outline,
-## so they sit beside his art; our own, so CC0, the same with or without
-## the paid pack.
+## ash), reed beds of cattails, a stilt hut over its pool with a ladder
+## down, and the will-o'-wisps' glow (its boardwalks are Shade's own bridge
+## planks: MireDressing, PIX-519). Drawn here in code in Shade's palette
+## (HamletArt.INKS) with his dark outline, so they sit beside his art; our
+## own, so CC0, the same with or without the paid pack.
 
 const TILE := 16
 ## The fen's mud and moss at a dead tree's foot, for the ash AshArt heaps
@@ -17,15 +17,10 @@ const MOSS := Color("5d6e3a")
 const REED_GREENS := [Color("2f5a3a"), Color("4c8a4e"), Color("7bb35a")]
 const CATTAIL := Color("79542d")
 const CATTAIL_LIT := Color("a1753f")
-## How many reed beds and plank patterns there are, picked by the cell.
+## How many reed beds there are, picked by the cell.
 const REED_BEDS := 4
-const PLANKINGS := 4
 ## A reed bed's picture: a cell wide, this tall, its foot the bottom row.
 const REED_SIZE := Vector2i(16, 20)
-## A run of boardwalk, a cell along: its planks this wide across the way,
-## the posts under them the rest.
-const WALK_ACROSS := 10
-const WALK_SIZE := Vector2i(16, 12)
 ## The stilt hut: two cells wide; its picture this big, its stilts' feet in
 ## its pool HUT_BELOW pixels under its cells (onto the boardwalk before it).
 const HUT_SIZE := Vector2i(32, 44)
@@ -41,8 +36,7 @@ static var _textures := {}
 
 
 ## A picture by name, made once a session: "snag_<n>", "reeds_<n>",
-## "walk_<n>" (across a row) or "walk_<n>_down" (down a column), "hut",
-## "hut_lit" (its window at night), "wisp" (the bright heart).
+## "hut", "hut_lit" (its window at night), "wisp" (the bright heart).
 static func texture(name: String) -> Texture2D:
 	if not _textures.has(name):
 		_textures[name] = ImageTexture.create_from_image(draw(name))
@@ -55,11 +49,6 @@ static func draw(name: String) -> Image:
 		return snag(int(name.trim_prefix("snag_")))
 	if name.begins_with("reeds_"):
 		return reeds(int(name.trim_prefix("reeds_")))
-	if name.begins_with("walk_"):
-		var image := walk(int(name.trim_prefix("walk_").get_slice("_", 0)))
-		if name.ends_with("_down"):
-			image.rotate_90(CLOCKWISE)
-		return image
 	match name:
 		"hut":
 			return hut()
@@ -112,36 +101,6 @@ static func reeds(n: int) -> Image:
 		if (x + n) % 3 != 0:
 			image.set_pixel(x, foot, REED_GREENS[0])
 	return _outlined(image)
-
-
-## A run of boardwalk a cell long, across a row: grey-brown planks across
-## the way, a gap between each, one missing here and there, on posts.
-static func walk(n: int) -> Image:
-	var image := Image.create(WALK_SIZE.x, WALK_SIZE.y, false, Image.FORMAT_RGBA8)
-	image.fill(Color(0, 0, 0, 0))
-	var inks := HamletArt.INKS
-	# Weathered planks, grey-brown, four pixels each with a thin seam of
-	# their own wood darkened between; one gone now and then, the mud dark
-	# through the gap. Its edges outlined, its posts under it into the mud
-	# every other cell.
-	var planks := [inks["4"].lerp(inks["h"], 0.35), inks["3"].lerp(inks["l"], 0.3), inks["4"].lerp(inks["l"], 0.2), inks["3"].lerp(inks["h"], 0.25)]
-	var outline: Color = inks["o"]
-	for x in WALK_SIZE.x:
-		var plank := x / 4
-		var wood: Color = planks[(plank * 3 + n) % planks.size()]
-		var gone := (n * 5 + plank) % 11 == 4
-		image.set_pixel(x, 0, outline)
-		image.set_pixel(x, WALK_ACROSS - 1, outline)
-		for y in range(1, WALK_ACROSS - 1):
-			var c: Color = wood.darkened(0.3) if x % 4 == 3 else (wood.lightened(0.15) if y == 1 else (wood.darkened(0.15) if y == WALK_ACROSS - 2 else wood))
-			image.set_pixel(x, y, MUD.darkened(0.4) if gone else c)
-	if n % 2 == 0:
-		for post_x: int in [3, 12]:
-			for y in range(WALK_ACROSS, WALK_SIZE.y):
-				image.set_pixel(post_x, y, inks["2"])
-				image.set_pixel(post_x - 1, y, outline)
-				image.set_pixel(post_x + 1, y, outline)
-	return image
 
 
 ## The stilt hut: a thatched roof over plank walls, a dark door and a

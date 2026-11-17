@@ -86,13 +86,51 @@ func test_the_middle_road_goes_on_to_the_west_hut() -> void:
 	var hut: Vector2i = MireDressing.HUTS[0]
 	assert_eq(hut.y, walk.position.y - 1, "the west hut stands right over the walk")
 	assert_true(walk.position.x <= hut.x and hut.x + 1 < walk.end.x, "its ladder down onto it")
-	# Every walk runs on from a way or a bridge at one end at least.
-	for each: Rect2i in MireDressing.WALKS:
-		var ends := 0
-		for cell: Vector2i in MireDressing._cells(each.grow(1)):
-			if not each.has_point(cell) and map.tile_at(cell) in ["path", "bridge", "floor"]:
-				ends += 1
-		assert_gt(ends, 0, "the walk %s runs on from a way" % each)
+
+
+## No walk stops in the open fen (PIX-519: the ruin's seemed to stop in the
+## grass short of the road): each of its two ends, its last two rows or
+## columns, meets a road, a bridge, the ruin's doorway, a stilt hut or
+## another walk going on.
+func test_every_walk_lands_at_both_ends() -> void:
+	var map := _map()
+	var huts := {}
+	for hut: Vector2i in MireDressing.HUTS:
+		huts[hut] = true
+		huts[hut + Vector2i.RIGHT] = true
+	for walk: Rect2i in MireDressing.WALKS:
+		var along := Vector2i.RIGHT if walk.size.x >= walk.size.y else Vector2i.DOWN
+		var length := walk.size.x if along == Vector2i.RIGHT else walk.size.y
+		for at: int in [0, length - 2]:
+			var end := Rect2i(walk.position + along * at, walk.size - along * (length - 2))
+			var landed := false
+			for cell: Vector2i in MireDressing._cells(end.grow(1)):
+				var side := cell.x < end.position.x or cell.x >= end.end.x
+				if walk.has_point(cell) or (side and (cell.y < end.position.y or cell.y >= end.end.y)):
+					continue  # its own cells, and the corners off its sides
+				var on_walk := MireDressing.WALKS.any(func(other: Rect2i) -> bool: return other.has_point(cell))
+				landed = landed or on_walk or huts.has(cell) or map.tile_at(cell) in ["path", "bridge", "floor"]
+			assert_true(landed, "the walk %s lands at its end %s" % [walk, end])
+		for cell: Vector2i in MireDressing._cells(walk):
+			assert_true(map.is_walkable(cell), "the walk %s over open ground at %s" % [walk, cell])
+	# The ruin's runs from its doorway right down onto the road.
+	var ruin: Rect2i = MireDressing.WALKS[MireDressing.WALKS.size() - 1]
+	for x in range(ruin.position.x, ruin.end.x):
+		assert_eq(map.tile_at(Vector2i(x, ruin.position.y - 1)), "floor", "the ruin's doorway over its walk")
+		assert_eq(map.tile_at(Vector2i(x, ruin.end.y)), "path", "the road under it")
+
+
+## Each walk runs over water (PIX-519: water under its planks alone showed
+## nowhere, a deck lying in the grass): the fen's laid beside it, or the
+## map's own, along three quarters of its sides that aren't another walk
+## at least (a stilt hut takes two).
+func test_every_walk_over_water() -> void:
+	var map := _map()
+	var laid := _laid(map)
+	for walk: Rect2i in laid["walks"]:
+		var sides := MireDressing._sides(walk).filter(func(cell: Vector2i) -> bool: return not MireDressing._on_walk(laid["walks"], cell))
+		var wet := sides.filter(func(cell: Vector2i) -> bool: return cell in laid["wet"] or map.tile_at(cell) in ["water", "bridge"])
+		assert_gte(wet.size() * 4, sides.size() * 3, "the walk %s over water: %d of its %d sides" % [walk, wet.size(), sides.size()])
 
 
 func test_wisps_float_over_the_fen_apart() -> void:
@@ -105,8 +143,9 @@ func test_wisps_float_over_the_fen_apart() -> void:
 			assert_gte(maxi(absi(at.x - other.x), absi(at.y - other.y)), 8, "wisps %s and %s far apart" % [at, other])
 
 
-## Drawn: what stands blocks its cells, the walks lie flat, the wisps are
-## out only at night, each with its soft light.
+## Drawn: what stands blocks its cells, the walks are Shade's planks over
+## the fen's water, the wisps are out only at night, each with its soft
+## light.
 func test_the_fen_drawn() -> void:
 	var map := _map()
 	var root := Node2D.new()
@@ -120,6 +159,23 @@ func test_the_fen_drawn() -> void:
 	for cell: Vector2i in laid["blocks"]:
 		assert_true(map.covered.has(cell), "%s blocked" % cell)
 	assert_false(laid["trees"].is_empty(), "trees drawn")
+	# The walks drawn as bridges (PIX-519): Shade's planks the way each runs,
+	# over the fen's water, on cells the hero still walks as before.
+	var look := view.look()
+	for walk: Rect2i in laid["walks"]:
+		for cell in MireDressing._cells(walk):
+			assert_eq(String(look[cell]), "bridge", "the walk drawn as a bridge at %s" % cell)
+			assert_true(map.is_walkable(cell), "and walked at %s" % cell)
+			assert_ne(map.tile_at(cell), "bridge", "the map's own cell kept at %s" % cell)
+			assert_eq(PunyTerrain.ground_at(look, cell), "river", "the fen's water under its planks at %s" % cell)
+			assert_ne(view._objects_layer.get_cell_source_id(cell), -1, "Shade's planks laid at %s" % cell)
+	for cell: Vector2i in laid["wet"]:
+		assert_eq(String(look[cell]), "water", "the fen's water beside a walk at %s" % cell)
+		assert_true(WorldTiles.is_walkable(map.tile_at(cell)), "the map's own open cell kept at %s" % cell)
+		assert_false(map.is_walkable(cell), "and not walked into at %s" % cell)
+		assert_eq(view.tile_layer.get_cell_source_id(cell), MapView.BLOCKER_SOURCE, "its whole cell stops the hero at %s" % cell)
+	assert_eq(PunyTerrain.span_axis(look, Vector2i(44, 20)), Vector2i.DOWN, "the ruin's runs down to the road")
+	assert_eq(PunyTerrain.span_axis(look, Vector2i(8, 25)), Vector2i.RIGHT, "the west hut's along the road")
 	view.set_night(false)
 	assert_string_contains(MireDressing.describe(view), "dark")
 	view.set_night(true)
@@ -150,8 +206,6 @@ func test_the_pictures() -> void:
 			if MireArt.REED_GREENS.any(func(green: Color) -> bool: return at.is_equal_approx(green)):
 				columns += 1
 		assert_gte(columns, 5, "reed bed %d's stems stand in %d columns" % [n, columns])
-	assert_eq(MireArt.draw("walk_1").get_size(), MireArt.WALK_SIZE)
-	assert_eq(MireArt.draw("walk_1_down").get_size(), Vector2i(MireArt.WALK_SIZE.y, MireArt.WALK_SIZE.x), "a walk down a column")
 	assert_eq(MireArt.draw("hut").get_size(), MireArt.HUT_SIZE)
 	assert_gt(MireArt.draw("hut").get_pixel(16, 20).a, 0.0, "the hut drawn")
 
