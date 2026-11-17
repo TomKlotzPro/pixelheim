@@ -1,8 +1,10 @@
 extends GutTest
 ## The loading screen (PIX-296): the title's night drawn in code
 ## (tools/splash.py, assets/splash.png), the desktop app's boot splash and
-## the web page's picture, with the page's life in web/shell.html; no words
-## but the logo, and the logo where the title draws it; a launch's title
+## the web page's picture, with the page's life in web/shell.html (PIX-517:
+## the courier on the road, the lamps, the page's words in two languages,
+## whose own rules tools/test_splash.py holds); no words in the markup, and
+## the logo where the title draws it; a launch's title
 ## rises out of the same picture into its entrance (PIX-392), and the name
 ## is forged back where the picture showed it.
 
@@ -61,9 +63,10 @@ func test_the_web_page_is_the_games_shell() -> void:
 	assert_lt(page.find("window.pixelheimShown"), page.find("<script src=\"$GODOT_URL\">"), "alive before the engine arrives")
 
 
-func test_the_page_shows_no_words() -> void:
-	# What a player could read: the body's markup, less its scripts, its
-	# tags and the error notice (Godot's own, shown only when it fails).
+func test_the_pages_markup_has_no_words() -> void:
+	# What a player could read before the script has chosen their language:
+	# the body's markup, less its scripts and its tags. The page's words are
+	# the script's, English or French (PIX-517), never the markup's.
 	var page := FileAccess.get_file_as_string(SHELL)
 	var body := page.substr(page.find("<body>"))
 	for block: String in ["<script[\\s\\S]*?</script>", "<!--[\\s\\S]*?-->", "<[^>]*>"]:
@@ -80,16 +83,17 @@ func test_the_pages_live_points_fit_the_picture() -> void:
 	var size := Rect2(Vector2.ZERO, TitleScene.ART)
 	assert_gt(scene["windows"].size(), 6, "the village's windows")
 	var picture := _picture()
-	var last := -1.0
 	for pane: Array in scene["windows"]:
 		assert_true(size.encloses(Rect2(pane[0], pane[1], pane[2], pane[3])), "a window in the picture")
-		assert_true(pane[0] >= last, "they light left to right")
-		last = pane[0]
 		assert_eq(Color(pane[5]), picture.get_pixel(int(pane[0]) + 4, int(pane[1])), "its frame is the picture's")
 	for star: Array in scene["stars"]:
 		assert_ne(Color(star[2]), picture.get_pixel(int(star[0]), int(star[1])), "a twinkling star shines in the picture")
-	var bar: Dictionary = scene["bar"]
-	assert_true(size.encloses(Rect2(bar["x"], bar["y"], bar["w"], bar["h"])), "the bar in the picture")
+	# The road the courier walks, under the houses, and its lamps (PIX-517).
+	var road: Dictionary = scene["road"]
+	assert_true(size.has_point(Vector2(road["from"], road["y"])) and size.has_point(Vector2(road["to"], road["y"])), "the road in the picture")
+	for x: float in scene["lamps"]["xs"]:
+		assert_true(size.has_point(Vector2(x, scene["lamps"]["y"])), "a lamp in the picture")
+	assert_eq(scene["words"].keys(), ["en", "fr"], "the page's words, English and French")
 
 
 func test_a_launch_rises_out_of_the_picture() -> void:
