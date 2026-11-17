@@ -6,7 +6,6 @@ extends GutTest
 ## rises out of the same picture into its entrance (PIX-392), and the name
 ## is forged back where the picture showed it.
 
-const TitleScreen := preload("res://scripts/title_screen.gd")
 const SHELL := "res://web/shell.html"
 
 var _reduce_motion: bool

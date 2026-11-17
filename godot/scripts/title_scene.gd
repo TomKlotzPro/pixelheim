@@ -1003,7 +1003,7 @@ func _village() -> void:
 	_house(grid, 37, 43, 99, 0, 40, "roof_moss")
 	var plan := PunyTown.plan(grid)
 	# Low houses carry no chimney in the town's grammar; these get one each.
-	for x in [6, 33, 41]:
+	for x: int in [6, 33, 41]:
 		var top := STREET / 16 - (5 if x != 41 else 4)
 		plan["decor"][Vector2i(x, top)] = PunyTown.CHIMNEY[0]
 		plan["decor"][Vector2i(x, top + 1)] = PunyTown.CHIMNEY[1]
@@ -1011,12 +1011,12 @@ func _village() -> void:
 	var street := Node2D.new()
 	street.y_sort_enabled = true
 	village.add_child(street)
-	for x in [13, 14, 15, 24, 25]:
+	for x: int in [13, 14, 15, 24, 25]:
 		var mask := (2 if x != 15 and x != 25 else 0) | (8 if x != 13 and x != 24 else 0)
 		_tile_sprite(street, PunyProps.FENCE[mask], Vector2(x * 16, 304))
 	_tile_sprite(street, PunyProps.BARREL, Vector2(11 * 16, 304))
 	_tile_sprite(street, PunyProps.CRATE, Vector2(26 * 16, 304))
-	for x in [12, 23]:
+	for x: int in [12, 23]:
 		_torch(Vector2(x * 16, 304))
 	var fountain := AnimatedSprite2D.new()
 	fountain.sprite_frames = PunyProps.fountain_sprite_frames()

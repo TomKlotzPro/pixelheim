@@ -16,7 +16,7 @@ func layers() -> Dictionary[String, MapLayer]:
 
 ## The prompt over a stead's door while its keepsake waits there, or once
 ## the stead has its line to say.
-func prompt_at(world: Node, cell: Vector2i) -> Variant:
+func prompt_at(world: World, cell: Vector2i) -> Variant:
 	if world.map.id != AshRuins.MAP or (Quests.keepsake_at(world.map.id, cell, GameState.progression.quests).is_empty() and _remembered(cell) == ""):
 		return null
 	return Rect2(Vector2(cell * MapView.TILE), Vector2.ONE * MapView.TILE)
@@ -24,7 +24,7 @@ func prompt_at(world: Node, cell: Vector2i) -> Variant:
 
 ## E at the door: the keepsake out of the ash, rising over it, and whose it
 ## is; later, the stead's line.
-func interact(world: Node, cell: Vector2i) -> bool:
+func interact(world: World, cell: Vector2i) -> bool:
 	if world.map.id != AshRuins.MAP:
 		return false
 	var quest := Quests.keepsake_at(world.map.id, cell, GameState.progression.quests)

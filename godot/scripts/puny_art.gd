@@ -938,7 +938,7 @@ static func walk_speed_scale(spec: Dictionary, pace: float, scale := 1.0) -> flo
 ## The animation to play for `anim` facing `dir`, falling back to walking and
 ## idling when a sheet doesn't draw that action.
 static func pick(sheet: SpriteFrames, anim: String, dir: String) -> String:
-	for candidate in ["%s_%s" % [anim, dir], anim, "walk_%s" % dir, "idle_%s" % dir, "walk", "idle"]:
+	for candidate: String in ["%s_%s" % [anim, dir], anim, "walk_%s" % dir, "idle_%s" % dir, "walk", "idle"]:
 		if sheet.has_animation(candidate):
 			return candidate
 	return sheet.get_animation_names()[0]

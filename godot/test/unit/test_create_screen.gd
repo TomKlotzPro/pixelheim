@@ -6,7 +6,7 @@ extends GutTest
 ## on screen are the device's. PIX-391: no look to pick, the hero shown as
 ## they start, the stats with icons and pips, the skills as chips.
 
-var screen: Node
+var screen: CreateScreen
 
 
 func before_each() -> void:
@@ -22,8 +22,8 @@ func after_each() -> void:
 	await get_tree().process_frame
 
 
-func _open() -> Node:
-	screen = preload("res://scripts/create_screen.gd").new()
+func _open() -> CreateScreen:
+	screen = CreateScreen.new()
 	add_child(screen)
 	return screen
 
@@ -90,7 +90,7 @@ func test_begin_is_the_one_lit_plank_and_waits_for_a_name() -> void:
 	assert_eq((screen.begin.get_theme_stylebox("normal") as StyleBoxTexture).texture, (lit.get_theme_stylebox("normal") as StyleBoxTexture).texture, "its plank lit")
 	assert_true(screen.begin.disabled, "no name, no hero")
 	screen.name_field.text = "Robin"
-	screen._refresh()
+	screen.refresh()
 	assert_false(screen.begin.disabled)
 
 
@@ -262,7 +262,7 @@ func test_no_stand_in_for_the_name() -> void:
 	_open()
 	assert_does_not_have(_labels(screen.details), "...")
 	screen.name_field.text = "Robin"
-	screen._refresh()
+	screen.refresh()
 	assert_has(_labels(screen.details), "Robin")
 
 
@@ -273,7 +273,7 @@ func test_a_wide_name_leaves_the_cards_their_size() -> void:
 	await wait_process_frames(2)
 	var width: float = screen.details.size.x
 	screen.name_field.text = "WWWWWWWWWWWWWWWW"
-	screen._refresh()
+	screen.refresh()
 	await wait_process_frames(2)
 	assert_eq(screen.details.size.x, width, "the hero's card as wide as with no name")
 	assert_eq(Layout.overflows(get_tree().root, Vector2(1280, 720)).size(), 0, "nothing off the canvas")

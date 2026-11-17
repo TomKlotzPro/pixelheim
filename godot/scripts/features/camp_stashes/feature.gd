@@ -16,17 +16,17 @@ func layers() -> Dictionary[String, MapLayer]:
 	return {"camp_stashes": CampStashes.new()}
 
 
-func every_second(world: Node) -> void:
+func every_second(world: World) -> void:
 	CampStashes.refresh(world.view, world.player_cell)
 
 
-func prompt_at(world: Node, cell: Vector2i) -> Variant:
+func prompt_at(world: World, cell: Vector2i) -> Variant:
 	if CampStashes.shut_at(world.view, cell).is_empty():
 		return null
 	return Rect2(Vector2(cell * MapView.TILE), Vector2.ONE * MapView.TILE)
 
 
-func interact(world: Node, cell: Vector2i) -> bool:
+func interact(world: World, cell: Vector2i) -> bool:
 	var stash := CampStashes.shut_at(world.view, cell)
 	if stash.is_empty():
 		return false
@@ -36,8 +36,8 @@ func interact(world: Node, cell: Vector2i) -> bool:
 
 ## `stash` (after clear): the hero beside the first stash out on the map,
 ## facing it, E pressed, as a player opens it.
-func step_stash(h: Node) -> void:
-	var world: Node = h.world
+func step_stash(h: Harness) -> void:
+	var world: World = h.world
 	CampStashes.refresh(world.view, world.player_cell)
 	var cells: Dictionary = world.view.get_meta(CampStashes.META, {})
 	for spawn_id: String in cells:

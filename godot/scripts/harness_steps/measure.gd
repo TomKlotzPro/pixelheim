@@ -9,8 +9,8 @@ extends RefCounted
 ## flags it was given in their order, awaiting each.
 
 ## The harness (harness.gd): its tree, its key presses and what's open.
-var h: Node
-var world: Node
+var h: Harness
+var world: World
 var flags: HarnessFlags
 ## The report line's fields; a value known only part-way through is noted
 ## as it's known.
@@ -54,7 +54,7 @@ func step_motion() -> void:
 	# walks; and the river stops the walk, the camera catching up as a
 	# step back, so frames count only while the hero still walks.
 	world.lights.clear_sky = true
-	h._draw_every_frame()
+	h.draw_every_frame()
 	world.player.scripted_dir = Vector2.RIGHT
 	world.player.sprite.speed_scale = 0.0
 	var hero_x: Array[float] = []
@@ -129,14 +129,14 @@ func step_turning() -> void:
 ## look book (PIX-220), every staged scene saved and on one sheet, in each
 ## of the app's looks named (PIX-227); tools/lookbook.sh runs it.
 func step_lookbook() -> void:
-	var book: Node = preload("res://scripts/lookbook.gd").new()
+	var book: Lookbook = preload("res://scripts/lookbook.gd").new()
 	book.world = world
 	book.with_perf = flags.has("perf")
 	# `film`, not `motion`: that's the walking-scroll check above, which
 	# would stop the hero's animations for the whole book.
 	book.with_motion = flags.has("film")
 	book.only = flags.list("--only")
-	book.looks = book.looks_from(flags)
+	book.looks = Lookbook.looks_from(flags)
 	book.out_dir = flags.value("--out", book.out_dir)
 	world.add_child(book)
 	await book.run()

@@ -1,3 +1,4 @@
+class_name RevealScreen
 extends Screen
 ## areas: town story
 ## The town risen (PIX-147): after a project is funded, the camera walks the
@@ -18,7 +19,7 @@ var stops: Array[Dictionary] = []
 const CAPTION_FOOT := 594.0
 ## What it brings comes a breath after its name.
 const DETAIL_DELAY := 0.35
-var world: Node
+var world: World
 ## What comes after the last stop (the ending's credits).
 var on_done := Callable()
 var caption: Label

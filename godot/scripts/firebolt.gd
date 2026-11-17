@@ -22,7 +22,7 @@ const RIM := Color("1a1410")
 const FLASH := Color("fff3c4")
 const FLASH_S := 0.12
 
-var world: Node2D
+var world: World
 var caster: Dictionary
 var power := 1.0
 var heading := Vector2.RIGHT
@@ -123,7 +123,7 @@ func _physics_process(delta: float) -> void:
 	var step := heading * speed * delta
 	position += step
 	flown += step.length()
-	var player: CharacterBody2D = world.player
+	var player: Player = world.player
 	if not player.dead and position.distance_to(player.global_position + Vector2(0, -6)) < REACH:
 		var damage := roundi(Bestiary.monster_attack_damage(caster, GameState.hero, GameState.pack, GameState.roll) * power)
 		var before: int = GameState.hero.hp

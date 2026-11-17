@@ -1,3 +1,4 @@
+class_name RankupScreen
 extends Screen
 ## areas: rank
 ## The ascension (RankUpOverlay.tsx, useRankUp; PIX-244 made it a moment).
@@ -195,7 +196,7 @@ func _open() -> void:
 	add_child(cards)
 	# Letterbox bars over everything, sliding in (standing at once with
 	# Reduce motion).
-	for top in [true, false]:
+	for top: bool in [true, false]:
 		var bar := ColorRect.new()
 		bar.color = Color.BLACK
 		bar.size = Vector2(view.x, BAR if still else 0.0)

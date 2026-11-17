@@ -278,7 +278,7 @@ static func _band(style: int, axis: int, width: int, variant: int) -> Image:
 				_tuft(band, axis, along, middle + dice.randi_range(-1, 0), dice.randi() % TUFTS.size())
 			along += dice.randi_range(5, 8)
 	var inks: Array = PAVED_INKS if style == PAVED else [RUT, RUT_WALL, RUT_LIP]
-	for side in [-1, 1]:
+	for side: int in [-1, 1]:
 		_rut(band, axis, middle + side * half, dice, inks)
 	var stones := 1 if style == COUNTRY else 2
 	for i in stones:

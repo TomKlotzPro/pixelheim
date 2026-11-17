@@ -197,7 +197,7 @@ func erase(slot: int) -> void:
 	if seen["kind"] == HERO:
 		_remove(deleted_for(slot))
 		_rename(seen["path"], deleted_for(slot))
-	for path in [path_for(slot), temp_for(slot), backup_for(slot), aside_for(slot)] + older_for(slot):
+	for path: String in [path_for(slot), temp_for(slot), backup_for(slot), aside_for(slot)] + older_for(slot):
 		if _exists(path):
 			_remove(path)
 	_known.erase(slot)

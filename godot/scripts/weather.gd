@@ -110,7 +110,7 @@ static func _falling(steps: float, storms_only: bool) -> float:
 	var day := floori(steps / DayNight.DAY_CYCLE_STEPS)
 	var most := 0.0
 	# Yesterday's shower may run on past midnight.
-	for d in [day - 1, day]:
+	for d: int in [day - 1, day]:
 		var shower := _shower(d)
 		if shower.is_empty() or (storms_only and not storms(d)):
 			continue
@@ -180,7 +180,7 @@ static func puddles_at(steps: float) -> float:
 static func _left(steps: float, fill: float, dry: float, by_kind: bool) -> float:
 	var day := floori(steps / DayNight.DAY_CYCLE_STEPS)
 	var most := 0.0
-	for d in [day - 1, day]:
+	for d: int in [day - 1, day]:
 		var shower := _shower(d)
 		if shower.is_empty():
 			continue

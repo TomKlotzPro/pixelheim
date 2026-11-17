@@ -238,8 +238,8 @@ static func _mark(cells: Dictionary, at: Vector2i, reach: int) -> void:
 ## Every neighbour, corners too, is open ground: walkable, no portal, nothing
 ## standing on it.
 static func _in_the_open(map: MapData, cell: Vector2i) -> bool:
-	for dy in [-1, 0, 1]:
-		for dx in [-1, 0, 1]:
+	for dy: int in [-1, 0, 1]:
+		for dx: int in [-1, 0, 1]:
 			var next: Vector2i = cell + Vector2i(dx, dy)
 			var tile := map.tile_at(next)
 			if not WorldTiles.is_walkable(tile) or tile in STANDING or map.portals.has(next):

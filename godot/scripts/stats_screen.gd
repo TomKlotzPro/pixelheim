@@ -1,4 +1,5 @@
-extends "res://scripts/ledger_screen.gd"
+class_name StatsScreen
+extends LedgerScreen
 ## areas: screen
 ## The stat sheet (WorldHud's sheet + statInfo): who the hero is, the pools
 ## and defenses, and the five stats with what each point would buy, spent

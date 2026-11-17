@@ -104,9 +104,11 @@ func test_the_hit_stop_hands_the_clock_back_when_the_world_goes() -> void:
 	assert_almost_eq(Engine.time_scale, 1.0, 0.0001, "a reload inside the stop: the next world runs at full speed")
 
 
-class Hero extends Node2D:
-	var dead := true
+class Hero extends "res://test/bare_hero.gd":
 	var raised := 0
+
+	func _init() -> void:
+		dead = true
 
 	func respawn(at: Vector2) -> void:
 		position = at
@@ -114,16 +116,14 @@ class Hero extends Node2D:
 		raised += 1
 
 
-class Square extends Node:
-	var player := Hero.new()
-	var last_player_position := Vector2.ZERO
-	var map: MapData = null
-	var view: Node = null
-	var soundscape := Quiet.new()
+class Square extends "res://test/bare_world.gd":
 	var entered := 0
 
 	func _init() -> void:
+		player = Hero.new()
+		soundscape = Quiet.new()
 		add_child(player)
+		add_child(soundscape)
 
 	func load_map(_id: String) -> MapData:
 		return MapData.new()
@@ -132,7 +132,10 @@ class Square extends Node:
 		entered += 1
 
 
-class Quiet extends RefCounted:
+class Quiet extends Soundscape:
+	func _ready() -> void:
+		pass
+
 	func hush(_seconds: float) -> void:
 		pass
 

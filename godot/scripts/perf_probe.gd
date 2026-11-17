@@ -190,7 +190,7 @@ static func summary(values: Array) -> String:
 	var sorted := values.duplicate()
 	sorted.sort()
 	var total := 0.0
-	for value in sorted:
+	for value: Variant in sorted:
 		total += float(value)
 	return "%.2f/%.2f" % [total / sorted.size(), float(sorted[mini(sorted.size() - 1, int(sorted.size() * 0.95))])]
 

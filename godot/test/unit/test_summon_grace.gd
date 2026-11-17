@@ -16,45 +16,49 @@ var _world: StubWorld
 
 ## What a blow on the hero asks of the world: its floats, its flash, the
 ## camera's shake and the screen's red edges.
-class StubSkills extends RefCounted:
-	func impact(_on: Node, _alpha := 0.0) -> void:
+class StubSkills extends SkillFx:
+	func impact(_on: Node2D, _alpha := 0.0) -> void:
 		pass
 
 
-class StubFx extends RefCounted:
-	var skills := StubSkills.new()
+class StubFx extends WorldFx:
+	func _init() -> void:
+		skills = StubSkills.new()
+		add_child(skills)
 
-	func float_number(_n: int, _at: Vector2, _tone: Color, _crit: bool, _on: Node) -> void:
+	func float_number(_n: int, _at: Vector2, _tone: Color, _crit := false, _on: Object = null) -> void:
 		pass
 
-	func float_text(_text: String, _at: Vector2, _tone: Color) -> void:
+	func float_text(_text: String, _at: Vector2, _tone: Color, _big := false) -> void:
 		pass
 
 	func appear(_enemy: Node) -> void:
 		pass
 
 
-class StubCamera extends RefCounted:
+class StubCamera extends CameraRig:
 	func shake(_strength: float, _seconds: float) -> void:
 		pass
 
-	func hit_stop(_seconds: float) -> void:
+	func hit_stop(_seconds: float, _scale := 0.08) -> void:
 		pass
 
 
 ## The red at the screen's edges (PIX-447).
-class StubEdge extends RefCounted:
+class StubEdge extends HurtEdge:
 	func struck(_share: float) -> void:
 		pass
 
 
-class StubHud extends RefCounted:
-	var hurt_edge := StubEdge.new()
+class StubHud extends Hud:
+	func _init() -> void:
+		hurt_edge = StubEdge.new()
+		add_child(hurt_edge)
 
 
 ## What a howl asks of the world besides: its line, the ground and the
 ## wolves it calls.
-class StubMessages extends RefCounted:
+class StubMessages extends Messages:
 	func log_line(_line: String) -> void:
 		pass
 
@@ -62,7 +66,7 @@ class StubMessages extends RefCounted:
 		pass
 
 
-class StubMap extends RefCounted:
+class StubMap extends MapData:
 	func is_walkable(_cell: Vector2i) -> bool:
 		return true
 
@@ -81,23 +85,26 @@ class StubSummon extends Node:
 		called = on
 
 
-class StubFoes extends Node:
-	func spawn_enemy(_species: String, _cell: Vector2i, _region := "", _spawn_id := "", _elite := false, _wild := true, _home := Vector2i(-1, -1)) -> Node:
+class StubFoes extends Foes:
+	func _process(_delta: float) -> void:
+		pass
+
+	func spawn_enemy(_species: String, _cell: Vector2i, _region := "", _spawn_id := "", _elite := false, _wild := true, _home := Vector2i(-1, -1), _lift := 0) -> Node:
 		var summon := StubSummon.new()
 		add_child(summon)
 		return summon
 
 
-class StubWorld extends Node2D:
-	var fx := StubFx.new()
-	var camera_rig := StubCamera.new()
-	var hud := StubHud.new()
-	var messages := StubMessages.new()
-	var map := StubMap.new()
-	var foes := StubFoes.new()
-	var player: CharacterBody2D
-
+## The pieces stand nowhere in the tree but the foes (their summons are
+## let go through it): the bare world frees them with itself.
+class StubWorld extends "res://test/bare_world.gd":
 	func _init() -> void:
+		fx = StubFx.new()
+		camera_rig = StubCamera.new()
+		hud = StubHud.new()
+		messages = StubMessages.new()
+		map = StubMap.new()
+		foes = StubFoes.new()
 		add_child(foes)
 
 
@@ -108,7 +115,7 @@ func before_each() -> void:
 	GameState.hero = _lent.hero
 	GameState.pack = _lent.pack
 	_world = add_child_autofree(StubWorld.new())
-	var hero: CharacterBody2D = PlayerScript.new()
+	var hero := PlayerScript.new()
 	hero.world = _world
 	_world.add_child(hero)
 	# Never stepped (its steps reach for a world the test has none of), but

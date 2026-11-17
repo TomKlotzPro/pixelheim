@@ -51,7 +51,7 @@ const CONFETTI_SECONDS := 1.8
 ## Reduce motion: the ruin stands this long, then the building does.
 const STILL_BEAT := 0.6
 
-var world: Node
+var world: World
 var project_id := ""
 ## "ruin" until the stop plays it, "rising", then "built" (the harness
 ## reports it).

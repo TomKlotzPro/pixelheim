@@ -1,3 +1,4 @@
+class_name Storm
 extends Node
 ## areas: field town rooms night
 ## A thunderstorm over the hero, frame by frame (PIX-491): how hard it
@@ -15,7 +16,7 @@ extends Node
 ## and never more than Weather.FLASH_CAP flashes in any FLASH_WINDOW
 ## seconds, whatever asks.
 
-var world: Node
+var world: World
 ## How hard the storm blows here, and how much of the rain's leavings show
 ## (1 on a map it rains on, 0 in a room: where on the map is the sheet's
 ## mask's), both eased.
@@ -121,7 +122,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	var map: MapData = world.map
-	if map == null or world.get("atmosphere") == null:
+	if map == null or world.atmosphere == null:
 		return
 	_now += delta
 	var now := _now
@@ -187,7 +188,7 @@ func strike(spec: Dictionary) -> void:
 		return
 	# The bolt's light stands beyond the top of the view, the way the strike
 	# falls; it casts wherever the map has occluders laid.
-	casts = not NightShadowsLayer.laid(world.get("view")).is_empty()
+	casts = not NightShadowsLayer.laid(world.view).is_empty()
 	if casts:
 		var view: Array[Vector2] = world.lights.world_view()
 		bolt.global_position = view[0] + view[1] / 2.0 + Vector2.UP.rotated(float(spec["from"])) * BOLT_OFF

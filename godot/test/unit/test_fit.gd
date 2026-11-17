@@ -11,14 +11,6 @@ extends GutTest
 ## the canvas, which no run with empty slots ever showed.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const SavesScreen := preload("res://scripts/saves_screen.gd")
-const MapScreen := preload("res://scripts/map_screen.gd")
-const InventoryScreen := preload("res://scripts/inventory_screen.gd")
-const ShopScreen := preload("res://scripts/shop_screen.gd")
-const TownHallScreen := preload("res://scripts/town_hall_screen.gd")
-const HomeScreen := preload("res://scripts/home_screen.gd")
-const JournalScreen := preload("res://scripts/journal_screen.gd")
-const CodexScreen := preload("res://scripts/codex_screen.gd")
 ## Three heroes with the longest lines a slot card shows (`--slots` in the
 ## harness reads them too).
 const FULL_SLOTS := "res://test/fixtures/slots"
@@ -36,10 +28,10 @@ var _lent: Node
 var _kept := {}
 
 
-## The map's world, standing in (GUT doesn't load world.gd).
-class StandIn extends Node2D:
-	var map: MapData
-	var player_cell := Vector2i(40, 30)
+## The map's world, standing in: nothing of it built.
+class StandIn extends "res://test/bare_world.gd":
+	func _init() -> void:
+		player_cell = Vector2i(40, 30)
 
 	func load_map(map_id: String) -> MapData:
 		return MapData.load_by_id(map_id)

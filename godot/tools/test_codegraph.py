@@ -10,7 +10,7 @@ import codegraph
 
 # The count once Bestiary, Npcs, Economy and Town answered by name (PIX-361
 # part 17, from 163). Lower it when you take one apart; never raise it.
-CEILING = 63
+CEILING = 59
 
 
 class PrivateCallsTest(unittest.TestCase):
