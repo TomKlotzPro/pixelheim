@@ -13790,7 +13790,7 @@ msgstr "Un fer à cheval neuf chez Hilda, un peu tordu. L'affreux marteau sert e
 
 #: assets/data/progression.json
 msgid "A roll like that slips their teeth. Someone is calling from Upper Street."
-msgstr "Une roulade comme celle-là esquive leurs crocs. Quelqu'un appelle depuis la Grand-Rue."
+msgstr "Une roulade pareille, et leurs crocs mordent le vide. Quelqu'un appelle depuis la Grand-Rue."
 
 #: assets/data/progression.json
 msgid "A troll in the Deepwood took Loras's lute to pick its teeth with."
