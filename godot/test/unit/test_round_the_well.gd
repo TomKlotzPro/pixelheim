@@ -7,7 +7,6 @@ extends GutTest
 ## (as a boss did since PIX-288), round whoever stands in its way, and with
 ## no way at all gives the chase up and takes up none.
 
-const Enemy := preload("res://scripts/enemy.gd")
 const TICK := 1.0 / 60.0
 ## The well, two cells wide as the village's, on the row the hero and the
 ## foe stand on.
@@ -79,8 +78,10 @@ func _goblin(mode := "chase") -> CharacterBody2D:
 	_world.add_child(foe)
 	foe.set_physics_process(false)
 	foe.home = foe.position
-	foe.mode = mode
-	foe.hunting = mode == "chase"
+	foe.enter(EnemyState.CHASE)
+	foe.hunting = true
+	if mode == "homeward":
+		foe.enter(EnemyState.HOMEWARD)
 	foe.can_bite = false
 	return foe
 
@@ -178,4 +179,4 @@ func test_a_hurt_foe_led_too_far_goes_home_still_hurt_and_mends_in_peace() -> vo
 	assert_eq(int(foe.fighter["hp"]), 1, "nor at once when they leave")
 	await _run(foe, 2.0, Vector2.INF, 0.0)
 	assert_eq(int(foe.fighter["hp"]), int(foe.fighter["maxHp"]), "whole again after half a minute in peace")
-	assert_false(foe.health_bar.visible)
+	assert_false(foe.drawing.health_bar.visible)

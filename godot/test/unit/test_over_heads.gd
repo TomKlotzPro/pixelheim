@@ -5,7 +5,6 @@ extends GutTest
 ## frame, and a foe's shot flies over them, a few pixels of it.
 
 const TILE := 16.0
-const Enemy := preload("res://scripts/enemy.gd")
 
 
 class StubHud extends Hud:
@@ -42,7 +41,7 @@ func _foe(at: Vector2) -> Node:
 ## cell above, back with the hero below.
 func test_a_foes_tag_and_bar_make_way_for_the_hero_above_it() -> void:
 	var foe: Node = await _foe(Vector2(200, 200))
-	var over: Array = [foe.level_tag, foe.health_bar, foe.health_bar_back]
+	var over: Array = [foe.level_tag, foe.drawing.health_bar, foe.drawing.health_bar_back]
 	assert_gt(foe.level_tag.get_global_rect().size.y, 0.0, "a tag laid out")
 	for step in 3:
 		foe.make_way(foe.global_position + Vector2(0, -TILE), 0.2)

@@ -28,7 +28,6 @@ func test_every_elite_family_has_a_told_trick() -> void:
 ## who stands where it began and sparing one who steps back out of it, and
 ## the elite comes in rather than waiting in the ring where it never could.
 func test_the_cleave_is_told_up_close_and_spares_a_hero_who_steps_back() -> void:
-	var EliteBrain := preload("res://scripts/elite_brain.gd")
 	var at := Vector2(100, 100)
 	for family: String in ["greenskins", "outlaws"]:
 		var cleave: Dictionary = Bestiary.elite_moves(family)
@@ -131,7 +130,6 @@ func test_a_foe_stops_at_the_heros_edge() -> void:
 ## monster with a cleave starts it there and strikes a hero who stands.
 func test_every_foe_stops_beside_the_hero_in_reach_of_both() -> void:
 	var EnemyScript := preload("res://scripts/enemy.gd")
-	var EliteBrain := preload("res://scripts/elite_brain.gd")
 	var near := float(Packs.rules()["ring"]["near"])
 	var fighters: Array[Dictionary] = [Bells.fafnyr()]
 	for id: String in Bestiary._data()["monsters"]:
@@ -156,7 +154,7 @@ func test_every_foe_stops_beside_the_hero_in_reach_of_both() -> void:
 		assert_lte(EnemyScript.HERO_HALF + foot - edge, foot / 2.0, "%s: beside the hero, not on them" % who)
 		assert_true(Reach.lands(hero, Vector2.RIGHT, at, body, Reach.swing("sword")), "%s: a blade reaches it" % who)
 		# PIX-463: its own reach, as Enemy works it out toward the hero.
-		var crown := EnemyScript.crown_of(PunyArt.frames(PunyArt.monster(fighter["id"])), Vector2(0, PunyArt.lift(PunyArt.monster(fighter["id"])) * size), size)
+		var crown := EnemyDrawing.crown_of(PunyArt.frames(PunyArt.monster(fighter["id"])), Vector2(0, PunyArt.lift(PunyArt.monster(fighter["id"])) * size), size)
 		var foe: CharacterBody2D = autofree(EnemyScript.new())
 		foe.edge = edge
 		foe.beyond = beyond

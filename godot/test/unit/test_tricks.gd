@@ -8,7 +8,6 @@ extends GutTest
 ## boss's or a named monster's; an elite keeps its family's move besides.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const Enemy := preload("res://scripts/enemy.gd")
 const EliteBrainScript := preload("res://scripts/elite_brain.gd")
 const TrickBrainScript := preload("res://scripts/trick_brain.gd")
 const KINDS := {"slime": "split", "wolf": "hitrun", "goblin": "snatch", "skeleton": "rise", "ghost": "fade", "crab": "shell"}
@@ -136,7 +135,7 @@ func _foe(kind: String, elite := false, at := HERO_AT + Vector2(16, 0)) -> Node:
 	foe.add_to_group("mobs")
 	_world.add_child(foe)
 	foe.set_physics_process(false)
-	foe.mode = "chase"
+	foe.enter(EnemyState.CHASE)
 	foe.hunting = true
 	if foe.trick != null:
 		foe.trick.set_physics_process(false)
@@ -227,11 +226,11 @@ func test_a_slain_slime_bursts_into_two_small_ones() -> void:
 		assert_null(half.trick, "which never split")
 		assert_true(half.faded, "the blow that burst it doesn't sweep them up")
 		assert_gte(half.global_position.distance_to(HERO_AT), slime.global_position.distance_to(HERO_AT), "never nearer the hero than the slime stood (PIX-497)")
-		assert_gt(half._over_head, Enemy.BAR_Y, "its tag sits just over it, not at its kind's height")
-		assert_gt(half.mark_foot(), Enemy.BAR_Y, "and its \"!\" right over it")
-		var low: float = half.mark_foot()
+		assert_gt(half.drawing.bar_at, EnemyDrawing.BAR_Y, "its tag sits just over it, not at its kind's height")
+		assert_gt(half.drawing.mark_foot(), EnemyDrawing.BAR_Y, "and its \"!\" right over it")
+		var low: float = half.drawing.mark_foot()
 		half.lead_tag(true)
-		assert_lte(half.mark_foot(), low - Enemy.TAG_HEIGHT, "over its tag when it is the one showing the pack's")
+		assert_lte(half.drawing.mark_foot(), low - EnemyDrawing.TAG_HEIGHT, "over its tag when it is the one showing the pack's")
 		half.lead_tag(false)
 		assert_eq(half.mode, "alert", "they come after the \"!\"")
 		assert_lt(half.sprite.sprite_frames.get_frame_texture("idle", 0).get_size().x, slime.sprite.sprite_frames.get_frame_texture("idle", 0).get_size().x, "drawn smaller")
@@ -533,7 +532,7 @@ func test_a_crabs_claws_come_up_and_go_down_and_its_back_is_open() -> void:
 	assert_true(crab.trick.posed(), "shown on its sprite")
 	assert_eq(crab.mode, "cast", "it stands to guard")
 	await wait_seconds(float(trick["tell"]) / 2.0)
-	assert_gt(crab.sprite.scale.y, crab._rest_scale.y * 1.1, "thrown up in the tell's first half")
+	assert_gt(crab.sprite.scale.y, crab.rest_scale.y * 1.1, "thrown up in the tell's first half")
 	assert_eq(crab.get_children().filter(func(child: Node) -> bool: return child is Sprite2D and (child as Sprite2D).texture == TrickBrainScript.star_texture()).size(), 1, "a glint off them as they rise")
 	_run(crab, float(trick["tell"]) + TICK)
 	assert_eq(crab.trick.state, "up")

@@ -1,3 +1,4 @@
+class_name EliteBrain
 extends Node
 ## areas: combat field
 ## An elite's one trick (PIX-155), by its family, told before it lands: beasts
@@ -14,7 +15,7 @@ const TILE := 16.0
 ## After any move, the others wait at least this long: never two at once.
 const BREATHER := 1.0
 
-var enemy: CharacterBody2D
+var enemy: Enemy
 var world: Node2D
 ## [{move: Dictionary, cooldown: float}], tried in order.
 var moves: Array[Dictionary] = []
@@ -31,7 +32,7 @@ var _shine: Tween
 
 
 func _ready() -> void:
-	enemy = get_parent()
+	enemy = get_parent() as Enemy
 	world = enemy.world
 	var family: Dictionary = Bestiary.elite_moves(Bestiary.family_of(enemy.fighter["id"]))
 	if not family.is_empty():
@@ -44,12 +45,12 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# Fallen, stood down or gone home, it calls no one: what it called fights
 	# on as any wild foe, its bites giving the hero grace again (PIX-421).
-	if enemy.dying or enemy.mode == "homeward":
+	if enemy.dying or enemy.state == EnemyState.HOMEWARD:
 		for wolf: Variant in called:
 			if is_instance_valid(wolf):
-				wolf.called = false
+				wolf.set_called(false)
 	# Stunned, it tries no trick (PIX-186).
-	if enemy.dying or enemy.mode != "chase" or enemy.ailments.is_stunned():
+	if enemy.dying or enemy.state != EnemyState.CHASE or enemy.ailments.is_stunned():
 		return
 	for slot in moves:
 		slot["cooldown"] -= delta
@@ -128,9 +129,8 @@ static func cleave_band(move: Dictionary, at: Vector2, hero: Vector2, beyond := 
 ## Stands still while its mark pulses, then strikes it; a lunge first leaps
 ## to the mark's far end, a leap to beside its middle.
 func _tell(move: Dictionary, shape: PackedVector2Array, jump: String) -> void:
-	enemy.mode = "cast"
+	enemy.begin_cast()
 	telling = String(move.get("move", ""))
-	enemy.velocity = Vector2.ZERO
 	_keep(Telegraph.mark(world, shape, float(move["tell"]), _strike.bind(move, jump)))
 
 
@@ -160,25 +160,24 @@ func _strike(shape: PackedVector2Array, move: Dictionary, jump: String) -> void:
 	if Telegraph.catches(world, shape):
 		var damage := roundi(Bestiary.monster_attack_damage(enemy.fighter, GameState.hero, GameState.pack, GameState.roll) * float(move["power"]))
 		world.player.take_hit(damage, enemy.global_position, move.get("inflicts", enemy.fighter.get("inflicts")))
-	enemy.mode = "chase"
+	enemy.end_cast()
 
 
 ## A guard raised for a moment: blows mostly glance off (enemy.take_hit).
 func _guard(move: Dictionary) -> void:
-	enemy.guarding = true
+	enemy.set_guarding(true)
 	Sound.play("guard_raise")
 	_shine = enemy.sprite.create_tween()
 	_shine.tween_property(enemy.sprite, "modulate", Color(0.7, 0.85, 1.4), 0.12)
 	_shine.tween_interval(float(move["seconds"]))
 	_shine.tween_property(enemy.sprite, "modulate", Color.WHITE, 0.15)
-	_shine.tween_callback(func() -> void: enemy.guarding = false)
+	_shine.tween_callback(enemy.set_guarding.bind(false))
 
 
 ## Stands still and glows for the tell, then does `then`.
 func _flash(move: Dictionary, then: Callable) -> void:
-	enemy.mode = "cast"
+	enemy.begin_cast()
 	telling = String(move.get("move", ""))
-	enemy.velocity = Vector2.ZERO
 	_glow = enemy.sprite.create_tween()
 	_glow.tween_property(enemy.sprite, "modulate", Color(1.8, 1.0, 0.5), float(move["tell"]))
 	_glow.tween_callback(func() -> void:
@@ -186,7 +185,7 @@ func _flash(move: Dictionary, then: Callable) -> void:
 		if enemy.dying:
 			return
 		then.call()
-		enemy.mode = "chase"
+		enemy.end_cast()
 	)
 
 
@@ -210,7 +209,7 @@ func interrupt() -> bool:
 	if enemy.guarding:
 		_shine.kill()
 		enemy.sprite.modulate = Color.WHITE
-		enemy.guarding = false
+		enemy.set_guarding(false)
 		broke = true
 	return broke
 
@@ -244,7 +243,7 @@ func _howl(move: Dictionary) -> void:
 		if not world.map.is_walkable(spot):
 			spot = cell
 		var wolf: Node = world.foes.spawn_enemy(move["monsterId"], spot, enemy.region, "", false, true, Vector2i((enemy.home / TILE).floor()))
-		wolf.called = true
+		wolf.set_called(true)
 		# A boss's fight was tuned on plain adds (PIX-489): no splitting, rising
 		# or hit and run from the foes it calls, and each is counted to its end.
 		wolf.plain()

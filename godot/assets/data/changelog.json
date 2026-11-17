@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.378.0",
+      "date": "2026-11-16",
+      "codename": "Nothing Left Hanging",
+      "notes": [
+        "Falling just as Fafnyr yields no longer leaves the Night of Bells stuck: you get up where you lie and the night goes on",
+        "A named foe who stands down is always paid out, even if you fall or leave during his words",
+        "Fixed a crash in the battle log, and a spell in flight whose target is gone lands where it was",
+        "The slow motion of a heavy blow no longer lingers after the world reloads"
+      ]
+    },
+    {
       "version": "0.377.0",
       "date": "2026-11-16",
       "codename": "Every Key Says True",

@@ -2413,6 +2413,10 @@ msgid "A monster's alert and fright bubbles sit centred over its head, and a nam
 msgstr "Les bulles d'alerte et de frayeur d'un monstre se centrent au-dessus de sa tête, et la plaque d'un monstre nommé au-dessus de sa barre de vie"
 
 #: assets/data/changelog.json
+msgid "A named foe who stands down is always paid out, even if you fall or leave during his words"
+msgstr "Un ennemi nommé qui se rend paie toujours son dû, même si vous tombez ou partez pendant qu'il parle"
+
+#: assets/data/changelog.json
 msgid "A named foe's level now stands above its name instead of over it"
 msgstr "Le niveau d'un ennemi nommé s'affiche désormais au-dessus de son nom au lieu de le masquer"
 
@@ -3769,6 +3773,10 @@ msgid "Fallen foes dissolve into embers or dust instead of fading away, and foes
 msgstr "Les ennemis vaincus se dissolvent en braises ou en poussière au lieu de s'effacer, et ils prennent leur élan en arrière avant de mordre, pour qu'on les voie venir"
 
 #: assets/data/changelog.json
+msgid "Falling just as Fafnyr yields no longer leaves the Night of Bells stuck: you get up where you lie and the night goes on"
+msgstr "Tomber au moment où Fafnyr se rend ne bloque plus la Nuit des cloches : vous vous relevez là où vous êtes et la nuit continue"
+
+#: assets/data/changelog.json
 msgid "Fanfare"
 msgstr "Fanfare"
 
@@ -3839,6 +3847,10 @@ msgstr "Cinq familles gardent le registre lisible : Bêtes, Peaux-vertes, Mort
 #: assets/data/changelog.json
 msgid "Five new floors beneath the mountain, for those who beat the dragon"
 msgstr "Cinq nouveaux étages sous la montagne, pour ceux qui ont vaincu le dragon"
+
+#: assets/data/changelog.json
+msgid "Fixed a crash in the battle log, and a spell in flight whose target is gone lands where it was"
+msgstr "Corrigé : un plantage du journal de combat, et un sort en vol dont la cible a disparu touche là où elle était"
 
 #: assets/data/changelog.json
 msgid "Fixed a lock where swinging during a roll could leave your hero unable to move"
@@ -4971,6 +4983,10 @@ msgstr "Personne à la maison"
 #: assets/data/changelog.json
 msgid "Nodes you can afford glow. Learning them still feels as permanent as it is."
 msgstr "Les nœuds à votre portée brillent. Les apprendre semble toujours aussi définitif que ça l'est."
+
+#: assets/data/changelog.json
+msgid "Nothing Left Hanging"
+msgstr "Rien ne reste en plan"
 
 #: assets/data/changelog.json
 msgid "Nothing Underfoot"
@@ -7347,6 +7363,10 @@ msgstr "L'écran des compétences tient aussi sur les écrans étroits ou hauts"
 #: assets/data/changelog.json
 msgid "The slime's pouch now says to press I to open your pack instead of “I opens your pack”, and the other messages that name a key read right whatever the key is"
 msgstr "La bourse de la gelée vous dit maintenant d'appuyer sur I pour ouvrir votre sac, au lieu de « I ouvre votre sac », et les autres messages qui nomment une touche se lisent bien, quelle que soit la touche"
+
+#: assets/data/changelog.json
+msgid "The slow motion of a heavy blow no longer lingers after the world reloads"
+msgstr "Le ralenti d'un coup lourd ne persiste plus après un rechargement du monde"
 
 #: assets/data/changelog.json
 msgid "The smithy's button says Craft, its recipes fit their lines, and the Codex families read alike"
@@ -17465,12 +17485,12 @@ msgid "Interrupted!"
 msgstr "Interrompu !"
 
 #: scripts/enemy.gd
-msgid "Lv %d"
-msgstr "Niv. %d"
-
-#: scripts/enemy.gd
 msgid "blocked"
 msgstr "paré"
+
+#: scripts/enemy_drawing.gd
+msgid "Lv %d"
+msgstr "Niv. %d"
 
 #: scripts/features/ash_fields/feature.gd
 msgid "In the ash: %s. Carry it home to %s."

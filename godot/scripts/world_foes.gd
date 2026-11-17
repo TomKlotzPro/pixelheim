@@ -67,6 +67,10 @@ var bosses_fallen := 0
 ## Named foes that stood down rather than fell (PIX-255; the harness
 ## reports it).
 var stood := 0
+## The named foe standing down now, until it is paid (stood_down): the ways
+## out stay barred and a fallen hero's waking waits (PIX-503: a fall or a
+## door inside its beat freed it unpaid, the fight won and nothing kept).
+var yielding: Node = null
 ## Monsters that took fright and ran from the hero (PIX-251; the harness
 ## reports it), and when the last did.
 var fled := 0
@@ -576,6 +580,8 @@ func about() -> bool:
 ## The boss or named monster hunting the hero now, or null: while one is,
 ## there's no leaving the place (PIX-232).
 func boss_hunting() -> Node:
+	if is_instance_valid(yielding):
+		return yielding
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		if enemy.hunting and not enemy.dying and fights_like_boss(enemy):
 			return enemy
@@ -656,21 +662,27 @@ func stood_down(enemy: Node) -> void:
 	hunted_by_boss = false
 	Sound.stop_music()
 	world.soundscape.hush(BOSS_HUSH_S)
+	yielding = enemy
 	var visit: MapView = world.view
 	await get_tree().create_timer(STAND_DOWN_BEAT).timeout
 	if not is_instance_valid(enemy) or world.view != visit:
+		yielding = null
 		return
 	var said := Hunts.standing_down(String(enemy.fighter.get("named", "")))
+	# By id: a lambda's captured foe, freed, is an engine error at the call.
+	var yielded := enemy.get_instance_id()
 	var heard := func(_who: String) -> void:
-		if not is_instance_valid(enemy):
+		yielding = null
+		var foe := instance_from_id(yielded) as Node
+		if foe == null:
 			return
 		stood += 1
-		on_enemy_died(enemy)
+		on_enemy_died(foe)
 		GameState.spoils.slay_boss()
 		world.hud.title_card(String(said.get("card", Text.t("Stood down"))), String(said.get("line", "")))
 		world.messages.make_way()
 		Sound.play("stood_down")
-		enemy.lie_down()
+		foe.lie_down()
 	var lines: Array = said.get("lines", [])
 	if lines.is_empty():
 		heard.call("")

@@ -161,17 +161,18 @@ func fading() -> bool:
 		screen.process_mode == Node.PROCESS_MODE_DISABLED or screen.get_children().any(func(node: Node) -> bool: return node.has_meta("fade"))))
 
 
-## What a foe is doing, for `foes[].mode`: the enemy's own mode, but a
+## What a foe is doing, for `foes[].mode`: its state's name (EnemyState), but a
 ## wind-up by its name (PIX-485: a fighter looked a dozen times to tell a
 ## glow from a chase) - its trick's state, the move its brain tells, a
 ## raised guard, a shot taking aim ("aim"), a bite told ("bite").
 static func mode_of(mob: Node) -> String:
-	var mode := String(mob.mode)
-	if mode not in ["chase", "cast"]:
+	var state: int = mob.state
+	var mode := EnemyState.name_of(state)
+	if not EnemyState.fighting(state):
 		return mode
 	if mob.trick != null and mob.trick.state != "":
 		return TRICK_MODES.get(mob.trick.state, mob.trick.state)
-	if mode == "cast":
+	if state == EnemyState.CAST:
 		return mob.brain.telling if mob.brain != null and mob.brain.telling != "" else mode
 	if mob.guarding:
 		return "guard"

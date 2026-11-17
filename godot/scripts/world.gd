@@ -311,8 +311,18 @@ func is_walkable(cell: Vector2i) -> bool:
 
 func on_player_died() -> void:
 	# The web's music hushed under the inn's build (PIX-417, Sound.hush).
-	get_tree().create_timer(1.2 - Sound.HUSH_S).timeout.connect(Sound.hush)
-	await get_tree().create_timer(1.2).timeout
+	# Both wait out a screen (PIX-503): running through a pause, they built
+	# the inn under the Night of Bells' dawn or a foe's last words and freed
+	# the foe those were about.
+	get_tree().create_timer(1.2 - Sound.HUSH_S, false).timeout.connect(Sound.hush)
+	await get_tree().create_timer(1.2, false).timeout
+	# A named foe standing down is heard out and paid before the hero wakes
+	# elsewhere (Foes.stood_down).
+	while is_instance_valid(foes.yielding):
+		await get_tree().process_frame
+	# Raised meanwhile (the Night of Bells' dawn, Night._raise): no waking.
+	if not player.dead:
+		return
 	# A fall on the Night of Bells wakes in the inn's doorway, the beat set
 	# out again (PIX-253 step 9).
 	if night.running():

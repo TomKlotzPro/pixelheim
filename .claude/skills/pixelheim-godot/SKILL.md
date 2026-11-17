@@ -20,6 +20,7 @@ Pixelheim is a Godot 4.7 game (`godot/`), live at the GitHub Pages root and as a
 - **Time and dice**: time anything in play by `GameClock`, never `Time.get_ticks_msec()`; draw from the global `randf()`/`randi()` or a seeded `RandomNumberGenerator`. Flows are stepped and must give the same report every run (`verify.md`).
 - **Screens and keys**: every menu, page and conversation extends `Screen`; take keys in `_unhandled_input`/`_command`, never by polling `Input` for a key a screen can take; the look is `UiStyle`'s alone (one pixel font, never below 2x). See `ui.md`.
 - **Tweens** are bound to the node they animate (`node.create_tween()`): a looping one left on a freed node freezes the web build.
+- **What may outlive a node keeps it by id** (PIX-503): a door, a fall or a reload frees every foe without its dying. A lambda or a bound Callable that can run after that takes `get_instance_id()` and resolves it with `instance_from_id()`: a freed capture is an engine error at every call, a freed node bound to a typed parameter stops the call before its body, and a freed node's own lambda can't even be asked `is_valid()`.
 - **The desktop canvas is linear light**: a shader doing colour maths over the world includes `shaders/linear.gdshaderinc` (`art.md`).
 - **No backward compatibility until the beta**: legacy paths can go; don't add migrations.
 - macOS has no `timeout`; don't wrap commands in it.

@@ -7,7 +7,6 @@ extends GutTest
 ## through a doorway, turns to fight only when cornered, and calms down once
 ## far enough away.
 
-const Enemy := preload("res://scripts/enemy.gd")
 const TILE := 16.0
 
 
