@@ -102,9 +102,11 @@ static func deal_patches(view: MapView, day: int) -> bool:
 	view.patch_day = day
 	view.patches = Gathering.patches_on(view.patch_decks, day)
 	# Nothing grows under what stands: what the Post's routes put up
-	# (PIX-322), the Mirefen's dead trees and huts (PIX-401).
+	# (PIX-322), the Mirefen's dead trees and huts (PIX-401); nor on what a
+	# feature draws as something else, the Mirefen's planks and shallows
+	# (MapView.drawn_as, PIX-519).
 	for cell: Vector2i in view.patches.keys():
-		if view.data.covered.has(cell):
+		if view.data.covered.has(cell) or view.drawn_as.has(cell):
 			view.patches.erase(cell)
 	# A healed lamp's morning find, picked as a patch is (PIX-324).
 	view.patches.merge(Lamps.finds(Lamps.now(view.data.id), day), true)
