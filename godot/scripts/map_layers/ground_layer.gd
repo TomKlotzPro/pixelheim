@@ -284,9 +284,10 @@ static func _ground_layers(view: MapView) -> Node2D:
 		flowers.material = view.flowers_sway
 		root.add_child(flowers)
 		view.layers["flowers"] = flowers
-	# The houses, their roofs under the snow where a settlement's lie under it
-	# (PIX-313: the Frostgate's, shaders/snowed_roof.gdshader), then what stands on
-	# their roofs (chimneys).
+	# The houses, their roofs taking the sun and the moon (PIX-523,
+	# shaders/roof_light.gdshader) or under the snow where a settlement's lie
+	# under it (PIX-313: the Frostgate's, shaders/snowed_roof.gdshader), then
+	# what stands on their roofs (chimneys).
 	for part: String in ["pieces", "snowed", "decor"]:
 		if part == "snowed":
 			if not view.house_style.get("snow", false) or view.buildings["pieces"].is_empty():
@@ -294,7 +295,9 @@ static func _ground_layers(view: MapView) -> Node2D:
 		elif view.buildings[part].is_empty():
 			continue
 		var houses := MapView.tile_layer_of(PunyTown.tileset())
-		if part == "snowed":
+		if part == "pieces":
+			houses.material = PunyTown.roof_light()
+		elif part == "snowed":
 			var snowed := ShaderMaterial.new()
 			snowed.shader = preload("res://shaders/snowed_roof.gdshader")
 			houses.material = snowed

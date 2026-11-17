@@ -92,6 +92,56 @@ func test_every_town_tier_keeps_its_doors_and_roads() -> void:
 				assert_true(pieces.has(cell) or plan["freed"].has(cell), "%s roof at %s is drawn or freed" % [tier, cell])
 
 
+func test_every_roof_piece_lies_on_one_slope() -> void:
+	# The roofs' light (PIX-523) reads each piece's slope: a piece laid on
+	# both sides of a gable would be lit the wrong way on one of them.
+	var slopes := PunyTown.roof_slopes()
+	var gable: Array = [PunyTown.GABLE_TOP] + PunyTown.GABLE_BODY + [PunyTown.GABLE_FOOT, PunyTown.GABLE_EAVE]
+	for row: Array in gable:
+		for c in row.size():
+			var want := PunyTown.SLOPE_WEST if c < 4 else (PunyTown.RIDGE_DOWN if c == 4 else PunyTown.SLOPE_EAST)
+			assert_eq(int(slopes[row[c]]) % PunyTown.EDGE_TOP, want, "gable piece %d in column %d" % [row[c], c])
+	var wing := {
+		PunyTown.SLOPE_NORTH: PunyTown.WING_TOP + PunyTown.WING_UPPER + PunyTown.UPPER_FILL, PunyTown.RIDGE_ACROSS: PunyTown.WING_RIDGE,
+		PunyTown.SLOPE_SOUTH: PunyTown.WING_LOWER + PunyTown.LOWER_FILL + PunyTown.WING_EAVE,
+	}
+	for want: int in wing:
+		for tile: int in (wing[want] as Array):
+			if tile >= 0:
+				assert_eq(int(slopes[tile]) % PunyTown.EDGE_TOP, want, "wing piece %d" % tile)
+	for tile: int in [PunyTown.WALL_LEFT, PunyTown.WALL, PunyTown.WALL_RIGHT, PunyTown.WINDOW, PunyTown.DOOR] + PunyTown.CHIMNEY:
+		assert_false(slopes.has(tile), "%d is no roof" % tile)
+
+
+func test_the_roof_light_knows_every_piece_of_every_house() -> void:
+	# Every piece a house is built of, in every roof colour (a town's
+	# gables and wings, the far-off village's wings): a wall stays as drawn,
+	# a roof piece has its slope and a copy of itself in another colour,
+	# where the two share only the wall under the roof (PIX-523).
+	var map := PunyTown.roof_map()
+	var houses: Array[Dictionary] = []
+	for tier: String in TIERS:
+		houses.append(PunyTown.plan(_load(tier).grid)["pieces"])
+	for kind: String in PunyTown.ROOF_ROWS:
+		houses.append(PunyTown.wing_house(Rect2i(0, 0, 5, 6), 2, kind))
+		var grid := _grid(["RRRRRRRRR", "RRRRRRRRR", "RRRRRRRRR", "RRRRRRRRR", "RRRRRRRRR", "RRRRRRRRR", "RRRRDRRRR"])
+		for cell: Vector2i in grid:
+			if grid[cell] == "roof":
+				grid[cell] = kind
+		houses.append(PunyTown.plan(grid)["pieces"])
+	for pieces: Dictionary in houses:
+		for cell: Vector2i in pieces:
+			var tile: int = pieces[cell]
+			var texel := map.get_pixel(tile % PunyTown.COLUMNS, tile / PunyTown.COLUMNS)
+			if PunyTown.is_wall(tile):
+				assert_eq(texel.r8, 0, "the wall piece %d stays as drawn" % tile)
+				continue
+			assert_gt(texel.r8, 0, "the roof piece %d has its slope" % tile)
+			var copy := tile + (texel.g8 - 128) * PunyTown.COLUMNS
+			assert_ne(copy, tile)
+			assert_eq(map.get_pixel(copy % PunyTown.COLUMNS, copy / PunyTown.COLUMNS).r8, texel.r8, "the roof piece %d's copy %d lies on its slope" % [tile, copy])
+
+
 func test_the_pack_draws_when_installed() -> void:
 	if not PunyTown.available():
 		pass_test("Medieval Age pack not installed here (scripts/fetch-private-art.sh); the town keeps its old houses.")

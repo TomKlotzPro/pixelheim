@@ -15,8 +15,9 @@ const DUST := {
 	"snow": Color(0.95, 0.97, 1.0), "ice": Color(0.84, 0.92, 1.0),
 	"bridge": Color(0.66, 0.55, 0.4), "dock": Color(0.66, 0.55, 0.4),
 }
-## ...or a splash, wading through a bog.
-const WADES := ["marsh"]
+## ...or a splash, wading through a bog or the shallows drawn beside the
+## Mirefen's boardwalks (PIX-519).
+const WADES := ["marsh", "water"]
 ## Foes in plate or mail, of stone or of iron: steel throws sparks off them.
 const ARMOURED := [
 	"orc", "boneknight", "golem", "iron_demon", "hollow_guard", "turncoat",

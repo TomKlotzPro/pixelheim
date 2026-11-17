@@ -3085,6 +3085,10 @@ msgid "Chests are furniture: face one, press E, and it opens once per save - the
 msgstr "Les coffres sont des meubles : placez-vous face à l'un d'eux, appuyez sur E, et il s'ouvre une fois par sauvegarde - ceux cachés dans les recoins contiennent un équipement d'un palier au-dessus de leur région"
 
 #: assets/data/changelog.json
+msgid "Chimney smoke you can see: thicker, leaning with the wind, gold at dusk and pale blue at night"
+msgstr "Une fumée de cheminée qu'on voit : plus épaisse, penchée par le vent, dorée au crépuscule et bleu pâle la nuit"
+
+#: assets/data/changelog.json
 msgid "Chimneys rose on the rooftops, and they smoke: pale wisps drift and thin over every hearth-warmed house"
 msgstr "Des cheminées ont poussé sur les toits, et elles fument : de pâles volutes dérivent et s'effilochent au-dessus de chaque maison chauffée par son âtre"
 
@@ -5337,6 +5341,10 @@ msgid "Outside the walls, the Reach's farmland grows with the town: a plot tramp
 msgstr "Hors des murs, les terres de la Marche grandissent avec la ville : un champ piétiné dans les Cendres, des rangs qui pointent sous un épouvantail au Hameau, du blé, un pré à moutons clos et des lanternes le long de la route du nord au Village, un verger et une ferme avec son foin, sa charrette et son puits sous le rempart sud au Bourg, et à la Cité des récoltes mûres et des vaches au pré"
 
 #: assets/data/changelog.json
+msgid "Over the Bog"
+msgstr "Au-dessus de la tourbière"
+
+#: assets/data/changelog.json
 msgid "Owned businesses pay RENT: +2g each after every victory, straight into your purse with a line in the battle log"
 msgstr "Les commerces que vous possédez versent un LOYER : +2 o chacun après chaque victoire, droit dans votre bourse, avec une ligne dans le journal de combat"
 
@@ -6071,6 +6079,14 @@ msgstr "Petites choses réparées : la création du héros répond de nouveau 
 #: assets/data/changelog.json
 msgid "Smithing shaves the Forge's prices and, at level 5, unlocks the +8 masterwork cap"
 msgstr "Le métier de Forge fait baisser les prix de la forge et, au niveau 5, débloque le plafond de chef-d'œuvre à +8"
+
+#: assets/data/changelog.json
+msgid "Smoke from the Chimneys"
+msgstr "Fumée aux cheminées"
+
+#: assets/data/changelog.json
+msgid "Smoke rises only from a chimney now, in town and in the village seen from the Reach"
+msgstr "La fumée ne monte plus que d'une cheminée, en ville comme dans le village vu de la Reach"
 
 #: assets/data/changelog.json
 msgid "Snow lies in drifts with blue shadows, and the Mirefen is murk, sedge and puddles instead of camouflage dots"
@@ -6841,6 +6857,10 @@ msgid "The Mirefen comes alive: dead trees, reed beds and boardwalks over the fe
 msgstr "Les Marais de Fange s'animent : des arbres morts, des roselières et des pontons sur la fange, une cabane sur pilotis, les berges du chenal qui ne suivent plus la grille, la route de l'ouest qui finit où il faut, et des feux follets qui dérivent la nuit"
 
 #: assets/data/changelog.json
+msgid "The Mirefen's boardwalks are real footbridges now: two planks wide, over the water, landing on a road, a bridge or a door at both ends"
+msgstr "Les passerelles du Mirefen sont de vraies passerelles : deux planches de large, au-dessus de l'eau, posées sur une route, un pont ou une porte à chaque bout"
+
+#: assets/data/changelog.json
 msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and reeds, the Deepwood's lake dark teal and the Frostgate's water icy"
 msgstr "Les mares des Marais de Fange sont d'une eau olive trouble avec nénuphars, lentilles d'eau et roseaux, le lac des Bois-Profonds sarcelle sombre et l'eau de la Porte-Givre glacée"
 
@@ -7429,6 +7449,10 @@ msgid "The roll's hint reads quickly and lets the fight's lines through"
 msgstr "Le conseil de la roulade se lit vite et laisse passer les lignes du combat"
 
 #: assets/data/changelog.json
+msgid "The ruin's walk goes all the way down to the road, and a new walk runs down the river's west bank to the south bridge"
+msgstr "La passerelle de la ruine descend jusqu'à la route, et une nouvelle longe la rive ouest de la rivière jusqu'au pont sud"
+
+#: assets/data/changelog.json
 msgid "The same gate from the Ashenreach, where the road widens up to it; from inside the town you see the fields beyond"
 msgstr "La même porte depuis la Marche des Cendres, où la route s'élargit jusqu'à elle ; depuis le village, on aperçoit les champs au-delà"
 
@@ -7547,6 +7571,10 @@ msgstr "Les légendes de la visite de la ville restent désormais toujours au-de
 #: assets/data/changelog.json
 msgid "The town's dog and cat now share the farm animals' look: a dark outline, flatter colours and the same pixel size, so they no longer stand apart from the hens and sheep"
 msgstr "Le chien et le chat du village ont désormais le même style que les animaux de la ferme : un contour sombre, des couleurs plus franches et la même taille de pixel, si bien qu'ils ne détonnent plus à côté des poules et des moutons"
+
+#: assets/data/changelog.json
+msgid "The town's roofs take the light: the slope facing the sun brightens and warms as it goes low, the other falls into a cool shade, and the moon lights its side at night"
+msgstr "Les toits de la ville prennent la lumière : le versant tourné vers le soleil s'éclaire et se réchauffe quand il descend, l'autre passe dans une ombre fraîche, et la lune éclaire le sien la nuit"
 
 #: assets/data/changelog.json
 msgid "The town's rooms are shaped by their keepers: the inn is wider with a bar and a hearth, the hall grand, the cottage small, Odo stands behind his counter, the smithy's coal bed glows, Hale's keep is walled in stone and Morvax's forge in dark stone, and every hearth and oven burns; furniture an old save placed where the cottage or the manor shrank may stand in or past their walls"
@@ -8203,6 +8231,10 @@ msgstr "Vous pouvez désormais pêcher près du pont de Pixelheim, au bord du la
 #: assets/data/changelog.json
 msgid "You can own a HOUSE. The shut door in the south of town names its price: the deed costs 1,500g - press E and it's yours"
 msgstr "Vous pouvez posséder une MAISON. La porte close au sud du village annonce son prix : le titre de propriété coûte 1 500 or - appuyez sur E et elle est à vous"
+
+#: assets/data/changelog.json
+msgid "You step on and off a boardwalk at its ends: the water beside it is deep enough to stop you"
+msgstr "On monte sur une passerelle et on en descend par ses bouts : l'eau qui la borde est assez profonde pour vous arrêter"
 
 #: assets/data/changelog.json
 msgid "Your Hero, Your Rules"

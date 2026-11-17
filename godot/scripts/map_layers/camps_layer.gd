@@ -191,7 +191,8 @@ static var _blank: ImageTexture
 
 ## A burning house's coals, smoke or sparks (`part`): a quad over `rect`
 ## (map pixels, whole) drawn by `shader`, `z` over the actors. It fades
-## rather than shrinks as the fire goes out (douse).
+## rather than shrinks as the fire goes out (douse). With no `part`, no
+## fire's: a chimney's smoke (PIX-523).
 static func _fire_air(view: MapView, part: String, rect: Rect2, shader: Shader, z: int, params: Dictionary) -> Sprite2D:
 	if _blank == null:
 		var white := Image.create(1, 1, false, Image.FORMAT_RGBA8)
@@ -209,8 +210,9 @@ static func _fire_air(view: MapView, part: String, rect: Rect2, shader: Shader, 
 		material.set_shader_parameter(key, params[key])
 	quad.material = material
 	quad.z_index = z
-	quad.set_meta("fire", part)
-	quad.set_meta("fades", true)
+	if part != "":
+		quad.set_meta("fire", part)
+		quad.set_meta("fades", true)
 	quad.add_to_group("decor")
 	view.props.add_child(quad)
 	return quad

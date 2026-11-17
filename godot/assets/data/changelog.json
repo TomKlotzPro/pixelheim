@@ -1,6 +1,26 @@
 {
   "releases": [
     {
+      "version": "0.385.0",
+      "date": "2026-11-17",
+      "codename": "Smoke from the Chimneys",
+      "notes": [
+        "The town's roofs take the light: the slope facing the sun brightens and warms as it goes low, the other falls into a cool shade, and the moon lights its side at night",
+        "Chimney smoke you can see: thicker, leaning with the wind, gold at dusk and pale blue at night",
+        "Smoke rises only from a chimney now, in town and in the village seen from the Reach"
+      ]
+    },
+    {
+      "version": "0.384.0",
+      "date": "2026-11-17",
+      "codename": "Over the Bog",
+      "notes": [
+        "The Mirefen's boardwalks are real footbridges now: two planks wide, over the water, landing on a road, a bridge or a door at both ends",
+        "The ruin's walk goes all the way down to the road, and a new walk runs down the river's west bank to the south bridge",
+        "You step on and off a boardwalk at its ends: the water beside it is deep enough to stop you"
+      ]
+    },
+    {
       "version": "0.383.0",
       "date": "2026-11-17",
       "codename": "Lantern on the Road",
