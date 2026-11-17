@@ -2533,6 +2533,10 @@ msgid "A save the game can't read is never shown as an empty slot or written ove
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A second woodpile, a stump with the axe still in it; benches with armrests; market stalls under four-tone awnings"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A settler with something to ask still heals you or plays first, then asks"
 msgstr ""
 
@@ -3673,6 +3677,10 @@ msgid "Every speaker has a look of their own: no more faceless farmers, no keepe
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every standing piece casts its shadow by day, on every map: stalls, carts, kegs, crates, huts, signposts, even Saltmere's lighthouse"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every step now sounds of the ground under it, grass, dirt, sand, stone, wood, snow, ice or shallow water, from Leohpaz's retro RPG sounds, and blows land with their own impact by weapon; each moment of the game has its own sound to fill, never the same take twice running"
 msgstr ""
 
@@ -4022,6 +4030,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "From the Ashes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "From the Town on, lamps hang on brackets at house corners, and the square's south corners get a lamp post with a lantern either side"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7585,6 +7597,10 @@ msgid "The town's dog and cat now share the farm animals' look: a dark outline, 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The town's doors keep their own stores: a crate with its lid, one with its lid ajar, a pair of kegs, a sack beside a basket of apples"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The town's roofs take the light: the slope facing the sun brightens and warms as it goes low, the other falls into a cool shade, and the moon lights its side at night"
 msgstr ""
 
@@ -8182,6 +8198,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Worth the Walk"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Worthy of the Light"
 msgstr ""
 
 #: assets/data/changelog.json

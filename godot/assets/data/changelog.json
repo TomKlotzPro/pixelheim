@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.387.0",
+      "date": "2026-11-17",
+      "codename": "Worthy of the Light",
+      "notes": [
+        "The town's doors keep their own stores: a crate with its lid, one with its lid ajar, a pair of kegs, a sack beside a basket of apples",
+        "A second woodpile, a stump with the axe still in it; benches with armrests; market stalls under four-tone awnings",
+        "From the Town on, lamps hang on brackets at house corners, and the square's south corners get a lamp post with a lantern either side",
+        "Every standing piece casts its shadow by day, on every map: stalls, carts, kegs, crates, huts, signposts, even Saltmere's lighthouse"
+      ]
+    },
+    {
       "version": "0.386.0",
       "date": "2026-11-17",
       "codename": "Laid by a Mason",

@@ -2533,6 +2533,10 @@ msgid "A save the game can't read is never shown as an empty slot or written ove
 msgstr "Une sauvegarde que le jeu ne sait pas lire n'est plus jamais affichée comme un emplacement vide ni écrasée : elle a sa propre carte et reste telle quelle"
 
 #: assets/data/changelog.json
+msgid "A second woodpile, a stump with the axe still in it; benches with armrests; market stalls under four-tone awnings"
+msgstr "Un second tas de bois, une souche avec la hache encore plantée ; des bancs à accoudoirs ; des étals sous des auvents ombrés"
+
+#: assets/data/changelog.json
 msgid "A settler with something to ask still heals you or plays first, then asks"
 msgstr "Un nouvel habitant qui a quelque chose à demander vous soigne ou joue toujours d'abord, puis demande"
 
@@ -3673,6 +3677,10 @@ msgid "Every speaker has a look of their own: no more faceless farmers, no keepe
 msgstr "Chaque personnage a désormais son propre visage : fini les fermiers sans visage et les marchands habillés comme le héros, et le portrait de dialogue montre leur tête et leurs épaules"
 
 #: assets/data/changelog.json
+msgid "Every standing piece casts its shadow by day, on every map: stalls, carts, kegs, crates, huts, signposts, even Saltmere's lighthouse"
+msgstr "Chaque objet debout projette son ombre le jour, sur toutes les cartes : étals, charrettes, tonnelets, caisses, cabanes, panneaux, jusqu'au phare de Saltmere"
+
+#: assets/data/changelog.json
 msgid "Every step now sounds of the ground under it, grass, dirt, sand, stone, wood, snow, ice or shallow water, from Leohpaz's retro RPG sounds, and blows land with their own impact by weapon; each moment of the game has its own sound to fill, never the same take twice running"
 msgstr "Chaque pas sonne désormais selon le sol, herbe, terre, sable, pierre, bois, neige, glace ou eau peu profonde, avec les sons rétro de Leohpaz, et les coups ont leur propre impact selon l'arme ; chaque moment du jeu a désormais son propre son, jamais deux fois la même prise d'affilée"
 
@@ -4023,6 +4031,10 @@ msgstr "Page blanche"
 #: assets/data/changelog.json
 msgid "From the Ashes"
 msgstr "Des cendres"
+
+#: assets/data/changelog.json
+msgid "From the Town on, lamps hang on brackets at house corners, and the square's south corners get a lamp post with a lantern either side"
+msgstr "Dès la Ville, des lanternes pendent à des potences aux coins des maisons, et les coins sud de la place ont un réverbère à deux lanternes"
 
 #: assets/data/changelog.json
 msgid "From the Town on, the square is laid in flagstones with grass in the joints, inside a border of setts"
@@ -7585,6 +7597,10 @@ msgid "The town's dog and cat now share the farm animals' look: a dark outline, 
 msgstr "Le chien et le chat du village ont désormais le même style que les animaux de la ferme : un contour sombre, des couleurs plus franches et la même taille de pixel, si bien qu'ils ne détonnent plus à côté des poules et des moutons"
 
 #: assets/data/changelog.json
+msgid "The town's doors keep their own stores: a crate with its lid, one with its lid ajar, a pair of kegs, a sack beside a basket of apples"
+msgstr "Les portes de la ville ont leurs propres réserves : une caisse avec son couvercle, une autre entrouverte, une paire de tonnelets, un sac à côté d'un panier de pommes"
+
+#: assets/data/changelog.json
 msgid "The town's roofs take the light: the slope facing the sun brightens and warms as it goes low, the other falls into a cool shade, and the moon lights its side at night"
 msgstr "Les toits de la ville prennent la lumière : le versant tourné vers le soleil s'éclaire et se réchauffe quand il descend, l'autre passe dans une ombre fraîche, et la lune éclaire le sien la nuit"
 
@@ -8183,6 +8199,10 @@ msgstr "À la hauteur de leur prix"
 #: assets/data/changelog.json
 msgid "Worth the Walk"
 msgstr "Ça vaut le détour"
+
+#: assets/data/changelog.json
+msgid "Worthy of the Light"
+msgstr "À la hauteur de la lumière"
 
 #: assets/data/changelog.json
 msgid "Wren the Stablemaster walks horses by the gate - two wolf pelts for saddle leather and fast travel drops you straight at Pixelheim Square, no gate queue"
