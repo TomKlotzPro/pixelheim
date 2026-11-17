@@ -5029,6 +5029,10 @@ msgid "Nothing Wasted"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Nothing playing is cut when they arrive: the next sound and the next change of place use them"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Now and then a shower crosses the open land: rain slants down and splashes, the light turns grey, the lamps come up, the birds fall quiet and you hear the rain"
 msgstr ""
 
@@ -5178,6 +5182,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On the town's tour, a rebuilt building rises at its stop: the ruin gives way in a cloud of dust, the walls go up row by row, and it lands under confetti"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "On the web the game starts about three times sooner: it loads 20 MB instead of 64 before the title"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5550,6 +5558,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Quick Hands"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Quick Off the Mark"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7286,6 +7298,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The mountain gate opens onto the mountain road, ash and dead pines, ash hounds and wyverns, up to Morvax's forge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The music and the sound effects arrive just after, in the background; until then you hear the game's own sounds"
 msgstr ""
 
 #: assets/data/changelog.json

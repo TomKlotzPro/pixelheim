@@ -63,7 +63,7 @@ const build = await agent(
   `(if behind, \`git merge --ff-only origin/main\`; if anything else is off, change nothing and return ok=false saying what). ` +
   `Check that godot/tools/play.py and .claude/skills/pixelheim-godot/playtest.md exist (PIX-423); if not, return ok=false.\n\n` +
   `Then export the web build the way playtest.md says (\`godot --headless --audio-driver Dummy --path godot --import\`, \`mkdir -p godot/export/web\`, then ` +
-  `\`godot --headless --audio-driver Dummy --path godot --export-release Web export/web/index.html\`). The private art is installed in this checkout; ` +
+  `\`godot --headless --audio-driver Dummy --path godot --export-release Web export/web/index.html\`, then \`godot --headless --audio-driver Dummy --path godot -s tools/audio_packs.gd\` for the paid audio packs, PIX-518). The private art is installed in this checkout; ` +
   `check the export has it (the paid packs under godot/assets/puny/ are present before exporting). Afterwards run \`git checkout -- godot/default_bus_layout.tres\` ` +
   `(the import rewrites its header) and check \`git status --porcelain\` is empty again.\n\n` +
   `Create the run folder ${RUN_DIR}, and in it the Playwright venv every player will use: \`python3 -m venv ${RUN_DIR}/pw && ${RUN_DIR}/pw/bin/pip install playwright==1.56.0\` ` +

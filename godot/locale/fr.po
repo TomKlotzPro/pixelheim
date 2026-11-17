@@ -5029,6 +5029,10 @@ msgid "Nothing Wasted"
 msgstr "Rien de perdu"
 
 #: assets/data/changelog.json
+msgid "Nothing playing is cut when they arrive: the next sound and the next change of place use them"
+msgstr "Rien de ce qui joue n'est coupé à leur arrivée : le son suivant et le prochain changement de lieu les utilisent"
+
+#: assets/data/changelog.json
 msgid "Now and then a shower crosses the open land: rain slants down and splashes, the light turns grey, the lamps come up, the birds fall quiet and you hear the rain"
 msgstr "De temps en temps, une averse traverse les terres : la pluie tombe en biais et éclabousse, la lumière se fait grise, les lampes s'allument, les oiseaux se taisent et l'on entend la pluie"
 
@@ -5179,6 +5183,10 @@ msgstr "La première nuit, les maisons en feu éclairent la place en halos doux�
 #: assets/data/changelog.json
 msgid "On the town's tour, a rebuilt building rises at its stop: the ruin gives way in a cloud of dust, the walls go up row by row, and it lands under confetti"
 msgstr "Pendant la visite du bourg, un bâtiment reconstruit s'élève à son arrêt : la ruine cède dans un nuage de poussière, les murs montent rang par rang, et il se pose sous les confettis"
+
+#: assets/data/changelog.json
+msgid "On the web the game starts about three times sooner: it loads 20 MB instead of 64 before the title"
+msgstr "Sur le web, le jeu démarre environ trois fois plus vite : il charge 20 Mo au lieu de 64 avant le titre"
 
 #: assets/data/changelog.json
 msgid "On the web, the music now also fades out softly when a scene takes you somewhere new (the dawn after the Night of Ash, the morning after the Night of Bells, the ending) and when Lantern Night or a new building redraws the village, instead of stopping dead"
@@ -5551,6 +5559,10 @@ msgstr "DES QUÊTES ! Cinq promesses dans le village : des gelées pour Sela
 #: assets/data/changelog.json
 msgid "Quick Hands"
 msgstr "Mains vives"
+
+#: assets/data/changelog.json
+msgid "Quick Off the Mark"
+msgstr "Départ rapide"
 
 #: assets/data/changelog.json
 msgid "Quick wins stack: a pack's kills rise as one float that counts up, not a pile of lines"
@@ -7287,6 +7299,10 @@ msgstr "Au lendemain de la Nuit des Cloches, Morvax attend près de la fontaine 
 #: assets/data/changelog.json
 msgid "The mountain gate opens onto the mountain road, ash and dead pines, ash hounds and wyverns, up to Morvax's forge"
 msgstr "La porte de la montagne s'ouvre sur la route de la montagne, cendres et pins morts, chiens de cendre et wyvernes, jusqu'à la forge de Morvax"
+
+#: assets/data/changelog.json
+msgid "The music and the sound effects arrive just after, in the background; until then you hear the game's own sounds"
+msgstr "La musique et les bruitages arrivent juste après, en arrière-plan ; d'ici là, vous entendez les sons du jeu lui-même"
 
 #: assets/data/changelog.json
 msgid "The name warning goes with your first letter, and the night's level-up names its keys"

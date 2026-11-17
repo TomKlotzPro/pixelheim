@@ -26,6 +26,7 @@ Needs the export (with the private art copied in) and Playwright for Python
 in a venv, run with the venv's python:
 
     mkdir -p godot/export/web && godot --headless --path godot --export-release Web export/web/index.html
+    godot --headless --audio-driver Dummy --path godot -s tools/audio_packs.gd   # with the paid audio installed (PIX-518)
     python3 -m venv /tmp/pw && /tmp/pw/bin/pip install playwright==1.56.0
     /tmp/pw/bin/python godot/tools/play.py start --dir /tmp/play
 """
@@ -181,7 +182,7 @@ def call(port, request, timeout=600):
 def start(options):
     args = game_args(options)
     if not os.path.exists(os.path.join(EXPORT, "index.html")):
-        raise SystemExit("no web export in %s: mkdir -p godot/export/web && godot --headless --path godot --export-release Web export/web/index.html" % EXPORT)
+        raise SystemExit("no web export in %s: mkdir -p godot/export/web && godot --headless --path godot --export-release Web export/web/index.html, then (paid audio installed) godot --headless --audio-driver Dummy --path godot -s tools/audio_packs.gd" % EXPORT)
     port = options.port or free_port()
     if options.port and free_port(port) != port:
         raise SystemExit("port %d is taken" % port)
