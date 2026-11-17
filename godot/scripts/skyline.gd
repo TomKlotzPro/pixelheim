@@ -289,12 +289,13 @@ static func _houses(town: MapData, room: Rect2i, cols: Array[Vector2i], rows: Ar
 			if x != door_x and (rect.size.x <= 3 or pieces.get(wall, -1) == PunyTown.WALL):
 				pieces[wall] = PunyTown.WINDOW
 		out["pieces"].merge(pieces, true)
-		# Smoke from each roof's top, a stack under it where the roof is tall
-		# enough to carry one (on a low roof it hid the roof).
+		# A stack and its smoke on a roof tall enough to carry one (on a low
+		# roof the stack hid the roof); a low roof doesn't smoke, as no smoke
+		# rises from a roof without a chimney.
 		var chimney := Vector2i(rect.end.x - 2 if rect.size.x >= 3 else rect.end.x - 1, rect.position.y)
 		if rect.size.y >= 3:
 			out["decor"][chimney] = CHIMNEY
-		out["smoke"].append(Vector2(chimney * PunyTerrain.TILE) + SMOKE_AT)
+			out["smoke"].append(Vector2(chimney * PunyTerrain.TILE) + SMOKE_AT)
 		out["icons"][Vector2i(door_x, rect.end.y - 1)] = ICONS.get(kind, ICONS["roof"])
 	return taken
 

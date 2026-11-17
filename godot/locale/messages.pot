@@ -3085,6 +3085,10 @@ msgid "Chests are furniture: face one, press E, and it opens once per save - the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Chimney smoke you can see: thicker, leaning with the wind, gold at dusk and pale blue at night"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Chimneys rose on the rooftops, and they smoke: pale wisps drift and thin over every hearth-warmed house"
 msgstr ""
 
@@ -6077,6 +6081,14 @@ msgid "Smithing shaves the Forge's prices and, at level 5, unlocks the +8 master
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Smoke from the Chimneys"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Smoke rises only from a chimney now, in town and in the village seen from the Reach"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Snow lies in drifts with blue shadows, and the Mirefen is murk, sedge and puddles instead of camouflage dots"
 msgstr ""
 
@@ -7558,6 +7570,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The town's dog and cat now share the farm animals' look: a dark outline, flatter colours and the same pixel size, so they no longer stand apart from the hens and sheep"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The town's roofs take the light: the slope facing the sun brightens and warms as it goes low, the other falls into a cool shade, and the moon lights its side at night"
 msgstr ""
 
 #: assets/data/changelog.json

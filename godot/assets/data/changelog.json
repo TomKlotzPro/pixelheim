@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.385.0",
+      "date": "2026-11-17",
+      "codename": "Smoke from the Chimneys",
+      "notes": [
+        "The town's roofs take the light: the slope facing the sun brightens and warms as it goes low, the other falls into a cool shade, and the moon lights its side at night",
+        "Chimney smoke you can see: thicker, leaning with the wind, gold at dusk and pale blue at night",
+        "Smoke rises only from a chimney now, in town and in the village seen from the Reach"
+      ]
+    },
+    {
       "version": "0.384.0",
       "date": "2026-11-17",
       "codename": "Over the Bog",

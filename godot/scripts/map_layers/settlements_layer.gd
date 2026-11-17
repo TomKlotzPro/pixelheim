@@ -6,12 +6,22 @@ extends MapLayer
 ## PIX-322): MapView's `decor_hamlet` and `decor_routes` units, and the
 ## smoke and village life its lit windows add (PIX-359).
 
-## Chimney smoke (PIX-313): a cottage's grey, a forge's dark, each thinning
-## to nothing; out of the mouth of Shade's chimney, from its cell's top
-## left.
-const SMOKE := Color(0.55, 0.53, 0.53, 0.7)
-const SMOKE_FORGE := Color(0.22, 0.2, 0.21, 0.85)
+## Chimney smoke (PIX-313, PIX-523): out of the mouth of Shade's chimney,
+## from its cell's top left; how far it may lean either side of the mouth
+## (a gale leans it furthest), in pixels. A cottage's, a forge's and the
+## village's seen far off (small, as the village is there), beside a
+## burning house's (shaders/fire_smoke.gdshader): how big its puffs and
+## its lean, how dark, how dense, and how high it climbs (pixels).
 const CHIMNEY_MOUTH := Vector2(8, 2)
+const SMOKE_LEFT := 12
+const SMOKE_RIGHT := 72
+## Room above a chimney plume's top for its round puffs (about 8 px at most).
+const SMOKE_HEAD := 10.0
+const SMOKE := {
+	"cottage": {"swell": 0.75, "soot": 0.0, "density": 1.35, "climb": 56},
+	"forge": {"swell": 0.95, "soot": 1.0, "density": 1.35, "climb": 56},
+	"far": {"swell": 0.4, "soot": 0.0, "density": 1.0, "climb": 30},
+}
 ## A waystation's ember lamp at night (PIX-322): the halo round its shard
 ## and its warmth pooled on the ground about its foot (from its cell's top
 ## left), reaching this far.
@@ -40,8 +50,8 @@ func build(view: MapView, slices: Slicer) -> void:
 
 
 ## A thread of smoke from a house's chimney (PIX-313: out of the chimney's
-## own mouth, where the house has one); without one, up from its door to
-## the roof's top, a little to the side. A house whose settlement raised a
+## own mouth); a house without one doesn't smoke (smoke out of a bare roof
+## read wrong, Tom 2026-11-17). A house whose settlement raised a
 ## stack of its own (Morvax's forge) smokes from that (_decor_hamlet); a
 ## shed (Hamlet.SHEDS) not at all.
 static func _add_chimney_smoke(view: MapView, door: Vector2i) -> void:
@@ -53,11 +63,6 @@ static func _add_chimney_smoke(view: MapView, door: Vector2i) -> void:
 	var chimney := chimney_of(door, view.buildings["decor"])
 	if chimney.x >= 0:
 		_add_smoke_thread(view, Vector2(chimney * TILE) + CHIMNEY_MOUTH)
-		return
-	var top := door
-	while view.buildings["pieces"].has(top + Vector2i.UP):
-		top += Vector2i.UP
-	_add_smoke_thread(view, Vector2(top * TILE) + Vector2(TILE * 1.5, 2))
 
 
 ## The chimney on the house whose door is `door`, among a drawing's `decor`
@@ -80,7 +85,7 @@ static func chimney_of(door: Vector2i, decor: Dictionary) -> Vector2i:
 static func _add_village_life(view: MapView) -> void:
 	if PunyTown.available():
 		for at: Vector2 in view.skyline["smoke"]:
-			_add_smoke_thread(view, at)
+			_add_smoke_thread(view, at, "far")
 	for ruin: Rect2i in view.skyline["ruins"]:
 		CampsLayer._add_smoke(view, ruin, VILLAGE_RUIN_SMOKE)
 	# Every lamp glows, but the town's lamps stand close here, small: one
@@ -97,35 +102,19 @@ static func _add_village_life(view: MapView) -> void:
 		halo.set_meta("light", light)
 
 
-## A thread of chimney smoke rising from `at`, grey enough to read on a
-## bright day (PIX-313: a cottage's was a few pale specks), thinning to
-## nothing as the wind takes it; a forge's (`forge`) thick and dark. Still
-## with Reduce motion.
-static func _add_smoke_thread(view: MapView, at: Vector2, forge := false) -> void:
-	if GameState.settings.reduce_motion:
-		return
-	var motes := MapView._still(CPUParticles2D.new())
-	motes.position = at
-	motes.amount = 10 if forge else 7
-	motes.lifetime = 4.5 if forge else 4.0
-	# Already rising when the map comes into view.
-	motes.preprocess = motes.lifetime
-	motes.direction = Vector2.UP
-	motes.spread = 10.0
-	motes.gravity = Vector2(4, -3)
-	motes.initial_velocity_min = 5.0
-	motes.initial_velocity_max = 9.0
-	motes.scale_amount_min = 3.0 if forge else 2.0
-	motes.scale_amount_max = 4.0 if forge else 3.0
-	var fade := Gradient.new()
-	var first: Color = SMOKE_FORGE if forge else SMOKE
-	fade.set_color(0, first)
-	fade.set_color(1, Color(first.lightened(0.35), 0.0))
-	fade.add_point(0.35, Color(first.lightened(0.15), first.a * 0.8))
-	motes.color_ramp = fade
-	motes.z_index = 6
-	motes.add_to_group("decor")
-	view.props.add_child(motes)
+## A thread of chimney smoke rising from `at`, as `look` (SMOKE) smokes: a
+## burning house's puffs (shaders/fire_smoke.gdshader, PIX-523; a cottage's
+## were a few pale specks, PIX-313), narrower, leaning with the wind, gold
+## with the sun low and pale blue under the moon. Held still with the clock
+## under Reduce motion.
+static func _add_smoke_thread(view: MapView, at: Vector2, look := "cottage") -> void:
+	var own: Dictionary = SMOKE[look]
+	var climb := float(own["climb"]) + SMOKE_HEAD
+	var rect := Rect2(at - Vector2(SMOKE_LEFT, climb), Vector2(SMOKE_LEFT + SMOKE_RIGHT, climb + 2))
+	CampsLayer._fire_air(view, "", rect, preload("res://shaders/fire_smoke.gdshader"), 6, {
+		"source": Vector2(SMOKE_LEFT, climb), "head": SMOKE_HEAD, "spread": 4.0, "seed": fposmod(at.x * 0.37 + at.y * 0.11, 9.7),
+		"swell": own["swell"], "soot": own["soot"], "density": own["density"], "by_hour": true,
+	})
 
 
 ## A settlement's set dressing (Hamlet, PIX-313): what stands sorted among
@@ -243,7 +232,7 @@ static func _decor_hamlet(view: MapView) -> void:
 					fire.position = still.position
 					root.add_child(fire)
 					var mouth := Vector2(cell * TILE) + HamletArt.STACK_MOUTH
-					_add_smoke_thread(view, mouth, true)
+					_add_smoke_thread(view, mouth, "forge")
 					if not GameState.settings.reduce_motion:
 						var embers := MapView._still(Motes.make_embers(3))
 						embers.position = mouth
