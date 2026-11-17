@@ -37,6 +37,8 @@ var ash: CPUParticles2D
 var caption: Label
 var front: Control
 var black: ColorRect
+## What takes the mouse, over everything else of the scene.
+var catcher: Control
 ## The actors on stage that a scene named (`name`), so a later step can
 ## move them on or change what they do.
 var cast := {}
@@ -64,16 +66,6 @@ func _open() -> void:
 	# The letterbox has the whole canvas: the HUD steps aside until the scene
 	# ends, so no sign's plate or card stands half under a bar (PIX-368).
 	_put_hud_aside()
-	# Every control of the scene lets the mouse through, so a click went to
-	# the title's planks under the opening: a second opening, two hero
-	# creations (crash hunt, 2026-11-16). This one takes it, and moves on as E.
-	var catcher := Control.new()
-	catcher.size = VIEW
-	catcher.mouse_filter = Control.MOUSE_FILTER_STOP
-	catcher.gui_input.connect(func(event: InputEvent) -> void:
-		if event is InputEventMouseButton and event.pressed:
-			advance = true)
-	add_child(catcher)
 	still = GameState.settings.reduce_motion
 	steps = scenes().get(scene_id, [])
 	shaker = Control.new()
@@ -109,6 +101,19 @@ func _open() -> void:
 	add_child(front)
 	black = _sheet(Color.BLACK)
 	add_child(black)
+	# Every control of the scene lets the mouse through, so a click went to
+	# the title's planks under the opening: a second opening, two hero
+	# creations (crash hunt, 2026-11-16). This one takes it, and moves on as
+	# E. It lies over everything (PIX-513): under the stage, the mountain
+	# path's sky and stars took the click first, and the third caption heard
+	# none.
+	catcher = Control.new()
+	catcher.size = VIEW
+	catcher.mouse_filter = Control.MOUSE_FILTER_STOP
+	catcher.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed:
+			advance = true)
+	add_child(catcher)
 	_play.call_deferred()
 
 
@@ -229,9 +234,15 @@ func _caption(text: String, hold: float) -> void:
 		typing = create_tween()
 		typing.tween_property(caption, "visible_ratio", 1.0, text.length() * TYPE_S)
 	await _linger(hold)
+	# A press while it types shows it whole, and it stays until the next
+	# press or its time again (PIX-513, the talk's rule: it went a second
+	# later, under the fade, unread).
+	var cut_short := typing != null and typing.is_running() and advance
 	if typing != null:
 		typing.kill()
 	caption.visible_ratio = 1.0
+	if cut_short:
+		await _linger(hold)
 
 
 ## A new backdrop: what was on stage goes, with its actors, tint and ash.

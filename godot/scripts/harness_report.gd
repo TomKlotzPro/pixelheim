@@ -322,6 +322,17 @@ func field_dark() -> String:
 	return str(world.hud.root.get_children().filter(func(node: Node) -> bool: return node.has_meta("fade") and node.color.a > 0.5).size())
 
 
+func field_dawn() -> String:
+	for node in world.get_children():
+		if node.get_script() == preload("res://scripts/dawn_screen.gd"):
+			var words := "told" if node._plate.visible else ("said" if node._bubble.visible else "quiet")
+			var flames := 0
+			for fire: Dictionary in world.view.fires:
+				flames += fire["nodes"].filter(func(lit: Variant) -> bool: return is_instance_valid(lit) and lit.has_meta("fire") and lit.get_meta("fire") == "flames").size()
+			return "%s %s%s%s" % [node._phase, words, " dock" if world.hud.dock.visible else "", " flames %d" % flames if flames > 0 else ""]
+	return ""
+
+
 func field_day() -> String:
 	return str(Gathering.day_of(GameState.world.steps)) if flags.has("--day") else ""
 

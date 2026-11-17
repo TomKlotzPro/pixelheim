@@ -15017,6 +15017,10 @@ msgid "Not tonight, courier. Every door is shut and the gate barred till dawn: t
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Not tonight. Pixelheim is burning, and the letter is for someone in it."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Now that's a coat. Here - a pearl from the jetty. Make something sharp with it."
 msgstr ""
 
@@ -19810,6 +19814,10 @@ msgstr ""
 
 #: scripts/state/spoils.gd
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
+msgstr ""
+
+#: scripts/state/spoils.gd
+msgid "Press {key:stats} for your stats and {key:skills} for your skills."
 msgstr ""
 
 #: scripts/state/spoils.gd

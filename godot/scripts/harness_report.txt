@@ -36,6 +36,7 @@ cpu | with cpu: what a frame cost the CPU from the map settled to the report, ms
 creation | hero creation's role and the starting skill read, of how many: rogue skill 1/3 (PIX-391)
 credits | the credits' last line while they roll (PIX-253 step 10)
 dark | with fades: what's left of a fade from the dark (PIX-238)
+dawn | at the Night of Ash's dawn: its phase (fires, gather, talk, card), then told (the telling's plate up), said (someone's bubble) or quiet, dock while the dock still shows, and the flames still drawn while any is: fires quiet flames 189, then talk told (PIX-509)
 day | with --day: the day (PIX-250)
 decor | on a map in the open air: how many pieces of field decor its drawing grew, its trees, wheat, bushes, stumps and stones (PIX-304)
 delivered | Maren's letters delivered, once any is out (PIX-253)

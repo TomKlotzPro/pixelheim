@@ -289,3 +289,19 @@ func test_a_refused_name_keeps_the_field_and_esc_closes() -> void:
 	esc.pressed = true
 	assert_has(screen.FIELD_KEYS, KEY_ESCAPE, "Esc is the screen's before the field swallows it")
 	assert_eq(screen._key_command(esc).get_method(), &"close")
+
+
+## PIX-515: "A hero needs a name." stayed up over a name typed, and a click
+## on Begin with no name said nothing.
+func test_the_name_warning_answers_a_click_and_goes_with_the_first_letter() -> void:
+	var made := _open()
+	made.name_field.text = ""
+	made._refresh()
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	made.begin.gui_input.emit(click)
+	assert_eq(made.status.text, "A hero needs a name.", "a click on the dark plank says why, as Enter does")
+	made.name_field.text = "T"
+	made.name_field.text_changed.emit("T")
+	assert_eq(made.status.text, "", "the first letter answers it")

@@ -15017,6 +15017,10 @@ msgid "Not tonight, courier. Every door is shut and the gate barred till dawn: t
 msgstr "Pas ce soir, messager. Toutes les portes sont closes et la porte du village barrée jusqu'à l'aube : la place a besoin de vous."
 
 #: assets/data/progression.json
+msgid "Not tonight. Pixelheim is burning, and the letter is for someone in it."
+msgstr "Pas ce soir. Pixelheim brûle, et la lettre est pour quelqu'un qui s'y trouve."
+
+#: assets/data/progression.json
 msgid "Now that's a coat. Here - a pearl from the jetty. Make something sharp with it."
 msgstr "Ça, c'est un ciré. Tenez - une perle de la jetée. Faites-en quelque chose de tranchant."
 
@@ -19811,6 +19815,10 @@ msgstr "Maîtrise : %s, Tueur %s. +%d %% de dégâts (%s)."
 #: scripts/state/spoils.gd
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
+
+#: scripts/state/spoils.gd
+msgid "Press {key:stats} for your stats and {key:skills} for your skills."
+msgstr "Appuyez sur {key:stats} pour vos stats et sur {key:skills} pour vos compétences."
 
 #: scripts/state/spoils.gd
 msgid "The bounty on %s is yours: +%d gold."

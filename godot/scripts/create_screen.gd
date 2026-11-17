@@ -105,7 +105,11 @@ func _open() -> void:
 	name_field.add_theme_color_override("font_color", UiStyle.INK)
 	name_field.add_theme_color_override("font_placeholder_color", UiStyle.FADED)
 	name_field.add_theme_color_override("caret_color", UiStyle.INK)
-	name_field.text_changed.connect(func(_text: String) -> void: _refresh())
+	# The first letter answers "A hero needs a name." (PIX-515: it stayed up
+	# over a name typed).
+	name_field.text_changed.connect(func(_text: String) -> void:
+		status.text = ""
+		_refresh())
 	name_field.text_submitted.connect(func(_text: String) -> void: _begin())
 	bottom.add_child(name_field)
 	# Between the two, wrapping rather than running off (all the slots full
@@ -115,6 +119,11 @@ func _open() -> void:
 	status.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	bottom.add_child(status)
 	begin = UiStyle.button("Begin the adventure", _begin, "Enter")
+	# Unnamed, the plank is disabled and takes no press: a click on it still
+	# gets Enter's answer (PIX-515: it said nothing).
+	begin.gui_input.connect(func(event: InputEvent) -> void:
+		if begin.disabled and _clicked(event):
+			_begin())
 	UiStyle.focus(begin)
 	# Its own height: stretched, the keycap inside would stretch with it.
 	begin.size_flags_vertical = Control.SIZE_SHRINK_CENTER
