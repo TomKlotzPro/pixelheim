@@ -149,6 +149,14 @@ static func bust(art: Dictionary) -> Rect2:
 	return Rect2((middle - Vector2.ONE * side / 2.0).floor(), Vector2.ONE * side)
 
 
+## A click on the window itself turns the page as one beside it does
+## (PIX-504): its panels stop the mouse, so it never came to
+## `_unhandled_input`. At a question the answers' buttons keep their clicks.
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and not _asking():
+		_unhandled_input(event)
+
+
 ## E, Enter, Space or a click turns the page (and closes after the last);
 ## Esc or a step in any direction leaves at any line. At a question, 1, 2...
 ## answer it (or a click on the answer); E waits for one.

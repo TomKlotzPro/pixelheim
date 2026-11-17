@@ -272,13 +272,15 @@ static func _draw(view: MapView, piece: Dictionary) -> void:
 	var cell: Vector2i = piece["cell"]
 	var mended: bool = piece["mended"]
 	var h := absi(hash(Vector3i(cell.x, cell.y, 397)))
+	# A floor is gone under the healed ground, and without the pack the
+	# healed ground's own saplings stand for a tree: nothing drawn, so no
+	# sprite made (one made first was left over at each, PIX-504).
+	if mended and (piece["kind"] == "floor" or (piece["kind"] == "tree" and not PunyTown.available())):
+		return
 	var sprite := Sprite2D.new()
 	sprite.centered = false
 	match String(piece["kind"]):
 		"floor":
-			# Gone under the healed ground.
-			if mended:
-				return
 			sprite.texture = floor_texture(piece["size"])
 			sprite.position = Vector2(cell * TILE)
 			sprite.add_to_group("decor")
@@ -304,9 +306,6 @@ static func _draw(view: MapView, piece: Dictionary) -> void:
 			sprite.flip_h = h % 2 == 1
 			stand_on(view, sprite, cell, Vector2(0, TILE - HamletArt.size("handcart").y))
 		"tree":
-			if mended and not PunyTown.available():
-				# Without the pack the healed ground's own saplings stand there.
-				return
 			if mended:
 				sprite.texture = PunyProps.texture(YOUNG)
 				stand_on(view, sprite, cell, Vector2.ZERO)

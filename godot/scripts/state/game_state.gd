@@ -90,6 +90,8 @@ var changes := 0
 ## ago" and the harness's report.
 var saves_made := 0
 var saved_clock := -1.0
+## The last save didn't land (PIX-504): said once, until one does.
+var save_failed := false
 ## Seconds played with this hero (PIX-302): counted past the title, saved
 ## whole; heroes from before v5 had none to count.
 var play_seconds := 0.0
@@ -373,6 +375,23 @@ func apply(state: Dictionary) -> void:
 	world = WorldState.from_dict(state)
 	post = PostState.from_dict(state.get("post", {}))
 	play_seconds = float(state.get("playSeconds", 0))
+	# A save made in the second of a fall (a quit or a crash before the inn:
+	# PIX-504) holds a hero at 0 HP: they wake as that fall would have woken
+	# them, or whole where they stood on the Night of Bells, whose beat a
+	# load sets out again as its own fall does.
+	if hero.hp <= 0:
+		if progression.bells > Bells.NONE:
+			make_whole()
+			# In the shelter's doorway, or on the square, as the night's own fall
+			# wakes them (world_bells.gd hero_fell).
+			var shelter := Bells.job("shelter", settlement.settlers, town_tier())
+			world.map_id = "town"
+			world.cell = Bells.cell(shelter["at"]) + Vector2i(1, 1) if not shelter.is_empty() else Town.square() + Vector2i(0, 4)
+		else:
+			var inn: Dictionary = upkeep.fall()
+			world.map_id = inn["mapId"]
+			world.cell = Vector2i(inn["x"], inn["y"])
+			world.facing = inn.get("facing", "down")
 	mark_dirty()
 	questing.forget_deliveries()
 	questing.note_deliveries(false)
@@ -414,10 +433,18 @@ func mark_dirty() -> void:
 func save_now(how := MOMENT) -> void:
 	dirty = false
 	_unsaved_seconds = 0.0
-	_saved_play = play_seconds
 	# The title's stand-in hero is never written; a made or brought hero is.
-	if slot != NO_SLOT and not standing_in:
-		slots.write(slot, to_dict())
+	if slot != NO_SLOT and not standing_in and not slots.write(slot, to_dict()):
+		# Nothing landed (a full disk, a folder it can't write: PIX-504): no
+		# quill, no "Saved", the autosave and the next leaving try again, and
+		# the player is told once, until a save lands.
+		dirty = true
+		if not save_failed:
+			save_failed = true
+			message.emit(Text.t("The game couldn't save. It will keep trying."))
+		return
+	save_failed = false
+	_saved_play = play_seconds
 	saves_made += 1
 	saved_clock = GameClock.seconds()
 	saved.emit(how)
@@ -442,6 +469,8 @@ func _notification(what: int) -> void:
 		or what == NOTIFICATION_APPLICATION_PAUSED
 		or what == NOTIFICATION_EXIT_TREE
 	)
+	if what == NOTIFICATION_EXIT_TREE:
+		save_failed = true  # the world left the tree first: no one to tell
 	# Time played since the last save is kept too (it marks nothing dirty:
 	# a hero standing still isn't saved every few seconds for it).
 	if leaving and (dirty or play_seconds - _saved_play >= 1.0):

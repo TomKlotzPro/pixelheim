@@ -196,7 +196,7 @@ func test_blows_on_one_foe_close_together_add_up() -> void:
 	fx.float_number(12, Vector2(100, 50), Color.WHITE, false, foe)
 	fx.float_number(13, Vector2(100, 50), Color.WHITE, false, foe)
 	fx.float_number(4, Vector2(140, 50), Color.WHITE, false, autofree(Node.new()))
-	await wait_frames(2)
+	await wait_physics_frames(2)
 	var shown: Array = fx.get_children().filter(func(stand: Node) -> bool: return not stand.is_queued_for_deletion())
 	assert_eq(shown.map(func(stand: Node) -> String: return (stand.get_child(0) as Label).text), ["25", "4"])
 

@@ -90,7 +90,7 @@ func test_the_codex_bestiary_fits_its_page() -> void:
 	assert_gte(script.pages() * script.PAGE_ROWS, kinds, "every kind on some page")
 	# A row is 28 px and 6 apart; the page line on top; the card's inside is
 	# its inset in (PIX-388).
-	assert_lte(script.PAGE_ROWS * 34 + 24, script.CARD.size.y - 2 * UiStyle.INSET, "a page fits the card")
+	assert_lte(float(script.PAGE_ROWS * 34 + 24), script.CARD.size.y - 2 * UiStyle.INSET, "a page fits the card")
 
 
 ## PIX-456: before the first tier the note says what the bonus is, and an

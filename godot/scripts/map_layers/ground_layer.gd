@@ -82,6 +82,9 @@ static func _gate_arches(view: MapView) -> void:
 	var paid := PunyTown.available()
 	for gate: Dictionary in view.rampart.get("gates", []):
 		for cell: Vector2i in gate["cells"]:
+			# An open gate has no arch: no sprite made to be left over (PIX-504).
+			if not paid and not view.rampart["fallback"].has(cell):
+				continue
 			var sprite := Sprite2D.new()
 			sprite.centered = false
 			sprite.region_enabled = true
@@ -92,12 +95,10 @@ static func _gate_arches(view: MapView) -> void:
 				sprite.region_rect = Rect2(piece % PunyTown.COLUMNS * TILE, piece / PunyTown.COLUMNS * TILE, TILE, Rampart.ARCH)
 				if view.rampart["scorched"].has(cell):
 					sprite.modulate *= Rampart.SCORCHED
-			elif view.rampart["fallback"].has(cell):
+			else:
 				sprite.texture = load(PunyTerrain.SHEET)
 				sprite.region_rect = PunyTerrain.region(view.rampart["fallback"][cell])
 				sprite.region_rect.size.y = Rampart.ARCH_FALLBACK
-			else:
-				continue
 			stand_on(view, sprite, cell, Vector2.ZERO)
 
 

@@ -339,6 +339,10 @@ func festival() -> void:
 ## Back from the board with something built: the town redraws around the
 ## hero, then shows it.
 func after_board() -> void:
+	# The game quit with the board open (PIX-504): the ledger leaves a tree
+	# the world has left already, and there is no town to draw.
+	if not world.is_inside_tree():
+		return
 	if GameState.reveals.is_empty() or world.map.id != "town" or not await world.hushed_build():
 		return
 	world.map = world.load_map("town")
