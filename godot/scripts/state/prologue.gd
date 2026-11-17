@@ -25,6 +25,47 @@ const EMBERS := 9
 const ORDER := [SCAVENGER, GATE, HOUNDS, BRAM, SELA, CAP, FIRES, EMBERS, MAREN]
 
 
+## What a wave's beat teaches (PIX-506: the hounds' line asked for a roll
+## and the embers' for a skill, and both waited for the wave to die, so a
+## newcomer rolled thirty times unanswered): the hero's first of it with the
+## wave up finishes the beat, as the wave's fall still does.
+const TEACHES := {HOUNDS: "dodge", EMBERS: "skill"}
+
+
+## The action that finishes `step` the first time the hero does it, "" for
+## a step that waits on something else.
+static func teaches(step: int) -> String:
+	return TEACHES.get(step, "")
+
+
+## The line above the dock stays up through a fight that night (PIX-507:
+## it names the key the fight teaches, and faded as every fight's does).
+static func line_stays(step: int) -> bool:
+	return step != DONE
+
+
+## Hurt enough that night for the potion's hint (PIX-197): under half.
+static func hurt(step: int, hp: int, max_hp: int) -> bool:
+	return step != DONE and hp > 0 and hp * 2 < max_hp
+
+
+## The pack's row the potion's hint means, among `rows` (InventoryState's
+## listing), -1 for none: the first potion that mends, else the first thing
+## that does. The pack opens on it for a hero `hurt` (PIX-508: it opened on
+## the sword in hand, and the hint's E took it off mid-fight).
+static func potion_row(rows: Array) -> int:
+	var food := -1
+	for index in rows.size():
+		var item := Catalog.item(String(rows[index]["item_id"]))
+		if rows[index]["kind"] != "stack" or not item.has("restoreHp"):
+			continue
+		if item["category"] == "potions":
+			return index
+		if food < 0:
+			food = index
+	return food
+
+
 ## The beat after `step` (DONE after the last).
 static func next(step: int) -> int:
 	var at := ORDER.find(step)

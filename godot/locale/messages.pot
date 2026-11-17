@@ -16137,11 +16137,19 @@ msgid "You fill a bucket. Water, for once, is on our side."
 msgstr ""
 
 #: assets/data/progression.json
+msgid "You roll clear of their teeth. Someone is calling from Upper Street."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "You're late, courier. Fifty years late."
 msgstr ""
 
 #: assets/data/progression.json
 msgid "Your hands are empty: the well is on the green, below the square."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Your skill answers the fire. Maren is waiting at the shrine."
 msgstr ""
 
 #: assets/data/progression.json

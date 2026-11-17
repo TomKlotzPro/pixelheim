@@ -170,10 +170,24 @@ func prologue_wave() -> void:
 		world.fx.appear(foe)
 
 
+## The hero rolled or cast a skill (PIX-506): with the night's wave up, the
+## beat that teaches it is done (Questing.prologue_did).
+func prologue_did(action: String) -> void:
+	if Prologue.teaches(GameState.progression.prologue) != action:
+		return
+	if get_tree().get_nodes_in_group("mobs").any(func(mob: Node) -> bool: return mob.has_meta("prologue_wave") and not mob.dying):
+		world.messages.flash(GameState.questing.prologue_did(action))
+
+
 ## Dawn after the Night of Ash (PIX-197): played on the town itself - the
 ## fires going out, the survivors on the square, the letter read, Fafnyr's
 ## shadow - and then the day.
 func play_dawn() -> void:
+	# The embers still up (PIX-506: their beat no longer waits for them to
+	# fall) go out with the night, not into the dawn's square.
+	for mob in get_tree().get_nodes_in_group("mobs"):
+		if mob.has_meta("prologue_wave"):
+			mob.queue_free()
 	var dawn := preload("res://scripts/dawn_screen.gd").new()
 	dawn.world = world
 	dawn.on_done = func() -> void:

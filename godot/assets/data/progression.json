@@ -1854,7 +1854,8 @@
           9
         ]
       ],
-      "cleared": "The hounds crumble into cinders. Someone is calling from Upper Street."
+      "cleared": "The hounds crumble into cinders. Someone is calling from Upper Street.",
+      "taught": "You roll clear of their teeth. Someone is calling from Upper Street."
     },
     "embers": {
       "monsterId": "imp",
@@ -1875,7 +1876,8 @@
           27
         ]
       ],
-      "cleared": "The last ember gutters out on the stones. Maren is waiting at the shrine."
+      "cleared": "The last ember gutters out on the stones. Maren is waiting at the shrine.",
+      "taught": "Your skill answers the fire. Maren is waiting at the shrine."
     },
     "cap": {
       "itemId": "leather_cap",

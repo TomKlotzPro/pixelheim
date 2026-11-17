@@ -16137,12 +16137,20 @@ msgid "You fill a bucket. Water, for once, is on our side."
 msgstr "Vous remplissez un seau. L'eau, pour une fois, est de notre côté."
 
 #: assets/data/progression.json
+msgid "You roll clear of their teeth. Someone is calling from Upper Street."
+msgstr "Vous roulez hors de portée de leurs crocs. Quelqu'un appelle depuis la Grand-Rue."
+
+#: assets/data/progression.json
 msgid "You're late, courier. Fifty years late."
 msgstr "Vous êtes en retard, messager. Cinquante ans de retard."
 
 #: assets/data/progression.json
 msgid "Your hands are empty: the well is on the green, below the square."
 msgstr "Vous avez les mains vides : le puits est sur le pré, en contrebas de la place."
+
+#: assets/data/progression.json
+msgid "Your skill answers the fire. Maren is waiting at the shrine."
+msgstr "Votre compétence répond au feu. Maren attend au sanctuaire."
 
 #: assets/data/progression.json
 msgid "the Blackiron Mines"

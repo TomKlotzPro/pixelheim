@@ -271,3 +271,83 @@ func test_a_survivor_plays_their_scene_only_on_their_step() -> void:
 					assert_false(place in line, "%s at beat %d names no place: %s" % [id, step, line])
 	var wanderer := {"id": "mayor", "lines": ["Hello."]}
 	assert_eq(Prologue.lines_of(wanderer, Prologue.BRAM), ["Hello."], "anyone else says their own")
+
+
+## PIX-506: the hounds' line asked for a roll and the embers' for a skill,
+## and each waited for its wave to die: 36 rolls went unanswered. The beat
+## is done by the first of what it teaches, and still by the wave's fall.
+func test_a_waves_beat_is_done_by_what_it_teaches() -> void:
+	assert_eq(Prologue.teaches(Prologue.HOUNDS), "dodge")
+	assert_eq(Prologue.teaches(Prologue.EMBERS), "skill")
+	for step: int in Prologue.ORDER + [Prologue.DONE]:
+		assert_eq(Prologue.teaches(step) != "", not Prologue.wave(step).is_empty(), "only a wave's beat teaches: %d" % step)
+		if Prologue.teaches(step) != "":
+			# The line names the key of what finishes it, and its answer the place the next beat is done.
+			var key := "{key:%s}" % ("skill_1" if Prologue.teaches(step) == "skill" else Prologue.teaches(step))
+			assert_string_contains(String(Prologue.data()["steps"][step - 1]["text"]), key)
+			assert_eq(String(Prologue.wave(step)["taught"]).get_slice(". ", 1), String(Prologue.wave(step)["cleared"]).get_slice(". ", 1), "where to next, as its fall says")
+	state.progression.prologue = Prologue.HOUNDS
+	assert_eq(state.questing.prologue_did("skill"), "", "a skill is not the hounds' lesson")
+	assert_eq(state.questing.prologue_did(""), "")
+	assert_eq(state.progression.prologue, Prologue.HOUNDS)
+	assert_string_contains(state.questing.prologue_did("dodge"), "Upper Street")
+	assert_eq(state.progression.prologue, Prologue.BRAM, "the first roll, both hounds standing")
+	assert_eq(state.questing.prologue_did("dodge"), "", "once")
+	assert_eq(state.questing.prologue_wave_cleared(), "", "the hounds falling later move nothing")
+	assert_eq(state.progression.prologue, Prologue.BRAM)
+	state.progression.prologue = Prologue.EMBERS
+	assert_eq(state.questing.prologue_did("dodge"), "", "a roll is not the embers' lesson")
+	assert_string_contains(state.questing.prologue_did("skill"), "Maren")
+	assert_eq(state.progression.prologue, Prologue.MAREN, "the first skill cast at them")
+	# Never rolled, never cast: the wave down still moves the night on.
+	state.progression.prologue = Prologue.HOUNDS
+	assert_string_contains(state.questing.prologue_wave_cleared(), "Upper Street")
+	assert_eq(state.progression.prologue, Prologue.BRAM)
+
+
+## PIX-507: the line that names the fight's key faded as every fight's does.
+func test_the_nights_line_stays_through_its_fights() -> void:
+	for step: int in Prologue.ORDER:
+		assert_true(Prologue.line_stays(step), "beat %d" % step)
+	assert_false(Prologue.line_stays(Prologue.DONE), "after the night a fight fades it, as before (PIX-144)")
+
+
+## PIX-508: "Open your pack (I) and drink a potion (E)" opened the pack on
+## the sword in hand, and E took it off mid-fight.
+func test_the_pack_opens_on_the_potion_for_a_hero_hurt_that_night() -> void:
+	assert_true(Prologue.hurt(Prologue.HOUNDS, 18, 42))
+	assert_false(Prologue.hurt(Prologue.HOUNDS, 21, 42), "half or more: no hint, the pack as it opens")
+	assert_false(Prologue.hurt(Prologue.HOUNDS, 0, 42), "fallen")
+	assert_false(Prologue.hurt(Prologue.DONE, 5, 42), "the night's hint only")
+	state.pack.add_item("potion_hp")
+	var rows: Array = state.pack.listing("all")
+	assert_eq(rows[0]["kind"], "gear", "the pack opens on the gear in hand")
+	var at := Prologue.potion_row(rows)
+	assert_eq(String(rows[at]["item_id"]), "potion_hp", "the row E drinks")
+	state.pack.add_item("bread")
+	rows = state.pack.listing("all", "name")
+	assert_eq(String(rows[Prologue.potion_row(rows)]["item_id"]), "potion_hp", "the potion before food, however the pack is sorted")
+	state.pack.items.erase("potion_hp")
+	rows = state.pack.listing("all")
+	assert_eq(String(Catalog.item(rows[Prologue.potion_row(rows)]["item_id"])["category"]), "food", "no potion: what else mends")
+	for item_id: String in state.pack.items.keys():
+		if Catalog.item(item_id).has("restoreHp"):
+			state.pack.items.erase(item_id)
+	assert_eq(Prologue.potion_row(state.pack.listing("all")), -1, "nothing that mends: the pack as it opens")
+
+
+## PIX-505: the prompt stood over the roof, three cells from a hero below
+## the well, and under the rim, on bare ground, for one facing down at it.
+func test_the_wells_prompt_sits_on_its_roof() -> void:
+	var size := Vector2(12, 14)
+	# Shade's well: two cells wide, its roof two tall over the rim.
+	var well := Rect2(Vector2(34, 29) * MapView.TILE, Vector2(2, 3) * MapView.TILE)
+	var roof := Rect2(well.position, Vector2(2, 2) * MapView.TILE)
+	for at: Array in [[Vector2i(35, 31), false], [Vector2i(35, 29), true], [Vector2i(34, 30), false]]:
+		var spot := Interaction.well_spot(well, at[0], size, at[1])
+		assert_true(roof.encloses(Rect2(spot, size).grow(1.0)), "on the roof, its bob too, facing %s" % [at[0]])
+		assert_eq(Rect2(spot, size).get_center().x, well.get_center().x, "in its middle")
+	# Without the pack the well is its one cell: the prompt as anything's.
+	var small := Rect2(Vector2(34, 31) * MapView.TILE, Vector2.ONE * MapView.TILE)
+	for below: bool in [false, true]:
+		assert_eq(Interaction.well_spot(small, Vector2i(34, 31), size, below), Interaction.prompt_spot(small, Vector2i(34, 31), size, below))

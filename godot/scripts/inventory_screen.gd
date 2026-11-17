@@ -151,6 +151,10 @@ func _open() -> void:
 	notes.add_child(reader)
 	status = Layout.wrapped(UiStyle.label("", 14, UiStyle.LAMP), LIST.x)
 	notes.add_child(status)
+	# Hurt on the first night, the pack opens on the potion its hint means
+	# (PIX-508: I then E took the sword in hand off mid-fight).
+	if Prologue.hurt(GameState.progression.prologue, GameState.hero.hp, int(GameState.hero.stats["maxHp"])):
+		selected = maxi(0, Prologue.potion_row(_rows()))
 	_refresh()
 
 

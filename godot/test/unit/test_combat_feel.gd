@@ -271,11 +271,20 @@ class FakeWorld extends Node2D:
 	var messages := FakeMessages.new()
 	var map := MapData.new()
 	var foes := FakeFight.new()
+	var stage := FakeStage.new()
 	## The hero the foes keep off (PIX-458).
 	var player: Node2D
 
 	func on_player_died() -> void:
 		pass
+
+
+## The night's beats hear of a roll and a cast (PIX-506).
+class FakeStage extends RefCounted:
+	var did: Array[String] = []
+
+	func prologue_did(action: String) -> void:
+		did.append(action)
 
 
 class FakeFight extends RefCounted:
@@ -442,6 +451,7 @@ func test_a_roll_past_the_strike_clears_the_swing() -> void:
 	assert_true(hero._can_dodge(), "the follow-through gives way")
 	hero.dodge(Vector2.LEFT)
 	assert_true(hero.dodging, "the roll starts")
+	assert_eq(hero.world.stage.did, ["dodge"] as Array[String], "and the night's hounds beat hears of it (PIX-506)")
 	assert_false(hero.attacking, "the swing is over")
 	assert_false(hero.casting, "a cast too")
 	assert_false(hero.striking, "it can't bite")
@@ -664,6 +674,7 @@ func test_a_skill_pressed_during_a_swing_fires_when_the_hero_is_free() -> void:
 	hero._end_swing()
 	hero._fire_kept()
 	assert_true(hero.casting, "it goes as the swing ends")
+	assert_eq(hero.world.stage.did, ["skill"] as Array[String], "the night's embers beat hears of the cast, not the press (PIX-506)")
 	assert_eq(hero.world.hud.dock.refused, [] as Array[int], "and nothing was refused")
 
 

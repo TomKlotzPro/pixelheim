@@ -48,7 +48,10 @@ func test_a_well_on_the_grass_is_the_roofed_well() -> void:
 	])))
 	assert_eq(well["kind"], "well")
 	assert_eq(well["tiles"], PunyProps.WELL)
-	assert_eq(well["covers"], [Vector2i(1, 2), Vector2i(2, 2)], "only the base blocks: the roof overhangs")
+	# PIX-505: only the base blocked, and the hero stood on the roof.
+	assert_eq(well["covers"], [Vector2i(1, 0), Vector2i(2, 0), Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2)], "all it is drawn over blocks, roof and rim")
+	for tile: Array in PunyProps.WELL:
+		assert_true(Vector2i(1, 2) + Vector2i(tile[0]) in well["covers"], "the tile at %s is stood beside, never on" % [tile[0]])
 
 
 func test_a_cramped_well_stays_one_cell() -> void:
