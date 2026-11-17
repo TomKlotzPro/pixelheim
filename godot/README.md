@@ -344,9 +344,10 @@ font cut into pixels (the page loads nothing but itself and the picture,
 about 60 KB); nothing is in the markup, so nothing shows in the wrong
 language before the title (PIX-295), and the tab and the window are titled
 just "Pixelheim". Reduced motion keeps only the progress. The game tells the page when its first
-screen is up (`window.pixelheimShown`, from `world.gd`), and a launch's
-title rises out of the same picture, laid under the name so the name holds
-still; titles after it (back from the saves) rise out of the night's colour.
+screen is up (`window.pixelheimShown`, from `world.gd`): the page fades,
+with the name and the village, into the dark starry sky where a launch's
+title entrance (PIX-392) begins its descent; titles after it (back from the
+saves) rise out of the night's colour.
 `python3 godot/tools/splash.py` redraws the picture and writes its live
 points (the twinkling stars, the windows, the chimneys, the road, the
 courier, the words and their letters) into the shell; `--check` says when

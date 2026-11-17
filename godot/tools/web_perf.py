@@ -56,6 +56,9 @@ def measure(browser, url, args, timeout_s):
     try:
         page.goto(url)
         page.wait_for_function("window.pixelheimPerf", timeout=timeout_s * 1000)
+        # The loading screen hands over to the game (PIX-517): gone by now.
+        if page.evaluate("!!document.getElementById('status')"):
+            raise SystemExit("the loading screen never left (window.pixelheimShown)")
     except Exception:
         print("\n".join(said[-30:]), file=sys.stderr)
         raise
