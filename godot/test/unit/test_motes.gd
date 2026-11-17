@@ -27,6 +27,7 @@ func test_feet_kick_up_dust_or_splash() -> void:
 	assert_eq(Motes.footfall("path"), "dust")
 	assert_eq(Motes.footfall("snow"), "dust", "snow puffs too")
 	assert_eq(Motes.footfall("marsh"), "splash", "wading through a bog")
+	assert_eq(Motes.footfall("water"), "splash", "or the Mirefen's shallows (PIX-519)")
 	assert_eq(Motes.footfall("grass"), "", "grass keeps quiet")
 	assert_eq(Motes.footfall("floor"), "")
 	for tile: String in Motes.DUST:

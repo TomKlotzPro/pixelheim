@@ -372,6 +372,7 @@
     "snow": "step_snow",
     "ice": "step_ice",
     "marsh": "step_mud",
+    "water": "step_mud",
     "cave:floor": "step_stone",
     "stone:floor": "step_stone",
     "cobbles:path": "step_stone",

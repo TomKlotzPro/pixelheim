@@ -5337,6 +5337,10 @@ msgid "Outside the walls, the Reach's farmland grows with the town: a plot tramp
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Over the Bog"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Owned businesses pay RENT: +2g each after every victory, straight into your purse with a line in the battle log"
 msgstr ""
 
@@ -6841,6 +6845,10 @@ msgid "The Mirefen comes alive: dead trees, reed beds and boardwalks over the fe
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Mirefen's boardwalks are real footbridges now: two planks wide, over the water, landing on a road, a bridge or a door at both ends"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and reeds, the Deepwood's lake dark teal and the Frostgate's water icy"
 msgstr ""
 
@@ -7426,6 +7434,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The roll's hint reads quickly and lets the fight's lines through"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The ruin's walk goes all the way down to the road, and a new walk runs down the river's west bank to the south bridge"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8202,6 +8214,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "You can own a HOUSE. The shut door in the south of town names its price: the deed costs 1,500g - press E and it's yours"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "You step on and off a boardwalk at its ends: the water beside it is deep enough to stop you"
 msgstr ""
 
 #: assets/data/changelog.json

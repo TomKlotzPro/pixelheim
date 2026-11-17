@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.384.0",
+      "date": "2026-11-17",
+      "codename": "Over the Bog",
+      "notes": [
+        "The Mirefen's boardwalks are real footbridges now: two planks wide, over the water, landing on a road, a bridge or a door at both ends",
+        "The ruin's walk goes all the way down to the road, and a new walk runs down the river's west bank to the south bridge",
+        "You step on and off a boardwalk at its ends: the water beside it is deep enough to stop you"
+      ]
+    },
+    {
       "version": "0.383.0",
       "date": "2026-11-17",
       "codename": "Lantern on the Road",

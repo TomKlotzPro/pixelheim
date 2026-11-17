@@ -611,6 +611,8 @@ func test_every_ground_has_its_step() -> void:
 	assert_eq(surfaces.keys().size(), 8, "grass, dirt, sand, stone, wood, snow, ice and the marsh's mud and water")
 	assert_eq(Sound.step_for("grass"), "step_grass")
 	assert_eq(Sound.step_for("marsh"), "step_mud", "squelch and splash (PIX-413)")
+	assert_eq(Sound.step_for("water"), "step_mud", "the Mirefen's shallows, waded (PIX-519)")
+	assert_eq(Sound.step_for("bridge"), "step_wood", "and its walks' planks")
 	assert_eq(Sound.step_for("floor"), "step_wood", "a house's boards")
 	# A cave's "floor" is its rock: every dungeon's floors, drawn by hand or
 	# laid from a seed, walked on wood before the review.
