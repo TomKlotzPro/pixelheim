@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.386.0",
+      "date": "2026-11-17",
+      "codename": "Laid by a Mason",
+      "notes": [
+        "From the Town on, the square is laid in flagstones with grass in the joints, inside a border of setts",
+        "In the City, a rosette of woven terracotta brick surrounds the fountain, with a path of it up to the hall's door",
+        "Where two stones meet, the edge is rounded and notched, not a ruler line"
+      ]
+    },
+    {
       "version": "0.385.0",
       "date": "2026-11-17",
       "codename": "Smoke from the Chimneys",

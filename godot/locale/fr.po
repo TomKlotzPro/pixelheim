@@ -4025,6 +4025,10 @@ msgid "From the Ashes"
 msgstr "Des cendres"
 
 #: assets/data/changelog.json
+msgid "From the Town on, the square is laid in flagstones with grass in the joints, inside a border of setts"
+msgstr "Dès la Ville, la place est dallée, avec de l'herbe dans les joints, dans une bordure de pavés"
+
+#: assets/data/changelog.json
 msgid "Frost creeps over the stair down to the ice cave in Liane's room"
 msgstr "Le givre gagne l'escalier qui descend à la grotte de glace, dans la chambre de Liane"
 
@@ -4377,6 +4381,10 @@ msgid "In the Browser"
 msgstr "Dans le navigateur"
 
 #: assets/data/changelog.json
+msgid "In the City, a rosette of woven terracotta brick surrounds the fountain, with a path of it up to the hall's door"
+msgstr "Dans la Cité, une rosace de briques tressées entoure la fontaine, avec une allée jusqu'à la porte de la mairie"
+
+#: assets/data/changelog.json
 msgid "In the Mirefen, the narrow tips of four pools are now marsh you can walk on"
 msgstr "Dans les Marais de Fange, les pointes étroites de quatre mares sont désormais un marais où l'on peut marcher"
 
@@ -4503,6 +4511,10 @@ msgstr "UN BUTIN À SA PLACE : un monstre des terres sauvages lâche ce que l�
 #: assets/data/changelog.json
 msgid "LOOT WHERE IT FALLS: wild loot names the regions that drop it (imp horn in the Mirefen, wolf pelts in the forest, marsh and on the coast), not a floor of the mountain"
 msgstr "LE BUTIN LÀ OÙ IL TOMBE : le butin sauvage indique les régions où on le trouve (corne de diablotin dans les Marais de Fange, peaux de loup dans la forêt, les marais et sur la côte), et non un étage de la montagne"
+
+#: assets/data/changelog.json
+msgid "Laid by a Mason"
+msgstr "Pavée par un maçon"
 
 #: assets/data/changelog.json
 msgid "Lamplight"
@@ -8063,6 +8075,10 @@ msgstr "Là où les régions se rejoignent, le sol ne change plus le long de lig
 #: assets/data/changelog.json
 msgid "Where the Ash Fields reach the river, the burnt ground now ends as raggedly as it does elsewhere, without a grey square or strip on the bank"
 msgstr "Là où les Champs de Cendres atteignent la rivière, la terre brûlée s'arrête désormais aussi irrégulièrement qu'ailleurs, sans carré ni bande grise sur la berge"
+
+#: assets/data/changelog.json
+msgid "Where two stones meet, the edge is rounded and notched, not a ruler line"
+msgstr "Là où deux pierres se rencontrent, le bord est arrondi et dentelé, pas tiré à la règle"
 
 #: assets/data/changelog.json
 msgid "While Pixelheim still lies in ashes, the other villages' people are home: Saltmere, Blackiron, Greyhold and the Frostgate no longer wait for Pixelheim to become a hamlet, so you can talk to them, take their quests and carry their post from the start"
