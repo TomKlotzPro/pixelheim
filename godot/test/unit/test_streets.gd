@@ -4,7 +4,7 @@ extends GutTest
 ## cobbled in the Town, and in the City every street cobbled, the square and
 ## the avenue to the gate in sandstone. The square laid by a mason (PIX-522):
 ## mossy flags in a border course of setts from the Town, the City's inlay
-## of basket weave round the fountain and in from the sides. Greyhold's
+## of basket weave round the fountain and in from its ways. Greyhold's
 ## courtyard is flagged and its paths cobbled; the Frostgate's road cobbled
 ## up to its observatory's flagged yard. Paving is only drawn: it covers
 ## open ground and never touches the grid.
@@ -70,6 +70,9 @@ func test_the_traffic_wears_the_busiest_streets_by_age() -> void:
 	assert_true(worn[4][SQUARE] and worn[4][BY_THE_FOUNTAIN], "a square scuffs, round its fountain too")
 	assert_false(worn[4][UPPER_STREET] or worn[4][GATE_ROAD], "a street ruts")
 	assert_false(worn[4].has(OFF_THE_WAYS), "the square's flags off the ways its folk walk lie as laid")
+	var walked := Streets.trodden("town")
+	assert_true(walked.has(BY_THE_FOUNTAIN) and walked.has(Vector2i(40, 21)), "the ways its folk walk, worn or not yet (PIX-522's moss keeps off them)")
+	assert_false(walked.has(OFF_THE_WAYS))
 	assert_false(worn[4].has(HEARTH_LANE), "a side lane keeps its stone")
 	for tier in range(3, Town.MAX_TIER + 1):
 		assert_gt(worn[tier].size(), worn[tier - 1].size(), "age %d wears more than the one before" % tier)
@@ -86,8 +89,10 @@ func test_the_traffic_wears_the_busiest_streets_by_age() -> void:
 ## The square laid by a mason (PIX-522): from the Town a border course of
 ## setts on its outer ring and nowhere else, the flags inside; in the City a
 ## rosette of basket weave round the fountain and a line of it one cell wide
-## in from each side, the sandstone between. No brick mat: nothing on the
-## square but its flags, its border and its inlay.
+## from each way in that meets the square square-on: the hall's door and the
+## west street (the review: the lines from the sides led nowhere, the east
+## one at grass and stalls), the sandstone between. No brick mat: nothing on
+## the square but its flags, its border and its inlay.
 func test_the_square_has_a_border_and_an_inlay() -> void:
 	var grid := _town()
 	var square := Rect2i(32, 20, 17, 9)
@@ -106,15 +111,17 @@ func test_the_square_has_a_border_and_an_inlay() -> void:
 					assert_has(["mossy", "sandstone", "basket"] if tier == 4 else ["mossy"], look, "age %d: inside the border at %s" % [tier, cell])
 		assert_false(paved.values().has("basket") and tier < 4, "age %d lays no inlay before the City" % tier)
 	var city := Streets.plan("town", grid, Town.MAX_TIER)
-	for cell: Vector2i in [Vector2i(40, 21), Vector2i(33, 24), Vector2i(47, 24), Vector2i(38, 22), Vector2i(43, 27)]:
+	for cell: Vector2i in [Vector2i(40, 21), Vector2i(33, 26), Vector2i(37, 26), Vector2i(38, 22), Vector2i(43, 27)]:
 		assert_eq(city.get(cell), "basket", "the inlay at %s" % cell)
-	for cell: Vector2i in [Vector2i(39, 21), Vector2i(33, 23), Vector2i(37, 25)]:
+	for cell: Vector2i in [Vector2i(39, 21), Vector2i(33, 25), Vector2i(33, 27), Vector2i(37, 25)]:
 		assert_eq(city.get(cell), "sandstone", "sandstone beside the inlay at %s" % cell)
+	for cell: Vector2i in [Vector2i(44, 24), Vector2i(47, 24)]:
+		assert_eq(city.get(cell), "sandstone", "no line to the east side, where no way comes in, at %s" % cell)
 	# Soft edges: the setts join the cobbled streets and round off against
 	# the square's flags; the flags run whole up to them.
 	var mouth := Vector2i(32, 26)
 	assert_eq(Streets.mask(city, mouth) & 64, 64, "the setts run on into the west street's cobbles")
-	assert_eq(Streets.mask(city, mouth) & 4, 0, "and round off against the sandstone")
+	assert_eq(Streets.mask(city, mouth) & 4, 0, "and round off against the line in from it")
 	assert_eq(Streets.mask(city, Vector2i(33, 22)), Streets.FULL, "the sandstone whole up to the border")
 	assert_eq(Streets.mask(city, Vector2i(40, 21)), 16, "the line from the hall's door joins the rosette below, rounded off against the setts and the sandstone")
 

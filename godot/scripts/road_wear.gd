@@ -10,8 +10,8 @@ class_name RoadWear
 ## the crown. Where the town's traffic runs over its paving (Streets.worn,
 ## PIX-382 step 4), the stone wears too: the same ruts and scuffs in shade
 ## and polish over whatever the paving is, and here and there a chipped
-## stone with the dirt showing; where no one wears it, the Town square's
-## flags have grass in their joints (PIX-522).
+## stone with the dirt showing; off the ways its folk walk, the Town
+## square's flags have grass in their joints (PIX-522).
 ## Drawn in code from Shade's CC0 dirt, grass and rock colours (it needs no
 ## paid art), as tiles on two layers over the ground: the wear (by where in
 ## the road's width a cell lies and which way the road runs) and the verges
@@ -102,10 +102,11 @@ static var _tileset: TileSet
 ## the map's edges (so a road out runs on), `paved` the cells paving covers
 ## (Streets: worn no more, but where the traffic wears the stone: `worn`,
 ## Streets.worn, a square's cells in scuffs and never a lane's ruts; the
-## flags of a Streets.MOSSY look worn by no one grassed in their joints),
+## flags of a Streets.MOSSY look grassed in their joints off the cells its
+## folk walk, `walked`: Streets.trodden),
 ## `origin` where cell (0, 0) lies in the plane (a road's wear runs on
 ## unbroken into the map beside), `style` COUNTRY or TOWN.
-static func rows(grid: Dictionary, beyond: Callable, size: Vector2i, from: int, to: int, paved: Dictionary, origin: Vector2i, style: int, worn := {}) -> Dictionary:
+static func rows(grid: Dictionary, beyond: Callable, size: Vector2i, from: int, to: int, paved: Dictionary, origin: Vector2i, style: int, worn := {}, walked := {}) -> Dictionary:
 	var wear := {}
 	var verge := {}
 	for y in range(from, mini(to, size.y)):
@@ -116,7 +117,7 @@ static func rows(grid: Dictionary, beyond: Callable, size: Vector2i, from: int, 
 			if paved.has(cell):
 				if worn.has(cell):
 					wear[cell] = wear_tile(grid, beyond, cell, origin, PAVED, worn[cell])
-				elif paved[cell] in Streets.MOSSY and Streets.mask(paved, cell) == Streets.FULL:
+				elif paved[cell] in Streets.MOSSY and not walked.has(cell) and Streets.mask(paved, cell) == Streets.FULL:
 					wear[cell] = MOSS + absi(hash(origin + cell)) % VARIANTS
 				continue
 			wear[cell] = wear_tile(grid, beyond, cell, origin, style)

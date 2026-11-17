@@ -12,9 +12,10 @@ class_name Streets
 ## screen, the Town's gravel bare sand over 17x9 cells, the City's three
 ## stones rectangles with hard seams and a brick mat under the fountain): a
 ## border course of setts round its outer ring from the Town, mossy flags
-## inside it with grass in their joints (RoadWear), and in the City sandstone
-## with a rosette of basket weave round the fountain and a line of it in
-## from each side. Greyhold's courtyard is flagged, its
+## inside it with grass in their joints off the ways its folk walk
+## (RoadWear), and in the City sandstone with a rosette of basket weave
+## round the fountain and a line of it from the hall's door and in from the
+## west street. Greyhold's courtyard is flagged, its
 ## paths in sandstone, the road from its gate to the keep (PIX-337: cobbles
 ## on its grey flags didn't show, by night least); the Frostgate's
 ## observatory stands in a flagged yard at the end of a cobbled road.
@@ -56,15 +57,15 @@ const LOOKS := {
 	# square's flags and the gravel, one with a cobbled street.
 	"setts": {"edges": Vector2i(34, 48), "fill": COBBLES, "soft": true},
 	# The terracotta set's basket weave in its own soft stones: the City's
-	# rosette round the fountain, and its lines in from the sides (a line
-	# one cell wide is all edge).
+	# rosette round the fountain, and its lines from the hall's door and the
+	# west street (a line one cell wide is all edge).
 	"basket": {"edges": Vector2i(34, 112), "fill": [[27, 109], [28, 109], [29, 109]], "soft": true},
 }
 ## The looks that set a row of edge stones where they end (RoadWear.kerbs):
 ## gravel has no edge of its own.
 const KERBED := ["gravel"]
-## The looks with grass in their flags' joints where no feet wear it away
-## (RoadWear.MOSS, PIX-522).
+## The looks with grass in their flags' joints off the ways folk walk
+## (RoadWear.MOSS, Streets.trodden, PIX-522).
 const MOSSY := ["mossy"]
 ## The pieces of a 12x4 edge block (rows of columns) by which of a cell's
 ## eight neighbours are paved (N=1, NE=2, E=4, SE=8, S=16, SW=32, W=64,
@@ -165,6 +166,19 @@ static func worn(map_id: String, grid: Dictionary, paved: Dictionary, tier: int)
 				if rect.size == Vector2i.ZERO or rect.has_point(cell):
 					out[cell] = square
 					break
+	return out
+
+
+## The cells a map's squares' folk walk (their `trodden` rects), worn yet or
+## not: the Town's mossy flags grow no grass in their joints there, so its
+## ways in to the fountain show before the City wears them (PIX-522).
+static func trodden(map_id: String) -> Dictionary:
+	var out := {}
+	for area: Dictionary in areas(map_id):
+		for r: Array in area.get("trodden", []):
+			for y in range(int(r[1]), int(r[1]) + int(r[3])):
+				for x in range(int(r[0]), int(r[0]) + int(r[2])):
+					out[Vector2i(x, y)] = true
 	return out
 
 

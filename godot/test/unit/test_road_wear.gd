@@ -191,9 +191,11 @@ func test_a_square_scuffs_where_a_street_ruts() -> void:
 	assert_true(square >= first and square < first + RoadWear.VARIANTS, "a square's: a worn patch in the paving's look")
 
 
-## The Town's mossy flags (PIX-522) have grass in their joints where no one
-## walks, scuffs where folk do, and the grass grows only in the joints: the
-## top and middle rows, the left edge above the middle and the middle below.
+## The Town's mossy flags (PIX-522) have grass in their joints off the ways
+## folk walk (clean on them before the City wears them, the review: the
+## Town's square read as one even grid), scuffs where they are worn, and
+## the grass grows only in the joints: the top and middle rows, the left
+## edge above the middle and the middle below.
 func test_mossy_flags_grow_grass_in_their_joints() -> void:
 	var strip := _road_down(4, 3)
 	var paved := {}
@@ -206,6 +208,7 @@ func test_mossy_flags_grow_grass_in_their_joints() -> void:
 	assert_false(wear.has(Vector2i(4, 6)), "an edge stone isn't a flag")
 	var worn: int = RoadWear.rows(grid, _grass, Vector2i(12, 12), 0, 12, paved, Vector2i.ZERO, RoadWear.TOWN, {middle: true})["wear"][middle]
 	assert_lt(worn, RoadWear.MOSS, "feet wear the grass away")
+	assert_false(RoadWear.rows(grid, _grass, Vector2i(12, 12), 0, 12, paved, Vector2i.ZERO, RoadWear.TOWN, {}, {middle: true})["wear"].has(middle), "and the ways folk walk lie clean before they're worn")
 	var atlas := RoadWear.atlas()
 	var grown := 0
 	for variant in RoadWear.VARIANTS:
