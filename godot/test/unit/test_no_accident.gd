@@ -4,12 +4,6 @@ extends GutTest
 ## world; and a talk left with Esc takes no quest.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const DialogueBox := preload("res://scripts/dialogue_box.gd")
-const ShopScreen := preload("res://scripts/shop_screen.gd")
-const BankScreen := preload("res://scripts/bank_screen.gd")
-const ThroneScreen := preload("res://scripts/throne_screen.gd")
-const StatsScreen := preload("res://scripts/stats_screen.gd")
-const BountyScreen := preload("res://scripts/bounty_screen.gd")
 const QUEST := "herbs_for_vex"
 const VEX := "alchemist_vex"
 

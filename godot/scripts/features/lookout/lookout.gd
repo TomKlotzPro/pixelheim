@@ -81,7 +81,7 @@ static func at(map_id: String, cell: Vector2i) -> bool:
 
 ## E at the spyglass: the Reach by night, or by day a word to come back
 ## after dark. True when E meant it.
-static func use(world: Node2D, cell: Vector2i) -> bool:
+static func use(world: World, cell: Vector2i) -> bool:
 	if not at(world.map.id, cell):
 		return false
 	if not DayNight.is_night(GameState.world.steps):

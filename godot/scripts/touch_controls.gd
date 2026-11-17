@@ -1,3 +1,4 @@
+class_name TouchControls
 extends CanvasLayer
 ## areas: screen
 ## On-screen controls for a phone (PIX-162): a thumbstick under the left

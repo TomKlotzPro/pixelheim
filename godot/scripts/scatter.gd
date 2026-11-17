@@ -152,8 +152,8 @@ static func solid(data: MapData, kept: Dictionary, drawn: Dictionary) -> Diction
 		if choice(data.grid, cell) not in SOLID:
 			continue
 		var open := true
-		for dy in [-1, 0, 1]:
-			for dx in [-1, 0, 1]:
+		for dy: int in [-1, 0, 1]:
+			for dx: int in [-1, 0, 1]:
 				var next: Vector2i = cell + Vector2i(dx, dy)
 				if next != cell and (not data.is_walkable(next) or data.portals.has(next) or out.has(next)):
 					open = false

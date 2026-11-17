@@ -1,3 +1,4 @@
+class_name ChangelogScreen
 extends Screen
 ## areas: title
 ## What's new (the web's Changelog page): every release, newest first, its

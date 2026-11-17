@@ -1,3 +1,4 @@
+class_name PauseScreen
 extends Screen
 ## areas: screen
 ## The Escape menu (PauseMenu.tsx): resume, the saves (slots and codes),
@@ -6,7 +7,7 @@ extends Screen
 
 const Options := preload("res://scripts/options_screen.gd")
 
-var world: Node
+var world: World
 var options: Array[Dictionary] = []
 var selected := 0
 var menu: VBoxContainer
@@ -53,7 +54,7 @@ func _open() -> void:
 	options = [
 		{"label": "Resume", "action": _resume},
 		{"label": "Saves", "action": _saves},
-		{"label": "Options", "action": _options},
+		{"label": "Options", "action": open_options},
 		{"label": "Quit to title", "action": _quit},
 	]
 	# A language chosen in Options rebuilt the world in it (PIX-428):
@@ -115,7 +116,7 @@ func _saves() -> void:
 	open_over(screen, [card, keys])
 
 
-func _options() -> void:
+func open_options() -> void:
 	var screen := Options.new()
 	screen.world = world
 	open_over(screen, [card, keys])

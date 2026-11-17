@@ -1,3 +1,4 @@
+class_name Escort
 extends Node2D
 ## areas: quest travel
 ## An escort (PIX-192): Gunnar's last wagon down the Frostgate - an old
@@ -16,7 +17,7 @@ const THREAT := 3.0 * 16
 const BITE_REACH := 16.0
 const BITE_EVERY := 1.2
 
-var world: Node
+var world: World
 var def: Dictionary
 var route: Array[Vector2] = []
 var index := 1
@@ -122,7 +123,7 @@ func _idle() -> void:
 func _reached(at: int) -> void:
 	for ambush: Dictionary in def.get("ambushes", []):
 		if int(ambush["at"]) == at:
-			for i in ambush["foes"].size():
+			for i: int in ambush["foes"].size():
 				var from: Array = ambush["from"][i]
 				var foe: Node = world.foes.spawn_enemy(ambush["foes"][i], Vector2i(int(from[0]), int(from[1])), "", "", false, true)
 				foe.quarry = self

@@ -8,9 +8,10 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 
 ## A world as LootPop reads it: the map shown and the hero.
 class Place:
-	extends Node2D
-	var view: Variant = RefCounted.new()
-	var player: Node2D = null
+	extends "res://test/bare_world.gd"
+
+	func _init() -> void:
+		view = MapView.new(MapData.new(), self)
 
 
 var _still: bool
@@ -177,14 +178,14 @@ func test_a_burst_on_the_next_map_counts_as_the_first_did() -> void:
 	await wait_seconds(2.0)
 	assert_eq(fx.loot.gold_counted, 10, "the first map's")
 	assert_false(fx.loot.is_processing(), "asleep between kills")
-	stage.view = RefCounted.new()
+	stage.view = MapView.new(MapData.new(), stage)
 	fx.burst_gains(_win(10, 5), Vector2(100, 80))
 	await wait_seconds(2.0)
 	assert_eq(fx.loot.gold_counted, 20, "the next map's first kill counted too")
 	# Through a door with coins in the air: they stay behind, the new
 	# map's fly.
 	fx.burst_gains(_win(10, 5), Vector2(100, 80))
-	stage.view = RefCounted.new()
+	stage.view = MapView.new(MapData.new(), stage)
 	fx.burst_gains(_win(7, 5), Vector2(100, 80))
 	await wait_seconds(2.0)
 	assert_eq(fx.loot.gold_counted, 27, "only the new map's landed")

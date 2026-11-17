@@ -95,8 +95,8 @@ static func shape(kind: Dictionary) -> Dictionary:
 			var whole := inside == ALL_SIDES
 			if _strip(inside) or (cut_too and whole and _cut(cells, cell).size() > 1):
 				cells.erase(cell)
-				for dy in [-1, 0, 1]:
-					for dx in [-1, 0, 1]:
+				for dy: int in [-1, 0, 1]:
+					for dx: int in [-1, 0, 1]:
 						next.append(cell + Vector2i(dx, dy))
 		waiting = next
 	var out := {}
@@ -157,8 +157,8 @@ static func _cut(cells: Dictionary, cell: Vector2i) -> Array:
 ## Whether every cell round `cell` is Shade's grass to the edge: a patch
 ## stays clear of roads, water, sand and cliffs and their tufted edges.
 static func _open_round(grid: Dictionary, cell: Vector2i) -> bool:
-	for dy in [-1, 0, 1]:
-		for dx in [-1, 0, 1]:
+	for dy: int in [-1, 0, 1]:
+		for dx: int in [-1, 0, 1]:
 			if PunyTerrain.ground_at(grid, cell + Vector2i(dx, dy)) != "grass":
 				return false
 	return true

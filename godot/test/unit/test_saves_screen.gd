@@ -7,7 +7,6 @@ extends GutTest
 ## over a hero asks first. Runs against a throwaway user:// folder.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const SavesScreen := preload("res://scripts/saves_screen.gd")
 const DIR := "user://test_saves_screen"
 ## A clock for the "saved ... ago" line: 2026-10-16, noon.
 const NOW := 1792152000

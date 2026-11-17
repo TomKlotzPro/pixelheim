@@ -120,7 +120,7 @@ static func lay(map: MapData, kept: Dictionary, healed: Dictionary, paid: bool) 
 				_stand(map, kept, out, {"kind": "post", "cell": cell, "set": walls})
 		var cart: Vector2i = stead["cart"]
 		_stand(map, kept, out, {"kind": "cart", "cell": cart, "cells": [cart, cart + Vector2i.RIGHT] as Array[Vector2i]})
-		for i in stead["rubble"].size():
+		for i: int in stead["rubble"].size():
 			if paid:
 				_stand(map, kept, out, {"kind": "rubble", "cell": stead["rubble"][i], "art": RUBBLE[i % RUBBLE.size()]})
 		var paddock: Rect2i = stead["paddock"]

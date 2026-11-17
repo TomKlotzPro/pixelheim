@@ -194,7 +194,7 @@ func _ready() -> void:
 	for i in 3:
 		_ambient_voices.append(_player("Ambience"))
 	_bed = _player("Ambience")
-	for player in [_music, _fading]:
+	for player: AudioStreamPlayer in [_music, _fading]:
 		player.finished.connect(_theme_over.bind(player))
 		# Streamed on the web too, where a player is a sample by default: a
 		# bundle's track was decoded whole on the main thread at its first
@@ -241,7 +241,7 @@ func release() -> void:
 	for tween: Tween in [_fade, _bed_fade, _duck]:
 		if tween != null:
 			tween.kill()
-	for player in [_music, _fading, _bed] + _voices() + _ambient_voices:
+	for player: AudioStreamPlayer in [_music, _fading, _bed] + _voices() + _ambient_voices:
 		player.stop()
 		player.stream = null
 	_streams.clear()

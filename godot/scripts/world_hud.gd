@@ -9,16 +9,16 @@ extends Node
 ## plate and the battle log stand on its layer too (Messages builds them).
 ## Which of GameState's signals reach it is still the world's wiring.
 
-var world: Node
+var world: World
 ## The HUD's layer (over the glow's, PIX-222).
 var root: CanvasLayer
 ## Day/night tint, under the HUD widgets and over the world.
 var sky_overlay: ColorRect
 ## A hurt's faint red at the screen's edges (PIX-447), over the tint.
-var hurt_edge: TextureRect
+var hurt_edge: HurtEdge
 ## The hero panel: health, resource, xp, gold, the screens (HudPanel).
-var dock: Control
-var boss_bar: Control
+var dock: HudDock
+var boss_bar: BossBar
 ## The first-time hints waiting their turn ([id, values, the id it's seen
 ## by], PIX-341: hints_wait).
 var _held_hints: Array[Array] = []
@@ -314,10 +314,10 @@ func _card_clear_of() -> Array[Rect2]:
 	var taken: Array[Rect2] = []
 	if boss_bar.following():
 		taken.append(boss_bar.plate.get_global_rect())
-	if world.get("fx") != null:
+	if world.fx != null:
 		for rect: Rect2 in world.fx.reach():
 			taken.append(to_screen(rect))
-	if world.get("player") != null:
+	if world.player != null:
 		taken.append(hero_on_screen())
 	return taken
 
@@ -358,10 +358,10 @@ func hero_on_screen() -> Rect2:
 ## wrapping words measured at no width, stood far over the top and the
 ## arrow's area came out negative).
 func _words_top() -> float:
-	var top: float = world.camera_rig.dock_top() if world.get("camera_rig") != null else 720.0
+	var top: float = world.camera_rig.dock_top() if world.camera_rig != null else 720.0
 	if objective_box != null:
 		top = minf(top, objective_box.position.y)
-	var messages: Messages = world.get("messages")
+	var messages: Messages = world.messages
 	if messages != null and messages.message_box.modulate.a > 0.0 and messages.message_box.position.y >= 0.0:
 		top = minf(top, messages.message_box.position.y)
 	if messages != null and messages.log_box.size.y > 0.0 and messages.log_box.position.y >= 0.0:
@@ -612,7 +612,7 @@ func _bearing_point() -> Vector2:
 	# A person is wherever they stand now: a keeper's tent on the square
 	# before the inn is rebuilt, a wanderer on their round.
 	if String(bearing["who"]) != "":
-		for villager in get_tree().get_nodes_in_group("npcs"):
+		for villager: Npc in get_tree().get_nodes_in_group("npcs"):
 			if not villager.away and String(villager.data.get("id", "")) == bearing["who"]:
 				return villager.global_position
 	var here: String = world.map.id
@@ -651,7 +651,7 @@ func update_nameplate() -> void:
 		nameplate_over = float(near.get("over", ShopSign.BOARD.y + 10))
 		(nameplate.get_child(0).get_child(0) as Label).text = near["name"]
 		(nameplate.get_child(0).get_child(1) as Label).text = near["about"]
-		nameplate.get_child(0).get_child(1).visible = near["about"] != ""
+		(nameplate.get_child(0).get_child(1) as Label).visible = near["about"] != ""
 		nameplate.reset_size()
 		nameplate.show()
 		nameplate.modulate.a = 1.0 if GameState.settings.reduce_motion else 0.0

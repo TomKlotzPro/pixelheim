@@ -951,7 +951,7 @@ func _add_field_decor(cell: Vector2i) -> void:
 			_add_wood(piece, cell)
 	else:
 		_add_decor_sprite(PunyTerrain.SHEET, PunyTerrain.region(choice), cell, absi(hash(cell)))
-		actors.get_child(-1).material = decor_sway if choice in Scatter.SWAYS else ground_tint
+		(actors.get_child(-1) as CanvasItem).material = decor_sway if choice in Scatter.SWAYS else ground_tint
 
 
 ## A tree, a bush or a rock of the woods (Woods.pieces), its foot where the
@@ -1033,8 +1033,8 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 		kept[cell] = true
 	# A pack's home and the cells around it stay open for the pack.
 	for spawn: Dictionary in Bestiary.spawns_on(data.id):
-		for dy in [-1, 0, 1]:
-			for dx in [-1, 0, 1]:
+		for dy: int in [-1, 0, 1]:
+			for dx: int in [-1, 0, 1]:
 				kept[Vector2i(spawn["x"] + dx, spawn["y"] + dy)] = true
 	return Scatter.solid(data, kept, bare)
 

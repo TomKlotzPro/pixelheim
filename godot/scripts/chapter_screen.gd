@@ -1,3 +1,4 @@
+class_name ChapterScreen
 extends Screen
 ## areas: story
 ## A chapter card (PIX-253 step 2, v2 §5: "Main quests stand out"): when a

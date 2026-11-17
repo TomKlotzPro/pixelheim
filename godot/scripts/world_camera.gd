@@ -11,7 +11,7 @@ extends Node
 ## keeps an art pixel a whole number of screen pixels at any window size.
 ## world.gd calls update() each frame, in the order it always did.
 
-var world: Node
+var world: World
 var camera: Camera2D
 ## False while something else frames the shot (the harness overview, the
 ## dawn and reveal tours).
@@ -76,7 +76,7 @@ func _ready() -> void:
 
 
 ## The camera on `player`, fitted to the window, cut to where they stand.
-func attach(player: Node2D) -> void:
+func attach(player: Player) -> void:
 	camera = Camera2D.new()
 	camera.limit_left = 0
 	camera.limit_top = 0
@@ -184,7 +184,7 @@ func update(delta: float) -> void:
 ## The hero was placed, not walked: no interpolating from the old spot, and
 ## the camera cuts there.
 func cut() -> void:
-	var player: Node2D = world.player
+	var player: Player = world.player
 	player.reset_physics_interpolation()
 	_hero_tick_from = player.position
 	_hero_tick_to = player.position
@@ -269,6 +269,15 @@ func _apply_shake(delta: float) -> void:
 	camera.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * power
 
 
+## The stop's timer goes with the rig (a reload: the title, another slot, a
+## language), and the engine's clock is everyone's: handed back as the rig
+## leaves (PIX-503: the title and the next world ran at a quarter speed).
+func _exit_tree() -> void:
+	if _stopped:
+		Engine.time_scale = 1.0
+		_stopped = false
+
+
 func hit_stop(seconds: float, scale := 0.08) -> void:
 	if _stopped or GameState.settings.reduce_motion:
 		return
@@ -309,7 +318,7 @@ func in_view(at: Vector2, margin := 0.0) -> bool:
 
 ## Where the dock begins on the 1280x720 canvas (the bottom, before it is built).
 func dock_top() -> float:
-	var dock: Node = world.hud.dock if world.hud != null else null
+	var dock: HudDock = world.hud.dock if world.hud != null else null
 	return dock.top() if dock != null and dock.top() > 0 else 720.0
 
 

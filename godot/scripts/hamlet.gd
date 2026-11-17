@@ -405,8 +405,8 @@ static func kept_on(map: MapData, decks: Variant = null) -> Dictionary:
 		if found.get("mapId", "") == map.id:
 			out[Vector2i(int(found["x"]), int(found["y"]))] = true
 	for spawn: Dictionary in Bestiary.spawns_on(map.id):
-		for dy in [-1, 0, 1]:
-			for dx in [-1, 0, 1]:
+		for dy: int in [-1, 0, 1]:
+			for dx: int in [-1, 0, 1]:
 				out[Vector2i(int(spawn["x"]) + dx, int(spawn["y"]) + dy)] = true
 	for chest: Dictionary in Interactables.chests_on(map.id):
 		out[Vector2i(int(chest["x"]), int(chest["y"]))] = true

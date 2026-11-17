@@ -2413,6 +2413,10 @@ msgid "A monster's alert and fright bubbles sit centred over its head, and a nam
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A named foe who stands down is always paid out, even if you fall or leave during his words"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A named foe's level now stands above its name instead of over it"
 msgstr ""
 
@@ -3769,6 +3773,10 @@ msgid "Fallen foes dissolve into embers or dust instead of fading away, and foes
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Falling just as Fafnyr yields no longer leaves the Night of Bells stuck: you get up where you lie and the night goes on"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fanfare"
 msgstr ""
 
@@ -3838,6 +3846,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Five new floors beneath the mountain, for those who beat the dragon"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Fixed a crash in the battle log, and a spell in flight whose target is gone lands where it was"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4970,6 +4982,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Nodes you can afford glow. Learning them still feels as permanent as it is."
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Nothing Left Hanging"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7346,6 +7362,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The slime's pouch now says to press I to open your pack instead of “I opens your pack”, and the other messages that name a key read right whatever the key is"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The slow motion of a heavy blow no longer lingers after the world reloads"
 msgstr ""
 
 #: assets/data/changelog.json

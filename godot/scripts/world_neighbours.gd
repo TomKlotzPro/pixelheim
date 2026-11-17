@@ -25,7 +25,7 @@ extends Node
 ## (forget). If the map past a road isn't whole when the hero reaches it (a
 ## very slow machine), its road is a door again: the soft one it was.
 
-var world: Node
+var world: World
 ## Each map drawn beside the hero's, by id: {"id", "data", "view", "offset"
 ## (cells: where its cell (0, 0) lies from the hero's map's), "state"
 ## ("drawing", "stitching", "ready", "dropping"), "slices", "road"}.
@@ -470,7 +470,7 @@ func _draw_now(id: String) -> void:
 ## map drawn beside theirs, it becomes theirs - in the same physics tick,
 ## right after they moved, so nothing is drawn in between.
 func _physics_process(_delta: float) -> void:
-	var player: Node2D = world.player
+	var player: Player = world.player
 	if player == null or player.dead or world.view == null or not _on_plane(world.map):
 		return
 	var cell := Vector2i((player.position / MapView.TILE).floor())

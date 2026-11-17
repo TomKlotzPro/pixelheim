@@ -63,21 +63,24 @@ func test_one_box_of_words_at_a_time() -> void:
 
 ## What the plate asks of the world: no fight on, and whether a title card
 ## is up.
-class CalmFoes extends RefCounted:
-	func in_fight(_linger: float) -> bool:
+class CalmFoes extends Foes:
+	func in_fight(_linger := 0.0) -> bool:
 		return false
 
 
-class CardHud extends RefCounted:
+class CardHud extends Hud:
 	var card := true
 
 	func card_up() -> bool:
 		return card
 
 
-class FellWorld extends Node:
-	var foes := CalmFoes.new()
-	var hud := CardHud.new()
+## Its foes and its HUD stand nowhere in the tree: the bare world frees them
+## with itself.
+class FellWorld extends "res://test/bare_world.gd":
+	func _init() -> void:
+		foes = CalmFoes.new()
+		hud = CardHud.new()
 
 
 ## PIX-378: the Hollow King's fall ended the fight, and the level's plate

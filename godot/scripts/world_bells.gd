@@ -28,7 +28,7 @@ extends Node
 ## How far a lit lantern's light reaches, in pixels.
 const LANTERN_REACH := 64.0
 
-var world: Node
+var world: World
 ## Tonight, while it runs: the lanterns lit and the roofs doused (their
 ## indices), the embers still standing - GameState's, so a save keeps them
 ## (ProgressionState) - and the bucket in hand.
@@ -531,13 +531,18 @@ func dragon_spent(enemy: Node) -> void:
 	await get_tree().create_timer(Foes.STAND_DOWN_BEAT * 2.0).timeout
 	if not is_instance_valid(enemy) or world.view != visit:
 		_dawning = false
+		# Never left at dawn (PIX-503): with him gone there is nothing to
+		# play, and nothing else would open the town's ways again.
+		if beat() == Bells.DAWN:
+			_day()
 		return
+	_raise()
 	_frame_dawn(enemy)
 	# The scenes play over the square itself: nothing of the HUD over it
 	# (every cutscene puts it aside, PIX-368).
 	var dawn := Cutscene.new()
 	dawn.scene_id = Bells.dawn_id()
-	dawn.on_done = _collar.bind(enemy)
+	dawn.on_done = _collar.bind(enemy.get_instance_id())
 	world.add_child(dawn)
 
 
@@ -578,8 +583,11 @@ func _frame_dawn(enemy: Node) -> void:
 
 ## The collar: Morvax down the road, the keepsakes in the lanterns, and the
 ## dragon off home, free (the scene brings its own Fafnyr).
-func _collar(enemy: Node) -> void:
-	if is_instance_valid(enemy):
+## He is known by id (PIX-503): bound as a Node and freed while the dawn
+## played, the call itself failed, and the night never reached its day.
+func _collar(spent: int) -> void:
+	var enemy := instance_from_id(spent) as Node
+	if enemy != null:
 		enemy.queue_free()
 	var scene := Cutscene.new()
 	scene.scene_id = Bells.collar_id()
@@ -603,8 +611,14 @@ func _day() -> void:
 
 ## A hero who falls tonight wakes in the inn's doorway, whole, the beat
 ## set out again (Fafnyr anew, the dawn clock from the start): the night
-## is a fight, not a toll.
+## is a fight, not a toll. Once he has stood down the night is won
+## (PIX-503: set out again, the town was drawn anew without him, and the
+## dawn, the collar and the day never came, every way out barred): the hero
+## gets up where they lie and the scenes play on.
 func hero_fell() -> void:
+	if beat() == Bells.DAWN:
+		_raise()
+		return
 	GameState.make_whole()
 	var shelter := Bells.job("shelter", GameState.settlement.settlers, GameState.town_tier())
 	var at := Bells.cell(shelter["at"]) + Vector2i(1, 1) if not shelter.is_empty() else Town.square() + Vector2i(0, 4)
@@ -613,6 +627,16 @@ func hero_fell() -> void:
 	world.player.respawn(MapView.center(at))
 	world.last_player_position = world.player.position
 	world.messages.flash(String(Bells.fafnyr_spec()["fallen"]))
+
+
+## The hero whole and on their feet where they are, for the dawn: fallen as
+## he stood down (a burn's last tick), they don't lie through the scenes.
+func _raise() -> void:
+	if not world.player.dead:
+		return
+	GameState.make_whole()
+	world.player.respawn(world.player.position)
+	world.last_player_position = world.player.position
 
 
 ## What bars the ways out of town tonight, "" when nothing does: everyone

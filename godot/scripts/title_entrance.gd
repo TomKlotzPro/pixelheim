@@ -58,7 +58,7 @@ const FRONT_SCALE := 4.0
 const HEAT := [Color("ffffff"), Color("fbf236"), Color("df7126"), Color(0.67, 0.2, 0.2, 0.0)]
 
 ## The title (title_screen.gd) and its scene.
-var screen: Variant
+var screen: TitleScreen
 var scene: TitleScene
 ## The loading picture it rises out of, if any (TitleScreen._veil).
 var veil: CanvasItem

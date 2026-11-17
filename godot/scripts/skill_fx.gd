@@ -47,7 +47,7 @@ var _oldest := 0
 ## A skill's strips as it's cast: round the hero for a heal; for a blow, its
 ## bolt to each foe struck then what lands on it (on the foe at once without
 ## a bolt). False when nothing could be drawn.
-func cast(skill: Dictionary, hero: Node2D, targets: Array) -> bool:
+func cast(skill: Dictionary, hero: Player, targets: Array) -> bool:
 	var look := ItemIcons.skill_look(String(skill["name"]))
 	if skill["kind"] == "heal":
 		_note(look["self"])
@@ -80,7 +80,7 @@ func swing(weapon: String, from: Vector2, target: Node2D, end: Vector2, seconds:
 	shot.modulate = tint
 	shot.add_child(Firebolt.plain("arrow" if weapon == "bow" else "ball", (end - from).normalized()))
 	add_child(shot)
-	var goal := func() -> Vector2: return target.global_position if is_instance_valid(target) else end
+	var goal := _goal(target, end)
 	var tween := shot.create_tween()
 	tween.tween_method(func(t: float) -> void: shot.position = (from.lerp(goal.call(), t) + ON_BODY).round(), 0.0, 1.0, seconds)
 	tween.tween_callback(shot.queue_free)
@@ -134,7 +134,8 @@ func fly(strip: String, from: Vector2, target: Node2D, end: Vector2, seconds: fl
 
 ## The flight itself (the test flies a sprite of its own).
 func _flight(sprite: AnimatedSprite2D, from: Vector2, target: Node2D, end: Vector2, seconds: float, hit := "", tint := Color.WHITE) -> void:
-	var goal := func() -> Vector2: return target.global_position if is_instance_valid(target) else end
+	var goal := _goal(target, end)
+	var aimed := _id(target)
 	sprite.rotation = snappedf((goal.call() - from).angle() + PI / 2.0, PI / 2.0)
 	sprite.modulate = tint
 	var path := func(t: float) -> void: sprite.position = (from.lerp(goal.call(), t) + ON_BODY).round()
@@ -145,8 +146,23 @@ func _flight(sprite: AnimatedSprite2D, from: Vector2, target: Node2D, end: Vecto
 	tween.tween_callback(func() -> void:
 		sprite.hide()
 		if hit != "":
-			play(hit, target if is_instance_valid(target) else null, end))
+			play(hit, instance_from_id(aimed) as Node2D, end))
 	sprite.set_meta("tween", tween)
+
+
+## Where a flight is headed: its target where it stands now, `end` once it
+## is gone. The target is kept by id (PIX-503): a lambda that captures a foe
+## freed in flight (a door, a fall) raises an engine error at every call,
+## before its own is_instance_valid can run.
+static func _goal(target: Node2D, end: Vector2) -> Callable:
+	var aimed := _id(target)
+	return func() -> Vector2:
+		var there := instance_from_id(aimed) as Node2D
+		return there.global_position if there != null else end
+
+
+static func _id(target: Node2D) -> int:
+	return target.get_instance_id() if is_instance_valid(target) else 0
 
 
 ## A strip asked for, drawn or not.

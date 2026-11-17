@@ -1,3 +1,4 @@
+class_name World
 extends Node2D
 ## areas: all
 ## World orchestration: loads the maps (assets/maps), builds their
@@ -17,7 +18,7 @@ var map: MapData
 ## door signs, furniture.
 var view: MapView
 var actors: Node2D
-var player: CharacterBody2D
+var player: Player
 ## The camera (Solid Ground: its own node, CameraRig).
 var camera_rig: CameraRig
 ## What flashes and floats over the world (WorldFx).
@@ -47,11 +48,11 @@ var last_player_position := Vector2.ZERO
 ## Seconds until the next look for packs due to come home.
 var respawn_check := 0.0
 ## The world's light and darkness (PIX-221, light_rig.gd).
-var lights: Node
+var lights: LightRig
 ## Each region's air and the weather (PIX-224).
-var atmosphere: Node
+var atmosphere: Atmosphere
 ## A thunderstorm's lightning, thunder and what the rain leaves (PIX-491).
-var storm: Node
+var storm: Storm
 ## A `--screenshot` run: the harness drives, nobody else.
 var harness := false
 ## The way the story kept shut that last stopped the hero (`barred`: true
@@ -310,8 +311,18 @@ func is_walkable(cell: Vector2i) -> bool:
 
 func on_player_died() -> void:
 	# The web's music hushed under the inn's build (PIX-417, Sound.hush).
-	get_tree().create_timer(1.2 - Sound.HUSH_S).timeout.connect(Sound.hush)
-	await get_tree().create_timer(1.2).timeout
+	# Both wait out a screen (PIX-503): running through a pause, they built
+	# the inn under the Night of Bells' dawn or a foe's last words and freed
+	# the foe those were about.
+	get_tree().create_timer(1.2 - Sound.HUSH_S, false).timeout.connect(Sound.hush)
+	await get_tree().create_timer(1.2, false).timeout
+	# A named foe standing down is heard out and paid before the hero wakes
+	# elsewhere (Foes.stood_down).
+	while is_instance_valid(foes.yielding):
+		await get_tree().process_frame
+	# Raised meanwhile (the Night of Bells' dawn, Night._raise): no waking.
+	if not player.dead:
+		return
 	# A fall on the Night of Bells wakes in the inn's doorway, the beat set
 	# out again (PIX-253 step 9).
 	if night.running():

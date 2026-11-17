@@ -1,3 +1,4 @@
+class_name Lookbook
 extends Node
 ## areas: none
 ## The look book (PIX-220): the same scenes, staged the same way every time -
@@ -100,7 +101,7 @@ const CLOCK := 40.0
 ## and the glow's levels filled.
 const LOOK_FRAMES := 4
 
-var world: Node
+var world: World
 var out_dir := "res://lookbook"
 var with_perf := false
 var with_motion := false
@@ -343,8 +344,8 @@ func _stage(shot: Dictionary) -> void:
 		Atlas.walk_all(GameState.world.discovered)
 		world.open_screen("map")
 		for node in world.get_children():
-			if node.has_method("show_waypoint"):
-				node.show_waypoint(shot["chart"])
+			if node is MapScreen:
+				(node as MapScreen).show_waypoint(shot["chart"])
 	if shot.has("slots"):
 		# The saves screen over a folder of fixture slots, for this shot alone.
 		_slots_kept = GameState.slots
@@ -633,7 +634,7 @@ static func strip(frames: Array[Image]) -> Image:
 	var cell := Vector2i(frames[0].get_width() / 2, frames[0].get_height() / 2)
 	var out := Image.create(cell.x * frames.size(), cell.y, false, Image.FORMAT_RGBA8)
 	for index in frames.size():
-		var small := frames[index].duplicate()
+		var small: Image = frames[index].duplicate()
 		small.convert(Image.FORMAT_RGBA8)
 		small.resize(cell.x, cell.y, Image.INTERPOLATE_BILINEAR)
 		out.blit_rect(small, Rect2i(Vector2i.ZERO, cell), Vector2i(index * cell.x, 0))
@@ -692,7 +693,7 @@ static func sheet(images: Array[Image]) -> Image:
 	var out := Image.create(cell.x * SHEET_COLUMNS, cell.y * rows, false, Image.FORMAT_RGBA8)
 	out.fill(Color(0.07, 0.05, 0.04))
 	for index in images.size():
-		var small := images[index].duplicate()
+		var small: Image = images[index].duplicate()
 		small.convert(Image.FORMAT_RGBA8)
 		small.resize(cell.x, cell.y, Image.INTERPOLATE_BILINEAR)
 		out.blit_rect(small, Rect2i(Vector2i.ZERO, cell), Vector2i(index % SHEET_COLUMNS * cell.x, index / SHEET_COLUMNS * cell.y))

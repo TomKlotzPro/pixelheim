@@ -4,7 +4,6 @@ extends GutTest
 ## where a fall wakes and what waking says; the unnamed hero's name.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const ShopScreen := preload("res://scripts/shop_screen.gd")
 
 const HEAL := "\\b\\d+ (HP|MP)\\b"
 

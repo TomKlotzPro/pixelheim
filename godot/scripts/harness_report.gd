@@ -32,14 +32,14 @@ const HEAD := 10
 ## TABLE_FILE's rows, read once (`table()`).
 static var _table: Array[Dictionary] = []
 
-var harness: Node
-var world: Node
+var harness: Harness
+var world: World
 var flags: HarnessFlags
 ## What the run noted part-way, by field.
 var _noted := {}
 
 
-func _init(run: Node, given: HarnessFlags) -> void:
+func _init(run: Harness, given: HarnessFlags) -> void:
 	harness = run
 	world = run.world
 	flags = given
@@ -109,26 +109,27 @@ func screens() -> PackedStringArray:
 
 
 ## The open map screen, or null.
-func _map_screen() -> Node:
+func _map_screen() -> MapScreen:
 	for node in world.get_children():
-		if node.has_method("destination_id"):
+		if node is MapScreen:
 			return node
 	return null
 
 
 ## The chapter card up, or null.
-func _chapter_card() -> Node:
+func _chapter_card() -> ChapterScreen:
 	for node in world.get_children():
-		if node.has_method("rise_left"):
+		if node is ChapterScreen:
 			return node
 	return null
 
 
 ## The journal on its Letters page, or null.
-func _letters_page() -> Node:
+func _letters_page() -> JournalScreen:
 	for node in world.get_children():
-		if node.get_script() == preload("res://scripts/journal_screen.gd") and node.tab == "letters":
-			return node
+		var journal := node as JournalScreen
+		if journal != null and journal.tab == "letters":
+			return journal
 	return null
 
 
@@ -200,7 +201,7 @@ func field_ailing() -> String:
 func field_ascension() -> String:
 	if not flags.has("rankup"):
 		return ""
-	var screen: Node = harness._ascension()
+	var screen := harness.ascension()
 	return screen.phase if screen != null else "closed"
 
 
@@ -244,13 +245,13 @@ func field_boss() -> String:
 	var out: PackedStringArray = []
 	for enemy in world.get_tree().get_nodes_in_group("mobs"):
 		if not enemy.dying and not enemy.is_queued_for_deletion() and Bestiary.fights_like_boss(enemy.fighter):
-			var share: int = world.hud.boss_bar.percent(float(enemy.fighter["hp"]) / maxi(1, int(enemy.fighter["maxHp"])))
+			var share: int = BossBar.percent(float(enemy.fighter["hp"]) / maxi(1, int(enemy.fighter["maxHp"])))
 			out.append("%s:%s:%d%%" % [enemy.fighter.get("named", enemy.fighter["id"]), enemy.mode, share])
 	return ",".join(out)
 
 
 func field_bossbar() -> String:
-	var bar: Node = world.hud.boss_bar
+	var bar: BossBar = world.hud.boss_bar
 	if bar.showing():
 		return bar.reading()
 	return "none" if flags.has("fight") or not Depths.shortcut_on(world.map.id).is_empty() else ""
@@ -304,15 +305,17 @@ func field_cpu() -> String:
 
 func field_creation() -> String:
 	for node in world.get_children():
-		if node.get_script() == preload("res://scripts/create_screen.gd"):
-			return "%s skill %d/%d" % [node._role(), node.skill_index + 1, node.skill_chips.size()]
+		var creation := node as CreateScreen
+		if creation != null:
+			return "%s skill %d/%d" % [creation._role(), creation.skill_index + 1, creation.skill_chips.size()]
 	return ""
 
 
 func field_credits() -> String:
 	for node in world.get_children():
-		if node is Cutscene and not node.finished and node.roll_end != "":
-			return node.roll_end
+		var scene := node as Cutscene
+		if scene != null and not scene.finished and scene.roll_end != "":
+			return scene.roll_end
 	return ""
 
 
@@ -354,7 +357,7 @@ func field_detail() -> String:
 
 
 func field_dockmenu() -> String:
-	var dock: Control = world.hud.dock
+	var dock: HudDock = world.hud.dock
 	if not dock.menu.visible:
 		return ""
 	var lines: PackedStringArray = []
@@ -442,8 +445,9 @@ func field_fires() -> String:
 
 func field_firstnight() -> String:
 	for node in world.get_children():
-		if node.get_script() == preload("res://scripts/create_screen.gd"):
-			return "play" if node.play_night else "skip"
+		var creation := node as CreateScreen
+		if creation != null:
+			return "play" if creation.play_night else "skip"
 	return ""
 
 
@@ -722,7 +726,7 @@ func field_maps() -> String:
 
 
 func field_morvax() -> String:
-	var villager: Node = harness._villager(Homecoming.MORVAX)
+	var villager: Npc = harness.villager(Homecoming.MORVAX)
 	if villager == null:
 		return ""
 	return "%s%s" % [villager.cell, " bench" if villager.data.get("bench", false) else ""]
@@ -731,7 +735,7 @@ func field_morvax() -> String:
 func field_motes() -> String:
 	if not flags.has("rankup"):
 		return ""
-	var screen: Node = harness._ascension()
+	var screen := harness.ascension()
 	var flying := 0
 	if screen != null:
 		for node in screen.find_children("*", "CPUParticles2D", true, false):
@@ -781,8 +785,9 @@ func field_patches() -> String:
 
 func field_pauseline() -> String:
 	for node in world.get_children():
-		if node is Screen and node.get("saved_line") is Label and node.saved_line.visible:
-			return node.saved_line.text
+		var pause := node as PauseScreen
+		if pause != null and pause.saved_line != null and pause.saved_line.visible:
+			return pause.saved_line.text
 	return ""
 
 
@@ -847,7 +852,7 @@ func field_reading() -> String:
 func field_rise() -> String:
 	if not flags.has("--rise"):
 		return ""
-	var rise: RebuildRise = harness._rise()
+	var rise: RebuildRise = harness.rise()
 	return rise.phase if rise != null else ("built" if harness._rise_phase != "none" else "none")
 
 
@@ -883,10 +888,12 @@ func field_routes() -> String:
 ## greeting over a counter, in the run's language.
 func field_said() -> String:
 	for node in world.get_children():
-		if "greeting" in node:
-			return Text.t(node.greeting)
-		if "npc" in node and "text" in node:
-			return Text.t(node.text.text)
+		var counter := node as ShopScreen
+		if counter != null:
+			return Text.t(counter.greeting)
+		var box := node as DialogueBox
+		if box != null:
+			return Text.t(box.text.text)
 	return ""
 
 
@@ -896,8 +903,9 @@ func field_saves() -> String:
 
 func field_scene() -> String:
 	for node in world.get_children():
-		if node is Cutscene and not node.finished:
-			return node.scene_id
+		var scene := node as Cutscene
+		if scene != null and not scene.finished:
+			return scene.scene_id
 	return ""
 
 
@@ -950,8 +958,9 @@ func field_skillfx() -> String:
 
 func field_speaker() -> String:
 	for node in world.get_children():
-		if node.has_method("_advance"):
-			return String(node.npc.get("id", ""))
+		var box := node as DialogueBox
+		if box != null:
+			return String(box.npc.get("id", ""))
 	return ""
 
 
@@ -1019,15 +1028,17 @@ func field_titlebeat() -> String:
 	if not flags.has("--title-at"):
 		return ""
 	for child in world.get_children():
-		if child.get_script() != null and String(child.get_script().resource_path).ends_with("title_screen.gd"):
-			return child.beat()
+		var title := child as TitleScreen
+		if title != null:
+			return title.beat()
 	return ""
 
 
 func field_titleline() -> String:
 	for child in world.get_children():
-		if child.get_script() != null and String(child.get_script().resource_path).ends_with("title_screen.gd"):
-			return child.said
+		var title := child as TitleScreen
+		if title != null:
+			return title.said
 	return ""
 
 
@@ -1082,8 +1093,9 @@ func field_top() -> String:
 ## Every screen shown under `node`, those opened over another screen included.
 func _screens_in(node: Node, out: Array[CanvasLayer]) -> void:
 	for child in node.get_children():
-		if child is CanvasLayer and child.get_script() != null and child.visible and String(child.get_script().resource_path).ends_with("_screen.gd"):
-			out.append(child)
+		var layer := child as CanvasLayer
+		if layer != null and layer.get_script() != null and layer.visible and String(layer.get_script().resource_path).ends_with("_screen.gd"):
+			out.append(layer)
 		_screens_in(child, out)
 
 
@@ -1097,8 +1109,9 @@ func field_torches() -> String:
 
 func field_tour() -> String:
 	for node in world.get_children():
-		if node is Screen and node.get_script() != null and String(node.get_script().resource_path).ends_with("reveal_screen.gd"):
-			return node.caption.text
+		var tour := node as RevealScreen
+		if tour != null:
+			return tour.caption.text
 	return ""
 
 
@@ -1147,9 +1160,10 @@ func field_waystations() -> String:
 
 func field_works() -> String:
 	for node in world.get_children():
-		if node is Screen and node.get_script() != null and String(node.get_script().resource_path).ends_with("town_hall_screen.gd"):
+		var hall := node as TownHallScreen
+		if hall != null:
 			var offered: PackedStringArray = []
-			for row: Dictionary in node.rows:
+			for row: Dictionary in hall.rows:
 				if not Town.work(String(row.get("project", ""))).is_empty():
 					offered.append(String(row["project"]))
 			return ",".join(offered) if not offered.is_empty() else "none"

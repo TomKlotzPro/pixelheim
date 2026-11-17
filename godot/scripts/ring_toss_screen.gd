@@ -1,3 +1,4 @@
+class_name RingTossScreen
 extends Screen
 ## areas: town
 ## The festival's ring toss (PIX-159): a ring slides along the rail, back and

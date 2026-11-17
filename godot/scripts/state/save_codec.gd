@@ -419,7 +419,7 @@ static func fresh_world() -> Dictionary:
 static func valid_hero(hero: Variant) -> bool:
 	if not hero is Dictionary:
 		return false
-	for key in ["name", "roleId", "level", "xp", "xpToNext", "hp", "mp", "statPoints", "skillPoints"]:
+	for key: String in ["name", "roleId", "level", "xp", "xpToNext", "hp", "mp", "statPoints", "skillPoints"]:
 		if hero.get(key) == null:
 			return false
 	return hero.get("stats") is Dictionary and hero.get("jobs") is Dictionary and not Catalog.role(str(hero["roleId"])).is_empty()

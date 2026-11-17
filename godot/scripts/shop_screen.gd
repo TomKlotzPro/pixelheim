@@ -1,3 +1,4 @@
+class_name ShopScreen
 extends Screen
 ## areas: trade
 ## A keeper's counter (talk to anyone in a shop): Buy, Sell, the Forge at the
@@ -131,7 +132,7 @@ func _open() -> void:
 	tab_row.custom_minimum_size.y = TAB_HEIGHT
 	tab_row.add_theme_constant_override("separation", 4)
 	for index in tabs.size():
-		var button := UiStyle.button(tabs[index], _switch.bind(index))
+		var button := UiStyle.button(tabs[index], switch.bind(index))
 		tab_buttons.append(button)
 		tab_row.add_child(button)
 	add_child(tab_row)
@@ -273,9 +274,9 @@ func _command(event: InputEvent) -> Callable:
 			if event.is_action_pressed(action):
 				return _select.bind(selected)
 	if event.is_action_pressed("move_left"):
-		command = _switch.bind(tab - 1)
+		command = switch.bind(tab - 1)
 	elif event.is_action_pressed("move_right"):
-		command = _switch.bind(tab + 1)
+		command = switch.bind(tab + 1)
 	elif event.is_action_pressed("move_up"):
 		command = _select.bind(selected - 1)
 	elif event.is_action_pressed("move_down"):
@@ -321,7 +322,7 @@ func _other() -> void:
 		_ask(_stack_count())
 
 
-func _switch(index: int) -> void:
+func switch(index: int) -> void:
 	_chosen[tabs[tab]] = selected
 	tab = wrapi(index, 0, tabs.size())
 	selected = int(_chosen.get(tabs[tab], 0))
@@ -409,7 +410,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				})
 			var picked_here := trade.owned_shop_map(shop_id) != ""
 			var stock: Array = Economy.shop_stock(shop_id, trade.stock_stage(), GameState.town_tier())
-			for item_id in trade.shop_wares(shop_id):
+			for item_id: Variant in trade.shop_wares(shop_id):
 				var price := trade.price_of(item_id)
 				# What only Pixelheim sells, since the age that brought it (PIX-159).
 				var signature: bool = Catalog.item(item_id).get("signature", false)
@@ -603,7 +604,7 @@ func _refresh() -> void:
 		var index := selected
 		var reveal := func() -> void:
 			if index < lists[side].get_child_count():
-				scrolls[side].ensure_control_visible(lists[side].get_child(index))
+				scrolls[side].ensure_control_visible(lists[side].get_child(index) as Control)
 		reveal.call_deferred()
 	_set_footer()
 
@@ -868,12 +869,13 @@ static func _coins(row: HBoxContainer, words: String, sum: int, color: Color) ->
 
 
 func _on_row_input(event: InputEvent, tab_name: String, index: int) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	var click := event as InputEventMouseButton
+	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 		# A row of the list beside the chosen one: its tab first.
 		if tab_name != tabs[tab]:
-			_switch(tabs.find(tab_name))
+			switch(tabs.find(tab_name))
 			_select(index)
-		elif event.double_click and index == selected:
+		elif click.double_click and index == selected:
 			_act()
 		else:
 			_select(index)

@@ -10,7 +10,7 @@ extends Node
 ## coins, hurts and heals as they happen. The fight's clock it reads (and
 ## keeps) is Foes': hunted_at, hunted_by_boss.
 
-var world: Node
+var world: World
 ## Sound's view of the hero: what changed is heard (coin, heal, hurt).
 var heard_gold := 0
 var heard_hp := 0

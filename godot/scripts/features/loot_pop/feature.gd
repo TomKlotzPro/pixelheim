@@ -17,7 +17,7 @@ func flags_after() -> String:
 ## `--loot epic`: a staged win bursts beside the hero, as a kill's does,
 ## with an iron sword of that rarity (`big`: a boss's burst and no drop).
 ## Shown, never paid.
-func step_loot(h: Node) -> void:
+func step_loot(h: Harness) -> void:
 	var staged: String = h.flags.value("--loot")
 	var win := Gains.none()
 	win["gold"] = 120 if staged == "big" else 8

@@ -11,7 +11,7 @@ extends Node
 ## and a boss's fall. Monsters stand on the world's y-sorted actors layer, in
 ## the "mobs" group.
 
-var world: Node
+var world: World
 ## Monsters at each of the web's visible spawn points: a small pack of the
 ## species that lives there, so the real-time fight has bodies to swing at.
 const PACK_SIZE := 3
@@ -67,6 +67,10 @@ var bosses_fallen := 0
 ## Named foes that stood down rather than fell (PIX-255; the harness
 ## reports it).
 var stood := 0
+## The named foe standing down now, until it is paid (stood_down): the ways
+## out stay barred and a fallen hero's waking waits (PIX-503: a fall or a
+## door inside its beat freed it unpaid, the fight won and nothing kept).
+var yielding: Node = null
 ## Monsters that took fright and ran from the hero (PIX-251; the harness
 ## reports it), and when the last did.
 var fled := 0
@@ -284,7 +288,7 @@ func _process(_delta: float) -> void:
 		return a.global_position.distance_squared_to(hero) < b.global_position.distance_squared_to(hero))
 	var fighting := in_fight()
 	var points: Array[Vector2] = []
-	for enemy in shown:
+	for enemy: Node2D in shown:
 		# A boss is in no pack (nowhere near one): its own tag, over it.
 		points.append(Vector2.INF if fights_like_boss(enemy) else enemy.global_position)
 	var leads: Array = Foes.packs(points, PACK_REACH) if fighting else range(shown.size())
@@ -418,7 +422,7 @@ func _spawn_pack(data: MapData, spawn: Dictionary, asleep := false) -> void:
 	var region := data.region_at(home)
 	var elite_chance := float(Bestiary.region(region)["eliteChance"])
 	var cells: Array[Vector2i] = [home]
-	for offset in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]:
+	for offset: Vector2i in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]:
 		var cell: Vector2i = home + offset
 		if cells.size() < PACK_SIZE and data.is_walkable(cell) and data.region_at(cell) != "" and not data.portals.has(cell):
 			cells.append(cell)
@@ -576,6 +580,8 @@ func about() -> bool:
 ## The boss or named monster hunting the hero now, or null: while one is,
 ## there's no leaving the place (PIX-232).
 func boss_hunting() -> Node:
+	if is_instance_valid(yielding):
+		return yielding
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		if enemy.hunting and not enemy.dying and fights_like_boss(enemy):
 			return enemy
@@ -656,21 +662,27 @@ func stood_down(enemy: Node) -> void:
 	hunted_by_boss = false
 	Sound.stop_music()
 	world.soundscape.hush(BOSS_HUSH_S)
+	yielding = enemy
 	var visit: MapView = world.view
 	await get_tree().create_timer(STAND_DOWN_BEAT).timeout
 	if not is_instance_valid(enemy) or world.view != visit:
+		yielding = null
 		return
 	var said := Hunts.standing_down(String(enemy.fighter.get("named", "")))
+	# By id: a lambda's captured foe, freed, is an engine error at the call.
+	var yielded := enemy.get_instance_id()
 	var heard := func(_who: String) -> void:
-		if not is_instance_valid(enemy):
+		yielding = null
+		var foe := instance_from_id(yielded) as Node
+		if foe == null:
 			return
 		stood += 1
-		on_enemy_died(enemy)
+		on_enemy_died(foe)
 		GameState.spoils.slay_boss()
 		world.hud.title_card(String(said.get("card", Text.t("Stood down"))), String(said.get("line", "")))
 		world.messages.make_way()
 		Sound.play("stood_down")
-		enemy.lie_down()
+		foe.lie_down()
 	var lines: Array = said.get("lines", [])
 	if lines.is_empty():
 		heard.call("")

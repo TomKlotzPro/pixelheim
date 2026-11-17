@@ -20,7 +20,7 @@ extends Node
 ## takes a pixel of it at most, so it never touches.
 const PROMPT_CLEAR := 2.0
 
-var world: Node
+var world: World
 ## A bucket of the well's water in hand, on the Night of Ash (PIX-197).
 var prologue_bucket := false
 ## What floats over a faced villager, chest, station or fishing spot: the
@@ -543,7 +543,7 @@ func talk(npc: Dictionary) -> void:
 ## The shrine's keeper's question (PIX-331): her skills or her training, each
 ## answer saying what comes back and what it costs (free the first time),
 ## or not today.
-func _ask_forgetting(npc: Dictionary, box: Node) -> void:
+func _ask_forgetting(npc: Dictionary, box: DialogueBox) -> void:
 	var hero := GameState.hero
 	var skills := Skills.forgettable(hero).size()
 	var spent := Skills.spent_stats(hero, GameState.household.trophies())

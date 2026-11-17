@@ -4,17 +4,17 @@ extends GutTest
 ## the map shows - a waypoint elsewhere turns the page to its map - and what
 ## E or a click travels to. A stand-in world: GUT doesn't load world.gd.
 
-const MapScreen := preload("res://scripts/map_screen.gd")
 
 var _discovered := {}
 var _settlers: Array[String] = []
 var _worlds: Array[Node] = []
 
 
-class StandIn extends Node2D:
-	var map: MapData
-	var player_cell := Vector2i(40, 30)
+class StandIn extends "res://test/bare_world.gd":
 	var went := {}
+
+	func _init() -> void:
+		player_cell = Vector2i(40, 30)
 
 	func load_map(map_id: String) -> MapData:
 		return MapData.load_by_id(map_id)

@@ -9,7 +9,7 @@ extends Node
 ## where these always stood among its pieces; world.gd calls update() each
 ## frame.
 
-var world: Node
+var world: World
 ## The battle log's lines (bottom-left, over the dock).
 var log_box: VBoxContainer
 ## The message's plate and its tag (PIX-194): "Quest accepted", "Level up"...
@@ -123,6 +123,10 @@ func log_now(line: String, holds := Callable()) -> void:
 	var now := GameClock.seconds()
 	entry["at"] = now
 	entry["holds"] = holds
+	# Whose moment it is, by id (PIX-503): a lambda keeps a bare pointer to
+	# the node that made it, so once that foe is freed `holds` can't even be
+	# asked whether it is valid (_drop_past).
+	entry["owner"] = holds.get_object_id() if not holds.is_null() else 0
 	entry["wait"] = NOW_S
 	for other: Dictionary in _log.showing.duplicate():
 		if is_same(other, entry):
@@ -260,13 +264,13 @@ func _say(entry: Dictionary) -> void:
 ## and the level's plate came up under its Victory card, LEVEL UP rising
 ## over the hero already said it). No world (a test's): never.
 func _fighting() -> bool:
-	if world == null or world.get("foes") == null:
+	if world == null or world.foes == null:
 		return false
 	return world.foes.in_fight(Foes.CALM_S) or _card_up()
 
 
 func _card_up() -> bool:
-	return world != null and world.get("hud") != null and world.hud.card_up()
+	return world != null and world.hud != null and world.hud.card_up()
 
 
 ## The message's plate, shrunk round its words (a container only grows).
@@ -445,13 +449,27 @@ func _drop_past() -> void:
 	for entry: Dictionary in _log.showing + _log.waiting:
 		var past := false
 		if entry.has("hint"):
-			past = world != null and world.get("hud") != null and not world.hud.hint_there(entry["hint"])
+			past = world != null and world.hud != null and not world.hud.hint_there(entry["hint"])
 		elif entry.has("at"):
-			var holds: Callable = entry["holds"]
-			past = (not holds.is_null() and not (holds.is_valid() and holds.call())) \
+			past = not _holds(entry) \
 				or (not entry.has("chip") and GameClock.seconds() - float(entry["at"]) > float(entry["wait"]))
 		if past:
 			_drop(entry)
+
+
+## Whether a line of the moment's moment lasts. Its foe freed without dying
+## (a door, a fall, a pack sent home: PIX-503), it doesn't, and `holds` is
+## let go untouched: asking a freed foe's lambda anything read freed memory.
+func _holds(entry: Dictionary) -> bool:
+	var owner_id := int(entry.get("owner", 0))
+	if owner_id == 0:
+		return true
+	if not is_instance_id_valid(owner_id):
+		entry["holds"] = Callable()
+		entry["owner"] = 0
+		return false
+	var holds: Callable = entry["holds"]
+	return holds.is_valid() and holds.call()
 
 
 ## A line of the log gone for good, showing or waiting.

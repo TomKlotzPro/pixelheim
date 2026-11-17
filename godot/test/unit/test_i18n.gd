@@ -109,7 +109,6 @@ func test_no_prose_format_skips_the_translation() -> void:
 ## PIX-196: the words the screens glue together - tags, compact gold, the
 ## pack's order, an ailment's name, a stat - speak the player's language.
 func test_tags_and_compact_gold_speak_french() -> void:
-	const InventoryScreen := preload("res://scripts/inventory_screen.gd")
 	Text.apply("fr")
 	assert_eq(Text.coins(55), "55 o")
 	assert_eq(InventoryScreen.sort_name("kind"), "type")
