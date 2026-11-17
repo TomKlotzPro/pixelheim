@@ -147,6 +147,11 @@ var routes := {"pieces": [], "blocks": [], "open": []}
 ## what it's drawn as (bare earth, grass, a meadow, a grove), laid over the
 ## ground as drawn (look); empty elsewhere.
 var healed := {}
+## What a feature's layer draws a cell as, laid over the ground as drawn
+## (look) after the healed ash, set in its plan: cell -> tile. Only drawn,
+## the map's own cells stay as they are (the Mirefen's boardwalks, drawn as
+## bridges over the fen's water: PIX-519).
+var drawn_as := {}
 ## A dungeon floor's torches on the wall (PIX-291), by cell.
 var wall_torches: Array[Vector2i] = []
 ## How a dungeon floor is dressed as its place (DungeonLook.plan, PIX-310);
@@ -594,11 +599,14 @@ static func tile_layer_of(tile_set: TileSet) -> TileMapLayer:
 
 
 ## The ground as drawn: the map's, but for the village far off (PIX-248),
-## whose streets, river and ash lie where its block's cells are, and the
-## ash healed round the lamps (PIX-323).
+## whose streets, river and ash lie where its block's cells are, the ash
+## healed round the lamps (PIX-323) and what a feature's layer draws over
+## it (drawn_as).
 func look() -> Dictionary:
 	var drawn: Dictionary = data.grid.merged(skyline["ground"], true) if not skyline.is_empty() else data.grid
-	return drawn.merged(healed, true) if not healed.is_empty() else drawn
+	if not healed.is_empty():
+		drawn = drawn.merged(healed, true)
+	return drawn.merged(drawn_as, true) if not drawn_as.is_empty() else drawn
 
 
 ## Hands the region's masks to every material that reads them (One Reach,
