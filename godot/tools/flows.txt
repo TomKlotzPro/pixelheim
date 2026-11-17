@@ -394,7 +394,7 @@ ash-line | --prologue 6 --at 40,8 --wait 3 --lang en | night=6 mobs=2 nightline=
 ash-line-cc0 | --prologue 6 --at 40,8 --wait 3 --lang en cc0 | night=6 mobs=2 nightline=shown fight | story combat night
 ash-line-embers | --prologue 9 --at 38,23 --keys a,j,wait,wait --lang en | night=9 mobs=3 nightline=shown fight | story combat night
 ash-roll | --prologue 6 --at 40,8 --keys shift --lang en | night=3 mobs=2 plate=A roll like that slips their teeth\. Someone is calling from Upper Street\. | story combat night
-ash-roll-cc0 | --prologue 6 --at 40,8 --keys shift --lang fr cc0 | night=3 mobs=2 plate=Une roulade comme celle-là esquive leurs crocs\. Quelqu'un appelle depuis la Grand-Rue\. | story combat night lang
+ash-roll-cc0 | --prologue 6 --at 40,8 --keys shift --lang fr cc0 | night=3 mobs=2 plate=Une roulade pareille, et leurs crocs mordent le vide\. Quelqu'un appelle depuis la Grand-Rue\. | story combat night lang
 ash-skill | --prologue 9 --at 38,23 --keys 1 --lang en | night=5 mobs=3 plate=Your skill answers the fire\. Maren is waiting at the shrine\. | story combat night
 ash-skill-cc0 | --prologue 9 --at 38,23 --keys 1 --lang fr cc0 | night=5 mobs=3 plate=Votre compétence répond au feu\. Maren attend au sanctuaire\. | story combat night lang
 ash-mend-idle | --prologue 9 --at 38,23 wounded --role cleric --keys 1 --lang en | hp=28 night=9 mobs=3 | story combat night
