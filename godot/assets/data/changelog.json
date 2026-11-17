@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.382.0",
+      "date": "2026-11-17",
+      "codename": "Quick Off the Mark",
+      "notes": [
+        "On the web the game starts about three times sooner: it loads 20 MB instead of 64 before the title",
+        "The music and the sound effects arrive just after, in the background; until then you hear the game's own sounds",
+        "Nothing playing is cut when they arrive: the next sound and the next change of place use them"
+      ]
+    },
+    {
       "version": "0.381.0",
       "date": "2026-11-17",
       "codename": "The Night Teaches",
