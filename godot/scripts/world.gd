@@ -282,7 +282,8 @@ func _process(delta: float) -> void:
 	# The ground as a feature draws it first: the Mirefen's planks are wood,
 	# its shallows water (MapView.drawn_as, PIX-519).
 	var under: String = view.drawn_as.get(cell, map.tile_at(cell))
-	Sound.play(Sound.step_for(under, view.streets.get(cell, "stone" if map.id in PunyInterior.STONE_ROOMS else map.style)))
+	var over: String = view.streets.get(cell, "stone" if map.id in PunyInterior.STONE_ROOMS else map.style)
+	Sound.play(Sound.step_for(under, over))
 	atmosphere.footfall(player.global_position + Vector2(0, 2), under)
 	GameState.move_to(map, cell, player.facing)
 	# Into a region of the Reach: its name, once (PIX-269).

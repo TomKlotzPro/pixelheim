@@ -13,7 +13,8 @@ extends MapLayer
 ## only open ground off the paths, never a pack's home, a chest, a lair,
 ## today's patches nor a walk (no patch grows under it after), and never so
 ## as to close a way (Hamlet.fits); a walk and the shallows along its
-## sides block nothing; reeds are walked through, as the woods are. The map
+## sides block nothing and grow no patch, and are the same every day and
+## arrival; reeds are walked through, as the woods are. The map
 ## itself is untouched. A walk is drawn as a bridge and its sides as water
 ## (MapView.drawn_as, PIX-519: in code it read as a ladder lying in the
 ## grass): Shade's pier planks the way it runs (PunyTerrain.object_at) over
@@ -59,15 +60,19 @@ const LAIR_CLEAR := 2
 ## What the Mirefen stands in, as it is laid: {"walks": [Rect2i], "wet":
 ## [cells of shallows beside them], "huts": [cell], "trees": {cell:
 ## variant}, "reeds": {cell: variant}, "blocks": [cells]}. `kept`: cells
-## nothing may stand on (Hamlet.kept_on without the patches' decks, today's
-## patches, where the hero arrives); `opened`: the field decor that blocks,
-## which a walk lifts off its cells.
-static func lay(map: MapData, kept: Dictionary, opened := {}) -> Dictionary:
+## nothing may stand on (Hamlet.kept_on without the patches' decks);
+## `opened`: the field decor that blocks, which a walk and its shallows lift
+## off their cells; `today`: today's patches and where the hero arrives,
+## kept clear of what stands but not of the shallows, the same every day
+## and arrival (PIX-519's review: a hero who quit wading came back on dry
+## fen in the middle of the water).
+static func lay(map: MapData, kept: Dictionary, opened := {}, today := {}) -> Dictionary:
 	var blocks: Array[Vector2i] = []
 	var out := {"walks": [] as Array[Rect2i], "wet": [] as Array[Vector2i], "huts": [] as Array[Vector2i], "trees": {}, "reeds": {}, "blocks": blocks}
 	if map.id != MAP:
 		return out
-	var clear := kept.duplicate()
+	var held := kept.merged(today)
+	var clear := held.duplicate()
 	for entry: Dictionary in Hunts.all():
 		if String(entry.get("mapId", "")) == map.id and entry.has("lair"):
 			var lair := Hunts.lair(entry)
@@ -79,20 +84,23 @@ static func lay(map: MapData, kept: Dictionary, opened := {}) -> Dictionary:
 			out["walks"].append(walk)
 			for cell in _cells(walk.grow(1)):
 				clear[cell] = true
+	var feet := {}
 	for hut in HUTS:
 		var foot: Array[Vector2i] = [hut, hut + Vector2i.RIGHT]
-		if Hamlet.fits(map, foot, kept, blocks):
+		feet[hut] = true
+		feet[hut + Vector2i.RIGHT] = true
+		if Hamlet.fits(map, foot, held, blocks):
 			out["huts"].append(hut)
 			blocks.append_array(foot)
 			for cell in _cells(Rect2i(hut - Vector2i.ONE, Vector2i(4, 3))):
 				clear[cell] = true
 	# The fen's shallows along each walk's sides, so it reads as planks over
 	# the bog (PIX-519: water only under them showed nowhere): waded through,
-	# never on a way, a hut or a kept cell.
+	# never on a way, a hut's foot or a kept cell.
 	for walk: Rect2i in out["walks"]:
 		for cell in _sides(walk):
-			if map.is_walkable(cell) and not Hamlet.is_way(map.id, map.tile_at(cell)) and not kept.has(cell) \
-					and cell not in blocks and not _on_walk(out["walks"], cell):
+			if (map.is_walkable(cell) or opened.has(cell)) and not Hamlet.is_way(map.id, map.tile_at(cell)) \
+					and not kept.has(cell) and not feet.has(cell) and not _on_walk(out["walks"], cell):
 				out["wet"].append(cell)
 	# Column by column, the order the cells sort in, without sorting them.
 	for x in map.size.x:
@@ -112,7 +120,7 @@ static func lay(map: MapData, kept: Dictionary, opened := {}) -> Dictionary:
 				continue
 			if tree:
 				var one: Array[Vector2i] = [cell]
-				if Hamlet.fits(map, one, kept, blocks):
+				if Hamlet.fits(map, one, held, blocks):
 					out["trees"][cell] = (h >> 10) % AshArt.SNAGS.size()
 					blocks.append(cell)
 			elif roll < REEDS_OUT or (roll < REEDS_BY_WATER and _by_water(map, cell)):
@@ -159,23 +167,23 @@ func plan(view: MapView, slices: Slicer) -> void:
 	if view.data.id != MAP:
 		return
 	slices.add("plan_mire", func() -> void:
-		# Today's patches kept clear; no later day's grows under what stands
-		# (PatchesLayer.deal_patches).
-		var kept := Hamlet.kept_on(view.data, {})
-		kept.merge(view.patches)
-		kept[view.arrival] = true
-		var laid := lay(view.data, kept, view.solid_scatter)
+		# Today's patches kept clear of what stands, and no later day's grows
+		# under it nor on the planks and shallows (PatchesLayer.deal_patches).
+		var today := view.patches.duplicate()
+		today[view.arrival] = true
+		var laid := lay(view.data, Hamlet.kept_on(view.data, {}), view.solid_scatter, today)
 		view.drawn_as = {}
 		for walk: Rect2i in laid["walks"]:
 			for cell in _cells(walk):
-				view.bare[cell] = true
 				view.drawn_as[cell] = "bridge"
-				if view.solid_scatter.has(cell):
-					view.solid_scatter.erase(cell)
-					view.data.covered.erase(cell)
 		for cell: Vector2i in laid["wet"]:
 			view.drawn_as[cell] = "water"
+		for cell: Vector2i in view.drawn_as:
 			view.bare[cell] = true
+			view.patches.erase(cell)
+			if view.solid_scatter.has(cell):
+				view.solid_scatter.erase(cell)
+				view.data.covered.erase(cell)
 		for cell: Vector2i in laid["blocks"]:
 			view.data.covered[cell] = true
 		# No field decor under what the fen grows.

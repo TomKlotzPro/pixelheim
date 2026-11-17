@@ -137,6 +137,26 @@ func test_every_walk_over_water() -> void:
 		assert_gte(wet.size() * 4, sides.size() * 3, "the walk %s over water: %d of its %d sides" % [walk, wet.size(), sides.size()])
 
 
+## The shallows are the same whatever the day's patches and wherever the
+## hero arrives (PIX-519's review: one who quit wading came back on dry fen
+## in the water, and the ground was worked out again), and what stands
+## still keeps off today's.
+func test_the_shallows_the_same_every_day_and_arrival() -> void:
+	var map := _map()
+	var kept := Hamlet.kept_on(map, {})
+	var laid := _laid(map)
+	var today := {Vector2i(9, 26): true}
+	var decks := Gathering.decks(map)
+	for region: String in decks:
+		for cell: Vector2i in decks[region]:
+			today[cell] = true
+	var other := MireDressing.lay(map, kept, {}, today)
+	assert_true(laid["wet"].has(Vector2i(9, 26)), "the shallows the flow wades into")
+	assert_eq(other["wet"], laid["wet"], "the same shallows")
+	for cell: Vector2i in other["blocks"]:
+		assert_false(today.has(cell), "nothing stands on today's patch or arrival at %s" % cell)
+
+
 func test_wisps_float_over_the_fen_apart() -> void:
 	var map := _map()
 	for i in MireDressing.WISPS.size():
@@ -177,6 +197,8 @@ func test_the_fen_drawn() -> void:
 		assert_eq(String(look[cell]), "water", "the fen's shallows beside a walk at %s" % cell)
 		assert_true(map.is_walkable(cell), "waded through at %s" % cell)
 		assert_ne(view.tile_layer.get_cell_source_id(cell), MapView.BLOCKER_SOURCE, "nothing stops the hero at %s" % cell)
+	for cell: Vector2i in view.drawn_as:
+		assert_false(view.patches.has(cell), "no patch grows on the planks or the shallows at %s" % cell)
 	assert_eq(PunyTerrain.span_axis(look, Vector2i(44, 20)), Vector2i.DOWN, "the ruin's runs down to the road")
 	assert_eq(PunyTerrain.span_axis(look, Vector2i(8, 25)), Vector2i.RIGHT, "the west hut's along the road")
 	view.set_night(false)
