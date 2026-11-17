@@ -59,7 +59,21 @@ const WALL_RIGHT := 949
 const WINDOW := 3659
 const DOOR := 4095
 
+## Which slope a roof piece lies on, for the roof's light (PIX-523,
+## shaders/roof_light.gdshader): a gable's west and east, a wing's north
+## (above its ridge) and south; a ridge piece is the two halves of the
+## slopes either side of the ridge in its middle, down a gable, across a
+## wing. EDGE_TOP marks a piece whose first row is the roof's top outline.
+const SLOPE_WEST := 1
+const SLOPE_EAST := 2
+const SLOPE_NORTH := 3
+const SLOPE_SOUTH := 4
+const RIDGE_DOWN := 5
+const RIDGE_ACROSS := 6
+const EDGE_TOP := 8
+
 static var _tileset: TileSet
+static var _roof_light: ShaderMaterial
 static var _source: TileSetAtlasSource
 ## The pack held back though it's here (the harness's `cc0`, PIX-318): the
 ## run draws what a build without the private art draws.
@@ -374,6 +388,54 @@ static func pieces() -> Array[int]:
 		if tile not in out:
 			out.append(tile)
 	return out
+
+
+## Each roof piece (in the terracotta, before its colour's shift) -> the
+## slope it lies on (SLOPE_*, RIDGE_*, + EDGE_TOP).
+static func roof_slopes() -> Dictionary:
+	var out := {}
+	var gable: Array = [GABLE_TOP] + GABLE_BODY + [GABLE_FOOT, GABLE_EAVE]
+	for r in gable.size():
+		var row: Array = gable[r]
+		for c in row.size():
+			var slope := SLOPE_WEST if c < 4 else (RIDGE_DOWN if c == 4 else SLOPE_EAST)
+			out[row[c]] = slope + (EDGE_TOP if r == 0 else 0)
+	var wing := {
+		SLOPE_NORTH + EDGE_TOP: WING_TOP, SLOPE_NORTH: WING_UPPER + UPPER_FILL, RIDGE_ACROSS: WING_RIDGE,
+		SLOPE_SOUTH: WING_LOWER + LOWER_FILL + WING_EAVE,
+	}
+	for slope: int in wing:
+		for tile: int in (wing[slope] as Array):
+			if tile >= 0:
+				out[tile] = slope
+	return out
+
+
+## The houses' layer's material (PIX-523): roofs that take the sun and the
+## moon (shaders/roof_light.gdshader), made once.
+static func roof_light() -> ShaderMaterial:
+	if _roof_light == null:
+		_roof_light = ShaderMaterial.new()
+		_roof_light.shader = preload("res://shaders/roof_light.gdshader")
+		_roof_light.set_shader_parameter("slopes", ImageTexture.create_from_image(roof_map()))
+		_roof_light.set_shader_parameter("columns", float(COLUMNS))
+	return _roof_light
+
+
+## What the roof's light reads, a texel per tile of the atlas: r the roof
+## piece's slope (0 for anything else), g how many rows down its copy in
+## another roof colour lies, +128 (what the two copies share is the wall
+## under the roof). Every colour in ROOF_ROWS is in it, so a roof colour
+## added there takes the light too.
+static func roof_map() -> Image:
+	var map := Image.create(COLUMNS, ROWS, false, Image.FORMAT_RG8)
+	var slopes := roof_slopes()
+	var furthest: int = ROOF_ROWS.values().max()
+	for tile: int in slopes:
+		for rows: int in ROOF_ROWS.values():
+			var tinted := _tint(tile, rows * COLUMNS)
+			map.set_pixel(tinted % COLUMNS, tinted / COLUMNS, Color8(int(slopes[tile]), 128 + (furthest if rows == 0 else -rows), 0))
+	return map
 
 
 static func place(layer: TileMapLayer, cell: Vector2i, tile: int) -> void:

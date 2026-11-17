@@ -104,7 +104,9 @@ func test_every_house_stands_in_its_own_roof_with_a_window_and_a_door() -> void:
 	var room := OUTER.grow(-1)
 	assert_eq(_count(pieces, PunyTown.DOOR), houses.size(), "every house of the town, each with its door")
 	assert_gte(_count(pieces, PunyTown.WINDOW), houses.size(), "and a window to light at night")
-	assert_eq(village["smoke"].size(), houses.size(), "and smoke from its roof")
+	var stacks := _count(village["decor"], Skyline.CHIMNEY)
+	assert_gt(stacks, 0, "chimneys on the tall roofs")
+	assert_eq(village["smoke"].size(), stacks, "and smoke only from a chimney")
 	for cell: Vector2i in pieces:
 		assert_true(room.has_point(cell), "inside the rampart (%s)" % cell)
 	for house: Dictionary in houses:
