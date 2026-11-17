@@ -254,7 +254,7 @@ func test_marens_relic_story_left_early_is_told_again() -> void:
 	GameState.progression.prologue = Prologue.DONE
 	GameState.progression.story_seen.assign([Letters.scene_id()])
 	GameState.progression.hunted.assign(["tidecaller"])
-	var world: Node = add_child_autofree(Node.new())
+	var world: World = add_child_autofree(preload("res://test/bare_world.gd").new())
 	var interaction: Interaction = autofree(Interaction.new())
 	interaction.world = world
 	var maren := {"id": "elder", "name": "Maren", "lines": ["Hm."]}
