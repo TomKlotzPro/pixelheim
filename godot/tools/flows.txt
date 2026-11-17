@@ -944,6 +944,32 @@ catch-prompt-back | --map deepwood --at 7,7 --keys d,e --wait 2.5 --zoom play | 
 prompt-under-spot | --map deepwood --at 7,7 --zoom play | map=deepwood hudclash=none | gathering field
 # The Night of Ash's dawn (PIX-197).
 dawn | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5 | open=dawn_screen | story screen
+# The dawn's words wait for what they tell (PIX-509, PIX-512): no word, no
+# dock and the night's hour while the camera crosses the burning town; then
+# every fire out, everyone on the square, the clock set once to the dawn's
+# hour, and "one by one the fires gave up". With the paid art and without.
+dawn-pan | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 3 | open=dawn_screen dawn=fires quiet flames [1-9]\d* fires=houses [1-9].* hour=23:16 moon | story screen night
+dawn-told | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 10 --lang en | open=dawn_screen dawn=talk told keys fires= hour=04:48 sun | story screen night
+dawn-told-cc0 | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 10 cc0 | open=dawn_screen dawn=talk told keys fires= hour=04:48 sun | story screen night
+# After a real night every hero has put fires out with buckets: a fire out
+# keeps its place in the list with its flames freed, and the dawn stopped on
+# the first of them (no pan, no telling, the dock up). `douse` puts one out
+# as a bucket does before Maren's last line opens the dawn. The footer
+# offers "next" (keys) only once the talk takes it, not over the pan.
+dawn-after-buckets-pan | --map town --prologue 5 --at 11,8 douse --keys w,e,e,e,e,e --wait 3 | open=dawn_screen dawn=fires quiet flames [1-9]\d* hour=23:16 moon | story screen night
+dawn-after-buckets | --map town --prologue 5 --at 11,8 douse --keys w,e,e,e,e,e --wait 10 | open=dawn_screen dawn=talk told keys fires= hour=04:48 sun | story screen night
+dawn-after-buckets-cc0 | --map town --prologue 5 --at 11,8 douse --keys w,e,e,e,e,e --wait 10 cc0 | open=dawn_screen dawn=talk told keys fires= hour=04:48 sun | story screen night
+# No rebuilding before the dawn decides it (PIX-510): that night the
+# projects board, the hall's ledger and the hero's door say the night's
+# line and open nothing.
+ash-board-shut | --map town --prologue 9 --at 37,22 --keys w,e --wait 0.5 --lang en | open=none plate=That can wait for morning\. Tonight, the village comes first\. | story night town
+ash-ledger-shut | --map town_hall --prologue 9 --at 12,5 --keys w,e --wait 0.5 --lang en | map=town_hall open=none plate=That can wait for morning\. Tonight, the village comes first\. | story night rooms
+# On the night itself nobody but the survivors is about (PIX-510: E on the
+# banker by the road got her caravans), and a shut gate says the night's
+# line, not the story's after it (PIX-514: the bridge "burned on the Night
+# of Ash" and wanted Saltmere's rope).
+ash-road-empty | --prologue 1 --at 51,36 --keys d,e --wait 0.5 | map=overworld night=1 open=none | story night field
+ash-bridge-line | --prologue 1 --at 48,33 --walk u,u --wait 0.5 --lang en | night=1 gate=bridge plate=Not tonight\. Pixelheim is burning, and the letter is for someone in it\. | story night field
 # The Night of Ash's own music (PIX-498): its track while the village
 # burns, on the road in and under its fights too, never the town's cheerful
 # tune; the town's once the night is over. With the bundle and on the game's

@@ -325,6 +325,21 @@ func field_dark() -> String:
 	return str(world.hud.root.get_children().filter(func(node: Node) -> bool: return node.has_meta("fade") and node.color.a > 0.5).size())
 
 
+func field_dawn() -> String:
+	for node in world.get_children():
+		var dawn := node as DawnScreen
+		if dawn == null:
+			continue
+		var flames := 0
+		for fire: Dictionary in world.view.fires:
+			# A flame put out is freed in place: a Variant until it's known live.
+			for lit: Variant in fire["nodes"]:
+				if is_instance_valid(lit) and (lit as Node).get_meta("fire", "") == "flames":
+					flames += 1
+		return "%s%s%s" % [dawn.state(), " dock" if world.hud.dock.visible else "", " flames %d" % flames if flames > 0 else ""]
+	return ""
+
+
 func field_day() -> String:
 	return str(Gathering.day_of(GameState.world.steps)) if flags.has("--day") else ""
 

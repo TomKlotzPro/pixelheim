@@ -105,7 +105,11 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	if level_line != "":
 		log.append(level_line)
 	# What the monster itself carries (PIX-143): a wolf's pelt, an imp's horn.
-	for carried: Dictionary in Bestiary.drops_of(fighter["id"]):
+	# A thing of ash leaves nothing of the kind it borrows (PIX-515: a hound
+	# that "crumbles into cinders" left a wolf's pelt).
+	var of_ash := Prologue.of_ash(owner.progression.prologue, fighter)
+	var carries: Array = [] if of_ash else Bestiary.drops_of(fighter["id"])
+	for carried: Dictionary in carries:
 		# A once-per-hero drop (PIX-180: Fafnyr's scale) is sure the first
 		# time, then rare.
 		var once := String(carried.get("once", ""))
@@ -123,7 +127,8 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	if drop.get("kind") == "gear":
 		owner.pack.gear.append(drop["gear"])
 		Gains.add_piece(gains, drop["gear"])
-	elif drop.get("kind") == "stack":
+	# Nor the floor's pelts and bread (PIX-515); gear it may leave.
+	elif drop.get("kind") == "stack" and not of_ash:
 		owner.pack.add_item(drop["itemId"])
 		Gains.add_item(gains, drop["itemId"])
 	if spawn_id != "":
@@ -205,6 +210,9 @@ func earn_xp(amount: int) -> String:
 	var line := Text.t("Level up: you are now level %d. +%d stat points and +%d skill point%s to spend.") % [
 		owner.hero.level, owner.hero.stat_points - stat_before, skills_won, "s" if skills_won > 1 else "",
 	]
+	# The night's lines name their keys, and so does its level (PIX-515).
+	if owner.progression.prologue != Prologue.DONE:
+		line += " " + Controls.say(Text.t("Press {key:stats} for your stats and {key:skills} for your skills."))
 	var waiting := Skills.next_skills_note(owner.hero)
 	return line if waiting == "" else "%s %s" % [line, waiting]
 

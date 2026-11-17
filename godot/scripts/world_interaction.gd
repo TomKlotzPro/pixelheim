@@ -94,7 +94,9 @@ func interact() -> void:
 		world.messages.flash(String(world.map.notes[faced]))
 		return
 	if world.map.id == "town" and faced == Town.house_door():
-		if Town.ashes_tent(Town.done_projects(GameState.settlement)).x >= 0:
+		if _not_tonight():
+			pass
+		elif Town.ashes_tent(Town.done_projects(GameState.settlement)).x >= 0:
 			world.messages.flash("Only cinders where the house stood. The board on the square can change that.")
 		elif GameState.household.owns_house():
 			world.enter_house()
@@ -131,6 +133,8 @@ func interact() -> void:
 	# The projects board on the square opens the village's ledger (PIX-145);
 	# what it built, the town shows off as it closes (PIX-147).
 	if world.map.id == "town" and faced == Town.project_board():
+		if _not_tonight():
+			return
 		var ledger := preload("res://scripts/town_hall_screen.gd").new()
 		ledger.tree_exited.connect(world.stage.after_board)
 		world.add_child(ledger)
@@ -141,7 +145,10 @@ func interact() -> void:
 		return
 	# The ledgers lying open on their tables (PIX-338): the village's in the
 	# hall opens as the mayor's word does, Mirelle's her bank.
-	match _ledger_at(faced):
+	var ledger_kind := _ledger_at(faced)
+	if ledger_kind != "" and _not_tonight():
+		return
+	match ledger_kind:
 		"hall":
 			world.add_child(preload("res://scripts/town_hall_screen.gd").new())
 			return
@@ -863,6 +870,15 @@ func _ledgers() -> Dictionary:
 	if world.map.id == "town" and GameState.holdings.is_settled("settler_mirelle"):
 		return {"bank": Town.bank_desk()}
 	return {}
+
+
+## On the Night of Ash the rebuilding isn't begun, or spoken of: the dawn
+## decides it (PIX-510). True that night, the night's line said.
+func _not_tonight() -> bool:
+	if GameState.progression.prologue == Prologue.DONE:
+		return false
+	world.messages.flash(Prologue.later_line())
+	return true
 
 
 ## Which ledger E meets facing `cell`, "" for none.

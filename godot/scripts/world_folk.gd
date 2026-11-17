@@ -17,9 +17,11 @@ func spawn_for(data: MapData) -> void:
 	# once the collar is off, on his bench there once he's home, and up at
 	# his forge staying but for festival days.
 	folk = Homecoming.placed(folk, data.id, GameState.progression, GameState.settlement, GameState.holdings.festival_on(), Gathering.day_of(GameState.world.steps))
-	# On the night of the fire only the survivors are about (PIX-152).
-	if GameState.progression.prologue != Prologue.DONE and data.id == "town":
-		folk = Prologue.survivors()
+	# On the night of the fire only the survivors are about (PIX-152), and
+	# nobody anywhere else (PIX-510: the banker by the road talked of
+	# caravans, the mayor in his hall of rebuilding).
+	if GameState.progression.prologue != Prologue.DONE:
+		folk = Prologue.folk(data.id)
 	# On the Night of Bells everyone is out at their job (PIX-253 step 9).
 	var bells: bool = GameState.progression.bells != Bells.NONE and data.id == "town"
 	if bells:
