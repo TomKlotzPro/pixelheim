@@ -872,7 +872,6 @@ func _ledgers() -> Dictionary:
 	return {}
 
 
-## Which ledger E meets facing `cell`, "" for none.
 ## On the Night of Ash the rebuilding isn't begun, or spoken of: the dawn
 ## decides it (PIX-510). True that night, the night's line said.
 func _not_tonight() -> bool:
@@ -882,6 +881,7 @@ func _not_tonight() -> bool:
 	return true
 
 
+## Which ledger E meets facing `cell`, "" for none.
 func _ledger_at(cell: Vector2i) -> String:
 	var ledgers := _ledgers()
 	for kind: String in ledgers:

@@ -74,12 +74,18 @@ static func wave(step: int) -> Dictionary:
 	return {}
 
 
-## Whether `fighter` is one of the night's own, a hound or an ember of the
-## wave at `step` (they wear another kind's sheet and numbers, not its
-## pockets: PIX-515).
+## Whether `fighter` is one of the night's own, a hound or an ember (they
+## wear another kind's sheet and numbers, not its pockets: PIX-515).
+## Whatever the night's beat, as a hound may outlive its own; never by day,
+## when the mountain road's wolves are called Ash Hounds too.
 static func of_ash(step: int, fighter: Dictionary) -> bool:
-	var foes := wave(step)
-	return not foes.is_empty() and foes["monsterId"] == fighter.get("id", "") and foes["name"] == fighter.get("name", "")
+	if step == DONE:
+		return false
+	for beat: int in [HOUNDS, EMBERS]:
+		var foes := wave(beat)
+		if foes["monsterId"] == fighter.get("id", "") and foes["name"] == fighter.get("name", ""):
+			return true
+	return false
 
 
 ## The survivors on the square that night, where the fire put them, saying

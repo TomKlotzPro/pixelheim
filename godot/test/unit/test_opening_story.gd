@@ -126,20 +126,34 @@ func test_a_click_is_heard_on_every_stage() -> void:
 
 
 ## PIX-515: a hound that "crumbles into cinders" left a wolf's pelt, an
-## ember an imp's horn; by day a wolf is a wolf.
+## ember an imp's horn, its own or the floor's; by day a wolf is a wolf.
+## Still so once the night has moved past their beat: a hound may outlive it.
 func test_a_thing_of_ash_leaves_nothing_of_the_kind_it_borrows() -> void:
-	state.roll = func() -> float: return 0.0
 	for step: int in [Prologue.HOUNDS, Prologue.EMBERS]:
-		state.progression.prologue = step
 		var wave := Prologue.wave(step)
-		var foe := Bestiary.spawn(wave["monsterId"])
-		foe["name"] = wave["name"]
-		assert_gt(Bestiary.drops_of(foe["id"]).size(), 0, "%s carries something by day" % foe["id"])
-		state.spoils.defeat_monster(foe, "", "", 1)
-		for carried: Dictionary in Bestiary.drops_of(foe["id"]):
-			assert_false(state.pack.items.has(carried["itemId"]), "%s leaves no %s" % [wave["name"], carried["itemId"]])
+		for at: int in [step, Prologue.MAREN]:
+			state.progression.prologue = at
+			var foe := Bestiary.spawn(wave["monsterId"])
+			foe["name"] = wave["name"]
+			assert_gt(Bestiary.drops_of(foe["id"]).size(), 0, "%s carries something by day" % foe["id"])
+			for rolls: Array in [[0.0], [0.0, 0.9, 0.9]]:
+				# [0.0]: everything drops, the floor's as gear. The other: the
+				# floor's drop is a stack (a pelt, bread), three rolls in all.
+				var calls: Array[int] = [0]
+				state.roll = func() -> float:
+					calls[0] += 1
+					return rolls[mini(calls[0], rolls.size()) - 1]
+				var before: Dictionary = state.pack.items.duplicate(true)
+				state.spoils.defeat_monster(foe.duplicate(true), "", "", 1)
+				assert_eq(state.pack.items, before, "%s leaves no pelt, horn or bread (step %d, rolls %s)" % [wave["name"], at, rolls])
+				if rolls.size() == 3:
+					assert_eq(calls[0], 3, "the floor's drop was rolled, and was a stack")
+	state.roll = func() -> float: return 0.0
 	state.questing.finish_prologue()
-	state.spoils.defeat_monster(Bestiary.spawn("wolf"), "", "", 1)
+	# The mountain road's wolves are called Ash Hounds too, and are wolves.
+	var wolf := Bestiary.spawn("wolf")
+	wolf["name"] = Prologue.wave(Prologue.HOUNDS)["name"]
+	state.spoils.defeat_monster(wolf, "", "", 1)
 	assert_true(state.pack.items.has("wolf_pelt"), "a wolf's pelt is a wolf's")
 
 

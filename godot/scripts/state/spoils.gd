@@ -107,7 +107,8 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	# What the monster itself carries (PIX-143): a wolf's pelt, an imp's horn.
 	# A thing of ash leaves nothing of the kind it borrows (PIX-515: a hound
 	# that "crumbles into cinders" left a wolf's pelt).
-	var carries: Array = [] if Prologue.of_ash(owner.progression.prologue, fighter) else Bestiary.drops_of(fighter["id"])
+	var of_ash := Prologue.of_ash(owner.progression.prologue, fighter)
+	var carries: Array = [] if of_ash else Bestiary.drops_of(fighter["id"])
 	for carried: Dictionary in carries:
 		# A once-per-hero drop (PIX-180: Fafnyr's scale) is sure the first
 		# time, then rare.
@@ -126,7 +127,8 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	if drop.get("kind") == "gear":
 		owner.pack.gear.append(drop["gear"])
 		Gains.add_piece(gains, drop["gear"])
-	elif drop.get("kind") == "stack":
+	# Nor the floor's pelts and bread (PIX-515); gear it may leave.
+	elif drop.get("kind") == "stack" and not of_ash:
 		owner.pack.add_item(drop["itemId"])
 		Gains.add_item(gains, drop["itemId"])
 	if spawn_id != "":
