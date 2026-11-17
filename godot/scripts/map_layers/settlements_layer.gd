@@ -15,6 +15,8 @@ extends MapLayer
 const CHIMNEY_MOUTH := Vector2(8, 2)
 const SMOKE_LEFT := 12
 const SMOKE_RIGHT := 72
+## Room above a chimney plume's top for its round puffs (about 8 px at most).
+const SMOKE_HEAD := 10.0
 const SMOKE := {
 	"cottage": {"swell": 0.75, "soot": 0.0, "density": 1.35, "climb": 56},
 	"forge": {"swell": 0.95, "soot": 1.0, "density": 1.35, "climb": 56},
@@ -48,8 +50,8 @@ func build(view: MapView, slices: Slicer) -> void:
 
 
 ## A thread of smoke from a house's chimney (PIX-313: out of the chimney's
-## own mouth, where the house has one); without one, up from its door to
-## the roof's top, a little to the side. A house whose settlement raised a
+## own mouth); a house without one doesn't smoke (smoke out of a bare roof
+## read wrong, Tom 2026-11-17). A house whose settlement raised a
 ## stack of its own (Morvax's forge) smokes from that (_decor_hamlet); a
 ## shed (Hamlet.SHEDS) not at all.
 static func _add_chimney_smoke(view: MapView, door: Vector2i) -> void:
@@ -61,11 +63,6 @@ static func _add_chimney_smoke(view: MapView, door: Vector2i) -> void:
 	var chimney := chimney_of(door, view.buildings["decor"])
 	if chimney.x >= 0:
 		_add_smoke_thread(view, Vector2(chimney * TILE) + CHIMNEY_MOUTH)
-		return
-	var top := door
-	while view.buildings["pieces"].has(top + Vector2i.UP):
-		top += Vector2i.UP
-	_add_smoke_thread(view, Vector2(top * TILE) + Vector2(TILE * 1.5, 2))
 
 
 ## The chimney on the house whose door is `door`, among a drawing's `decor`
@@ -112,10 +109,10 @@ static func _add_village_life(view: MapView) -> void:
 ## under Reduce motion.
 static func _add_smoke_thread(view: MapView, at: Vector2, look := "cottage") -> void:
 	var own: Dictionary = SMOKE[look]
-	var climb := float(own["climb"])
+	var climb := float(own["climb"]) + SMOKE_HEAD
 	var rect := Rect2(at - Vector2(SMOKE_LEFT, climb), Vector2(SMOKE_LEFT + SMOKE_RIGHT, climb + 2))
 	CampsLayer._fire_air(view, "", rect, preload("res://shaders/fire_smoke.gdshader"), 6, {
-		"source": Vector2(SMOKE_LEFT, climb), "spread": 4.0, "seed": fposmod(at.x * 0.37 + at.y * 0.11, 9.7),
+		"source": Vector2(SMOKE_LEFT, climb), "head": SMOKE_HEAD, "spread": 4.0, "seed": fposmod(at.x * 0.37 + at.y * 0.11, 9.7),
 		"swell": own["swell"], "soot": own["soot"], "density": own["density"], "by_hour": true,
 	})
 

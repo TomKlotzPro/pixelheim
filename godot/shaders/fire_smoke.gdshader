@@ -26,6 +26,10 @@ uniform float swell = 1.0;
 uniform float soot = 0.0;
 uniform float density = 1.0;
 uniform bool by_hour = false;
+// Pixels of the quad above the plume's top, so a puff's round top isn't cut
+// flat by the quad's edge (a chimney's thread, PIX-523); the climb is
+// source.y less this.
+uniform float head = 0.0;
 const int PUFFS = 14;
 // Steps a second; how long a puff takes to climb the plume (seconds).
 const float STEPS = 8.0;
@@ -61,7 +65,7 @@ void fragment() {
 		}
 		vec2 from = source + vec2((hash(n * 3.1 + round_no * 7.7) * 2.0 - 1.0) * spread * 0.6, 0.0);
 		float lean = ((6.0 + 28.0 * world_wind) * life * life + sin(life * 4.0 + n) * 3.0) * swell;
-		vec2 middle = from + vec2(lean, -source.y * 0.92 * life);
+		vec2 middle = from + vec2(lean, -(source.y - head) * 0.92 * life);
 		float radius = (3.0 + 11.0 * life) * girth * swell;
 		vec2 off = px - middle;
 		float far = length(off * vec2(1.0, 1.2));
