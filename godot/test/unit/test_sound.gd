@@ -789,7 +789,8 @@ func test_a_story_build_waits_out_a_change_of_place() -> void:
 ## The world as the board's and the post's close and the morning after the
 ## Night of Bells ask it (Stage.after_board, Stage.after_post, Night._day):
 ## its map, the hero's cell, the hushes asked (`must` or not), given or
-## dropped (a story's never is: World.hushed_build), and each place drawn.
+## dropped (a story's never is: World.hushed_build), and each place drawn,
+## with the way it was come to (World.go, PIX-500).
 class BoardWorld extends "res://test/bare_world.gd":
 	var hush_given := true
 	var asked: Array[bool] = []
@@ -811,8 +812,9 @@ class BoardWorld extends "res://test/bare_world.gd":
 		next.id = id
 		return next
 
-	func enter_map(next: MapData, at: Vector2i) -> void:
-		drawn.append([next.id, at])
+	func go(place: MapData, at: Vector2i, how: int, _turning := Callable()) -> bool:
+		drawn.append([place.id, at, how])
+		return true
 
 
 class Said extends Messages:
@@ -844,7 +846,7 @@ func test_the_town_after_the_board_waits_on_the_hush() -> void:
 	world.hush_given = true
 	await stage.after_board()
 	GameState.reveals.assign(kept)
-	assert_eq(world.drawn, [["town", Vector2i(43, 27)]], "drawn once the hush is given")
+	assert_eq(world.drawn, [["town", Vector2i(43, 27), Passage.REDRAW]], "drawn again once the hush is given, no door")
 	var post: PostState = GameState.post
 	GameState.post = PostState.new()
 	Routes.tally(GameState.post, "saltmere", "bram", int(Hubs.marks()[0]))
@@ -856,7 +858,7 @@ func test_the_town_after_the_board_waits_on_the_hush() -> void:
 	world.hush_given = true
 	await stage.after_post()
 	GameState.post = post
-	assert_eq(world.drawn, [["saltmere", Vector2i(43, 27)]], "drawn once it is given")
+	assert_eq(world.drawn, [["saltmere", Vector2i(43, 27), Passage.REDRAW]], "drawn again once it is given, no door")
 	assert_eq(world.asked, [false, false, false, false], "neither is a story's")
 
 
@@ -881,7 +883,7 @@ func test_the_morning_after_the_night_of_bells_is_never_dropped() -> void:
 	for section: String in kept:
 		GameState.set(section, kept[section])
 	assert_eq(world.asked, [true], "the hush asked as a story's")
-	assert_eq(world.drawn, [["town", Town.square() + Vector2i(0, 4)]], "the square drawn though a change of place held the hush")
+	assert_eq(world.drawn, [["town", Town.square() + Vector2i(0, 4), Passage.CUT]], "the square come to though a change of place held the hush")
 	assert_eq(world.messages.lines.size(), 1, "the day's line said")
 	assert_true(world.camera_rig.follows)
 

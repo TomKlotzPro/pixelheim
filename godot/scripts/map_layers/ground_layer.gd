@@ -125,7 +125,7 @@ static func _ground_layers(view: MapView) -> Node2D:
 	# The ground as drawn: the map's, but for the village far off (PIX-248),
 	# whose streets, river and ash lie where its block's cells are. On past
 	# the map's edges: below the dock the camera looks past the south edge
-	# (CameraRig.set_limits, PIX-269), and sees the ground go on, as it lies
+	# (CameraRig.set_bounds, PIX-269), and sees the ground go on, as it lies
 	# there in the Reach's plane (the map beside, or the ridge's rock).
 	# Worked out on the map's first visit this session, and kept (PIX-269).
 	if view.kept == null:
