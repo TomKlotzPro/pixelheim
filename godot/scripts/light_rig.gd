@@ -256,9 +256,13 @@ func _process(delta: float) -> void:
 	_mirror_water(at)
 	_drift_clouds(at, overcast)
 	# The scenery's shadows follow the sun (PIX-449): none indoors or
-	# underground, and none under a sky all cloud.
-	var sun := DayNight.sun(GameState.world.steps) if Lights.under_sky(world.map) else Vector3.ZERO
-	RenderingServer.global_shader_parameter_set("sun", Vector4(sun.x, sun.y, sun.z * (1.0 - overcast), 0.0))
+	# underground, and none under a sky all cloud. The moon (w) is the
+	# night's dark under the sky (the roofs' rim, PIX-523): none through
+	# cloud, nor through the Night of Ash's smoke.
+	var outside := Lights.under_sky(world.map)
+	var sun := DayNight.sun(GameState.world.steps) if outside else Vector3.ZERO
+	var moon := dark * (1.0 - overcast) if outside and light_for(world.map) != Lights.ASH_NIGHT else 0.0
+	RenderingServer.global_shader_parameter_set("sun", Vector4(sun.x, sun.y, sun.z * (1.0 - overcast), moon))
 	var still: bool = GameState.settings.reduce_motion
 	var t := GameClock.seconds()
 	# The day through a room's window follows the sky, not the room's dark
