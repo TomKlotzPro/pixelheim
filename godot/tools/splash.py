@@ -14,9 +14,13 @@
 #   web page's picture (the web export copies it beside index.html), which the
 #   title rises out of on a launch;
 # - the scene's live points in godot/web/shell.html, between its "splash.py"
-#   markers: the stars that twinkle (with the sky behind each), the windows
-#   that light one by one as the game loads, the chimneys that smoke, the
-#   summit the embers rise from, and where the loading bar sits.
+#   markers (PIX-517): the stars that twinkle (with the sky behind each), the
+#   windows that flicker, the chimneys that smoke, the summit the embers and
+#   Fafnyr's far fire rise from, the lake that shimmers, the torches, the
+#   road with its ember lamps and the courier who walks it as the bytes
+#   arrive (drawn here too, pixel by pixel: no pack art), and the page's
+#   words, English and French, with the game's body font cut into pixels for
+#   them (the page loads nothing but itself and the picture).
 #
 #   python3 godot/tools/splash.py           (needs Pillow)
 #   python3 godot/tools/splash.py --check   (fails when either file is stale)
@@ -31,6 +35,7 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 PNG = os.path.join(ROOT, "assets", "splash.png")
 SHELL = os.path.join(ROOT, "web", "shell.html")
 FONT = os.path.join(ROOT, "assets", "fonts", "press-start-2p.woff2")
+BODY = os.path.join(ROOT, "assets", "fonts", "PixeloidSans.ttf")
 BEGIN, END = "/* splash.py: the scene's live points */", "/* splash.py: end */"
 
 W, H = 640, 360
@@ -56,10 +61,74 @@ LAKE = (277, 304)
 LOGO = {"left": 168, "top": 42, "advance": 34, "pixel": 4, "light": 15}
 GOLD, GOLD_LIGHT = hexc("f2c14e"), hexc("ffe08f")
 BRONZE, BRONZE_DARK, LOGO_OUTLINE = hexc("8a4f14"), hexc("4a2408"), hexc("140a03")
-# Where the title's menu will rise: the loading bar sits there, the dock's
-# pixel bar (a night outline, the fill lit along its top).
-BAR = {"x": 272, "y": 146, "w": 96, "h": 5}
-NIGHT_OUTLINE = hexc("1c120a")
+# The road the courier walks as the game arrives (PIX-517): their feet's row,
+# and where the walk begins and ends; an ember lamp every 32 pixels of it
+# ("an ember lamp on every post road"), lit as they pass.
+ROAD = {"y": 345, "from": 12, "to": 618}
+LAMPS = {"y": 352, "xs": list(range(32, 609, 32))}
+# The courier, the hero, facing east with a lantern held out: standing, a
+# stride and the legs passing. C cap, H hair, S skin, K eye and boots, R and D
+# the red tunic, B the satchel, P trousers, L the lantern's iron, Y its light.
+COURIER_INK = {"C": "8a4f14", "H": "3a2214", "S": "e0a878", "K": "140a03", "R": "b8323a", "D": "7a2430",
+    "B": "6b4a2a", "P": "3d3a66", "L": "3a2a24", "Y": "ffd27a"}
+COURIER_BODY = [
+    "..CCC.....",
+    ".CCCCC....",
+    ".HSSS.....",
+    ".HSKS.....",
+    "..SSS.....",
+    ".RRRR.....",
+    "BRRRRSSLL.",
+    "BBRRR..LYL",
+    "BBDRR..LYL",
+    ".RDDR...L.",
+]
+COURIER = {
+    "stand": COURIER_BODY + [".PP.PP....", ".PP.PP....", ".KK.KK...."],
+    "stride": COURIER_BODY + [".PP.PP....", "PP...PP...", "KK...KK..."],
+    "pass": COURIER_BODY + ["..PPP.....", "..PPP.....", "..KKK....."],
+}
+# A lamp on its post: E its glass, dark until lit.
+LAMP = [".L.", "LEL", "LEL", ".L.", ".L.", ".L.", ".L."]
+# The page's words (PIX-517), in the game's voice; French in the house style
+# (U+202F before : ; ! ?). A line fits LINE art pixels, the notice's NOTICE.
+LINE, NOTICE = 420, 330
+WORDS = {
+    "en": {
+        "tips": [
+            "A courier never reads the post.",
+            "Five letters, fifty years late. Better late than never.",
+            "Fafnyr sleeps under the Ashen Mountain. Mostly.",
+            "An ember lamp on every post road: follow them home.",
+            "Talk to everyone. Somebody always knows something.",
+            "Fall in a fight and you wake at the inn. Nobody will mention it.",
+            "Hilda's forge is warm. So is Hilda, on good days.",
+            "The village grows as its people come home.",
+        ],
+        "stalled": "The first visit downloads the whole game. Later visits are quicker.",
+        "unit": "MB",
+        "failed": "The road is out: the game didn't arrive.",
+        "again": "Try again",
+        "missing": "This browser is missing:",
+    },
+    "fr": {
+        "tips": [
+            "Un messager ne lit jamais le courrier.",
+            "Cinq lettres, cinquante ans de retard. Mieux vaut tard que jamais.",
+            "Fafnyr dort sous la Montagne des Cendres. La plupart du temps.",
+            "Une lampe de braise sur chaque route du courrier\u202f: suivez-les.",
+            "Parlez \u00e0 tout le monde. Quelqu'un sait toujours quelque chose.",
+            "Tombez au combat et vous vous r\u00e9veillez \u00e0 l'auberge. Personne n'en parlera.",
+            "La forge de Hilda est chaleureuse. Hilda aussi, les bons jours.",
+            "Le village grandit quand les siens rentrent \u00e0 la maison.",
+        ],
+        "stalled": "La premi\u00e8re visite t\u00e9l\u00e9charge tout le jeu. Les suivantes sont plus rapides.",
+        "unit": "Mo",
+        "failed": "La route est coup\u00e9e\u202f: le jeu n'est pas arriv\u00e9.",
+        "again": "R\u00e9essayer",
+        "missing": "Il manque \u00e0 ce navigateur\u202f:",
+    },
+}
 WINDOW_GLASS, WINDOW_CORE, WINDOW_FRAME = hexc("f2b04e"), hexc("ffe3a0"), hexc("3a2214")
 WINDOW_DARK = hexc("17142c")
 
@@ -478,6 +547,29 @@ def logo(canvas):
                 canvas.rect(left + gx * pixel, y, pixel, 1, GOLD_LIGHT if y < LOGO["top"] + LOGO["light"] else GOLD)
 
 
+def glyphs():
+    """The body font cut into pixels for the page's words: every printable
+    ASCII letter (the engine's own error may say anything) and whatever else
+    the words use, each [its advance, then its 11 rows as bits, the leftmost
+    pixel bit 0]. U+202F is a thin space."""
+    font = ImageFont.truetype(BODY, 9)
+    wanted = {chr(code) for code in range(32, 127)} | {"\u2026"}
+    for words in WORDS.values():
+        for line in words["tips"] + [words[key] for key in words if key != "tips"]:
+            wanted |= set(line)
+    cut = {}
+    for char in sorted(wanted):
+        if char == "\u202f":
+            cut[char] = [2] + [0] * 11
+            continue
+        image = Image.new("1", (12, 11), 0)
+        pen = ImageDraw.Draw(image)
+        pen.fontmode = "1"
+        pen.text((0, 0), char, font=font, fill=1)
+        cut[char] = [round(font.getlength(char))] + [sum(1 << x for x in range(12) if image.getpixel((x, y))) for y in range(11)]
+    return cut
+
+
 def draw(shine=True, lit=True):
     canvas = Canvas()
     sky(canvas)
@@ -515,9 +607,13 @@ def scene():
         "stars": [[x, y, ink(starless, x, y)] for x, y in twinkling if picture.getpixel((x, y)) != starless.getpixel((x, y))],
         # [x, y, w, h, the dark glass, the frame's cross] left to right.
         "windows": [[x, y, w, h, ink(unlit, x + 1, y + 1), ink(picture, x + 4, y)] for x, y, w, h in windows],
-        "chimneys": chimneys, "summit": [SUMMIT[0], SUMMIT[1] - 2], "bar": BAR,
-        "outline": "#%02x%02x%02x" % NIGHT_OUTLINE,
-        "gold": "#%02x%02x%02x" % hexc("e8b33a"), "goldLight": "#%02x%02x%02x" % hexc("ffe08a"),
+        "chimneys": chimneys, "summit": [SUMMIT[0], SUMMIT[1] - 2],
+        # The water in sight between the cottages, and the torches' flames.
+        "lake": [176, LAKE[0] + 2, 424, LAKE[1] - 3],
+        "torches": [[201, STREET - 14], [377, STREET - 14]],
+        "road": ROAD, "lamps": LAMPS, "lamp": LAMP,
+        "courier": COURIER, "ink": {key: "#" + value for key, value in COURIER_INK.items()},
+        "glyphs": glyphs(), "words": WORDS, "line": LINE, "notice": NOTICE,
     }
     return picture, live
 

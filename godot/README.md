@@ -333,18 +333,30 @@ exactly where the title draws it. It is the desktop app's boot splash
 (`boot_splash/image`, unsmoothed, in black bars on a window of another shape
 like the game's canvas) and the web page's picture: the web export uses the
 game's own shell, `web/shell.html`, where the picture shows from the first
-instant and comes alive while the build downloads (stars twinkling, embers
-off the summit, smoke from the chimneys) as the village's windows light one
-by one, left to right, with the dock's pixel bar where the title's menu will
-rise; reduced motion keeps only the progress. No words but the logo, so
-nothing shows in English before the title (PIX-295), and the tab and the
-window are titled just "Pixelheim". The game tells the page when its first
-screen is up (`window.pixelheimShown`, from `world.gd`), and a launch's
-title rises out of the same picture, laid under the name so the name holds
-still; titles after it (back from the saves) rise out of the night's colour.
+instant and comes alive while the build downloads (PIX-517): stars
+twinkling, the lake shimmering, windows and torches flickering, smoke from
+the chimneys, the mountain smoking with embers and, now and then, a far
+flash of Fafnyr's fire. The progress is the courier, drawn by `splash.py`
+too, walking the road with a lantern as far as the bytes have arrived (what
+the engine's `onProgress` counts) and lighting the road's ember lamps on the
+way, the count over their head ("38 / 64 MB"). Under the name a line of the
+world changes every few seconds; a line that hasn't moved for four seconds
+says that the first visit downloads the whole game; a failed load leaves a
+notice with a "Try again" link. The words are English or French by the
+browser's language, from `splash.py`'s `WORDS`, written in the game's body
+font cut into pixels (the page loads nothing but itself and the picture,
+about 60 KB); nothing is in the markup, so nothing shows in the wrong
+language before the title (PIX-295), and the tab and the window are titled
+just "Pixelheim". Reduced motion keeps only the progress. The game tells the page when its first
+screen is up (`window.pixelheimShown`, from `world.gd`): the page fades,
+with the name and the village, into the dark starry sky where a launch's
+title entrance (PIX-392) begins its descent; titles after it (back from the
+saves) rise out of the night's colour.
 `python3 godot/tools/splash.py` redraws the picture and writes its live
-points (the twinkling stars, the windows, the chimneys) into the shell;
-`--check` says when either is stale.
+points (the twinkling stars, the windows, the chimneys, the road, the
+courier, the words and their letters) into the shell; `--check` says when
+either is stale, and `tools/test_splash.py` holds the points and the words
+(each line fits, the French in the house style).
 
 ### Icon
 

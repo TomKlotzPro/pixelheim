@@ -5,17 +5,23 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
 		<title>$GODOT_PROJECT_NAME</title>
 		<!--
-		The web build's page (PIX-296), Godot's own shell with the game's
-		loading screen in it: the title's night (assets/splash.png, drawn by
-		tools/splash.py, which the export copies beside this page) over the
-		same night colour from the first instant, alive while the game
-		downloads - stars twinkling, embers off the summit, smoke from the
-		chimneys - and the village's windows lighting one by one with the
-		dock's pixel bar where the title's menu will rise. No words: the logo
-		is the only text. Reduced motion keeps it still but for the progress.
-		The game says when its first screen is up (world.gd calls
-		window.pixelheimShown), and the page fades as the title rises out of
-		the same picture.
+		The web build's page (PIX-296, PIX-517), Godot's own shell with the
+		game's loading screen in it: the title's night (assets/splash.png,
+		drawn by tools/splash.py, which the export copies beside this page)
+		over the same night colour from the first instant, alive while the
+		game downloads - stars twinkling, the lake shimmering, windows and
+		torches flickering, smoke from the chimneys, the Ashen Mountain
+		smoking with embers and, now and then, a far flash of Fafnyr's fire.
+		The progress is the courier walking the road with a lantern, lighting
+		the road's ember lamps as the bytes arrive, the count over their head;
+		a line of the world under the name, a new one every few seconds,
+		English or French by the browser's language (the game's body font
+		cut into pixels by splash.py: the page loads nothing but itself and
+		the picture). A line that stops moving says so honestly; a failure
+		leaves a notice with a way to try again. Reduced motion keeps it
+		still but for the progress. The game says when its first screen is up
+		(world.gd calls window.pixelheimShown), and the page fades as the
+		title rises out of the same picture.
 		-->
 		<link rel="preload" href="$GODOT_SPLASH" as="image">
 		<style>
@@ -88,21 +94,70 @@ body {
 	}
 }
 
+/* The failure notice: plain, in the night's colours, should the page's life
+   itself have failed... */
 #status-notice {
 	display: none;
 	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	box-sizing: border-box;
+	max-width: 80%;
 	pointer-events: auto;
-	background-color: #5b3943;
-	border-radius: 0.5rem;
-	border: 1px solid #9b3943;
-	color: #e0e0e0;
-	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
-	line-height: 1.3;
-	margin: 0 2rem;
-	overflow: hidden;
-	padding: 1rem;
+	background-color: #1c120a;
+	border: 2px solid #f2c14e;
+	color: #f3e6c4;
+	font: 16px/1.5 ui-monospace, Menlo, Consolas, monospace;
+	padding: 1rem 1.5rem;
 	text-align: center;
 	z-index: 2;
+}
+
+#status-notice p {
+	margin: 0 0 0.5rem;
+}
+
+#status-notice a {
+	color: #f2c14e;
+}
+
+#status-notice small {
+	display: block;
+	margin-top: 0.5rem;
+	color: #c9b48a;
+	white-space: pre-line;
+}
+
+/* ...and otherwise drawn on the canvas in the game's pixels: its words stay
+   here for a reader and its link for a click, unseen over the drawn ones. */
+#status-notice.drawn {
+	inset: 0;
+	transform: none;
+	max-width: none;
+	background: none;
+	border: 0;
+	padding: 0;
+	color: transparent;
+	pointer-events: none;
+}
+
+#status-notice.drawn p, #status-notice.drawn small {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+}
+
+#status-notice.drawn a {
+	position: absolute;
+	color: transparent;
+	pointer-events: auto;
+}
+
+#status-notice.drawn a:focus-visible {
+	outline: 2px solid #f2c14e;
 }
 		</style>
 		$GODOT_HEAD_INCLUDE
@@ -114,14 +169,34 @@ body {
 			<div id="status-stage">
 				<img id="status-splash" src="$GODOT_SPLASH" alt="">
 				<canvas id="status-life" width="640" height="360"></canvas>
+				<canvas id="status-words" width="640" height="360"></canvas>
+				<div id="status-notice" role="alert"><p></p><a href=""></a><small></small></div>
 			</div>
-			<div id="status-notice"></div>
 		</div>
 
 		<script>
 /* splash.py: the scene's live points */
-const SCENE = {"stars":[[36,39,"#040515"],[372,30,"#040619"],[447,117,"#080c27"],[453,147,"#080c27"],[276,20,"#040619"],[189,141,"#080c27"],[191,160,"#0e1136"],[224,12,"#040619"],[487,108,"#080b25"],[76,73,"#040517"],[110,54,"#040618"],[274,30,"#040619"],[65,87,"#070a23"],[531,25,"#090a1b"],[251,96,"#080c27"],[612,168,"#0c0e2b"],[607,182,"#0c0e2d"],[539,169,"#0e1034"],[141,31,"#040619"],[419,152,"#080c27"]],"windows":[[10,300,10,8,"#100d20","#251611"],[34,300,10,8,"#110e21","#271712"],[62,300,10,8,"#120f23","#2d1a12"],[108,300,10,8,"#131126","#321d13"],[142,300,10,8,"#151229","#351f13"],[446,300,10,8,"#151229","#351f13"],[494,300,10,8,"#151229","#351f13"],[544,300,10,8,"#131126","#2f1c13"],[572,300,10,8,"#121024","#2a1912"],[604,300,10,8,"#110e21","#271712"]],"chimneys":[[63,248],[115,265],[473,244],[613,245]],"summit":[118,110],"bar":{"x":272,"y":146,"w":96,"h":5},"outline":"#1c120a","gold":"#e8b33a","goldLight":"#ffe08a"};
+const SCENE = {"stars":[[36,39,"#040515"],[372,30,"#040619"],[447,117,"#080c27"],[453,147,"#080c27"],[276,20,"#040619"],[189,141,"#080c27"],[191,160,"#0e1136"],[224,12,"#040619"],[487,108,"#080b25"],[76,73,"#040517"],[110,54,"#040618"],[274,30,"#040619"],[65,87,"#070a23"],[531,25,"#090a1b"],[251,96,"#080c27"],[612,168,"#0c0e2b"],[607,182,"#0c0e2d"],[539,169,"#0e1034"],[141,31,"#040619"],[419,152,"#080c27"]],"windows":[[10,300,10,8,"#100d20","#251611"],[34,300,10,8,"#110e21","#271712"],[62,300,10,8,"#120f23","#2d1a12"],[108,300,10,8,"#131126","#321d13"],[142,300,10,8,"#151229","#351f13"],[446,300,10,8,"#151229","#351f13"],[494,300,10,8,"#151229","#351f13"],[544,300,10,8,"#131126","#2f1c13"],[572,300,10,8,"#121024","#2a1912"],[604,300,10,8,"#110e21","#271712"]],"chimneys":[[63,248],[115,265],[473,244],[613,245]],"summit":[118,110],"lake":[176,279,424,301],"torches":[[201,306],[377,306]],"road":{"y":345,"from":12,"to":618},"lamps":{"y":352,"xs":[32,64,96,128,160,192,224,256,288,320,352,384,416,448,480,512,544,576,608]},"lamp":[".L.","LEL","LEL",".L.",".L.",".L.",".L."],"courier":{"stand":["..CCC.....",".CCCCC....",".HSSS.....",".HSKS.....","..SSS.....",".RRRR.....","BRRRRSSLL.","BBRRR..LYL","BBDRR..LYL",".RDDR...L.",".PP.PP....",".PP.PP....",".KK.KK...."],"stride":["..CCC.....",".CCCCC....",".HSSS.....",".HSKS.....","..SSS.....",".RRRR.....","BRRRRSSLL.","BBRRR..LYL","BBDRR..LYL",".RDDR...L.",".PP.PP....","PP...PP...","KK...KK..."],"pass":["..CCC.....",".CCCCC....",".HSSS.....",".HSKS.....","..SSS.....",".RRRR.....","BRRRRSSLL.","BBRRR..LYL","BBDRR..LYL",".RDDR...L.","..PPP.....","..PPP.....","..KKK....."]},"ink":{"C":"#8a4f14","H":"#3a2214","S":"#e0a878","K":"#140a03","R":"#b8323a","D":"#7a2430","B":"#6b4a2a","P":"#3d3a66","L":"#3a2a24","Y":"#ffd27a"},"glyphs":{" ":[3,0,0,0,0,0,0,0,0,0,0,0],"!":[2,0,0,1,1,1,1,1,0,1,0,0],"\"":[4,0,0,5,5,0,0,0,0,0,0,0],"#":[6,0,0,10,31,10,10,10,31,10,0,0],"$":[6,0,4,14,21,5,14,20,21,14,4,0],"%":[6,0,0,19,19,8,4,2,25,25,0,0],"&":[6,0,0,2,5,5,2,21,9,22,0,0],"'":[2,0,0,1,1,0,0,0,0,0,0,0],"(":[4,0,0,4,2,1,1,1,1,2,4,0],")":[4,0,0,1,2,4,4,4,4,2,1,0],"*":[4,0,0,5,2,5,0,0,0,0,0,0],"+":[4,0,0,0,0,2,7,2,0,0,0,0],",":[2,0,0,0,0,0,0,0,0,1,1,0],"-":[4,0,0,0,0,0,7,0,0,0,0,0],".":[2,0,0,0,0,0,0,0,0,1,0,0],"/":[6,0,0,16,16,8,4,2,1,1,0,0],"0":[6,0,0,14,17,17,21,17,17,14,0,0],"1":[6,0,0,7,4,4,4,4,4,31,0,0],"2":[6,0,0,14,17,16,8,4,2,31,0,0],"3":[6,0,0,14,17,16,12,16,17,14,0,0],"4":[6,0,0,8,12,10,9,31,8,8,0,0],"5":[6,0,0,31,1,1,15,16,17,14,0,0],"6":[6,0,0,14,17,1,15,17,17,14,0,0],"7":[6,0,0,31,16,16,8,4,2,1,0,0],"8":[6,0,0,14,17,17,14,17,17,14,0,0],"9":[6,0,0,14,17,17,30,16,17,14,0,0],":":[2,0,0,0,0,1,0,0,0,1,0,0],";":[2,0,0,0,0,1,0,0,0,1,1,0],"<":[4,0,0,0,4,2,1,2,4,0,0,0],"=":[4,0,0,0,0,7,0,7,0,0,0,0],">":[4,0,0,0,1,2,4,2,1,0,0,0],"?":[6,0,0,14,17,16,8,4,0,4,0,0],"@":[6,0,0,31,17,21,29,1,1,31,0,0],"A":[6,0,0,4,10,10,17,31,17,17,0,0],"B":[6,0,0,15,17,17,15,17,17,15,0,0],"C":[6,0,0,14,17,1,1,1,17,14,0,0],"D":[6,0,0,7,9,17,17,17,9,7,0,0],"E":[6,0,0,31,1,1,15,1,1,31,0,0],"F":[6,0,0,31,1,1,15,1,1,1,0,0],"G":[6,0,0,14,1,1,29,17,17,30,0,0],"H":[6,0,0,17,17,17,31,17,17,17,0,0],"I":[4,0,0,7,2,2,2,2,2,7,0,0],"J":[5,0,0,8,8,8,8,9,9,6,0,0],"K":[6,0,0,17,9,5,3,5,9,17,0,0],"L":[6,0,0,1,1,1,1,1,1,31,0,0],"M":[8,0,0,65,99,85,73,65,65,65,0,0],"N":[7,0,0,35,37,37,41,41,49,33,0,0],"O":[6,0,0,14,17,17,17,17,17,14,0,0],"P":[6,0,0,15,17,17,15,1,1,1,0,0],"Q":[6,0,0,14,17,17,17,21,9,22,0,0],"R":[6,0,0,15,17,17,15,5,9,17,0,0],"S":[6,0,0,14,17,1,14,16,17,14,0,0],"T":[6,0,0,31,4,4,4,4,4,4,0,0],"U":[6,0,0,17,17,17,17,17,17,14,0,0],"V":[6,0,0,17,17,17,10,10,4,4,0,0],"W":[8,0,0,65,73,73,85,85,34,34,0,0],"X":[6,0,0,17,17,10,4,10,17,17,0,0],"Y":[6,0,0,17,17,17,14,4,4,4,0,0],"Z":[6,0,0,31,16,8,4,2,1,31,0,0],"[":[4,0,0,7,1,1,1,1,1,1,7,0],"\\":[6,0,0,1,1,2,4,8,16,16,0,0],"]":[4,0,0,7,4,4,4,4,4,4,7,0],"^":[6,0,0,4,10,17,0,0,0,0,0,0],"_":[4,0,0,0,0,0,0,0,0,0,7,0],"`":[6,2,4,0,0,0,0,0,0,0,0,0],"a":[6,0,0,0,0,22,25,17,25,22,0,0],"b":[6,0,0,1,1,13,19,17,19,13,0,0],"c":[6,0,0,0,0,30,1,1,1,30,0,0],"d":[6,0,0,16,16,22,25,17,25,22,0,0],"e":[6,0,0,0,0,14,17,31,1,30,0,0],"f":[4,0,0,6,2,7,2,2,2,2,0,0],"g":[6,0,0,0,0,22,25,17,25,22,16,14],"h":[6,0,0,1,1,13,19,17,17,17,0,0],"i":[2,0,0,1,0,1,1,1,1,1,0,0],"j":[5,0,0,8,0,8,8,8,8,9,6,0],"k":[5,0,0,1,1,9,5,3,5,9,0,0],"l":[2,0,0,1,1,1,1,1,1,1,0,0],"m":[8,0,0,0,0,55,73,73,73,73,0,0],"n":[6,0,0,0,0,13,19,17,17,17,0,0],"o":[6,0,0,0,0,14,17,17,17,14,0,0],"p":[6,0,0,0,0,13,19,17,19,13,1,1],"q":[6,0,0,0,0,22,25,17,25,22,16,16],"r":[5,0,0,0,0,9,5,3,1,1,0,0],"s":[6,0,0,0,0,30,1,14,16,15,0,0],"t":[4,0,0,2,2,7,2,2,2,6,0,0],"u":[6,0,0,0,0,17,17,17,17,14,0,0],"v":[6,0,0,0,0,17,17,17,10,4,0,0],"w":[8,0,0,0,0,65,73,73,85,34,0,0],"x":[6,0,0,0,0,17,10,4,10,17,0,0],"y":[6,0,0,0,0,17,17,10,10,4,4,3],"z":[6,0,0,0,0,31,16,14,1,31,0,0],"{":[5,0,0,12,2,2,3,3,2,2,12,0],"|":[2,0,0,1,1,1,1,1,1,1,1,0],"}":[5,0,0,3,4,4,12,12,4,4,3,0],"~":[6,0,0,0,0,2,21,8,0,0,0,0],"\u00e0":[6,0,2,4,0,22,25,17,25,22,0,0],"\u00e8":[6,0,2,4,0,14,17,31,1,30,0,0],"\u00e9":[6,0,8,4,0,14,17,31,1,30,0,0],"\u2026":[6,0,0,0,0,0,0,0,0,21,0,0],"\u202f":[2,0,0,0,0,0,0,0,0,0,0,0]},"words":{"en":{"tips":["A courier never reads the post.","Five letters, fifty years late. Better late than never.","Fafnyr sleeps under the Ashen Mountain. Mostly.","An ember lamp on every post road: follow them home.","Talk to everyone. Somebody always knows something.","Fall in a fight and you wake at the inn. Nobody will mention it.","Hilda's forge is warm. So is Hilda, on good days.","The village grows as its people come home."],"stalled":"The first visit downloads the whole game. Later visits are quicker.","unit":"MB","failed":"The road is out: the game didn't arrive.","again":"Try again","missing":"This browser is missing:"},"fr":{"tips":["Un messager ne lit jamais le courrier.","Cinq lettres, cinquante ans de retard. Mieux vaut tard que jamais.","Fafnyr dort sous la Montagne des Cendres. La plupart du temps.","Une lampe de braise sur chaque route du courrier\u202f: suivez-les.","Parlez \u00e0 tout le monde. Quelqu'un sait toujours quelque chose.","Tombez au combat et vous vous r\u00e9veillez \u00e0 l'auberge. Personne n'en parlera.","La forge de Hilda est chaleureuse. Hilda aussi, les bons jours.","Le village grandit quand les siens rentrent \u00e0 la maison."],"stalled":"La premi\u00e8re visite t\u00e9l\u00e9charge tout le jeu. Les suivantes sont plus rapides.","unit":"Mo","failed":"La route est coup\u00e9e\u202f: le jeu n'est pas arriv\u00e9.","again":"R\u00e9essayer","missing":"Il manque \u00e0 ce navigateur\u202f:"}},"line":420,"notice":330};
 /* splash.py: end */
+
+// The page's words, in the browser's language: French or English.
+const FRENCH = /^fr\b/i.test(navigator.language || '');
+const WORDS = SCENE.words[FRENCH ? 'fr' : 'en'];
+if (FRENCH) {
+	document.documentElement.lang = 'fr';
+}
+
+// The failure notice's words and link, for a reader and a click. `final`:
+// trying again can't help (the browser lacks something), so no link.
+function notice(detail, final) {
+	const box = document.getElementById('status-notice');
+	box.querySelector('p').textContent = WORDS.failed;
+	box.querySelector('a').textContent = WORDS.again;
+	box.querySelector('a').style.display = final ? 'none' : '';
+	box.querySelector('small').textContent = detail;
+	box.style.display = 'block';
+	return box;
+}
 
 // The loading screen's life, before the engine's script has even arrived.
 // It must never stand in the game's way: should it fail, the picture waits
@@ -133,7 +208,7 @@ const loading = (function () {
 		console.error(err);
 		const away = () => document.getElementById('status') && document.getElementById('status').remove();
 		window.pixelheimShown = away;
-		return {progress: () => {}, started: () => setTimeout(away, 10000), fail: () => {}};
+		return {progress: () => {}, started: () => setTimeout(away, 10000), fail: notice};
 	}
 }());
 
@@ -149,20 +224,59 @@ function alive() {
 	}
 	const life = document.getElementById('status-life');
 	const pen = life.getContext('2d');
+	// The words have a canvas of their own, at the screen's pixels: a letter's
+	// pixel is a whole number of them, crisp in a window of any size.
+	const words = document.getElementById('status-words');
+	const quill = words.getContext('2d');
 	const still = window.matchMedia !== undefined && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-	const windows = SCENE.windows || [];
-	const bar = SCENE.bar;
-	// How much has arrived (0..1), and the share the bar shows, easing to it.
+	const W = life.width;
+	const H = life.height;
+	// The game's text colours in the dark (UiStyle.CREAM, DUSK, GOLD).
+	const CREAM = '#f3e6c4';
+	const DIM = '#c9b48a';
+	const NIGHT = '#04061a';
+	const GOLD = '#f2c14e';
+	// A line past this long without a byte says why (seconds); a line of the
+	// world stays this long.
+	const STALL_S = 4;
+	const TIP_S = 6;
+	const LINE_OUT_S = 0.2;
+	const windows = SCENE.windows;
+	const road = SCENE.road;
+	const lamps = SCENE.lamps;
+	const lake = SCENE.lake;
+	// How much has arrived (0..1), and how far the courier has walked of it.
 	let target = 0;
 	let shown = 0;
+	// What the engine counts: bytes arrived, bytes in all.
+	let bytes = [0, 0];
+	// The page's seconds when a byte last arrived, and when the courier last
+	// took a step.
+	let movedAt = 0;
+	let walkedAt = -1;
+	let ready = false;
 	let gone = false;
+	// What went wrong, once something has: the lines under the notice.
+	let failed = null;
+	let link = null;
+	let retry = true;
 	let clock = 0;
 	let last = performance.now();
-	// When each window lit (in the page's seconds), for its warm fade-in.
-	const litAt = windows.map(() => -1);
+	// When each lamp was lit (in the page's seconds), for its flare.
+	const litAt = lamps.xs.map(() => -1);
 	const embers = [];
 	const puffs = [];
+	const glints = [];
 	let nextPuff = 0;
+	let nextPlume = 0;
+	// Fafnyr's far fire: when the next flash comes, and when the last began.
+	let nextFlash = 5 + Math.random() * 4;
+	let flashAt = -10;
+	// The line of the world showing, when it came, and the one it replaced.
+	let tip = Math.floor(Math.random() * WORDS.tips.length);
+	let line = WORDS.tips[tip];
+	let lineAt = 0;
+	let lineBefore = '';
 
 	// A small stepped glow, the way the game draws light (TitleScene.glow_texture).
 	function glowSprite(radius, rgb, peak, steps) {
@@ -182,83 +296,312 @@ function alive() {
 		}
 		return sprite;
 	}
+	// A sprite from splash.py's rows, a letter a colour.
+	function sprite(rows, inks) {
+		const drawn = document.createElement('canvas');
+		drawn.width = rows[0].length;
+		drawn.height = rows.length;
+		const ink = drawn.getContext('2d');
+		rows.forEach(function (row, y) {
+			Array.from(row).forEach(function (letter, x) {
+				if (inks[letter]) {
+					ink.fillStyle = inks[letter];
+					ink.fillRect(x, y, 1, 1);
+				}
+			});
+		});
+		return drawn;
+	}
 	const windowGlow = glowSprite(14, '255,176,80', 0.18, 4);
+	const torchGlow = glowSprite(12, '255,138,48', 0.2, 4);
+	const lanternGlow = glowSprite(20, '255,176,80', 0.34, 5);
+	const lampGlow = glowSprite(11, '255,150,70', 0.5, 4);
+	const fireGlow = glowSprite(46, '255,104,36', 0.6, 6);
+	const courier = {};
+	Object.keys(SCENE.courier).forEach(function (pose) {
+		courier[pose] = sprite(SCENE.courier[pose], SCENE.ink);
+	});
+	const lampDark = sprite(SCENE.lamp, {L: SCENE.ink.L, E: '#17142c'});
+	const lampLit = sprite(SCENE.lamp, {L: SCENE.ink.L, E: '#ff9a3a'});
+
+	// A beat between 0 and 1 of this thing's own, in steps: a flame's flicker.
+	function flicker(index, speed) {
+		const wave = Math.sin(clock * speed * (1 + (index % 5) * 0.17) + index * 2.3) * Math.sin(clock * speed * 0.43 + index * 5.1);
+		return Math.round((0.5 + 0.5 * wave) * 4) / 4;
+	}
+
+	function glint() {
+		const wide = 2 + Math.floor(Math.random() * 5);
+		return {
+			x: lake[0] + Math.floor(Math.random() * (lake[2] - lake[0] - wide)),
+			y: lake[1] + Math.floor(Math.random() * (lake[3] - lake[1])),
+			w: wide, age: 0, life: 1.2 + Math.random() * 2.4,
+		};
+	}
+	for (let i = 0; i < 16 && !still; i++) {
+		const one = glint();
+		one.age = Math.random() * one.life;
+		glints.push(one);
+	}
+
+	// How wide `text` is, in the font's pixels.
+	function wide(text) {
+		let total = 0;
+		Array.from(text).forEach(function (letter) {
+			total += (SCENE.glyphs[letter] || SCENE.glyphs['?'])[0];
+		});
+		return total;
+	}
+
+	// `text` cut to `most` font pixels, ending on an ellipsis if it was longer.
+	function fitted(text, most) {
+		let cut = Array.from(text);
+		if (wide(text) <= most) {
+			return text;
+		}
+		while (cut.length > 0 && wide(cut.join('') + '…') > most) {
+			cut.pop();
+		}
+		return cut.join('') + '…';
+	}
+
+	// Writes `text` on the words' canvas at the picture's (x, y), `align` of
+	// its width left of x (0.5 centres it), over its own night shadow.
+	// shortcut: a line longer than a very small window (under about 420 CSS
+	// pixels wide) is cut at its edge; wrap it if phones ever load this page
+	// upright.
+	function write(text, x, y, color, alpha, align) {
+		const scale = words.width / W;
+		const dot = Math.max(1, Math.round(scale));
+		const across = wide(text) * dot;
+		const left = Math.max(4 * dot, Math.min(words.width - across - 4 * dot, Math.round(x * scale - across * align)));
+		const top = Math.round(y * scale);
+		quill.globalAlpha = alpha;
+		[[dot, dot, NIGHT], [0, 0, color]].forEach(function (pass) {
+			let at = left + pass[0];
+			quill.fillStyle = pass[2];
+			Array.from(text).forEach(function (letter) {
+				const glyph = SCENE.glyphs[letter] || SCENE.glyphs['?'];
+				for (let row = 1; row < glyph.length; row++) {
+					for (let bits = glyph[row], column = 0; bits > 0; bits >>= 1, column++) {
+						if (bits & 1) {
+							quill.fillRect(at + column * dot, top + pass[1] + (row - 1) * dot, dot, dot);
+						}
+					}
+				}
+				at += glyph[0] * dot;
+			});
+		});
+		quill.globalAlpha = 1;
+	}
+
+	function light(glow, x, y, alpha) {
+		pen.globalAlpha = Math.max(0, Math.min(1, alpha));
+		pen.globalCompositeOperation = 'lighter';
+		pen.drawImage(glow, Math.round(x - glow.width / 2), Math.round(y - glow.height / 2));
+		pen.globalCompositeOperation = 'source-over';
+		pen.globalAlpha = 1;
+	}
 
 	function draw() {
-		pen.clearRect(0, 0, life.width, life.height);
+		pen.clearRect(0, 0, W, H);
 		// A third of the stars dim and brighten, each on its own beat.
 		if (!still) {
-			(SCENE.stars || []).forEach(function (star, index) {
+			SCENE.stars.forEach(function (star, index) {
 				const beat = 0.5 + 0.5 * Math.sin(clock * (0.7 + (index % 5) * 0.23) + index * 1.7);
 				pen.globalAlpha = 0.85 * (1 - beat);
 				pen.fillStyle = star[2];
 				pen.fillRect(star[0], star[1], 1, 1);
 			});
+			pen.globalAlpha = 1;
 		}
-		// The windows light one by one, left to right, as the game arrives.
-		windows.forEach(function (pane, index) {
-			const lit = litAt[index] < 0 ? 0 : (still ? 1 : Math.min(1, (clock - litAt[index]) / 0.5));
-			if (lit < 1) {
-				// The picture's own dark glass, then its frame's cross.
-				pen.globalAlpha = 1 - lit;
-				pen.fillStyle = pane[4];
-				pen.fillRect(pane[0], pane[1], pane[2], pane[3]);
-				pen.fillStyle = pane[5];
-				pen.fillRect(pane[0] + 4, pane[1], 2, pane[3]);
-				pen.fillRect(pane[0], pane[1] + 4, pane[2], 1);
-			}
-			if (lit > 0) {
-				pen.globalAlpha = lit;
-				pen.globalCompositeOperation = 'lighter';
-				pen.drawImage(windowGlow, Math.round(pane[0] + pane[2] / 2 - 14), Math.round(pane[1] + pane[3] / 2 - 14));
-				pen.globalCompositeOperation = 'source-over';
-			}
+		// Fafnyr's fire, far off: the crater flares twice, the sky warms.
+		const since = clock - flashAt;
+		if (since < 1.6) {
+			const flare = Math.max(1 - Math.abs(since - 0.12) / 0.18, 0.65 * (1 - Math.abs(since - 0.6) / 0.5), 0);
+			const level = Math.round(flare * 6) / 6;
+			light(fireGlow, SCENE.summit[0], SCENE.summit[1] + 4, level);
+			pen.globalCompositeOperation = 'lighter';
+			pen.fillStyle = 'rgba(255,90,30,' + (0.05 * level) + ')';
+			pen.fillRect(0, 0, W, 268);
+			pen.globalCompositeOperation = 'source-over';
+		}
+		// The mountain's smoke and the chimneys', embers riding up off the summit.
+		puffs.forEach(function (puff) {
+			const t = puff.age / puff.life;
+			const size = Math.round(puff.size + t * puff.grow);
+			pen.globalAlpha = puff.alpha * Math.max(0, 1 - t);
+			pen.fillStyle = puff.hot && t < 0.25 ? '#963c36' : (puff.hot && t < 0.5 ? '#46345c' : puff.color);
+			pen.fillRect(Math.round(puff.x - size / 2), Math.round(puff.y - size / 2), size, size);
 		});
-		// Embers riding up off the summit, smoke rising from the chimneys.
 		embers.forEach(function (ember) {
 			pen.globalAlpha = Math.max(0, 1 - ember.age / ember.life);
 			pen.fillStyle = ember.age < ember.life * 0.4 ? '#ffd27a' : '#ff8a30';
 			pen.fillRect(Math.round(ember.x), Math.round(ember.y), 1, 1);
 		});
-		puffs.forEach(function (puff) {
-			const size = Math.round(2 + puff.age / puff.life * 4);
-			pen.globalAlpha = 0.3 * Math.max(0, 1 - puff.age / puff.life);
-			pen.fillStyle = '#8c8cb4';
-			pen.fillRect(Math.round(puff.x - size / 2), Math.round(puff.y - size / 2), size, size);
+		// The moon broken on the lake, here and there, a moment each.
+		glints.forEach(function (one) {
+			pen.globalAlpha = Math.round(0.8 * Math.sin(Math.PI * one.age / one.life) * 4) / 4;
+			pen.fillStyle = one.w === 2 ? '#bec8e6' : '#7e98d0';
+			pen.fillRect(one.x, one.y, one.w, 1);
 		});
-		// The dock's pixel bar: a night outline, the gold fill lit along its top.
 		pen.globalAlpha = 1;
-		if (bar) {
-			pen.fillStyle = SCENE.outline;
-			pen.fillRect(bar.x, bar.y, bar.w, bar.h);
-			const fill = Math.floor((bar.w - 2) * shown);
-			if (fill > 0) {
-				pen.fillStyle = SCENE.gold;
-				pen.fillRect(bar.x + 1, bar.y + 1, fill, bar.h - 2);
-				pen.fillStyle = SCENE.goldLight;
-				pen.fillRect(bar.x + 1, bar.y + 1, fill, 1);
+		// The windows' candlelight: the glass dips toward the dark a step or
+		// two (the picture's own dark glass, the frame's cross kept), the
+		// glow round it with it.
+		windows.forEach(function (pane, index) {
+			const dip = still ? 0 : Math.max(0, flicker(index, 3.1) - 0.5) * 0.5;
+			if (dip > 0) {
+				pen.globalAlpha = dip;
+				pen.fillStyle = pane[4];
+				pen.fillRect(pane[0], pane[1], pane[2], pane[3]);
+				pen.globalAlpha = 1;
+				pen.fillStyle = pane[5];
+				pen.fillRect(pane[0] + 4, pane[1], 2, pane[3]);
+				pen.fillRect(pane[0], pane[1] + 4, pane[2], 1);
 			}
+			light(windowGlow, pane[0] + pane[2] / 2, pane[1] + pane[3] / 2, 1 - dip * 2);
+		});
+		if (!still) {
+			SCENE.torches.forEach(function (flame, index) {
+				light(torchGlow, flame[0], flame[1], flicker(index + 20, 6.3));
+			});
+		}
+		// The courier, a lantern held out, on the road as far as the game has
+		// arrived; the road's lamps behind them lit, each with a flare.
+		const at = Math.round(road.from + (road.to - road.from) * shown);
+		const walking = !still && clock - walkedAt < 0.3;
+		const pose = walking ? (Math.floor(at / 4) % 2 === 0 ? 'stride' : 'pass') : 'stand';
+		const body = courier[pose];
+		const top = road.y - body.height + 1 - (pose === 'pass' ? 1 : 0);
+		pen.drawImage(body, at, top);
+		light(lanternGlow, at + 8.5, top + 8, still ? 1 : 0.75 + 0.25 * flicker(31, 5.2));
+		lamps.xs.forEach(function (x, index) {
+			const lit = litAt[index] >= 0;
+			pen.drawImage(lit ? lampLit : lampDark, x - 1, lamps.y - lampLit.height + 1);
+			if (lit) {
+				const flare = still ? 0 : Math.max(0, 1 - (clock - litAt[index]) / 0.35);
+				light(lampGlow, x + 0.5, lamps.y - 4, 0.55 + 0.45 * flare + (still ? 0 : 0.12 * flicker(index + 40, 4.4)));
+				pen.fillStyle = flare > 0.4 ? '#fff4c8' : '#ffd27a';
+				pen.fillRect(x, lamps.y - 5, 1, 1);
+			}
+		});
+
+		// The words: a line of the world under the name, the count over the
+		// courier's head.
+		const across = Math.round(stage.clientWidth * (window.devicePixelRatio || 1));
+		if (across > 0 && words.width !== across) {
+			words.width = across;
+			words.height = Math.round(across * H / W);
+		}
+		quill.clearRect(0, 0, words.width, words.height);
+		if (failed !== null) {
+			// The scene steps back; the notice on a night plate with a gold rim.
+			pen.fillStyle = 'rgba(4,6,26,0.6)';
+			pen.fillRect(0, 0, W, H);
+			// Laid out in the letters' own pixels, so the plate holds its
+			// words in a window of any size; the link over its drawn words.
+			const scale = words.width / W;
+			const dot = Math.max(1, Math.round(scale));
+			const under = retry ? 44 : 27;
+			const high = under + 2 + 14 * failed.length;
+			const box = [Math.round(words.width / 2) - 180 * dot, Math.round(words.height / 2) - Math.round(high / 2) * dot, 360 * dot, high * dot];
+			const row = (down) => (box[1] + down * dot) / scale;
+			const span = wide(WORDS.again) * dot;
+			quill.fillStyle = GOLD;
+			quill.fillRect(box[0] - dot, box[1] - dot, box[2] + 2 * dot, box[3] + 2 * dot);
+			quill.fillStyle = '#1c120a';
+			quill.fillRect(box[0], box[1], box[2], box[3]);
+			write(WORDS.failed, 320, row(8), CREAM, 1, 0.5);
+			failed.forEach(function (said, index) {
+				write(said, 320, row(under + 14 * index), DIM, 1, 0.5);
+			});
+			if (!retry) {
+				return;
+			}
+			write(WORDS.again, 320, row(25), GOLD, 1, 0.5);
+			quill.fillStyle = GOLD;
+			quill.fillRect(Math.round((words.width - span) / 2), box[1] + 35 * dot, span, dot);
+			link.style.left = ((words.width - span) / 2 - 8 * dot) / words.width * 100 + '%';
+			link.style.width = (span + 16 * dot) / words.width * 100 + '%';
+			link.style.top = (box[1] + 21 * dot) / words.height * 100 + '%';
+			link.style.height = 17 * dot / words.height * 100 + '%';
+			return;
+		}
+		// The line before goes, then this one comes, settling up into place:
+		// never both at once, which read as garbled letters.
+		const turned = clock - lineAt - (lineBefore === '' ? 0 : LINE_OUT_S);
+		if (!still && turned < 0) {
+			write(lineBefore, 320, 92, CREAM, -turned / LINE_OUT_S, 0.5);
+		} else {
+			const fresh = still ? 1 : Math.min(1, turned / 0.3);
+			write(line, 320, 92 + Math.round((1 - fresh) * 3), CREAM, fresh, 0.5);
+		}
+		if (bytes[0] > 0) {
+			const mega = (count) => Math.round(count / 1048576);
+			const count = bytes[1] > 0 ? mega(Math.min(bytes[0], bytes[1])) + ' / ' + mega(bytes[1]) : '' + mega(bytes[0]);
+			write(count + ' ' + WORDS.unit, at + 4, top - 14, DIM, 0.9, 0.5);
+		}
+	}
+
+	function say(next) {
+		if (next !== line) {
+			lineBefore = line;
+			line = next;
+			lineAt = clock;
 		}
 	}
 
 	function step(seconds) {
 		clock += seconds;
-		shown += (target - shown) * Math.min(1, seconds * (still ? 60 : 5));
-		windows.forEach(function (pane, index) {
-			if (litAt[index] < 0 && shown >= (index + 1) / (windows.length + 1)) {
+		// The courier walks to where the bytes are, faster the further behind.
+		const before = shown;
+		shown = still ? target : Math.min(target, shown + (0.12 + (target - shown) * 3) * seconds);
+		if (shown !== before) {
+			walkedAt = clock;
+		}
+		const at = road.from + (road.to - road.from) * shown;
+		lamps.xs.forEach(function (x, index) {
+			if (litAt[index] < 0 && at + 9 >= x) {
 				litAt[index] = clock;
 			}
 		});
+		// Nothing for a while, with more to come: say so, honestly, until it
+		// moves again; else the next line of the world in its turn.
+		if (!ready && target < 1 && clock - movedAt > STALL_S) {
+			say(WORDS.stalled);
+		} else if (still) {
+			// Reduced motion: one line of the world, back once the bytes move.
+			say(WORDS.tips[tip]);
+		} else if (clock - lineAt > TIP_S) {
+			tip = (tip + 1) % WORDS.tips.length;
+			say(WORDS.tips[tip]);
+		}
 		if (still) {
 			return;
 		}
-		if (SCENE.summit && Math.random() < seconds * 5 && embers.length < 14) {
+		if (Math.random() < seconds * 5 && embers.length < 14) {
 			embers.push({x: SCENE.summit[0] + (Math.random() - 0.5) * 8, y: SCENE.summit[1], vx: -2 - Math.random() * 5, vy: -9 - Math.random() * 7, age: 0, life: 1.6 + Math.random() * 1.6});
 		}
+		if (clock >= nextFlash) {
+			flashAt = clock;
+			nextFlash = clock + 16 + Math.random() * 14;
+			for (let i = 0; i < 12; i++) {
+				embers.push({x: SCENE.summit[0] + (Math.random() - 0.5) * 10, y: SCENE.summit[1], vx: (Math.random() - 0.6) * 22, vy: -14 - Math.random() * 16, age: 0, life: 1.2 + Math.random() * 1.4});
+			}
+			nextPlume = 0;
+		}
+		// The mountain's plume, lit red from below, drifting west as the
+		// picture's does; the chimneys' thin smoke.
+		nextPlume -= seconds;
+		if (nextPlume <= 0) {
+			puffs.push({x: SCENE.summit[0] + (Math.random() - 0.5) * 4, y: SCENE.summit[1] - 3, vx: -8 - Math.random() * 4, vy: -6 - Math.random() * 3, age: 0, life: 5 + Math.random() * 3, size: 2, grow: 6, alpha: 0.34, color: '#2e2850', hot: true});
+			nextPlume = 0.45;
+		}
 		nextPuff -= seconds;
-		if (nextPuff <= 0 && SCENE.chimneys) {
-			SCENE.chimneys.forEach(function (top) {
-				puffs.push({x: top[0] + (Math.random() - 0.5) * 2, y: top[1], age: 0, life: 4 + Math.random() * 2});
+		if (nextPuff <= 0) {
+			SCENE.chimneys.forEach(function (chimney) {
+				puffs.push({x: chimney[0] + (Math.random() - 0.5) * 2, y: chimney[1], vx: -2.5, vy: -5, age: 0, life: 4 + Math.random() * 2, size: 2, grow: 4, alpha: 0.3, color: '#8c8cb4'});
 			});
 			nextPuff = 1.1;
 		}
@@ -266,17 +609,20 @@ function alive() {
 			for (let i = list.length - 1; i >= 0; i--) {
 				const bit = list[i];
 				bit.age += seconds;
-				if (bit.vx !== undefined) {
-					bit.x += bit.vx * seconds;
-					bit.y += bit.vy * seconds;
+				bit.x += bit.vx * seconds;
+				bit.y += bit.vy * seconds;
+				if (list === embers) {
 					bit.vx -= 1.5 * seconds;
-				} else {
-					bit.x -= 2.5 * seconds;
-					bit.y -= 5 * seconds;
 				}
 				if (bit.age >= bit.life) {
 					list.splice(i, 1);
 				}
+			}
+		});
+		glints.forEach(function (one, index) {
+			one.age += seconds;
+			if (one.age >= one.life) {
+				glints[index] = glint();
 			}
 		});
 	}
@@ -294,7 +640,7 @@ function alive() {
 
 	// The page leaves as the title rises out of the same picture under it.
 	function leave() {
-		if (gone || status.classList.contains('leaving')) {
+		if (gone || failed !== null || status.classList.contains('leaving')) {
 			return;
 		}
 		target = 1;
@@ -307,20 +653,35 @@ function alive() {
 	window.pixelheimShown = leave;
 
 	return {
-		progress: function (share) {
-			target = Math.max(target, Math.min(1, share));
+		// What the engine counts of its files so far: bytes arrived, bytes in
+		// all (0 when it can't know).
+		progress: function (current, total) {
+			if (current !== bytes[0]) {
+				movedAt = clock;
+			}
+			bytes = [current, total];
+			if (current > 0 && total > 0) {
+				target = Math.max(target, Math.min(1, current / total));
+			}
 		},
 		// The engine runs: everything has arrived; the game builds its first
 		// screen and says so. Should it never, the page goes anyway.
 		started: function () {
+			ready = true;
 			target = 1;
 			setTimeout(leave, 10000);
 		},
-		// Something went wrong: the notice shows over the night, and the
-		// page stays.
-		fail: function () {
-			gone = true;
+		// Something went wrong: the notice shows over the night, which
+		// breathes on behind it, and the page stays. `detail` is what the
+		// engine said, its first two lines kept; `final` leaves out the link.
+		fail: function (detail, final) {
+			retry = !final;
+			const box = notice(detail, final);
+			box.classList.add('drawn');
+			failed = detail.split('\n').filter((said) => said.trim() !== '').slice(0, 2).map((said) => fitted(said, SCENE.notice));
+			link = box.querySelector('a');
 			status.style.pointerEvents = 'auto';
+			arrived();
 		},
 	};
 }
@@ -332,30 +693,11 @@ const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 const engine = new Engine(GODOT_CONFIG);
 
 (function () {
-	const statusNotice = document.getElementById('status-notice');
-
-	function setStatusNotice(text) {
-		while (statusNotice.lastChild) {
-			statusNotice.removeChild(statusNotice.lastChild);
-		}
-		const lines = text.split('\n');
-		lines.forEach((line) => {
-			statusNotice.appendChild(document.createTextNode(line));
-			statusNotice.appendChild(document.createElement('br'));
-		});
-	}
-
+	// The page's own notice, in its words, with a way to try again; what
+	// the engine said goes under it, small.
 	function displayFailureNotice(err) {
 		console.error(err);
-		if (err instanceof Error) {
-			setStatusNotice(err.message);
-		} else if (typeof err === 'string') {
-			setStatusNotice(err);
-		} else {
-			setStatusNotice('An unknown error occurred.');
-		}
-		statusNotice.style.display = 'block';
-		loading.fail();
+		loading.fail(err instanceof Error ? err.message : (typeof err === 'string' ? err : ''));
 	}
 
 	const missing = Engine.getMissingFeatures({
@@ -389,19 +731,17 @@ const engine = new Engine(GODOT_CONFIG);
 				console.error('Error while registering service worker:', err);
 			});
 		} else {
-			// Display the message as usual
-			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
-			displayFailureNotice(missingMsg + missing.join('\n'));
+			console.error('Missing features:', missing);
+			loading.fail(WORDS.missing + ' ' + missing.join(', '), true);
 		}
 	} else {
 		engine.startGame({
 			// A harness run's command line (PIX-361, tools/web_perf.py sets it
 			// before the page loads); never from the URL, so no link can.
 			'args': window.pixelheimArgs || [],
+			// Whatever files the engine counts, as it counts them.
 			'onProgress': function (current, total) {
-				if (current > 0 && total > 0) {
-					loading.progress(current / total);
-				}
+				loading.progress(current, total);
 			},
 		}).then(() => {
 			loading.started();
