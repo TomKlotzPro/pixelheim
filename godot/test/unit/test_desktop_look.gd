@@ -5,9 +5,6 @@ extends GutTest
 ## every pass over the world written for both canvases; and the export
 ## presets the CI builds the app from.
 
-const LightRig := preload("res://scripts/light_rig.gd")
-const Lookbook := preload("res://scripts/lookbook.gd")
-
 
 func after_each() -> void:
 	DesktopLook.look = DesktopLook.BROWSER

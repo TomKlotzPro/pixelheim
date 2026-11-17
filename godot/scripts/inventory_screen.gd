@@ -1,3 +1,4 @@
+class_name InventoryScreen
 extends Screen
 ## areas: screen
 ## The pack and the paperdoll (Inventory.tsx): the hero dressed in what they
@@ -47,7 +48,7 @@ const GHOSTS := {
 }
 
 ## The world: for curing live ailments and placing furniture.
-var world: Node
+var world: World
 var tab := 0
 var selected := 0
 var rows: Array[Dictionary] = []
@@ -227,7 +228,7 @@ func _refresh() -> void:
 		# The chosen row in the window, by the rows' real height: two lines
 		# of type and the frame stand taller than ROW_HEIGHT, so counting by
 		# it let a row far down the list be chosen out of sight.
-		var pitch := int(list.get_child(0).get_combined_minimum_size().y) + list.get_theme_constant("separation")
+		var pitch := int((list.get_child(0) as Control).get_combined_minimum_size().y) + list.get_theme_constant("separation")
 		scroll.scroll_vertical = clampi(scroll.scroll_vertical, (selected + 1) * pitch - int(list_tall), selected * pitch)
 	_set_footer()
 
@@ -330,8 +331,9 @@ func _row_panel(index: int) -> PanelContainer:
 		UiStyle.CARD if index == selected else Color(UiStyle.CARD, 0.5), UiStyle.LAMP if index == selected else UiStyle.RIM, 6
 	))
 	panel.gui_input.connect(func(event: InputEvent) -> void:
-		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			if event.double_click and index == selected:
+		var click := event as InputEventMouseButton
+		if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
+			if click.double_click and index == selected:
 				_primary()
 			else:
 				_select(index)
@@ -572,7 +574,7 @@ func _build_doll() -> void:
 	figure.play(PunyArt.pick(figure.sprite_frames, "idle", "down"))
 	doll.add_child(figure)
 	# The slots the page's inset in, the kit's slot at its widest (56).
-	for column in [[DOLL_LEFT, UiStyle.INSET], [DOLL_RIGHT, DOLL.size.x - UiStyle.INSET - 56]]:
+	for column: Array in [[DOLL_LEFT, UiStyle.INSET], [DOLL_RIGHT, DOLL.size.x - UiStyle.INSET - 56]]:
 		var y := float(UiStyle.INSET)
 		for slot: Array in column[0]:
 			var box := _slot(slot[0], slot[1])
@@ -614,7 +616,8 @@ func _slot(slot: String, label: String) -> Control:
 		box.add_child(_icon(instance["itemId"]))
 		box.tooltip_text = Text.t("%s - click to take off") % InventoryState.gear_name(instance)
 		box.gui_input.connect(func(event: InputEvent) -> void:
-			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			var click := event as InputEventMouseButton
+			if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 				GameState.upkeep.unequip(slot)
 				Sound.play("unequip")
 				_refresh()
@@ -640,7 +643,7 @@ func _command(event: InputEvent) -> Callable:
 		command = _drop.bind(false)
 	elif event.is_action_pressed("drop_all"):
 		command = _drop.bind(true)
-	elif event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_R:
+	elif event is InputEventKey and event.is_pressed() and not event.is_echo() and (event as InputEventKey).physical_keycode == KEY_R:
 		command = _sort
 	return command
 

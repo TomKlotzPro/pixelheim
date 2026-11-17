@@ -4,8 +4,6 @@ extends GutTest
 ## out in order, and the probe's summary reads average and 95th percentile;
 ## its CPU clock times frames headless too (PIX-355).
 
-const Lookbook := preload("res://scripts/lookbook.gd")
-
 
 func test_every_shot_stands_on_open_ground() -> void:
 	for shot_name: String in Lookbook.shots():

@@ -1,3 +1,4 @@
+class_name CodexScreen
 extends Screen
 ## areas: screen
 ## The codex (Codex.tsx): the trophy case. Masteries shows each monster

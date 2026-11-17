@@ -71,7 +71,7 @@ func field_lamps(report: HarnessReport) -> String:
 
 func field_visitors(report: HarnessReport) -> String:
 	var names: PackedStringArray = []
-	for npc: Node in report.world.get_tree().get_nodes_in_group("npcs"):
+	for npc: Npc in report.world.get_tree().get_nodes_in_group("npcs"):
 		if String(npc.data.get("id", "")).begins_with("lamp_visitor_"):
 			names.append(String(npc.data["name"]))
 	names.sort()

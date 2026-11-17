@@ -11,7 +11,6 @@ extends GutTest
 ## counting no paused tick.
 
 const Bridge := preload("res://scripts/play_bridge.gd")
-const Harness := preload("res://scripts/harness.gd")
 
 
 ## window.pixelheimPlay's stand-in.
@@ -168,14 +167,13 @@ func test_the_chosen_ones_words() -> void:
 
 
 ## The world as state() reads it: its HUD, its map, the hero and their cell.
-class FakeWorld extends Node2D:
-	var hud: Hud
-	var map := MapData.new()
-	var player_cell := Vector2i(10, 10)
-	var player: FakeFighter
+class FakeWorld extends "res://test/bare_world.gd":
+	func _init() -> void:
+		map = MapData.new()
+		player_cell = Vector2i(10, 10)
 
 
-## A hero or a foe as state() reads one, its brain and its trick too.
+## A foe as state() reads one, its brain and its trick too.
 class FakeFighter extends Node2D:
 	var ailments := Ailments.new()
 	var fighter := {}
@@ -254,7 +252,7 @@ func test_a_foes_mode_names_its_wind_up() -> void:
 ## hero and on each foe, and the foe's wind-up, in the state itself.
 func test_ailments_on_the_hero_and_each_foe() -> void:
 	var world := _enter()
-	world.player = FakeFighter.new()
+	world.player = preload("res://test/bare_hero.gd").new()
 	world.add_child(world.player)
 	world.player.ailments.effects.append({"kind": "poison", "turnsLeft": 3, "power": 1})
 	var wolf := FakeFighter.new()
@@ -341,9 +339,16 @@ func test_played_counts_no_paused_tick() -> void:
 
 
 ## A villager as state() reads one.
-class FakeVillager extends Node2D:
-	var away := false
-	var data := {}
+## A villager as state() reads one: never built or stepped.
+class FakeVillager extends Npc:
+	func _ready() -> void:
+		pass
+
+	func _process(_delta: float) -> void:
+		pass
+
+	func _physics_process(_delta: float) -> void:
+		pass
 
 
 ## PIX-435 (finding a villager took 40 calls): the folk and the ways out

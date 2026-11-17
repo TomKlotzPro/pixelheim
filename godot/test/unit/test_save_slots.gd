@@ -752,3 +752,58 @@ func test_play_time_is_saved_on_leaving_even_with_nothing_else_changed() -> void
 	assert_false(state.dirty, "time alone saves nothing every few seconds")
 	state._notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
 	assert_eq(slots.summary(1)["playSeconds"], 30, "but leaving keeps it")
+
+
+## PIX-504: the write's answer was dropped, so the quill wrote and the pause
+## menu said "Saved" for a save that never landed.
+func test_a_save_that_did_not_land_is_not_called_saved_and_is_tried_again() -> void:
+	var state := _fresh_state()
+	state.boot(1)
+	_put(slots.path_for(1), _newer_text())  # a write here is refused
+	var made: int = state.saves_made
+	watch_signals(state)
+	state.mark_dirty()
+	state.save_now()
+	state.save_now()
+	assert_true(state.dirty, "still to save: the autosave and leaving try again")
+	assert_eq(state.saves_made, made, "no save counted")
+	assert_signal_not_emitted(state, "saved", "no quill, no Saved")
+	assert_signal_emit_count(state, "message", 1, "the player is told, once")
+	DirAccess.remove_absolute(slots.path_for(1))
+	state.save_now()
+	assert_false(state.dirty)
+	assert_signal_emit_count(state, "saved", 1, "a save that lands is one")
+	assert_eq(slots.summary(1)["kind"], SaveSlots.HERO)
+	_put(slots.path_for(1), _newer_text())
+	state.save_now()
+	assert_signal_emit_count(state, "message", 2, "and told again when a later one doesn't")
+
+
+## PIX-504: a quit in the second of a fall saved a hero at 0 HP, who woke
+## alive at 0 where they fell, no toll paid.
+func test_a_hero_saved_at_no_health_wakes_as_the_fall_would_have_woken_them() -> void:
+	var fell := _fresh_state()
+	fell.pack.gold = 200
+	fell.upkeep.hurt(9999)
+	fell.world.map_id = "overworld"
+	fell.world.cell = Vector2i(40, 40)
+	var state := _fresh_state()
+	state.apply(SaveCodec.reread(fell.to_dict()))
+	var inn := Upkeep.waking(state.progression.prologue, Town.done_projects(state.settlement))
+	assert_eq(state.hero.hp, int(state.hero.stats["maxHp"]), "whole again")
+	assert_eq([state.world.map_id, state.world.cell], [inn["mapId"], Vector2i(inn["x"], inn["y"])], "where a fall wakes")
+	assert_eq(state.pack.gold, 200 - fell.spoils.death_toll(), "the fall's toll paid")
+
+
+func test_a_hero_saved_at_no_health_on_the_night_of_bells_wakes_whole_in_the_night() -> void:
+	var fell := _fresh_state()
+	fell.progression.bells = Bells.HOLD
+	fell.pack.gold = 200
+	fell.upkeep.hurt(9999)
+	fell.world.cell = Vector2i(30, 30)
+	var state := _fresh_state()
+	state.apply(SaveCodec.reread(fell.to_dict()))
+	assert_eq(state.hero.hp, int(state.hero.stats["maxHp"]))
+	var shelter := Bells.job("shelter", state.settlement.settlers, state.town_tier())
+	var doorway := Bells.cell(shelter["at"]) + Vector2i(1, 1) if not shelter.is_empty() else Town.square() + Vector2i(0, 4)
+	assert_eq([state.progression.bells, state.world.map_id, state.world.cell, state.pack.gold], [Bells.HOLD, "town", doorway, 200], "the night is a fight, not a toll: up where its own fall wakes them")

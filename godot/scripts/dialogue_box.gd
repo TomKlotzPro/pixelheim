@@ -1,3 +1,4 @@
+class_name DialogueBox
 extends Screen
 ## areas: town story
 ## A conversation: the speaker in a portrait slot and a gold name tab on the
@@ -148,11 +149,20 @@ static func bust(art: Dictionary) -> Rect2:
 	return Rect2((middle - Vector2.ONE * side / 2.0).floor(), Vector2.ONE * side)
 
 
+## A click on the window itself turns the page as one beside it does
+## (PIX-504): its panels stop the mouse, so it never came to
+## `_unhandled_input`. At a question the answers' buttons keep their clicks.
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and not _asking():
+		_unhandled_input(event)
+
+
 ## E, Enter, Space or a click turns the page (and closes after the last);
 ## Esc or a step in any direction leaves at any line. At a question, 1, 2...
 ## answer it (or a click on the answer); E waits for one.
 func _command(event: InputEvent) -> Callable:
-	var click: bool = event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT
+	var mouse := event as InputEventMouseButton
+	var click: bool = mouse != null and mouse.pressed and mouse.button_index == MOUSE_BUTTON_LEFT
 	var leave: bool = event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu")
 	for move: String in ["move_up", "move_down", "move_left", "move_right"]:
 		leave = leave or event.is_action_pressed(move)

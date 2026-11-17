@@ -1,3 +1,4 @@
+class_name BossBar
 extends Control
 ## areas: combat dungeon
 ## The boss bar (PIX-210): across the top of the screen while a boss - or a

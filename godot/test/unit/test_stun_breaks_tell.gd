@@ -21,34 +21,37 @@ var _kept := {}
 var _world: StubWorld
 
 
-class StubSkills extends RefCounted:
-	func impact(_on: Node, _alpha := 0.0) -> void:
+class StubSkills extends SkillFx:
+	func impact(_on: Node2D, _alpha := 0.0) -> void:
 		pass
 
 
-class StubFx extends RefCounted:
-	var skills := StubSkills.new()
+class StubFx extends WorldFx:
 	var words: Array[String] = []
 
-	func float_number(_n: int, _at: Vector2, _tone: Color, _crit: bool, _on: Node) -> void:
+	func _init() -> void:
+		skills = StubSkills.new()
+		add_child(skills)
+
+	func float_number(_n: int, _at: Vector2, _tone: Color, _crit := false, _on: Object = null) -> void:
 		pass
 
 	func float_text(text: String, _at: Vector2, _tone: Color, _big := false) -> void:
 		words.append(text)
 
-	func dust(_at: Vector2) -> void:
+	func dust(_at: Vector2, _held := false) -> void:
 		pass
 
 
-class StubCamera extends RefCounted:
+class StubCamera extends CameraRig:
 	func shake(_strength: float, _seconds: float) -> void:
 		pass
 
-	func hit_stop(_seconds: float) -> void:
+	func hit_stop(_seconds: float, _scale := 0.08) -> void:
 		pass
 
 
-class StubMessages extends RefCounted:
+class StubMessages extends Messages:
 	func log_line(_line: String) -> void:
 		pass
 
@@ -56,15 +59,15 @@ class StubMessages extends RefCounted:
 		pass
 
 
-class StubHero extends CharacterBody2D:
-	var dead := false
+## The hero as a foe needs one: never built or stepped.
+class StubHero extends "res://test/bare_hero.gd":
 	var hits := 0
 
 	func take_hit(_damage: int, _from: Vector2, _inflicts: Variant = null, _grace := true) -> void:
 		hits += 1
 
 
-class StubFoes extends RefCounted:
+class StubFoes extends Foes:
 	func fights_like_boss(_foe: Node) -> bool:
 		return false
 
@@ -72,21 +75,21 @@ class StubFoes extends RefCounted:
 		pass
 
 
-class StubWorld extends Node2D:
-	var fx := StubFx.new()
-	var camera_rig := StubCamera.new()
-	var messages := StubMessages.new()
-	var foes := StubFoes.new()
-	var player: StubHero
-	## Open grass, for a leap to land on.
-	var map := MapData.new()
-
+## The pieces stand nowhere in the tree: the bare world frees them with
+## itself.
+class StubWorld extends "res://test/bare_world.gd":
 	func _init() -> void:
+		fx = StubFx.new()
+		camera_rig = StubCamera.new()
+		messages = StubMessages.new()
+		foes = StubFoes.new()
 		# Telegraph lays its marks at this depth among the world's children.
 		for i in 4:
 			add_child(Node.new())
 		player = StubHero.new()
 		add_child(player)
+		# Open grass, for a leap to land on.
+		map = MapData.new()
 		for x in 16:
 			for y in 16:
 				map.grid[Vector2i(x, y)] = "grass"

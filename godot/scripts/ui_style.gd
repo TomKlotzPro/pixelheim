@@ -586,7 +586,7 @@ static func button_keyed(node: Button, key: String, text: String) -> void:
 		# The plank fits its cap and words once they're measured (in the tree).
 		row.minimum_size_changed.connect(func() -> void: node.custom_minimum_size = Vector2(row.get_combined_minimum_size().x + sides, PLANK))
 	node.text = ""
-	keycap_text(row.get_child(0), Controls.shown(key))
+	keycap_text(row.get_child(0) as PanelContainer, Controls.shown(key))
 	(row.get_child(1) as Label).text = text
 	node.custom_minimum_size = Vector2(row.get_combined_minimum_size().x + sides, PLANK)
 
@@ -983,7 +983,7 @@ static func _fit_footer(id: int, centered: bool) -> void:
 	row.add_theme_constant_override("separation", 3)
 	for child in row.get_children():
 		if child.get_class() == "Control":
-			child.custom_minimum_size.x = 4
+			(child as Control).custom_minimum_size.x = 4
 	# A row keeps the width its words first asked for: back to what they
 	# need now, or a centred one stood past the canvas's edge, its words
 	# off the middle (a paged pack in French, the big type).

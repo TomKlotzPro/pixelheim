@@ -1,3 +1,4 @@
+class_name Npc
 extends AnimatableBody2D
 ## areas: town story
 ## A villager: their Puny sheet (PunyArt, PIX-130), a body the hero bumps
@@ -23,7 +24,7 @@ const BENCH_AT := Vector2(0, 3)
 ## The body the hero bumps into (_ready says why this shape).
 const BODY := Vector2(20, 17)
 
-var world: Node2D
+var world: World
 var data: Dictionary
 var home := Vector2i.ZERO
 ## The tile the villager occupies (or is stepping onto).
@@ -177,7 +178,10 @@ func _process(delta: float) -> void:
 
 ## No mark over them while a scene has them (PIX-509: Maren kept her "!"
 ## through the dawn she speaks in).
-var unmarked := false
+var unmarked := false:
+	set(value):
+		unmarked = value
+		_refresh_mark()
 
 
 ## Their quest mark as things stand: the right one, or none with the marks

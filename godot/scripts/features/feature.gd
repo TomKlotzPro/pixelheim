@@ -42,19 +42,19 @@ func layers() -> Dictionary[String, MapLayer]:
 
 ## Each second of play, after the core's own once-a-second work (world.gd's
 ## watch).
-func every_second(_world: Node) -> void:
+func every_second(_world: World) -> void:
 	pass
 
 
 ## The pixels what E meets facing `cell` is drawn in, for the prompt to
 ## stand over, or null when it's none of this feature's
 ## (Interaction._prompt_target, after the core's own).
-func prompt_at(_world: Node, _cell: Vector2i) -> Variant:
+func prompt_at(_world: World, _cell: Vector2i) -> Variant:
 	return null
 
 
 ## E facing `cell`: true when this feature took it (Interaction.interact,
 ## after the core's own things on a cell, before the folk beside the hero:
 ## the lookout's spyglass took E over a villager standing by).
-func interact(_world: Node, _cell: Vector2i) -> bool:
+func interact(_world: World, _cell: Vector2i) -> bool:
 	return false

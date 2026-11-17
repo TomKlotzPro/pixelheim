@@ -212,18 +212,19 @@ func test_the_fight_has_its_own_blips() -> void:
 		assert_gt(SoundScript._synth(SoundScript.UI_SOUNDS[name]).data.size(), 0, name)
 
 
-class FakeSkillFx extends RefCounted:
-	var impacts_held := false
-
-	func cast(_skill: Dictionary, _caster: Node, _targets: Array) -> bool:
+class FakeSkillFx extends SkillFx:
+	func cast(_skill: Dictionary, _caster: Node2D, _targets: Array) -> bool:
 		return false
 
 
-class FakeFx extends RefCounted:
-	var skills := FakeSkillFx.new()
+class FakeFx extends WorldFx:
 	var words: Array[String] = []
 
-	func dust(_at: Vector2) -> void:
+	func _init() -> void:
+		skills = FakeSkillFx.new()
+		add_child(skills)
+
+	func dust(_at: Vector2, _held := false) -> void:
 		pass
 
 	func float_text(text: String, _at: Vector2, _color: Color, _big := false) -> void:
@@ -236,7 +237,7 @@ class FakeFx extends RefCounted:
 		pass
 
 
-class FakeMessages extends RefCounted:
+class FakeMessages extends Messages:
 	## The lines of the moment said (log_now).
 	var said: Array[String] = []
 
@@ -254,31 +255,34 @@ class FakeMessages extends RefCounted:
 
 
 ## The dock, as far as the hero asks it: the slots it was told to flash.
-class FakeDock extends RefCounted:
+class FakeDock extends HudDock:
 	var refused: Array[int] = []
 
 	func refuse(index: int) -> void:
 		refused.append(index)
 
 
-class FakeHud extends RefCounted:
-	var dock := FakeDock.new()
+class FakeHud extends Hud:
+	func _init() -> void:
+		dock = FakeDock.new()
+		add_child(dock)
 
 
-class FakeWorld extends Node2D:
-	var hud := FakeHud.new()
-	var fx := FakeFx.new()
-	var messages := FakeMessages.new()
-	var map := MapData.new()
-	var foes := FakeFight.new()
-	## The hero the foes keep off (PIX-458).
-	var player: Node2D
+## The pieces stand nowhere in the tree: the bare world frees them with
+## itself. `player` is the hero the foes keep off (PIX-458).
+class FakeWorld extends "res://test/bare_world.gd":
+	func _init() -> void:
+		hud = FakeHud.new()
+		fx = FakeFx.new()
+		messages = FakeMessages.new()
+		map = MapData.new()
+		foes = FakeFight.new()
 
 	func on_player_died() -> void:
 		pass
 
 
-class FakeFight extends RefCounted:
+class FakeFight extends Foes:
 	func in_fight(_linger := 0.0) -> bool:
 		return true
 

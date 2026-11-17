@@ -6,7 +6,7 @@ extends Node
 ## grows; who stands beside the hero; and the village's hours (PIX-149).
 ## They stand on the world's y-sorted actors layer, in the "npcs" group.
 
-var world: Node
+var world: World
 
 
 ## Villagers who live on this map now: tier-gated townsfolk and recruits.
@@ -74,13 +74,13 @@ func _process(_delta: float) -> void:
 		return
 	spawn_for(world.map)
 	keep_hours(true)
-	for villager: Node in get_tree().get_nodes_in_group("npcs"):
+	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
 		_come.call(villager)
 
 
 ## A recruit settled or the town grew: redraw who stands on this map.
 func respawn() -> void:
-	for villager in get_tree().get_nodes_in_group("npcs"):
+	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
 		villager.queue_free()
 	spawn_for(world.map)
 
@@ -88,7 +88,7 @@ func respawn() -> void:
 ## The villager beside the hero, faced side first: {npc, side} or {}.
 func beside() -> Dictionary:
 	var occupied := {}
-	for villager in get_tree().get_nodes_in_group("npcs"):
+	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
 		if not villager.away:
 			occupied[villager.cell] = villager.data
 	return Npcs.beside(occupied, world.player_cell, Vector2i(world.player.facing))
@@ -110,7 +110,7 @@ func keep_hours(arriving := false) -> void:
 		and (DayNight.is_dusk(GameState.world.steps) or GameState.holdings.festival_on())
 	var spots := Town.gathering_spots(map) if gathering else ([] as Array[Vector2i])
 	var taken := {}
-	for villager in get_tree().get_nodes_in_group("npcs"):
+	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
 		if villager.is_queued_for_deletion():
 			continue
 		var id := String(villager.data["id"])

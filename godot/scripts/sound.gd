@@ -163,6 +163,9 @@ var buses_added := 0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# A closed window is answered here (`_notification`): the engine quits
+	# once every sound is let go.
+	get_tree().auto_accept_quit = false
 	_dice.seed = 411
 	_doc =SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/audio.json"))
 	# The buses come from default_bus_layout.tres (PIX-412): made here at run
@@ -191,7 +194,7 @@ func _ready() -> void:
 	for i in 3:
 		_ambient_voices.append(_player("Ambience"))
 	_bed = _player("Ambience")
-	for player in [_music, _fading]:
+	for player: AudioStreamPlayer in [_music, _fading]:
 		player.finished.connect(_theme_over.bind(player))
 		# Streamed on the web too, where a player is a sample by default: a
 		# bundle's track was decoded whole on the main thread at its first
@@ -208,6 +211,28 @@ func _exit_tree() -> void:
 	release()
 
 
+## The window closed (Cmd-Q too): the game quits after its sounds' farewell.
+## GameState saves on the same notice, before the frame this waits.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		await farewell()
+		get_tree().quit()
+
+
+## Every sound stopped and let go before the engine shuts down, at a real
+## quit as at a harness run's (PIX-379, PIX-504: one still playing leaked at
+## exit, its stream and playback, "resources still in use at exit"). The
+## audio server's mixer retires a stopped sound on its own thread, in the
+## machine's time, which a stepped run's frames outrun and the tree's end
+## doesn't wait for; the frame after frees it.
+func farewell() -> void:
+	get_tree().paused = true  # nothing may start a track again
+	stop_all()
+	release()
+	OS.delay_msec(100)
+	await get_tree().process_frame
+
+
 ## Every player stopped at once, fades and all, every sound let go, and
 ## none played after (a screen freed at the end says "close"): at the
 ## engine's end, and a harness run's (PIX-379).
@@ -216,7 +241,7 @@ func release() -> void:
 	for tween: Tween in [_fade, _bed_fade, _duck]:
 		if tween != null:
 			tween.kill()
-	for player in [_music, _fading, _bed] + _voices() + _ambient_voices:
+	for player: AudioStreamPlayer in [_music, _fading, _bed] + _voices() + _ambient_voices:
 		player.stop()
 		player.stream = null
 	_streams.clear()

@@ -29,8 +29,8 @@ const TICK_RUN_S := 0.5
 ## How long the twinkle where one landed lasts.
 const FLASH_S := 0.14
 
-var world: Node2D
-var fx: Node2D
+var world: World
+var fx: WorldFx
 
 ## What flies now, each a pooled entry, and the spent ones to use again.
 var _bits: Array[Dictionary] = []

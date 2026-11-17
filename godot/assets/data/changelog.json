@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.379.0",
+      "date": "2026-11-17",
+      "codename": "Kept Safe",
+      "notes": [
+        "A save that fails to write is no longer called saved: it is tried again and a short line tells you",
+        "A save file edited by hand with a wrong value reads as damaged instead of loading half a hero",
+        "Quitting in the second of a fall no longer wakes you alive where you fell: you wake as the fall would have woken you",
+        "Maren tells her relic story again if you leave it on its first line, and a click on a conversation turns the page",
+        "Fixed small leaks when building a map without the paid art and when quitting with a sound playing"
+      ]
+    },
+    {
       "version": "0.378.0",
       "date": "2026-11-16",
       "codename": "Nothing Left Hanging",

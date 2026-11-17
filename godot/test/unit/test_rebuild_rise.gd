@@ -4,8 +4,6 @@ extends GutTest
 ## where the project can be seen, and the stop says what it brings; an
 ## age's stop names who moved in with it.
 
-const Lookbook := preload("res://scripts/lookbook.gd")
-
 
 func _projects() -> Array[String]:
 	var out: Array[String] = []

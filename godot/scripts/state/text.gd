@@ -108,7 +108,7 @@ static func _walk(value: Variant, key: String) -> void:
 			else:
 				_walk(v, name)
 	elif value is Array:
-		for i in value.size():
+		for i: int in value.size():
 			var v: Variant = value[i]
 			if v is String:
 				if is_words(key, v):

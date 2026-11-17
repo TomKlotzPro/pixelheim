@@ -9,8 +9,8 @@ extends RefCounted
 ## flags it was given in their order, awaiting each.
 
 ## The harness (harness.gd): its tree, its key presses and what's open.
-var h: Node
-var world: Node
+var h: Harness
+var world: World
 var flags: HarnessFlags
 ## The report line's fields; a value known only part-way through is noted
 ## as it's known.

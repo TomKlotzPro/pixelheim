@@ -309,7 +309,7 @@ static func _add_smoke(view: MapView, rect: Rect2i, share := 1.0) -> void:
 		return
 	var middle := Vector2(rect.position * TILE) + Vector2(rect.size * TILE) / 2.0
 	var extents := (Vector2(rect.size * TILE) / 2.0 - Vector2(10, 10)).max(Vector2(3, 3))
-	for ember in [false, true]:
+	for ember: bool in [false, true]:
 		var motes := MapView._still(CPUParticles2D.new())
 		motes.position = middle
 		motes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
@@ -434,7 +434,7 @@ static func _wanted_poster() -> ImageTexture:
 	if _poster == null:
 		var art := Image.create(POSTER[0].length(), POSTER.size(), false, Image.FORMAT_RGBA8)
 		for y in POSTER.size():
-			for x in POSTER[y].length():
+			for x: int in POSTER[y].length():
 				if POSTER[y][x] != ".":
 					art.set_pixel(x, y, Color(POSTER_INKS[POSTER[y][x]]))
 		_poster = ImageTexture.create_from_image(art)

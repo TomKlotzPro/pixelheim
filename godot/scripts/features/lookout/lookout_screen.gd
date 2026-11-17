@@ -10,11 +10,10 @@ extends Screen
 ## alone (test_night_light). The lamps breathe softly, still with Reduce
 ## motion. E or Esc closes it.
 
-const MapScreen := preload("res://scripts/map_screen.gd")
 ## How big the page may be on the screen.
 const BOX := Vector2(1040, 520)
 
-var world: Node2D
+var world: World
 var panorama: Panorama
 
 

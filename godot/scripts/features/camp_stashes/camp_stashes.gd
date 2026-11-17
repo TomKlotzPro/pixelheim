@@ -59,7 +59,7 @@ static func plan_on(map: MapData, camps: Dictionary, worked := {}) -> Dictionary
 
 
 static func _beside(map: MapData, camps: Dictionary, home: Vector2i, tent: Vector2i, taken: Array, worked: Dictionary) -> Vector2i:
-	for reach in [1, 2]:
+	for reach: int in [1, 2]:
 		for offset: Vector2i in CampsLayer.CAMP_RING:
 			var cell: Vector2i = home + offset
 			if maxi(absi(offset.x), absi(offset.y)) == 2 and maxi(absi(cell.x - tent.x), absi(cell.y - tent.y)) <= reach \

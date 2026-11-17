@@ -9,16 +9,17 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 
 ## The world as the watch asks it (LanternPass.watch): a map, the hero's
 ## cell, and the map drawn again round them, after the music's hush.
-class FakeWorld extends Node:
-	var harness := false
-	var map := MapData.new()
-	var player_cell := Vector2i(43, 27)
+class FakeWorld extends "res://test/bare_world.gd":
 	## Each drawing: the map, where the hero stands, whether the festival's on.
 	var drawn: Array = []
 	## The hushes asked before a drawing (World.hushed_build, PIX-420).
 	var hushes := 0
 
-	func hushed_build() -> bool:
+	func _init() -> void:
+		map = MapData.new()
+		player_cell = Vector2i(43, 27)
+
+	func hushed_build(_must := false) -> bool:
 		hushes += 1
 		return true
 

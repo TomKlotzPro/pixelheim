@@ -18,11 +18,7 @@ var _world: StubWorld
 var _origin := 0
 
 
-class StubHero extends CharacterBody2D:
-	var dead := false
-
-
-class StubFoes extends RefCounted:
+class StubFoes extends Foes:
 	## The foe's place in the ring round the hero, when it has one.
 	var spot := Vector2.INF
 
@@ -33,13 +29,13 @@ class StubFoes extends RefCounted:
 		return false
 
 
-class StubWorld extends Node2D:
-	var foes := StubFoes.new()
-	var player := StubHero.new()
-	var map := MapData.new()
-
+## The foes stand nowhere in the tree: the bare world frees them with itself.
+class StubWorld extends "res://test/bare_world.gd":
 	func _init() -> void:
+		foes = StubFoes.new()
+		player = preload("res://test/bare_hero.gd").new()
 		add_child(player)
+		map = MapData.new()
 		map.size = Vector2i(16, 16)
 		for x in 16:
 			for y in 16:

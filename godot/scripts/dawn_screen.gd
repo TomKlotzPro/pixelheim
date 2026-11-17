@@ -1,3 +1,4 @@
+class_name DawnScreen
 extends Screen
 ## areas: story
 ## The dawn after the Night of Ash (PIX-197), played on the town itself
@@ -23,7 +24,7 @@ const FIRES_SECONDS := 7.0
 ## The morning's grey, before the day's own sky takes over.
 const DAWN_GREY := Color(0.42, 0.36, 0.4, 0.22)
 
-var world: Node
+var world: World
 var on_done := Callable()
 var _beats: Array = []
 var _index := -1
@@ -36,7 +37,7 @@ var _plate_text: Label
 var _bubble: PanelContainer
 var _bubble_text: Label
 var _bubble_name: Label
-var _speaker: Node2D
+var _speaker: Npc
 var _black: ColorRect
 var _shadow: AnimatedSprite2D
 var _card: VBoxContainer
@@ -50,10 +51,9 @@ func _open() -> void:
 	_beats = Prologue.dawn()
 	# The hero holds still; the fires, the smoke and the people don't.
 	world.view.props.process_mode = Node.PROCESS_MODE_ALWAYS
-	for villager in get_tree().get_nodes_in_group("npcs"):
+	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
 		villager.process_mode = Node.PROCESS_MODE_ALWAYS
 		villager.unmarked = true
-		villager._refresh_mark()
 	# The flames stand among the actors, which are held: left so, they froze
 	# and none went out, however the telling had it (PIX-509).
 	for fire: Dictionary in world.view.fires:
@@ -167,7 +167,7 @@ func _gather() -> void:
 
 func _place_everyone() -> void:
 	var places := Prologue.dawn_places()
-	for villager in get_tree().get_nodes_in_group("npcs"):
+	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
 		if places.has(villager.data["id"]):
 			_stand(villager, places[villager.data["id"]])
 	if not _actors.has("mayor"):
@@ -193,7 +193,7 @@ func _place_everyone() -> void:
 	world.hud.update_clock(Prologue.dawn_steps())
 
 
-func _stand(villager: Node2D, cell: Vector2i) -> void:
+func _stand(villager: Npc, cell: Vector2i) -> void:
 	# A villager is a physics body, and the world's physics is held: moved
 	# by hand, not synced from the paused server (the day respawns them).
 	villager.sync_to_physics = false
