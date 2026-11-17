@@ -37,6 +37,11 @@ extends Node
 ## PIX-498: the Night of Ash has a track of its own ("ashnight"), the
 ## bundle's or the game's own minor march (tools/synth.py, from its notes in
 ## audio.json), until the dawn's theme and the town's tune.
+## PIX-518: the web build starts without the packs' audio, which was nine
+## tenths of its download: tools/audio_packs.gd puts the takes and the tracks
+## in packs of their own beside the page (`PACKS`), fetched once the game
+## runs and mounted as each lands (`mount`). Until then, and without them,
+## every sound and track is the game's own.
 ## Autoload `Sound`.
 
 const FADE_S := 0.35
@@ -95,6 +100,10 @@ const PAID := "res://assets/audio/paid/takes.json"
 ## (PIX-416), and the rate it wrote them at.
 const PAID_MUSIC := "res://assets/audio/paid/music.json"
 const PAID_MUSIC_RATE := 44100.0
+## The web's audio packs beside the page (tools/audio_packs.gd), in the order
+## they're fetched: the takes are a third of the tracks' size and heard at
+## every step, so they come first (PIX-518).
+const PACKS: Array[String] = ["sfx.pck", "music.pck"]
 
 var _doc := {}
 var _streams := {}
@@ -133,6 +142,9 @@ var _paid := {}
 ## The bundle's tracks installed, by slot ("town", "theme_dawn"): each
 ## one's path and loopBegin; {} without them (PIX-416).
 var _paid_music := {}
+## The page's call when a pack has been fetched (`_fetch_packs`), kept: the
+## browser can only call one this still holds.
+var _pack_fetched: JavaScriptObject
 ## The packs' takes held back though they're here (the harness's `cc0`, as
 ## the paid art is): the run hears what a build without them hears.
 var withheld := false
@@ -205,6 +217,76 @@ func _ready() -> void:
 	_paid = paid_takes(PAID)
 	_paid_music = paid_music(PAID_MUSIC)
 	apply_volumes()
+	# The web export carries the packs' lists without their audio (its
+	# preset's exclude_filter): a build made with them has the packs to fetch.
+	if OS.has_feature("web") and FileAccess.file_exists(PAID) and _paid.is_empty():
+		_fetch_packs()
+
+
+## The web's audio packs fetched one after the other from beside the page
+## and mounted as each lands (PIX-518). The browser's own fetch, off the
+## game's frames: GitHub Pages zips a pack and the browser unzips it, so
+## HTTPRequest, counting the unzipped bytes against the zipped
+## Content-Length, never saw the body whole, and Godot's client takes one
+## chunk of the stream a frame (a 5 MiB pack that had arrived in 2 s was
+## read in 38). The browser's HTTP cache keeps them for the next visit.
+func _fetch_packs() -> void:
+	_pack_fetched = JavaScriptBridge.create_callback(_pack_came)
+	JavaScriptBridge.get_interface("window").pixelheimPack = _pack_fetched
+	JavaScriptBridge.eval("""(async () => {
+		for (const name of %s) {
+			let bytes = null;
+			try {
+				const answer = await fetch(name);
+				bytes = answer.ok ? await answer.arrayBuffer() : null;
+			} catch (error) {}
+			window.pixelheimPack(name, bytes);
+		}
+	})()""" % JSON.stringify(PACKS), true)
+
+
+## A pack fetched (`_fetch_packs`: its name and its bytes, null when it
+## didn't come: its sounds stay the game's own), written to /tmp, the
+## browser's memory, as the game's own pack is (user:// there is IndexedDB,
+## which would keep 50 MB more), and mounted.
+func _pack_came(args: Array) -> void:
+	var file := "/tmp/" + str(args[0])
+	var here := false
+	if args[1] != null and not released:
+		var out := FileAccess.open(file, FileAccess.WRITE)
+		out.store_buffer(JavaScriptBridge.js_buffer_to_packed_byte_array(args[1]))
+		out.close()
+		here = mount(file)
+	# Said in the browser's console: the one place to see why a visit still
+	# hears the game's own sounds.
+	print("Sound: %s %s (%d events and %d tracks from the packs)" % [args[0], "mounted" if here else "didn't come", _paid.size(), _paid_music.size()])
+
+
+## A pack of the packs' audio mounted over res:// (PIX-518): its takes and
+## tracks are here from now on (`arrived`). False when it can't be read.
+func mount(pack: String) -> bool:
+	if not ProjectSettings.load_resource_pack(pack):
+		return false
+	arrived()
+	return true
+
+
+## The packs' audio read again, some of it newly here (PIX-518). Nothing
+## playing changes: the next take an event plays is the packs', and the next
+## change of track plays the bundle's, from its start (where the game's own
+## tune was left says nothing of the bundle's), even where the slot's
+## fallback is the tune playing now.
+func arrived() -> void:
+	_land(paid_takes(PAID), paid_music(PAID_MUSIC))
+
+
+func _land(takes: Dictionary, music: Dictionary) -> void:
+	_paid = takes
+	if music.size() != _paid_music.size():
+		_paid_music = music
+		_resume_at.clear()
+		if not track.begins_with("theme:"):
+			_heard = ""
 
 
 func _exit_tree() -> void:
@@ -245,6 +327,17 @@ func release() -> void:
 		player.stop()
 		player.stream = null
 	_streams.clear()
+
+
+## What a playtest hears (play.py's `sound`, PIX-518): the track asked for,
+## the file playing for it, the one fading out under it ("" once the
+## crossfade is over: never two for good), and how many events and slots the
+## packs fill.
+func report() -> Dictionary:
+	var files: Array[String] = []
+	for player: AudioStreamPlayer in [_music, _fading]:
+		files.append(player.stream.resource_path.get_file() if player.playing and player.stream != null else "")
+	return {"track": track, "music": files[0], "fading": files[1], "paidEvents": _paid.size(), "paidTracks": _paid_music.size()}
 
 
 func _player(bus: String) -> AudioStreamPlayer:

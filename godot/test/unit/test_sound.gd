@@ -954,3 +954,33 @@ func test_a_closed_window_waits_for_every_sound_to_be_let_go() -> void:
 	assert_true(sound.released, "none played after")
 	for player: AudioStreamPlayer in players:
 		assert_false(player.playing or player.stream != null, "%s let go" % player.bus)
+
+
+## PIX-518: the web build starts without the packs' audio and mounts it when
+## it lands. Until then a slot plays the game's own; the landing changes
+## nothing playing; after it the next take and the next change of track are
+## the packs', the bundle's track from its start.
+func test_the_packs_landing_change_nothing_playing() -> void:
+	var takes: Dictionary = Sound._paid
+	var music: Dictionary = Sound._paid_music
+	Sound.stop_music()
+	Sound._land({}, {})
+	assert_eq(Sound.heard_as("coast"), "world", "not here yet: the game's own")
+	assert_eq(Sound.takes_of("ui_tick"), ["blip/tick"])
+	Sound.play_track("world")
+	Sound._resume_at["world"] = 3.0
+	var playing := Sound._music
+	var stream := playing.stream
+	Sound._land({"ui_tick": ["sfx/hurt"]}, {"world": {"path": "res://none.ogg", "loopBegin": 0.0}, "coast": {"path": "res://none.ogg", "loopBegin": 0.0}})
+	assert_eq(Sound.takes_of("ui_tick"), ["sfx/hurt"], "the next take is the packs'")
+	assert_eq(Sound.heard_as("coast"), "coast", "the next change of track the bundle's")
+	assert_true(Sound._music == playing and playing.stream == stream and playing.playing, "what plays plays on")
+	Sound.play_track("world")
+	assert_true(Sound._music == playing and playing.stream == stream, "and isn't started over")
+	assert_eq(Sound.report()["music"], "world.wav")
+	assert_false(Sound._resume_at.has("world"), "the bundle's from its start")
+	assert_eq(Sound._heard, "", "a slot sharing the tune playing changes to its own")
+	assert_false(Sound.mount("user://no_such.pck"), "a pack that didn't come")
+	Sound.stop_music()
+	Sound._land(takes, music)
+	Sound._resume_at.clear()

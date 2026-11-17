@@ -11,6 +11,7 @@ the desktop. Needs Playwright for Python and Google Chrome (no browser
 download):
 
     godot --headless --path godot --export-release Web export/web/index.html
+    godot --headless --audio-driver Dummy --path godot -s tools/audio_packs.gd   # with the paid audio installed (PIX-518)
     python3 -m venv /tmp/pw && /tmp/pw/bin/pip install playwright==1.56.0
     /tmp/pw/bin/python godot/tools/web_perf.py [--out web-perf.json]
 """

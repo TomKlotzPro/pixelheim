@@ -144,6 +144,8 @@ jobs:
         run: |
           mkdir -p godot/export/web
           godot --headless --path godot --export-release Web export/web/index.html
+          # The packs' audio beside it, as the deploy builds it (PIX-518).
+          godot --headless --audio-driver Dummy --path godot -s tools/audio_packs.gd
 
       - name: Upload web build artifact
         uses: actions/upload-artifact@v4
