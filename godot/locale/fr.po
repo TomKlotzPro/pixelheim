@@ -4305,6 +4305,10 @@ msgid "How It Ends"
 msgstr "Comment tout finit"
 
 #: assets/data/changelog.json
+msgid "Hurt that night, your pack opens on the potion, so the hint's keys drink it instead of taking your sword off"
+msgstr "Blessé cette nuit-là, votre sac s'ouvre sur la potion : les touches de l'astuce la font boire au lieu d'ôter votre épée"
+
+#: assets/data/changelog.json
 msgid "Hush Before Dawn"
 msgstr "Silence avant l'aube"
 
@@ -6825,6 +6829,10 @@ msgid "The Night Burns"
 msgstr "La nuit brûle"
 
 #: assets/data/changelog.json
+msgid "The Night Teaches"
+msgstr "La nuit enseigne"
+
+#: assets/data/changelog.json
 msgid "The Night of Ash"
 msgstr "La Nuit des Cendres"
 
@@ -7137,6 +7145,10 @@ msgid "The hero's fall plays at its full quality again"
 msgstr "La chute du héros retrouve sa pleine qualité"
 
 #: assets/data/changelog.json
+msgid "The hounds' lesson ends with your first roll and the embers' with your first skill, not only when they all fall"
+msgstr "La leçon des chiens s'achève à votre première roulade, celle des braises à votre première compétence, pas seulement quand tous tombent"
+
+#: assets/data/changelog.json
 msgid "The hub screen retires with honor. It served well."
 msgstr "L'écran central prend sa retraite avec les honneurs. Il a bien servi."
 
@@ -7195,6 +7207,10 @@ msgstr "Le registre garde son texte dans son cadre et porte le nom de l'époque�
 #: assets/data/changelog.json
 msgid "The line above the dock says where: the next step, the place it's in and how far along you are"
 msgstr "La ligne au-dessus de la barre dit où : la prochaine étape, le lieu où elle se trouve et où vous en êtes"
+
+#: assets/data/changelog.json
+msgid "The line naming the key stays up through the night's fights"
+msgstr "La ligne qui nomme la touche reste affichée pendant les combats de la nuit"
 
 #: assets/data/changelog.json
 msgid "The line under the title now says what the game is about: The village burned. You stayed."
@@ -7551,6 +7567,10 @@ msgstr "La version web joue de nouveau sa musique et ses bruitages : ses bus a
 #: assets/data/changelog.json
 msgid "The web game no longer carries its test suite: about 1.4 MB less to download before you play"
 msgstr "Le jeu sur le web n'embarque plus ses tests : environ 1,4 Mo de moins à télécharger avant de jouer"
+
+#: assets/data/changelog.json
+msgid "The well stands where it is drawn: you no longer walk onto its roof, and E shows on it from every side"
+msgstr "Le puits se trouve là où il est dessiné : vous ne marchez plus sur son toit, et E s'affiche dessus de tous les côtés"
 
 #: assets/data/changelog.json
 msgid "The wind moves the world: trees, wheat and flowers sway, their tops more than their feet, as gusts roll across the land"
