@@ -84,7 +84,7 @@ class SplashTest(unittest.TestCase):
             for line in words["tips"] + [words["stalled"]]:
                 self.assertLessEqual(set(line), set(glyphs), line)
                 self.assertLessEqual(self.wide(line), self.scene["line"], line)
-            for line in (words["failed"], words["again"]):
+            for line in (words["failed"], words["again"], words["missing"]):
                 self.assertLessEqual(set(line), set(glyphs), line)
                 self.assertLessEqual(self.wide(line), self.scene["notice"], line)
         self.assertLess(self.scene["line"], W * 2 / 3, "a line fits a window two thirds the picture's size, a letter's pixel a screen's")

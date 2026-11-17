@@ -106,8 +106,8 @@ body {
 	max-width: 80%;
 	pointer-events: auto;
 	background-color: #1c120a;
-	border: 2px solid #e8b33a;
-	color: #f4ecd0;
+	border: 2px solid #f2c14e;
+	color: #f3e6c4;
 	font: 16px/1.5 ui-monospace, Menlo, Consolas, monospace;
 	padding: 1rem 1.5rem;
 	text-align: center;
@@ -119,13 +119,13 @@ body {
 }
 
 #status-notice a {
-	color: #ffe08a;
+	color: #f2c14e;
 }
 
 #status-notice small {
 	display: block;
 	margin-top: 0.5rem;
-	color: #8c8cb4;
+	color: #c9b48a;
 	white-space: pre-line;
 }
 
@@ -157,7 +157,7 @@ body {
 }
 
 #status-notice.drawn a:focus-visible {
-	outline: 2px solid #ffe08a;
+	outline: 2px solid #f2c14e;
 }
 		</style>
 		$GODOT_HEAD_INCLUDE
@@ -176,7 +176,7 @@ body {
 
 		<script>
 /* splash.py: the scene's live points */
-const SCENE = {"stars":[[36,39,"#040515"],[372,30,"#040619"],[447,117,"#080c27"],[453,147,"#080c27"],[276,20,"#040619"],[189,141,"#080c27"],[191,160,"#0e1136"],[224,12,"#040619"],[487,108,"#080b25"],[76,73,"#040517"],[110,54,"#040618"],[274,30,"#040619"],[65,87,"#070a23"],[531,25,"#090a1b"],[251,96,"#080c27"],[612,168,"#0c0e2b"],[607,182,"#0c0e2d"],[539,169,"#0e1034"],[141,31,"#040619"],[419,152,"#080c27"]],"windows":[[10,300,10,8,"#100d20","#251611"],[34,300,10,8,"#110e21","#271712"],[62,300,10,8,"#120f23","#2d1a12"],[108,300,10,8,"#131126","#321d13"],[142,300,10,8,"#151229","#351f13"],[446,300,10,8,"#151229","#351f13"],[494,300,10,8,"#151229","#351f13"],[544,300,10,8,"#131126","#2f1c13"],[572,300,10,8,"#121024","#2a1912"],[604,300,10,8,"#110e21","#271712"]],"chimneys":[[63,248],[115,265],[473,244],[613,245]],"summit":[118,110],"lake":[176,279,424,301],"torches":[[201,306],[377,306]],"road":{"y":345,"from":12,"to":618},"lamps":{"y":352,"xs":[32,64,96,128,160,192,224,256,288,320,352,384,416,448,480,512,544,576,608]},"lamp":[".L.","LEL","LEL",".L.",".L.",".L.",".L."],"courier":{"stand":["..CCC.....",".CCCCC....",".HSSS.....",".HSKS.....","..SSS.....",".RRRR.....","BRRRRSSLL.","BBRRR..LYL","BBDRR..LYL",".RDDR...L.",".PP.PP....",".PP.PP....",".KK.KK...."],"stride":["..CCC.....",".CCCCC....",".HSSS.....",".HSKS.....","..SSS.....",".RRRR.....","BRRRRSSLL.","BBRRR..LYL","BBDRR..LYL",".RDDR...L.",".PP.PP....","PP...PP...","KK...KK..."],"pass":["..CCC.....",".CCCCC....",".HSSS.....",".HSKS.....","..SSS.....",".RRRR.....","BRRRRSSLL.","BBRRR..LYL","BBDRR..LYL",".RDDR...L.","..PPP.....","..PPP.....","..KKK....."]},"ink":{"C":"#8a4f14","H":"#3a2214","S":"#e0a878","K":"#140a03","R":"#b8323a","D":"#7a2430","B":"#6b4a2a","P":"#3d3a66","L":"#3a2a24","Y":"#ffd27a"},"glyphs":{" ":[3,0,0,0,0,0,0,0,0,0,0,0],"!":[2,0,0,1,1,1,1,1,0,1,0,0],"\"":[4,0,0,5,5,0,0,0,0,0,0,0],"#":[6,0,0,10,31,10,10,10,31,10,0,0],"$":[6,0,4,14,21,5,14,20,21,14,4,0],"%":[6,0,0,19,19,8,4,2,25,25,0,0],"&":[6,0,0,2,5,5,2,21,9,22,0,0],"'":[2,0,0,1,1,0,0,0,0,0,0,0],"(":[4,0,0,4,2,1,1,1,1,2,4,0],")":[4,0,0,1,2,4,4,4,4,2,1,0],"*":[4,0,0,5,2,5,0,0,0,0,0,0],"+":[4,0,0,0,0,2,7,2,0,0,0,0],",":[2,0,0,0,0,0,0,0,0,1,1,0],"-":[4,0,0,0,0,0,7,0,0,0,0,0],".":[2,0,0,0,0,0,0,0,0,1,0,0],"/":[6,0,0,16,16,8,4,2,1,1,0,0],"0":[6,0,0,14,17,17,21,17,17,14,0,0],"1":[6,0,0,7,4,4,4,4,4,31,0,0],"2":[6,0,0,14,17,16,8,4,2,31,0,0],"3":[6,0,0,14,17,16,12,16,17,14,0,0],"4":[6,0,0,8,12,10,9,31,8,8,0,0],"5":[6,0,0,31,1,1,15,16,17,14,0,0],"6":[6,0,0,14,17,1,15,17,17,14,0,0],"7":[6,0,0,31,16,16,8,4,2,1,0,0],"8":[6,0,0,14,17,17,14,17,17,14,0,0],"9":[6,0,0,14,17,17,30,16,17,14,0,0],":":[2,0,0,0,0,1,0,0,0,1,0,0],";":[2,0,0,0,0,1,0,0,0,1,1,0],"<":[4,0,0,0,4,2,1,2,4,0,0,0],"=":[4,0,0,0,0,7,0,7,0,0,0,0],">":[4,0,0,0,1,2,4,2,1,0,0,0],"?":[6,0,0,14,17,16,8,4,0,4,0,0],"@":[6,0,0,31,17,21,29,1,1,31,0,0],"A":[6,0,0,4,10,10,17,31,17,17,0,0],"B":[6,0,0,15,17,17,15,17,17,15,0,0],"C":[6,0,0,14,17,1,1,1,17,14,0,0],"D":[6,0,0,7,9,17,17,17,9,7,0,0],"E":[6,0,0,31,1,1,15,1,1,31,0,0],"F":[6,0,0,31,1,1,15,1,1,1,0,0],"G":[6,0,0,14,1,1,29,17,17,30,0,0],"H":[6,0,0,17,17,17,31,17,17,17,0,0],"I":[4,0,0,7,2,2,2,2,2,7,0,0],"J":[5,0,0,8,8,8,8,9,9,6,0,0],"K":[6,0,0,17,9,5,3,5,9,17,0,0],"L":[6,0,0,1,1,1,1,1,1,31,0,0],"M":[8,0,0,65,99,85,73,65,65,65,0,0],"N":[7,0,0,35,37,37,41,41,49,33,0,0],"O":[6,0,0,14,17,17,17,17,17,14,0,0],"P":[6,0,0,15,17,17,15,1,1,1,0,0],"Q":[6,0,0,14,17,17,17,21,9,22,0,0],"R":[6,0,0,15,17,17,15,5,9,17,0,0],"S":[6,0,0,14,17,1,14,16,17,14,0,0],"T":[6,0,0,31,4,4,4,4,4,4,0,0],"U":[6,0,0,17,17,17,17,17,17,14,0,0],"V":[6,0,0,17,17,17,10,10,4,4,0,0],"W":[8,0,0,65,73,73,85,85,34,34,0,0],"X":[6,0,0,17,17,10,4,10,17,17,0,0],"Y":[6,0,0,17,17,17,14,4,4,4,0,0],"Z":[6,0,0,31,16,8,4,2,1,31,0,0],"[":[4,0,0,7,1,1,1,1,1,1,7,0],"\\":[6,0,0,1,1,2,4,8,16,16,0,0],"]":[4,0,0,7,4,4,4,4,4,4,7,0],"^":[6,0,0,4,10,17,0,0,0,0,0,0],"_":[4,0,0,0,0,0,0,0,0,0,7,0],"`":[6,2,4,0,0,0,0,0,0,0,0,0],"a":[6,0,0,0,0,22,25,17,25,22,0,0],"b":[6,0,0,1,1,13,19,17,19,13,0,0],"c":[6,0,0,0,0,30,1,1,1,30,0,0],"d":[6,0,0,16,16,22,25,17,25,22,0,0],"e":[6,0,0,0,0,14,17,31,1,30,0,0],"f":[4,0,0,6,2,7,2,2,2,2,0,0],"g":[6,0,0,0,0,22,25,17,25,22,16,14],"h":[6,0,0,1,1,13,19,17,17,17,0,0],"i":[2,0,0,1,0,1,1,1,1,1,0,0],"j":[5,0,0,8,0,8,8,8,8,9,6,0],"k":[5,0,0,1,1,9,5,3,5,9,0,0],"l":[2,0,0,1,1,1,1,1,1,1,0,0],"m":[8,0,0,0,0,55,73,73,73,73,0,0],"n":[6,0,0,0,0,13,19,17,17,17,0,0],"o":[6,0,0,0,0,14,17,17,17,14,0,0],"p":[6,0,0,0,0,13,19,17,19,13,1,1],"q":[6,0,0,0,0,22,25,17,25,22,16,16],"r":[5,0,0,0,0,9,5,3,1,1,0,0],"s":[6,0,0,0,0,30,1,14,16,15,0,0],"t":[4,0,0,2,2,7,2,2,2,6,0,0],"u":[6,0,0,0,0,17,17,17,17,14,0,0],"v":[6,0,0,0,0,17,17,17,10,4,0,0],"w":[8,0,0,0,0,65,73,73,85,34,0,0],"x":[6,0,0,0,0,17,10,4,10,17,0,0],"y":[6,0,0,0,0,17,17,10,10,4,4,3],"z":[6,0,0,0,0,31,16,14,1,31,0,0],"{":[5,0,0,12,2,2,3,3,2,2,12,0],"|":[2,0,0,1,1,1,1,1,1,1,1,0],"}":[5,0,0,3,4,4,12,12,4,4,3,0],"~":[6,0,0,0,0,2,21,8,0,0,0,0],"\u00e0":[6,0,2,4,0,22,25,17,25,22,0,0],"\u00e8":[6,0,2,4,0,14,17,31,1,30,0,0],"\u00e9":[6,0,8,4,0,14,17,31,1,30,0,0],"\u2026":[6,0,0,0,0,0,0,0,0,21,0,0],"\u202f":[2,0,0,0,0,0,0,0,0,0,0,0]},"words":{"en":{"tips":["A courier never reads the post.","Five letters, fifty years late. Better late than never.","Fafnyr sleeps under the Ashen Mountain. Mostly.","An ember lamp on every post road: follow them home.","Talk to everyone. Somebody always knows something.","Fall in a fight and you wake at the inn. Nobody will mention it.","Hilda's forge is warm. So is Hilda, on good days.","The village grows as its people come home."],"stalled":"The first visit downloads the whole game. Later visits are quicker.","unit":"MB","failed":"The road is out: the game didn't arrive.","again":"Try again"},"fr":{"tips":["Un messager ne lit jamais le courrier.","Cinq lettres, cinquante ans de retard. Mieux vaut tard que jamais.","Fafnyr dort sous la Montagne des Cendres. La plupart du temps.","Une lampe de braise sur chaque route du courrier\u202f: suivez-les.","Parlez \u00e0 tout le monde. Quelqu'un sait toujours quelque chose.","Tombez au combat et vous vous r\u00e9veillez \u00e0 l'auberge. Personne n'en parlera.","La forge de Hilda est chaude. Hilda aussi, les bons jours.","Le village grandit quand les siens rentrent \u00e0 la maison."],"stalled":"La premi\u00e8re visite t\u00e9l\u00e9charge tout le jeu. Les suivantes sont plus rapides.","unit":"Mo","failed":"La route est coup\u00e9e\u202f: le jeu n'est pas arriv\u00e9.","again":"R\u00e9essayer"}},"line":420,"notice":330};
+const SCENE = {"stars":[[36,39,"#040515"],[372,30,"#040619"],[447,117,"#080c27"],[453,147,"#080c27"],[276,20,"#040619"],[189,141,"#080c27"],[191,160,"#0e1136"],[224,12,"#040619"],[487,108,"#080b25"],[76,73,"#040517"],[110,54,"#040618"],[274,30,"#040619"],[65,87,"#070a23"],[531,25,"#090a1b"],[251,96,"#080c27"],[612,168,"#0c0e2b"],[607,182,"#0c0e2d"],[539,169,"#0e1034"],[141,31,"#040619"],[419,152,"#080c27"]],"windows":[[10,300,10,8,"#100d20","#251611"],[34,300,10,8,"#110e21","#271712"],[62,300,10,8,"#120f23","#2d1a12"],[108,300,10,8,"#131126","#321d13"],[142,300,10,8,"#151229","#351f13"],[446,300,10,8,"#151229","#351f13"],[494,300,10,8,"#151229","#351f13"],[544,300,10,8,"#131126","#2f1c13"],[572,300,10,8,"#121024","#2a1912"],[604,300,10,8,"#110e21","#271712"]],"chimneys":[[63,248],[115,265],[473,244],[613,245]],"summit":[118,110],"lake":[176,279,424,301],"torches":[[201,306],[377,306]],"road":{"y":345,"from":12,"to":618},"lamps":{"y":352,"xs":[32,64,96,128,160,192,224,256,288,320,352,384,416,448,480,512,544,576,608]},"lamp":[".L.","LEL","LEL",".L.",".L.",".L.",".L."],"courier":{"stand":["..CCC.....",".CCCCC....",".HSSS.....",".HSKS.....","..SSS.....",".RRRR.....","BRRRRSSLL.","BBRRR..LYL","BBDRR..LYL",".RDDR...L.",".PP.PP....",".PP.PP....",".KK.KK...."],"stride":["..CCC.....",".CCCCC....",".HSSS.....",".HSKS.....","..SSS.....",".RRRR.....","BRRRRSSLL.","BBRRR..LYL","BBDRR..LYL",".RDDR...L.",".PP.PP....","PP...PP...","KK...KK..."],"pass":["..CCC.....",".CCCCC....",".HSSS.....",".HSKS.....","..SSS.....",".RRRR.....","BRRRRSSLL.","BBRRR..LYL","BBDRR..LYL",".RDDR...L.","..PPP.....","..PPP.....","..KKK....."]},"ink":{"C":"#8a4f14","H":"#3a2214","S":"#e0a878","K":"#140a03","R":"#b8323a","D":"#7a2430","B":"#6b4a2a","P":"#3d3a66","L":"#3a2a24","Y":"#ffd27a"},"glyphs":{" ":[3,0,0,0,0,0,0,0,0,0,0,0],"!":[2,0,0,1,1,1,1,1,0,1,0,0],"\"":[4,0,0,5,5,0,0,0,0,0,0,0],"#":[6,0,0,10,31,10,10,10,31,10,0,0],"$":[6,0,4,14,21,5,14,20,21,14,4,0],"%":[6,0,0,19,19,8,4,2,25,25,0,0],"&":[6,0,0,2,5,5,2,21,9,22,0,0],"'":[2,0,0,1,1,0,0,0,0,0,0,0],"(":[4,0,0,4,2,1,1,1,1,2,4,0],")":[4,0,0,1,2,4,4,4,4,2,1,0],"*":[4,0,0,5,2,5,0,0,0,0,0,0],"+":[4,0,0,0,0,2,7,2,0,0,0,0],",":[2,0,0,0,0,0,0,0,0,1,1,0],"-":[4,0,0,0,0,0,7,0,0,0,0,0],".":[2,0,0,0,0,0,0,0,0,1,0,0],"/":[6,0,0,16,16,8,4,2,1,1,0,0],"0":[6,0,0,14,17,17,21,17,17,14,0,0],"1":[6,0,0,7,4,4,4,4,4,31,0,0],"2":[6,0,0,14,17,16,8,4,2,31,0,0],"3":[6,0,0,14,17,16,12,16,17,14,0,0],"4":[6,0,0,8,12,10,9,31,8,8,0,0],"5":[6,0,0,31,1,1,15,16,17,14,0,0],"6":[6,0,0,14,17,1,15,17,17,14,0,0],"7":[6,0,0,31,16,16,8,4,2,1,0,0],"8":[6,0,0,14,17,17,14,17,17,14,0,0],"9":[6,0,0,14,17,17,30,16,17,14,0,0],":":[2,0,0,0,0,1,0,0,0,1,0,0],";":[2,0,0,0,0,1,0,0,0,1,1,0],"<":[4,0,0,0,4,2,1,2,4,0,0,0],"=":[4,0,0,0,0,7,0,7,0,0,0,0],">":[4,0,0,0,1,2,4,2,1,0,0,0],"?":[6,0,0,14,17,16,8,4,0,4,0,0],"@":[6,0,0,31,17,21,29,1,1,31,0,0],"A":[6,0,0,4,10,10,17,31,17,17,0,0],"B":[6,0,0,15,17,17,15,17,17,15,0,0],"C":[6,0,0,14,17,1,1,1,17,14,0,0],"D":[6,0,0,7,9,17,17,17,9,7,0,0],"E":[6,0,0,31,1,1,15,1,1,31,0,0],"F":[6,0,0,31,1,1,15,1,1,1,0,0],"G":[6,0,0,14,1,1,29,17,17,30,0,0],"H":[6,0,0,17,17,17,31,17,17,17,0,0],"I":[4,0,0,7,2,2,2,2,2,7,0,0],"J":[5,0,0,8,8,8,8,9,9,6,0,0],"K":[6,0,0,17,9,5,3,5,9,17,0,0],"L":[6,0,0,1,1,1,1,1,1,31,0,0],"M":[8,0,0,65,99,85,73,65,65,65,0,0],"N":[7,0,0,35,37,37,41,41,49,33,0,0],"O":[6,0,0,14,17,17,17,17,17,14,0,0],"P":[6,0,0,15,17,17,15,1,1,1,0,0],"Q":[6,0,0,14,17,17,17,21,9,22,0,0],"R":[6,0,0,15,17,17,15,5,9,17,0,0],"S":[6,0,0,14,17,1,14,16,17,14,0,0],"T":[6,0,0,31,4,4,4,4,4,4,0,0],"U":[6,0,0,17,17,17,17,17,17,14,0,0],"V":[6,0,0,17,17,17,10,10,4,4,0,0],"W":[8,0,0,65,73,73,85,85,34,34,0,0],"X":[6,0,0,17,17,10,4,10,17,17,0,0],"Y":[6,0,0,17,17,17,14,4,4,4,0,0],"Z":[6,0,0,31,16,8,4,2,1,31,0,0],"[":[4,0,0,7,1,1,1,1,1,1,7,0],"\\":[6,0,0,1,1,2,4,8,16,16,0,0],"]":[4,0,0,7,4,4,4,4,4,4,7,0],"^":[6,0,0,4,10,17,0,0,0,0,0,0],"_":[4,0,0,0,0,0,0,0,0,0,7,0],"`":[6,2,4,0,0,0,0,0,0,0,0,0],"a":[6,0,0,0,0,22,25,17,25,22,0,0],"b":[6,0,0,1,1,13,19,17,19,13,0,0],"c":[6,0,0,0,0,30,1,1,1,30,0,0],"d":[6,0,0,16,16,22,25,17,25,22,0,0],"e":[6,0,0,0,0,14,17,31,1,30,0,0],"f":[4,0,0,6,2,7,2,2,2,2,0,0],"g":[6,0,0,0,0,22,25,17,25,22,16,14],"h":[6,0,0,1,1,13,19,17,17,17,0,0],"i":[2,0,0,1,0,1,1,1,1,1,0,0],"j":[5,0,0,8,0,8,8,8,8,9,6,0],"k":[5,0,0,1,1,9,5,3,5,9,0,0],"l":[2,0,0,1,1,1,1,1,1,1,0,0],"m":[8,0,0,0,0,55,73,73,73,73,0,0],"n":[6,0,0,0,0,13,19,17,17,17,0,0],"o":[6,0,0,0,0,14,17,17,17,14,0,0],"p":[6,0,0,0,0,13,19,17,19,13,1,1],"q":[6,0,0,0,0,22,25,17,25,22,16,16],"r":[5,0,0,0,0,9,5,3,1,1,0,0],"s":[6,0,0,0,0,30,1,14,16,15,0,0],"t":[4,0,0,2,2,7,2,2,2,6,0,0],"u":[6,0,0,0,0,17,17,17,17,14,0,0],"v":[6,0,0,0,0,17,17,17,10,4,0,0],"w":[8,0,0,0,0,65,73,73,85,34,0,0],"x":[6,0,0,0,0,17,10,4,10,17,0,0],"y":[6,0,0,0,0,17,17,10,10,4,4,3],"z":[6,0,0,0,0,31,16,14,1,31,0,0],"{":[5,0,0,12,2,2,3,3,2,2,12,0],"|":[2,0,0,1,1,1,1,1,1,1,1,0],"}":[5,0,0,3,4,4,12,12,4,4,3,0],"~":[6,0,0,0,0,2,21,8,0,0,0,0],"\u00e0":[6,0,2,4,0,22,25,17,25,22,0,0],"\u00e8":[6,0,2,4,0,14,17,31,1,30,0,0],"\u00e9":[6,0,8,4,0,14,17,31,1,30,0,0],"\u2026":[6,0,0,0,0,0,0,0,0,21,0,0],"\u202f":[2,0,0,0,0,0,0,0,0,0,0,0]},"words":{"en":{"tips":["A courier never reads the post.","Five letters, fifty years late. Better late than never.","Fafnyr sleeps under the Ashen Mountain. Mostly.","An ember lamp on every post road: follow them home.","Talk to everyone. Somebody always knows something.","Fall in a fight and you wake at the inn. Nobody will mention it.","Hilda's forge is warm. So is Hilda, on good days.","The village grows as its people come home."],"stalled":"The first visit downloads the whole game. Later visits are quicker.","unit":"MB","failed":"The road is out: the game didn't arrive.","again":"Try again","missing":"This browser is missing:"},"fr":{"tips":["Un messager ne lit jamais le courrier.","Cinq lettres, cinquante ans de retard. Mieux vaut tard que jamais.","Fafnyr dort sous la Montagne des Cendres. La plupart du temps.","Une lampe de braise sur chaque route du courrier\u202f: suivez-les.","Parlez \u00e0 tout le monde. Quelqu'un sait toujours quelque chose.","Tombez au combat et vous vous r\u00e9veillez \u00e0 l'auberge. Personne n'en parlera.","La forge de Hilda est chaleureuse. Hilda aussi, les bons jours.","Le village grandit quand les siens rentrent \u00e0 la maison."],"stalled":"La premi\u00e8re visite t\u00e9l\u00e9charge tout le jeu. Les suivantes sont plus rapides.","unit":"Mo","failed":"La route est coup\u00e9e\u202f: le jeu n'est pas arriv\u00e9.","again":"R\u00e9essayer","missing":"Il manque \u00e0 ce navigateur\u202f:"}},"line":420,"notice":330};
 /* splash.py: end */
 
 // The page's words, in the browser's language: French or English.
@@ -186,11 +186,13 @@ if (FRENCH) {
 	document.documentElement.lang = 'fr';
 }
 
-// The failure notice's words and link, for a reader and a click.
-function notice(detail) {
+// The failure notice's words and link, for a reader and a click. `final`:
+// trying again can't help (the browser lacks something), so no link.
+function notice(detail, final) {
 	const box = document.getElementById('status-notice');
 	box.querySelector('p').textContent = WORDS.failed;
 	box.querySelector('a').textContent = WORDS.again;
+	box.querySelector('a').style.display = final ? 'none' : '';
 	box.querySelector('small').textContent = detail;
 	box.style.display = 'block';
 	return box;
@@ -229,14 +231,16 @@ function alive() {
 	const still = window.matchMedia !== undefined && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	const W = life.width;
 	const H = life.height;
-	const CREAM = '#f4ecd0';
-	const DIM = '#a8a8d0';
+	// The game's text colours in the dark (UiStyle.CREAM, DUSK, GOLD).
+	const CREAM = '#f3e6c4';
+	const DIM = '#c9b48a';
 	const NIGHT = '#04061a';
-	const GOLD = '#ffe08a';
+	const GOLD = '#f2c14e';
 	// A line past this long without a byte says why (seconds); a line of the
 	// world stays this long.
 	const STALL_S = 4;
 	const TIP_S = 6;
+	const LINE_OUT_S = 0.2;
 	const windows = SCENE.windows;
 	const road = SCENE.road;
 	const lamps = SCENE.lamps;
@@ -255,6 +259,7 @@ function alive() {
 	// What went wrong, once something has: the lines under the notice.
 	let failed = null;
 	let link = null;
+	let retry = true;
 	let clock = 0;
 	let last = performance.now();
 	// When each lamp was lit (in the page's seconds), for its flare.
@@ -498,7 +503,8 @@ function alive() {
 			// words in a window of any size; the link over its drawn words.
 			const scale = words.width / W;
 			const dot = Math.max(1, Math.round(scale));
-			const high = 46 + 14 * failed.length;
+			const under = retry ? 44 : 27;
+			const high = under + 2 + 14 * failed.length;
 			const box = [Math.round(words.width / 2) - 180 * dot, Math.round(words.height / 2) - Math.round(high / 2) * dot, 360 * dot, high * dot];
 			const row = (down) => (box[1] + down * dot) / scale;
 			const span = wide(WORDS.again) * dot;
@@ -507,24 +513,30 @@ function alive() {
 			quill.fillStyle = '#1c120a';
 			quill.fillRect(box[0], box[1], box[2], box[3]);
 			write(WORDS.failed, 320, row(8), CREAM, 1, 0.5);
+			failed.forEach(function (said, index) {
+				write(said, 320, row(under + 14 * index), DIM, 1, 0.5);
+			});
+			if (!retry) {
+				return;
+			}
 			write(WORDS.again, 320, row(25), GOLD, 1, 0.5);
 			quill.fillStyle = GOLD;
 			quill.fillRect(Math.round((words.width - span) / 2), box[1] + 35 * dot, span, dot);
-			failed.forEach(function (said, index) {
-				write(said, 320, row(44 + 14 * index), DIM, 1, 0.5);
-			});
 			link.style.left = ((words.width - span) / 2 - 8 * dot) / words.width * 100 + '%';
 			link.style.width = (span + 16 * dot) / words.width * 100 + '%';
 			link.style.top = (box[1] + 21 * dot) / words.height * 100 + '%';
 			link.style.height = 17 * dot / words.height * 100 + '%';
 			return;
 		}
-		const fresh = still ? 1 : Math.min(1, (clock - lineAt) / 0.4);
-		if (fresh < 1 && lineBefore !== '') {
-			write(lineBefore, 320, 92, CREAM, 1 - fresh, 0.5);
+		// The line before goes, then this one comes, settling up into place:
+		// never both at once, which read as garbled letters.
+		const turned = clock - lineAt - (lineBefore === '' ? 0 : LINE_OUT_S);
+		if (!still && turned < 0) {
+			write(lineBefore, 320, 92, CREAM, -turned / LINE_OUT_S, 0.5);
+		} else {
+			const fresh = still ? 1 : Math.min(1, turned / 0.3);
+			write(line, 320, 92 + Math.round((1 - fresh) * 3), CREAM, fresh, 0.5);
 		}
-		// It settles up into place as it comes.
-		write(line, 320, 92 + Math.round((1 - fresh) * 3), CREAM, fresh, 0.5);
 		if (bytes[0] > 0) {
 			const mega = (count) => Math.round(count / 1048576);
 			const count = bytes[1] > 0 ? mega(Math.min(bytes[0], bytes[1])) + ' / ' + mega(bytes[1]) : '' + mega(bytes[0]);
@@ -558,6 +570,9 @@ function alive() {
 		// moves again; else the next line of the world in its turn.
 		if (!ready && target < 1 && clock - movedAt > STALL_S) {
 			say(WORDS.stalled);
+		} else if (still) {
+			// Reduced motion: one line of the world, back once the bytes move.
+			say(WORDS.tips[tip]);
 		} else if (clock - lineAt > TIP_S) {
 			tip = (tip + 1) % WORDS.tips.length;
 			say(WORDS.tips[tip]);
@@ -658,9 +673,10 @@ function alive() {
 		},
 		// Something went wrong: the notice shows over the night, which
 		// breathes on behind it, and the page stays. `detail` is what the
-		// engine said, its first two lines kept.
-		fail: function (detail) {
-			const box = notice(detail);
+		// engine said, its first two lines kept; `final` leaves out the link.
+		fail: function (detail, final) {
+			retry = !final;
+			const box = notice(detail, final);
 			box.classList.add('drawn');
 			failed = detail.split('\n').filter((said) => said.trim() !== '').slice(0, 2).map((said) => fitted(said, SCENE.notice));
 			link = box.querySelector('a');
@@ -715,7 +731,8 @@ const engine = new Engine(GODOT_CONFIG);
 				console.error('Error while registering service worker:', err);
 			});
 		} else {
-			displayFailureNotice('This browser is missing: ' + missing.join(', '));
+			console.error('Missing features:', missing);
+			loading.fail(WORDS.missing + ' ' + missing.join(', '), true);
 		}
 	} else {
 		engine.startGame({

@@ -109,6 +109,7 @@ WORDS = {
         "unit": "MB",
         "failed": "The road is out: the game didn't arrive.",
         "again": "Try again",
+        "missing": "This browser is missing:",
     },
     "fr": {
         "tips": [
@@ -118,13 +119,14 @@ WORDS = {
             "Une lampe de braise sur chaque route du courrier\u202f: suivez-les.",
             "Parlez \u00e0 tout le monde. Quelqu'un sait toujours quelque chose.",
             "Tombez au combat et vous vous r\u00e9veillez \u00e0 l'auberge. Personne n'en parlera.",
-            "La forge de Hilda est chaude. Hilda aussi, les bons jours.",
+            "La forge de Hilda est chaleureuse. Hilda aussi, les bons jours.",
             "Le village grandit quand les siens rentrent \u00e0 la maison.",
         ],
         "stalled": "La premi\u00e8re visite t\u00e9l\u00e9charge tout le jeu. Les suivantes sont plus rapides.",
         "unit": "Mo",
         "failed": "La route est coup\u00e9e\u202f: le jeu n'est pas arriv\u00e9.",
         "again": "R\u00e9essayer",
+        "missing": "Il manque \u00e0 ce navigateur\u202f:",
     },
 }
 WINDOW_GLASS, WINDOW_CORE, WINDOW_FRAME = hexc("f2b04e"), hexc("ffe3a0"), hexc("3a2214")
