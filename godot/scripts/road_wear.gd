@@ -10,7 +10,8 @@ class_name RoadWear
 ## the crown. Where the town's traffic runs over its paving (Streets.worn,
 ## PIX-382 step 4), the stone wears too: the same ruts and scuffs in shade
 ## and polish over whatever the paving is, and here and there a chipped
-## stone with the dirt showing.
+## stone with the dirt showing; where no one wears it, the Town square's
+## flags have grass in their joints (PIX-522).
 ## Drawn in code from Shade's CC0 dirt, grass and rock colours (it needs no
 ## paid art), as tiles on two layers over the ground: the wear (by where in
 ## the road's width a cell lies and which way the road runs) and the verges
@@ -44,12 +45,13 @@ const VERGE_VARIANTS := 3
 ## The atlas: the rutted lanes, then the worn patches (crossings and
 ## squares), then the verges by which sides meet grass (N=1, E=2, S=4, W=8),
 ## then the kerbs the same way: a row of edge stones along a gravelled
-## street's sides (Streets.KERBED).
+## street's sides (Streets.KERBED), then the moss in a square's flags.
 const COLUMNS := 16
 const PATCHES := STYLES * 2 * LANES * VARIANTS
 const VERGES := PATCHES + STYLES * VARIANTS
 const KERBS := VERGES + 15 * VERGE_VARIANTS
-const COUNT := KERBS + 15 * VERGE_VARIANTS
+const MOSS := KERBS + 15 * VERGE_VARIANTS
+const COUNT := MOSS + VARIANTS
 ## What a road is, and what grass grows in from beside it.
 const ROAD := "path"
 const GRASSY := ["grass", "forest", "flowers", "crops"]
@@ -99,7 +101,8 @@ static var _tileset: TileSet
 ## {cell: tile}, "verge": {cell: tile}}. `beyond(cell)` is the ground past
 ## the map's edges (so a road out runs on), `paved` the cells paving covers
 ## (Streets: worn no more, but where the traffic wears the stone: `worn`,
-## Streets.worn, a square's cells in scuffs and never a lane's ruts),
+## Streets.worn, a square's cells in scuffs and never a lane's ruts; the
+## flags of a Streets.MOSSY look worn by no one grassed in their joints),
 ## `origin` where cell (0, 0) lies in the plane (a road's wear runs on
 ## unbroken into the map beside), `style` COUNTRY or TOWN.
 static func rows(grid: Dictionary, beyond: Callable, size: Vector2i, from: int, to: int, paved: Dictionary, origin: Vector2i, style: int, worn := {}) -> Dictionary:
@@ -113,6 +116,8 @@ static func rows(grid: Dictionary, beyond: Callable, size: Vector2i, from: int, 
 			if paved.has(cell):
 				if worn.has(cell):
 					wear[cell] = wear_tile(grid, beyond, cell, origin, PAVED, worn[cell])
+				elif paved[cell] in Streets.MOSSY and Streets.mask(paved, cell) == Streets.FULL:
+					wear[cell] = MOSS + absi(hash(origin + cell)) % VARIANTS
 				continue
 			wear[cell] = wear_tile(grid, beyond, cell, origin, style)
 			var sides := 0
@@ -256,6 +261,8 @@ static func atlas() -> Image:
 		for variant in VERGE_VARIANTS:
 			_atlas.blit_rect(_verge(sides, variant), Rect2i(0, 0, TILE, TILE), coords(VERGES + (sides - 1) * VERGE_VARIANTS + variant) * TILE)
 			_atlas.blit_rect(_kerb(sides, variant), Rect2i(0, 0, TILE, TILE), coords(KERBS + (sides - 1) * VERGE_VARIANTS + variant) * TILE)
+	for variant in VARIANTS:
+		_atlas.blit_rect(_moss(variant), Rect2i(0, 0, TILE, TILE), coords(MOSS + variant) * TILE)
 	return _atlas
 
 
@@ -450,6 +457,37 @@ static func _kerb(sides: int, variant: int) -> Image:
 						_dot(tile, Vector2i(TILE - 2, a), STONE_LIGHT if step == 0 else STONE)
 						_dot(tile, Vector2i(TILE - 1, a), STONE)
 			along += length + 1
+	return tile
+
+
+## Grass in the joints of a square's great flagstones (PIX-522: the Town's
+## square, its mossy flags): the pack's flags lie in courses, their joints
+## along the cell's top and middle rows and down its left edge above the
+## middle and its middle below, and the grass grows along them in short
+## runs, here and there a tuft standing where three flags meet.
+static func _moss(variant: int) -> Image:
+	var tile := Image.create(TILE, TILE, false, Image.FORMAT_RGBA8)
+	# One flag in four lies clean, so the grass grows in patches, not a grid.
+	if variant == 0:
+		return tile
+	var dice := RandomNumberGenerator.new()
+	dice.seed = hash([variant, "moss"])
+	# Each joint: where it starts, which way it runs, how long it is.
+	for joint: Array in [[Vector2i(0, 0), Vector2i.RIGHT, TILE], [Vector2i(0, 8), Vector2i.RIGHT, TILE],
+			[Vector2i(0, 1), Vector2i.DOWN, 7], [Vector2i(8, 9), Vector2i.DOWN, 7]]:
+		var start: Vector2i = joint[0]
+		var way: Vector2i = joint[1]
+		var length: int = joint[2]
+		var along := dice.randi_range(0, 3)
+		while along < length:
+			if dice.randf() < 0.55:
+				for step in mini(dice.randi_range(1, 3), length - along):
+					_dot(tile, start + way * (along + step), GRASS_DARK if dice.randf() < 0.6 else GRASS)
+			along += dice.randi_range(3, 6)
+	for meet: Vector2i in [Vector2i(0, 8), Vector2i(8, 8)]:
+		if dice.randf() < 0.45:
+			var shape: Array = TUFTS[[0, 3][dice.randi() % 2]]
+			_stamp(tile, meet - Vector2i(String(shape[0]).length() / 2, shape.size() - 1), shape)
 	return tile
 
 
