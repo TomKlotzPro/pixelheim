@@ -12,22 +12,22 @@ extends MapLayer
 ## trees and reeds by the cell's own dice (`lay`, pure). What stands blocks
 ## only open ground off the paths, never a pack's home, a chest, a lair,
 ## today's patches nor a walk (no patch grows under it after), and never so
-## as to close a way (Hamlet.fits); a walk blocks nothing, the fen's water
-## along its sides as a tree does; reeds are walked through, as the woods
-## are. The map itself is untouched. A walk is drawn as a bridge and its
-## sides as water (MapView.drawn_as, PIX-519: in code it read as a ladder
-## lying in the grass): Shade's pier planks the way it runs
-## (PunyTerrain.object_at) over the fen's own water, his CC0 sheet; the rest
-## is drawn in code (MireArt), so all the same without the paid pack.
+## as to close a way (Hamlet.fits); a walk and the shallows along its
+## sides block nothing; reeds are walked through, as the woods are. The map
+## itself is untouched. A walk is drawn as a bridge and its sides as water
+## (MapView.drawn_as, PIX-519: in code it read as a ladder lying in the
+## grass): Shade's pier planks the way it runs (PunyTerrain.object_at) over
+## the fen's own water, his CC0 sheet; the rest is drawn in code (MireArt),
+## so all the same without the paid pack.
 
 const MAP := "mirefen"
 ## The boardwalks, each two cells wide as the road or the bridge it runs on
-## from, landing at both ends on a road, a bridge, a door or another walk
-## (PIX-519): the middle road's west end to the west hut's ladder; down the
-## river's west bank from the middle road to the south bridge; from the
-## south bridge's east end to the south hut's; from the north bridge's west
-## end over the fen, then down to the middle road (two runs); the ruin's
-## doorway down to the road.
+## from, landing at both ends on a road, a bridge, a door, a hut or another
+## walk (PIX-519): the middle road's west end to the west hut's ladder;
+## down the river's west bank from the middle road to the south bridge;
+## from the south bridge's east end to the south hut's; from the north
+## bridge's west end over the fen, then down to the middle road (two runs);
+## the ruin's doorway down to the road.
 const WALKS: Array[Rect2i] = [
 	Rect2i(5, 24, 7, 2), Rect2i(16, 26, 2, 10), Rect2i(26, 34, 4, 2), Rect2i(14, 14, 4, 2), Rect2i(14, 16, 2, 8),
 	Rect2i(44, 18, 2, 6),
@@ -56,24 +56,24 @@ const WISP_HOP := 2.6
 const LAIR_CLEAR := 2
 
 
-## What the Mirefen stands in, as it is laid: {"walks": [Rect2i],
-## "wet": [cells of water beside them], "huts": [cell], "trees": {cell:
-## variant}, "reeds": {cell: variant}, "blocks": [cells]}. `kept`: cells nothing may stand on (Hamlet.kept_on
-## without the patches' decks, today's patches, where the hero arrives);
-## `opened`: the field decor that blocks, which a walk lifts off its cells.
+## What the Mirefen stands in, as it is laid: {"walks": [Rect2i], "wet":
+## [cells of shallows beside them], "huts": [cell], "trees": {cell:
+## variant}, "reeds": {cell: variant}, "blocks": [cells]}. `kept`: cells
+## nothing may stand on (Hamlet.kept_on without the patches' decks, today's
+## patches, where the hero arrives); `opened`: the field decor that blocks,
+## which a walk lifts off its cells.
 static func lay(map: MapData, kept: Dictionary, opened := {}) -> Dictionary:
 	var blocks: Array[Vector2i] = []
 	var out := {"walks": [] as Array[Rect2i], "wet": [] as Array[Vector2i], "huts": [] as Array[Vector2i], "trees": {}, "reeds": {}, "blocks": blocks}
 	if map.id != MAP:
 		return out
-	var lairs := {}
+	var clear := kept.duplicate()
 	for entry: Dictionary in Hunts.all():
 		if String(entry.get("mapId", "")) == map.id and entry.has("lair"):
 			var lair := Hunts.lair(entry)
 			for dy in range(-LAIR_CLEAR, LAIR_CLEAR + 1):
 				for dx in range(-LAIR_CLEAR, LAIR_CLEAR + 1):
-					lairs[lair + Vector2i(dx, dy)] = true
-	var clear := kept.merged(lairs)
+					clear[lair + Vector2i(dx, dy)] = true
 	for walk in WALKS:
 		if _all_open(map, walk, opened):
 			out["walks"].append(walk)
@@ -86,16 +86,14 @@ static func lay(map: MapData, kept: Dictionary, opened := {}) -> Dictionary:
 			blocks.append_array(foot)
 			for cell in _cells(Rect2i(hut - Vector2i.ONE, Vector2i(4, 3))):
 				clear[cell] = true
-	# The fen's water along each walk's sides, so it reads as planks over the
-	# bog (PIX-519: water only under them showed nowhere): a cell at a time
-	# where Hamlet.fits lets it block, as a dead tree, never a hut's nor by a
-	# lair.
+	# The fen's shallows along each walk's sides, so it reads as planks over
+	# the bog (PIX-519: water only under them showed nowhere): waded through,
+	# never on a way, a hut or a kept cell.
 	for walk: Rect2i in out["walks"]:
 		for cell in _sides(walk):
-			var one: Array[Vector2i] = [cell]
-			if not lairs.has(cell) and not _on_walk(out["walks"], cell) and Hamlet.fits(map, one, kept, blocks):
+			if map.is_walkable(cell) and not Hamlet.is_way(map.id, map.tile_at(cell)) and not kept.has(cell) \
+					and cell not in blocks and not _on_walk(out["walks"], cell):
 				out["wet"].append(cell)
-				blocks.append(cell)
 	# Column by column, the order the cells sort in, without sorting them.
 	for x in map.size.x:
 		for y in map.size.y:
@@ -177,6 +175,7 @@ func plan(view: MapView, slices: Slicer) -> void:
 					view.data.covered.erase(cell)
 		for cell: Vector2i in laid["wet"]:
 			view.drawn_as[cell] = "water"
+			view.bare[cell] = true
 		for cell: Vector2i in laid["blocks"]:
 			view.data.covered[cell] = true
 		# No field decor under what the fen grows.
@@ -189,13 +188,6 @@ func build(view: MapView, slices: Slicer) -> void:
 	if not view.has_meta("mire"):
 		return
 	var laid: Dictionary = view.get_meta("mire")
-	# The water beside the walks stops the hero at its edge as the map's own
-	# water does: the blockers' whole-cell box, not a prop's foot.
-	slices.add("decor_mire_wet", func() -> void:
-		for cell: Vector2i in laid["wet"]:
-			view.tile_layer.set_cell(cell, MapView.BLOCKER_SOURCE, Vector2i.ZERO)
-		if view.sliced:
-			view.tile_layer.update_internals())
 	slices.add("decor_mire_huts", func() -> void:
 		for hut: Vector2i in laid["huts"]:
 			_raise_hut(view, hut))

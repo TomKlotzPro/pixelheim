@@ -59,6 +59,10 @@ func test_nothing_stands_on_a_path_a_portal_a_home_a_chest_or_a_lair() -> void:
 	for cell: Vector2i in laid["reeds"]:
 		assert_eq(map.tile_at(cell), "marsh", "a reed bed in the mire at %s" % cell)
 		assert_does_not_have(laid["blocks"], cell, "reeds are walked through")
+	for cell: Vector2i in laid["wet"]:
+		assert_false(kept.has(cell), "%s's shallows keep clear of packs, portals, chests and the spawn" % cell)
+		assert_does_not_have(Hamlet.WAYS, map.tile_at(cell), "%s's shallows off the paths" % cell)
+		assert_does_not_have(laid["blocks"], cell, "the shallows are waded through at %s" % cell)
 
 
 func test_no_way_is_closed() -> void:
@@ -90,7 +94,7 @@ func test_the_middle_road_goes_on_to_the_west_hut() -> void:
 
 ## No walk stops in the open fen (PIX-519: the ruin's seemed to stop in the
 ## grass short of the road): each of its two ends, its last two rows or
-## columns, meets a road, a bridge, the ruin's doorway, a stilt hut or
+## columns, meets a road, a bridge, a door (the ruin's doorway), a hut or
 ## another walk going on.
 func test_every_walk_lands_at_both_ends() -> void:
 	var map := _map()
@@ -144,8 +148,8 @@ func test_wisps_float_over_the_fen_apart() -> void:
 
 
 ## Drawn: what stands blocks its cells, the walks are Shade's planks over
-## the fen's water, the wisps are out only at night, each with its soft
-## light.
+## the fen's water, waded beside them, the wisps are out only at night, each
+## with its soft light.
 func test_the_fen_drawn() -> void:
 	var map := _map()
 	var root := Node2D.new()
@@ -170,10 +174,9 @@ func test_the_fen_drawn() -> void:
 			assert_eq(PunyTerrain.ground_at(look, cell), "river", "the fen's water under its planks at %s" % cell)
 			assert_ne(view._objects_layer.get_cell_source_id(cell), -1, "Shade's planks laid at %s" % cell)
 	for cell: Vector2i in laid["wet"]:
-		assert_eq(String(look[cell]), "water", "the fen's water beside a walk at %s" % cell)
-		assert_true(WorldTiles.is_walkable(map.tile_at(cell)), "the map's own open cell kept at %s" % cell)
-		assert_false(map.is_walkable(cell), "and not walked into at %s" % cell)
-		assert_eq(view.tile_layer.get_cell_source_id(cell), MapView.BLOCKER_SOURCE, "its whole cell stops the hero at %s" % cell)
+		assert_eq(String(look[cell]), "water", "the fen's shallows beside a walk at %s" % cell)
+		assert_true(map.is_walkable(cell), "waded through at %s" % cell)
+		assert_ne(view.tile_layer.get_cell_source_id(cell), MapView.BLOCKER_SOURCE, "nothing stops the hero at %s" % cell)
 	assert_eq(PunyTerrain.span_axis(look, Vector2i(44, 20)), Vector2i.DOWN, "the ruin's runs down to the road")
 	assert_eq(PunyTerrain.span_axis(look, Vector2i(8, 25)), Vector2i.RIGHT, "the west hut's along the road")
 	view.set_night(false)
