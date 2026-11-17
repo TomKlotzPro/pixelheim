@@ -391,6 +391,7 @@ func test_a_field_of_another_type_is_a_damaged_save_never_a_hero_half_loaded() -
 		["town", "properties", {}], ["story", "seen", [{}]], ["quests", "ledger", []], ["quests", "ledger", {"a": 7}],
 		["quests", "tracked", 7], ["world", "chests", {}], ["world", "slain", [7]], ["world", "steps", "x"],
 		["world", "fog", {"town": {"x": "x"}}], ["world", "at", {"map": "keep", "x": null, "y": []}],
+		["town", "invested", 7], ["town", "bank", "x"], ["town", "tills", 7], ["town", "tills", {"town": 7}], ["town", "expansions", 7], ["home", "owned", "x"],
 	]
 	for field: Array in wrong:
 		var doc: Dictionary = whole.duplicate(true)

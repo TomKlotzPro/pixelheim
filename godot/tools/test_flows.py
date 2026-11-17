@@ -173,7 +173,8 @@ class RunnerTest(unittest.TestCase):
                      "WARNING: 12 ObjectDB instances were leaked at exit (run with --verbose for details).",
                      "WARNING: ObjectDB instances leaked at exit (run with --verbose for details).",
                      "ERROR: 6 resources still in use at exit (run with --verbose for details).",
-                     "ERROR: 1 resource still in use at exit."):
+                     "ERROR: 1 resource still in use at exit.",
+                     "ERROR: 3 RID allocations of type 'ShapedTextDataAdvanced' were leaked at exit."):
             self.assertRegex(line, leaked)
         self.assertNotRegex("screenshot saved; map=town logged=0", leaked)
 

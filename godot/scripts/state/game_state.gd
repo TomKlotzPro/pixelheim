@@ -382,6 +382,11 @@ func apply(state: Dictionary) -> void:
 	if hero.hp <= 0:
 		if progression.bells > Bells.NONE:
 			make_whole()
+			# In the shelter's doorway, or on the square, as the night's own fall
+			# wakes them (world_bells.gd hero_fell).
+			var shelter := Bells.job("shelter", settlement.settlers, town_tier())
+			world.map_id = "town"
+			world.cell = Bells.cell(shelter["at"]) + Vector2i(1, 1) if not shelter.is_empty() else Town.square() + Vector2i(0, 4)
 		else:
 			var inn: Dictionary = upkeep.fall()
 			world.map_id = inn["mapId"]

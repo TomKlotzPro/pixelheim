@@ -804,4 +804,6 @@ func test_a_hero_saved_at_no_health_on_the_night_of_bells_wakes_whole_in_the_nig
 	var state := _fresh_state()
 	state.apply(SaveCodec.reread(fell.to_dict()))
 	assert_eq(state.hero.hp, int(state.hero.stats["maxHp"]))
-	assert_eq([state.progression.bells, state.world.cell, state.pack.gold], [Bells.HOLD, Vector2i(30, 30), 200], "the night is a fight, not a toll")
+	var shelter := Bells.job("shelter", state.settlement.settlers, state.town_tier())
+	var doorway := Bells.cell(shelter["at"]) + Vector2i(1, 1) if not shelter.is_empty() else Town.square() + Vector2i(0, 4)
+	assert_eq([state.progression.bells, state.world.map_id, state.world.cell, state.pack.gold], [Bells.HOLD, "town", doorway, 200], "the night is a fight, not a toll: up where its own fall wakes them")

@@ -166,7 +166,7 @@ since() { perl -MTime::HiRes=time -e 'printf "%.1f", time - $ARGV[0]' "$1"; }
 
 # What the engine says at its quit of a run that left something behind
 # (PIX-504): a node never put in the tree nor freed, a sound still held.
-leaked='ObjectDB instances? (was |were )?leaked|resources? still in use at exit|RIDs? of type .* (was|were) leaked'
+leaked='ObjectDB instances? (was |were )?leaked|resources? still in use at exit|RIDs? of type .* (was|were) leaked|RID allocations? of type .* (was|were) leaked'
 
 # One Godot run of a flow (or a batch), in job slot $3, its output in its
 # folder's output.txt. A watchdog, after $4 seconds (the watchdog's): a run

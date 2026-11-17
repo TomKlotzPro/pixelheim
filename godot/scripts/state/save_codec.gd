@@ -61,11 +61,12 @@ const SHAPE := {
 	},
 	"playSeconds": NUMBER, "gold": NUMBER, "inventory": COUNTS, "equipped": {"*": TYPE_STRING},
 	"gear": [{"+uid": TYPE_STRING, "+itemId": TYPE_STRING, "bonus": NUMBER, "deep": NUMBER, "deepBonus": NUMBER}],
-	"house": {"storage": TYPE_DICTIONARY}, "properties": TEXTS, "townTier": NUMBER, "settlers": TEXTS, "projects": TEXTS,
+	"house": {"owned": TYPE_BOOL, "storage": TYPE_DICTIONARY}, "properties": TEXTS, "townTier": NUMBER, "settlers": TEXTS, "projects": TEXTS,
 	"festival": TYPE_DICTIONARY, "storySeen": TEXTS, "prologue": NUMBER, "prologueDoused": [NUMBER],
 	"bells": {"beat": NUMBER, "lit": [NUMBER], "doused": [NUMBER], "embers": NUMBER},
 	"quests": {"*": {"done": TYPE_BOOL, "progress": NUMBER}}, "tracked": TYPE_STRING, "deeds": TEXTS, "firsts": TEXTS, "crafted": TYPE_DICTIONARY, "hunted": TEXTS,
 	"met": TYPE_DICTIONARY, "tricks": TEXTS, "worldSteps": NUMBER,
+	"investments": {"savings": TYPE_DICTIONARY, "tills": {"*": TYPE_DICTIONARY}, "expansions": TEXTS},
 	"world": {
 		"position": {"mapId": TYPE_STRING, "x": NUMBER, "y": NUMBER, "facing": TYPE_STRING},
 		"discovered": {"*": {"x": NUMBER, "y": NUMBER, "w": NUMBER, "h": NUMBER}}, "openedChests": TEXTS, "slain": TEXTS, "slainAt": COUNTS, "gatheredAt": COUNTS,
@@ -281,10 +282,15 @@ static func from_file(raw: Variant) -> Dictionary:
 	_put(state, "projects", town.get("projects"))
 	_put(state, "festival", town.get("festival"))
 	if town.has("invested") or INVESTED.values().any(func(key: String) -> bool: return town.has(key)):
-		var invested: Dictionary = town.get("invested", {}).duplicate()
-		for key: String in INVESTED:
-			_put(invested, key, town.get(INVESTED[key]))
-		state["investments"] = invested
+		var held: Variant = town.get("invested", {})
+		# A hand-edited file's other type is well_typed's to call damaged, not a crash here.
+		if held is Dictionary:
+			var invested: Dictionary = held.duplicate()
+			for key: String in INVESTED:
+				_put(invested, key, town.get(INVESTED[key]))
+			state["investments"] = invested
+		else:
+			state["investments"] = held
 
 	var story := _section(doc, "story")
 	_put(state, "storySeen", story.get("seen"))
