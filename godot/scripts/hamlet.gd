@@ -56,11 +56,13 @@ const HOUSES := {
 const SHEDS := {"frostgate": [Vector2i(17, 38)]}
 ## A barrel and a crate outdoors, at the Puny folk's scale (HamletArt): Shade's
 ## stood as tall as the villager beside them, a barrel on a crate a tower.
-## By look, what a settlement keeps in them.
+## By look, what a settlement keeps in them, one of each list by its cell
+## (PIX-524: the one crate stood by nearly every door): a crate shut or
+## opened or a sack and a basket of apples, a keg or a pair of them.
 const STORES := {
-	"": {"barrel": "keg", "crate": "box"},
-	"smithy": {"barrel": "tub", "crate": "coal"},
-	"mine": {"barrel": "keg", "crate": "coal"},
+	"": {"barrel": ["keg", "barrels"], "crate": ["box", "crate_ajar", "sack_basket"]},
+	"smithy": {"barrel": ["tub"], "crate": ["coal"]},
+	"mine": {"barrel": ["keg"], "crate": ["coal"]},
 }
 ## Set dressing by map, placed by hand: each a HamletArt piece (`art`) at
 ## `cell` (its left cell; a piece wider than a cell stands on the cells to
@@ -241,7 +243,8 @@ static func store(map_id: String, kind: String, cell: Vector2i) -> String:
 	for piece: Dictionary in DRESSING.get(map_id, []):
 		if piece.has("store") and piece["cell"] == cell:
 			return piece["store"]
-	return STORES.get(look_of(map_id), STORES[""]).get(kind, STORES[""][kind])
+	var kept: Array = STORES.get(look_of(map_id), STORES[""]).get(kind, STORES[""][kind])
+	return kept[(cell.x * 7 + cell.y * 13) % kept.size()]
 
 
 ## Who holds map `map_id` now, by the hero's `quests` (HELD): "" where no

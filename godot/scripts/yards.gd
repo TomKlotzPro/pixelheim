@@ -15,8 +15,8 @@ class_name Yards
 ##   windows in flower;
 ## - the Town: benches on the square's west rim, the hedge longer, the east
 ##   lawn's garden grown with its scarecrow, hay by the slate hall and the
-##   east field, a cart by the forge, lanterns by the keepers' doors, most
-##   windows in flower;
+##   east field, a cart by the forge, lanterns by the keepers' doors, lamps
+##   on brackets at four houses' corners, most windows in flower;
 ## - the City: every window in flower, roses and box round the hall and
 ##   lanterns either side of its door, and bunting strung across the square
 ##   between its lamps, its lanterns lit at night.
@@ -99,18 +99,21 @@ const STEAD := Vector2i(76, 36)
 
 ## Each piece placed by hand, as Hamlet.DRESSING's (`art` ours or `tile`
 ## the pack's), with the age it comes at; a lantern `dim` keeps its halo
-## without a light of its own, where the City's lamps already reach.
+## without a light of its own, where the City's lamps already reach. Each
+## door keeps its own stores and every other house splits its wood on a
+## stump (PIX-524); a `lamp` on a wall is a lamp on a bracket at a house's
+## corner by a street or the square (PropsLayer.look_of), its halo alone.
 const PIECES := [
 	# The Hamlet: what a house rebuilt needs first.
 	{"art": "woodpile", "cell": Vector2i(18, 9), "by": MAREN, "age": 1},
-	{"art": "box", "cell": Vector2i(35, 9), "by": ODO, "age": 1},
+	{"art": "crate_ajar", "cell": Vector2i(35, 9), "by": ODO, "age": 1},
 	{"art": "keg", "cell": Vector2i(57, 9), "by": INN, "age": 1},
-	{"art": "woodpile", "cell": Vector2i(61, 5), "by": UPPER, "age": 1},
+	{"art": "woodpile_split", "cell": Vector2i(61, 5), "by": UPPER, "age": 1},
 	{"art": "keg", "cell": Vector2i(28, 18), "by": VEX, "age": 1},
 	{"art": "tub", "cell": Vector2i(61, 16), "by": FORGE, "age": 1},
 	{"art": "coal", "cell": Vector2i(61, 15), "by": FORGE, "age": 1},
 	{"art": "woodpile", "cell": Vector2i(3, 24), "by": LANE_WEST, "age": 1},
-	{"art": "box", "cell": Vector2i(28, 24), "by": LANE_EAST, "age": 1},
+	{"art": "barrels", "cell": Vector2i(28, 24), "by": LANE_EAST, "age": 1},
 	{"tile": SCARECROW, "cell": Vector2i(81, 14), "age": 1},
 	# The Village: washing out, gardens dug, stock laid in.
 	{"line": 1, "cell": Vector2i(25, 7), "by": MAREN, "age": 2},
@@ -121,18 +124,18 @@ const PIECES := [
 	{"art": "garden", "cell": Vector2i(22, 4), "flat": true, "by": MAREN, "age": 2},
 	{"tile": ROSES, "cell": Vector2i(18, 10), "by": MAREN, "age": 2},
 	{"tile": SACKS, "cell": Vector2i(35, 10), "by": ODO, "age": 2},
-	{"art": "box", "cell": Vector2i(57, 8), "by": INN, "age": 2},
+	{"art": "sack_basket", "cell": Vector2i(57, 8), "by": INN, "age": 2},
 	{"art": "keg", "cell": Vector2i(28, 19), "by": VEX, "age": 2},
 	{"art": "woodpile", "cell": Vector2i(61, 14), "by": FORGE, "age": 2},
 	{"art": "keg", "cell": Vector2i(3, 25), "by": LANE_WEST, "age": 2},
-	{"art": "woodpile", "cell": Vector2i(28, 23), "by": LANE_EAST, "age": 2},
-	{"art": "woodpile", "cell": Vector2i(4, 31), "by": THATCH, "age": 2},
+	{"art": "woodpile_split", "cell": Vector2i(28, 23), "by": LANE_EAST, "age": 2},
+	{"art": "woodpile_split", "cell": Vector2i(4, 31), "by": THATCH, "age": 2},
 	{"art": "garden", "cell": Vector2i(6, 28), "flat": true, "by": THATCH, "age": 2},
 	{"art": "garden", "cell": Vector2i(7, 28), "flat": true, "by": THATCH, "age": 2},
 	{"art": "garden", "cell": Vector2i(58, 30), "flat": true, "age": 2},
 	{"art": "garden", "cell": Vector2i(59, 30), "flat": true, "age": 2},
 	{"art": "garden", "cell": Vector2i(60, 30), "flat": true, "age": 2},
-	{"art": "woodpile", "cell": Vector2i(79, 9), "by": FARM, "age": 2},
+	{"art": "woodpile_split", "cell": Vector2i(79, 9), "by": FARM, "age": 2},
 	# The Town: the square's rims kept, the lawns worked, the doors lit.
 	{"line": 2, "cell": Vector2i(20, 23), "by": HOME, "age": 3},
 	{"line": 3, "cell": Vector2i(11, 30), "by": MOSS, "age": 3},
@@ -156,8 +159,12 @@ const PIECES := [
 	{"art": "lantern", "cell": Vector2i(51, 10), "wall": true, "by": INN, "age": 3},
 	{"art": "lantern", "cell": Vector2i(24, 19), "wall": true, "by": VEX, "age": 3},
 	{"art": "lantern", "cell": Vector2i(56, 18), "wall": true, "by": FORGE, "age": 3},
+	{"lamp": true, "cell": Vector2i(34, 10), "wall": true, "by": ODO, "age": 3},
+	{"lamp": true, "cell": Vector2i(44, 10), "wall": true, "by": INN, "age": 3},
+	{"lamp": true, "cell": Vector2i(27, 25), "wall": true, "by": LANE_EAST, "age": 3},
+	{"lamp": true, "cell": Vector2i(51, 18), "wall": true, "by": FORGE, "age": 3},
 	{"tile": HAY, "cell": Vector2i(73, 10), "by": FARM, "age": 3},
-	{"art": "woodpile", "cell": Vector2i(62, 22), "by": LAWN, "age": 3},
+	{"art": "woodpile_split", "cell": Vector2i(62, 22), "by": LAWN, "age": 3},
 	# The City: dressed for the whole Reach to see.
 	{"art": "lantern", "cell": Vector2i(39, 19), "wall": true, "by": HALL, "age": 4},
 	{"art": "lantern", "cell": Vector2i(41, 19), "wall": true, "by": HALL, "age": 4},
@@ -178,6 +185,10 @@ const PIECES := [
 	{"art": "bunting", "line": 17, "cell": Vector2i(32, 29), "age": 4},
 	{"art": "bunting", "line": 11, "cell": Vector2i(35, 20), "high": 1, "age": 4},
 ]
+## The square's lamps at its two south corners, a lantern either side of
+## the post (PIX-524, PropsLayer.look_of): the City's bunting is strung
+## between them.
+const SQUARE_LAMPS: Array[Vector2i] = [Vector2i(31, 29), Vector2i(49, 29)]
 ## Flowering hedges along the foot of the wall: [first cell, last, age].
 const HEDGES := [[Vector2i(26, 3), Vector2i(36, 3), 2], [Vector2i(18, 3), Vector2i(25, 3), 3], [Vector2i(58, 3), Vector2i(63, 3), 3]]
 ## A hedge's bushes, picked by cell: mostly green, in flower here and there.

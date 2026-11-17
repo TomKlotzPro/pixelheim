@@ -55,6 +55,7 @@ static func add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
 		still.centered = false
 		still.position = Vector2(0, TILE - HamletArt.size(art).y) - Vector2(0, sort_y)
 		root.add_child(still)
+		ShadowsLayer.cast_art(view, art, Vector2(prop["cell"] * TILE) + Vector2(0, TILE))
 	else:
 		var lift := 0.0
 		if prop["kind"] == "shrine":
@@ -74,7 +75,8 @@ static func add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
 			# The well's roof stood over the cells behind it (PIX-429).
 			see_through(still)
 			root.add_child(still)
-	if foot.has_area():
+	# A lamp hung on a wall stands on nothing (PIX-524).
+	if foot.has_area() and not (prop["kind"] == "lamp" and on_wall(view, prop["cell"])):
 		var body := StaticBody2D.new()
 		# The foot first: the night's shadows are cast from a body's first
 		# box (NightShadowsLayer._foot), never from the well's roof over it.
@@ -122,31 +124,69 @@ const FOUNTAIN_ENERGY := 0.34
 ## A street lamp (PIX-311: a cold torch read as a bug on the road by day):
 ## a post with its lantern (LampArt), its foot on the bottom of the cell;
 ## at night its glass lit (the dark doesn't touch it), a soft halo round
-## the glass and its light pooled on the ground about its foot.
+## the glass and its light pooled on the ground about its foot. In its look
+## (PIX-524, `look_of`): at the square's corners a lantern either side of a
+## taller post, a halo round each and one light, so the budget holds; hung
+## on a house's wall by its corner, a lantern on a bracket, its halo alone
+## as the keepers' door lanterns have (test_night_light), no shadow on the
+## ground.
 static func _add_lamp_post(view: MapView, root: Node2D, cell: Vector2i, sort_y: float) -> void:
-	var top := Vector2(0, TILE - LampArt.size().y - sort_y)
+	var look := look_of(view, cell)
+	var drawn := LampArt.look(look)
+	var size: Vector2i = drawn["size"]
+	# Its post on the middle of its cell; a bracket's lantern to the house's
+	# end, its plate on the wall.
+	var top := Vector2((TILE - size.x) / 2.0, TILE - size.y - sort_y)
+	var flip := look == "bracket" and on_wall(view, cell + Vector2i.RIGHT)
 	var post := Sprite2D.new()
-	post.texture = LampArt.post()
+	post.texture = drawn["cold"]
 	post.centered = false
 	post.position = top
+	post.flip_h = flip
 	root.add_child(post)
 	var flame := AnimatedSprite2D.new()
-	flame.sprite_frames = LampArt.glass()
+	flame.sprite_frames = drawn["lit"]
 	flame.material = Lights.unshaded()
 	flame.centered = false
 	flame.position = top
+	flame.flip_h = flip
 	flame.play()
 	# Each lamp flickers on its own beat.
 	flame.frame = absi(hash(cell)) % flame.sprite_frames.get_frame_count("default")
 	root.add_child(flame)
-	var at := Vector2(cell * TILE) + Vector2(0, TILE - LampArt.size().y)
-	var halo := view._add_halo(at + LampArt.HALO_AT, MapView.LAMP_HALO, MapView.LAMP_HALO_PEAK)
+	var at := Vector2(cell * TILE) + Vector2(top.x, TILE - size.y)
+	var halo: Sprite2D
+	for glass: Vector2 in drawn["halos"]:
+		var spot := at + (Vector2(size.x - glass.x, glass.y) if flip else glass)
+		var one := view._add_halo(spot, MapView.LAMP_HALO - (3 if look == "bracket" else 0), MapView.LAMP_HALO_PEAK)
+		if halo == null:
+			halo = one
+		else:
+			# Put out with the first (MapView.lamps_out).
+			one.reparent(halo)
+	view.lamps.append({"flame": flame, "unlit": post, "glow": halo})
+	if look == "bracket":
+		return
 	var light := Lights.make(Vector2(cell * TILE) + MapView.LAMP_POOL, MapView.LAMP_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
 	view.props.add_child(light)
 	halo.tree_exiting.connect(light.queue_free)
 	halo.set_meta("light", light)
-	view.lamps.append({"flame": flame, "unlit": post, "glow": halo})
-	lamp_shadow(view, cell, LampArt.size())
+	lamp_shadow(view, cell, Vector2i(TILE, size.y))
+
+
+## How the lamp on `cell` looks (LampArt.LOOKS, PIX-524): hung on a house's
+## wall (Yards' corner lamps), on a bracket; at the town square's corners
+## (Yards.SQUARE_LAMPS), a lantern either side; elsewhere the street lamp.
+static func look_of(view: MapView, cell: Vector2i) -> String:
+	if on_wall(view, cell):
+		return "bracket"
+	return "double" if view.data.id == "town" and cell in Yards.SQUARE_LAMPS else "post"
+
+
+## Whether `cell` is a house's: its roof, or its front's walls and door.
+static func on_wall(view: MapView, cell: Vector2i) -> bool:
+	var tile := view.data.tile_at(cell)
+	return tile.begins_with("roof") or tile.begins_with("door")
 
 
 ## How wide a lamp's shadow is: its post's foot and its lantern.

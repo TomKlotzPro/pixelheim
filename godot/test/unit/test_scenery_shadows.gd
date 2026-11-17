@@ -70,3 +70,25 @@ func test_houses_that_touch_cast_one_shadow() -> void:
 	assert_eq(houses.size(), 2)
 	assert_has(houses, Rect2i(0, 0, 3, 3), "the house and its wing, by their bounds")
 	assert_has(houses, Rect2i(6, 0, 1, 1), "the one apart")
+
+
+## PIX-524: what the settlements put up casts as the trees do (PIX-521's
+## audit: only trees, lamps and houses did), with the pack or without:
+## Saltmere's stall, racks, cart and keg, the town's crates and kegs, each
+## from the bottom of its own cells.
+func test_the_dressing_casts() -> void:
+	for id: String in ["saltmere", "town"]:
+		var view := _draw(id)
+		var feet := {}
+		for caster: Vector4 in view.casters:
+			feet[Vector2i(floori(caster.x / MapView.TILE), floori((caster.y - 1.0) / MapView.TILE))] = true
+		var standing: Array = view.hamlet["pieces"].filter(func(piece: Dictionary) -> bool:
+			return piece["kind"] == "stand" and piece.has("art") and piece["art"] != "lamp_post")
+		if id == "saltmere":
+			assert_gt(standing.size(), 5, "Saltmere's quay dressed")
+		for piece: Dictionary in standing:
+			var cells: Array = piece["cells"]
+			assert_true(cells.any(func(cell: Vector2i) -> bool: return feet.has(cell)), "%s's %s at %s casts" % [id, piece["art"], piece["cell"]])
+		for cell: Vector2i in view.data.grid:
+			if view.data.tile_at(cell) in ["barrel", "crate"]:
+				assert_true(feet.has(cell), "%s's %s at %s casts" % [id, view.data.tile_at(cell), cell])

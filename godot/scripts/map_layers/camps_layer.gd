@@ -393,6 +393,11 @@ static func _add_camp_piece(view: MapView, cell: Vector2i, piece: Dictionary) ->
 	if piece["kind"] in ["post", "post_house"]:
 		sprite.position.y = TILE - HamletArt.size("post_box" if piece["kind"] == "post" else "post_house").y - foot.end.y
 	root.add_child(sprite)
+	# A tent, a board, the post box and its house cast as the trees do
+	# (PIX-524); a torch's flame doesn't.
+	if sprite is Sprite2D and (sprite as Sprite2D).texture != null:
+		var drawn := (sprite as Sprite2D).texture.get_size()
+		cast(view, root.position + sprite.position + Vector2(drawn.x / 2.0, drawn.y), drawn.x - 2.0, drawn.y)
 	if piece.get("wanted", false):
 		var poster := Sprite2D.new()
 		poster.texture = _wanted_poster()

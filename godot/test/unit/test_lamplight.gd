@@ -240,6 +240,15 @@ func test_a_lit_window_is_its_glass_not_an_orb() -> void:
 		var light: PointLight2D = pane.get_meta("light")
 		assert_eq(light.texture, Lights.spill(), "its light thrown on the ground below it")
 		assert_gt(light.position.y, pane.position.y + MapView.TILE - 1.0, "from the foot of the wall")
-	assert_eq(view.lamps.size(), view.outdoor_props["props"].filter(func(prop: Dictionary) -> bool: return prop["kind"] == "lamp").size(), "every lamp a post")
+	# The map's lamps and the yards' lamps on brackets at houses' corners
+	# (PIX-524).
+	var hung: Array = view.hamlet["pieces"].filter(func(piece: Dictionary) -> bool: return piece.get("lamp", false))
+	assert_eq(view.lamps.size(), view.outdoor_props["props"].filter(func(prop: Dictionary) -> bool: return prop["kind"] == "lamp").size() + hung.size(), "every lamp a lamp")
+	var looks := {}
 	for lamp: Dictionary in view.lamps:
-		assert_eq((lamp["unlit"] as Sprite2D).texture, LampArt.post())
+		for look: String in LampArt.LOOKS:
+			if (lamp["unlit"] as Sprite2D).texture == LampArt.look(look)["cold"]:
+				looks[look] = int(looks.get(look, 0)) + 1
+	assert_eq(looks.get("bracket", 0), hung.size(), "a lamp on a wall on its bracket")
+	assert_eq(looks.get("double", 0), Yards.SQUARE_LAMPS.size(), "the square's corners a lantern either side")
+	assert_eq(int(looks.get("post", 0)) + int(looks.get("bracket", 0)) + int(looks.get("double", 0)), view.lamps.size(), "every lamp in a look of its own")

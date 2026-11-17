@@ -225,6 +225,8 @@ func _raise_hut(view: MapView, hut: Vector2i) -> void:
 	view.night_glows.append(halo)
 	for cell: Vector2i in [hut, hut + Vector2i.RIGHT]:
 		block(view, cell)
+	# It casts as the trees do (PIX-524).
+	cast(view, Vector2(hut * TILE) + Vector2(MireArt.HUT_SIZE.x / 2.0, TILE + MireArt.HUT_BELOW), MireArt.HUT_SIZE.x - 4, MireArt.HUT_SIZE.y)
 
 
 ## A will-o'-wisp over `cell`: its heart, its halo and a soft light, shown

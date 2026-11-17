@@ -12,7 +12,9 @@ class_name HamletArt
 ## yards take its window boxes and the City's bunting (PIX-382, Yards), and
 ## its market Mabel's stalls cleared for the pack's wares, a handcart and a
 ## crate of fish (PIX-382 step 4); the Frostgate's sledges, bare and loaded
-## with firewood, and a street's lamp post (PIX-400). Drawn here in code in Shade's palette (his
+## with firewood, and a street's lamp post (PIX-400); the stores a door keeps
+## (a crate shut or ajar, a pair of kegs, a sack and a basket) and a stump
+## with its axe, the woodpile's second shape (PIX-524). Drawn here in code in Shade's palette (his
 ## outline, his woods, irons and greys), at 1x on his 16 px grid, so they
 ## sit beside his art as his. Our own, so CC0 like the rest of the
 ## repository: they draw the same with or without the paid pack. Pictures
@@ -25,8 +27,12 @@ const TILE := 16
 ## twine (t T); cork and cloth (r R e, u U, b B); the dark of a doorway
 ## (n N); leaves (f F v) and carrots (c C); coal (z Z); flame and gold
 ## (a Y q Q); slate (g G) and water (w W); sea glass (m M, PIX-324: the
-## coast's shallows' greens).
+## coast's shallows' greens); and, sampled off the Medieval Age's own sacks,
+## baskets and cloth (PIX-524), burlap (x X d D), wicker (E H K) and a red's
+## highlight (p), so a store or an awning takes four tones as his do.
 const INKS := {
+	"x": Color("574442"), "X": Color("766855"), "d": Color("968662"), "D": Color("ada56f"),
+	"E": Color("6e5139"), "H": Color("96793f"), "K": Color("c5ab63"), "p": Color("e55e4d"),
 	"o": Color("2e2036"), "1": Color("4a3132"), "2": Color("644227"), "3": Color("79542d"), "4": Color("a1753f"),
 	"5": Color("c18f4f"), "6": Color("d6a555"), "k": Color("2d2d2d"), "i": Color("484849"), "l": Color("6f6f70"),
 	"h": Color("9a9b9e"), "j": Color("b5b7bb"), "y": Color("ffffff"), "s": Color("d7e3ec"), "S": Color("a9bfd0"),
@@ -87,24 +93,87 @@ const PIECES := {
 		".....o2332o.....",
 		"......oooo......",
 	],
-	## A crate at their scale: planks, a brace across, darker sides.
+	## A crate at their scale, its lid on (PIX-524: the first, all front and
+	## a pixel of lid, read as a brown plaque on the wall): the lid's top lit,
+	## two planks across its front, the corner posts, the west catching the
+	## light and the east in shade.
 	"box": [
 		"................",
 		"................",
 		"................",
 		"................",
 		"................",
+		"..oooooooooooo..",
+		".o656666666665o.",
+		".o545555555554o.",
+		".oooooooooooooo.",
+		".o4o55555555o2o.",
+		".o4o43333332o2o.",
+		".o4oooooooooo2o.",
+		".o4o55555554o2o.",
+		".o3o43333221o1o.",
+		".o3o22222221o1o.",
+		".oooooooooooooo.",
+	],
+	## The same crate opened (PIX-524), its lid slid back askew on it, apples
+	## and a cabbage in straw inside.
+	"crate_ajar": [
 		"................",
-		"...oooooooooo...",
-		"..o5555555554o..",
-		"..oooooooooooo..",
-		"..o5o4444445o3o.",
-		"..o4o54444o4o3o.",
-		"..o4o445o444o3o.",
-		"..o4o4o5444o4o..",
-		"..o4o5444444o3o.",
-		"..o3o2222222o2o.",
-		"..oooooooooooo..",
+		"................",
+		"................",
+		"................",
+		"......oooooooo..",
+		"....oo66666665o.",
+		"..oo66555555oo..",
+		".o65544444oo....",
+		".ooopRoopRoFvoo.",
+		".oQYRepYReoFfQo.",
+		".oooooooooooooo.",
+		".o4o55555555o2o.",
+		".o4o43333332o2o.",
+		".o4o55555554o2o.",
+		".o3o22222221o1o.",
+		".oooooooooooooo.",
+	],
+	## A pair of kegs (PIX-524), the one behind a step up the yard and half
+	## hidden: lids lit, staves lit to the west, bright iron hoops.
+	"barrels": [
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"..ooooo.........",
+		".o45654oooooo...",
+		".o2444o456654o..",
+		".ohjhlo244442o..",
+		".o5543ohjhhlio..",
+		".o4543o556432o..",
+		".ohjhlo456432o..",
+		".o3432o456432o..",
+		"..ooooohjhhlio..",
+		"......o345321o..",
+		".......oooooo...",
+	],
+	## A sack of grain tied at the neck (PIX-524) against a wicker basket of
+	## apples: burlap and wicker in the pack's own tones.
+	"sack_basket": [
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"..oooo..........",
+		".oDDdXo..oo.oo..",
+		".oXccxo.opRopReo",
+		"oXDDDdXoRepRRpeo",
+		"oDDDddXoKKKKKKHo",
+		"oDDdddXoEKHKHKEo",
+		"oXDdddxoKHKHKHEo",
+		"oXddXXxoEHEHEEEo",
+		"oxXXXxxoo1EEE1o.",
+		".oooooo..ooooo..",
 	],
 	## Logs stacked against a wall: their cut ends, rings in them.
 	"woodpile": [
@@ -124,6 +193,27 @@ const PIECES := {
 		"o6c36o6c36oo56oo",
 		"oo56ooo56oo2222o",
 		".oooooooooooooo.",
+	],
+	## The woodpile's second shape (PIX-524: one heap by every door): the
+	## stump the logs are split on, the axe left in it, a split log or two
+	## by it. The stump's top lit, its rings in it, its bark in shade.
+	"woodpile_split": [
+		"................",
+		"................",
+		"................",
+		"...........oo...",
+		"..........o54o..",
+		".........o54o...",
+		"......oooo4o....",
+		".....ohjjio.....",
+		"....oooooooooo..",
+		"...o665c56665o..",
+		"...o56c6c6654o..",
+		".o.oo4333332oo..",
+		"o6oo543432321o..",
+		"o5c5o3332322o2o.",
+		"o4553o3232221oo.",
+		".ooooooooooooo..",
 	],
 	## The same under the Frostgate's snow.
 	"woodpile_snow": [
@@ -792,9 +882,9 @@ const BUNTING_SAG := 7
 const STALLS := {
 	"stall_red": ["market_stall", {}],
 	"stall_blue": ["market_stall_blue", {}],
-	"stall_green": ["market_stall", {"R": "F", "e": "f"}],
-	"stall_gold": ["market_stall", {"R": "a", "e": "4"}],
-	"stall_teal": ["market_stall", {"R": "m", "e": "T"}],
+	"stall_green": ["market_stall", {"p": "v", "R": "F", "e": "f"}],
+	"stall_gold": ["market_stall", {"p": "Y", "R": "a", "e": "4"}],
+	"stall_teal": ["market_stall", {"p": "M", "R": "m", "e": "T"}],
 }
 ## Where on Mabel's stall her heaps lie: between the poles, over the counter.
 const STALL_HEAPS := Rect2i(6, 14, 20, 4)
@@ -858,6 +948,23 @@ static func size(name: String) -> Vector2i:
 ## How many cells across piece `name` stands.
 static func cells_wide(name: String) -> int:
 	return ceili(size(name).x / float(TILE))
+
+
+static var _inked := {}
+
+## Where piece `name` is drawn in its picture: the bounds of its inked
+## pixels (what casts its shadow, PIX-524), read off its rows, once.
+static func inked(name: String) -> Rect2i:
+	if not _inked.has(name):
+		var rows := rows_of(name)
+		var bounds := Rect2i()
+		for y in rows.size():
+			var row := String(rows[y])
+			for x in row.length():
+				if row[x] != ".":
+					bounds = Rect2i(x, y, 1, 1) if bounds.size == Vector2i.ZERO else bounds.merge(Rect2i(x, y, 1, 1))
+		_inked[name] = bounds
+	return _inked[name]
 
 
 ## What burns in a lit piece at night (PIX-324: the lighthouse's lantern,

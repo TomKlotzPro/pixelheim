@@ -162,3 +162,33 @@ func test_every_piece_is_drawn() -> void:
 			for row: String in HamletArt.rows_of(piece["art"]):
 				for ink in row:
 					assert_true(ink == "." or HamletArt.INKS.has(ink), "%s: %s in Shade's inks" % [piece["art"], ink])
+
+
+## PIX-524: no door keeps the same crate, the wood is split two ways, a
+## lamp on a bracket hangs on bare wall at the end of a house's front (by
+## its corner, never over a window or a door), and the square's corner
+## lamps are lamps of the map that the City's bunting runs between.
+func test_the_props_are_each_their_own() -> void:
+	var town := _town(Town.MAX_TIER)
+	var built: Dictionary = town["built"]["pieces"]
+	var arts := {}
+	var corners := 0
+	for piece: Dictionary in town["planned"]["pieces"]:
+		arts[piece.get("art", "")] = true
+		if not piece.get("lamp", false):
+			continue
+		var cell: Vector2i = piece["cell"]
+		corners += 1
+		assert_eq(piece["kind"], "wall", "%s: hung on a wall" % cell)
+		assert_does_not_have([PunyTown.WINDOW, PunyTown.DOOR], built.get(cell, -1), "%s: on bare wall" % cell)
+		assert_ne(built.has(cell + Vector2i.LEFT), built.has(cell + Vector2i.RIGHT), "%s: at the end of its house's front" % cell)
+		assert_false(built.has(cell + Vector2i.DOWN), "%s: on a front, the street before it" % cell)
+	assert_eq(corners, 4, "four corners lit")
+	for art: String in ["crate_ajar", "barrels", "sack_basket", "woodpile", "woodpile_split"]:
+		assert_true(arts.has(art), "%s laid" % art)
+	var map := MapData.load_tiered("town", Town.projects_through(Town.MAX_TIER), Town.MAX_TIER)
+	for cell: Vector2i in Yards.SQUARE_LAMPS:
+		assert_eq(map.tile_at(cell), "lamp", "%s: a lamp of the map" % cell)
+	var bunting: Dictionary = Yards.PIECES.filter(func(entry: Dictionary) -> bool: return entry.get("art", "") == "bunting" and entry.get("high", 0) == 0)[0]
+	assert_eq(bunting["cell"] + Vector2i.LEFT, Yards.SQUARE_LAMPS[0], "the bunting tied to the first")
+	assert_eq(bunting["cell"] + Vector2i(int(bunting["line"]), 0), Yards.SQUARE_LAMPS[1], "and to the second")
