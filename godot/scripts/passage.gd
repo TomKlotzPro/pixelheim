@@ -27,7 +27,8 @@ const NAMES: Array[String] = ["door", "dark", "cut", "seamless", "redraw"]
 ## SAVE, the game is saved;
 ## NAME, the place says its name (a card, when it is due);
 ## ARRIVAL, the story hears the hero has come (the nights set out, a
-## dungeon's floor said, the dodge taught);
+## dungeon's floor said, the dodge taught; a SEAMLESS hand-over only tells
+## the stage, Stage.arrive: its row describes _hand_over, it doesn't drive it);
 ## NEWS, what was built since is shown (the town's reveals, a hub's tour);
 ## FADE, the place comes in from the dark;
 ## HUSH, the way hushes the web's music itself before the build (PIX-417).

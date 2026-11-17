@@ -601,12 +601,18 @@ func _refresh() -> void:
 	if not rows.is_empty():
 		# Deferred until layout. Old rows leave the list at once on refresh, so
 		# looking the row up by index then always finds the current one.
-		var index := selected
-		var reveal := func() -> void:
-			if index < lists[side].get_child_count():
-				scrolls[side].ensure_control_visible(lists[side].get_child(index) as Control)
-		reveal.call_deferred()
+		# Held by id (PIX-503's rule): a screen freed before the frame's end (a
+		# test's autofree, a quick close) is skipped, not read after free.
+		ShopScreen._reveal.bind(get_instance_id(), side, selected).call_deferred()
 	_set_footer()
+
+
+## Scrolls the chosen row into sight once laid out, if the screen still is.
+static func _reveal(id: int, side: int, index: int) -> void:
+	var screen := instance_from_id(id) as ShopScreen
+	if screen == null or index >= screen.lists[side].get_child_count():
+		return
+	screen.scrolls[side].ensure_control_visible(screen.lists[side].get_child(index) as Control)
 
 
 ## The pages, lists and card where this tab has them: Buy and Sell three

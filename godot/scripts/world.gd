@@ -438,7 +438,8 @@ func _step_back() -> void:
 ## and a hand-over never wait, and never drop.
 func go(place: MapData, arrival: Vector2i, how: int, turning := Callable()) -> bool:
 	if how == Passage.SEAMLESS:
-		_hand_over(neighbours.drawn[place.id], arrival)
+		var beside: Dictionary = neighbours.drawn[place.id]
+		_hand_over(beside, arrival)
 		return true
 	# Only the hero's own map is drawn again: any other is come to. And a
 	# night sets its scene out as the town is come to, its foes with it

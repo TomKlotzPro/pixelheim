@@ -484,7 +484,7 @@ func _physics_process(_delta: float) -> void:
 	if boss != null:
 		world.bar_the_way(boss)
 		return
-	world.go(beside["data"], there["cell"], Passage.SEAMLESS)
+	world.go(beside["data"] as MapData, there["cell"], Passage.SEAMLESS)
 
 
 ## The bookkeeping of a hand-over to `beside`: it's the hero's map now (no
