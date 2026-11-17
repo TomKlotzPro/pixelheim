@@ -378,7 +378,9 @@
     "cobbles:path": "step_stone",
     "flags:path": "step_stone",
     "sandstone:path": "step_stone",
-    "bricks:path": "step_stone"
+    "mossy:path": "step_stone",
+    "setts:path": "step_stone",
+    "basket:path": "step_stone"
   },
   "tracks": {
     "title": {

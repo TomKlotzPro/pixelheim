@@ -2,7 +2,9 @@ extends GutTest
 ## Pixelheim's streets show its age (PIX-307): trodden dirt in the Ashes and
 ## the Hamlet, gravel from the Village, Upper Street and the gate road
 ## cobbled in the Town, and in the City every street cobbled, the square and
-## the avenue to the gate in sandstone, brick round the fountain. Greyhold's
+## the avenue to the gate in sandstone. The square laid by a mason (PIX-522):
+## mossy flags in a border course of setts from the Town, the City's inlay
+## of basket weave round the fountain and in from its ways. Greyhold's
 ## courtyard is flagged and its paths cobbled; the Frostgate's road cobbled
 ## up to its observatory's flagged yard. Paving is only drawn: it covers
 ## open ground and never touches the grid.
@@ -34,11 +36,12 @@ func test_each_age_paves_its_own_streets() -> void:
 	assert_eq(ages[2].get(SQUARE), "gravel", "and its square")
 	assert_eq(ages[3].get(UPPER_STREET), "cobbles", "the Town cobbles Upper Street")
 	assert_eq(ages[3].get(GATE_ROAD), "cobbles", "and the gate road")
-	assert_eq(ages[3].get(SQUARE), "gravel", "its square still gravel")
+	assert_eq(ages[3].get(SQUARE), "mossy", "its square in mossy flags")
+	assert_eq(ages[3].get(BY_THE_FOUNTAIN), "mossy", "up to the fountain")
 	assert_eq(ages[4].get(HEARTH_LANE), "cobbles", "the City cobbles every street")
 	assert_eq(ages[4].get(SQUARE), "sandstone", "its square in sandstone")
 	assert_eq(ages[4].get(GATE_ROAD), "sandstone", "and its avenue to the gate")
-	assert_eq(ages[4].get(BY_THE_FOUNTAIN), "bricks", "brick round the fountain")
+	assert_eq(ages[4].get(BY_THE_FOUNTAIN), "basket", "basket weave round the fountain")
 	for tier in range(2, Town.MAX_TIER + 1):
 		assert_ne(Streets.tiles(ages[tier]), Streets.tiles(ages[tier - 1]), "age %d draws its own paving" % tier)
 		for cell: Vector2i in [OUTSIDE, FARM_TRACK]:
@@ -67,6 +70,9 @@ func test_the_traffic_wears_the_busiest_streets_by_age() -> void:
 	assert_true(worn[4][SQUARE] and worn[4][BY_THE_FOUNTAIN], "a square scuffs, round its fountain too")
 	assert_false(worn[4][UPPER_STREET] or worn[4][GATE_ROAD], "a street ruts")
 	assert_false(worn[4].has(OFF_THE_WAYS), "the square's flags off the ways its folk walk lie as laid")
+	var walked := Streets.trodden("town")
+	assert_true(walked.has(BY_THE_FOUNTAIN) and walked.has(Vector2i(40, 21)), "the ways its folk walk, worn or not yet (PIX-522's moss keeps off them)")
+	assert_false(walked.has(OFF_THE_WAYS))
 	assert_false(worn[4].has(HEARTH_LANE), "a side lane keeps its stone")
 	for tier in range(3, Town.MAX_TIER + 1):
 		assert_gt(worn[tier].size(), worn[tier - 1].size(), "age %d wears more than the one before" % tier)
@@ -80,11 +86,51 @@ func test_the_traffic_wears_the_busiest_streets_by_age() -> void:
 		assert_false(fort_worn.has(Vector2i(33, 20)), "its yard's flags off the paths lie as laid")
 
 
+## The square laid by a mason (PIX-522): from the Town a border course of
+## setts on its outer ring and nowhere else, the flags inside; in the City a
+## rosette of basket weave round the fountain and a line of it one cell wide
+## from each way in that meets the square square-on: the hall's door and the
+## west street (the review: the lines from the sides led nowhere, the east
+## one at grass and stalls), the sandstone between. No brick mat: nothing on
+## the square but its flags, its border and its inlay.
+func test_the_square_has_a_border_and_an_inlay() -> void:
+	var grid := _town()
+	var square := Rect2i(32, 20, 17, 9)
+	var ring := func(cell: Vector2i) -> bool: return not square.grow(-1).has_point(cell)
+	for tier in range(Town.MAX_TIER + 1):
+		var paved := Streets.plan("town", grid, tier)
+		for y in range(square.position.y, square.end.y):
+			for x in range(square.position.x, square.end.x):
+				var cell := Vector2i(x, y)
+				if not paved.has(cell) or tier < 3:
+					continue
+				var look: String = paved[cell]
+				if ring.call(cell):
+					assert_eq(look, "setts", "age %d: the border course at %s" % [tier, cell])
+				else:
+					assert_has(["mossy", "sandstone", "basket"] if tier == 4 else ["mossy"], look, "age %d: inside the border at %s" % [tier, cell])
+		assert_false(paved.values().has("basket") and tier < 4, "age %d lays no inlay before the City" % tier)
+	var city := Streets.plan("town", grid, Town.MAX_TIER)
+	for cell: Vector2i in [Vector2i(40, 21), Vector2i(38, 22), Vector2i(43, 27)]:
+		assert_eq(city.get(cell), "basket", "the inlay at %s" % cell)
+	for cell: Vector2i in [Vector2i(39, 21), Vector2i(33, 25), Vector2i(33, 27), Vector2i(37, 25)]:
+		assert_eq(city.get(cell), "sandstone", "sandstone beside the inlay at %s" % cell)
+	for cell: Vector2i in [Vector2i(44, 24), Vector2i(47, 24), Vector2i(33, 26), Vector2i(37, 26)]:
+		assert_eq(city.get(cell), "sandstone", "no line east or west: one line, from the hall's door, at %s" % cell)
+	# Soft edges: the setts join the cobbled streets and round off against
+	# the square's flags; the flags run whole up to them.
+	var mouth := Vector2i(32, 26)
+	assert_eq(Streets.mask(city, mouth) & 64, 64, "the setts run on into the west street's cobbles")
+	assert_eq(Streets.mask(city, mouth) & 4, 0, "and round off against the line in from it")
+	assert_eq(Streets.mask(city, Vector2i(33, 22)), Streets.FULL, "the sandstone whole up to the border")
+	assert_eq(Streets.mask(city, Vector2i(40, 21)), 16, "the line from the hall's door joins the rosette below, rounded off against the setts and the sandstone")
+
+
 ## The fountain stands on its paving, centred (PIX-364). The grid marks one
 ## cell "well" and the basin is 2x2 from it, so a Village paving round that
 ## one cell kerbed a one-cell square under the basin's top-left quarter.
 ## Whatever the square lays under and round it apart from its own paving (a
-## hole, the City's brick ring) is centred on the basin within an art pixel.
+## hole, the City's rosette) is centred on the basin within an art pixel.
 func test_the_fountain_sits_on_its_base() -> void:
 	var grid := MapData.load_tiered("town", ["fountain"], 1).grid
 	var fountain: Dictionary = PunyProps.plan(grid)["props"].filter(func(p: Dictionary) -> bool: return p["kind"] == "fountain")[0]
@@ -95,17 +141,17 @@ func test_the_fountain_sits_on_its_base() -> void:
 	var bases := 0
 	for tier in range(Town.MAX_TIER + 1):
 		var paved := Streets.plan("town", grid, tier)
-		var square: String = paved.get(cell + Vector2i(-3, 0), "")
+		var square: String = paved.get(cell + Vector2i(-5, -2), "")
 		var base := Rect2()
-		for y in range(cell.y - 1, cell.y + 3):
-			for x in range(cell.x - 1, cell.x + 3):
+		for y in range(cell.y - 2, cell.y + 4):
+			for x in range(cell.x - 2, cell.x + 4):
 				if paved.get(Vector2i(x, y), "") != square:
 					var at := Rect2(Vector2(x, y) * 16, Vector2(16, 16))
 					base = at if not base.has_area() else base.merge(at)
 		if base.has_area():
 			bases += 1
 			assert_lte(base.get_center().distance_to(basin.get_center()), 1.0, "age %d: the basin on its base (%s, %s)" % [tier, base, basin])
-	assert_gt(bases, 0, "the City's brick ring at least")
+	assert_gt(bases, 0, "the City's rosette at least")
 
 
 func test_paving_lies_on_open_ground_and_leaves_the_grid_alone() -> void:
@@ -184,14 +230,22 @@ func test_the_pieces_are_made_ahead_and_the_data_is_whole() -> void:
 		var data := MapData.load_by_id(map_id)
 		for area: Dictionary in doc[map_id]:
 			assert_true(area.has("name") and area.has("ground") and area.has("from"), "%s: %s" % [map_id, area])
-			for look: String in (area["from"] as Dictionary).values():
+			var looks: Array = (area["from"] as Dictionary).values()
+			for part: String in ["border", "inlay"]:
+				if area.has(part):
+					looks.append_array((area[part]["from"] as Dictionary).values())
+			for look: String in looks:
 				assert_true(Streets.LOOKS.has(look), "%s's %s is a look" % [map_id, look])
 			for ground: String in area["ground"]:
 				assert_true(WorldTiles.TILE_INFO.has(ground), "%s paves %s, a tile" % [map_id, ground])
+			assert_true(area.has("rect") or not area.has("border"), "%s's %s: a border runs round a rect" % [map_id, area["name"]])
 			if area.has("rect"):
 				var r: Array = area["rect"]
 				var rect := Rect2i(int(r[0]), int(r[1]), int(r[2]), int(r[3]))
 				assert_true(Rect2i(Vector2i.ZERO, data.size).encloses(rect), "%s's %s inside the map" % [map_id, area["name"]])
+				var inlay: Dictionary = area.get("inlay", {})
+				for i: Array in inlay.get("rects", []):
+					assert_true(rect.encloses(Rect2i(int(i[0]), int(i[1]), int(i[2]), int(i[3]))), "%s's %s: its inlay inside it" % [map_id, area["name"]])
 	for look: String in Streets.KERBED:
 		assert_true(Streets.LOOKS.has(look))
 

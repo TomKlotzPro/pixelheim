@@ -34,11 +34,13 @@
 {"shot": "ash_fires", "area": "town", "map": "town", "cell": [26, 12], "time": "night", "tier": 0, "ash": true}
 # The streets by the town's age (PIX-307, `tier`): Upper Street trodden
 # and rutted in the Ashes, the square in gravel in the Village, Upper
-# Street cobbled in the Town, and the City's square in sandstone, brick
-# round its fountain, by day and at night.
+# Street cobbled in the Town, and the City's square in sandstone, by day
+# and at night; the Town's square in mossy flags in its border course, the
+# City's rosette of basket weave round the fountain (PIX-522).
 {"shot": "streets_ashes", "area": "town", "map": "town", "cell": [40, 13], "time": "day", "tier": 0}
 {"shot": "streets_village", "area": "town", "map": "town", "cell": [40, 22], "time": "day", "tier": 2}
 {"shot": "streets_town", "area": "town", "map": "town", "cell": [40, 13], "time": "day", "tier": 3}
+{"shot": "streets_town_square", "area": "town", "map": "town", "cell": [40, 22], "time": "day", "tier": 3}
 {"shot": "streets_city", "area": "town", "map": "town", "cell": [40, 22], "time": "day"}
 {"shot": "streets_city_night", "area": "town", "map": "town", "cell": [40, 22], "time": "night"}
 # The Pixelheim Post's box on the square past the bounty board (PIX-320,
