@@ -66,6 +66,19 @@ static func potion_row(rows: Array) -> int:
 	return food
 
 
+## The row the pack opens on for a hero `hurt`: the `potion_row`, else the
+## first that is not gear, so E never takes off what is worn (the review of
+## PIX-508: three potions and the food gone, I then E took the sword off).
+## shortcut: a pack of nothing but gear opens on its first row, worn or
+## not; ask the pack what is worn if a playtest finds it.
+static func pack_row(rows: Array) -> int:
+	var at := potion_row(rows)
+	for index in rows.size():
+		if at < 0 and rows[index]["kind"] != "gear":
+			at = index
+	return maxi(0, at)
+
+
 ## The beat after `step` (DONE after the last).
 static func next(step: int) -> int:
 	var at := ORDER.find(step)

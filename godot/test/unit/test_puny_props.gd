@@ -52,6 +52,10 @@ func test_a_well_on_the_grass_is_the_roofed_well() -> void:
 	assert_eq(well["covers"], [Vector2i(1, 0), Vector2i(2, 0), Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2)], "all it is drawn over blocks, roof and rim")
 	for tile: Array in PunyProps.WELL:
 		assert_true(Vector2i(1, 2) + Vector2i(tile[0]) in well["covers"], "the tile at %s is stood beside, never on" % [tile[0]])
+	# Its body is the rim and the roof over it; only the rim is its foot,
+	# which the night's shadows are cast from.
+	assert_eq((well["foot"] as Rect2).size.y, 16.0, "the foot is the rim, a cell tall")
+	assert_eq((well["foot"] as Rect2).merge(well["roof"]), Rect2(2, -32, 28, 48), "rim and roof: all it is drawn over")
 
 
 func test_a_cramped_well_stays_one_cell() -> void:
@@ -114,7 +118,8 @@ func test_every_foot_covers_the_core_of_each_cell_it_blocks_on_every_tier() -> v
 		var plan := PunyProps.plan(data.grid)
 		assert_gt(plan["props"].size(), 10, id)
 		for prop: Dictionary in plan["props"]:
-			var foot: Rect2 = prop["foot"]
+			# What its body blocks: the foot, and the well's roof over it.
+			var foot: Rect2 = (prop["foot"] as Rect2).merge(prop.get("roof", prop["foot"]))
 			var origin := Vector2(prop["cell"] * 16)
 			for cell: Vector2i in prop["covers"]:
 				var core := Rect2(Vector2(cell * 16) + CORE.position, CORE.size)

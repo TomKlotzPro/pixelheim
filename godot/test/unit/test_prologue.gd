@@ -333,7 +333,11 @@ func test_the_pack_opens_on_the_potion_for_a_hero_hurt_that_night() -> void:
 	for item_id: String in state.pack.items.keys():
 		if Catalog.item(item_id).has("restoreHp"):
 			state.pack.items.erase(item_id)
-	assert_eq(Prologue.potion_row(state.pack.listing("all")), -1, "nothing that mends: the pack as it opens")
+	rows = state.pack.listing("all")
+	assert_eq(Prologue.potion_row(rows), -1, "nothing that mends")
+	assert_eq(rows[0]["kind"], "gear")
+	assert_ne(rows[Prologue.pack_row(rows)]["kind"], "gear", "then the pack opens off the gear (the letter): E takes nothing off")
+	assert_eq(Prologue.pack_row([]), 0, "an empty pack as it opens")
 
 
 ## PIX-505: the prompt stood over the roof, three cells from a hero below

@@ -385,7 +385,9 @@ road | --prologue 1 | map=overworld cell=\(48, 34\) | story travel
 # on its roof, E's prompt up; E fills the bucket and the prompt goes
 # (PIX-505: the pack's roofed well stops the hero at (34, 28), the CC0 one
 # at (34, 30); a windowed share runs every flow on CC0, so each takes both:
-# [23][80], a field having no "|", and five steps down from 27 end by 32).
+# [23][80], a field having no "|", and five steps down from 27 end by 32;
+# so (34, 30), the roof's own cell on the pack, passes here: the body over
+# the roof is test_puny_props', test_hero_seen's and test_night_shadows').
 # The line stays up through the embers' fight too (ash-line-embers: the
 # hero strikes first, as ash-mend, the embers slow to start it on the pack).
 ash-line | --prologue 6 --at 40,8 --wait 3 --lang en | night=6 mobs=2 nightline=shown fight | story combat night
