@@ -58,7 +58,13 @@ const STATUE_FOOT := Rect2(3, 6, 10, 10)
 const BARREL_FOOT := Rect2(2, 5, 12, 11)
 const CRATE_FOOT := Rect2(1, 4, 14, 12)
 const SMALL_WELL_FOOT := Rect2(1, 3, 14, 13)
+## The roofed well blocks all it is drawn over (PIX-505: only its rim did,
+## and the hero stood on its roof, seen through it): its rim is its foot,
+## what it sorts on and casts from at night, and its roof a second box over
+## it ("roof"), which blocks too and casts nothing (a foot as tall as the
+## picture threw the whole well's block of shadow over the green).
 const WELL_FOOT := Rect2(2, 0, 28, 16)
+const WELL_ROOF := Rect2(2, -32, 28, 32)
 const BASIN_FOOT := Rect2(3, 4, 26, 28)
 const STALL_FOOT := Rect2(0, 2, 32, 14)
 const CHEST_FOOT := Rect2(1, 3, 14, 13)
@@ -154,7 +160,10 @@ static func _well(grid: Dictionary, cell: Vector2i) -> Dictionary:
 		return fountain
 	if not paved and room.call([cell + Vector2i(1, 0)], ["grass"]):
 		var well := _prop("well", cell, WELL, WELL_FOOT)
-		well["covers"] = [cell, cell + Vector2i(1, 0)]
+		well["roof"] = WELL_ROOF
+		well["covers"] = []
+		for tile: Array in WELL:
+			well["covers"].append(cell + Vector2i(tile[0]))
 		return well
 	return _prop("well", cell, [[Vector2i.ZERO, SMALL_WELL]], SMALL_WELL_FOOT)
 

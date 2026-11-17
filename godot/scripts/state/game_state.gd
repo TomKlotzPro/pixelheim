@@ -490,7 +490,9 @@ func move_to(map: MapData, cell: Vector2i, facing: Vector2) -> void:
 func walk(tiles: float) -> void:
 	# The Night of Bells keeps its own clock (PIX-253 step 9): it holds at
 	# the middle of the night, and turns toward dawn as the square is held.
-	if tiles <= 0.0 or progression.bells != Bells.NONE:
+	# The Night of Ash keeps its hour until its dawn (PIX-511): a hero who
+	# wandered had a sun on the clock while Maren said "we'll talk at dawn".
+	if tiles <= 0.0 or progression.bells != Bells.NONE or progression.prologue != Prologue.DONE:
 		return
 	world.steps += tiles
 	mark_dirty()

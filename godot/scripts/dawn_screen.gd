@@ -6,10 +6,13 @@ extends Screen
 ## off), but the town keeps living below:
 ## 1. the fires go out: the camera drifts from the shrine across the town
 ##    while each ruin's fire gutters out in turn, and the red night eases to
-##    a grey dawn;
-## 2. a breath of dark, and the survivors stand round the square's heart;
-## 3. they speak, each line in a bubble over whoever says it (the telling in
-##    a plate below); on Fafnyr's name a roar, and his shadow sweeps across;
+##    a grey dawn, without a word (PIX-509: "one by one the fires gave up"
+##    stood over homes in full flame and an empty square);
+## 2. a breath of dark, and the survivors stand round the square's heart,
+##    the clock at the dawn's hour;
+## 3. the telling, then they speak, each line in a bubble over whoever says
+##    it (the telling in a plate below); on Fafnyr's name a roar, and his
+##    shadow sweeps across;
 ##    last, the tagline's moment (PIX-253): the courier should have ridden
 ##    south by noon, and stayed;
 ## 4. a card - Pixelheim, day one - and the day begins.
@@ -41,6 +44,9 @@ var _card: VBoxContainer
 ## The tagline's words, mid-screen (PIX-253).
 var _tag: VBoxContainer
 var _shake_left := 0.0
+## The keys under the clock: the pan's (Esc), then the talk's (E too).
+var _keys_pan: Control
+var _keys_talk: Control
 
 
 func _open() -> void:
@@ -50,8 +56,21 @@ func _open() -> void:
 	world.view.props.process_mode = Node.PROCESS_MODE_ALWAYS
 	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
 		villager.process_mode = Node.PROCESS_MODE_ALWAYS
+		villager.unmarked = true
+	# The flames stand among the actors, which are held: left so, they froze
+	# and none went out, however the telling had it (PIX-509).
+	# A fire the hero's buckets put out keeps its place in the list with its
+	# flames freed: asked as a Variant, since a freed node given to a typed
+	# variable stops the script there (PIX-503).
+	for fire: Dictionary in world.view.fires:
+		for node: Variant in fire["nodes"]:
+			if is_instance_valid(node):
+				(node as Node).process_mode = Node.PROCESS_MODE_ALWAYS
 	world.camera_rig.follows = false
 	world.camera_rig.camera.process_mode = Node.PROCESS_MODE_ALWAYS
+	# The dock goes as it does in talk (PIX-509); the rest of the HUD stays,
+	# for its sky and its clock.
+	world.hud.dock.visible = false
 	_build()
 	Sound.play_theme("dawn")
 	_fires()
@@ -93,14 +112,18 @@ func _build() -> void:
 	add_child(_bubble)
 	# The dawn keeps the HUD (its sky is the HUD's): the keys stand under the
 	# clock and the quill, not on them (PIX-346).
-	add_child(UiStyle.footer("{key:interact}  next      Esc  skip", Vector2(1010, 60)))
+	# The pan takes no press but Esc, and says so: "next" comes with the talk.
+	_keys_pan = UiStyle.footer("Esc  skip", Vector2(1010, 60))
+	add_child(_keys_pan)
+	_keys_talk = UiStyle.footer("{key:interact}  next      Esc  skip", Vector2(1010, 60))
+	_keys_talk.visible = false
+	add_child(_keys_talk)
 
 
 ## 1. The camera drifts from the shrine across the town; the fires go out in
 ## the order it meets them, and the night greys toward morning.
 func _fires() -> void:
 	_phase = "fires"
-	_tell(String(_beats[0]["line"]))
 	var still := GameState.settings.reduce_motion
 	var path: Array[Vector2] = [
 		world.camera_rig.camera.global_position,
@@ -128,10 +151,9 @@ func _fires() -> void:
 			.set_delay(0.4 + (FIRES_SECONDS - 1.2) * n / maxf(1.0, order.size() - 1))
 	var sky: ColorRect = world.hud.sky_overlay
 	_flow.tween_property(sky, "color", DAWN_GREY, FIRES_SECONDS)
-	# The clock reads the dawn as the sky greys (PIX-346), on to the morning
-	# the day begins at.
-	var now: float = GameState.world.steps
-	_flow.tween_method(world.hud.update_clock, now, now + fposmod(Prologue.dawn_steps() - now, DayNight.DAY_CYCLE_STEPS), FIRES_SECONDS)
+	# The clock keeps the night's hour through the pan and is set to the
+	# dawn's once, in the dark (PIX-512: run forward over the pan, it spun
+	# through a whole day when the night's walk had passed the dawn's hour).
 	_flow.chain().tween_interval(0.6)
 	_flow.chain().tween_callback(_gather)
 
@@ -194,14 +216,18 @@ func _stand(villager: Npc, cell: Vector2i) -> void:
 	_actors[villager.data["id"]] = villager
 
 
-## 3. Line by line: a bubble over the speaker, or the telling below.
+## 3. Line by line, from the telling of the dawn (the fires out, everyone
+## on the square: what it says is what is seen, PIX-509): a bubble over the
+## speaker, or the telling below.
 func _talk() -> void:
 	_phase = "talk"
-	_index = 0
+	_index = -1
 	_next()
 
 
 func _next() -> void:
+	_keys_pan.visible = false
+	_keys_talk.visible = true
 	_index += 1
 	if _index >= _beats.size():
 		_day_card()
@@ -334,6 +360,14 @@ func jump_to(beat: int) -> void:
 	_next()
 
 
+## Where the dawn stands, for the harness's report: its phase, then told
+## (the telling's plate up), said (someone's bubble) or quiet, and keys once
+## the footer offers "next".
+func state() -> String:
+	var words := "told" if _plate.visible else ("said" if _bubble.visible else "quiet")
+	return "%s %s%s" % [_phase, words, " keys" if _keys_talk.visible else ""]
+
+
 func _process(delta: float) -> void:
 	# The speaker's bubble rides above their head as the camera settles.
 	if _bubble.visible and is_instance_valid(_speaker):
@@ -358,6 +392,7 @@ func close() -> void:
 	world.camera_rig.camera.offset = Vector2.ZERO
 	world.camera_rig.camera.process_mode = Node.PROCESS_MODE_INHERIT
 	world.camera_rig.follows = true
+	world.hud.dock.visible = true
 	if is_instance_valid(world.view.props):
 		world.view.props.process_mode = Node.PROCESS_MODE_INHERIT
 	if _actors.has("mayor") and is_instance_valid(_actors["mayor"]):

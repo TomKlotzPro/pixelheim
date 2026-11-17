@@ -176,13 +176,21 @@ func _process(delta: float) -> void:
 	_step_to(next)
 
 
+## No mark over them while a scene has them (PIX-509: Maren kept her "!"
+## through the dawn she speaks in).
+var unmarked := false:
+	set(value):
+		unmarked = value
+		_refresh_mark()
+
+
 ## Their quest mark as things stand: the right one, or none with the marks
 ## turned off in Options.
 func _refresh_mark() -> void:
 	var kind := ""
 	var story := false
 	# Nobody asks or hands in anything on the Night of Bells (PIX-253 step 9).
-	if GameState.settings.quest_marks and GameState.progression.bells == Bells.NONE:
+	if GameState.settings.quest_marks and GameState.progression.bells == Bells.NONE and not unmarked:
 		var id := String(data.get("id", ""))
 		kind = Quests.mark_for(id, GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open)
 		story = Quests.mark_tells_story(id, GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open)

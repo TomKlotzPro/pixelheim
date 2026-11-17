@@ -76,12 +76,17 @@ static func add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
 			root.add_child(still)
 	if foot.has_area():
 		var body := StaticBody2D.new()
-		var shape := CollisionShape2D.new()
-		var rect := RectangleShape2D.new()
-		rect.size = foot.size
-		shape.shape = rect
-		shape.position = foot.get_center() - Vector2(0, sort_y)
-		body.add_child(shape)
+		# The foot first: the night's shadows are cast from a body's first
+		# box (NightShadowsLayer._foot), never from the well's roof over it.
+		for box: Rect2 in [foot, prop.get("roof", Rect2())]:
+			if not box.has_area():
+				continue
+			var shape := CollisionShape2D.new()
+			var rect := RectangleShape2D.new()
+			rect.size = box.size
+			shape.shape = rect
+			shape.position = box.get_center() - Vector2(0, sort_y)
+			body.add_child(shape)
 		root.add_child(body)
 	view.actors.add_child(root)
 	view.prop_nodes[prop["cell"]] = root
