@@ -111,6 +111,12 @@ static func gate_line() -> String:
 	return String(data()["gate"])
 
 
+## What the projects board, the ledgers and the hero's door say that night
+## (PIX-510): the rebuilding is the dawn's to decide.
+static func later_line() -> String:
+	return String(data()["later"])
+
+
 ## The step a conversation with `npc_id` finishes, or DONE when it finishes none.
 static func step_of(npc_id: String) -> int:
 	for npc: Dictionary in Npcs.townsfolk():

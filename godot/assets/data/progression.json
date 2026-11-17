@@ -1762,6 +1762,7 @@
       "y": 37
     },
     "gate": "Not tonight. Pixelheim is burning, and the letter is for someone in it.",
+    "later": "That can wait for morning. Tonight, the village comes first.",
     "arrival": "The letter was for Elder Maren of Pixelheim. You could see the fire from the last hill.",
     "pouch": "The slime was carrying a traveller's pouch: a health potion. Press {key:inventory} to open your pack.",
     "steps": [

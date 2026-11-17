@@ -44,6 +44,9 @@ var _card: VBoxContainer
 ## The tagline's words, mid-screen (PIX-253).
 var _tag: VBoxContainer
 var _shake_left := 0.0
+## The keys under the clock: the pan's (Esc), then the talk's (E too).
+var _keys_pan: Control
+var _keys_talk: Control
 
 
 func _open() -> void:
@@ -56,10 +59,13 @@ func _open() -> void:
 		villager.unmarked = true
 	# The flames stand among the actors, which are held: left so, they froze
 	# and none went out, however the telling had it (PIX-509).
+	# A fire the hero's buckets put out keeps its place in the list with its
+	# flames freed: asked as a Variant, since a freed node given to a typed
+	# variable stops the script there (PIX-503).
 	for fire: Dictionary in world.view.fires:
-		for node: Node in fire["nodes"]:
+		for node: Variant in fire["nodes"]:
 			if is_instance_valid(node):
-				node.process_mode = Node.PROCESS_MODE_ALWAYS
+				(node as Node).process_mode = Node.PROCESS_MODE_ALWAYS
 	world.camera_rig.follows = false
 	world.camera_rig.camera.process_mode = Node.PROCESS_MODE_ALWAYS
 	# The dock goes as it does in talk (PIX-509); the rest of the HUD stays,
@@ -106,7 +112,12 @@ func _build() -> void:
 	add_child(_bubble)
 	# The dawn keeps the HUD (its sky is the HUD's): the keys stand under the
 	# clock and the quill, not on them (PIX-346).
-	add_child(UiStyle.footer("{key:interact}  next      Esc  skip", Vector2(1010, 60)))
+	# The pan takes no press but Esc, and says so: "next" comes with the talk.
+	_keys_pan = UiStyle.footer("Esc  skip", Vector2(1010, 60))
+	add_child(_keys_pan)
+	_keys_talk = UiStyle.footer("{key:interact}  next      Esc  skip", Vector2(1010, 60))
+	_keys_talk.visible = false
+	add_child(_keys_talk)
 
 
 ## 1. The camera drifts from the shrine across the town; the fires go out in
@@ -215,6 +226,8 @@ func _talk() -> void:
 
 
 func _next() -> void:
+	_keys_pan.visible = false
+	_keys_talk.visible = true
 	_index += 1
 	if _index >= _beats.size():
 		_day_card()
@@ -345,6 +358,14 @@ func jump_to(beat: int) -> void:
 	_phase = "talk"
 	_index = beat - 1
 	_next()
+
+
+## Where the dawn stands, for the harness's report: its phase, then told
+## (the telling's plate up), said (someone's bubble) or quiet, and keys once
+## the footer offers "next".
+func state() -> String:
+	var words := "told" if _plate.visible else ("said" if _bubble.visible else "quiet")
+	return "%s %s%s" % [_phase, words, " keys" if _keys_talk.visible else ""]
 
 
 func _process(delta: float) -> void:

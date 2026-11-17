@@ -15505,6 +15505,10 @@ msgid "Teo's bell is ringing over Pixelheim. Everyone to their places: the drago
 msgstr ""
 
 #: assets/data/progression.json
+msgid "That can wait for morning. Tonight, the village comes first."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "That green! The whole valley will want it. Take an antidote - the fen leaves a taste."
 msgstr ""
 

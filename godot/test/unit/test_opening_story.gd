@@ -40,6 +40,8 @@ func test_only_the_survivors_are_about_that_night() -> void:
 	assert_eq(Prologue.folk("town").size(), Prologue.survivors().size())
 	for map_id: String in ["overworld", "town_hall", "town_inn", "town_shop"]:
 		assert_eq(Prologue.folk(map_id), [], "nobody on %s" % map_id)
+	assert_ne(Prologue.later_line(), "", "the board and the ledgers have the night's line")
+	assert_false("rebuild" in Prologue.later_line().to_lower())
 	for survivor: Dictionary in Prologue.folk("town"):
 		for key: String in ["lines", "before", "after"]:
 			for line: String in survivor["prologue"].get(key, []):

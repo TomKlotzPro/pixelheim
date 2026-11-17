@@ -327,12 +327,16 @@ func field_dark() -> String:
 
 func field_dawn() -> String:
 	for node in world.get_children():
-		if node.get_script() == preload("res://scripts/dawn_screen.gd"):
-			var words := "told" if node._plate.visible else ("said" if node._bubble.visible else "quiet")
-			var flames := 0
-			for fire: Dictionary in world.view.fires:
-				flames += fire["nodes"].filter(func(lit: Variant) -> bool: return is_instance_valid(lit) and lit.has_meta("fire") and lit.get_meta("fire") == "flames").size()
-			return "%s %s%s%s" % [node._phase, words, " dock" if world.hud.dock.visible else "", " flames %d" % flames if flames > 0 else ""]
+		var dawn := node as DawnScreen
+		if dawn == null:
+			continue
+		var flames := 0
+		for fire: Dictionary in world.view.fires:
+			# A flame put out is freed in place: a Variant until it's known live.
+			for lit: Variant in fire["nodes"]:
+				if is_instance_valid(lit) and (lit as Node).get_meta("fire", "") == "flames":
+					flames += 1
+		return "%s%s%s" % [dawn.state(), " dock" if world.hud.dock.visible else "", " flames %d" % flames if flames > 0 else ""]
 	return ""
 
 
