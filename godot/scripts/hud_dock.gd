@@ -1,3 +1,4 @@
+class_name HudDock
 extends Control
 ## areas: screen
 ## The hero's dock along the bottom of the screen (PIX-138): one wooden plate
@@ -52,7 +53,7 @@ const ICON := 32
 ## from the menu.
 const PAD_SKILLS := 3
 
-var world: Node
+var world: World
 var plate: PanelContainer
 var portrait: AnimatedSprite2D
 var name_label: Label
@@ -269,7 +270,8 @@ func _skills() -> Control:
 		# Its tooltip is a window that samples as its owner does: crisp (PIX-384).
 		slot.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		slot.gui_input.connect(func(event: InputEvent) -> void:
-			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			var click := event as InputEventMouseButton
+			if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 				world.player.press_skill(index)
 		)
 		var face := Control.new()
@@ -382,7 +384,7 @@ func _build_menu() -> void:
 		row["id"] = screen[0]
 		menu_rows[screen[0]] = {"cap": row["cap"], "word": row["word"], "name": screen[1], "row": row}
 	# Skills 4-6, for a pad with no keys for them (PIX-215).
-	for index in [3, 4, 5]:
+	for index: int in [3, 4, 5]:
 		var cast := func() -> void:
 			_close_menu()
 			world.player.press_skill(index)
@@ -406,7 +408,8 @@ func _menu_line(lines: VBoxContainer, run: Callable, icon: Texture2D) -> Diction
 	line.mouse_filter = Control.MOUSE_FILTER_STOP
 	line.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	line.gui_input.connect(func(event: InputEvent) -> void:
-		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var click := event as InputEventMouseButton
+		if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 			run.call()
 	)
 	var at := menu_lines.size()

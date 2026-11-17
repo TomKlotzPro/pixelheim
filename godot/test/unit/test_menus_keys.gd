@@ -9,13 +9,6 @@ extends GutTest
 ## a pad's right stick pages a card that runs long, the footer in its caps.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const ShopScreen := preload("res://scripts/shop_screen.gd")
-const InventoryScreen := preload("res://scripts/inventory_screen.gd")
-const StatsScreen := preload("res://scripts/stats_screen.gd")
-const SkillsScreen := preload("res://scripts/skills_screen.gd")
-const JournalScreen := preload("res://scripts/journal_screen.gd")
-const OptionsScreen := preload("res://scripts/options_screen.gd")
-const SavesScreen := preload("res://scripts/saves_screen.gd")
 const DIR := "user://test_menus_keys"
 
 var _lent: Node
@@ -107,12 +100,13 @@ func _stick(value: float) -> InputEventJoypadMotion:
 	return push
 
 
-func _counter(tab: String) -> Screen:
+func _counter(tab: String) -> ShopScreen:
 	GameState.trade.stall_shop = Economy.shop_at("town_shop")
 	GameState.pack.items.merge({"forest_herb": 10})
-	var counter: Screen = ShopScreen.new()
+	var counter := ShopScreen.new()
 	counter.start_tab = tab
-	return _open(counter)
+	_open(counter)
+	return counter
 
 
 # ---- PIX-487: a pad pages a card ------------------------------------------------
@@ -157,7 +151,7 @@ func test_a_stick_let_go_in_the_world_is_let_go_at_the_next_screen() -> void:
 func test_a_long_card_pages_by_the_stick_and_the_footer_wears_the_hands_caps() -> void:
 	GameState.settings.large_text = true
 	GameState.hero.stat_points = 0
-	var stats := _open(StatsScreen.new())
+	var stats := _open(StatsScreen.new()) as StatsScreen
 	# A card of the big type that surely runs past its window.
 	stats.info.text = "\n".join(range(40).map(func(line: int) -> String: return "Line %d" % line))
 	await wait_process_frames(3)
@@ -187,20 +181,20 @@ func test_large_reading_text_grows_every_reading_text() -> void:
 	for label: Label in [counter.detail, counter.card_extra]:
 		assert_eq(label.get_theme_font_size("font_size"), UiStyle.BIG, "the counter's card, every line of it")
 	counter.close()
-	var pack: Screen = _open(InventoryScreen.new())
+	var pack := _open(InventoryScreen.new()) as InventoryScreen
 	assert_eq(pack.about.get_theme_font_size("font_size"), UiStyle.BIG, "the pack's description")
 	assert_lt(pack.scroll.size.y, InventoryScreen.LIST.y, "its list gives it the room")
 	pack.close()
 	GameState.progression.quests.merge({"slime_trouble": {"progress": 2, "done": false}})
-	var journal: Screen = _open(JournalScreen.new())
+	var journal := _open(JournalScreen.new()) as JournalScreen
 	assert_eq(journal.detail.get_theme_font_size("font_size"), UiStyle.BIG, "the journal's quest text")
 	journal.close()
 	# A hero of the second rank: the path graph over the tree, the tallest page.
 	GameState.hero.level = 10
-	var skills: Screen = _open(SkillsScreen.new())
+	var skills := _open(SkillsScreen.new()) as SkillsScreen
 	assert_eq(skills.details.get_theme_font_size("font_size"), UiStyle.BIG, "the Skills description")
 	assert_eq(skills.reader.size.y, 2.0 * Layout.line_of(skills.reader), "two lines of it")
-	for card in skills.view.get_children():
+	for card: Node in skills.view.get_children():
 		if card is PanelContainer:
 			assert_lte(card.position.y + card.size.y, skills.reader.position.y, "under the tree's last row, not on it")
 	assert_almost_eq(skills.reader.position.y + skills.reader.size.y, SkillsScreen.PAGE.end.y - UiStyle.INSET, 1.0, "its last line on the page's inset")
@@ -234,22 +228,22 @@ func test_the_counters_footer_is_the_questions_while_it_asks_how_many() -> void:
 	assert_has(before, "tab")
 	counter._ask(10)
 	var asking := _says(counter.footer)
-	for word in ["how many", "all", "sell", "keep"]:
+	for word: String in ["how many", "all", "sell", "keep"]:
 		assert_has(asking, word)
-	for word in ["tab", "choose", "sell a stack", "close"]:
+	for word: String in ["tab", "choose", "sell a stack", "close"]:
 		assert_does_not_have(asking, word, "nothing the question doesn't take")
 	counter._cancel()
 	assert_has(_says(counter.footer), "close", "put down, the counter's keys again")
-	counter._switch(0)
+	counter.switch(0)
 	assert_does_not_have(_says(counter.footer), "sell a stack", "no Z where nothing sells")
 
 
 func test_the_packs_craft_tab_offers_what_a_recipe_takes() -> void:
-	var pack: Screen = InventoryScreen.new()
+	var pack := InventoryScreen.new()
 	pack.tab = InventoryScreen.TABS.size() - 1
 	_open(pack)
 	assert_eq(String(InventoryScreen.TABS[pack.tab][0]), "craft")
-	for word in ["equip / use", "drop", "drop all", "sort", "travel"]:
+	for word: String in ["equip / use", "drop", "drop all", "sort", "travel"]:
 		assert_does_not_have(_says(pack.footer), word, "the guide, in town: nothing for E, X, Z or R")
 	pack._select(1)
 	var recipe := _says(pack.footer)
@@ -273,13 +267,13 @@ func test_the_packs_craft_tab_offers_what_a_recipe_takes() -> void:
 	pack._switch(0)
 	# Laid out: the description's window knows whether its words run long.
 	await wait_process_frames(3)
-	for word in ["equip / use", "drop", "drop all", "sort"]:
+	for word: String in ["equip / use", "drop", "drop all", "sort"]:
 		assert_has(_says(pack.footer), word, "the pack's own keys on what it holds")
 
 
 func test_the_pack_gives_sorts_place_to_the_page_keys() -> void:
 	GameState.settings.large_text = true
-	var pack: Screen = _open(InventoryScreen.new())
+	var pack := _open(InventoryScreen.new()) as InventoryScreen
 	await wait_process_frames(3)
 	assert_has(_says(pack.footer), "sort")
 	Layout.read(pack.reader, " ".join(range(200).map(func(_at: int) -> String: return "words")), 3)
@@ -312,7 +306,7 @@ func test_a_footer_closed_up_stands_in_the_canvas() -> void:
 func test_the_skills_footer_names_the_keys_the_card_takes() -> void:
 	var hero := GameState.hero
 	hero.skill_points = 1
-	var skills: Screen = _open(SkillsScreen.new())
+	var skills := _open(SkillsScreen.new()) as SkillsScreen
 	var first: Vector2i = skills.cells.keys().filter(func(cell: Vector2i) -> bool: return Skills.can_buy(hero, skills.cells[cell]["entry"]))[0]
 	skills.selected = first
 	skills._layout()
@@ -330,7 +324,7 @@ func test_the_skills_footer_names_the_keys_the_card_takes() -> void:
 
 func test_the_stats_footer_counts_the_points_and_drops_e_with_none() -> void:
 	GameState.hero.stat_points = 3
-	var stats := _open(StatsScreen.new())
+	var stats := _open(StatsScreen.new()) as StatsScreen
 	assert_has(_says(stats.keys), "spend a point (3 left)")
 	assert_does_not_have(_says(stats.keys), "do it")
 	stats._act()
@@ -343,7 +337,7 @@ func test_the_stats_footer_counts_the_points_and_drops_e_with_none() -> void:
 
 
 func test_the_weapon_tag_is_ink_on_the_page_and_whole() -> void:
-	var stats := _open(StatsScreen.new())
+	var stats := _open(StatsScreen.new()) as StatsScreen
 	await wait_process_frames(3)
 	var tags: Array = stats.list.find_children("*", "Label", true, false).filter(func(label: Label) -> bool: return label.text == "Weapon")
 	assert_eq(tags.size(), 1, "the stat the weapon in hand asks for")
@@ -360,14 +354,14 @@ func test_a_saves_footer_follows_what_the_slot_holds() -> void:
 	game.new_game("Hrafna", "ranger")
 	GameState.slots.write(1, game.to_dict())
 	GameState.slots.write(2, game.to_dict())
-	var saves: Screen = _open(SavesScreen.new())
+	var saves := _open(SavesScreen.new()) as SavesScreen
 	saves._select(0)
-	for word in ["continue", "duplicate", "delete", "copy", "paste"]:
+	for word: String in ["continue", "duplicate", "delete", "copy", "paste"]:
 		assert_has(_says(saves.footer), word, "a hero's slot")
 	saves._select(2)
 	var empty := _says(saves.footer)
 	assert_has(empty, "paste", "an empty slot takes a code")
-	for word in ["continue", "duplicate", "delete", "copy", "bring back"]:
+	for word: String in ["continue", "duplicate", "delete", "copy", "bring back"]:
 		assert_does_not_have(empty, word, "and nothing else")
 	saves._select(1)
 	saves._delete()
@@ -389,7 +383,7 @@ func test_from_the_title_the_last_hero_is_last_played_and_e_on_another_plays_at_
 	GameState.slot = 1
 	GameState.standing_in = false
 	GameState.title_seen = false
-	var saves: QuietSaves = _open(QuietSaves.new())
+	var saves := _open(QuietSaves.new()) as QuietSaves
 	var words := _says(saves)
 	assert_has(words, "Last played", "no one plays yet")
 	assert_does_not_have(words, "Playing")
@@ -417,8 +411,8 @@ func test_from_the_title_the_last_hero_is_last_played_and_e_on_another_plays_at_
 # ---- PIX-484: Options' keys as said ----------------------------------------------
 
 ## Options open with the row labelled `label` chosen.
-func _options(label: String) -> Screen:
-	var options: Screen = _open(OptionsScreen.new())
+func _options(label: String) -> OptionsScreen:
+	var options := _open(OptionsScreen.new()) as OptionsScreen
 	var choosable: Array[int] = options._choosable()
 	for at in choosable.size():
 		if options.rows[choosable[at]]["label"] == label:
@@ -427,7 +421,7 @@ func _options(label: String) -> Screen:
 	return options
 
 
-func _chosen(options: Screen) -> Dictionary:
+func _chosen(options: OptionsScreen) -> Dictionary:
 	return options.rows[options._choosable()[options.selected]]
 
 

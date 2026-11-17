@@ -8,8 +8,8 @@ extends RefCounted
 ## flags it was given in their order, awaiting each.
 
 ## The harness (harness.gd): its tree, its key presses and what's open.
-var h: Node
-var world: Node
+var h: Harness
+var world: World
 var flags: HarnessFlags
 ## The report line's fields; a value known only part-way through is noted
 ## as it's known.
@@ -24,7 +24,7 @@ func step_story() -> void:
 	if flags.has("credits"):
 		for node in world.get_children():
 			if node is Cutscene:
-				node.from_kind = "credits"
+				(node as Cutscene).from_kind = "credits"
 	await h.get_tree().create_timer(0.3).timeout
 
 
@@ -72,7 +72,7 @@ func step_brew() -> void:
 	# there gives nothing.
 	GameState.pack.add_item("forest_herb")
 	GameState.pack.add_item("marsh_reed")
-	var vex: Node = h._villager("alchemist_vex")
+	var vex: Node = h.villager("alchemist_vex")
 	if vex != null and world.map.id == "town":
 		GameState.trade.stall_shop = Economy.station_shop("alchemy")
 	GameState.trade.craft("brew_potion_hp")
@@ -106,7 +106,7 @@ func step_talk_to() -> void:
 		return
 	world.interaction.talk(npc)
 	await h.get_tree().create_timer(0.3).timeout
-	await h._keys(flags)
+	await h.keys(flags)
 
 
 func step_talk() -> void:
@@ -171,7 +171,7 @@ func step_rise() -> void:
 		GameState.reveals.assign(["project:" + project_id])
 		world.stage.after_board()
 		for frame in 300:
-			var rise: RebuildRise = h._rise()
+			var rise: RebuildRise = h.rise()
 			if rise != null and rise.phase != "ruin":
 				break
 			await h.get_tree().process_frame
@@ -207,7 +207,7 @@ func step_choice() -> void:
 func step_chapter() -> void:
 	world.stage.cards = true
 	var waited := 0.0
-	while waited < 8.0 and not world.get_children().any(func(node: Node) -> bool: return node.has_method("rise_left")):
+	while waited < 8.0 and not world.get_children().any(func(node: Node) -> bool: return node is ChapterScreen):
 		await h.get_tree().create_timer(0.1).timeout
 		waited += 0.1
 	await h.get_tree().create_timer(1.0).timeout
@@ -222,7 +222,7 @@ func step_dawn_beat() -> void:
 
 
 ## Stand below `villager`, facing them.
-func _face(villager: Node) -> void:
+func _face(villager: Npc) -> void:
 	world.player.position = MapView.center(villager.cell + Vector2i.DOWN)
 	world.camera_rig.cut()
 	world.player_cell = villager.cell + Vector2i.DOWN
@@ -231,14 +231,14 @@ func _face(villager: Node) -> void:
 
 ## A word with `villager`, as a hero has one (PIX-283): below them, facing
 ## them, E, and E again till the conversation closes.
-func _word_with(villager: Node) -> void:
+func _word_with(villager: Npc) -> void:
 	_face(villager)
 	world.interaction.interact()
 	await h.get_tree().create_timer(0.3).timeout
 	for press in 12:
-		if not world.get_children().any(func(node: Node) -> bool: return node.has_method("_advance")):
+		if not world.get_children().any(func(node: Node) -> bool: return node is DialogueBox):
 			return
-		await h._tap(KEY_E)
+		await h.tap(KEY_E)
 
 
 ## The Pixelheim Post's step (PIX-320; world.gd opened the Post before the
@@ -291,7 +291,7 @@ func _post(step: String) -> void:
 				Post.hand_over(post, String(before["id"]))
 			if step not in post.bag:
 				post.bag.append(step)
-			var villager: Node = h._villager(Post.addressee(entry))
+			var villager: Npc = h.villager(Post.addressee(entry))
 			if villager != null:
 				_face(villager)
 				world.interaction.interact()
@@ -301,7 +301,7 @@ func _post(step: String) -> void:
 
 ## Stand below the map's first villager facing up; `talk` also presses E.
 func _below_first_villager() -> void:
-	var villager: Node = h.get_tree().get_first_node_in_group("npcs")
+	var villager: Npc = h.get_tree().get_first_node_in_group("npcs")
 	world.player.position = MapView.center(villager.cell + Vector2i.DOWN)
 	world.camera_rig.cut()
 	world.player_cell = villager.cell + Vector2i.DOWN
@@ -310,4 +310,4 @@ func _below_first_villager() -> void:
 		world.interaction.interact()
 	await h.get_tree().create_timer(0.3).timeout
 	# The way a player leaves it (the report lists what stays open).
-	await h._keys(flags)
+	await h.keys(flags)

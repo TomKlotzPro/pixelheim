@@ -6,7 +6,6 @@ extends GutTest
 ## a throwaway hero lent to GameState, given back after each test.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const JournalScreen := preload("res://scripts/journal_screen.gd")
 
 var screen: Node
 var _lent: Node

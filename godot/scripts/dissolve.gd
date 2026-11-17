@@ -36,7 +36,7 @@ static func shown(at: float, length := SECONDS) -> float:
 ## The screen as it stands, on a layer of its own over `world`, ready to
 ## fade out over whatever is built under it; null where nothing is drawn (a
 ## quiet run has no picture to hold).
-static func hold(world: Node) -> Dissolve:
+static func hold(world: World) -> Dissolve:
 	if DisplayServer.get_name() == "headless":
 		return null
 	var image := world.get_viewport().get_texture().get_image()

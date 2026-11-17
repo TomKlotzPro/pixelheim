@@ -1,4 +1,5 @@
-extends "res://scripts/ledger_screen.gd"
+class_name BountyScreen
+extends LedgerScreen
 ## areas: quest
 ## The bounty board on the square (PIX-156): the named monsters posted so far,
 ## the wanted first, then the slain. The card tells the chosen one's tale,
@@ -26,7 +27,7 @@ func _intro() -> String:
 func _info() -> String:
 	var chosen := _chosen()
 	if chosen.is_empty():
-		var first := _when(Hunts.next_notice(GameState.questing.board_floors()))
+		var first := goes_up_when(Hunts.next_notice(GameState.questing.board_floors()))
 		if first == "":
 			return Text.t("No notices yet. The board waits for word from the wilds.")
 		return Text.t("No notices yet. The board waits for word from the wilds.\n\nThe first one goes up when %s.") % first
@@ -36,7 +37,7 @@ func _info() -> String:
 	lines.append("%s." % Hunts.reward_line(chosen))
 	if slain:
 		lines.append_array(["", String(chosen["homecoming"])])
-	var next := _when(Hunts.next_notice(GameState.questing.board_floors()))
+	var next := goes_up_when(Hunts.next_notice(GameState.questing.board_floors()))
 	if next != "":
 		lines.append_array(["", Text.t("Another notice goes up when %s.") % next])
 	return "\n".join(lines)
@@ -71,7 +72,7 @@ func _chosen() -> Dictionary:
 ## (PIX-170), or Pixelheim grown to a town (PIX-257: Grandmother Gulp); ""
 ## for one only the old mountain's floors posted, which left play: the
 ## board says nothing of when, rather than send the hero to a floor.
-static func _when(entry: Dictionary) -> String:
+static func goes_up_when(entry: Dictionary) -> String:
 	if entry.has("postedTier"):
 		return Text.t("Pixelheim has grown into a town")
 	if not entry.has("postedRelics"):

@@ -8,9 +8,6 @@ extends GutTest
 ## a card, shown once, kept in the story ledger.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const MapScreen := preload("res://scripts/map_screen.gd")
-const Npc := preload("res://scripts/npc.gd")
-const ChapterScreen := preload("res://scripts/chapter_screen.gd")
 const RECIPIENTS := {
 	"letter_wenna": "saltmere_wenna", "letter_pell": "mines_pell", "letter_hale": "greyhold_ulla", "letter_aske": "frost_aske",
 }
@@ -177,15 +174,6 @@ func test_the_arrow_is_gold_only_while_it_leads_the_main_story() -> void:
 
 # ---- The hollow diamond -------------------------------------------------------------
 
-class FakeHud extends Node:
-	var bearing := {}
-	var story := {}
-
-
-class StandIn extends Node2D:
-	var hud: FakeHud
-
-
 func test_the_main_story_waits_behind_a_side_quest() -> void:
 	state.questing.finish_dialogue("elder")
 	state.progression.quests["cheese_run"] = {"progress": 0, "done": false}
@@ -204,8 +192,8 @@ func test_the_main_story_waits_behind_a_side_quest() -> void:
 
 
 func test_the_map_keeps_the_main_story_as_a_hollow_diamond() -> void:
-	var world: StandIn = autofree(StandIn.new())
-	world.hud = autofree(FakeHud.new())
+	var world: World = autofree(preload("res://test/bare_world.gd").new())
+	world.hud = Hud.new()
 	var painting = autofree(MapScreen.Painting.new())
 	painting.world = world
 	painting.map = MapData.load_by_id("town")

@@ -250,6 +250,15 @@ func sleep_till_morning() -> void:
 ## Defeat is forgiving (RETURN_TO_WORLD after a loss): wake healed, purse
 ## intact but for the toll. Returns where to wake (`waking`).
 func wake_at_inn() -> Dictionary:
+	var inn := fall()
+	owner.save_now()
+	owner.message.emit(wake_line(inn["woke"], inn["lost"]))
+	return inn
+
+
+## What a fall does to the hero, unsaved and unsaid (a save loaded at 0 HP
+## falls so too, PIX-504): where to wake (`waking`) and the gold `lost`.
+func fall() -> Dictionary:
 	owner.settlement.bard_song = false
 	var inn := waking(owner.progression.prologue, Town.done_projects(owner.settlement))
 	owner.make_whole()
@@ -260,9 +269,7 @@ func wake_at_inn() -> Dictionary:
 	var lost := owner.spoils.death_toll()
 	owner.pack.gold -= lost
 	owner.pack_changed()
-	owner.save_now()
-	owner.message.emit(wake_line(inn["woke"], lost))
-	return inn
+	return inn.merged({"lost": lost})
 
 
 ## Where a fall wakes (PIX-347): {mapId, x, y, facing, woke}. On the Night

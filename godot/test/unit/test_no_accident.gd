@@ -4,12 +4,6 @@ extends GutTest
 ## world; and a talk left with Esc takes no quest.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const DialogueBox := preload("res://scripts/dialogue_box.gd")
-const ShopScreen := preload("res://scripts/shop_screen.gd")
-const BankScreen := preload("res://scripts/bank_screen.gd")
-const ThroneScreen := preload("res://scripts/throne_screen.gd")
-const StatsScreen := preload("res://scripts/stats_screen.gd")
-const BountyScreen := preload("res://scripts/bounty_screen.gd")
 const QUEST := "herbs_for_vex"
 const VEX := "alchemist_vex"
 
@@ -214,3 +208,65 @@ func test_marens_confession_left_with_esc_stays_untold() -> void:
 	state.questing.finish_dialogue("elder", false)
 	assert_true(Letters.fifth_due(state.progression, state.settlement), "left with Esc: still to tell")
 	assert_false(state.progression.quests.has(Letters.fifth_quest()["id"]), "and the fifth letter not given")
+
+
+# ---- a click on the talk's own window (PIX-504) ----------------------------------
+
+## A left click as the player's lands, through the viewport, at `at`.
+func _click(at: Vector2) -> void:
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = true
+	event.position = at
+	event.global_position = at
+	get_viewport().push_input(event, true)
+
+
+func test_a_click_on_the_talks_own_window_turns_the_page() -> void:
+	var box := DialogueBox.new()
+	box.npc = {"id": "nobody", "name": "Nobody", "lines": ["One.", "Two.", "Three."]}
+	add_child_autofree(box)
+	await get_tree().process_frame
+	_click(box.panel.get_global_rect().get_center())
+	assert_eq(box.page, 1, "on the window, as beside it")
+	_click(Vector2(4, 4))
+	assert_eq(box.page, 2, "and beside it still")
+
+
+func test_a_click_beside_a_question_answers_nothing() -> void:
+	var picked := []
+	var box := DialogueBox.new()
+	box.npc = {"id": "nobody", "name": "Nobody", "lines": ["Well?"]}
+	box.choices = ["Yes", "No"]
+	box.on_choice = func(index: int) -> void: picked.append(index)
+	add_child_autofree(box)
+	await get_tree().process_frame
+	_click(box.panel.get_global_rect().get_center())
+	assert_eq(picked, [], "only a click on an answer gives it")
+	assert_false(box.is_queued_for_deletion(), "and the question waits")
+
+
+## PIX-504: Maren's story of a relic, left on its first line (Esc, a step
+## away), was marked told and never offered again.
+func test_marens_relic_story_left_early_is_told_again() -> void:
+	var kept: ProgressionState = GameState.progression
+	GameState.progression = ProgressionState.new()
+	GameState.progression.prologue = Prologue.DONE
+	GameState.progression.story_seen.assign([Letters.scene_id()])
+	GameState.progression.hunted.assign(["tidecaller"])
+	var world: World = add_child_autofree(preload("res://test/bare_world.gd").new())
+	var interaction: Interaction = autofree(Interaction.new())
+	interaction.world = world
+	var maren := {"id": "elder", "name": "Maren", "lines": ["Hm."]}
+	interaction.talk(maren)
+	var box: Node = world.get_child(-1)
+	assert_eq(box.npc["lines"], Story.elder_story([], ["tidecaller"])["lines"], "Tam's ladle")
+	box._unhandled_input(_press(&"ui_cancel"))
+	assert_false(GameState.has_seen("maren_tam"), "left on its first line: not told")
+	interaction.talk(maren)
+	box = world.get_child(-1)
+	assert_eq(box.npc["lines"].size(), 3, "so she tells it again")
+	for line in 3:
+		box._unhandled_input(_press(&"interact"))
+	assert_true(GameState.has_seen("maren_tam"), "heard out: told, once")
+	GameState.progression = kept

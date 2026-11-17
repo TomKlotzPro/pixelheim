@@ -26,7 +26,7 @@ func layers() -> Dictionary[String, MapLayer]:
 
 
 ## Lantern Night's festival, and Fafnyr's pass over the Reach.
-func every_second(world: Node) -> void:
+func every_second(world: World) -> void:
 	LanternPass.watch(world)
 
 
@@ -34,7 +34,7 @@ func every_second(world: Node) -> void:
 ## on Lantern Night after dark; --keys esc skips it, --wait lets it play out.
 ## A second of the night first, so its light has settled before the world
 ## holds still for him, as in play.
-func step_lantern(h: Node) -> void:
+func step_lantern(h: Harness) -> void:
 	await h.get_tree().create_timer(1.0).timeout
 	LanternPass.watch(h.world)
 	await h.get_tree().create_timer(0.3).timeout

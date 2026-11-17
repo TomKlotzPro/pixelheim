@@ -82,8 +82,9 @@ func test_the_spyglass_stands_off_the_road() -> void:
 
 
 ## The world as the hooks ask it: its map.
-class FakeWorld extends Node2D:
-	var map := MapData.new()
+class FakeWorld extends "res://test/bare_world.gd":
+	func _init() -> void:
+		map = MapData.new()
 
 
 ## PIX-369: E and its prompt are the feature's hooks, no call in

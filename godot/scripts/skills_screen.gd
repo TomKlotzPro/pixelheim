@@ -1,3 +1,4 @@
+class_name SkillsScreen
 extends Screen
 ## areas: rank screen
 ## The skill tree (SkillTree.tsx): once the hero has ranked, the Path Graph on
@@ -337,7 +338,7 @@ func _command(event: InputEvent) -> Callable:
 		command = _move.bind(Vector2i.RIGHT)
 	elif event.is_action_pressed("interact"):
 		command = _act
-	elif event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F:
+	elif event is InputEventKey and event.is_pressed() and not event.is_echo() and (event as InputEventKey).physical_keycode == KEY_F:
 		command = _forget
 	else:
 		for index in Skills.DOCK_SIZE:
@@ -431,9 +432,9 @@ func _act() -> void:
 		Sound.play("skill_learned")
 		status.text = Text.t("Learned: %s.") % entry["name"]
 		# The first skill bought names who can make the hero forget it (PIX-331).
-		var hud: Variant = get_tree().current_scene.get("hud")
-		if hud != null:
-			hud.hint("forget")
+		var scene := get_tree().current_scene as World
+		if scene != null and scene.hud != null:
+			scene.hud.hint("forget")
 	elif entry["id"] in GameState.hero.skill_nodes:
 		status.text = "Already learned."
 	else:

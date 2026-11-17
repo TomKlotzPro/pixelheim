@@ -10,7 +10,7 @@ func layers() -> Dictionary[String, MapLayer]:
 
 
 ## An animal the hero stands facing steps aside (Herd.shoo, PIX-389).
-func every_second(world: Node) -> void:
+func every_second(world: World) -> void:
 	var herd: Variant = _herd(world.view)
 	if is_instance_valid(herd):
 		herd.shoo(world.player_cell, world.player_cell + Vector2i(world.player.facing.round()))

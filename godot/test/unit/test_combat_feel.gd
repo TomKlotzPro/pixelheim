@@ -212,18 +212,19 @@ func test_the_fight_has_its_own_blips() -> void:
 		assert_gt(SoundScript._synth(SoundScript.UI_SOUNDS[name]).data.size(), 0, name)
 
 
-class FakeSkillFx extends RefCounted:
-	var impacts_held := false
-
-	func cast(_skill: Dictionary, _caster: Node, _targets: Array) -> bool:
+class FakeSkillFx extends SkillFx:
+	func cast(_skill: Dictionary, _caster: Node2D, _targets: Array) -> bool:
 		return false
 
 
-class FakeFx extends RefCounted:
-	var skills := FakeSkillFx.new()
+class FakeFx extends WorldFx:
 	var words: Array[String] = []
 
-	func dust(_at: Vector2) -> void:
+	func _init() -> void:
+		skills = FakeSkillFx.new()
+		add_child(skills)
+
+	func dust(_at: Vector2, _held := false) -> void:
 		pass
 
 	func float_text(text: String, _at: Vector2, _color: Color, _big := false) -> void:
@@ -236,7 +237,7 @@ class FakeFx extends RefCounted:
 		pass
 
 
-class FakeMessages extends RefCounted:
+class FakeMessages extends Messages:
 	## The lines of the moment said (log_now).
 	var said: Array[String] = []
 
@@ -254,40 +255,43 @@ class FakeMessages extends RefCounted:
 
 
 ## The dock, as far as the hero asks it: the slots it was told to flash.
-class FakeDock extends RefCounted:
+class FakeDock extends HudDock:
 	var refused: Array[int] = []
 
 	func refuse(index: int) -> void:
 		refused.append(index)
 
 
-class FakeHud extends RefCounted:
-	var dock := FakeDock.new()
+class FakeHud extends Hud:
+	func _init() -> void:
+		dock = FakeDock.new()
+		add_child(dock)
 
 
-class FakeWorld extends Node2D:
-	var hud := FakeHud.new()
-	var fx := FakeFx.new()
-	var messages := FakeMessages.new()
-	var map := MapData.new()
-	var foes := FakeFight.new()
-	var stage := FakeStage.new()
-	## The hero the foes keep off (PIX-458).
-	var player: Node2D
+## The pieces stand nowhere in the tree: the bare world frees them with
+## itself. `player` is the hero the foes keep off (PIX-458).
+class FakeWorld extends "res://test/bare_world.gd":
+	func _init() -> void:
+		hud = FakeHud.new()
+		fx = FakeFx.new()
+		messages = FakeMessages.new()
+		map = MapData.new()
+		foes = FakeFight.new()
+		stage = FakeStage.new()
 
 	func on_player_died() -> void:
 		pass
 
 
 ## The night's beats hear of a roll and a cast (PIX-506).
-class FakeStage extends RefCounted:
+class FakeStage extends Stage:
 	var did: Array[String] = []
 
 	func prologue_did(action: String) -> void:
 		did.append(action)
 
 
-class FakeFight extends RefCounted:
+class FakeFight extends Foes:
 	func in_fight(_linger := 0.0) -> bool:
 		return true
 
@@ -451,7 +455,7 @@ func test_a_roll_past_the_strike_clears_the_swing() -> void:
 	assert_true(hero._can_dodge(), "the follow-through gives way")
 	hero.dodge(Vector2.LEFT)
 	assert_true(hero.dodging, "the roll starts")
-	assert_eq(hero.world.stage.did, ["dodge"] as Array[String], "and the night's hounds beat hears of it (PIX-506)")
+	assert_eq((hero.world.stage as FakeStage).did, ["dodge"] as Array[String], "and the night's hounds beat hears of it (PIX-506)")
 	assert_false(hero.attacking, "the swing is over")
 	assert_false(hero.casting, "a cast too")
 	assert_false(hero.striking, "it can't bite")
@@ -674,7 +678,7 @@ func test_a_skill_pressed_during_a_swing_fires_when_the_hero_is_free() -> void:
 	hero._end_swing()
 	hero._fire_kept()
 	assert_true(hero.casting, "it goes as the swing ends")
-	assert_eq(hero.world.stage.did, ["skill"] as Array[String], "the night's embers beat hears of the cast, not the press (PIX-506)")
+	assert_eq((hero.world.stage as FakeStage).did, ["skill"] as Array[String], "the night's embers beat hears of the cast, not the press (PIX-506)")
 	assert_eq(hero.world.hud.dock.refused, [] as Array[int], "and nothing was refused")
 
 

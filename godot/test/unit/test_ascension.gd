@@ -10,7 +10,6 @@ extends GutTest
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const PlayerScript := preload("res://scripts/player.gd")
-const RankupScreen := preload("res://scripts/rankup_screen.gd")
 
 var screen: Node
 var _lent: Node

@@ -5,15 +5,11 @@ extends GutTest
 ## moonlight; the lake, the wind and the glow; reduced motion holding it all
 ## still; and the world under it resting from drawing while it's covered.
 
-const LightRig := preload("res://scripts/light_rig.gd")
-const TitleScreen := preload("res://scripts/title_screen.gd")
 ## A world as the title sees it: a canvas to hide, its LightRig, its sounds.
 const WORLD := """
-extends Node2D
-var map: MapData
-var harness := true
-var lights: Node
-var soundscape: Node
+extends "res://test/bare_world.gd"
+func _init() -> void:
+	harness = true
 """
 
 var _reduce_motion: bool

@@ -4,22 +4,8 @@ extends GutTest
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const HudDockScript := preload("res://scripts/hud_dock.gd")
-const StatsScreen := preload("res://scripts/stats_screen.gd")
-const SkillsScreen := preload("res://scripts/skills_screen.gd")
-const CreateScreen := preload("res://scripts/create_screen.gd")
 
 var _kept: Array = []
-
-
-## The dock's frames read only this much of the world while the hero's whole.
-class StandIn extends Node:
-	var player := Hands.new()
-
-
-class Hands:
-	var ailments := Ailments.new()
-	var skill_ready := true
-	var SKILL_TURN := 1.0
 
 
 func _lend(role: String) -> void:
@@ -40,7 +26,9 @@ func after_each() -> void:
 
 func _dock() -> Control:
 	var dock: Control = HudDockScript.new()
-	dock.world = autofree(StandIn.new())
+	# The dock's frames read only the hero's hands of the world while the hero's whole.
+	dock.world = autofree(preload("res://test/bare_world.gd").new())
+	dock.world.player = Player.new()
 	add_child_autofree(dock)
 	return dock
 

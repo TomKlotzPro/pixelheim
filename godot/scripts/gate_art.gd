@@ -115,7 +115,7 @@ static func _avalanche(cells: Array[Vector2i]) -> Array[Dictionary]:
 		high = Vector2i(maxi(high.x, cell.x), maxi(high.y, cell.y))
 	# The mesa's three rows end on the gate's last row, its rim above it.
 	for row in MESA.size():
-		for column in MESA[row].size():
+		for column: int in MESA[row].size():
 			var cell := Vector2i(low.x + column, high.y - (MESA.size() - 1) + row)
 			out.append(_piece(cell, "world", MESA[row][column], Vector2.ZERO, "snow", row == 0))
 	out.append(_piece(Vector2i(low.x, high.y), "world", OVERWORLD_ROCK, Vector2(1, 5), "snow"))

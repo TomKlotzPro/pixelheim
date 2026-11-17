@@ -2505,8 +2505,16 @@ msgid "A roll leaves a short trail of fading ghosts along its path"
 msgstr "Une roulade laisse derrière elle une courte traînée de silhouettes qui s'effacent"
 
 #: assets/data/changelog.json
+msgid "A save file edited by hand with a wrong value reads as damaged instead of loading half a hero"
+msgstr "Un fichier de sauvegarde modifié à la main avec une valeur fausse est lu comme abîmé au lieu de charger un héros à moitié"
+
+#: assets/data/changelog.json
 msgid "A save on a dungeon floor wakes you at the top of that floor instead of back at the entrance, and sleeping saves with your well-rested bonus kept"
 msgstr "Une sauvegarde à un étage de donjon vous réveille en haut de cet étage au lieu de l'entrée, et dormir sauvegarde en gardant votre bonus de repos"
+
+#: assets/data/changelog.json
+msgid "A save that fails to write is no longer called saved: it is tried again and a short line tells you"
+msgstr "Une sauvegarde qui échoue n'est plus annoncée comme faite : elle est retentée et une courte ligne vous prévient"
 
 #: assets/data/changelog.json
 msgid "A save the game can't read is never shown as an empty slot or written over: it gets its own card and is kept as it is"
@@ -3857,6 +3865,10 @@ msgid "Fixed a lock where swinging during a roll could leave your hero unable to
 msgstr "Corrige un blocage : frapper pendant une roulade pouvait empêcher votre héros de bouger"
 
 #: assets/data/changelog.json
+msgid "Fixed small leaks when building a map without the paid art and when quitting with a sound playing"
+msgstr "Corrigé : de petites fuites en construisant une carte sans l'art payant et en quittant pendant un son"
+
+#: assets/data/changelog.json
 msgid "Fixed: a flaky load could leave the world pitch black until a reload - the renderer retries on its own"
 msgstr "Corrigé : un chargement capricieux pouvait laisser le monde plongé dans le noir jusqu'au rechargement - le rendu réessaie désormais tout seul"
 
@@ -4413,6 +4425,10 @@ msgid "Kept"
 msgstr "En lieu sûr"
 
 #: assets/data/changelog.json
+msgid "Kept Safe"
+msgstr "Bien gardé"
+
+#: assets/data/changelog.json
 msgid "Keys That Look Like Keys"
 msgstr "Des touches qui ressemblent à des touches"
 
@@ -4719,6 +4735,10 @@ msgstr "Mille langues"
 #: assets/data/changelog.json
 msgid "Maren no longer skips a story: if you went far before visiting her, she tells each one in turn, oldest first, and the main quest's step that waits on it is met"
 msgstr "Maren ne saute plus d'histoire : si vous avez exploré loin avant de lui rendre visite, elle les raconte chacune à leur tour, la plus ancienne d'abord, et l'étape de la quête principale qui l'attend est validée"
+
+#: assets/data/changelog.json
+msgid "Maren tells her relic story again if you leave it on its first line, and a click on a conversation turns the page"
+msgstr "Maren raconte de nouveau l'histoire de sa relique si vous la quittez à la première ligne, et un clic sur une conversation tourne la page"
 
 #: assets/data/changelog.json
 msgid "Maren's letters are the main story in the journal: the courier's satchel lists each letter, who it's for and where, and once it's delivered, what they answered"
@@ -5531,6 +5551,10 @@ msgstr "Planches tranquilles"
 #: assets/data/changelog.json
 msgid "Quit in the middle of the Night of Bells and you come back at the same beat, with the lanterns you lit and the roofs you doused"
 msgstr "Quittez au milieu de la Nuit des Cloches et vous revenez au même moment, avec les lanternes allumées et les toits éteints"
+
+#: assets/data/changelog.json
+msgid "Quitting in the second of a fall no longer wakes you alive where you fell: you wake as the fall would have woken you"
+msgstr "Quitter à l'instant d'une chute ne vous réveille plus vivant là où vous êtes tombé : vous vous réveillez comme la chute l'aurait voulu"
 
 #: assets/data/changelog.json
 msgid "READABLE DANGER: a foe shows its level as you come near, on a small plate over its head - grey well below you, cream a match, orange a step above, red far above - so you can choose your fights before the charge"
@@ -19383,6 +19407,10 @@ msgstr "La sauvegarde de l'emplacement %d vient d'une version plus ancienne de P
 #: scripts/state/game_state.gd
 msgid "Slot %d's save can't be read. It's kept as it is, in Saves."
 msgstr "La sauvegarde de l'emplacement %d est illisible. Elle est gardée telle quelle, dans Sauvegardes."
+
+#: scripts/state/game_state.gd
+msgid "The game couldn't save. It will keep trying."
+msgstr "Le jeu n'a pas pu sauvegarder. Il réessaiera."
 
 #: scripts/state/game_state.gd
 msgid "Wanderer"

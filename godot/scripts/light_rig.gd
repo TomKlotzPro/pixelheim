@@ -1,3 +1,4 @@
+class_name LightRig
 extends Node
 ## areas: field night
 ## The world's light, frame by frame (PIX-221): the darkness for the place
@@ -15,7 +16,7 @@ extends Node
 ## HDR and a wider glow at night, where the desktop renderer runs; the
 ## browser's look everywhere else.
 
-var world: Node
+var world: World
 var darkness: CanvasModulate
 var lantern: PointLight2D
 ## The glow (PIX-222): a screen pass between the world and the HUD.
@@ -173,7 +174,7 @@ func _screen_pass(layer: CanvasLayer, shader: Shader) -> ColorRect:
 ## lives in Pixelheim he keeps it trimmed (PIX-255: his perk, the settlers'
 ## `lantern` share), and it reaches that much further, from the moment he
 ## comes home.
-func give_lantern(player: Node2D) -> void:
+func give_lantern(player: Player) -> void:
 	lantern = Lights.make(LANTERN_AT, lantern_reach(GameState.holdings.settler_share("lantern")), Lights.LANTERN, Lights.LANTERN_ENERGY, true)
 	# The hero never blocks their own lantern (PIX-490).
 	lantern.shadow_item_cull_mask = NightShadows.LANTERN
@@ -226,13 +227,13 @@ func _process(delta: float) -> void:
 	# rain, fog or snow the sky is all cloud.
 	var rain := 0.0
 	var overcast := 0.0
-	if world.get("atmosphere") != null:
+	if world.atmosphere != null:
 		rain = world.atmosphere.rain
 		overcast = maxf(rain, maxf(world.atmosphere.weights.get("mire", 0.0), world.atmosphere.weights.get("frost", 0.0)))
 	light = light.lerp(light * Weather.RAIN_LIGHT, rain)
 	# A thunderstorm's clouds are darker still (PIX-491), and its wind blows
 	# harder: the trees lean further, the grass ripples more.
-	gale = world.storm.storm if world.get("storm") != null and Lights.under_sky(world.map) else 0.0
+	gale = world.storm.storm if world.storm != null and Lights.under_sky(world.map) else 0.0
 	light = light.lerp(light * Weather.STORM_LIGHT, gale)
 	darkness.color = light
 	dark = Lights.darkness(light)
@@ -288,7 +289,7 @@ func _process(delta: float) -> void:
 ## the map has occluders (not in a room), in the dark, and with the
 ## Shadows setting on.
 func _cast_shadows(flames: Array[PointLight2D], delta: float) -> void:
-	var on: bool = GameState.settings.shadows and is_instance_valid(lantern) and world.get("view") != null \
+	var on: bool = GameState.settings.shadows and is_instance_valid(lantern) and world.view != null \
 		and not NightShadowsLayer.laid(world.view).is_empty()
 	var cap := NightShadows.LAMPS if on else 0
 	candidates = flames.size()
@@ -356,8 +357,8 @@ func world_view() -> Array[Vector2]:
 func _mirror_water(view: Array[Vector2]) -> void:
 	var map: MapData = world.map
 	var mirror := reflections.material as ShaderMaterial
-	var laid: Dictionary = world.neighbours.mirror if world.get("neighbours") != null else {}
-	var version: int = world.neighbours.mirror_version if world.get("neighbours") != null else 0
+	var laid: Dictionary = world.neighbours.mirror if world.neighbours != null else {}
+	var version: int = world.neighbours.mirror_version if world.neighbours != null else 0
 	if map != _water_of or version != _mirror_version:
 		_water_of = map
 		_mirror_version = version

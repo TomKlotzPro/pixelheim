@@ -6,7 +6,6 @@ extends GutTest
 
 const FIXTURE := "res://test/fixtures/slots/slot_3.save"
 const OLDER := "res://test/fixtures/slots_older/slot_1.json"
-const SavesScreen := preload("res://scripts/saves_screen.gd")
 
 
 func _code() -> String:

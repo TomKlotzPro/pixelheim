@@ -1,3 +1,4 @@
+class_name TitleScreen
 extends Screen
 ## areas: title
 ## The title (PIX-139): Pixelheim's street at night under the Ashen Mountain
@@ -38,7 +39,7 @@ const Options := preload("res://scripts/options_screen.gd")
 ## saves) rise out of the night's colour.
 static var _risen := false
 
-var world: Node
+var world: World
 var scene: TitleScene
 var options: Array[Dictionary] = []
 var selected := 0
@@ -297,7 +298,7 @@ func _card() -> void:
 	menu = Control.new()
 	menu.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(menu)
-	version = load("res://scripts/changelog_screen.gd").releases()[0]["version"]
+	version = ChangelogScreen.releases()[0]["version"]
 	if not GameState.standing_in:
 		options.append({"label": Text.t("Continue  %s, Lv %d") % [GameState.hero.hero_name, GameState.hero.level], "action": _continue})
 	options.append({"label": "New Game", "action": _new_game})
@@ -332,7 +333,8 @@ func _card() -> void:
 	footer.mouse_entered.connect(func() -> void: footer.add_theme_color_override("font_color", UiStyle.GOLD))
 	footer.mouse_exited.connect(func() -> void: footer.add_theme_color_override("font_color", UiStyle.DUSK))
 	footer.gui_input.connect(func(event: InputEvent) -> void:
-		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var click := event as InputEventMouseButton
+		if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 			_whats_new()
 	)
 	add_child(_shadowed(footer))

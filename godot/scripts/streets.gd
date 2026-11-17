@@ -203,7 +203,7 @@ static func mask(paved: Dictionary, cell: Vector2i) -> int:
 static func _place(bits: int) -> Vector2i:
 	if _pieces.is_empty():
 		for row in BLOCK.size():
-			for column in BLOCK[row].size():
+			for column: int in BLOCK[row].size():
 				if BLOCK[row][column] >= 0:
 					_pieces[BLOCK[row][column]] = Vector2i(column, row)
 	return _pieces[bits]
@@ -214,7 +214,7 @@ static func pieces() -> Array[int]:
 	var out: Array[int] = []
 	for look: Dictionary in LOOKS.values():
 		for row in BLOCK.size():
-			for column in BLOCK[row].size():
+			for column: int in BLOCK[row].size():
 				if BLOCK[row][column] >= 0:
 					var at: Vector2i = look["edges"] + Vector2i(column, row)
 					out.append(at.y * COLUMNS + at.x)

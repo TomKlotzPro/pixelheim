@@ -1,3 +1,4 @@
+class_name Atmosphere
 extends Node
 ## areas: field
 ## Each region's air and the weather, frame by frame (PIX-224): the air the
@@ -11,7 +12,7 @@ extends Node
 ## dust, and the bursts the world asks for (dust and splashes underfoot,
 ## sparks off armour). With reduced motion nothing falls, rises or blows.
 
-var world: Node
+var world: World
 ## How much of each air (Weather.KINDS), 0..1, and of the rain.
 var weights := {}
 var rain := 0.0
@@ -108,7 +109,7 @@ var _room := Rect2()
 
 ## The air's pass: on while any air, rain or mood shows.
 func _shade() -> void:
-	var lights: Node = world.lights
+	var lights: LightRig = world.lights
 	var mood := Weather.mood(weights, lights.dark)
 	var air_pass: ColorRect = lights.air
 	var calm := rain < 0.001 and weights.values().all(func(w: float) -> bool: return w < 0.001) and absf(float(mood[1]) - 1.0) < 0.005

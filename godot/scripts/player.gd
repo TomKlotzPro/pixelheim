@@ -1,3 +1,4 @@
+class_name Player
 extends CharacterBody2D
 ## areas: combat town title
 ## The action hero, drawn from Shade's Puny sheet for the hero's role
@@ -42,7 +43,7 @@ const SKILL_KEPT_SECONDS := 0.5
 ## paid icon over the head is a few pixels, and the CC0 build has none).
 const AILING_TINTS := {"poison": Color(0.66, 1.0, 0.55), "burn": Color(1.0, 0.7, 0.5)}
 
-var world: Node2D
+var world: World
 ## Mirrors GameState.hero.hp, the web hero's real health (PIX-126).
 var hp := 0
 var facing := Vector2.DOWN

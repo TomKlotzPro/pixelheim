@@ -7,10 +7,10 @@ extends Node
 ## the town's reveals after the board, an escort's wagon and the clock of a
 ## quest against time. The screens and scenes it plays stand on the world.
 
-var world: Node
+var world: World
 ## An escort under way on this map (PIX-192): its wagon waits at the start
 ## of the route, or comes back there a few breaths after it was lost.
-var escort: Node2D
+var escort: Escort
 var escort_lost_at := -100.0
 ## A quest against the clock (PIX-192): its time ticks while the world runs,
 ## shown top right, red in its last half minute; a lapse closes the chest the
@@ -353,6 +353,10 @@ func festival() -> void:
 ## Back from the board with something built: the town redraws around the
 ## hero, then shows it.
 func after_board() -> void:
+	# The game quit with the board open (PIX-504): the ledger leaves a tree
+	# the world has left already, and there is no town to draw.
+	if not world.is_inside_tree():
+		return
 	if GameState.reveals.is_empty() or world.map.id != "town" or not await world.hushed_build():
 		return
 	world.map = world.load_map("town")

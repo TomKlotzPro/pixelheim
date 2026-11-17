@@ -4,7 +4,6 @@ extends GutTest
 ## screen, hunting, hurt or a boss never rests; and one resting wakes while
 ## the walking hero's screen is still more than half a second from it.
 
-const Player := preload("res://scripts/player.gd")
 ## The screen at play zoom: 1280x720 over three.
 const VIEW := Rect2(0, 0, 1280.0 / 3.0, 240)
 

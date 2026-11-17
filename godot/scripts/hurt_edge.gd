@@ -1,3 +1,4 @@
+class_name HurtEdge
 extends TextureRect
 ## areas: combat screen
 ## The faint red at the screen's edges when the hero is hurt (PIX-447): a
@@ -23,7 +24,7 @@ const BREATH := Vector2(0.06, 0.18)
 ## The breath comes and goes over this, at a fight's start and end, not at once.
 const BREATH_IN_S := 0.4
 
-var world: Node
+var world: World
 ## What's left of the last hit's flash.
 var flash := 0.0
 ## How far low health's breath is in, 0 to 1.

@@ -15,6 +15,10 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 ## their own (GameStateScript.new()), and a module reaching the autoload
 ## would change the real game's state from inside one. Signals are its too.
 var owner: GameStateScript
+## Whether the talk that last closed was heard to its end (PIX-504), for
+## whoever listens to `dialogue_closed`: a story left on its first line
+## isn't told. Not saved.
+var heard_out := true
 
 
 ## What each accepted delivery had at the last look (PIX-206), so a pickup
@@ -79,6 +83,7 @@ func board_floors() -> Array:
 ## before its end (`heard` false: Esc, a step away) takes no new quest
 ## (PIX-486): the giver's ask is its last line, and still waits.
 func finish_dialogue(npc_id: String, heard := true) -> void:
+	heard_out = heard
 	# On the night of the fire, talking is the night's next step (PIX-152).
 	if owner.progression.prologue != Prologue.DONE:
 		_prologue_talk(npc_id)

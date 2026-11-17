@@ -1,3 +1,4 @@
+class_name LedgerScreen
 extends Screen
 ## areas: town
 ## Shared frame for the town's ledgers (town hall, bank): a title, a column of
@@ -189,8 +190,8 @@ func _refresh() -> void:
 	if not rows.is_empty():
 		var top := 0
 		for index in selected:
-			top += int(list.get_child(index).get_combined_minimum_size().y) + list.get_theme_constant("separation")
-		var tall := int(list.get_child(selected).get_combined_minimum_size().y)
+			top += int((list.get_child(index) as Control).get_combined_minimum_size().y) + list.get_theme_constant("separation")
+		var tall := int((list.get_child(selected) as Control).get_combined_minimum_size().y)
 		scroll.scroll_vertical = clampi(scroll.scroll_vertical, top + tall - int(LIST.size.y), top)
 	_set_keys()
 
@@ -203,8 +204,9 @@ func _row(index: int) -> Control:
 		UiStyle.CARD if chosen else Color(UiStyle.CARD, 0.5), UiStyle.LAMP if chosen else UiStyle.RIM, 10
 	))
 	panel.gui_input.connect(func(event: InputEvent) -> void:
-		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			if event.double_click and index == selected:
+		var click := event as InputEventMouseButton
+		if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
+			if click.double_click and index == selected:
 				_act()
 			else:
 				_select(index)

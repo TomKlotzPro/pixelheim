@@ -146,7 +146,7 @@ static func _regional(laid: Dictionary, spec: Dictionary) -> void:
 	var arrivals: Array[Vector2i] = [laid["stairs"], map.spawn]
 	if down != NOWHERE:
 		arrivals.append_array([down, down + Vector2i.LEFT])
-	for i in laid["foes"].size():
+	for i: int in laid["foes"].size():
 		var foe: Dictionary = laid["foes"][i]
 		var home := _open_near(map, foe["cell"], rooms[i + 1], keep_off, arrivals, int(spec.get("clear", 0)))
 		foe["cell"] = home

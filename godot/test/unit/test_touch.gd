@@ -4,8 +4,6 @@ extends GutTest
 ## desktop's 1280x720), and the thumbstick presses the move actions as hard
 ## as it is pushed, and lets go.
 
-const TouchControls := preload("res://scripts/touch_controls.gd")
-
 
 func after_each() -> void:
 	for action: String in ["move_left", "move_right", "move_up", "move_down"]:

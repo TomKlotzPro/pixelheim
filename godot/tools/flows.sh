@@ -164,6 +164,10 @@ runs="$PWD/flows/$([[ $boot == 1 ]] && echo boot || echo runs)"
 now() { perl -MTime::HiRes=time -e 'printf "%.2f", time'; }
 since() { perl -MTime::HiRes=time -e 'printf "%.1f", time - $ARGV[0]' "$1"; }
 
+# What the engine says at its quit of a run that left something behind
+# (PIX-504): a node never put in the tree nor freed, a sound still held.
+leaked='ObjectDB instances? (was |were )?leaked|resources? still in use at exit|RIDs? of type .* (was|were) leaked|RID allocations? of type .* (was|were) leaked'
+
 # One Godot run of a flow (or a batch), in job slot $3, its output in its
 # folder's output.txt. A watchdog, after $4 seconds (the watchdog's): a run
 # that never quits fails instead of stalling the rest.
@@ -221,7 +225,7 @@ run_flow() {
 # BATCH line to the next) and judges it as if it had run alone, its time
 # the batch's shared out.
 run_batch() {
-	local slot=$1 dir i name args rest start ran took file
+	local slot=$1 dir i name args rest start ran took file alone=0 rans=()
 	shift
 	dir="$runs/batch-${FLOWS[$1]%%|*}"
 	mkdir -p "$dir"
@@ -240,6 +244,25 @@ run_batch() {
 			/^BATCH [a-z0-9_-]+$/ { close(to); to = runs "/" $2 "/" file; next }
 			{ print > to }' "$dir/$file"
 	done
+	# What a Godot leaves behind it says once, at its quit: in a batch that
+	# is in its last flow's share, whichever flow left it. So each flow of a
+	# batch that leaked runs again alone, and the one that leaks is the one
+	# that fails; when none does alone, the batch's last flow, saying so.
+	if grep -qE "$leaked" "$dir/output.txt"; then
+		for i in "$@"; do
+			IFS="|" read -r name args rest <<<"${FLOWS[i]}"
+			run_godot "$runs/$name" "$args" "$slot"
+			rans[i]=$?
+			grep -qE "$leaked" "$runs/$name/output.txt" && alone=1
+		done
+		if [[ $alone == 0 ]]; then
+			grep -E "$leaked" "$dir/output.txt" | sed "s|\$| (its batch, ${dir#"$PWD"/}: none of its flows does alone)|" >>"$runs/$name/output.txt"
+		fi
+		for i in "$@"; do
+			judge "$i" "${rans[i]}" "$took"
+		done
+		return
+	fi
 	for i in "$@"; do
 		judge "$i" "$ran" "$took"
 	done
@@ -266,8 +289,10 @@ judge() {
 	# line stayed clean. So does a shader that doesn't compile: the run goes
 	# on without it. So does a crash, at the quit too: a GDScript Translation
 	# left in the TranslationServer crashed every run after its report, and
-	# each crash put up a macOS crash dialog.
-	errors=$(grep -m1 -E "Program crashed|SCRIPT ERROR|Parse Error|SHADER ERROR" <<<"$output")
+	# each crash put up a macOS crash dialog. So does a run that left
+	# something behind at its quit: two sprites made and never drawn passed
+	# every flow for weeks.
+	errors=$(grep -m1 -E "Program crashed|SCRIPT ERROR|Parse Error|SHADER ERROR|$leaked" <<<"$output")
 	if [[ -n $errors ]]; then
 		status=FAIL
 		line=$errors

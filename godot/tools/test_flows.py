@@ -19,7 +19,7 @@ FLOWS_SH = os.path.join(TOOLS, "flows.sh")
 ## The tickets flows.sh may name: the runner's own (the release flows, the
 ## French run, side by side, the job summary, the tags, this, the stepped
 ## runs). A flow's ticket goes beside it in flows.txt.
-RUNNER_TICKETS = {"PIX-129", "PIX-196", "PIX-270", "PIX-271", "PIX-272", "PIX-273", "PIX-276", "PIX-360", "PIX-445"}
+RUNNER_TICKETS = {"PIX-129", "PIX-196", "PIX-270", "PIX-271", "PIX-272", "PIX-273", "PIX-276", "PIX-360", "PIX-445", "PIX-504"}
 
 REPORT = ("screenshot saved; map=town cell=(79, 4) hp=120 gold=90 save=town(79, 4) draws=212 paused=false"
           " open=none night=0 mobs=3 card=The Mirefen floats=+60 gold logged=0 packs=slime,goblin:asleep")
@@ -163,6 +163,20 @@ class RunnerTest(unittest.TestCase):
         named = set(re.findall(r"PIX-\d+", self.source)) - RUNNER_TICKETS
         self.assertEqual(named, set(), "flows.sh describes the runner: a flow's words and its ticket go beside it "
                          "in flows.txt (a change to the runner itself adds its ticket to RUNNER_TICKETS)")
+
+    def test_a_run_that_left_something_behind_at_its_quit_fails(self):
+        # PIX-504: the engine's own words, one thing left or several.
+        leaked = re.search(r"^leaked='(.+)'$", self.source, re.M).group(1)
+        self.assertIn('|$leaked" <<<"$output")', self.source, "judge fails a flow on them")
+        for line in ('WARNING: 1 RID of type "CanvasItem" was leaked.', 'WARNING: 13 RIDs of type "CanvasItem" were leaked.',
+                     "WARNING: 1 ObjectDB instance was leaked at exit (run with --verbose for details).",
+                     "WARNING: 12 ObjectDB instances were leaked at exit (run with --verbose for details).",
+                     "WARNING: ObjectDB instances leaked at exit (run with --verbose for details).",
+                     "ERROR: 6 resources still in use at exit (run with --verbose for details).",
+                     "ERROR: 1 resource still in use at exit.",
+                     "ERROR: 3 RID allocations of type 'ShapedTextDataAdvanced' were leaked at exit."):
+            self.assertRegex(line, leaked)
+        self.assertNotRegex("screenshot saved; map=town logged=0", leaked)
 
     def test_a_merge_keeps_both_sides_flows(self):
         # Two branches adding flows at the same place keep both on a rebase;

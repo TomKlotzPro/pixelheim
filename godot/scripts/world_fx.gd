@@ -7,7 +7,7 @@ extends Node2D
 ## where it was won (PIX-245), dust kicked up, a monster fading into view. A
 ## Node2D at the world's origin, so what it adds stands where it always did.
 
-var world: Node2D
+var world: World
 ## The skills' and weapons' strips (PIX-396).
 var skills: SkillFx
 ## A kill's coins, sparks and drops on their way to the hero (PIX-492).
@@ -189,7 +189,7 @@ func shown() -> Array[Rect2]:
 		for line: Node in (win["box"] as Node).get_children():
 			for part: String in ["text", "then"]:
 				if line.has_node(part) and not line.is_queued_for_deletion():
-					rects.append(_drawn(line.get_node(part)))
+					rects.append(_drawn(line.get_node(part) as Label))
 		if not rects.is_empty():
 			out.append(rects.reduce(func(whole: Rect2, rect: Rect2) -> Rect2: return whole.merge(rect), rects[0]))
 	for stand: Node in get_children():
@@ -231,7 +231,7 @@ func _lift_win(win: Dictionary, reserved: Array[Rect2], over: Array[Rect2]) -> A
 	for line: Node in lines:
 		for part: String in ["text", "then"]:
 			if line.has_node(part):
-				rects.append(_drawn(line.get_node(part)))
+				rects.append(_drawn(line.get_node(part) as Label))
 	if rects.is_empty():
 		return rects
 	var lifted: float = win.get("lift", 0.0)

@@ -5,7 +5,6 @@ extends GutTest
 ## they were.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const ShopScreen := preload("res://scripts/shop_screen.gd")
 
 var state: Node
 

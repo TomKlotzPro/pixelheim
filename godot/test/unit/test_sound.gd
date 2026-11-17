@@ -174,12 +174,12 @@ func test_places_and_fights_choose_the_webs_themes() -> void:
 
 
 ## What the soundscape reads of a world, with nothing of the world built.
-class NightWorld extends Node:
-	var map := MapData.load_by_id("town")
-	var player_cell := Vector2i(30, 30)
-	var atmosphere: Node = null
-	var foes := {"hunted_at": -100.0, "hunted_by_boss": false}
-	var view := {"camps": {}}
+class NightWorld extends "res://test/bare_world.gd":
+	func _init() -> void:
+		map = MapData.load_by_id("town")
+		player_cell = Vector2i(30, 30)
+		foes = Foes.new()
+		view = MapView.new(map, self)
 
 
 ## PIX-498: while the Night of Ash runs the village burns to a track of its
@@ -205,10 +205,10 @@ func test_the_night_of_ash_plays_its_own_track_until_the_dawn() -> void:
 		assert_eq(Sound._heard, "ashnight", "a track of its own with the bundle and without")
 		assert_true(Sound._music.playing)
 		assert_has(ears._soundscape(), "fire", "the fire is still heard")
-		world.foes["hunted_at"] = GameClock.seconds()
+		world.foes.hunted_at = GameClock.seconds()
 		ears.refresh()
 		assert_eq(Sound.track, "ashnight", "a hound on the hunt doesn't take it")
-		world.foes["hunted_at"] = -100.0
+		world.foes.hunted_at = -100.0
 		# The dawn's theme (dawn_screen.gd), then the day.
 		Sound.play_theme("dawn")
 		assert_eq(Sound.track, "theme:dawn")
@@ -687,7 +687,7 @@ func test_the_web_hushes_the_music_around_a_build() -> void:
 
 
 ## world.gd with nothing of the world built: what a build's hush asks of it.
-class BareWorld extends "res://scripts/world.gd":
+class BareWorld extends World:
 	func _ready() -> void:
 		hud = Hud.new()
 		hud.root = CanvasLayer.new()
@@ -705,7 +705,7 @@ class BareWorld extends "res://scripts/world.gd":
 ## dissolve's picture doesn't show them standing in it, and is back after.
 func test_the_hero_is_gone_into_the_door_before_the_place_changes() -> void:
 	var world: BareWorld = add_child_autofree(BareWorld.new())
-	world.player = add_child_autofree(CharacterBody2D.new())
+	world.player = add_child_autofree(preload("res://test/bare_hero.gd").new())
 	var was: bool = Sound.hushes_builds
 	for web: bool in [false, true]:
 		Sound.hushes_builds = web
@@ -790,14 +790,17 @@ func test_a_story_build_waits_out_a_change_of_place() -> void:
 ## Night of Bells ask it (Stage.after_board, Stage.after_post, Night._day):
 ## its map, the hero's cell, the hushes asked (`must` or not), given or
 ## dropped (a story's never is: World.hushed_build), and each place drawn.
-class BoardWorld extends Node:
-	var map := MapData.new()
-	var player_cell := Vector2i(43, 27)
+class BoardWorld extends "res://test/bare_world.gd":
 	var hush_given := true
 	var asked: Array[bool] = []
 	var drawn: Array = []
-	var camera_rig := Rig.new()
-	var messages := Said.new()
+
+	func _init() -> void:
+		map = MapData.new()
+		player_cell = Vector2i(43, 27)
+		camera_rig = CameraRig.new()
+		camera_rig.follows = false
+		messages = Said.new()
 
 	func hushed_build(must := false) -> bool:
 		asked.append(must)
@@ -812,11 +815,7 @@ class BoardWorld extends Node:
 		drawn.append([next.id, at])
 
 
-class Rig:
-	var follows := false
-
-
-class Said:
+class Said extends Messages:
 	var lines: Array = []
 
 	func log_lines(more: Array, _later := false) -> void:
@@ -834,6 +833,11 @@ func test_the_town_after_the_board_waits_on_the_hush() -> void:
 	stage.world = world
 	var kept: Array[String] = GameState.reveals.duplicate()
 	GameState.reveals.assign(["the_inn"])
+	# PIX-504: the game quit with the board open, its ledger leaving the tree
+	# after the world has.
+	await stage.after_board()
+	assert_eq([world.asked, world.drawn], [[], []], "no town drawn on a world out of the tree")
+	add_child(world)
 	world.hush_given = false
 	await stage.after_board()
 	assert_eq(world.drawn, [], "not drawn while another change of place holds the hush")
@@ -931,3 +935,20 @@ func test_a_track_with_an_intro_loops_from_its_loop_begin() -> void:
 	stream.loop_begin = 0
 	Sound.stop_music()
 
+
+
+## PIX-504: only a harness run let go of its sounds before quitting; a
+## window closed on a sound still playing left its stream "still in use at
+## exit". The close is now the game's to answer, after the same farewell.
+func test_a_closed_window_waits_for_every_sound_to_be_let_go() -> void:
+	assert_false(get_tree().auto_accept_quit, "the close is the game's to answer")
+	var sound: Node = preload("res://scripts/sound.gd").new()
+	add_child_autofree(sound)
+	sound.play("door")
+	var players := sound.find_children("*", "AudioStreamPlayer", false, false)
+	assert_true(players.any(func(player: AudioStreamPlayer) -> bool: return player.playing), "a sound playing at the close")
+	await sound.farewell()
+	get_tree().paused = false
+	assert_true(sound.released, "none played after")
+	for player: AudioStreamPlayer in players:
+		assert_false(player.playing or player.stream != null, "%s let go" % player.bus)

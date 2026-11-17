@@ -952,7 +952,7 @@ static func bunting(cells: int) -> Dictionary:
 			if turn % LANTERN_EVERY == LANTERN_EVERY - 1:
 				# A lantern on its hook: cap, glass, foot.
 				day.set_pixel(x + 2, top, INKS["o"])
-				for dy in [1, 2]:
+				for dy: int in [1, 2]:
 					day.set_pixel(x + 1, top + dy, INKS["o"])
 					day.set_pixel(x + 2, top + dy, INKS["Q"])
 					day.set_pixel(x + 3, top + dy, INKS["o"])

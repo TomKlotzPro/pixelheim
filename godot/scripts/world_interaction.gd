@@ -20,7 +20,7 @@ extends Node
 ## takes a pixel of it at most, so it never touches.
 const PROMPT_CLEAR := 2.0
 
-var world: Node
+var world: World
 ## A bucket of the well's water in hand, on the Night of Ash (PIX-197).
 var prologue_bucket := false
 ## What floats over a faced villager, chest, station or fishing spot: the
@@ -468,13 +468,16 @@ func talk(npc: Dictionary) -> void:
 			npc = npc.duplicate()
 			npc["lines"] = [word] + Array(npc["lines"])
 	# Maren tells each relic's story once its boss is down, once each
-	# (PIX-153, PIX-170).
+	# (PIX-153, PIX-170), and again when the hero left before its end
+	# (PIX-504: Esc or a step on its first line marked it told for good).
 	if npc["id"] == "elder":
 		var told := Story.elder_story(GameState.progression.story_seen, GameState.progression.hunted)
 		if not told.is_empty():
 			npc = npc.duplicate()
 			npc["lines"] = told["lines"]
-			GameState.dialogue_closed.connect(func(_who: String) -> void: GameState.mark_seen(told["id"]), CONNECT_ONE_SHOT)
+			GameState.dialogue_closed.connect(func(_who: String) -> void:
+				if GameState.questing.heard_out:
+					GameState.mark_seen(told["id"]), CONNECT_ONE_SHOT)
 			box.npc = npc
 			world.add_child(box)
 			return
@@ -540,7 +543,7 @@ func talk(npc: Dictionary) -> void:
 ## The shrine's keeper's question (PIX-331): her skills or her training, each
 ## answer saying what comes back and what it costs (free the first time),
 ## or not today.
-func _ask_forgetting(npc: Dictionary, box: Node) -> void:
+func _ask_forgetting(npc: Dictionary, box: DialogueBox) -> void:
 	var hero := GameState.hero
 	var skills := Skills.forgettable(hero).size()
 	var spent := Skills.spent_stats(hero, GameState.household.trophies())

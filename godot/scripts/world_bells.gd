@@ -28,7 +28,7 @@ extends Node
 ## How far a lit lantern's light reaches, in pixels.
 const LANTERN_REACH := 64.0
 
-var world: Node
+var world: World
 ## Tonight, while it runs: the lanterns lit and the roofs doused (their
 ## indices), the embers still standing - GameState's, so a save keeps them
 ## (ProgressionState) - and the bucket in hand.

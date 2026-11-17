@@ -102,14 +102,17 @@ func test_the_menu_lists_skills_only_for_a_pad_and_once_learned() -> void:
 
 ## Just enough of a world for the hurt edge: in a fight or not.
 class Fight:
-	extends Node
-	var foes := FightFoes.new()
+	extends "res://test/bare_world.gd"
+
+	func _init() -> void:
+		foes = FightFoes.new()
 
 
 class FightFoes:
+	extends Foes
 	var on := true
 
-	func in_fight() -> bool:
+	func in_fight(_linger := 0.0) -> bool:
 		return on
 
 
