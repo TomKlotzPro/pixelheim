@@ -226,9 +226,9 @@ func _reentry() -> void:
 	for visit in 2:
 		for id: String in REENTRY_MAPS:
 			var started := Time.get_ticks_usec()
-			world.map = world.load_map(id)
+			var place: MapData = world.load_map(id)
 			var loaded := Time.get_ticks_usec()
-			world.enter_map(world.map, world.map.spawn)
+			world.go(place, place.spawn, Passage.CUT)
 			var done := Time.get_ticks_usec()
 			took[id] = took.get(id, []) + [(loaded - started) / 1000.0, (done - loaded) / 1000.0]
 			# The old map's nodes go at the end of the frame.
@@ -256,8 +256,8 @@ func _rooms() -> void:
 	var walled := 0
 	var stairs: Array[String] = []
 	for id: String in order:
-		world.map = world.load_map(id)
-		world.enter_map(world.map, world.map.spawn)
+		var room: MapData = world.load_map(id)
+		world.go(room, room.spawn, Passage.CUT)
 		# The room before's nodes go at the end of the frame.
 		await h.get_tree().process_frame
 		await h.get_tree().process_frame

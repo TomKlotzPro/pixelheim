@@ -38,8 +38,7 @@ func step_festival() -> void:
 	# A festival day (PIX-159): the town comes back with its stalls, its
 	# barker and confetti, everyone on the square.
 	GameState.holdings.start_festival(maxi(1, GameState.town_tier()))
-	world.map = world.load_map("town")
-	world.enter_map(world.map, world.player_cell)
+	world.go(world.load_map("town"), world.player_cell, Passage.REDRAW)
 	await h.get_tree().create_timer(0.3).timeout
 
 

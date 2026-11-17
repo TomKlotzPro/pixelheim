@@ -157,7 +157,7 @@ func _ready() -> void:
 	add_child(neighbours)
 	_build_hud()
 	interaction.build_prompt()
-	enter_map(map, arrival)
+	go(map, arrival, Passage.CUT)
 	# The title greets a launch (not a slot switch or a reload, and not the harness).
 	if not GameState.title_seen and (not harness or flags.has("title")):
 		open_title()
@@ -331,8 +331,7 @@ func on_player_died() -> void:
 	# Defeat is forgiving: wake at the inn, healed, purse intact.
 	var inn: Dictionary = GameState.upkeep.wake_at_inn()
 	var bed := Vector2i(inn["x"], inn["y"])
-	map = load_map(inn["mapId"])
-	enter_map(map, bed)
+	go(load_map(inn["mapId"]), bed, Passage.CUT)
 	player.respawn(MapView.center(bed))
 	last_player_position = player.position  # a respawn is not a walk
 
@@ -364,26 +363,22 @@ func use_portal(target: Dictionary) -> void:
 		barred_said = "vault" if str(target.get("barred", "")) == Vault.DUNGEON else "mountain"
 		return
 	var next := load_map(target["mapId"])
-	var through := func() -> void:
-		var from_id := map.id
-		var arrival := Vector2i(int(target["x"]), int(target["y"]))
-		map = next
-		# Facing into the new map, away from the way back (PIX-269),
-		# not into the rock or the door they came out of.
-		player.face(Ways.arrival_facing(map, arrival, from_id, player.facing))
-		enter_map(map, arrival)
+	var arrival := Vector2i(int(target["x"]), int(target["y"]))
+	# Facing into the new map, away from the way back (PIX-269), not into
+	# the rock or the door they came out of: turned as the place changes.
+	var turn := func() -> void: player.face(Ways.arrival_facing(next, arrival, map.id, player.facing))
 	# The Vault's door opened the first time (PIX-257): Fafnyr shows the
 	# hoard he hated, then the hero goes in.
 	var first := Vault.first_word(target, GameState.progression)
 	if first != "":
 		_step_back()
-		stage.play_story(first, func() -> void: _through_door(through, Ways.goes_under(map, next)))
+		stage.play_story(first, func() -> void: go(next, arrival, Passage.through(map, next), turn))
 		return
 	# A stair taken, down or up, or a cave's mouth (PIX-414): steps ringing in the stone.
 	var at: Variant = map.portals.find_key(target)
 	if at != null and Ways.kind_of(map, at) in ["stairs", "down", "cave"]:
 		Sound.play("stairs")
-	_through_door(through, Ways.goes_under(map, next))
+	go(next, arrival, Passage.through(map, next), turn)
 
 
 ## One of the hero's screens, from its key or the panel's button.
@@ -428,68 +423,143 @@ func _step_back() -> void:
 	GameState.move_to(map, back, player.facing)
 
 
-func enter_map(next: MapData, arrival: Vector2i) -> void:
-	var changing := view != null
-	if changing:
-		Sound.play("door")
-	# Through a door every map drawn beside the hero's goes at once.
-	neighbours.forget()
-	foes.hunted_at = -100.0
-	soundscape.listen_again()
-	foes.arrived_at = GameClock.seconds()
-	for stale in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("decor"):
-		stale.queue_free()
-	# A boss's bar goes with the place it was fought in (PIX-288: a hero
-	# felled mid-fight wakes at the inn, not under it).
-	if hud.boss_bar != null:
-		hud.boss_bar.let_go()
+## One way to change place (PIX-500): the hero comes to `place` at `arrival`
+## the way `how` says (Passage: DOOR, DARK, CUT, SEAMLESS, REDRAW), and
+## that way decides what arriving does (Passage.DOES) - so a map drawn
+## again round the hero is no door. `place` is a map read as the town has
+## grown (load_map); a hand-over's is the map drawn beside the hero's
+## (Neighbours), a redraw's the hero's own map read again, `arrival` their
+## cell. `turning` runs as the place changes, before it is drawn (a door
+## turns the hero to face into the new map).
+## A door and the dark hush the web's music themselves (PIX-417); a cut and
+## a redraw are built at once, so off a door their caller awaits
+## `hushed_build` first (PIX-420). True once the hero is there, false when
+## a change of place already under way dropped this one: a cut, a redraw
+## and a hand-over never wait, and never drop.
+func go(place: MapData, arrival: Vector2i, how: int, turning := Callable()) -> bool:
+	if how == Passage.SEAMLESS:
+		var beside: Dictionary = neighbours.drawn[place.id]
+		_hand_over(beside, arrival)
+		return true
+	# Only the hero's own map is drawn again: any other is come to. And a
+	# night sets its scene out as the town is come to, its foes with it
+	# (Stage.arrive, Night.arrive), and has no other way to put its fires
+	# and lanterns back: under one, the town drawn again is come to again,
+	# as it always was.
+	if how == Passage.REDRAW and (map == null or place.id != map.id or GameState.progression.prologue != Prologue.DONE or night.running()):
+		how = Passage.CUT
+	var there := [false]
+	var arrive := func() -> void:
+		if turning.is_valid():
+			turning.call()
+		map = place
+		_enter_map(place, arrival, how)
+		there[0] = true
+	match how:
+		Passage.DOOR:
+			await _through_door(arrive)
+		Passage.DARK:
+			await _through_door(arrive, true)
+		_:
+			arrive.call()
+	return there[0]
+
+
+## The hero's map drawn for this visit (MapView) at `arrival`; the cell they
+## arrive on, the map's spawn when that one is built over now.
+func _draw_map(next: MapData, arrival: Vector2i) -> Vector2i:
 	if view != null:
 		view.clear()
 	view = MapView.new(next, actors)
 	arrival = view.plan(arrival)
 	view.build(self)
 	_set_plane()
+	return arrival
+
+
+## `next` built and the hero in it at `arrival`, come the way `how` says:
+## each thing a door does only where that way does it (Passage.does). Only
+## `go` calls it. The first map of a session (no view yet) is come to
+## quietly: no sound, no card, a quiet save, no fade.
+func _enter_map(next: MapData, arrival: Vector2i, how: int) -> void:
+	var changing := view != null
+	var leaving := Passage.does(how, Passage.FOES)
+	if changing and Passage.does(how, Passage.SOUND):
+		Sound.play("door")
+	# Through a door every map drawn beside the hero's goes at once; and
+	# drawn again, the hero's map has to be stitched to them anew.
+	neighbours.forget()
+	soundscape.listen_again()
+	var stale: Array = get_tree().get_nodes_in_group("decor")
+	if leaving:
+		foes.hunted_at = -100.0
+		foes.arrived_at = GameClock.seconds()
+		stale += get_tree().get_nodes_in_group("mobs")
+		# A boss's bar goes with the place it was fought in (PIX-288: a hero
+		# felled mid-fight wakes at the inn, not under it).
+		if hud.boss_bar != null:
+			hud.boss_bar.let_go()
+	for node: Node in stale:
+		# Drawn again, a map keeps who walks it: its foes (not among these),
+		# and the wagon the hero is seeing home (Stage.tend_escort), which
+		# is among the decor only to go with the place.
+		if leaving or node != stage.escort:
+			node.queue_free()
+	var asked := arrival
+	arrival = _draw_map(next, arrival)
 	folk.spawn_for(next)
-	player.position = MapView.center(arrival)
-	camera_rig.cut()
-	player.ailments.clear()
+	# Stood on the arrival and the camera cut there; a map drawn again
+	# leaves the hero where they stand, but for one whose cell was built
+	# over.
+	if Passage.does(how, Passage.PLACED) or arrival != asked:
+		player.position = MapView.center(arrival)
+		camera_rig.cut()
+	if Passage.does(how, Passage.AILMENTS):
+		player.ailments.clear()
 	last_player_position = player.position
 	player_cell = arrival
+	GameState.move_to(next, arrival, player.facing)
 	# Crossing into a map is a moment worth keeping: save at once, and the
 	# quill says so (PIX-302 step 4); the map the game opens on is saved
 	# quietly, nothing having happened yet.
-	GameState.move_to(next, arrival, player.facing)
-	GameState.save_now(GameState.MOMENT if changing else GameState.QUIET)
+	if Passage.does(how, Passage.SAVE):
+		GameState.save_now(GameState.MOMENT if changing else GameState.QUIET)
 	# The place's name once the hero is there, not on a post by the way out
-	# (PIX-269); the map the game opens on is only noted.
-	hud.name_place(next, arrival, not changing)
-	stage.arrive(next)
-	# Home after the run, the Night of Bells (PIX-253 step 9).
-	night.arrive(next)
-	# A floor of a region's dungeon says which (PIX-255).
-	delve.arrive(next)
+	# (PIX-269); the map the game opens on is only noted, and so is one
+	# drawn again.
+	hud.name_place(next, arrival, not changing or not Passage.does(how, Passage.NAME))
+	if Passage.does(how, Passage.ARRIVAL):
+		stage.arrive(next)
+		# Home after the run, the Night of Bells (PIX-253 step 9).
+		night.arrive(next)
+		# A floor of a region's dungeon says which (PIX-255).
+		delve.arrive(next)
 	# A festival day: confetti over the square (PIX-159).
 	if next.id == "town" and GameState.holdings.festival_on():
 		stage.festival()
-	stage.play_reveals.call_deferred()
-	# A hub grown since the hero was last there has its tour (PIX-324).
-	stage.play_hub_tour.call_deferred()
+	if Passage.does(how, Passage.NEWS):
+		stage.play_reveals.call_deferred()
+		# A hub grown since the hero was last there has its tour (PIX-324).
+		stage.play_hub_tour.call_deferred()
 	folk.keep_hours(true)
 	# Under the sky the camera may look past the south edge, under the dock.
-	camera_rig.set_limits(Vector2(next.size * TILE), next.style != "cave" and PunyTerrain.is_outdoor(next.grid))
-	foes.spawn_for(next)
+	# Held to the map at once, or eased back to it where nothing cuts (the
+	# maps beside a map drawn again come back in a moment).
+	camera_rig.set_bounds(Rect2(Vector2.ZERO, Vector2(next.size * TILE)), next.style != "cave" and PunyTerrain.is_outdoor(next.grid), Passage.does(how, Passage.PLACED))
+	if leaving:
+		foes.spawn_for(next)
 	# The dodge taught on the way out to where packs roam, after the first
 	# night, so no boss is the first to charge (PIX-341: L'Appelle-Marée
 	# was); it waits for the place's card, the packs out (PIX-462: a hint
 	# shows while what it is about is there).
-	if changing and GameState.progression.prologue == Prologue.DONE and not Bestiary.spawns_on(next.id).is_empty():
+	if changing and Passage.does(how, Passage.ARRIVAL) and GameState.progression.prologue == Prologue.DONE and not Bestiary.spawns_on(next.id).is_empty():
 		hud.hint("dodge")
 	respawn_check = 0.0
 	soundscape.refresh()
 	# Through a door that dissolves, the old picture is already fading out
 	# over this one; otherwise (a dungeon's floors, waking at the inn, the
-	# story's moments) the new map comes in from the dark.
-	if changing and not _dissolving:
+	# story's moments, a map drawn again) the new map comes in from the dark.
+	if changing and Passage.does(how, Passage.FADE):
 		_fade_in()
 
 
@@ -506,7 +576,8 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 ## music cross-fades and its air eases in, the fog of war clears round the
 ## hero, the save follows them (once for crossing back and forth), and its
 ## name comes up as it would on arriving, with its three minutes' rest.
-func hand_over(beside: Dictionary, arrival: Vector2i) -> void:
+## Only `go` calls it (Passage.SEAMLESS).
+func _hand_over(beside: Dictionary, arrival: Vector2i) -> void:
 	var by := -Vector2(beside["offset"] * TILE)
 	var left := map
 	var left_view := view
@@ -633,8 +704,6 @@ func plane_px() -> Vector2:
 ## motion, and in harness runs unless they ask (`fades`).
 const DOOR_FADE := 0.15
 var _passing := false
-## While a dissolve's new map is built under its picture.
-var _dissolving := false
 ## How the last change of scene looked: "dissolve", "dark", or "cut" (with
 ## reduced motion); the harness reports it (`fades`).
 var scene_change := ""
@@ -642,7 +711,7 @@ var scene_change := ""
 
 func _through_door(then: Callable, down := false) -> void:
 	if down or not _fades():
-		_through_dark(then)
+		await _through_dark(then)
 		return
 	if not _passing:
 		_hero_goes_in()
@@ -650,9 +719,7 @@ func _through_door(then: Callable, down := false) -> void:
 		return
 	scene_change = "dissolve"
 	Dissolve.hold(self)
-	_dissolving = true
 	then.call()
-	_dissolving = false
 	if player != null:
 		player.modulate.a = 1.0
 
@@ -671,7 +738,7 @@ func _hero_goes_in() -> void:
 
 ## Through the dark: the screen fades to it, `then` changes the scene, and
 ## whatever comes next fades in from it. Once at a time; at once (a cut)
-## with no fades.
+## with no fades. It returns once `then` has run, or at once when dropped.
 func _through_dark(then: Callable) -> void:
 	if not _fades():
 		if not await _hushed():
@@ -694,6 +761,7 @@ func _through_dark(then: Callable) -> void:
 		dark.queue_free()
 		_passing = false
 	)
+	await fade.finished
 
 
 ## On the web the music hushed before a map is built under a dissolve or a
@@ -801,18 +869,12 @@ func travel_to(waypoint: Dictionary) -> void:
 	Sound.play("travel")
 	var arrival := Vector2i(int(waypoint["arrival"]["x"]), int(waypoint["arrival"]["y"]))
 	var next := map if waypoint["mapId"] == map.id else load_map(waypoint["mapId"])
-	_through_door(func() -> void:
-		map = next
-		enter_map(map, arrival)
-	, Ways.goes_under(map, next))
+	go(next, arrival, Passage.through(map, next))
 
 ## Into the bought house, at its door (E on the door, or walking into it).
 func enter_house() -> void:
-	_through_door(func() -> void:
-		map = load_map("town_house")
-		enter_map(map, Vector2i(8, 8))
+	if await go(load_map("town_house"), Vector2i(8, 8), Passage.DOOR):
 		hud.hint("house")
-	)
 
 
 ## The objective line hides while the world is paused (menus,

@@ -128,8 +128,9 @@ class Square extends "res://test/bare_world.gd":
 	func load_map(_id: String) -> MapData:
 		return MapData.new()
 
-	func enter_map(_map: MapData, _at: Vector2i) -> void:
+	func go(_place: MapData, _at: Vector2i, _how: int, _turning := Callable()) -> bool:
 		entered += 1
+		return true
 
 
 class Quiet extends Soundscape:
