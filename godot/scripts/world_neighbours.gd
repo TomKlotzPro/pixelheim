@@ -12,7 +12,7 @@ extends Node
 ## past its edges taken off the other, the region's tone and the water's
 ## foam laid across, and the camera may look over it (CameraRig.set_bounds)
 ## with the ridge (Seam.ridge_texture) drawn where no map lies. Walking on
-## past the line, the world hands the hero over to it (world.hand_over):
+## past the line, the world hands the hero over to it (world.go, SEAMLESS):
 ## it becomes the map the hero stands on and the one left is drawn beside
 ## it. Far from it again, it's let go, a few hundred nodes a frame.
 ## Early in a session each map of the Reach is worked out ahead (its kept
@@ -484,13 +484,13 @@ func _physics_process(_delta: float) -> void:
 	if boss != null:
 		world.bar_the_way(boss)
 		return
-	world.hand_over(beside, there["cell"])
+	world.go(beside["data"], there["cell"], Passage.SEAMLESS)
 
 
 ## The bookkeeping of a hand-over to `beside`: it's the hero's map now (no
 ## longer in `drawn`), and the map left (`left`, `left_view`) is drawn
 ## beside it; every other map drawn beside them now lies `offset` cells
-## nearer. The drawings themselves have already moved (world.hand_over).
+## nearer. The drawings themselves have already moved (world._hand_over).
 func handed_over(beside: Dictionary, left: MapData, left_view: MapView) -> void:
 	var offset: Vector2i = beside["offset"]
 	drawn.erase(beside["id"])

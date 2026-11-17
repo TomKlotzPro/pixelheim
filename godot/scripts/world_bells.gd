@@ -78,7 +78,7 @@ func beat() -> int:
 	return GameState.progression.bells
 
 
-## On arriving somewhere (world.enter_map): home with the run home next,
+## On arriving somewhere (world.go): home with the run home next,
 ## the night begins; back on the town map while it runs (waking after a
 ## fall), its beat is set out again.
 func arrive(next: MapData) -> void:
@@ -604,8 +604,7 @@ func _day() -> void:
 	_show_clock(false)
 	world.camera_rig.follows = true
 	await world.hushed_build(true)
-	world.map = world.load_map("town")
-	world.enter_map(world.map, Town.square() + Vector2i(0, 4))
+	world.go(world.load_map("town"), Town.square() + Vector2i(0, 4), Passage.CUT)
 	world.messages.log_lines([said] + ([_built] if _built != "" else []))
 
 
@@ -622,8 +621,7 @@ func hero_fell() -> void:
 	GameState.make_whole()
 	var shelter := Bells.job("shelter", GameState.settlement.settlers, GameState.town_tier())
 	var at := Bells.cell(shelter["at"]) + Vector2i(1, 1) if not shelter.is_empty() else Town.square() + Vector2i(0, 4)
-	world.map = world.load_map("town")
-	world.enter_map(world.map, at)
+	world.go(world.load_map("town"), at, Passage.CUT)
 	world.player.respawn(MapView.center(at))
 	world.last_player_position = world.player.position
 	world.messages.flash(String(Bells.fafnyr_spec()["fallen"]))
