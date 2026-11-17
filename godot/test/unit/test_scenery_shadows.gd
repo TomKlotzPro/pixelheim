@@ -72,16 +72,23 @@ func test_houses_that_touch_cast_one_shadow() -> void:
 	assert_has(houses, Rect2i(6, 0, 1, 1), "the one apart")
 
 
+## Where `view`'s casters stand: the cells their feet are on the bottom of.
+func _feet(view: MapView) -> Dictionary:
+	var feet := {}
+	for caster: Vector4 in view.casters:
+		feet[Vector2i(floori(caster.x / MapView.TILE), floori((caster.y - 1.0) / MapView.TILE))] = true
+	return feet
+
+
 ## PIX-524: what the settlements put up casts as the trees do (PIX-521's
 ## audit: only trees, lamps and houses did), with the pack or without:
-## Saltmere's stall, racks, cart and keg, the town's crates and kegs, each
-## from the bottom of its own cells.
+## Saltmere's stall, racks, cart and keg, the town's crates and kegs, its
+## roofed well, the shrine's knight and the market's crates, each from the
+## bottom of its own cells.
 func test_the_dressing_casts() -> void:
 	for id: String in ["saltmere", "town"]:
 		var view := _draw(id)
-		var feet := {}
-		for caster: Vector4 in view.casters:
-			feet[Vector2i(floori(caster.x / MapView.TILE), floori((caster.y - 1.0) / MapView.TILE))] = true
+		var feet := _feet(view)
 		var standing: Array = view.hamlet["pieces"].filter(func(piece: Dictionary) -> bool:
 			return piece["kind"] == "stand" and piece.has("art") and piece["art"] != "lamp_post")
 		if id == "saltmere":
@@ -89,6 +96,35 @@ func test_the_dressing_casts() -> void:
 		for piece: Dictionary in standing:
 			var cells: Array = piece["cells"]
 			assert_true(cells.any(func(cell: Vector2i) -> bool: return feet.has(cell)), "%s's %s at %s casts" % [id, piece["art"], piece["cell"]])
-		for cell: Vector2i in view.data.grid:
-			if view.data.tile_at(cell) in ["barrel", "crate"]:
-				assert_true(feet.has(cell), "%s's %s at %s casts" % [id, view.data.tile_at(cell), cell])
+		for prop: Dictionary in view.outdoor_props["props"]:
+			if prop["kind"] in ["barrel", "crate", "well", "shrine", "stall"]:
+				var covers: Array = prop["covers"]
+				assert_true(covers.any(func(cell: Vector2i) -> bool: return feet.has(cell)), "%s's %s at %s casts" % [id, prop["kind"], prop["cell"]])
+
+
+## PIX-524: the Post's road casts too, its signposts and a waystation built
+## (its hut, bench, post box and ember lamp), as flow waystation-bench sets
+## it up; and the Mirefen's stilt huts.
+func test_the_roads_and_the_fen_cast() -> void:
+	var post := GameState.post
+	var projects := GameState.settlement.projects.duplicate()
+	var prologue := GameState.progression.prologue
+	GameState.progression.prologue = Prologue.DONE
+	GameState.post = PostState.new()
+	Routes.tally(GameState.post, "saltmere", "bram", 6)
+	Routes.raise_signs(GameState.post)
+	GameState.settlement.projects.assign(Town.done_projects(GameState.settlement) + ["waystation_saltmere"])
+	var reach := _draw(Routes.MAP)
+	GameState.post = post
+	GameState.settlement.projects.assign(projects)
+	GameState.progression.prologue = prologue
+	var feet := _feet(reach)
+	var kinds: Array = reach.routes["pieces"].map(func(piece: Dictionary) -> String: return piece["kind"])
+	for kind: String in ["signpost", "hut", "bench", "box", "lamp"]:
+		assert_has(kinds, kind, "the road has its %s" % kind)
+	for piece: Dictionary in reach.routes["pieces"]:
+		var cells: Array = piece["cells"]
+		assert_true(cells.any(func(cell: Vector2i) -> bool: return feet.has(cell)), "the road's %s at %s casts" % [piece["kind"], piece["cell"]])
+	var fen := _feet(_draw("mirefen"))
+	for hut: Vector2i in MireDressing.HUTS:
+		assert_true(fen.has(hut) or fen.has(hut + Vector2i.RIGHT), "the Mirefen's stilt hut at %s casts" % hut)

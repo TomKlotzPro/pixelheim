@@ -104,6 +104,8 @@ const DOUBLE := [
 ## A lamp on a bracket for a house's corner (PIX-524): its plate on the
 ## wall, a scrolled iron arm out of it and the street lamp's lantern hung
 ## from the arm's end, to the east (flipped where the wall runs on east).
+## The clear rows under it lift it up its wall, the arm under the eave: on
+## the wall's foot, its lantern stood on the street.
 const BRACKET := [
 	"ooo.............",
 	"olioooooooooo...",
@@ -122,6 +124,10 @@ const BRACKET := [
 	".......okgiigko.",
 	".......oiiiiiio.",
 	"........okkkko..",
+	"................",
+	"................",
+	"................",
+	"................",
 	"................",
 ]
 ## The lantern's glass lit, in three beats of the flame: where it stands in

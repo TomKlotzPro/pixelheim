@@ -67,6 +67,7 @@ static func add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
 			plinth.position = Vector2(0, -sort_y)
 			root.add_child(plinth)
 			lift = RuinArt.PLINTH_RISE
+		var rows := 1
 		for piece: Array in prop["tiles"]:
 			var still := Sprite2D.new()
 			still.texture = PunyDungeon.sheet().tile_texture(piece[1]) if prop["sheet"] == "dungeon" else PunyProps.texture(piece[1])
@@ -75,6 +76,13 @@ static func add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
 			# The well's roof stood over the cells behind it (PIX-429).
 			see_through(still)
 			root.add_child(still)
+			rows = maxi(rows, 1 - (piece[0] as Vector2i).y)
+		# The wells, the knight on his plinth and the market's crates cast
+		# from their foot, as tall as they are drawn (PIX-524: the roofed
+		# well floated beside the lamp and the stall that cast); a fence's
+		# run of posts would lay a dark band, so it casts none.
+		if prop["kind"] in ["well", "shrine", "stall"]:
+			cast(view, root.position + Vector2(foot.get_center().x, 0), foot.size.x, rows * TILE + lift)
 	# A lamp hung on a wall stands on nothing (PIX-524).
 	if foot.has_area() and not (prop["kind"] == "lamp" and on_wall(view, prop["cell"])):
 		var body := StaticBody2D.new()
@@ -162,8 +170,10 @@ static func _add_lamp_post(view: MapView, root: Node2D, cell: Vector2i, sort_y: 
 		if halo == null:
 			halo = one
 		else:
-			# Put out with the first (MapView.lamps_out).
+			# Put out with the first (MapView.lamps_out), at its z, not on
+			# top of the first's (over the smoke and embers).
 			one.reparent(halo)
+			one.z_as_relative = false
 	view.lamps.append({"flame": flame, "unlit": post, "glow": halo})
 	if look == "bracket":
 		return
