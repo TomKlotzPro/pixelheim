@@ -116,7 +116,7 @@ func test_a_new_map_takes_the_bar_down_at_once() -> void:
 	bar._process(0.5)
 	assert_true(bar.showing())
 	bar.let_go()
-	assert_false(bar.showing(), "gone at once (world.enter_map)")
+	assert_false(bar.showing(), "gone at once (world.go)")
 	assert_false(bar.following())
 	bar._process(0.1)
 	assert_eq(bar.modulate.a, 0.0, "and stays gone")

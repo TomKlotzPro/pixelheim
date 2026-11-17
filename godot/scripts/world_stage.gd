@@ -204,10 +204,9 @@ func play_dawn() -> void:
 	dawn.on_done = func() -> void:
 		GameState.questing.finish_prologue()
 		await world.hushed_build(true)
-		world.map = world.load_map("town")
 		# The day begins on the square, below the hall, whether the dawn
-		# was watched or skipped.
-		world.enter_map(world.map, Town.square() + Vector2i(0, 2))
+		# was watched or skipped: the night's foes gone, the day saved.
+		world.go(world.load_map("town"), Town.square() + Vector2i(0, 2), Passage.CUT)
 	world.add_child(dawn)
 
 
@@ -232,10 +231,9 @@ func play_ending(choice := Homecoming.HOME) -> void:
 	var scene_id := Story.ending_scene(choice)
 	GameState.mark_seen(scene_id)
 	GameState.reveals.clear()
-	world.map = world.load_map("town")
 	# Below the fountain, facing the hall.
 	var square := Town.square() + Vector2i(0, 3)
-	world.enter_map(world.map, square)
+	world.go(world.load_map("town"), square, Passage.CUT)
 	var lanterns := choice == Homecoming.STAY
 	if lanterns:
 		_lanterns()
@@ -362,7 +360,7 @@ func festival() -> void:
 
 
 ## Back from the board with something built: the town redraws around the
-## hero, then shows it.
+## hero, then shows it (Passage.REDRAW: no door, whoever walks it stays).
 func after_board() -> void:
 	# The game quit with the board open (PIX-504): the ledger leaves a tree
 	# the world has left already, and there is no town to draw.
@@ -370,8 +368,7 @@ func after_board() -> void:
 		return
 	if GameState.reveals.is_empty() or world.map.id != "town" or not await world.hushed_build():
 		return
-	world.map = world.load_map("town")
-	world.enter_map(world.map, world.player_cell)
+	world.go(world.load_map("town"), world.player_cell, Passage.REDRAW)
 
 
 ## A piece of post handed over at a hub that it made grow (PIX-324): the
@@ -379,8 +376,7 @@ func after_board() -> void:
 func after_post() -> void:
 	if world.map == null or Hubs.news(GameState.post, world.map.id).is_empty() or not await world.hushed_build():
 		return
-	world.map = world.load_map(world.map.id)
-	world.enter_map(world.map, world.player_cell)
+	world.go(world.load_map(world.map.id), world.player_cell, Passage.REDRAW)
 
 
 ## A hub's tour of its own (PIX-324, Hubs): the first time the hero is at a

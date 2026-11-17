@@ -28,8 +28,9 @@ class FakeWorld extends "res://test/bare_world.gd":
 		next.id = id
 		return next
 
-	func enter_map(next: MapData, at: Vector2i) -> void:
-		drawn.append([next.id, at, GameState.holdings.festival_on()])
+	func go(place: MapData, at: Vector2i, how: int, _turning := Callable()) -> bool:
+		drawn.append([place.id, at, GameState.holdings.festival_on(), how])
+		return true
 
 
 func _progression(ended := true) -> ProgressionState:
@@ -166,7 +167,7 @@ func test_begun_with_the_hero_in_town_its_stalls_go_up_round_them() -> void:
 	GameState.progression = kept[0]
 	GameState.settlement = kept[1]
 	GameState.world.steps = kept[2]
-	assert_eq(world.drawn, [["town", Vector2i(43, 27), true]], "drawn again where the hero stands, the festival on, once")
+	assert_eq(world.drawn, [["town", Vector2i(43, 27), true, Passage.REDRAW]], "drawn again where the hero stands, the festival on, once, and no door")
 	assert_eq(world.hushes, 1, "after the music's hush, as a door's (PIX-420)")
 
 

@@ -2153,6 +2153,10 @@ msgid "A New Engine"
 msgstr "Un nouveau moteur"
 
 #: assets/data/changelog.json
+msgid "A Night That Holds"
+msgstr "Une nuit qui tient"
+
+#: assets/data/changelog.json
 msgid "A PROPER BEGINNING: a new hero no longer just appears in town. You are a courier carrying a letter to Elder Maren, and you arrive on the road the night Pixelheim burns"
 msgstr "UN VRAI COMMENCEMENT : un nouveau héros n'apparaît plus simplement en ville. Vous êtes un messager qui porte une lettre à l'Ancienne Maren, et vous arrivez par la route la nuit où Pixelheim brûle"
 
@@ -2467,6 +2471,10 @@ msgstr "Une voie est une identité permanente : un thème passif toujours acti
 #: assets/data/changelog.json
 msgid "A phone starts with large text, which now reaches the shops' and ledgers' descriptions too"
 msgstr "Un téléphone démarre avec le grand texte, qui s'applique désormais aussi aux descriptions des boutiques et des registres"
+
+#: assets/data/changelog.json
+msgid "A press or a click on a typing caption shows it whole and lets you read it, on every caption"
+msgstr "Appuyer ou cliquer sur une légende en train de s'écrire l'affiche en entier et vous laisse la lire, sur toutes les légendes"
 
 #: assets/data/changelog.json
 msgid "A quest accepted names the quest and its whole pay, without its story: the journal keeps that"
@@ -5145,6 +5153,10 @@ msgid "On a phone, first-time tips now name what you can touch on screen instead
 msgstr "Sur téléphone, les astuces de découverte nomment désormais ce que vous pouvez toucher à l'écran plutôt qu'une touche du clavier"
 
 #: assets/data/changelog.json
+msgid "On the Night of Ash only the survivors are about, the shut gates say why, and nobody talks of rebuilding before the dawn decides it"
+msgstr "Pendant la Nuit des cendres, seuls les survivants sont là, les portes fermées disent pourquoi, et personne ne parle de reconstruire avant que l'aube n'en décide"
+
+#: assets/data/changelog.json
 msgid "On the Night of Ash, the well and the burning homes now show E, and answer from any cell beside them"
 msgstr "Pendant la Nuit des Cendres, le puits et les maisons en feu affichent désormais E, et répondent depuis n'importe quelle case voisine"
 
@@ -6829,6 +6841,10 @@ msgid "The Night of Ash has its own dramatic music while the village burns, from
 msgstr "La Nuit des cendres a sa propre musique dramatique pendant que le village brûle, de la route jusqu'à l'aube"
 
 #: assets/data/changelog.json
+msgid "The Night of Ash stays night until its dawn, and the dawn's clock no longer spins through the day"
+msgstr "La Nuit des cendres reste la nuit jusqu'à son aube, et l'horloge de l'aube ne tourne plus à toute vitesse"
+
+#: assets/data/changelog.json
 msgid "The Open World"
 msgstr "Le Monde ouvert"
 
@@ -7027,6 +7043,10 @@ msgstr "Les ateliers se présentent enfin : une enclume pend au-dessus de la p
 #: assets/data/changelog.json
 msgid "The cutscenes' title cards and captions speak French, the doors keep their signs in French once you own a house, and switching language mid-game renames the Deep Hunt and the journal's leads at once"
 msgstr "Les cartons et les légendes des cinématiques parlent français, les portes gardent leurs enseignes en français une fois la maison achetée, et changer de langue en cours de partie renomme aussitôt la Traque des Profondeurs et les pistes du journal"
+
+#: assets/data/changelog.json
+msgid "The dawn's words come once every fire is out and the survivors stand on a calm square"
+msgstr "Les mots de l'aube arrivent une fois tous les feux éteints et les survivants réunis sur une place calme"
 
 #: assets/data/changelog.json
 msgid "The decor got real carpentry too: lamp posts with glowing lanterns, a roofed well, rail fences that connect, market stalls under striped awnings, round barrels, plank crates - and real trees in the deep woods"
@@ -7251,6 +7271,10 @@ msgstr "Au lendemain de la Nuit des Cloches, Morvax attend près de la fontaine 
 #: assets/data/changelog.json
 msgid "The mountain gate opens onto the mountain road, ash and dead pines, ash hounds and wyverns, up to Morvax's forge"
 msgstr "La porte de la montagne s'ouvre sur la route de la montagne, cendres et pins morts, chiens de cendre et wyvernes, jusqu'à la forge de Morvax"
+
+#: assets/data/changelog.json
+msgid "The name warning goes with your first letter, and the night's level-up names its keys"
+msgstr "L'avertissement sur le nom part dès la première lettre, et la montée de niveau de la nuit nomme ses touches"
 
 #: assets/data/changelog.json
 msgid "The night classes stepped into the light: the necromancer's robes and the rogue's leathers brightened so they read on every lawn"
@@ -15045,6 +15069,10 @@ msgid "Not tonight, courier. Every door is shut and the gate barred till dawn: t
 msgstr "Pas ce soir, messager. Toutes les portes sont closes et la porte du village barrée jusqu'à l'aube : la place a besoin de vous."
 
 #: assets/data/progression.json
+msgid "Not tonight. Pixelheim is burning, and the letter is for someone in it."
+msgstr "Pas ce soir. Pixelheim brûle, et la lettre est pour quelqu'un qui s'y trouve."
+
+#: assets/data/progression.json
 msgid "Now that's a coat. Here - a pearl from the jetty. Make something sharp with it."
 msgstr "Ça, c'est un ciré. Tenez - une perle de la jetée. Faites-en quelque chose de tranchant."
 
@@ -15503,6 +15531,10 @@ msgstr "Teo sonne la cloche. Fafnyr tressaille."
 #: assets/data/progression.json
 msgid "Teo's bell is ringing over Pixelheim. Everyone to their places: the dragon goes for the lights."
 msgstr "La cloche de Teo sonne sur Pixelheim. Chacun à son poste : le dragon va droit sur les lumières."
+
+#: assets/data/progression.json
+msgid "That can wait for morning. Tonight, the village comes first."
+msgstr "Cela peut attendre le matin. Ce soir, le village passe avant tout."
 
 #: assets/data/progression.json
 msgid "That green! The whole valley will want it. Take an antidote - the fen leaves a taste."
@@ -19847,6 +19879,10 @@ msgstr "Maîtrise : %s, Tueur %s. +%d %% de dégâts (%s)."
 #: scripts/state/spoils.gd
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
+
+#: scripts/state/spoils.gd
+msgid "Press {key:stats} for your stats and {key:skills} for your skills."
+msgstr "Appuyez sur {key:stats} pour vos stats et sur {key:skills} pour vos compétences."
 
 #: scripts/state/spoils.gd
 msgid "The bounty on %s is yours: +%d gold."

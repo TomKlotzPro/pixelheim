@@ -42,7 +42,7 @@ reentry |  | every outdoor map entered twice, first visit then back again: REENT
 credits |  | with --story: the scene begun at its credits' roll; the report adds credits= (PIX-253 step 10)
 clear |  | fell every foe on the map at once (a floor of the Kings' Vault, its guardian too: PIX-257) | clear | 50
 light |  | with --bells: the five lanterns lit one by one, as E would (PIX-253 step 9) | light | 40
-douse |  | with --bells: every burning roof doused, as the well's water would (PIX-253 step 9) | douse | 60
+douse |  | with --bells: every burning roof doused, as the well's water would (PIX-253 step 9); with --prologue: the first ruin's fire put out and its flames freed, as a bucket does | douse | 60
 daybreak |  | with --bells 3: the dawn clock run out, Fafnyr standing down, then the dawn's scene (PIX-253 step 9); the report adds scene= | daybreak | 70
 rooms |  | every room entered in turn as a door enters it, the run's own room last: ROOM lines with what each is drawn from (paid, free or none) and its walls, floor and stairs down; the report adds rooms= (PIX-318) | rooms | 90
 --fps | <n> | the frames a second the run is stepped at (PIX-276): tools/flows.sh gives Godot --fixed-fps n (60 when not given, a frame a physics tick); with motion, its walk measured over as many frames as 0.75 s takes at that pace

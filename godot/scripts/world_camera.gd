@@ -91,20 +91,12 @@ func attach(player: Player) -> void:
 	cut()
 
 
-## Holds the camera inside a map `size_px` pixels across. Under the sky
-## (`under_dock`, PIX-269) it may look past the south edge as far as the
-## dock covers, so the last rows of the map - a road out to the south, the
-## hero walking down it - stand above the dock rather than behind it; the
-## ground is drawn on past the edge to fill what shows beside the dock
-## (MapView.EDGE_PAD).
-func set_limits(size_px: Vector2, under_dock := false) -> void:
-	set_bounds(Rect2(Vector2.ZERO, size_px), under_dock)
-
-
 ## Holds the camera inside `rect` (world pixels): at once (`cut`, a map
 ## entered), or easing out to it or in from it (One Reach, PIX-269: the
 ## maps beside the hero's drawn or let go) - a camera pressed against an
 ## edge that opens drifts out over what's beyond rather than jumping.
+## Under the sky (`under_dock`) it may look past the south edge as far as
+## the dock covers, so a road out to the south stands above the dock.
 func set_bounds(rect: Rect2, under_dock := false, cut := true) -> void:
 	_bounds = rect
 	_under_dock = under_dock

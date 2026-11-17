@@ -45,6 +45,13 @@ func step_light() -> void:
 
 
 func step_douse() -> void:
+	# On the Night of Ash, the first ruin's fire put out as a bucket does
+	# (world_interaction's _carry_water), and left to burn down and free its
+	# flames: the fire stays in the view's list, as it does at the real dawn.
+	if GameState.progression.prologue != Prologue.DONE:
+		world.view.douse_ruin(0)
+		await h.get_tree().create_timer(1.6).timeout
+		return
 	world.night.douse_all()
 	await h.get_tree().create_timer(0.3).timeout
 

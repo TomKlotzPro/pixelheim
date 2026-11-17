@@ -128,6 +128,20 @@ static func wave(step: int) -> Dictionary:
 	return {}
 
 
+## Whether `fighter` is one of the night's own, a hound or an ember (they
+## wear another kind's sheet and numbers, not its pockets: PIX-515).
+## Whatever the night's beat, as a hound may outlive its own; never by day,
+## when the mountain road's wolves are called Ash Hounds too.
+static func of_ash(step: int, fighter: Dictionary) -> bool:
+	if step == DONE:
+		return false
+	for beat: int in [HOUNDS, EMBERS]:
+		var foes := wave(beat)
+		if foes["monsterId"] == fighter.get("id", "") and foes["name"] == fighter.get("name", ""):
+			return true
+	return false
+
+
 ## The survivors on the square that night, where the fire put them, saying
 ## what they say then: [npc as for Npcs.on_map].
 static func survivors() -> Array[Dictionary]:
@@ -141,6 +155,26 @@ static func survivors() -> Array[Dictionary]:
 		survivor.erase("stall")
 		out.append(survivor)
 	return out
+
+
+## Who is about on `map_id` that night (PIX-510): the survivors in the
+## village, nobody anywhere else - the day's folk and their day's lines
+## come with the dawn.
+static func folk(map_id: String) -> Array[Dictionary]:
+	return survivors() if map_id == "town" else ([] as Array[Dictionary])
+
+
+## What a shut gate says that night (PIX-514): its own line tells the night
+## as long past ("burned on the Night of Ash") and sends the hero off to
+## places the story hasn't named yet.
+static func gate_line() -> String:
+	return String(data()["gate"])
+
+
+## What the projects board, the ledgers and the hero's door say that night
+## (PIX-510): the rebuilding is the dawn's to decide.
+static func later_line() -> String:
+	return String(data()["later"])
 
 
 ## The step a conversation with `npc_id` finishes, or DONE when it finishes none.

@@ -34,8 +34,7 @@ static func watch(world: World) -> void:
 		# once the board shuts (WorldStage.after_board; PIX-367).
 		# On the web after the music has hushed, as a door's (PIX-420).
 		if world.map.id == "town" and await world.hushed_build():
-			world.map = world.load_map("town")
-			world.enter_map(world.map, world.player_cell)
+			world.go(world.load_map("town"), world.player_cell, Passage.REDRAW)
 	if world.map.id == Routes.MAP and Screen.holds() == 0 and DayNight.is_night(GameState.world.steps) \
 			and LanternNight.waits(GameState.progression, GameState.settlement, day) and not Routes.lamps(GameState.settlement).is_empty():
 		play(world, day)

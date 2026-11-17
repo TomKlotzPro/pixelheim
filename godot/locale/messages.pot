@@ -2153,6 +2153,10 @@ msgid "A New Engine"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A Night That Holds"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A PROPER BEGINNING: a new hero no longer just appears in town. You are a courier carrying a letter to Elder Maren, and you arrive on the road the night Pixelheim burns"
 msgstr ""
 
@@ -2466,6 +2470,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A phone starts with large text, which now reaches the shops' and ledgers' descriptions too"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A press or a click on a typing caption shows it whole and lets you read it, on every caption"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5145,6 +5153,10 @@ msgid "On a phone, first-time tips now name what you can touch on screen instead
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On the Night of Ash only the survivors are about, the shut gates say why, and nobody talks of rebuilding before the dawn decides it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "On the Night of Ash, the well and the burning homes now show E, and answer from any cell beside them"
 msgstr ""
 
@@ -6829,6 +6841,10 @@ msgid "The Night of Ash has its own dramatic music while the village burns, from
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Night of Ash stays night until its dawn, and the dawn's clock no longer spins through the day"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Open World"
 msgstr ""
 
@@ -7026,6 +7042,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The cutscenes' title cards and captions speak French, the doors keep their signs in French once you own a house, and switching language mid-game renames the Deep Hunt and the journal's leads at once"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The dawn's words come once every fire is out and the survivors stand on a calm square"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7250,6 +7270,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The mountain gate opens onto the mountain road, ash and dead pines, ash hounds and wyverns, up to Morvax's forge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The name warning goes with your first letter, and the night's level-up names its keys"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -15045,6 +15069,10 @@ msgid "Not tonight, courier. Every door is shut and the gate barred till dawn: t
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Not tonight. Pixelheim is burning, and the letter is for someone in it."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Now that's a coat. Here - a pearl from the jetty. Make something sharp with it."
 msgstr ""
 
@@ -15502,6 +15530,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Teo's bell is ringing over Pixelheim. Everyone to their places: the dragon goes for the lights."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "That can wait for morning. Tonight, the village comes first."
 msgstr ""
 
 #: assets/data/progression.json
@@ -19846,6 +19878,10 @@ msgstr ""
 
 #: scripts/state/spoils.gd
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
+msgstr ""
+
+#: scripts/state/spoils.gd
+msgid "Press {key:stats} for your stats and {key:skills} for your skills."
 msgstr ""
 
 #: scripts/state/spoils.gd

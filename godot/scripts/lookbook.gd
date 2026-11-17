@@ -278,9 +278,9 @@ func _stage(shot: Dictionary) -> void:
 		_open_post()
 	if shot.get("routes", false):
 		_open_routes()
-	world.map = world.load_map(shot["map"])
-	var at: Vector2i = nearest_walkable(world.map, shot["cell"]) if shot.has("cell") else _cell(world.map, String(shot.get("at", "")))
-	world.enter_map(world.map, at)
+	var place: MapData = world.load_map(shot["map"])
+	var at: Vector2i = nearest_walkable(place, shot["cell"]) if shot.has("cell") else _cell(place, String(shot.get("at", "")))
+	world.go(place, at, Passage.CUT)
 	# The card naming the place stands over its own shot only.
 	if not shot.get("card", false):
 		world.hud.forget_places()
