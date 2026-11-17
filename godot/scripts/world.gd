@@ -279,8 +279,11 @@ func _process(delta: float) -> void:
 	# paving or a cave's rock (PIX-411), and dust off dry ground, a splash in
 	# a bog (PIX-225).
 	# A stone room's floor is its flags (PunyInterior.STONE_ROOMS), not boards.
-	Sound.play(Sound.step_for(map.tile_at(cell), view.streets.get(cell, "stone" if map.id in PunyInterior.STONE_ROOMS else map.style)))
-	atmosphere.footfall(player.global_position + Vector2(0, 2), map.tile_at(cell))
+	# The ground as a feature draws it first: the Mirefen's planks are wood,
+	# its shallows water (MapView.drawn_as, PIX-519).
+	var under: String = view.drawn_as.get(cell, map.tile_at(cell))
+	Sound.play(Sound.step_for(under, view.streets.get(cell, "stone" if map.id in PunyInterior.STONE_ROOMS else map.style)))
+	atmosphere.footfall(player.global_position + Vector2(0, 2), under)
 	GameState.move_to(map, cell, player.facing)
 	# Into a region of the Reach: its name, once (PIX-269).
 	hud.name_place(map, cell)
