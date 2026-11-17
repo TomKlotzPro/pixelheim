@@ -2385,6 +2385,10 @@ msgid "A level gained bursts in gold on the hero with LEVEL UP over their head, 
 msgstr "Un niveau gagné éclate en or sur le héros avec NIVEAU SUPÉRIEUR au-dessus de sa tête, la ligne d'expérience s'illumine, et la nouvelle s'affiche sur le bandeau des messages au lieu de se perdre dans le journal de combat"
 
 #: assets/data/changelog.json
+msgid "A line about the world shows under the name, in English or French; if the load stalls it says so, and if it fails you can try again"
+msgstr "Une phrase sur le monde s'affiche sous le nom, en anglais ou en français ; si le chargement cale, elle le dit, et s'il échoue, vous pouvez réessayer"
+
+#: assets/data/changelog.json
 msgid "A live stats panel beside the doll: ATK, DEF and every granted bonus, updating as you dress"
 msgstr "Un panneau de caractéristiques en direct à côté du mannequin : ATQ, DEF et chaque bonus accordé, mis à jour pendant que vous vous équipez"
 
@@ -4519,6 +4523,10 @@ msgstr "La Nuit des Lanternes tient ses promesses : si elle commence pendant q
 #: assets/data/changelog.json
 msgid "Lantern Shadows"
 msgstr "Les ombres de la lanterne"
+
+#: assets/data/changelog.json
+msgid "Lantern on the Road"
+msgstr "Lanterne sur la route"
 
 #: assets/data/changelog.json
 msgid "Large reading text now grows every text you read: the pack, the journal, the skills and the counter's card"
@@ -7205,6 +7213,10 @@ msgid "The killing blow lands harder: a white flash, a longer pause and a thud; 
 msgstr "Le coup fatal frappe plus fort : un éclair blanc, une pause plus longue et un bruit sourd ; les attaques et les compétences ont leurs propres sons. Avec les mouvements réduits, ni éclair, ni rebond, ni pause"
 
 #: assets/data/changelog.json
+msgid "The lake shimmers, the windows and torches flicker, the mountain smokes and a dragon's fire flashes far off"
+msgstr "Le lac miroite, les fenêtres et les torches vacillent, la montagne fume et le feu d'un dragon luit au loin"
+
+#: assets/data/changelog.json
 msgid "The land got lived-in: a fenced sheep pen, flower meadows, kitchen gardens behind the cottages, and a walled orchard behind the player's house"
 msgstr "La campagne paraît habitée : un enclos à moutons, des prés fleuris, des potagers derrière les maisonnettes et un verger clos de murs derrière la maison du joueur"
 
@@ -7227,6 +7239,10 @@ msgstr "La ligne qui nomme la touche reste affichée pendant les combats de la n
 #: assets/data/changelog.json
 msgid "The line under the title now says what the game is about: The village burned. You stayed."
 msgstr "La ligne sous le titre dit enfin de quoi parle le jeu : Le village a brûlé. Vous restez."
+
+#: assets/data/changelog.json
+msgid "The loading screen fades into the starry sky where the title begins"
+msgstr "L'écran de chargement s'efface dans le ciel étoilé où commence le titre"
 
 #: assets/data/changelog.json
 msgid "The loading screen shows only the night sky and a quiet bar: no old title, no English"
@@ -7583,6 +7599,10 @@ msgstr "La version web joue de nouveau sa musique et ses bruitages : ses bus a
 #: assets/data/changelog.json
 msgid "The web game no longer carries its test suite: about 1.4 MB less to download before you play"
 msgstr "Le jeu sur le web n'embarque plus ses tests : environ 1,4 Mo de moins à télécharger avant de jouer"
+
+#: assets/data/changelog.json
+msgid "The web loading screen comes alive: a courier walks the road with a lantern as far as the game has loaded, lighting the lamps on the way"
+msgstr "L'écran de chargement du web prend vie : un coursier marche sur la route avec une lanterne, aussi loin que le jeu est chargé, et allume les lampes en chemin"
 
 #: assets/data/changelog.json
 msgid "The well stands where it is drawn: you no longer walk onto its roof, and E shows on it from every side"

@@ -2385,6 +2385,10 @@ msgid "A level gained bursts in gold on the hero with LEVEL UP over their head, 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A line about the world shows under the name, in English or French; if the load stalls it says so, and if it fails you can try again"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A live stats panel beside the doll: ATK, DEF and every granted bonus, updating as you dress"
 msgstr ""
 
@@ -4518,6 +4522,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Lantern Shadows"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Lantern on the Road"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7205,6 +7213,10 @@ msgid "The killing blow lands harder: a white flash, a longer pause and a thud; 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The lake shimmers, the windows and torches flicker, the mountain smokes and a dragon's fire flashes far off"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The land got lived-in: a fenced sheep pen, flower meadows, kitchen gardens behind the cottages, and a walled orchard behind the player's house"
 msgstr ""
 
@@ -7226,6 +7238,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The line under the title now says what the game is about: The village burned. You stayed."
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The loading screen fades into the starry sky where the title begins"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7582,6 +7598,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The web game no longer carries its test suite: about 1.4 MB less to download before you play"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The web loading screen comes alive: a courier walks the road with a lantern as far as the game has loaded, lighting the lamps on the way"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.383.0",
+      "date": "2026-11-17",
+      "codename": "Lantern on the Road",
+      "notes": [
+        "The web loading screen comes alive: a courier walks the road with a lantern as far as the game has loaded, lighting the lamps on the way",
+        "The lake shimmers, the windows and torches flicker, the mountain smokes and a dragon's fire flashes far off",
+        "A line about the world shows under the name, in English or French; if the load stalls it says so, and if it fails you can try again",
+        "The loading screen fades into the starry sky where the title begins"
+      ]
+    },
+    {
       "version": "0.382.0",
       "date": "2026-11-17",
       "codename": "Quick Off the Mark",
