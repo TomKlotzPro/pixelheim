@@ -13789,6 +13789,10 @@ msgid "A new horseshoe on Hilda's door, a little crooked. The awful hammer still
 msgstr "Un fer à cheval neuf chez Hilda, un peu tordu. L'affreux marteau sert encore."
 
 #: assets/data/progression.json
+msgid "A roll like that slips their teeth. Someone is calling from Upper Street."
+msgstr "Une roulade comme celle-là esquive leurs crocs. Quelqu'un appelle depuis la Grand-Rue."
+
+#: assets/data/progression.json
 msgid "A troll in the Deepwood took Loras's lute to pick its teeth with."
 msgstr "Un troll des Bois-Profonds a pris le luth de Loras pour se curer les dents."
 
@@ -16159,10 +16163,6 @@ msgstr "Vous remplissez un seau au puits."
 #: assets/data/progression.json
 msgid "You fill a bucket. Water, for once, is on our side."
 msgstr "Vous remplissez un seau. L'eau, pour une fois, est de notre côté."
-
-#: assets/data/progression.json
-msgid "You roll clear of their teeth. Someone is calling from Upper Street."
-msgstr "Vous roulez hors de portée de leurs crocs. Quelqu'un appelle depuis la Grand-Rue."
 
 #: assets/data/progression.json
 msgid "You're late, courier. Fifty years late."

@@ -165,17 +165,28 @@ func prologue_wave() -> void:
 		var cell := Vector2i(int(at[0]), int(at[1]))
 		var foe := foes.spawn_enemy(wave["monsterId"], cell, "", "", bool(wave.get("elite", false)), false, cell, int(wave["level"]) - int(kind["level"]))
 		foe.fighter["name"] = wave["name"]
-		foe.set_meta("prologue_wave", true)
+		# Tagged with its beat: hounds left standing are not the embers' wave.
+		foe.set_meta("prologue_wave", GameState.progression.prologue)
 		foe.plain()
 		world.fx.appear(foe)
 
 
-## The hero rolled or cast a skill (PIX-506): with the night's wave up, the
+## The foes of `step`'s own wave still up among `mobs`, `but` one (PIX-506:
+## the hounds can outlive their beat, gone home to the gate, and counted as
+## the embers' wave: felling the embers finished nothing, and a skill cast
+## with the embers dead did).
+static func wave_left(mobs: Array[Node], step: int, but: Node = null) -> Array[Node]:
+	return mobs.filter(func(mob: Node) -> bool:
+		return mob != but and mob.get_meta("prologue_wave", -1) == step and not mob.get("dying"))
+
+
+## The hero rolled or cast a skill (PIX-506): with the beat's wave up, the
 ## beat that teaches it is done (Questing.prologue_did).
 func prologue_did(action: String) -> void:
-	if Prologue.teaches(GameState.progression.prologue) != action:
+	var step := GameState.progression.prologue
+	if Prologue.teaches(step) != action:
 		return
-	if get_tree().get_nodes_in_group("mobs").any(func(mob: Node) -> bool: return mob.has_meta("prologue_wave") and not mob.dying):
+	if not wave_left(get_tree().get_nodes_in_group("mobs"), step).is_empty():
 		world.messages.flash(GameState.questing.prologue_did(action))
 
 
@@ -185,7 +196,7 @@ func prologue_did(action: String) -> void:
 func play_dawn() -> void:
 	# The embers still up (PIX-506: their beat no longer waits for them to
 	# fall) go out with the night, not into the dawn's square.
-	for mob in get_tree().get_nodes_in_group("mobs"):
+	for mob: Node in get_tree().get_nodes_in_group("mobs"):
 		if mob.has_meta("prologue_wave"):
 			mob.queue_free()
 	var dawn := preload("res://scripts/dawn_screen.gd").new()

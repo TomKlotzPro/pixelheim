@@ -351,3 +351,21 @@ func test_the_wells_prompt_sits_on_its_roof() -> void:
 	var small := Rect2(Vector2(34, 31) * MapView.TILE, Vector2.ONE * MapView.TILE)
 	for below: bool in [false, true]:
 		assert_eq(Interaction.well_spot(small, Vector2i(34, 31), size, below), Interaction.prompt_spot(small, Vector2i(34, 31), size, below))
+
+
+## PIX-506: the hounds, rolled past, give up the chase and stand at the gate
+## through the rest of the night. They are not the embers' wave: the embers'
+## fall finishes their beat, and a skill cast with only hounds up does not.
+func test_a_wave_counts_only_its_own_beats_foes() -> void:
+	var mobs: Array[Node] = []
+	for step: int in [Prologue.HOUNDS, Prologue.HOUNDS, Prologue.EMBERS, Prologue.EMBERS]:
+		var foe: Node = autofree(Node.new())
+		foe.set_meta("prologue_wave", step)
+		mobs.append(foe)
+	mobs.append(autofree(Node.new()))
+	assert_eq(Stage.wave_left(mobs, Prologue.EMBERS), mobs.slice(2, 4), "the embers alone, no hound, no wild foe")
+	assert_eq(Stage.wave_left(mobs, Prologue.EMBERS, mobs[3]), [mobs[2]], "but the one falling")
+	mobs.remove_at(2)
+	assert_eq(Stage.wave_left(mobs, Prologue.EMBERS, mobs[2]), [], "the last ember down, both hounds standing: the wave is down")
+	assert_eq(Stage.wave_left(mobs.slice(0, 2), Prologue.EMBERS), [], "only hounds up: no ember's wave for a skill to answer")
+	assert_eq(Stage.wave_left(mobs, Prologue.DONE), [], "nothing untagged is a wave, the night done")

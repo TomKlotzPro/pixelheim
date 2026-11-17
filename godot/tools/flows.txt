@@ -383,19 +383,24 @@ road | --prologue 1 | map=overworld cell=\(48, 34\) | story travel
 # is on. Hurt, I then E drinks the potion, the sword still in hand
 # (PIX-508: E took it off). Walking down at the well stops beside it, never
 # on its roof, E's prompt up; E fills the bucket and the prompt goes
-# (PIX-505: ash-well and ash-well-fill need the paid pack's roofed well).
+# (PIX-505: the pack's roofed well stops the hero at (34, 28), the CC0 one
+# at (34, 30); a windowed share runs every flow on CC0, so each takes both:
+# [23][80], a field having no "|", and five steps down from 27 end by 32).
+# The line stays up through the embers' fight too (ash-line-embers: the
+# hero strikes first, as ash-mend, the embers slow to start it on the pack).
 ash-line | --prologue 6 --at 40,8 --wait 3 --lang en | night=6 mobs=2 nightline=shown fight | story combat night
 ash-line-cc0 | --prologue 6 --at 40,8 --wait 3 --lang en cc0 | night=6 mobs=2 nightline=shown fight | story combat night
-ash-roll | --prologue 6 --at 40,8 --keys shift --lang en | night=3 mobs=2 plate=You roll clear of their teeth\. Someone is calling from Upper Street\. | story combat night
-ash-roll-cc0 | --prologue 6 --at 40,8 --keys shift --lang fr cc0 | night=3 mobs=2 plate=Vous roulez hors de portée de leurs crocs\. Quelqu'un appelle depuis la Grand-Rue\. | story combat night lang
+ash-line-embers | --prologue 9 --at 38,23 --keys a,j,wait,wait --lang en | night=9 mobs=3 nightline=shown fight | story combat night
+ash-roll | --prologue 6 --at 40,8 --keys shift --lang en | night=3 mobs=2 plate=A roll like that slips their teeth\. Someone is calling from Upper Street\. | story combat night
+ash-roll-cc0 | --prologue 6 --at 40,8 --keys shift --lang fr cc0 | night=3 mobs=2 plate=Une roulade comme celle-là esquive leurs crocs\. Quelqu'un appelle depuis la Grand-Rue\. | story combat night lang
 ash-skill | --prologue 9 --at 38,23 --keys 1 --lang en | night=5 mobs=3 plate=Your skill answers the fire\. Maren is waiting at the shrine\. | story combat night
 ash-skill-cc0 | --prologue 9 --at 38,23 --keys 1 --lang fr cc0 | night=5 mobs=3 plate=Votre compétence répond au feu\. Maren attend au sanctuaire\. | story combat night lang
 ash-mend-idle | --prologue 9 --at 38,23 wounded --role cleric --keys 1 --lang en | hp=28 night=9 mobs=3 | story combat night
 ash-mend | --prologue 9 --at 38,23 wounded --role cleric --keys a,j,wait,wait,1 --lang en | night=5 mobs=3 plate=Your skill answers the fire\. Maren is waiting at the shrine\. | story combat night
 ash-potion | --prologue 6 --at 40,8 wounded --role warrior --keys i,e --lang en | hp=35 open=inventory_screen night=6 hero=warrior:.*:rusty_sword | story screen night
 ash-potion-cc0 | --prologue 6 --at 40,8 wounded --role warrior --keys i,e --lang en cc0 | hp=35 open=inventory_screen night=6 hero=warrior:.*:rusty_sword | story screen night
-ash-well | --prologue 8 --at 35,27 --walk d,d,d,d,d --lang en | cell=\(35, 28\) night=8 prompt=shown | story town night
-ash-well-fill | --prologue 8 --at 35,27 --walk d,d,d,d,d --keys e --lang en | cell=\(35, 28\) plate=You fill a bucket at the well\. prompt= | story town night
+ash-well | --prologue 8 --at 34,27 --walk d,d,d,d,d --lang en | cell=\(34, [23][80]\) night=8 prompt=shown | story town night
+ash-well-fill | --prologue 8 --at 34,27 --walk d,d,d,d,d --keys e --lang en | cell=\(34, [23][80]\) plate=You fill a bucket at the well\. prompt= | story town night
 ash-well-cc0 | --prologue 8 --at 34,27 --walk d,d,d,d,d --lang en cc0 | cell=\(34, 30\) night=8 prompt=shown | story town night
 ash-well-fill-cc0 | --prologue 8 --at 34,27 --walk d,d,d,d,d --keys e --lang en cc0 | cell=\(34, 30\) plate=You fill a bucket at the well\. prompt= | story town night
 # A dodge roll with Shift (PIX-129).

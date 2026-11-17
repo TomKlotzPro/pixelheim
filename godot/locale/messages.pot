@@ -13789,6 +13789,10 @@ msgid "A new horseshoe on Hilda's door, a little crooked. The awful hammer still
 msgstr ""
 
 #: assets/data/progression.json
+msgid "A roll like that slips their teeth. Someone is calling from Upper Street."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "A troll in the Deepwood took Loras's lute to pick its teeth with."
 msgstr ""
 
@@ -16158,10 +16162,6 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "You fill a bucket. Water, for once, is on our side."
-msgstr ""
-
-#: assets/data/progression.json
-msgid "You roll clear of their teeth. Someone is calling from Upper Street."
 msgstr ""
 
 #: assets/data/progression.json
