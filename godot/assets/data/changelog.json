@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.381.0",
+      "date": "2026-11-17",
+      "codename": "The Night Teaches",
+      "notes": [
+        "The well stands where it is drawn: you no longer walk onto its roof, and E shows on it from every side",
+        "The hounds' lesson ends with your first roll and the embers' with your first skill, not only when they all fall",
+        "The line naming the key stays up through the night's fights",
+        "Hurt that night, your pack opens on the potion, so the hint's keys drink it instead of taking your sword off"
+      ]
+    },
+    {
       "version": "0.380.0",
       "date": "2026-11-17",
       "codename": "A Night That Holds",

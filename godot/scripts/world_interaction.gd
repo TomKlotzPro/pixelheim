@@ -670,6 +670,11 @@ func _water_beside() -> Dictionary:
 	return water
 
 
+## The night's bucket is full: the Night of Ash's, or the Night of Bells'.
+func _bucket_full() -> bool:
+	return prologue_bucket if GameState.progression.prologue == Prologue.FIRES else world.night.bucket
+
+
 ## The cells the well is drawn over (PIX-460: Shade's stands two wide under
 ## its roof, and E took only its one cell): its own without the pack.
 func _well_cells() -> Rect2i:
@@ -774,8 +779,9 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 ## (Feature.prompt_at, PIX-369); the prompt floats over them.
 func update_prompt() -> void:
 	var water := _water_beside()
-	if not water.is_empty():
-		_show_prompt(_pixels(_well_cells() if water["ruin"] < 0 else Rect2i(water["cell"], Vector2i.ONE)), water["cell"])
+	# The well with the bucket full has no more to give (PIX-505: its prompt stayed).
+	if not water.is_empty() and not (water["ruin"] < 0 and _bucket_full()):
+		_show_prompt(_pixels(_well_cells() if water["ruin"] < 0 else Rect2i(water["cell"], Vector2i.ONE)), water["cell"], water["ruin"] < 0)
 		return
 	var beside: Dictionary = world.folk.beside()
 	if not beside.is_empty():
@@ -841,6 +847,17 @@ static func prompt_spot(target: Rect2, cell: Vector2i, size: Vector2, below := f
 	return Vector2(cell.x * MapView.TILE + roundf((MapView.TILE - size.x) / 2.0), y)
 
 
+## Where the well's prompt stands (PIX-505): Shade's well wears it in the
+## middle of its roof, the cells of `target` above its rim, from every side
+## (over it stood three cells from a hero below, and under it, facing down,
+## on bare ground two cells from the hero); a well of one cell as anything
+## else (prompt_spot).
+static func well_spot(target: Rect2, cell: Vector2i, size: Vector2, below := false) -> Vector2:
+	if target.size.y <= MapView.TILE:
+		return prompt_spot(target, cell, size, below)
+	return (Vector2(target.get_center().x, target.position.y + (target.size.y - MapView.TILE) / 2.0) - size / 2.0).round()
+
+
 static func _pixels(cells: Rect2i) -> Rect2:
 	return Rect2(Vector2(cells.position * MapView.TILE), Vector2(cells.size * MapView.TILE))
 
@@ -848,12 +865,13 @@ static func _pixels(cells: Rect2i) -> Rect2:
 ## The prompt over `target` (prompt_spot), bobbing a pixel; the key read
 ## fresh (it may have been rebound). It waits while anything rises through
 ## where it stands (PIX-465: a catch read "Sm[E] Pike").
-func _show_prompt(target: Rect2, cell: Vector2i) -> void:
+func _show_prompt(target: Rect2, cell: Vector2i, well := false) -> void:
 	if prompt_label is Keycap and not prompt_label.visible:
 		(prompt_label as Keycap).show_key(_interact_key())
 		prompt_label.reset_size()
 	var bob := roundf(sin(GameClock.msec() / 260.0)) if not GameState.settings.reduce_motion else 0.0
-	var spot := prompt_spot(target, cell, prompt_label.size, cell.y > world.player_cell.y)
+	var below: bool = cell.y > world.player_cell.y
+	var spot := well_spot(target, cell, prompt_label.size, below) if well else prompt_spot(target, cell, prompt_label.size, below)
 	prompt_label.position = spot + Vector2(0, bob)
 	# Every place the bob takes it (a pixel up or down), so the bob doesn't
 	# blink it in and out while a word stops at its edge.

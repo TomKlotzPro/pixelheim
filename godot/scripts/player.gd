@@ -416,6 +416,7 @@ func dodge(pressed_heading := Vector2.ZERO) -> void:
 	dodging = true
 	dodge_ready = false
 	Sound.play("dodge")
+	world.stage.prologue_did("dodge")
 	# A blur: the hero half-seen, a puff of dust where they left from.
 	var blur := sprite.create_tween()
 	blur.tween_property(sprite, "modulate:a", 0.45, 0.05)
@@ -597,6 +598,9 @@ func cast(index: int) -> void:
 	# It went: the last refusal no longer holds.
 	world.messages.withdraw(refused)
 	refused = ""
+	# A strike has its foe; a mend counts at the embers only in their fight (PIX-506).
+	if skill["kind"] != "heal" or world.foes.in_fight():
+		world.stage.prologue_did("skill")
 	GameState.training.pay_for_skill(skill)
 	skill_ready = false
 	_skill_ready_at = GameClock.seconds() + SKILL_TURN

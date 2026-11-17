@@ -199,6 +199,21 @@ func test_a_map_lays_its_occluders_from_what_stands() -> void:
 			assert_ne((occluder as LightOccluder2D).occluder_light_mask & NightShadows.LAMP, 0)
 
 
+## PIX-505's review: the well's body grew to its roof and it cast as a solid
+## block three cells tall, the green east of it dark from the roof's top.
+func test_the_roofed_well_casts_from_its_rim() -> void:
+	if not PunyTown.available():
+		pass_test("the roofed well is the paid pack's")
+		return
+	var well: Node2D = _draw("town").prop_nodes[Vector2i(34, 31)]
+	assert_eq(well.find_children("*", "CollisionShape2D", true, false).size(), 2, "the hero is kept off the rim and the roof")
+	var cast := well.find_children("*", "LightOccluder2D", true, false)
+	assert_eq(cast.size(), 1)
+	var occluder: LightOccluder2D = cast[0]
+	assert_eq((occluder.occluder.polygon[0] * 2.0).abs().y, 16.0, "the rim's height, not the picture's")
+	assert_eq(occluder.position.y, -8.0, "at the rim, the root standing on its foot's bottom")
+
+
 func test_a_lamp_casts_and_never_blocks_itself() -> void:
 	var view := _draw("town")
 	var lamps := view.under.find_children("*", "PointLight2D", true, false).filter(

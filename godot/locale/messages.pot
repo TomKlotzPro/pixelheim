@@ -4305,6 +4305,10 @@ msgid "How It Ends"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Hurt that night, your pack opens on the potion, so the hint's keys drink it instead of taking your sword off"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Hush Before Dawn"
 msgstr ""
 
@@ -6825,6 +6829,10 @@ msgid "The Night Burns"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Night Teaches"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Night of Ash"
 msgstr ""
 
@@ -7137,6 +7145,10 @@ msgid "The hero's fall plays at its full quality again"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The hounds' lesson ends with your first roll and the embers' with your first skill, not only when they all fall"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The hub screen retires with honor. It served well."
 msgstr ""
 
@@ -7194,6 +7206,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The line above the dock says where: the next step, the place it's in and how far along you are"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The line naming the key stays up through the night's fights"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7550,6 +7566,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The web game no longer carries its test suite: about 1.4 MB less to download before you play"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The well stands where it is drawn: you no longer walk onto its roof, and E shows on it from every side"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -13813,6 +13833,10 @@ msgid "A new horseshoe on Hilda's door, a little crooked. The awful hammer still
 msgstr ""
 
 #: assets/data/progression.json
+msgid "A roll like that slips their teeth. Someone is calling from Upper Street."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "A troll in the Deepwood took Loras's lute to pick its teeth with."
 msgstr ""
 
@@ -16198,6 +16222,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Your hands are empty: the well is on the green, below the square."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Your skill answers the fire. Maren is waiting at the shrine."
 msgstr ""
 
 #: assets/data/progression.json

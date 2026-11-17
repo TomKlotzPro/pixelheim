@@ -565,6 +565,17 @@ func prologue_wave_cleared() -> String:
 	return String(wave["cleared"])
 
 
+## The hero did `action` with the night's wave up (PIX-506): when it is
+## what the beat teaches (Prologue.teaches), on, with the line that says so
+## and where to next; "" otherwise. The wave left standing says no more.
+func prologue_did(action: String) -> String:
+	if action == "" or Prologue.teaches(owner.progression.prologue) != action:
+		return ""
+	var wave := Prologue.wave(owner.progression.prologue)
+	prologue_on()
+	return String(wave["taught"])
+
+
 ## A burning home put out with the well's water (PIX-197); the line to say.
 func prologue_douse(ruin: int) -> String:
 	if owner.progression.prologue != Prologue.FIRES or ruin in owner.progression.prologue_doused:

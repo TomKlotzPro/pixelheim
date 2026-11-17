@@ -621,12 +621,11 @@ func on_enemy_died(enemy: Node) -> void:
 	world.fx.burst_gains(won["gains"], enemy.global_position, fights_like_boss(enemy))
 	if enemy.has_meta("prologue"):
 		world.messages.flash(GameState.questing.prologue_pouch())
-	# The last of a wave of the night's foes: on to the next beat.
-	if enemy.has_meta("prologue_wave"):
-		var left := get_tree().get_nodes_in_group("mobs").filter(func(mob: Node) -> bool:
-			return mob != enemy and mob.has_meta("prologue_wave") and not mob.dying)
-		if left.is_empty():
-			world.messages.flash(GameState.questing.prologue_wave_cleared())
+	# The last of this beat's wave of the night's foes: on to the next beat
+	# (a hound outliving its beat is no ember: Stage.wave_left).
+	var night := GameState.progression.prologue
+	if enemy.get_meta("prologue_wave", -1) == night and Stage.wave_left(get_tree().get_nodes_in_group("mobs"), night, enemy).is_empty():
+		world.messages.flash(GameState.questing.prologue_wave_cleared())
 	# One of the Night of Bells' embers (PIX-253 step 9): the night counts them.
 	if enemy.has_meta("bells_wave"):
 		world.night.ember_fell(enemy)

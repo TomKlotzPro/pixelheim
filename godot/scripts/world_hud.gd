@@ -448,12 +448,13 @@ func hint_boards() -> void:
 func on_hp_changed(hp: int, max_hp: int) -> void:
 	dock.refresh()
 	# Hurt on the first night: how to drink a potion, once (PIX-197).
-	if GameState.progression.prologue != Prologue.DONE and hp * 2 < max_hp and hp > 0:
+	if Prologue.hurt(GameState.progression.prologue, hp, max_hp):
 		hint("potion")
 
 
 ## The line above the dock (PIX-144): the main quest's next step, faded out
-## in a fight, under a flashing message and once the story is done; hidden
+## in a fight (never on the Night of Ash, whose line names the fight's key:
+## PIX-507), under a flashing message and once the story is done; hidden
 ## while the world is paused (menus, conversations, cutscenes: the world's
 ## _notification).
 func update_objective() -> void:
@@ -487,7 +488,8 @@ func update_objective() -> void:
 		under = minf(under, messages.message_box.position.y)
 	messages.log_box.reset_size()
 	messages.log_box.position.y = under - 6 - messages.log_box.size.y
-	var show: bool = text != "" and not world.foes.in_fight() and messages.message_box.modulate.a < 0.05
+	var fought: bool = world.foes.in_fight() and not Prologue.line_stays(GameState.progression.prologue)
+	var show: bool = text != "" and not fought and messages.message_box.modulate.a < 0.05
 	var target := 1.0 if show else 0.0
 	if objective_box.get_meta("fading_to", -1.0) != target:
 		objective_box.set_meta("fading_to", target)

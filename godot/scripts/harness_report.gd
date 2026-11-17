@@ -769,6 +769,13 @@ func field_next() -> String:
 	return String(MainQuest.next_step(GameState.progression, GameState.settlement).get("id", ""))
 
 
+func field_nightline() -> String:
+	if GameState.progression.prologue == Prologue.DONE or world.map.id != "town":
+		return ""
+	var box: Control = world.hud.objective_box
+	return ("shown" if box.visible and box.get_meta("fading_to", 0.0) > 0.0 else "faded") + (" fight" if world.foes.in_fight() else "")
+
+
 func field_overflow() -> String:
 	return noted("overflow")
 
