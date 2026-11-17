@@ -2153,6 +2153,10 @@ msgid "A New Engine"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A Night That Holds"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A PROPER BEGINNING: a new hero no longer just appears in town. You are a courier carrying a letter to Elder Maren, and you arrive on the road the night Pixelheim burns"
 msgstr ""
 
@@ -2466,6 +2470,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A phone starts with large text, which now reaches the shops' and ledgers' descriptions too"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A press or a click on a typing caption shows it whole and lets you read it, on every caption"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4297,6 +4305,10 @@ msgid "How It Ends"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Hurt that night, your pack opens on the potion, so the hint's keys drink it instead of taking your sword off"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Hush Before Dawn"
 msgstr ""
 
@@ -5142,6 +5154,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On a phone, first-time tips now name what you can touch on screen instead of a keyboard key"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "On the Night of Ash only the survivors are about, the shut gates say why, and nobody talks of rebuilding before the dawn decides it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6813,6 +6829,10 @@ msgid "The Night Burns"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Night Teaches"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Night of Ash"
 msgstr ""
 
@@ -6826,6 +6846,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Night of Ash has its own dramatic music while the village burns, from the road to the dawn"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Night of Ash stays night until its dawn, and the dawn's clock no longer spins through the day"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7029,6 +7053,10 @@ msgid "The cutscenes' title cards and captions speak French, the doors keep thei
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The dawn's words come once every fire is out and the survivors stand on a calm square"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The decor got real carpentry too: lamp posts with glowing lanterns, a roofed well, rail fences that connect, market stalls under striped awnings, round barrels, plank crates - and real trees in the deep woods"
 msgstr ""
 
@@ -7117,6 +7145,10 @@ msgid "The hero's fall plays at its full quality again"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The hounds' lesson ends with your first roll and the embers' with your first skill, not only when they all fall"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The hub screen retires with honor. It served well."
 msgstr ""
 
@@ -7174,6 +7206,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The line above the dock says where: the next step, the place it's in and how far along you are"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The line naming the key stays up through the night's fights"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7250,6 +7286,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The mountain gate opens onto the mountain road, ash and dead pines, ash hounds and wyverns, up to Morvax's forge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The name warning goes with your first letter, and the night's level-up names its keys"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7526,6 +7566,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The web game no longer carries its test suite: about 1.4 MB less to download before you play"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The well stands where it is drawn: you no longer walk onto its roof, and E shows on it from every side"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -13789,6 +13833,10 @@ msgid "A new horseshoe on Hilda's door, a little crooked. The awful hammer still
 msgstr ""
 
 #: assets/data/progression.json
+msgid "A roll like that slips their teeth. Someone is calling from Upper Street."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "A troll in the Deepwood took Loras's lute to pick its teeth with."
 msgstr ""
 
@@ -15041,6 +15089,10 @@ msgid "Not tonight, courier. Every door is shut and the gate barred till dawn: t
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Not tonight. Pixelheim is burning, and the letter is for someone in it."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Now that's a coat. Here - a pearl from the jetty. Make something sharp with it."
 msgstr ""
 
@@ -15498,6 +15550,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Teo's bell is ringing over Pixelheim. Everyone to their places: the dragon goes for the lights."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "That can wait for morning. Tonight, the village comes first."
 msgstr ""
 
 #: assets/data/progression.json
@@ -16166,6 +16222,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Your hands are empty: the well is on the green, below the square."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Your skill answers the fire. Maren is waiting at the shrine."
 msgstr ""
 
 #: assets/data/progression.json
@@ -19838,6 +19898,10 @@ msgstr ""
 
 #: scripts/state/spoils.gd
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
+msgstr ""
+
+#: scripts/state/spoils.gd
+msgid "Press {key:stats} for your stats and {key:skills} for your skills."
 msgstr ""
 
 #: scripts/state/spoils.gd

@@ -1,6 +1,29 @@
 {
   "releases": [
     {
+      "version": "0.381.0",
+      "date": "2026-11-17",
+      "codename": "The Night Teaches",
+      "notes": [
+        "The well stands where it is drawn: you no longer walk onto its roof, and E shows on it from every side",
+        "The hounds' lesson ends with your first roll and the embers' with your first skill, not only when they all fall",
+        "The line naming the key stays up through the night's fights",
+        "Hurt that night, your pack opens on the potion, so the hint's keys drink it instead of taking your sword off"
+      ]
+    },
+    {
+      "version": "0.380.0",
+      "date": "2026-11-17",
+      "codename": "A Night That Holds",
+      "notes": [
+        "The Night of Ash stays night until its dawn, and the dawn's clock no longer spins through the day",
+        "The dawn's words come once every fire is out and the survivors stand on a calm square",
+        "On the Night of Ash only the survivors are about, the shut gates say why, and nobody talks of rebuilding before the dawn decides it",
+        "A press or a click on a typing caption shows it whole and lets you read it, on every caption",
+        "The name warning goes with your first letter, and the night's level-up names its keys"
+      ]
+    },
+    {
       "version": "0.379.0",
       "date": "2026-11-17",
       "codename": "Kept Safe",

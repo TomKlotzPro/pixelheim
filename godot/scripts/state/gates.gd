@@ -92,8 +92,10 @@ static func closed_on(map_id: String, progression: ProgressionState, settlement:
 
 
 ## What a shut gate says: the line of the first thing that opens it not done
-## yet (the last one's once all are).
+## yet (the last one's once all are); on the Night of Ash, the night's own.
 static func line(gate: Dictionary, progression: ProgressionState, settlement: SettlementState) -> String:
+	if progression.prologue != Prologue.DONE:
+		return Prologue.gate_line()
 	var need := _waiting_on(gate, progression, settlement)
 	if need.is_empty():
 		need = gate["opens"][-1]

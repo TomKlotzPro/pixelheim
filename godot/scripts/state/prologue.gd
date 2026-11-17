@@ -25,6 +25,60 @@ const EMBERS := 9
 const ORDER := [SCAVENGER, GATE, HOUNDS, BRAM, SELA, CAP, FIRES, EMBERS, MAREN]
 
 
+## What a wave's beat teaches (PIX-506: the hounds' line asked for a roll
+## and the embers' for a skill, and both waited for the wave to die, so a
+## newcomer rolled thirty times unanswered): the hero's first of it with the
+## wave up finishes the beat, as the wave's fall still does.
+const TEACHES := {HOUNDS: "dodge", EMBERS: "skill"}
+
+
+## The action that finishes `step` the first time the hero does it, "" for
+## a step that waits on something else.
+static func teaches(step: int) -> String:
+	return TEACHES.get(step, "")
+
+
+## The line above the dock stays up through a fight that night (PIX-507:
+## it names the key the fight teaches, and faded as every fight's does).
+static func line_stays(step: int) -> bool:
+	return step != DONE
+
+
+## Hurt enough that night for the potion's hint (PIX-197): under half.
+static func hurt(step: int, hp: int, max_hp: int) -> bool:
+	return step != DONE and hp > 0 and hp * 2 < max_hp
+
+
+## The pack's row the potion's hint means, among `rows` (InventoryState's
+## listing), -1 for none: the first potion that mends, else the first thing
+## that does. The pack opens on it for a hero `hurt` (PIX-508: it opened on
+## the sword in hand, and the hint's E took it off mid-fight).
+static func potion_row(rows: Array) -> int:
+	var food := -1
+	for index in rows.size():
+		var item := Catalog.item(String(rows[index]["item_id"]))
+		if rows[index]["kind"] != "stack" or not item.has("restoreHp"):
+			continue
+		if item["category"] == "potions":
+			return index
+		if food < 0:
+			food = index
+	return food
+
+
+## The row the pack opens on for a hero `hurt`: the `potion_row`, else the
+## first that is not gear, so E never takes off what is worn (the review of
+## PIX-508: three potions and the food gone, I then E took the sword off).
+## shortcut: a pack of nothing but gear opens on its first row, worn or
+## not; ask the pack what is worn if a playtest finds it.
+static func pack_row(rows: Array) -> int:
+	var at := potion_row(rows)
+	for index in rows.size():
+		if at < 0 and rows[index]["kind"] != "gear":
+			at = index
+	return maxi(0, at)
+
+
 ## The beat after `step` (DONE after the last).
 static func next(step: int) -> int:
 	var at := ORDER.find(step)
@@ -74,6 +128,20 @@ static func wave(step: int) -> Dictionary:
 	return {}
 
 
+## Whether `fighter` is one of the night's own, a hound or an ember (they
+## wear another kind's sheet and numbers, not its pockets: PIX-515).
+## Whatever the night's beat, as a hound may outlive its own; never by day,
+## when the mountain road's wolves are called Ash Hounds too.
+static func of_ash(step: int, fighter: Dictionary) -> bool:
+	if step == DONE:
+		return false
+	for beat: int in [HOUNDS, EMBERS]:
+		var foes := wave(beat)
+		if foes["monsterId"] == fighter.get("id", "") and foes["name"] == fighter.get("name", ""):
+			return true
+	return false
+
+
 ## The survivors on the square that night, where the fire put them, saying
 ## what they say then: [npc as for Npcs.on_map].
 static func survivors() -> Array[Dictionary]:
@@ -87,6 +155,26 @@ static func survivors() -> Array[Dictionary]:
 		survivor.erase("stall")
 		out.append(survivor)
 	return out
+
+
+## Who is about on `map_id` that night (PIX-510): the survivors in the
+## village, nobody anywhere else - the day's folk and their day's lines
+## come with the dawn.
+static func folk(map_id: String) -> Array[Dictionary]:
+	return survivors() if map_id == "town" else ([] as Array[Dictionary])
+
+
+## What a shut gate says that night (PIX-514): its own line tells the night
+## as long past ("burned on the Night of Ash") and sends the hero off to
+## places the story hasn't named yet.
+static func gate_line() -> String:
+	return String(data()["gate"])
+
+
+## What the projects board, the ledgers and the hero's door say that night
+## (PIX-510): the rebuilding is the dawn's to decide.
+static func later_line() -> String:
+	return String(data()["later"])
 
 
 ## The step a conversation with `npc_id` finishes, or DONE when it finishes none.

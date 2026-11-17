@@ -137,9 +137,10 @@ func test_no_walkable_cell_hides_the_hero() -> void:
 					lost.append(cell)
 			assert_eq(lost, [], "%s (%s): the hero lost there" % [map_id, "cc0" if withheld else "pack"])
 			if map_id == "town@0" and not withheld and PunyTown.available():
-				# The well's roof and the grove the playtest lost the hero
-				# under: there still, seen through.
-				for cell: Vector2i in [Vector2i(34, 30), Vector2i(9, 16)]:
-					assert_gte(_hidden(buckets, figure, cell, false), LOST, "the hero under it at %s" % cell)
+				# The grove the playtest lost the hero under: there still,
+				# seen through. The well's roof is stood beside (PIX-505).
+				assert_gte(_hidden(buckets, figure, Vector2i(9, 16), false), LOST, "the hero under the grove")
+				for cell: Vector2i in [Vector2i(34, 29), Vector2i(35, 30)]:
+					assert_true(view.data.covered.has(cell), "no hero under the well's roof at %s" % cell)
 			root.free()
 	PunyTown.withheld = was
