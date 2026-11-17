@@ -369,7 +369,9 @@ func _mirror_water(view: Array[Vector2]) -> void:
 			mirror.set_shader_parameter("map_pixels", laid["cells"] * MapView.TILE)
 			mirror.set_shader_parameter("mirror_origin", laid["origin"])
 		elif wet:
-			mirror.set_shader_parameter("water_map", PunyTerrain.water_map(map.grid, map.size, map.id))
+			# The ground as drawn, so a feature's planks over drawn water
+			# (MapView.drawn_as) are no bank to mirror (PIX-519).
+			mirror.set_shader_parameter("water_map", PunyTerrain.water_map(world.view.look() if world.view != null else map.grid, map.size, map.id))
 			mirror.set_shader_parameter("map_pixels", Vector2(map.size * MapView.TILE))
 			mirror.set_shader_parameter("mirror_origin", world.plane_px() / MapView.TILE)
 		# The river's banks swing in the mirror as on the hero's map's ground.
