@@ -2505,7 +2505,15 @@ msgid "A roll leaves a short trail of fading ghosts along its path"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A save file edited by hand with a wrong value reads as damaged instead of loading half a hero"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A save on a dungeon floor wakes you at the top of that floor instead of back at the entrance, and sleeping saves with your well-rested bonus kept"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A save that fails to write is no longer called saved: it is tried again and a short line tells you"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3857,6 +3865,10 @@ msgid "Fixed a lock where swinging during a roll could leave your hero unable to
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fixed small leaks when building a map without the paid art and when quitting with a sound playing"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fixed: a flaky load could leave the world pitch black until a reload - the renderer retries on its own"
 msgstr ""
 
@@ -4413,6 +4425,10 @@ msgid "Kept"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Kept Safe"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Keys That Look Like Keys"
 msgstr ""
 
@@ -4718,6 +4734,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Maren no longer skips a story: if you went far before visiting her, she tells each one in turn, oldest first, and the main quest's step that waits on it is met"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Maren tells her relic story again if you leave it on its first line, and a click on a conversation turns the page"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5530,6 +5550,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Quit in the middle of the Night of Bells and you come back at the same beat, with the lanterns you lit and the roofs you doused"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Quitting in the second of a fall no longer wakes you alive where you fell: you wake as the fall would have woken you"
 msgstr ""
 
 #: assets/data/changelog.json
