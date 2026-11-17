@@ -186,11 +186,13 @@ static func _add_lamp_post(view: MapView, root: Node2D, cell: Vector2i, sort_y: 
 
 ## How the lamp on `cell` looks (LampArt.LOOKS, PIX-524): hung on a house's
 ## wall (Yards' corner lamps), on a bracket; at the town square's corners
-## (Yards.SQUARE_LAMPS), a lantern either side; elsewhere the street lamp.
+## (Yards.SQUARE_LAMPS) from the Town age, a lantern either side; elsewhere
+## the street lamp.
 static func look_of(view: MapView, cell: Vector2i) -> String:
 	if on_wall(view, cell):
 		return "bracket"
-	return "double" if view.data.id == "town" and cell in Yards.SQUARE_LAMPS else "post"
+	var square := view.data.id == "town" and cell in Yards.SQUARE_LAMPS and GameState.town_tier() >= Yards.SQUARE_LAMPS_AGE
+	return "double" if square else "post"
 
 
 ## Whether `cell` is a house's: its roof, or its front's walls and door.

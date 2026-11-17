@@ -187,8 +187,10 @@ const PIECES := [
 ]
 ## The square's lamps at its two south corners, a lantern either side of
 ## the post (PIX-524, PropsLayer.look_of): the City's bunting is strung
-## between them.
+## between them. From the Town age, as the lamps on brackets: the burnt
+## square of the Ashes keeps its plain posts.
 const SQUARE_LAMPS: Array[Vector2i] = [Vector2i(31, 29), Vector2i(49, 29)]
+const SQUARE_LAMPS_AGE := 3
 ## Flowering hedges along the foot of the wall: [first cell, last, age].
 const HEDGES := [[Vector2i(26, 3), Vector2i(36, 3), 2], [Vector2i(18, 3), Vector2i(25, 3), 3], [Vector2i(58, 3), Vector2i(63, 3), 3]]
 ## A hedge's bushes, picked by cell: mostly green, in flower here and there.

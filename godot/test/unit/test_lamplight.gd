@@ -250,5 +250,6 @@ func test_a_lit_window_is_its_glass_not_an_orb() -> void:
 			if (lamp["unlit"] as Sprite2D).texture == LampArt.look(look)["cold"]:
 				looks[look] = int(looks.get(look, 0)) + 1
 	assert_eq(looks.get("bracket", 0), hung.size(), "a lamp on a wall on its bracket")
-	assert_eq(looks.get("double", 0), Yards.SQUARE_LAMPS.size(), "the square's corners a lantern either side")
+	var grand := Yards.SQUARE_LAMPS.size() if GameState.town_tier() >= Yards.SQUARE_LAMPS_AGE else 0
+	assert_eq(looks.get("double", 0), grand, "the square's corners a lantern either side, from the Town age")
 	assert_eq(int(looks.get("post", 0)) + int(looks.get("bracket", 0)) + int(looks.get("double", 0)), view.lamps.size(), "every lamp in a look of its own")
