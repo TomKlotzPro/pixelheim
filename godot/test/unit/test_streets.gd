@@ -111,12 +111,12 @@ func test_the_square_has_a_border_and_an_inlay() -> void:
 					assert_has(["mossy", "sandstone", "basket"] if tier == 4 else ["mossy"], look, "age %d: inside the border at %s" % [tier, cell])
 		assert_false(paved.values().has("basket") and tier < 4, "age %d lays no inlay before the City" % tier)
 	var city := Streets.plan("town", grid, Town.MAX_TIER)
-	for cell: Vector2i in [Vector2i(40, 21), Vector2i(33, 26), Vector2i(37, 26), Vector2i(38, 22), Vector2i(43, 27)]:
+	for cell: Vector2i in [Vector2i(40, 21), Vector2i(38, 22), Vector2i(43, 27)]:
 		assert_eq(city.get(cell), "basket", "the inlay at %s" % cell)
 	for cell: Vector2i in [Vector2i(39, 21), Vector2i(33, 25), Vector2i(33, 27), Vector2i(37, 25)]:
 		assert_eq(city.get(cell), "sandstone", "sandstone beside the inlay at %s" % cell)
-	for cell: Vector2i in [Vector2i(44, 24), Vector2i(47, 24)]:
-		assert_eq(city.get(cell), "sandstone", "no line to the east side, where no way comes in, at %s" % cell)
+	for cell: Vector2i in [Vector2i(44, 24), Vector2i(47, 24), Vector2i(33, 26), Vector2i(37, 26)]:
+		assert_eq(city.get(cell), "sandstone", "no line east or west: one line, from the hall's door, at %s" % cell)
 	# Soft edges: the setts join the cobbled streets and round off against
 	# the square's flags; the flags run whole up to them.
 	var mouth := Vector2i(32, 26)
