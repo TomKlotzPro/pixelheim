@@ -84,6 +84,15 @@ On the Night of Bells one hushed run of five had a 19 ms stall at -41.7 as the s
 
 The music's own level is about -23 to -34 dBFS. A hushed door or gate begins 0.15 s and a frame later on the web; the long tasks are the same. A first page in a fresh browser now and then ran far longer (the cave 1023 ms, the line 920, the door 467): a build's under the hush now, the line's not. In a fresh browser the line's frame was 66-68 ms and held the music 29 ms, at full level. The web download (90.7 MiB as files, 56.7 MiB gzipped) is mostly the bundle's music: 38.5 MiB of Ogg in the 52.5 MiB pck (gzip takes nothing off it), the engine's wasm 37.7 MiB (9.6 gzipped), the effects' and beds' takes 7.4 MiB (imported as QOA), all the rest some 6 MiB.
 
+**A first visit to the web build** (PIX-518, 2026-11-17, the export with the packs, served gzipped as GitHub Pages serves it, headless Chrome with no cache and the network held by CDP's `Network.emulateNetworkConditions`, 40 ms latency). The pck was 62.3 MB (54.0 gzipped), 47 of them the paid audio, all waited for before the first frame. Now `index.pck` is 14.9 MB (9.4 gzipped) and the paid audio comes after the start in `sfx.pck` (5.7 MB, 4.8 gzipped) and `music.pck` (41.9 MB, 39.8 gzipped; `ui.md`'s Sound):
+
+| Line | Before the title, before | after | The title, before | after | sfx.pck mounted | music.pck mounted |
+|---|---|---|---|---|---|---|
+| 0.6 MB/s (Pages, cold, as Tom measured it) | 64.2 MB | 19.7 MB | 109.4 s | 35.5 s | 42.7 s | 110.0 s |
+| 2 MB/s | 64.2 MB | 19.7 MB | 34.5 s | 12.5 s | 14.1 s | 35.0 s |
+
+What is left before the title is the engine (wasm, 10.1 MB gzipped) and the pck's 9.4, most of it the game's own WAVs. Mounting a pack takes one frame (13.4-13.8 ms the takes, 16.5-17.0 the tracks, timed in a scratch export: the bytes copied out of the browser's buffer, written to `/tmp`, the pack's index read, the lists read again), under the music's 43 ms ring. `web_perf.py`, two rounds turn about with main's export, the same within the machine's noise: the City at night 2.20-2.30/2.70-2.90 -> 2.20-2.80/2.80-3.30, the Reach at night 2.70-2.90/3.20-3.30 -> 2.90-3.50/3.30-3.90, the line's slowest frame 12.9-15.1 -> 14.6-17.0 ms (the first round of the branch's ran high throughout, its second as main's). The music stays at Vorbis quality 5 (about 84 kbit/s): it no longer delays the start, and this machine's only Vorbis encoder (ffmpeg's own, which `music_prep.py` uses) fails an assertion at quality 2 and 3; a smaller bundle needs libvorbis and Tom's ear.
+
 ## Entering a map (`reentry`, ms)
 
 | Map | First visit | Again | Drawn beside (BESIDE total) | Nodes | of which decor |

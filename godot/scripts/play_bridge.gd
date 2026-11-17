@@ -195,6 +195,7 @@ func state() -> Dictionary:
 		"hour": "%02d:%02d" % [hour.x, hour.y], "night": DayNight.is_night(steps),
 		"paused": get_tree().paused, "seconds": snappedf(GameClock.seconds(), 0.01),
 		"played": snappedf(_played / float(Engine.physics_ticks_per_second), 0.01), "fading": fading(),
+		"sound": Sound.report(),
 	}
 	var world := get_tree().current_scene as World
 	if world == null or world.hud == null or world.map == null:

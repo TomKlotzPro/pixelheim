@@ -1,7 +1,8 @@
 """The game ships no tests (PIX-351): every export preset's exclude_filter
 keeps test/ and addons/gut out of the pack, and nothing the game runs; and
 its include_filter carries the files the game reads as they are, which
-Godot doesn't import (PIX-356).
+Godot doesn't import (PIX-356). The Web preset alone leaves the paid audio
+out, for tools/audio_packs.gd's packs, fetched after the start (PIX-518).
 
     python3 -m unittest discover -s godot/tools -p 'test_*.py'
 """
@@ -9,6 +10,7 @@ import configparser
 import fnmatch
 import glob
 import os
+import re
 import unittest
 
 PRESETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "export_presets.cfg")
@@ -49,6 +51,31 @@ class ExportTest(unittest.TestCase):
                 self.assertFalse(matched(path, exclude_filter), f"{name} would leave out {path}")
             for path in NOT_IMPORTED:
                 self.assertTrue(matched(path, include_filter), f"{name} would leave out {path}")
+
+    def test_only_the_web_leaves_the_paid_audio_to_its_packs(self):
+        """PIX-518: index.pck without the packs' takes and tracks but with
+        their lists (how Sound knows there are packs to fetch); the desktop
+        with everything; a pack for each kind left out, fetched by the name
+        Sound has, and built by the deploy."""
+        config = configparser.ConfigParser(interpolation=None)
+        config.read(PRESETS)
+        sounds = ["assets/audio/paid/hit_blade_1.wav", "assets/audio/paid/music_town.ogg"]
+        for section in [s for s in config.sections() if s.count(".") == 1]:
+            name = config[section].get("name").strip('"')
+            exclude_filter = config[section].get("exclude_filter").strip('"')
+            for path in sounds:
+                self.assertEqual(matched(path, exclude_filter), name == "Web", f"{name}: {path}")
+            for path in ["assets/audio/paid/takes.json", "assets/audio/paid/music.json", "assets/audio/sfx/hurt.wav"]:
+                self.assertFalse(matched(path, exclude_filter), f"{name} would leave out {path}")
+        tool = open(os.path.join(GODOT, "tools", "audio_packs.gd")).read()
+        packs = dict(re.findall(r'"(\w+\.pck)": "(\w+)"', tool))
+        self.assertEqual(sorted(packs.values()), ["ogg", "wav"], "a pack for each kind the Web preset leaves out")
+        fetched = re.search(r"const PACKS: Array\[String\] = \[(.*)\]", open(os.path.join(GODOT, "scripts", "sound.gd")).read()).group(1)
+        self.assertEqual(sorted(re.findall(r'"([^"]+)"', fetched)), sorted(packs), "Sound fetches the packs the tool writes")
+        deploy = open(os.path.join(GODOT, "..", ".github", "workflows", "deploy.yml")).read()
+        self.assertIn("tools/audio_packs.gd", deploy, "the deploy builds the packs")
+        for pack in packs:
+            self.assertIn("export/web/" + pack, deploy, f"the deploy fails without {pack}")
 
 
 if __name__ == "__main__":

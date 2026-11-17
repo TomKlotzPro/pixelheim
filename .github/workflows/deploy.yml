@@ -66,6 +66,12 @@ jobs:
           fi
           mkdir -p godot/export/web
           godot --headless --path godot --export-release Web export/web/index.html
+          # The packs' audio in packs of its own beside the page (PIX-518):
+          # the Web preset leaves it out of index.pck, and the game fetches
+          # sfx.pck and music.pck once it runs. A site without them would
+          # play the game's own sounds for good, so their absence fails.
+          godot --headless --audio-driver Dummy --path godot -s tools/audio_packs.gd
+          test -s godot/export/web/sfx.pck && test -s godot/export/web/music.pck
           mkdir -p site
           cp -R godot/export/web/. site/
       # Publishes to the gh-pages branch root, and nothing else stays there:
