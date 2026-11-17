@@ -235,7 +235,7 @@ func test_barrels_and_crates_are_at_the_folk_s_scale() -> void:
 	assert_eq(Hamlet.store("mountain_road", "barrel", Vector2i.ZERO), "tub", "the smith quenches in a tub")
 	assert_eq(Hamlet.store("mountain_road", "crate", Vector2i.ZERO), "coal")
 	assert_eq(Hamlet.store("frostgate", "crate", Vector2i(7, 38)), "woodpile_snow", "the hermit's woodpile by his hut")
-	assert_has(Hamlet.STORES[""]["crate"], Hamlet.store("frostgate", "crate", Vector2i(42, 38)), "the caravan's crates")
+	assert_eq(Hamlet.store("frostgate", "crate", Vector2i(42, 38)), "box", "the caravan's crates shut against the snow")
 
 
 ## PIX-524: the town's crates and barrels aren't one crate and one keg by

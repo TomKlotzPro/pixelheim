@@ -58,9 +58,11 @@ const SHEDS := {"frostgate": [Vector2i(17, 38)]}
 ## stood as tall as the villager beside them, a barrel on a crate a tower.
 ## By look, what a settlement keeps in them, one of each list by its cell
 ## (PIX-524: the one crate stood by nearly every door): a crate shut or
-## opened or a sack and a basket of apples, a keg or a pair of them.
+## opened or a sack and a basket of apples, a keg or a pair of them; under
+## the Frostgate's snow, the crates shut (no apples in the snow).
 const STORES := {
 	"": {"barrel": ["keg", "barrels"], "crate": ["box", "crate_ajar", "sack_basket"]},
+	"frost": {"barrel": ["keg", "barrels"], "crate": ["box"]},
 	"smithy": {"barrel": ["tub"], "crate": ["coal"]},
 	"mine": {"barrel": ["keg"], "crate": ["coal"]},
 }

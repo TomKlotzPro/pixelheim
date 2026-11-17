@@ -214,7 +214,7 @@ const MARKET := [
 	{"tile": CLOTH[0], "cell": Vector2i(30, 24), "on": Vector2i(3, -6), "age": 3},
 	{"tile": CLOTH[1], "cell": Vector2i(30, 24), "on": Vector2i(10, -7), "age": 3},
 	{"tile": CLOTH[2], "cell": Vector2i(30, 24), "on": Vector2i(17, -9), "age": 3},
-	{"tile": JUG, "cell": Vector2i(49, 27), "age": 4},
+	{"tile": JUG, "cell": Vector2i(51, 27), "age": 4},
 	{"art": "handcart", "cell": Vector2i(50, 24), "age": 4},
 	{"tile": FLOUR, "cell": Vector2i(50, 24), "on": Vector2i(2, -6), "age": 4},
 	{"art": "fish_crate", "cell": Vector2i(50, 24), "on": Vector2i(11, -5), "age": 4},

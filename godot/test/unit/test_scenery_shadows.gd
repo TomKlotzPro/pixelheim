@@ -83,12 +83,22 @@ func _feet(view: MapView) -> Dictionary:
 ## PIX-524: what the settlements put up casts as the trees do (PIX-521's
 ## audit: only trees, lamps and houses did), with the pack or without:
 ## Saltmere's stall, racks, cart and keg, the town's crates and kegs, its
-## roofed well, the shrine's knight and the market's crates, each from the
-## bottom of its own cells.
+## roofed well, the shrine's knight and the market's crates, its boards and
+## post box, each from the bottom of its own cells.
 func test_the_dressing_casts() -> void:
+	# The Post open, so the town's post box stands among its camps.
+	var quests := GameState.progression.quests.duplicate()
+	GameState.progression.quests["letter_wenna"] = {"progress": 1, "done": true}
 	for id: String in ["saltmere", "town"]:
 		var view := _draw(id)
 		var feet := _feet(view)
+		# The camps' tents, the town's boards and its post box (CampsLayer);
+		# a torch's flame casts none.
+		if id == "town":
+			assert_true(view.camps.has(Post.box_cell()), "the post box stands")
+		for cell: Vector2i in view.camps:
+			if view.camps[cell]["kind"] != "torch":
+				assert_true(feet.has(cell), "%s's %s at %s casts" % [id, view.camps[cell]["kind"], cell])
 		var standing: Array = view.hamlet["pieces"].filter(func(piece: Dictionary) -> bool:
 			return piece["kind"] == "stand" and piece.has("art") and piece["art"] != "lamp_post")
 		if id == "saltmere":
@@ -100,6 +110,7 @@ func test_the_dressing_casts() -> void:
 			if prop["kind"] in ["barrel", "crate", "well", "shrine", "stall"]:
 				var covers: Array = prop["covers"]
 				assert_true(covers.any(func(cell: Vector2i) -> bool: return feet.has(cell)), "%s's %s at %s casts" % [id, prop["kind"], prop["cell"]])
+	GameState.progression.quests = quests
 
 
 ## PIX-524: the Post's road casts too, its signposts and a waystation built

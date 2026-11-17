@@ -189,7 +189,7 @@ func _draw_past() -> void:
 	add_child(_past)
 	for prop: Dictionary in past.outdoor_props["props"]:
 		if _inside(prop["cell"]):
-			var piece := _still_prop(prop)
+			var piece := _still_prop(past, prop)
 			_past.add_child(piece)
 			_rubble.append(piece)
 	# What it draws untoned (houses, spans, the rubble) takes the ground's
@@ -207,17 +207,20 @@ func _draw_past() -> void:
 			_past_materials.append(item.material as ShaderMaterial)
 
 
-## A prop of the town as it stood, still (a lamp unlit, PIX-311), on its foot.
-func _still_prop(prop: Dictionary) -> Node2D:
+## A prop of the town as it stood on `past`, still (a lamp unlit, PIX-311,
+## in the look the live town gives it: PropsLayer.look_of), on its foot.
+func _still_prop(past: MapView, prop: Dictionary) -> Node2D:
 	var foot: Rect2 = prop["foot"]
 	var sort_y := foot.end.y if foot.has_area() else float(TILE)
 	var root := Node2D.new()
 	root.position = Vector2(prop["cell"] * TILE) + Vector2(0, sort_y)
 	if prop["kind"] == "lamp":
+		var drawn := LampArt.look(PropsLayer.look_of(past, prop["cell"]))
+		var size: Vector2i = drawn["size"]
 		var post := Sprite2D.new()
-		post.texture = LampArt.post()
+		post.texture = drawn["cold"]
 		post.centered = false
-		post.position = Vector2(0, TILE - LampArt.size().y - sort_y)
+		post.position = Vector2((TILE - size.x) / 2.0, TILE - size.y - sort_y)
 		root.add_child(post)
 		return root
 	for piece: Array in prop["tiles"]:

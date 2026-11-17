@@ -192,3 +192,20 @@ func test_the_props_are_each_their_own() -> void:
 	var bunting: Dictionary = Yards.PIECES.filter(func(entry: Dictionary) -> bool: return entry.get("art", "") == "bunting" and entry.get("high", 0) == 0)[0]
 	assert_eq(bunting["cell"] + Vector2i.LEFT, Yards.SQUARE_LAMPS[0], "the bunting tied to the first")
 	assert_eq(bunting["cell"] + Vector2i(int(bunting["line"]), 0), Yards.SQUARE_LAMPS[1], "and to the second")
+
+
+## PIX-524's review: the square's lamp stands a cell taller than the post,
+## a lantern either side, so nothing stands in the cells its picture reaches
+## (the City's jug sat on the south-east one like a hat).
+func test_nothing_stands_under_the_square_lamps() -> void:
+	var size: Vector2i = LampArt.look("double")["size"]
+	var up := ceili(float(size.y) / MapView.TILE) - 1
+	var side := ceili((size.x - MapView.TILE) / 2.0 / MapView.TILE)
+	for age in Town.MAX_TIER + 1:
+		for piece: Dictionary in _town(age)["planned"]["pieces"]:
+			if piece["kind"] != "stand":
+				continue
+			for cell: Vector2i in piece["cells"]:
+				for lamp: Vector2i in Yards.SQUARE_LAMPS:
+					var off := cell - lamp
+					assert_false(absi(off.x) <= side and off.y >= -up and off.y <= 0, "age %d: %s stands in the lamp at %s" % [age, cell, lamp])
