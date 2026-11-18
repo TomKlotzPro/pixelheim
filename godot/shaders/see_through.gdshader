@@ -20,7 +20,7 @@ void vertex() {
 void fragment() {
 	COLOR.a *= see_through(canvas_pos, foot);
 	if (relief > 0.0) {
-		NORMAL_MAP = RELIEF_NORMAL(RELIEF_GRAIN, true);
+		NORMAL_MAP = RELIEF_NORMAL(RELIEF_GRAIN, RELIEF_DARK, true);
 	} else {
 		NORMAL_MAP = RELIEF_FLAT;
 	}

@@ -347,7 +347,7 @@ void fragment() {
 	// Light relief (PIX-528): the torches shape the stone, never the sea's
 	// pools (a cell the sea reaches stays flat).
 	if (relief > 0.0 && m.g == 0.0) {
-		NORMAL_MAP = RELIEF_NORMAL(RELIEF_GRAIN, false);
+		NORMAL_MAP = RELIEF_NORMAL(RELIEF_GRAIN, RELIEF_DARK, false);
 	} else {
 		NORMAL_MAP = RELIEF_FLAT;
 	}

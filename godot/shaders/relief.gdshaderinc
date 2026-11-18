@@ -4,7 +4,7 @@
 // the normal (NORMAL_MAP) a light takes it by, in light() below. A shader
 // with the relief includes linear.gdshaderinc first, then this, and in its
 // fragment() writes
-//     NORMAL_MAP = <relief here> ? RELIEF_NORMAL(RELIEF_GRAIN, <a sprite>) : RELIEF_FLAT;
+//     NORMAL_MAP = <relief here> ? RELIEF_NORMAL(<grain>, <dark>, <a sprite>) : RELIEF_FLAT;
 // always, both ways: a NORMAL_MAP left unwritten decodes to a skewed normal.
 // Writing NORMAL_MAP turns Godot's normal mapping on for good, so light()
 // is ours: with the relief off it lights as Godot lights an item with no
@@ -14,20 +14,29 @@
 // 0 with Light relief off, Lights.RELIEF on (LightRig).
 global uniform float relief;
 // How steep one tone's step makes the surface.
-const float RELIEF_K = 12.0;
+const float RELIEF_K = 20.0;
 // Steps of tone under this are the drawing's grain, not its shape: cored out,
-// so paving and a prop's mottling don't turn to pebbles. A wall's plaster and
-// the open ground (snow, grass, cobbles), more: in linear light a speck on
-// the snow is as big a step as a joint on dark paving.
+// so a prop's mottling doesn't turn to pebbles. The ground (snow, grass,
+// cobbles, paving, a room's floor) and a wall's plaster, more.
 const float RELIEF_GRAIN = 0.05;
-const float RELIEF_SOFT_GRAIN = 0.10;
-// A step over the grain shapes no more than this much: a painted stripe or a
-// speck slopes as gently as an outline, never into a lit and a dark column.
-const float RELIEF_STEP = 0.03;
+const float RELIEF_SOFT_GRAIN = 0.07;
+// A step over the grain shapes up to RELIEF_STEP where it goes down into a
+// dark (an outline, a beam, a crate's frame, the joint between two stones,
+// a sprite's own edge: the art's shape), and no more than RELIEF_SOFT_STEP
+// between two lit tones (a stall's painted stripe, a speck on the snow, the
+// plaster's mottling), which would split into a lit and a dark column. Dark
+// is under RELIEF_DARK on a prop, a house or a dungeon, where a stall's red
+// stripe is no shape; under RELIEF_GROUND_DARK on the ground, where the
+// joints between cobbles are as light as that stripe and the snow's specks
+// lighter still.
+const float RELIEF_STEP = 0.15;
+const float RELIEF_SOFT_STEP = 0.02;
+const float RELIEF_DARK = 0.10;
+const float RELIEF_GROUND_DARK = 0.25;
 // The relief is whole where the light's own falloff (its texture's alpha, 1
 // at its heart, 0 at its edge) is over this, and gone at its edge: each light
 // by its own reach, the same at any window size.
-const float RELIEF_FADE = 0.5;
+const float RELIEF_FADE = 0.2;
 const vec3 RELIEF_FLAT = vec3(0.5, 0.5, 1.0);
 
 // A pixel's height: its luminance in linear light, times its alpha.
@@ -51,21 +60,25 @@ vec2 relief_uv(vec2 uv, vec2 off, vec2 px, vec4 region, bool cut) {
 	return clamp(at, lo + 0.5 * px, hi - 0.5 * px);
 }
 
-float relief_step(float d, float grain) {
-	return clamp(d - clamp(d, -grain, grain), -RELIEF_STEP, RELIEF_STEP);
+// The step from height `b` to `a`, its grain cored out and capped by how dark
+// its darker side is.
+float relief_step(float a, float b, float grain, float dark) {
+	float d = a - b;
+	float cap = mix(RELIEF_STEP, RELIEF_SOFT_STEP, smoothstep(0.5 * dark, dark, min(a, b)));
+	return clamp(d - clamp(d, -grain, grain), -cap, cap);
 }
 
 // The normal from the heights left, right, up and down. A flipped piece is
 // mirrored on the screen, never in its UV (its region's size is negative).
-vec3 relief_normal(float l, float r, float u, float d, float grain, vec4 region) {
-	vec2 slope = vec2(relief_step(l - r, grain), relief_step(d - u, grain)) * sign(region.zw);
+vec3 relief_normal(float l, float r, float u, float d, float grain, float dark, vec4 region) {
+	vec2 slope = vec2(relief_step(l, r, grain, dark), relief_step(d, u, grain, dark)) * sign(region.zw);
 	return normalize(vec3(slope * RELIEF_K * relief, 1.0)) * 0.5 + 0.5;
 }
 
 // TEXTURE is read here, in the fragment() the macro is written in, never in a
 // function of our own (art.md).
 #define RELIEF_TAP(dx, dy, cut) relief_h(texture(TEXTURE, relief_uv(UV, vec2(dx, dy), TEXTURE_PIXEL_SIZE, REGION_RECT, cut)))
-#define RELIEF_NORMAL(grain, cut) relief_normal(RELIEF_TAP(-1.0, 0.0, cut), RELIEF_TAP(1.0, 0.0, cut), RELIEF_TAP(0.0, -1.0, cut), RELIEF_TAP(0.0, 1.0, cut), grain, REGION_RECT)
+#define RELIEF_NORMAL(grain, dark, cut) relief_normal(RELIEF_TAP(-1.0, 0.0, cut), RELIEF_TAP(1.0, 0.0, cut), RELIEF_TAP(0.0, -1.0, cut), RELIEF_TAP(0.0, 1.0, cut), grain, dark, REGION_RECT)
 
 // Off, or the lightning's flat sky: the light as Godot gives it with no
 // normal map (a directional light's alpha is its energy again, as in
