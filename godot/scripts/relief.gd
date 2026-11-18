@@ -25,13 +25,26 @@ static func material(tiles := false) -> ShaderMaterial:
 ## `node` and everything under it: each sprite and tile layer with no
 ## material of its own, nor its parent's, wears material(). Never an
 ## animated sprite (flames, the fountain's jet, boats, animals), never what
-## has a material already (unshaded, a glow, the ground's toning, see-through).
+## has a material already (unshaded, a glow, the ground's toning, see-through),
+## never a character's (on_character).
 static func dress(node: Node) -> void:
 	var pieces := node.find_children("*", "", true, false)
 	pieces.append(node)
 	for piece: Node in pieces:
-		if (piece is Sprite2D or piece is TileMapLayer) and (piece as CanvasItem).material == null and not (piece as CanvasItem).use_parent_material:
+		if (piece is Sprite2D or piece is TileMapLayer) and (piece as CanvasItem).material == null and not (piece as CanvasItem).use_parent_material and not on_character(piece):
 			(piece as CanvasItem).material = material(piece is TileMapLayer)
+
+
+## Whether `piece` is part of the hero, a foe, a villager or an animal (its
+## ground shadow, the hero's ailment icon): characters stay lit as they were,
+## a 14 px face would turn to bumps.
+static func on_character(piece: Node) -> bool:
+	var at := piece
+	while at != null:
+		if at is CharacterBody2D or at is AnimatableBody2D:
+			return true
+		at = at.get_parent()
+	return false
 
 
 ## How many pieces under `node` wear material() (the report's relief=).

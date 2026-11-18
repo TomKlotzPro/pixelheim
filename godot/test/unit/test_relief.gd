@@ -97,6 +97,29 @@ func test_dress_gives_the_plain_pieces_the_material() -> void:
 	root.free()
 
 
+## The hero's ailment icon, a foe's or a villager's ground shadow, the
+## dodge's ghost among the actors: characters stay as they were.
+func test_dress_leaves_the_characters() -> void:
+	var root := Node2D.new()
+	var hero := CharacterBody2D.new()
+	var icon := Sprite2D.new()
+	hero.add_child(icon)
+	var folk := AnimatableBody2D.new()
+	var shadow := Sprite2D.new()
+	folk.add_child(shadow)
+	root.add_child(hero)
+	root.add_child(folk)
+	Relief.dress(root)
+	Relief.dress(icon)
+	assert_null(icon.material, "the hero's ailment icon")
+	assert_null(shadow.material, "a villager's ground shadow")
+	assert_true(Relief.on_character(icon))
+	assert_false(Relief.on_character(root))
+	root.free()
+	var code := FileAccess.get_file_as_string("res://scripts/player.gd")
+	assert_string_contains(code.substr(code.find("func _ghost()")), "ghost.use_parent_material = true", "the dodge's ghost, added among the actors")
+
+
 ## Whatever the town draws with no material of its own wears the relief's,
 ## with the pack or without: none is left flat by a place that makes it.
 func test_a_drawn_town_leaves_no_plain_piece_flat() -> void:
@@ -112,7 +135,7 @@ func test_a_drawn_town_leaves_no_plain_piece_flat() -> void:
 	for top: Node in [view.under, view.stand]:
 		for piece: Node in top.find_children("*", "", true, false):
 			var item := piece as CanvasItem
-			if (piece is Sprite2D or piece is TileMapLayer) and item.material == null and not item.use_parent_material:
+			if (piece is Sprite2D or piece is TileMapLayer) and item.material == null and not item.use_parent_material and not Relief.on_character(piece):
 				flat.append(item.get_path())
 	assert_eq(flat, [], "every plain piece dressed")
 	assert_gt(Relief.worn(view.under) + Relief.worn(view.stand), 0)
