@@ -7,8 +7,9 @@
 //     NORMAL_MAP = <relief here> ? RELIEF_NORMAL(RELIEF_GRAIN) : RELIEF_FLAT;
 // always, both ways: a NORMAL_MAP left unwritten decodes to a skewed normal.
 // Writing NORMAL_MAP turns Godot's normal mapping on for good, so light()
-// is ours: with the relief off it lights exactly as Godot lights an item
-// with no normal map, and every shader writing NORMAL_MAP has it.
+// is ours: with the relief off it lights as Godot lights an item with no
+// normal map, and every shader writing NORMAL_MAP has it. Its shadows take
+// the art's colour (below), as on every floor (frozen, puddles, stair_frost).
 
 // 0 with Light relief off, Lights.RELIEF on (LightRig).
 global uniform float relief;
@@ -70,4 +71,11 @@ void light() {
 		shade = clamp(mix(1.0, lit, near * min(relief, 1.0)), 0.0, 2.0);
 	}
 	LIGHT = vec4(LIGHT_COLOR.rgb * COLOR.rgb * LIGHT_ENERGY * shade, LIGHT_IS_DIRECTIONAL ? 1.0 : LIGHT_COLOR.a);
+	// A night shadow (PIX-528): Godot blends a shadowed pixel from this light
+	// to the light's shadow colour, which never met the art's own colour, so
+	// over ground darker than about 0.43 a shadow's soft edge came out
+	// brighter than both the lit ground and the shadow, a light outline.
+	// The art's colour carried into it, only the alpha falls across the edge:
+	// a shadow is a share of the light on any ground (NightShadows.DEPTH).
+	SHADOW_MODULATE.rgb = COLOR.rgb * shade * max(LIGHT_ENERGY, 1.0);
 }
