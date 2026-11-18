@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.388.0",
+      "date": "2026-11-18",
+      "codename": "Shaped by the Flame",
+      "notes": [
+        "New option, Light relief: at night the lamps, torches and your lantern shape what they light, the side of a stone, a beam or a crate facing the flame catching it; off by default for now, try it in Options",
+        "Night shadows no longer glow at their edges on dark ground: a shadow is now the same share of the light everywhere, darker on dark ground, lighter on snow"
+      ]
+    },
+    {
       "version": "0.387.0",
       "date": "2026-11-17",
       "codename": "Worthy of the Light",
