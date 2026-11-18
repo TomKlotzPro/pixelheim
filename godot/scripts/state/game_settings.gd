@@ -33,8 +33,10 @@ var large_text := false
 var clear_warnings := false
 ## Bright things bloom softly (PIX-222).
 var glow := true
-## The lantern and the lamps cast shadows at night (PIX-490).
-var shadows := true
+## The lamps and fires cast shadows at night (PIX-490), off by default since
+## 2026-11-18: the long wedges read as a field of view (Tom). Kept under
+## `night_shadows`, so an older file's `shadows` takes the new default.
+var shadows := false
 ## Lightning flashes (PIX-491): off, a strike is one slow soft brightening,
 ## as it is with Reduce motion.
 var flashes := true
@@ -72,7 +74,7 @@ func load_file() -> void:
 	large_text = config.get_value(SECTION, "large_text", large_text)
 	clear_warnings = config.get_value(SECTION, "clear_warnings", clear_warnings)
 	glow = config.get_value(SECTION, "glow", glow)
-	shadows = config.get_value(SECTION, "shadows", shadows)
+	shadows = config.get_value(SECTION, "night_shadows", shadows)
 	flashes = config.get_value(SECTION, "flashes", flashes)
 	hints = config.get_value(SECTION, "hints", hints)
 	quest_marks = config.get_value(SECTION, "quest_marks", quest_marks)
@@ -103,7 +105,7 @@ func save_file() -> void:
 	config.set_value(SECTION, "large_text", large_text)
 	config.set_value(SECTION, "clear_warnings", clear_warnings)
 	config.set_value(SECTION, "glow", glow)
-	config.set_value(SECTION, "shadows", shadows)
+	config.set_value(SECTION, "night_shadows", shadows)
 	config.set_value(SECTION, "flashes", flashes)
 	config.set_value(SECTION, "language", language)
 	config.set_value(SECTION, "hints", hints)
