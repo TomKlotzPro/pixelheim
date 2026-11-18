@@ -8,14 +8,18 @@ class_name Relief
 ## and what comes to stand among the actors later.
 
 static var _material: ShaderMaterial
+static var _tiles: ShaderMaterial
 
 
-## The one material every plain piece shares.
-static func material() -> ShaderMaterial:
+## The one material every plain sprite shares, or every plain tile layer
+## (`tiles`: its taps never clamped to a tile, as a TileSet pads its tiles).
+static func material(tiles := false) -> ShaderMaterial:
 	if _material == null:
 		_material = ShaderMaterial.new()
 		_material.shader = preload("res://shaders/relief.gdshader")
-	return _material
+		_tiles = _material.duplicate() as ShaderMaterial
+		_tiles.set_shader_parameter("cut", false)
+	return _tiles if tiles else _material
 
 
 ## `node` and everything under it: each sprite and tile layer with no
@@ -27,11 +31,11 @@ static func dress(node: Node) -> void:
 	pieces.append(node)
 	for piece: Node in pieces:
 		if (piece is Sprite2D or piece is TileMapLayer) and (piece as CanvasItem).material == null and not (piece as CanvasItem).use_parent_material:
-			(piece as CanvasItem).material = material()
+			(piece as CanvasItem).material = material(piece is TileMapLayer)
 
 
 ## How many pieces under `node` wear material() (the report's relief=).
 static func worn(node: Node) -> int:
 	if _material == null:
 		return 0
-	return node.find_children("*", "", true, false).filter(func(piece: Node) -> bool: return piece is CanvasItem and (piece as CanvasItem).material == _material).size()
+	return node.find_children("*", "", true, false).filter(func(piece: Node) -> bool: return piece is CanvasItem and (piece as CanvasItem).material in [_material, _tiles]).size()

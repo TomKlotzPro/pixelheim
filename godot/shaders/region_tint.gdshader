@@ -262,7 +262,7 @@ void fragment() {
 	// Light relief (PIX-528), of the art as it is drawn here: none on the
 	// water, a puddle, the ice or a bank drawn again over Shade's.
 	if (relief > 0.0 && !water && !puddle && !iced && inland == INLAND_NONE) {
-		NORMAL_MAP = RELIEF_NORMAL(RELIEF_GRAIN);
+		NORMAL_MAP = RELIEF_NORMAL(RELIEF_GRAIN, true);
 	} else {
 		NORMAL_MAP = RELIEF_FLAT;
 	}
