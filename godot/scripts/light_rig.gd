@@ -170,6 +170,12 @@ func _screen_pass(layer: CanvasLayer, shader: Shader) -> ColorRect:
 	return rect
 
 
+## The shaders' `relief` global, set each frame (PIX-528): Lights.RELIEF
+## with Light relief on, 0 off, where every shader lights as before.
+static func relief_strength() -> float:
+	return Lights.RELIEF if GameState.settings.relief else 0.0
+
+
 ## The hero carries a lantern: it only shows when it's dark. Once Aske
 ## lives in Pixelheim he keeps it trimmed (PIX-255: his perk, the settlers'
 ## `lantern` share), and it reaches that much further, from the moment he
@@ -264,7 +270,7 @@ func _process(delta: float) -> void:
 	var moon := dark * (1.0 - overcast) if outside and light_for(world.map) != Lights.ASH_NIGHT else 0.0
 	RenderingServer.global_shader_parameter_set("sun", Vector4(sun.x, sun.y, sun.z * (1.0 - overcast), moon))
 	# The lamps and the lantern shape the art, with Light relief on (PIX-528).
-	RenderingServer.global_shader_parameter_set("relief", Lights.RELIEF if GameState.settings.relief else 0.0)
+	RenderingServer.global_shader_parameter_set("relief", relief_strength())
 	var still: bool = GameState.settings.reduce_motion
 	var t := GameClock.seconds()
 	# The day through a room's window follows the sky, not the room's dark

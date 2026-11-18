@@ -1,5 +1,6 @@
 extends GutTest
-## Light relief (PIX-528): the option, kept and flipped; the rule that keeps
+## Light relief (PIX-528): the option, kept and flipped, and what the
+## LightRig hands the shaders for it; the rule that keeps
 ## it off exactly as before (every shader writing NORMAL_MAP lights through
 ## relief.gdshaderinc's light()); the plain pieces it dresses and those it
 ## leaves; and the lights' height.
@@ -45,6 +46,17 @@ func test_options_flip_it() -> void:
 	(_row(options, "Light relief")["adjust"] as Callable).call(-1)
 	assert_true(GameState.settings.relief, "and on again")
 	options.free()
+
+
+## What the LightRig hands the shaders each frame: nothing with the option
+## off, so every shader lights as before.
+func test_the_rig_hands_the_shaders_the_setting() -> void:
+	GameState.settings.relief = false
+	assert_eq(LightRig.relief_strength(), 0.0, "off: lit as before")
+	GameState.settings.relief = true
+	assert_eq(LightRig.relief_strength(), Lights.RELIEF, "on: the lights shape the art")
+	var rig := FileAccess.get_file_as_string("res://scripts/light_rig.gd")
+	assert_string_contains(rig.substr(rig.find("func _process(")), "global_shader_parameter_set(\"relief\", relief_strength())", "set every frame")
 
 
 func _row(options: OptionsScreen, label: String) -> Dictionary:
