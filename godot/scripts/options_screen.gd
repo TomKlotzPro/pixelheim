@@ -115,6 +115,8 @@ func _build() -> Array[Dictionary]:
 	out.append({"label": "Clear warnings", "value": "On" if settings.clear_warnings else "Off", "adjust": _flip.bind("clear_warnings")})
 	out.append({"label": "Glow", "value": "On" if settings.glow else "Off", "adjust": _flip.bind("glow")})
 	out.append({"label": "Shadows", "value": "On" if settings.shadows else "Off", "adjust": _flip.bind("shadows")})
+	# The lamps and the lantern shaping the art (PIX-528).
+	out.append({"label": "Light relief", "value": "On" if settings.relief else "Off", "adjust": _flip.bind("relief")})
 	# Lightning as a soft brightening instead (PIX-491).
 	out.append({"label": "Flashes", "value": "On" if settings.flashes else "Off", "adjust": _flip.bind("flashes")})
 	out.append({"label": "Hints", "value": "On" if settings.hints else "Off", "adjust": _flip.bind("hints")})

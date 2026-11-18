@@ -38,10 +38,14 @@ shader_type canvas_item;
 // of the map's own (`ice_map`, `ice_pixels`, read from `map_origin` alone:
 // no map beside it has ice), its shore rounded and bent off the grid, the
 // snow under it a ghost and its frost over the snow by the shore.
+//
+// Light relief (PIX-528, relief.gdshaderinc): the lamps and the lantern shape
+// the ground, the decor and the trees by their own light and dark.
 
 #include "res://shaders/wind.gdshaderinc"
 #include "res://shaders/linear.gdshaderinc"
 #include "res://shaders/see_through.gdshaderinc"
+#include "res://shaders/relief.gdshaderinc"
 
 uniform sampler2D tint_map : filter_linear, repeat_disable;
 uniform vec2 map_pixels;
@@ -254,6 +258,13 @@ void fragment() {
 	}
 	if (sway_alone) {
 		base.a *= see_through(world_pos - plane_origin, sorted_on);
+	}
+	// Light relief (PIX-528), of the art as it is drawn here: none on the
+	// water, a puddle, the ice or a bank drawn again over Shade's.
+	if (relief > 0.0 && !water && !puddle && !iced && inland == INLAND_NONE) {
+		NORMAL_MAP = RELIEF_NORMAL(RELIEF_GRAIN);
+	} else {
+		NORMAL_MAP = RELIEF_FLAT;
 	}
 	COLOR = vec4(to_canvas(base.rgb), base.a);
 }

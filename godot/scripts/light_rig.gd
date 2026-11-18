@@ -263,6 +263,8 @@ func _process(delta: float) -> void:
 	var sun := DayNight.sun(GameState.world.steps) if outside else Vector3.ZERO
 	var moon := dark * (1.0 - overcast) if outside and light_for(world.map) != Lights.ASH_NIGHT else 0.0
 	RenderingServer.global_shader_parameter_set("sun", Vector4(sun.x, sun.y, sun.z * (1.0 - overcast), moon))
+	# The lamps and the lantern shape the art, with Light relief on (PIX-528).
+	RenderingServer.global_shader_parameter_set("relief", Lights.RELIEF if GameState.settings.relief else 0.0)
 	var still: bool = GameState.settings.reduce_motion
 	var t := GameClock.seconds()
 	# The day through a room's window follows the sky, not the room's dark

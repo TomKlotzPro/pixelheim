@@ -552,6 +552,9 @@ func building(root: Node, slices: Slicer) -> void:
 	slices.add("set_pieces", _add_set_pieces.bind(data))
 	slices.add("rest", func() -> void:
 		furnish()
+		# Light relief on every plain piece drawn (PIX-528).
+		Relief.dress(under)
+		Relief.dress(stand)
 		_night = -1
 		set_night(DayNight.is_night(GameState.world.steps)))
 
@@ -570,6 +573,8 @@ func _setup(root: Node) -> void:
 	stand.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	stand.position = offset
 	stand.visible = not hidden
+	# And on what comes to stand among the actors later (PIX-528).
+	stand.child_entered_tree.connect(func(node: Node) -> void: Relief.dress(node))
 	if _actor_layer != null:
 		_actor_layer.add_child(stand)
 	actors = stand

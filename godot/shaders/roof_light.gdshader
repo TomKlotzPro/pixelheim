@@ -13,6 +13,7 @@
 shader_type canvas_item;
 
 #include "res://shaders/linear.gdshaderinc"
+#include "res://shaders/relief.gdshaderinc"
 
 global uniform vec4 sun;
 // Per atlas tile: r its slope (PunyTown.SLOPE_*, + EDGE_TOP), g how many
@@ -42,9 +43,11 @@ void fragment() {
 	vec2 at = texel - tile * pitch - (pitch - TILE) * 0.5;
 	vec2 code = floor(texelFetch(slopes, ivec2(tile), 0).rg * 255.0 + 0.5);
 	int kind = int(code.x);
+	bool roof = false;
 	if (kind > 0 && COLOR.a > 0.0) {
 		vec4 copy = texelFetch(TEXTURE, ivec2(texel + vec2(0.0, (code.y - 128.0) * pitch)), 0);
-		if (any(notEqual(texelFetch(TEXTURE, ivec2(texel), 0), copy))) {
+		roof = any(notEqual(texelFetch(TEXTURE, ivec2(texel), 0), copy));
+		if (roof) {
 			kind = kind % 8;
 			// The slope this pixel lies on, as it faces in the plane.
 			vec2 face = kind == 1 ? vec2(-1.0, 0.0) : (kind == 2 ? vec2(1.0, 0.0) : (kind == 3 ? vec2(0.0, -1.0) : vec2(0.0, 1.0)));
@@ -67,5 +70,12 @@ void fragment() {
 			rgb *= 1.0 + MOON * max(facing, 0.0) * SLOPE_MOON * moon;
 			COLOR.rgb = to_canvas(rgb);
 		}
+	}
+	// Light relief (PIX-528): a wall's plaster grain cored out more than a
+	// roof's, so it reads plastered, its beams, frames and stones shaped.
+	if (relief > 0.0) {
+		NORMAL_MAP = RELIEF_NORMAL(roof ? RELIEF_GRAIN : RELIEF_WALL_GRAIN);
+	} else {
+		NORMAL_MAP = RELIEF_FLAT;
 	}
 }

@@ -18473,6 +18473,10 @@ msgid "Large reading text"
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "Light relief"
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "Music volume"
 msgstr ""
 
