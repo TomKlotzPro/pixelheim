@@ -94,7 +94,7 @@ log-back-after | --map town --ail poison talk --keys esc | open=none toast=1 box
 # keeps by its house, the square's rims, the City's bunting lit at night;
 # with the paid pack (on Shade's CC0 art alone, none).
 yards-village | --map town --town-tier 2 --at 40,12 | map=town yards=(2:flat8,line3,on4,stand32,wall10)? | town
-yards-city-night | --map town --town-tier 4 --at 40,28 night | map=town yards=(4:flat15,line7,on15,stand89,wall39)? | town night
+yards-city-night | --map town --town-tier 4 --at 40,28 night | map=town yards=(4:flat15,line7,on15,stand89,wall43)? | town night
 # The market, the streets and their green by the age (PIX-382 step 4): one
 # bare stall in the Hamlet, the market's wares and the paving its traffic
 # wears growing with each age, the trades' signs and the planters from the

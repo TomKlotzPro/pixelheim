@@ -227,13 +227,26 @@ func test_barrels_and_crates_are_at_the_folk_s_scale() -> void:
 	# Shade's barrel stood 16 px, as tall as the villager (14) beside it.
 	for kind: String in ["barrel", "crate"]:
 		for map_id: String in ["town", "overworld"] + MAPS:
-			var art := Hamlet.store(map_id, kind, Vector2i.ZERO)
-			assert_true(HamletArt.PIECES.has(art), "%s's %s is drawn" % [map_id, kind])
-			assert_lte(_height(art), 12, "%s's %s (%s) stands below a villager's shoulder" % [map_id, kind, art])
+			for x in 6:
+				var art := Hamlet.store(map_id, kind, Vector2i(x, 0))
+				assert_true(HamletArt.PIECES.has(art), "%s's %s is drawn" % [map_id, kind])
+				assert_lte(_height(art), 12, "%s's %s (%s) stands below a villager's shoulder" % [map_id, kind, art])
+				assert_eq(HamletArt.cells_wide(art), 1, "%s on its one cell" % art)
 	assert_eq(Hamlet.store("mountain_road", "barrel", Vector2i.ZERO), "tub", "the smith quenches in a tub")
 	assert_eq(Hamlet.store("mountain_road", "crate", Vector2i.ZERO), "coal")
 	assert_eq(Hamlet.store("frostgate", "crate", Vector2i(7, 38)), "woodpile_snow", "the hermit's woodpile by his hut")
-	assert_eq(Hamlet.store("frostgate", "crate", Vector2i(42, 38)), "box", "the caravan's crates")
+	assert_eq(Hamlet.store("frostgate", "crate", Vector2i(42, 38)), "box", "the caravan's crates shut against the snow")
+
+
+## PIX-524: the town's crates and barrels aren't one crate and one keg by
+## every door.
+func test_a_door_keeps_its_own_stores() -> void:
+	var map := MapData.load_tiered("town", Town.projects_through(Town.MAX_TIER), Town.MAX_TIER)
+	var kept := {}
+	for cell: Vector2i in map.grid:
+		if map.tile_at(cell) in ["barrel", "crate"]:
+			kept[Hamlet.store("town", map.tile_at(cell), cell)] = true
+	assert_gte(kept.size(), 4, "a crate shut and opened, a sack and a basket, kegs: %s" % [kept.keys()])
 
 
 ## How many rows of `art` hold a pixel.

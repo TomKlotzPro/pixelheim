@@ -8,8 +8,11 @@ class_name LampArt
 ## (`glass`, the only part the dark doesn't touch). A lit window is its own
 ## glass lit amber (`panes`), the frame left in the night, and a room's
 ## windows by day are its glass full of the sky (`day_panes`). A camp's
-## torch stands on a stake (`stake`). Pictures are rows of characters, one
-## a pixel, keyed in PALETTE: art made in code, not cut from a sheet.
+## torch stands on a stake (`stake`). Pixelheim's lamps come in two more
+## looks (PIX-524: every lamp was the one post): a lamp on a bracket for a
+## house's corner and the square's post with a lantern either side (`look`).
+## Pictures are rows of characters, one a pixel, keyed in PALETTE: art made
+## in code, not cut from a sheet.
 
 ## Shade's palette, by the character the rows draw it with.
 const PALETTE := {
@@ -58,6 +61,75 @@ const POST := [
 	"....oooooooo....",
 	"................",
 ]
+## The square's lamp (PIX-524): the post a cell taller, an iron crossbar on
+## it under a finial, scrolls under the bar, and the street lamp's lantern
+## hung from each end. 32 wide: its post on the middle of its cell.
+const DOUBLE := [
+	"..............oooo..............",
+	".............ohiiko.............",
+	"..............okko..............",
+	"..oooooooooooooiioooooooooooooo.",
+	"..okiiooiiiiiiiiiiiiiiiiiiooiko.",
+	"..ooooikoooooooooooooookooikooo.",
+	"....oliikoko..ocmo..okoooliiko..",
+	"...oiiiiikooo.ocmo.ooo.oiiiiiko.",
+	"...okkkkkko...ocmo.....okkkkkko.",
+	"...okGgggko...ocmo.....okGgggko.",
+	"...okGgggko...ocmo.....okGgggko.",
+	"...okggogko...ocmo.....okggogko.",
+	"...okggngko...ocmo.....okggngko.",
+	"...okggngko...ocmo.....okggngko.",
+	"...okgiigko...ocmo.....okgiigko.",
+	"...oiiiiiio...ocmo.....oiiiiiio.",
+	"....okkkko....ocmo......okkkko..",
+	"..............ocmo..............",
+	"..............ocmo..............",
+	"..............ocmo..............",
+	"..............ocmo..............",
+	"..............ocmo..............",
+	"..............ocmo..............",
+	"..............ocmo..............",
+	"..............ocmo..............",
+	"..............ocmo..............",
+	"..............ocmo..............",
+	"..............ocmo..............",
+	"..............ocmo..............",
+	".............oiiiio.............",
+	".............ocmmwo.............",
+	"............ohlllllo............",
+	"............oiiiiiio............",
+	"............oooooooo............",
+	"................................",
+]
+## A lamp on a bracket for a house's corner (PIX-524): its plate on the
+## wall, a scrolled iron arm out of it and the street lamp's lantern hung
+## from the arm's end, to the east (flipped where the wall runs on east).
+## The clear rows under it lift it up its wall, the arm under the eave: on
+## the wall's foot, its lantern stood on the street.
+const BRACKET := [
+	"ooo.............",
+	"olioooooooooo...",
+	"ohkiiiiiiiiiko..",
+	"olooookooookko..",
+	"oho..oko..ooo...",
+	"olo...ooooiko...",
+	"ooo.....oliiko..",
+	".......oiiiiiko.",
+	".......okkkkkko.",
+	".......okGgggko.",
+	".......okGgggko.",
+	".......okggogko.",
+	".......okggngko.",
+	".......okggngko.",
+	".......okgiigko.",
+	".......oiiiiiio.",
+	"........okkkko..",
+	"................",
+	"................",
+	"................",
+	"................",
+	"................",
+]
 ## The lantern's glass lit, in three beats of the flame: where it stands in
 ## the post (its top-left), and each beat's rows.
 const GLASS_AT := Vector2i(6, 7)
@@ -67,6 +139,12 @@ const LIT := [
 	["rrar", "aYYa", "aYya", "aYYa", "arar", "rrrr"],
 ]
 const LIT_FPS := 5.0
+## Each look (`look`): its rows and where each of its lanterns' glass stands.
+const LOOKS := {
+	"post": [POST, [GLASS_AT]],
+	"bracket": [BRACKET, [Vector2i(9, 9)]],
+	"double": [DOUBLE, [Vector2i(5, 9), Vector2i(25, 9)]],
+}
 ## The middle of the glass, in the post's pixels: where its halo stands.
 const HALO_AT := Vector2(8.0, 10.0)
 ## A camp torch's stake driven into the ground, a little earth round it:
@@ -115,8 +193,7 @@ static func picture(rows: Array) -> Image:
 	return image
 
 
-static var _post: ImageTexture
-static var _glass: SpriteFrames
+static var _looks := {}
 static var _stake: ImageTexture
 static var _panes: ImageTexture
 static var _day_panes: ImageTexture
@@ -125,27 +202,39 @@ static var _recess_panes: ImageTexture
 
 ## The street lamp, cold (its post and lantern, by day and night alike).
 static func post() -> ImageTexture:
-	if _post == null:
-		_post = ImageTexture.create_from_image(picture(POST))
-	return _post
+	return look("post")["cold"]
 
 
 ## How big the lamp is, in pixels: its foot on the bottom row.
 static func size() -> Vector2i:
-	return Vector2i(String(POST[0]).length(), POST.size())
+	return look("post")["size"]
 
 
 ## The lantern's glass lit, over the post at night: clear but for the glass,
 ## LIT's beats played in a loop.
 static func glass() -> SpriteFrames:
-	if _glass == null:
-		_glass = SpriteFrames.new()
-		_glass.set_animation_speed("default", LIT_FPS)
+	return look("post")["lit"]
+
+
+## Lamp `name` of LOOKS, drawn once: cold ("cold"), its glass lit over it in
+## LIT's beats ("lit", clear but for the glass), how big ("size") and the
+## middle of each lantern's glass, where a halo stands ("halos").
+static func look(name: String) -> Dictionary:
+	if not _looks.has(name):
+		var rows: Array = LOOKS[name][0]
+		var size := Vector2i(String(rows[0]).length(), rows.size())
+		var lit := SpriteFrames.new()
+		lit.set_animation_speed("default", LIT_FPS)
+		var halos: Array[Vector2] = []
+		for at: Vector2i in LOOKS[name][1]:
+			halos.append(Vector2(at) + HALO_AT - Vector2(GLASS_AT))
 		for beat: Array in LIT:
-			var image := Image.create(size().x, size().y, false, Image.FORMAT_RGBA8)
-			image.blit_rect(picture(beat), Rect2i(0, 0, 4, beat.size()), GLASS_AT)
-			_glass.add_frame("default", ImageTexture.create_from_image(image))
-	return _glass
+			var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
+			for at: Vector2i in LOOKS[name][1]:
+				image.blit_rect(picture(beat), Rect2i(0, 0, 4, beat.size()), at)
+			lit.add_frame("default", ImageTexture.create_from_image(image))
+		_looks[name] = {"cold": ImageTexture.create_from_image(picture(rows)), "lit": lit, "size": size, "halos": halos}
+	return _looks[name]
 
 
 ## A camp torch's stake (STAKE).

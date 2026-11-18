@@ -48,11 +48,52 @@ func build(view: MapView, slices: Slicer) -> void:
 	slices.add_each("shadows", UNITS, func(i: int) -> void:
 		if not view.has_ground_layers():
 			return
+		if i == 0:
+			_cast_dressing(view)
 		var casters := view.casters
 		for k in range(casters.size() * i / UNITS, casters.size() * (i + 1) / UNITS):
 			_stand(standing, casters[k])
 		if i == UNITS - 1:
 			_lay(view, standing))
+
+
+## What the settlements and the Post's roads put up that stands on the
+## ground casts as the trees do (PIX-524: PIX-521's audit found only trees,
+## lamps and houses casting, a stall or a cart afloat beside an anchored
+## tree), read off their plans as the houses are: every standing piece of
+## Hamlet's (a town's yards, a hub's, the farmland's: stalls, carts, racks,
+## kegs, crates, woodpiles, sledges, huts), every map, and the roads'
+## signposts, huts, benches and post boxes. What already casts where it is
+## drawn (the young trees and bushes, the potted ones, the lamps) is passed
+## over; what lies flat, hangs on a wall, floats or sits on a stall casts
+## nothing, nor a pasture's log fence (a run of its posts would lay a dark
+## band along it). A pack tile's shadow is a cell's (TILE_INK wide).
+static func _cast_dressing(view: MapView) -> void:
+	for piece: Dictionary in view.hamlet["pieces"]:
+		if piece["kind"] != "stand" or piece.get("lamp", false) or piece.get("art", "") == "lamp_post":
+			continue
+		if piece.has("tile") and (Yards.grows(piece["tile"]) or piece["tile"] in PunyProps.FENCE.values()):
+			continue
+		var bottom := Vector2(piece["cell"] * TILE) + Vector2(0, TILE)
+		if piece.has("tile"):
+			cast(view, bottom + Vector2(TILE / 2.0, 0), TILE_INK, TILE * (2 if piece.has("top") else 1))
+		else:
+			cast_art(view, piece["art"], bottom)
+	for piece: Dictionary in view.routes["pieces"]:
+		if piece["kind"] != "lamp":
+			cast_art(view, "post_box" if piece["kind"] == "box" else String(piece["kind"]), Vector2(piece["cell"] * TILE) + Vector2(0, TILE))
+
+
+## How wide a pack tile's piece is drawn, about: its shadow's width.
+const TILE_INK := 12.0
+
+
+## HamletArt's (or a hub's or a road's) piece `art` standing with the
+## bottom-left of its picture at `bottom_left` casts from its inked pixels
+## (PIX-524).
+static func cast_art(view: MapView, art: String, bottom_left: Vector2) -> void:
+	var inked := HamletArt.inked(art)
+	cast(view, bottom_left + Vector2(inked.get_center().x, inked.end.y - HamletArt.size(art).y), inked.size.x, inked.size.y)
 
 
 ## Gone at night, when the lamps take over: the sun's strength is none
