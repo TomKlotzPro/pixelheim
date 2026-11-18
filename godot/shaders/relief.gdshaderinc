@@ -16,9 +16,14 @@ global uniform float relief;
 // How steep one tone's step makes the surface.
 const float RELIEF_K = 12.0;
 // Steps of tone under this are the drawing's grain, not its shape: cored out,
-// so grass and paving don't turn to pebbles. A wall's plaster, more.
-const float RELIEF_GRAIN = 0.03;
-const float RELIEF_WALL_GRAIN = 0.10;
+// so paving and a prop's mottling don't turn to pebbles. A wall's plaster and
+// the open ground (snow, grass, cobbles), more: in linear light a speck on
+// the snow is as big a step as a joint on dark paving.
+const float RELIEF_GRAIN = 0.05;
+const float RELIEF_SOFT_GRAIN = 0.10;
+// A step over the grain shapes no more than this much: a painted stripe or a
+// speck slopes as gently as an outline, never into a lit and a dark column.
+const float RELIEF_STEP = 0.03;
 // The relief is whole where the light's own falloff (its texture's alpha, 1
 // at its heart, 0 at its edge) is over this, and gone at its edge: each light
 // by its own reach, the same at any window size.
@@ -47,7 +52,7 @@ vec2 relief_uv(vec2 uv, vec2 off, vec2 px, vec4 region, bool cut) {
 }
 
 float relief_step(float d, float grain) {
-	return d - clamp(d, -grain, grain);
+	return clamp(d - clamp(d, -grain, grain), -RELIEF_STEP, RELIEF_STEP);
 }
 
 // The normal from the heights left, right, up and down. A flipped piece is

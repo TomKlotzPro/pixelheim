@@ -260,9 +260,10 @@ void fragment() {
 		base.a *= see_through(world_pos - plane_origin, sorted_on);
 	}
 	// Light relief (PIX-528), of the art as it is drawn here: none on the
-	// water, a puddle, the ice or a bank drawn again over Shade's.
+	// water, a puddle, the ice or a bank drawn again over Shade's; the snow's
+	// specks and the cobbles' mottling cored out as a wall's plaster is.
 	if (relief > 0.0 && !water && !puddle && !iced && inland == INLAND_NONE) {
-		NORMAL_MAP = RELIEF_NORMAL(RELIEF_GRAIN, true);
+		NORMAL_MAP = RELIEF_NORMAL(RELIEF_SOFT_GRAIN, true);
 	} else {
 		NORMAL_MAP = RELIEF_FLAT;
 	}

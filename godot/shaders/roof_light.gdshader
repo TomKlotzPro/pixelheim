@@ -74,7 +74,7 @@ void fragment() {
 	// Light relief (PIX-528): a wall's plaster grain cored out more than a
 	// roof's, so it reads plastered, its beams, frames and stones shaped.
 	if (relief > 0.0) {
-		NORMAL_MAP = RELIEF_NORMAL(roof ? RELIEF_GRAIN : RELIEF_WALL_GRAIN, false);
+		NORMAL_MAP = RELIEF_NORMAL(roof ? RELIEF_GRAIN : RELIEF_SOFT_GRAIN, false);
 	} else {
 		NORMAL_MAP = RELIEF_FLAT;
 	}
