@@ -5009,6 +5009,10 @@ msgid "Night Watch"
 msgstr "Veille de nuit"
 
 #: assets/data/changelog.json
+msgid "Night shadows are now off by default; turn them on in Options: Shadows"
+msgstr "Les ombres de nuit sont désormais désactivées par défaut ; activez-les dans Options : Ombres"
+
+#: assets/data/changelog.json
 msgid "Night shadows no longer glow at their edges on dark ground: a shadow is now the same share of the light everywhere, darker on dark ground, lighter on snow"
 msgstr "Les ombres de nuit ne s'éclairent plus sur leurs bords quand le sol est sombre : une ombre prend partout la même part de la lumière, plus sombre sur un sol sombre, plus claire sur la neige"
 
@@ -5363,6 +5367,10 @@ msgstr "Menu Options : volume de la musique et des effets, lignes de balayage 
 #: assets/data/changelog.json
 msgid "Options on the title screen opens again: it was opening behind the title"
 msgstr "Les options de l'écran titre s'ouvrent de nouveau : elles s'ouvraient derrière le titre"
+
+#: assets/data/changelog.json
+msgid "Out of Sight"
+msgstr "Hors de vue"
 
 #: assets/data/changelog.json
 msgid "Out of the Way"
@@ -7553,6 +7561,10 @@ msgid "The stray stubs of plaster wall standing in the town's rooms are gone: th
 msgstr "Les bouts de mur en plâtre qui traînaient dans les pièces du village ont disparu : les fourneaux de la forge et les étagères de la boutique sont côte à côte, et les comptoirs coupés en deux n'en font plus qu'un"
 
 #: assets/data/changelog.json
+msgid "The sun's shadows end in a soft edge instead of a checkerboard, long at dusk as they are"
+msgstr "Les ombres du soleil se terminent par un bord doux plutôt qu'un damier, même longues au crépuscule"
+
+#: assets/data/changelog.json
 msgid "The tap bar carries what only a key did: drop, drop all and sort in the pack, put a skill on a key and forget in Skills, and it shrinks to fit the screen"
 msgstr "La barre tactile reprend ce que seul le clavier faisait : jeter, tout jeter et trier dans le sac, placer une compétence sur une touche et oublier dans Compétences, et elle se resserre pour tenir à l'écran"
 
@@ -8335,6 +8347,10 @@ msgstr "Votre héros, les villageois et tous les ennemis ont désormais une ombr
 #: assets/data/changelog.json
 msgid "Your house announces itself: a FOR SALE sign hangs over the door, and turns to HOME once the deed is yours"
 msgstr "Votre maison s'annonce : un écriteau À VENDRE pend au-dessus de la porte, et devient MAISON une fois le titre de propriété à vous"
+
+#: assets/data/changelog.json
+msgid "Your lantern no longer throws shadows out from you like a field of view; the lamps and fires still do"
+msgstr "Votre lanterne ne projette plus d'ombres autour de vous comme un champ de vision ; les lampes et les feux, si"
 
 #: assets/data/changelog.json
 msgid "Your look follows you everywhere: the world, battles, the inventory doll"
