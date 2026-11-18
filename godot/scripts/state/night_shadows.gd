@@ -22,8 +22,11 @@ const REACH := 240.0
 const FADE := 0.5
 ## How much of a light a shadow takes away: never all of it, and the
 ## night's own light is still under it, so a shadow is the night's blue,
-## never black.
-const DEPTH := 0.8
+## never black. A share of the light on any ground since the floors carry
+## the art's colour into a shadow (PIX-528, relief.gdshaderinc): before,
+## what was left was the light's own colour, nearly all of it over dark
+## grass and a light rim along the edge.
+const DEPTH := 0.6
 ## How soft a shadow's edge is (PointLight2D.shadow_filter_smooth).
 const SOFT := 2.5
 ## The tiles that stand tall and block a light by their cell: rock, walls,
@@ -252,7 +255,8 @@ static func faded(strength: float, wanted: bool, room: bool, delta: float) -> fl
 ## still gets. Godot blends from the light's colour times its energy to
 ## this colour times its alpha, so the colour carries the energy too: with
 ## the bare colour a dim lantern's shadow was nearly as bright as its
-## light, and brighter than it along its edge.
+## light, and brighter than it along its edge. The floors' light() carries
+## the art's colour into it too (SHADOW_MODULATE, PIX-528).
 static func left_in_shadow(color: Color, energy: float, strength: float) -> Color:
 	var lit := minf(energy, 1.0)
 	return Color(color.r * lit, color.g * lit, color.b * lit, 1.0 - DEPTH * clampf(strength, 0.0, 1.0))

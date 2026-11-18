@@ -173,4 +173,7 @@ void light() {
 	}
 	// A directional light's alpha is its energy again, not a falloff.
 	LIGHT = vec4(got, sky ? 1.0 : LIGHT_COLOR.a);
+	// A shadow takes a share of the light, as on every floor (PIX-528,
+	// relief.gdshaderinc).
+	SHADOW_MODULATE.rgb = COLOR.rgb * max(LIGHT_ENERGY, 1.0);
 }

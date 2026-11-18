@@ -35,6 +35,10 @@ var clear_warnings := false
 var glow := true
 ## The lantern and the lamps cast shadows at night (PIX-490).
 var shadows := true
+## The lamps and the lantern shape the art they light (PIX-528): off by
+## default until the depth is shaped from the art's forms (PIX-529), as the
+## depth from its tones turns patterns (snow, paving, stripes) to grain.
+var relief := false
 ## Lightning flashes (PIX-491): off, a strike is one slow soft brightening,
 ## as it is with Reduce motion.
 var flashes := true
@@ -56,6 +60,7 @@ func _init(file_path := "user://settings.cfg") -> void:
 func load_file() -> void:
 	# A phone reads at arm's length (PIX-214): large text unless told otherwise.
 	large_text = Touch.enabled()
+	relief = default_relief()
 	var config := ConfigFile.new()
 	if config.load(path) != OK:
 		return
@@ -73,6 +78,7 @@ func load_file() -> void:
 	clear_warnings = config.get_value(SECTION, "clear_warnings", clear_warnings)
 	glow = config.get_value(SECTION, "glow", glow)
 	shadows = config.get_value(SECTION, "shadows", shadows)
+	relief = config.get_value(SECTION, "relief", relief)
 	flashes = config.get_value(SECTION, "flashes", flashes)
 	hints = config.get_value(SECTION, "hints", hints)
 	quest_marks = config.get_value(SECTION, "quest_marks", quest_marks)
@@ -84,6 +90,11 @@ func load_file() -> void:
 		for action: String in saved:
 			if Controls.BINDABLE.has(action):
 				bindings[action] = int(saved[action])
+
+
+## Light relief's default: off everywhere until PIX-529 shapes the depth.
+static func default_relief() -> bool:
+	return false
 
 
 func save_file() -> void:
@@ -104,6 +115,7 @@ func save_file() -> void:
 	config.set_value(SECTION, "clear_warnings", clear_warnings)
 	config.set_value(SECTION, "glow", glow)
 	config.set_value(SECTION, "shadows", shadows)
+	config.set_value(SECTION, "relief", relief)
 	config.set_value(SECTION, "flashes", flashes)
 	config.set_value(SECTION, "language", language)
 	config.set_value(SECTION, "hints", hints)

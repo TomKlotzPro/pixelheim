@@ -198,4 +198,7 @@ void light() {
 	float warm = clamp((grey - lit.b) / max(grey, 0.001) * warm_sharpness, 0.0, 1.0);
 	lit = mix(lit, vec3(grey), frosted * warm);
 	LIGHT = vec4(COLOR.rgb * lit, LIGHT_COLOR.a);
+	// A shadow takes a share of the light, as on every floor (PIX-528,
+	// relief.gdshaderinc).
+	SHADOW_MODULATE.rgb = COLOR.rgb * max(LIGHT_ENERGY, 1.0);
 }

@@ -51,7 +51,7 @@ REPORT_HEAD = "screenshot saved;"
 # each from a boot's state. Anything else runs alone, `cc0` (its art kept
 # for the session), `--lang` and `--fps` among them.
 LOOK_TAKES = {"--map", "--at", "--zoom", "--wait", "--town-tier", "--built", "--house-tier", "--day",
-              "--settlers", "--seen", "--hunted", "--delivered", "--post", "--routes", "--lit"}
+              "--settlers", "--seen", "--hunted", "--delivered", "--post", "--routes", "--lit", "--relief"}
 LOOK_BARE = {"night", "overview"}
 
 

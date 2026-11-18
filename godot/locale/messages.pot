@@ -4985,6 +4985,10 @@ msgid "New monsters: Bone Knight, Shade, Mimic, Fire Imp, and Morvax the Deathle
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "New option, Light relief: at night the lamps, torches and your lantern shape what they light, the side of a stone, a beam or a crate facing the flame catching it; off by default for now, try it in Options"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "New roads lead across the Ashenreach to the Mirefen and Deepwood passes and to the Undermountain, and a path climbs to Saltmere's sea cave"
 msgstr ""
 
@@ -5002,6 +5006,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Night Watch"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Night shadows no longer glow at their edges on dark ground: a shadow is now the same share of the light everywhere, darker on dark ground, lighter on snow"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6010,6 +6018,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Shadowstep now crosses up to four cells: the rogue fades, slips past the foe and strikes from behind"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Shaped by the Flame"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -18470,6 +18482,10 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "Large reading text"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Light relief"
 msgstr ""
 
 #: scripts/options_screen.gd

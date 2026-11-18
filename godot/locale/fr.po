@@ -4985,6 +4985,10 @@ msgid "New monsters: Bone Knight, Shade, Mimic, Fire Imp, and Morvax the Deathle
 msgstr "Nouveaux monstres : Chevalier d'os, Spectre, Mimique, Diablotin de feu, et Morvax le Sans-Mort"
 
 #: assets/data/changelog.json
+msgid "New option, Light relief: at night the lamps, torches and your lantern shape what they light, the side of a stone, a beam or a crate facing the flame catching it; off by default for now, try it in Options"
+msgstr "Nouvelle option, Relief des lumières : la nuit, les lampes, les torches et votre lanterne sculptent ce qu'elles éclairent, le côté d'une pierre, d'une poutre ou d'une caisse tourné vers la flamme s'allume ; désactivée par défaut pour l'instant, à essayer dans les Options"
+
+#: assets/data/changelog.json
 msgid "New roads lead across the Ashenreach to the Mirefen and Deepwood passes and to the Undermountain, and a path climbs to Saltmere's sea cave"
 msgstr "De nouvelles routes traversent la Marche des Cendres jusqu'aux passages des Marais de Fange et des Bois-Profonds et jusqu'au Sous-Mont, et un sentier monte à la grotte marine de Saltmere"
 
@@ -5003,6 +5007,10 @@ msgstr "Prochaines étapes"
 #: assets/data/changelog.json
 msgid "Night Watch"
 msgstr "Veille de nuit"
+
+#: assets/data/changelog.json
+msgid "Night shadows no longer glow at their edges on dark ground: a shadow is now the same share of the light everywhere, darker on dark ground, lighter on snow"
+msgstr "Les ombres de nuit ne s'éclairent plus sur leurs bords quand le sol est sombre : une ombre prend partout la même part de la lumière, plus sombre sur un sol sombre, plus claire sur la neige"
 
 #: assets/data/changelog.json
 msgid "Nine places that shared a track now have their own: Saltmere, the Frostgate, Greyhold, Blackiron, the mountain road, the inn, the crypts, the ice cave, and the dragon's fight on the square"
@@ -6011,6 +6019,10 @@ msgstr "Les Ombres se désactivent dans les Options, à côté de Lueurs"
 #: assets/data/changelog.json
 msgid "Shadowstep now crosses up to four cells: the rogue fades, slips past the foe and strikes from behind"
 msgstr "Pas de l'ombre franchit désormais jusqu'à quatre cases : le voleur s'efface, passe derrière l'ennemi et frappe dans son dos"
+
+#: assets/data/changelog.json
+msgid "Shaped by the Flame"
+msgstr "Sculpté par la flamme"
 
 #: assets/data/changelog.json
 msgid "Sharpened Steel"
@@ -18471,6 +18483,10 @@ msgstr "Langue"
 #: scripts/options_screen.gd
 msgid "Large reading text"
 msgstr "Texte de lecture agrandi"
+
+#: scripts/options_screen.gd
+msgid "Light relief"
+msgstr "Relief des lumières"
 
 #: scripts/options_screen.gd
 msgid "Music volume"

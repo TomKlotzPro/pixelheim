@@ -30,12 +30,16 @@ EXPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "export"
 # lamps cast shadows beside the lantern (PIX-490); and that City under a
 # thunderstorm (PIX-491: the rain, the wet ground and its puddles), then
 # with a flash held, the bolt's light casting every frame, as no storm
-# ever does for more than a few. test_harness_flags reads these lines.
+# ever does for more than a few. Light relief (PIX-528): the Reach's and
+# the City's nights with it on, and again with it off (`-flat`), so its cost
+# reads off one run. test_harness_flags reads these lines.
 RUNS = {
     "storm": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night storm cpu perf --wait 2 --shot user://web_perf.png",
     "strike": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night storm --strike held cpu perf --wait 2 --shot user://web_perf.png",
-    "night": "--fixed-fps 60 -- --screenshot --map overworld night cpu perf --wait 2 --shot user://web_perf.png",
-    "town": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night cpu perf --wait 2 --shot user://web_perf.png",
+    "night": "--fixed-fps 60 -- --screenshot --map overworld night --relief on cpu perf --wait 2 --shot user://web_perf.png",
+    "night-flat": "--fixed-fps 60 -- --screenshot --map overworld night --relief off cpu perf --wait 2 --shot user://web_perf.png",
+    "town": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night --relief on cpu perf --wait 2 --shot user://web_perf.png",
+    "town-flat": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night --relief off cpu perf --wait 2 --shot user://web_perf.png",
     "line": "--fixed-fps 60 -- --screenshot --map overworld --at 93,33 seamless --walk r,r,r cpu crossing --wait 1 --shot user://web_perf.png",
 }
 

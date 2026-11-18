@@ -556,6 +556,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/mirefen/mire_dressing.gd` — The Mirefen alive (PIX-401, the v0.307 world audit: « a uniform fen of puddles and a few shrubs, one ruin and two camps »)
 - `scripts/features/night_shadows/feature.gd` — The lantern's and the lamps' shadows in the harness (PIX-490)
 - `scripts/features/night_shadows/night_shadows_layer.gd` — What blocks the lantern's and the lamps' light on a map (PIX-490), once everything stands
+- `scripts/features/relief/feature.gd` — Light relief in the harness (PIX-528): `--relief` and the report's relief=, their rows beside this script and their flows in tools/flows.d/relief.txt.
 - `scripts/features/storm/feature.gd` — Thunderstorms in the harness (PIX-491): `storm`, `drying` and `--strike`, the puddles' layer (PuddlesLayer) and the report's storm=, their rows beside this script and their flows in tools/flows.d/storm.txt.
 - `scripts/features/storm/puddles_layer.gd` — What the rain leaves on a map under the sky (PIX-491)
 - `scripts/features/waysides/feature.gd` — The Reach's wayside lanterns in the harness (PIX-397, step 4)
@@ -636,6 +637,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/rankup_screen.gd` — The ascension (RankUpOverlay.tsx, useRankUp; PIX-244 made it a moment).
 - `scripts/reach_plane.gd` — The Reach as one plane (One Reach, PIX-269, step 3).
 - `scripts/rebuild_rise.gd` — A building rising on the town's tour (PIX-264).
+- `scripts/relief.gd` — Light relief's plain material (PIX-528): what a map draws with no material of its own (a prop, a lamp post, a crate, a stall, a cart, a room's furniture) wears shaders/relief.gdshader, so the lamps and the lantern shape it as they shape the ground and the houses (region_tint, roof_light).
 - `scripts/reveal_screen.gd` — The town risen (PIX-147): after a project is funded, the camera walks the town to what was built
 - `scripts/ring_toss_screen.gd` — The festival's ring toss (PIX-159): a ring slides along the rail, back and forth, quicker each throw; E throws it, and it lands if it's over the peg.
 - `scripts/road_shape.gd` — The shape of a country road's ends and turns (PIX-404), as a mask the ground's shader reads (shaders/road_shape.gdshaderinc).

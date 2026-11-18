@@ -7,6 +7,8 @@ shader_type canvas_item;
 // stone is the ghost under the ice and the frost creeps out over it.
 
 #include "res://shaders/linear.gdshaderinc"
+// Its light() and its shadows, as every floor's (PIX-528).
+#include "res://shaders/relief.gdshaderinc"
 
 global uniform float world_time;
 uniform sampler2D ice_map : filter_linear, repeat_disable;
