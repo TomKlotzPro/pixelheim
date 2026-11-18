@@ -336,11 +336,10 @@ func _cast_shadows(flames: Array[PointLight2D], delta: float) -> void:
 		if strength > 0.0:
 			light.shadow_color = NightShadows.left_in_shadow(light.color, light.energy, strength)
 			now.append(light)
+	# The hero's own lantern casts none: shadows thrown out from the hero
+	# read as a field of view (Tom, 2026-11-18).
 	if is_instance_valid(lantern):
-		lantern.shadow_enabled = on and lantern.visible
-		if lantern.shadow_enabled:
-			lantern.shadow_color = NightShadows.left_in_shadow(lantern.color, lantern.energy, 1.0)
-			now.push_front(lantern)
+		lantern.shadow_enabled = false
 	casting = now
 
 

@@ -16,4 +16,4 @@ func field_nightshadows(report: HarnessReport) -> String:
 	var laid := NightShadowsLayer.laid(world.view)
 	if laid.is_empty():
 		return ""
-	return "lights %d of %d lamps %d feet %d walls %d" % [world.lights.casting.size(), 1 + NightShadows.LAMPS, world.lights.candidates, laid["feet"], laid["walls"]]
+	return "lights %d of %d lamps %d feet %d walls %d" % [world.lights.casting.size(), NightShadows.LAMPS, world.lights.candidates, laid["feet"], laid["walls"]]

@@ -324,7 +324,7 @@ func _shadowed() -> int:
 	return get_tree().get_nodes_in_group("lights").filter(func(light: Node) -> bool: return (light as PointLight2D).shadow_enabled).size()
 
 
-func test_the_lantern_and_no_more_than_the_cap_of_lamps_cast() -> void:
+func test_no_more_than_the_cap_of_lamps_cast_and_never_the_lantern() -> void:
 	GameState.settings.shadows = true
 	var view := _draw("town")
 	var flames := _flames(view)
@@ -334,17 +334,16 @@ func test_the_lantern_and_no_more_than_the_cap_of_lamps_cast() -> void:
 	for i in 90:
 		rig._cast_shadows(flames, 1.0 / 60.0)
 		most = maxi(most, rig.casting.size())
-	assert_eq(rig.casting.size(), 1 + NightShadows.LAMPS, "the lantern and the cap of lamps")
-	assert_eq(most, 1 + NightShadows.LAMPS, "never more, while they fade in")
-	assert_true(rig.lantern in rig.casting and rig.lantern.shadow_enabled, "the lantern always")
-	assert_eq(rig.lantern.shadow_item_cull_mask & NightShadows.FOLK, 0, "which the hero never blocks")
+	assert_eq(rig.casting.size(), NightShadows.LAMPS, "the cap of lamps")
+	assert_eq(most, NightShadows.LAMPS, "never more, while they fade in")
+	assert_false(rig.lantern in rig.casting or rig.lantern.shadow_enabled, "never the hero's own lantern: its shadows read as a field of view")
 	assert_eq(_shadowed(), rig.casting.size(), "every other light as before")
 	# Walked up the street, other lamps take over: still no more.
 	(rig.lantern.get_parent() as Node2D).position = MapView.center(Vector2i(47, 13))
 	for i in 90:
 		rig._cast_shadows(flames, 1.0 / 60.0)
-		assert_lte(rig.casting.size(), 1 + NightShadows.LAMPS)
-	assert_eq(rig.casting.size(), 1 + NightShadows.LAMPS)
+		assert_lte(rig.casting.size(), NightShadows.LAMPS)
+	assert_eq(rig.casting.size(), NightShadows.LAMPS)
 	# The setting off: none.
 	GameState.settings.shadows = false
 	rig._cast_shadows(flames, 1.0 / 60.0)
@@ -364,16 +363,16 @@ func test_a_lamp_freed_with_its_map_stops_no_other() -> void:
 	var rig := _rig(view, MapView.center(Vector2i(40, 24)))
 	for i in 90:
 		rig._cast_shadows(flames, 1.0 / 60.0)
-	assert_eq(rig.casting.size(), 1 + NightShadows.LAMPS)
-	var gone: PointLight2D = rig.casting[1]
+	assert_eq(rig.casting.size(), NightShadows.LAMPS)
+	var gone: PointLight2D = rig.casting[0]
 	flames.erase(gone)
 	gone.free()
 	# The hero far from every lamp: those left fade out.
 	(rig.lantern.get_parent() as Node2D).position = Vector2(-4000, -4000)
 	for i in 90:
 		rig._cast_shadows(flames, 1.0 / 60.0)
-	assert_eq(rig.casting.size(), 1, "the lantern alone")
-	assert_eq(_shadowed(), 1, "and no lamp left casting behind it")
+	assert_eq(rig.casting.size(), 0, "none: the lantern never casts")
+	assert_eq(_shadowed(), 0, "and no lamp left casting behind it")
 
 
 func test_by_day_and_in_a_room_nothing_casts() -> void:
@@ -392,11 +391,12 @@ func test_by_day_and_in_a_room_nothing_casts() -> void:
 
 func test_the_setting_is_kept() -> void:
 	var path := "user://test_night_shadows.cfg"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	var settings := GameSettings.new(path)
-	assert_true(settings.shadows, "on until turned off")
-	settings.shadows = false
+	assert_false(settings.shadows, "off until turned on (2026-11-18: the long wedges read as a field of view)")
+	settings.shadows = true
 	settings.save_file()
 	var again := GameSettings.new(path)
 	again.load_file()
-	assert_false(again.shadows)
+	assert_true(again.shadows, "kept on")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))

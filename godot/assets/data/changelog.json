@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.389.0",
+      "date": "2026-11-18",
+      "codename": "Out of Sight",
+      "notes": [
+        "Your lantern no longer throws shadows out from you like a field of view; the lamps and fires still do",
+        "Night shadows are now off by default; turn them on in Options: Shadows",
+        "The sun's shadows end in a soft edge instead of a checkerboard, long at dusk as they are"
+      ]
+    },
+    {
       "version": "0.388.0",
       "date": "2026-11-18",
       "codename": "Shaped by the Flame",

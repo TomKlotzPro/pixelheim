@@ -11,8 +11,8 @@ render_mode unshaded;
 // fragment shader asks of each art pixel, at its middle, whether the
 // footprint passes over it on its way, so the edges are whole art pixels
 // at any zoom. A blob (`walls` off: a tree, a bush, a lamp's foot) is an
-// oval, crisp at the foot and softer as it reaches away, its rim dithered;
-// a wall (a house) is its footprint, its edge dithered a pixel.
+// oval, crisp at the foot and softer as it reaches away, its rim soft;
+// a wall (a house) is its footprint, its edge half a shade for a pixel.
 // It writes coverage, not a colour, so it reads the same on the browser's
 // canvas and the app's linear one.
 
@@ -24,17 +24,10 @@ uniform bool walls = false;
 // A footprint's depth and its caster's height share the UV's y (PACK in
 // ShadowsLayer).
 const float PACK = 1024.0;
-// The oval's dithered rim, a share of its radius: at the foot, and at the
-// far end of its cast.
+// The oval's soft rim, a share of its radius: at the foot, and at the far
+// end of its cast.
 const float RIM_NEAR = 0.25;
 const float RIM_FAR = 0.6;
-
-const float BAYER[16] = float[16](
-	0.0, 8.0, 2.0, 10.0,
-	12.0, 4.0, 14.0, 6.0,
-	3.0, 11.0, 1.0, 9.0,
-	15.0, 7.0, 13.0, 5.0
-);
 
 // The footprint's middle in the canvas, its half size and where the sun
 // carries it, the same over the whole shadow; and where the pixel lies.
@@ -86,11 +79,11 @@ bool swept(vec2 p, vec2 h, vec2 c) {
 void fragment() {
 	vec2 pixel = floor(canvas_px);
 	vec2 p = pixel + 0.5 - middle;
-	ivec2 block = ivec2(pixel) & ivec2(3);
-	float dither = (BAYER[block.y * 4 + block.x] + 0.5) / 16.0;
-	bool shaded;
+	// Coverage, soft at the rim (Tom, 2026-11-18: a dithered rim read as a
+	// checkerboard on long shadows); scenery_shade darkens by it.
+	float cover;
 	if (walls) {
-		shaded = swept(p, half_size - 1.0, cast) || (dither < 0.5 && swept(p, half_size, cast));
+		cover = swept(p, half_size - 1.0, cast) ? 1.0 : (swept(p, half_size, cast) ? 0.5 : 0.0);
 	} else {
 		// The oval nearest `p` on its way, and how far `p` lies from its
 		// middle there, in its radii.
@@ -99,7 +92,8 @@ void fragment() {
 		vec2 v = cast / r;
 		float t = clamp(dot(q, v) / max(dot(v, v), 0.0001), 0.0, 1.0);
 		float d = length(q - t * v);
-		shaded = d < 1.0 - mix(RIM_NEAR, RIM_FAR, t) * dither;
+		float rim = mix(RIM_NEAR, RIM_FAR, t);
+		cover = 1.0 - smoothstep(1.0 - rim, 1.0, d);
 	}
-	COLOR = vec4(1.0, 1.0, 1.0, shaded ? 1.0 : 0.0);
+	COLOR = vec4(1.0, 1.0, 1.0, cover);
 }

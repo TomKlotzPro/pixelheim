@@ -7,8 +7,10 @@
 # the storm is heard and the windows flash: no puddles, nothing cast. With
 # Reduce motion a strike is the soft kind, with no shadows. Five strikes
 # at once show three flashes, no more (the cap).
-storm-day | --map overworld storm --strike held | map=overworld storm=rain 1\.0 flashes 1 puddles 100 wet 1\.0 cast | field
-storm-night | --map town --town-tier 4 --at 40,24 night storm --strike held | map=town storm=rain 1\.0 flashes 1 puddles 100 wet 1\.0 cast | town night
+# A bolt casts only with the Shadows setting on (off by default since
+# 2026-11-18): the day and night strikes turn it on (`shadows`).
+storm-day | --map overworld storm shadows --strike held | map=overworld storm=rain 1\.0 flashes 1 puddles 100 wet 1\.0 cast | field
+storm-night | --map town --town-tier 4 --at 40,24 night storm shadows --strike held | map=town storm=rain 1\.0 flashes 1 puddles 100 wet 1\.0 cast | town night
 storm-inside | --map town_inn night storm --strike now | map=town_inn storm=inside rain 1\.0 flashes 1 puddles 0 wet 0\.0 | rooms night
 storm-still | --map overworld storm --strike now still | map=overworld storm=rain 1\.0 flashes 1 puddles 100 wet 1\.0 soft | field
 storm-cap | --map overworld storm --strike 5 | map=overworld storm=rain 1\.0 flashes 3 puddles 100 wet 1\.0( cast)? | field

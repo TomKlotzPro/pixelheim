@@ -23,6 +23,7 @@ cc0 |  | the paid Medieval Age pack, GegX's UI kit, ninth-jedi's farm animals an
 still |  | Reduce motion on, as a player can set it
 large |  | Large reading text on, as a player can set it (PIX-477: a card's words then run past it and page by a key)
 hints |  | the first-time hints on and none seen yet, as a new player has them (PIX-341)
+shadows |  | the night's shadows on (Options: Shadows), as a player can set them; off by default
 --role | <id> | a new hero of that role before the first map, its starting weapon in hand (PIX-379): warrior, mage, ranger, cleric, paladin, rogue or necromancer; the report adds hero=
 --level | <n> | a hero of that level as the game makes one (PIX-379): its level-ups' health, mana and points, the stat points 2:1 on its weapon's stat and endurance, its role's tree bought in order, a kit of gear for the level worn; the rank's title (the hero looks the same at every rank); the report adds hero=
 --town-tier | <n> | the village at that age (default the Hamlet the flows were written for; 0 is a new hero's Ashes)

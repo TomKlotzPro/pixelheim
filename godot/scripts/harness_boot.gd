@@ -65,6 +65,9 @@ static func boot(flags: HarnessFlags, state: Node) -> void:
 		# `large`: the run with Large reading text on (PIX-477).
 		if flags.has("large"):
 			state.settings.large_text = true
+		# `shadows`: the night's shadows on, as a player can set them.
+		if flags.has("shadows"):
+			state.settings.shadows = true
 		# `hints`: a new player's first-time hints, none seen (PIX-341).
 		if flags.has("hints"):
 			state.settings.hints = true
