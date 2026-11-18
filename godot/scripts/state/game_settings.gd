@@ -35,9 +35,10 @@ var clear_warnings := false
 var glow := true
 ## The lantern and the lamps cast shadows at night (PIX-490).
 var shadows := true
-## The lamps and the lantern shape the art they light (PIX-528): on where
-## the frame affords it (load_file).
-var relief := true
+## The lamps and the lantern shape the art they light (PIX-528): off by
+## default until the depth is shaped from the art's forms (PIX-529), as the
+## depth from its tones turns patterns (snow, paving, stripes) to grain.
+var relief := false
 ## Lightning flashes (PIX-491): off, a strike is one slow soft brightening,
 ## as it is with Reduce motion.
 var flashes := true
@@ -91,9 +92,9 @@ func load_file() -> void:
 				bindings[action] = int(saved[action])
 
 
-## Light relief's default: on, but on a phone, whose GPU was never measured.
+## Light relief's default: off everywhere until PIX-529 shapes the depth.
 static func default_relief() -> bool:
-	return not Touch.enabled()
+	return false
 
 
 func save_file() -> void:

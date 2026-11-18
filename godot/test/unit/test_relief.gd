@@ -20,17 +20,17 @@ func after_each() -> void:
 	GameState.settings.read_only = _kept["read_only"]
 
 
-func test_on_by_default_and_remembered() -> void:
+func test_off_by_default_and_remembered() -> void:
 	var path := "user://test_relief_settings.cfg"
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	var settings := GameSettings.new(path)
 	settings.load_file()
-	assert_true(settings.relief, "on, with no file yet (not a phone)")
-	settings.relief = false
+	assert_false(settings.relief, "off, with no file yet (until PIX-529)")
+	settings.relief = true
 	settings.save_file()
 	var again := GameSettings.new(path)
 	again.load_file()
-	assert_false(again.relief, "remembered off")
+	assert_true(again.relief, "remembered on")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 
