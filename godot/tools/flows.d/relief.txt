@@ -1,0 +1,8 @@
+# Light relief's flows (PIX-528: a feature's flows, read after
+# tools/flows.txt as its own, scripts/features/relief/), a line each as in
+# flows.txt.
+# The City's square at night with Light relief forced on: the plain pieces
+# drawn (props, lamp posts, stalls, crates) wear its material; forced off,
+# they still do (the shaders light them as before), and it says off.
+relief-town | --map town --town-tier 4 --at 40,24 night --relief on | map=town relief=on pieces [1-9]\d* | town night
+relief-off | --map town --town-tier 4 --at 40,24 night --relief off | map=town relief=off pieces [1-9]\d* | town night

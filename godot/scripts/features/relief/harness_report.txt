@@ -1,0 +1,4 @@
+# Light relief's report field (PIX-528): `field | says`, as the core's
+# (scripts/harness_report.txt), which it joins after its head, by name; its
+# function is `field_relief(report)` in feature.gd.
+relief | on a map: Light relief on or off, and how many plain pieces of the drawing wear its material (Relief.material()): on pieces 412 (PIX-528)

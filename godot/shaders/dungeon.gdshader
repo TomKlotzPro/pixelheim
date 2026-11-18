@@ -21,6 +21,7 @@ shader_type canvas_item;
 // never smudged nor a field of checks.
 
 #include "res://shaders/linear.gdshaderinc"
+#include "res://shaders/relief.gdshaderinc"
 
 global uniform float world_time;
 uniform sampler2D cells : filter_nearest, repeat_disable;
@@ -342,6 +343,13 @@ void fragment() {
 		} else if (m.r > 0.2) {
 			c = wall_of(c, px, in_cell, m.r > 0.5, th);
 		}
+	}
+	// Light relief (PIX-528): the torches shape the stone, never the sea's
+	// pools (a cell the sea reaches stays flat).
+	if (relief > 0.0 && m.g == 0.0) {
+		NORMAL_MAP = RELIEF_NORMAL(RELIEF_GRAIN, RELIEF_DARK, false);
+	} else {
+		NORMAL_MAP = RELIEF_FLAT;
 	}
 	COLOR = vec4(to_canvas(c), base.a);
 }

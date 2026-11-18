@@ -136,6 +136,13 @@ static func soft() -> Texture2D:
 	return _soft
 
 
+## How strongly the lights shape the art with Light relief on (PIX-528,
+## shaders/relief.gdshaderinc), and how high over the art a light stands for
+## it, in pixels: lower lights graze, and shape it further from them.
+const RELIEF := 1.0
+const RELIEF_HEIGHT := 40.0
+
+
 ## A light at `at` reaching `radius` pixels, of `color`, at full `energy`
 ## when it's darkest; fire flickers. The LightRig sets its energy each frame.
 ## Its `shape` is soft() unless given (a window's spill, a sunbeam).
@@ -154,6 +161,8 @@ static func make(at: Vector2, radius: float, color: Color, energy: float, flicke
 	light.shadow_filter_smooth = NightShadows.SOFT
 	light.shadow_item_cull_mask = NightShadows.LAMP
 	light.position = at
+	# Over the art, for the relief (nothing while it's off).
+	light.height = RELIEF_HEIGHT
 	light.set_meta("energy", energy)
 	light.set_meta("flicker", flicker)
 	light.set_meta("phase", fmod(absf(at.x * 0.37 + at.y * 0.61), TAU))

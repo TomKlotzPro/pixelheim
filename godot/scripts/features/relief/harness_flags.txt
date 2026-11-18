@@ -1,0 +1,4 @@
+# Light relief's harness flags (PIX-528): `flag | takes | does`, as the
+# core's (scripts/harness_flags.txt), in its table after feature.gd's
+# flags_after().
+--relief | <on|off> | Light relief forced on or off for the run, whatever the player's setting (PIX-528); the report's relief= says which

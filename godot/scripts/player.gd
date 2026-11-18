@@ -535,6 +535,8 @@ func _ghost() -> void:
 	ghost.position = position
 	ghost.self_modulate = sprite.self_modulate
 	ghost.modulate.a = GHOST_ALPHA
+	# Lit as the hero is, never dressed in Light relief among the actors.
+	ghost.use_parent_material = true
 	# It stays put: nothing to smooth between physics ticks.
 	ghost.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	get_parent().add_child(ghost)
