@@ -200,6 +200,18 @@ const SHIELDS := {
 const SHIELD_AT := {0: [4, 8, true], 2: [1, 8, false], 4: [-5, 8, false], 6: [-4, 8, true]}
 ## Columns where both hands are busy or the hero lies down: no shield.
 const SHIELD_HIDDEN := [[8, 15], [21, 24]]
+## Where the Tin Lantern hangs in the main hand (PIX-530), the one away from
+## the shield, per row (down 0 clockwise; the ways between are their own:
+## a hand turns with the body): [x of its left column from the figure's
+## middle, y of its top row below the figure's top, drawn in front]. Down,
+## down-right and down-left beside the screen-left hand, right and up-right
+## below the near hand, up and up-left beside the screen-right hand, left
+## behind the back (the far hand: the shield's in front). Its bottom row
+## is the feet's last.
+const LANTERN_AT := {
+	0: [-9, 8, true], 1: [-9, 8, true], 2: [1, 8, true], 3: [1, 8, true],
+	4: [6, 8, true], 5: [6, 8, true], 6: [3, 8, false], 7: [-8, 8, true],
+}
 
 ## The bare template whose frames say where each head ends.
 const BASE := "characters/Character-Base.png"
@@ -637,6 +649,20 @@ static func _neck_rows() -> PackedInt32Array:
 
 
 static var _figures: Array[Rect2i] = []
+
+
+## Where the Tin Lantern hangs in a frame of the puny sheet (PIX-530): its
+## top-left pixel in the 32 px cell ("at") and whether it is drawn in front
+## of the figure ("front"); {} where it's put away: shown while the hero
+## stands, walks or is hurt (columns 0-3 and 18-20), never while the main
+## hand swings, draws or casts (4-17) nor as the hero falls (21-23). Read
+## every tick, so plain comparisons.
+static func held_at(row: int, column: int) -> Dictionary:
+	if not (column < 4 or (column >= 18 and column < 21)) or not LANTERN_AT.has(row):
+		return {}
+	var place: Array = LANTERN_AT[row]
+	var used := _figure(row * 24 + column)
+	return {"at": Vector2i(used.position.x + used.size.x / 2 + int(place[0]), used.position.y + int(place[1])), "front": place[2]}
 
 
 ## The bare figure in each frame (the template's), so a plume or a swung

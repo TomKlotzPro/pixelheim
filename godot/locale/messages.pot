@@ -1889,6 +1889,14 @@ msgid "Tidecutter"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Tin Lantern"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Tin, horn and a stub of candle. Carry it and it lights your way at night and under the ground. Odo swears it has never once gone out. Odo has never once gone out after dark."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Tower Shield"
 msgstr ""
 
@@ -10754,6 +10762,10 @@ msgstr ""
 
 #: assets/data/hints.json
 msgid "Banked gold earns a little daily and is safe when you fall."
+msgstr ""
+
+#: assets/data/hints.json
+msgid "Dark out? Odo sells lanterns: carry one and it lights your way."
 msgstr ""
 
 #: assets/data/hints.json

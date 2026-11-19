@@ -1889,6 +1889,14 @@ msgid "Tidecutter"
 msgstr "Tranche-marée"
 
 #: assets/data/catalog.json
+msgid "Tin Lantern"
+msgstr "Lanterne en fer-blanc"
+
+#: assets/data/catalog.json
+msgid "Tin, horn and a stub of candle. Carry it and it lights your way at night and under the ground. Odo swears it has never once gone out. Odo has never once gone out after dark."
+msgstr "Du fer-blanc, de la corne et un bout de chandelle. Gardez-la sur vous : elle éclaire votre chemin la nuit et sous terre. Odo jure qu'elle ne s'est jamais éteinte. Odo n'est jamais sorti une fois la nuit tombée."
+
+#: assets/data/catalog.json
 msgid "Tower Shield"
 msgstr "Pavois"
 
@@ -10755,6 +10763,10 @@ msgstr "Six touches prises : placez {skill} dans Compétences ({key:skills})."
 #: assets/data/hints.json
 msgid "Banked gold earns a little daily and is safe when you fall."
 msgstr "L'or en banque rapporte chaque jour et reste à l'abri si vous tombez."
+
+#: assets/data/hints.json
+msgid "Dark out? Odo sells lanterns: carry one and it lights your way."
+msgstr "Il fait noir ? Odo vend des lanternes qui éclairent votre chemin."
 
 #: assets/data/hints.json
 msgid "Face the notice board and press {key:interact} to fund the village's projects."

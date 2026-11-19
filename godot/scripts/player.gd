@@ -89,6 +89,10 @@ var _spring: Tween
 var gait: Gait
 ## On the ground under their feet (PIX-441): stays there through the squash.
 var _shadow: Sprite2D
+## The lantern in the hero's hand (PIX-530) and its glass, lit while its
+## light burns: the pool round them always has a source to see.
+var held: Sprite2D
+var held_glass: Sprite2D
 
 func _ready() -> void:
 	# Top-down: no floor, no walls by angle, just slide along what blocks.
@@ -104,6 +108,18 @@ func _ready() -> void:
 	# A clean white flash when struck (PIX-226), the outline kept (PIX-497).
 	sprite.material = Juice.fighter_material(Juice.HERO_KEEP)
 	add_child(sprite)
+	# On the sprite, so it takes its squash and lift, but neither its tint
+	# nor its flash (its own material).
+	held = Sprite2D.new()
+	held.texture = LampArt.hand()
+	held.centered = false
+	held.visible = false
+	held_glass = Sprite2D.new()
+	held_glass.texture = LampArt.hand_glass()
+	held_glass.centered = false
+	held_glass.material = Lights.unshaded()
+	held.add_child(held_glass)
+	sprite.add_child(held)
 	gait = Gait.new(sprite, art)
 	_play("idle")
 	_lay_shadow()
@@ -121,6 +137,7 @@ func _ready() -> void:
 
 	sprite.animation_finished.connect(_on_animation_finished)
 	sprite.frame_changed.connect(_on_frame_changed)
+	sprite.animation_changed.connect(_hold_lantern)
 	ailment_icon = Sprite2D.new()
 	ailment_icon.position = Vector2(0, -22)
 	ailment_icon.visible = false
@@ -154,6 +171,8 @@ func _lay_shadow() -> void:
 	move_child(_shadow, sprite.get_index())
 
 func _physics_process(delta: float) -> void:
+	# Before the fall's return: nightfall or a lantern bought shows at once.
+	_hold_lantern()
 	if dead:
 		return
 	_tick_ailments(delta)
@@ -872,6 +891,7 @@ func _on_animation_finished() -> void:
 ## The weapon only bites on the striking frames, matching what the sheet
 ## shows; a blade or a staff leaves its arc on the first (PIX-226).
 func _on_frame_changed() -> void:
+	_hold_lantern()
 	if attacking and not casting:
 		var strike: Array = STRIKE_FRAMES.get(art["attack"], [1, 2])
 		striking = sprite.frame >= strike[0] and sprite.frame <= strike[1]
@@ -879,6 +899,23 @@ func _on_frame_changed() -> void:
 			_loose()
 		if sprite.frame == strike[0] and art["attack"] != "bow" and not _loosed:
 			_slash()
+
+
+## The Tin Lantern in hand (PIX-530) where this frame holds it
+## (PunyArt.held_at: the template's 32 px cells), put away while the hand
+## swings or the hero falls or carries none; its glass lit while the
+## lantern's light burns.
+func _hold_lantern() -> void:
+	if held == null:
+		return
+	var frame := sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame) as AtlasTexture
+	var hand := PunyArt.held_at(int(frame.region.position.y) / 32, int(frame.region.position.x) / 32) if frame != null and Lights.carried(GameState.pack.items) else {}
+	held.visible = not hand.is_empty()
+	if held.visible:
+		# The sprite is centred on its 32 px cell.
+		held.position = Vector2(hand["at"] as Vector2i) - Vector2(16, 16)
+		held.show_behind_parent = not hand["front"]
+		held_glass.visible = world != null and world.lights != null and is_instance_valid(world.lights.lantern) and world.lights.lantern.visible
 
 
 ## This swing's arrow or bolt was drawn (PIX-396).

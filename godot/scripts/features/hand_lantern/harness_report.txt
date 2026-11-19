@@ -1,0 +1,4 @@
+# The hand lantern's report field (PIX-530): `field | says`, as the core's
+# (scripts/harness_report.txt), which it joins after its head, by name; its
+# function is `field_handlight(report)` in feature.gd.
+handlight | the hero's own light: the lantern they carry, how far it reaches in pixels and whether it burns now, none without one: lantern 96 lit (PIX-530)

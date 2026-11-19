@@ -1,9 +1,9 @@
 # The night shadows' flows (PIX-490: a feature's flows, read after
 # tools/flows.txt as its own, scripts/features/night_shadows/), a line each
 # as in flows.txt.
-# At night the hero's lantern and the lamps nearest them cast shadows: on
-# the City's square, where far more lamps burn than may cast, the lantern
-# and the cap of three, no more, a second after arriving (they fade in);
+# At night the lamps nearest the hero cast shadows: on the City's square,
+# where far more lamps burn than may cast, the cap of three, no more, a
+# second after arriving (they fade in);
 # occluders at the feet of what stands and round the houses' feet and the
 # walls. By day none casts (the sun's shadows alone, PIX-449). In the
 # Deepwood the camps' fires near it; in the sea cave its wall torches, the

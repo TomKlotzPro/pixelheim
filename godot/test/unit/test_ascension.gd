@@ -57,7 +57,8 @@ func _drawn_at(level: int) -> Dictionary:
 		"shader": material.shader.get_shader_uniform_list().map(func(uniform: Dictionary) -> Array:
 			return [uniform["name"], material.get_shader_parameter(uniform["name"])]),
 		"parts": hero.get_children().map(func(child: Node) -> String: return child.get_class()),
-		"inside": sprite.get_child_count(),
+		# The lantern they carry hangs on the sprite (PIX-530), at every rank alike.
+		"inside": sprite.get_children().filter(func(child: Node) -> bool: return child != (hero as Player).held).size(),
 	}
 	hero.free()
 	return drawn

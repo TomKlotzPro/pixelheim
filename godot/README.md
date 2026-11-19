@@ -542,6 +542,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/farmland/feature.gd` — The farmland round the town on the Reach in the harness (PIX-397)
 - `scripts/features/feature.gd` — A feature that plugs itself in from a folder of its own (PIX-361): its harness flags, presets, report fields, look book shots and map layers, beside the core's.
 - `scripts/features/features.gd` — Every feature under scripts/features/ (PIX-361), found once: each folder there is one, its feature.gd a Feature, in the folders' name order.
+- `scripts/features/hand_lantern/feature.gd` — The hero's hand lantern in the harness (PIX-530)
 - `scripts/features/lamps/feature.gd` — The lamps in the harness (PIX-323, PIX-324; PIX-361's first feature)
 - `scripts/features/lantern_night/feature.gd` — Lantern Night in the harness (PIX-362): `--lantern` and its preset, and the report's lantern=, their rows beside this script and their flows in tools/flows.d/lantern_night.txt
 - `scripts/features/lantern_night/lantern_layer.gd` — The Reach's lamps on Lantern Night (PIX-362)
