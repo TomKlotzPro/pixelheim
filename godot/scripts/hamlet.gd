@@ -64,7 +64,7 @@ const HOUSES := {
 ## turn, so a house keeps its front as the ages raise more ([]: Shade's
 ## timber). The town keeps no look (look_of), so no chimney is added.
 const FRONTS := {
-	Yards.INN: DIAMOND, Yards.ODO: [], Yards.FARM: DARK_PLANKS, Yards.MAREN: CROSS, Yards.UPPER: PLANKS,
+	Yards.INN: CROSS, Yards.ODO: [], Yards.FARM: DARK_PLANKS, Yards.MAREN: CROSS, Yards.UPPER: PLANKS,
 	Yards.SLATE: [], Yards.FORGE: SMITHY, Yards.VEX: PLANKS, Yards.HALL: FORT, Yards.WEST: DIAMOND,
 	Yards.LANE_WEST: CROSS, Yards.HOME: [], Yards.LANE_EAST: DIAMOND, Yards.LAWN: CROSS,
 	Yards.THATCH: PLANKS, Yards.MOSS: DARK_PLANKS, Yards.STEAD: DARK_PLANKS,
