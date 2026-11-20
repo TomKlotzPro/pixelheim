@@ -2169,6 +2169,10 @@ msgid "A Real Fight"
 msgstr "Un vrai combat"
 
 #: assets/data/changelog.json
+msgid "A Rounder Hand"
+msgstr "Une main plus ronde"
+
+#: assets/data/changelog.json
 msgid "A SAFER MIREFEN AND DEEPWOOD: the Mirefen's mimic pack is gone (its trapped chest waits in the far west, by Grandmother Gulp), and the Deepwood's trolls no longer stand at its gate"
 msgstr "MARAIS DE FANGE ET BOIS-PROFONDS PLUS SÛRS : la meute de mimiques des Marais de Fange a disparu (son coffre piégé attend tout à l'ouest, près de Grand-mère Glouglou), et les trolls des Bois-Profonds ne se tiennent plus à leur entrée"
 
@@ -3695,6 +3699,10 @@ msgstr "Chaque morceau boucle sans coupure, et la musique d'un lieu reprend là 
 #: assets/data/changelog.json
 msgid "Every way out of a map reads as a way on: the road runs right to it, through an opening wide enough to look walkable, and a signpost names where it leads"
 msgstr "Chaque sortie d'une carte se lit comme un passage : la route y mène tout droit, par une ouverture assez large pour sembler praticable, et un panneau indique où elle conduit"
+
+#: assets/data/changelog.json
+msgid "Every word you read is in a new, rounder typeface: the dialogue, the menus, the HUD, the journal, the shops and every screen"
+msgstr "Chaque mot que vous lisez a une nouvelle police, plus ronde : les dialogues, les menus, l'interface, le journal, les boutiques et tous les écrans"
 
 #: assets/data/changelog.json
 msgid "Everyone casts a shadow, and a quiet vignette frames the world"
@@ -5511,6 +5519,10 @@ msgstr "Pip et Nell ont désormais leur propre visage à taille d'enfant, et Mor
 #: assets/data/changelog.json
 msgid "Pitched Tents"
 msgstr "Tentes dressées"
+
+#: assets/data/changelog.json
+msgid "Pixel letters stay where they belong: the title, the damage, gold and XP numbers over the world, and the keys"
+msgstr "Les lettres en pixels restent là où elles vont bien : le titre, les nombres de dégâts, d'or et d'expérience au-dessus du monde, et les touches"
 
 #: assets/data/changelog.json
 msgid "Pixelheim can grow into a City once the dragon is free"
@@ -7587,6 +7599,10 @@ msgstr "La barre tactile reprend ce que seul le clavier faisait : jeter, tout 
 #: assets/data/changelog.json
 msgid "The test suite tightened its bolts: shared walking, chasing and fighting helpers replace a dozen private copies, and the equip/drop/skill-point wiring got its first direct tests"
 msgstr "La suite de tests a resserré ses boulons : des utilitaires partagés de marche, de poursuite et de combat remplacent une douzaine de copies privées, et le câblage équiper/lâcher/point de compétence a reçu ses premiers tests directs"
+
+#: assets/data/changelog.json
+msgid "The text is a little larger, and every page keeps its room, with Large text too"
+msgstr "Le texte est un peu plus grand, et chaque page garde sa place, en grand texte aussi"
 
 #: assets/data/changelog.json
 msgid "The three renderers now share one camera, one day/night clock and one interaction-prompt rule - the classic renderer's prompt had quietly drifted; it agrees with the others again"

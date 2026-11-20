@@ -37,6 +37,8 @@ func build_prompt() -> void:
 	if Touch.enabled():
 		var mark := Label.new()
 		mark.text = "!"
+		# A world label the camera enlarges: pixel type, as the floats (PIX-533).
+		mark.add_theme_font_override("font", UiStyle.pixel_font())
 		mark.add_theme_font_size_override("font_size", 10)
 		mark.add_theme_color_override("font_color", Color(1, 0.9, 0.3))
 		mark.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
