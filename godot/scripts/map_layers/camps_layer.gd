@@ -116,6 +116,34 @@ func build(view: MapView, slices: Slicer) -> void:
 		slices.add("decor_ruins", func() -> void: _decor_ruins(view))
 
 
+## The town hall's house on the town's map, in cells (empty anywhere else):
+## the house whose door leads into it.
+static func hall(view: MapView) -> Rect2i:
+	if view.data.id != "town":
+		return Rect2i()
+	for door: Vector2i in view.data.portals:
+		if view.data.portals[door].get("mapId", "") == "town_hall":
+			return PunyTown.house_of(view.data.grid, door)
+	return Rect2i()
+
+
+## The hall on the Night of Ash (PIX-516: it stood whole on the square, its
+## windows warm, on the night nobody is in it): its windows dark and its
+## walls and roof scorched as the gatehouse is (GroundLayer's `ashen` layer).
+## The town is drawn anew after the dawn (Stage.play_dawn), whole and lit.
+func set_night(view: MapView, _night: bool) -> void:
+	if GameState.progression.prologue == Prologue.DONE:
+		return
+	var house := hall(view)
+	for pane: Node2D in view.panes:
+		if is_instance_valid(pane) and house.has_point(Vector2i(pane.position) / TILE):
+			pane.visible = false
+			# The LightRig shows a light by its energy: none thrown below it.
+			var light: Variant = pane.get_meta("light", null)
+			if is_instance_valid(light):
+				(light as Node).set_meta("energy", 0.0)
+
+
 ## The town's ruins smoking, and on the night of the fire still burning
 ## (PIX-151), but for the ones the hero put out (PIX-197): those smoulder,
 ## as the ruins do the days after.
