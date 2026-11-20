@@ -189,10 +189,11 @@ func test_a_drawn_town_leaves_no_plain_piece_flat() -> void:
 
 
 ## The Medieval Age's stone, from ids alone (no pack needed): the flags',
-## the sandstone's and the mossy flags' fill, the rooms' floors and stone
+## the sandstone's and the mossy flags' fill, the keep's and Morvax's stone
 ## walls, the rampart; never the small stones (the cobbles, the setts, the
-## edge stones), the basket weave or the gravel, the town's plaster nor a
-## roof (PIX-529's pictures: carved, they turned to grain or ruled lines).
+## edge stones), the basket weave, a room's brick floor or planks, the
+## gravel, the town's plaster nor a roof (PIX-529's pictures: carved, they
+## turned to grain or a mark at every brick's end).
 func test_the_carved_stones() -> void:
 	var stone := Relief.carved()
 	var at := func(cell: Variant) -> int:
@@ -206,8 +207,10 @@ func test_the_carved_stones() -> void:
 			for column: int in (Streets.BLOCK[row] as Array).size():
 				if int(Streets.BLOCK[row][column]) >= 0:
 					assert_false(stone.has(at.call(Vector2i(paving["edges"]) + Vector2i(column, row))), "%s's edge stones stay flat" % look)
-	for tile: int in PunyInterior.STONE + PunyInterior.PLANKS + Rampart.WALL.values() + Rampart.TOWER:
+	for tile: int in Rampart.WALL.values() + Rampart.TOWER:
 		assert_true(stone.has(tile), "tile %d carved" % tile)
+	for tile: int in PunyInterior.STONE + PunyInterior.PLANKS:
+		assert_false(stone.has(tile), "a room's floor %d stays flat" % tile)
 	for offset: int in PunyInterior.WALL_SETS.values():
 		assert_true(stone.has(int(PunyInterior.WALLS[0]) + offset), "a stone wall")
 	for tile: int in PunyInterior.WALLS.values():
@@ -236,11 +239,55 @@ func test_the_tile_sheets_are_padded_as_the_relief_reads_them() -> void:
 			assert_true(source.use_texture_padding, "padded")
 
 
-## Relief's forms and the shader's are the same numbers.
+## Relief's forms and the shader's are the same numbers; a CC0 sheet's tile
+## layer carves only in the dungeons' own shader (a ruin's and a CC0 room's
+## thin bricks turned to a checker).
 func test_the_forms_match_the_shader() -> void:
 	var include := FileAccess.get_file_as_string("res://shaders/relief.gdshaderinc")
-	for line: String in ["RELIEF_PLAIN = %d;" % Relief.PLAIN, "RELIEF_CARVED = %d;" % Relief.CARVED, "RELIEF_DOMED = %d;" % Relief.DOMED, "RELIEF_PITCH = 18.0;"]:
+	for line: String in ["RELIEF_PLAIN = %d;" % Relief.PLAIN, "RELIEF_CARVED = %d;" % Relief.CARVED, "RELIEF_DOMED = %d;" % Relief.DOMED, "RELIEF_PITCH = 18.0;", "#define RELIEF_OTHER_JOINT 0.0"]:
 		assert_string_contains(include, line)
+	var dungeon := FileAccess.get_file_as_string("res://shaders/dungeon.gdshader")
+	var asks := dungeon.find("#define RELIEF_OTHER_JOINT RELIEF_JOINT")
+	assert_gt(asks, -1, "the dungeons' stone carves")
+	assert_lt(asks, dungeon.find("#include \"res://shaders/relief.gdshaderinc\""), "set before the include")
+
+
+## A room without the pack (PIX-318) stands its furniture domed as with it,
+## and leaves the rest to dress (its floor, walls and rugs on CC0 sheets,
+## flat in the shader); the forge's fire stays unshaded.
+func test_a_free_room_domes_its_furniture() -> void:
+	var withheld := PunyTown.withheld
+	PunyTown.withheld = true
+	var data := MapData.load_tiered("town_smith", [], 1)
+	var root := Node2D.new()
+	add_child_autofree(root)
+	var standing := Node2D.new()
+	root.add_child(standing)
+	var view := MapView.new(data, standing)
+	view.plan(data.spawn)
+	view.build(root)
+	PunyTown.withheld = withheld
+	assert_true(view.buildings.get("free", false), "drawn from the CC0 sheets")
+	var furniture: Array = (view.buildings["pieces"] as Dictionary).keys() + (view.buildings["objects"] as Dictionary).keys()
+	var is_furniture := func(cell: Vector2i) -> bool: return cell in furniture
+	var layers := 0
+	var sprites := 0
+	for piece: Node in view.ground.find_children("*", "", true, false):
+		var item := piece as CanvasItem
+		if piece is TileMapLayer:
+			var cells := (piece as TileMapLayer).get_used_cells()
+			if item.material == Relief.material(Relief.DOMED, true):
+				layers += 1
+				assert_true(cells.all(is_furniture), "only the furniture domed")
+			else:
+				assert_false(not cells.is_empty() and cells.all(is_furniture), "no furniture left undomed")
+		elif piece is Sprite2D and item.material == Relief.material(Relief.DOMED, false):
+			sprites += 1
+			assert_true(is_furniture.call(Vector2i((piece as Sprite2D).position / 16.0)), "a piece drawn in code is furniture")
+	assert_gt(layers, 0, "the CC0 furniture domed")
+	assert_gt(sprites, 0, "and the pieces drawn in code")
+	var unshaded := view.ground.find_children("*", "Sprite2D", true, false).filter(func(piece: Node) -> bool: return (piece as Sprite2D).material == Lights.unshaded())
+	assert_gt(unshaded.size(), 0, "the forge's mouth still glows unshaded")
 
 
 func test_the_lights_stand_over_the_art() -> void:

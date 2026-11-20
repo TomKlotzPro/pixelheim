@@ -4,8 +4,8 @@ class_name Relief
 ## a map draws with no material of its own wears shaders/relief.gdshader, a
 ## sprite standing among the actors (a prop, a lamp post, a crate, a stall,
 ## a cart, a room's furniture) domed from its outline, a tile layer (the
-## town's paving, a room's floor and stone walls, the rampart) carved from
-## its stones' joints, so the lamps and the lantern shape them by their forms
+## town's flags, a keep's stone walls, the rampart) carved from its stones'
+## joints, so the lamps and the lantern shape them by their forms
 ## (shaders/relief.gdshaderinc). Which of the Medieval Age's tiles are stone
 ## (carved()) is worked out from their ids alone, never from the pack's
 ## pixels. MapView dresses its drawing once it stands, and what comes to
@@ -76,12 +76,13 @@ static func worn(node: Node) -> int:
 
 
 ## The Medieval Age's stone, tile id -> how much darker its joints are:
-## the flags', the sandstone's and the mossy flags' fill; a room's stone
-## floor and planks; the keep's and Morvax's stone walls (not the town's
-## plaster); the rampart's walls and towers. Not the cobbles, the setts nor
-## any set's edge stones (stones of 3 to 5 pixels in three tones: carved,
-## grain), the basket weave (its 3-pixel rows in stack bond: a ruled line
-## at every brick's end) or the gravel: they stay flat (PIX-529's pictures).
+## the flags', the sandstone's and the mossy flags' fill; the keep's and
+## Morvax's stone walls (not the town's plaster); the rampart's walls and
+## towers. Not the cobbles, the setts nor any set's edge stones (stones of
+## 3 to 5 pixels in three tones: carved, grain; at their own step, 0.17,
+## too thin to carve at all), the basket weave nor a room's brick floor or
+## planks (rows of 3 or 4 pixels: a mark at every brick's end) or the
+## gravel: they stay flat (PIX-529's pictures).
 static func carved() -> Dictionary:
 	var out := {}
 	for look: String in Streets.LOOKS:
@@ -93,7 +94,7 @@ static func carved() -> Dictionary:
 	var walls: Array = []
 	for offset: int in PunyInterior.WALL_SETS.values():
 		walls.append_array(PunyInterior.WALLS.values().map(func(tile: int) -> int: return tile + offset))
-	for tile: int in PunyInterior.STONE + PunyInterior.PLANKS + walls + Rampart.WALL.values() + Rampart.TOWER:
+	for tile: int in walls + Rampart.WALL.values() + Rampart.TOWER:
 		out[tile] = JOINT
 	return out
 

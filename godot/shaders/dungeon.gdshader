@@ -21,6 +21,9 @@ shader_type canvas_item;
 // never smudged nor a field of checks.
 
 #include "res://shaders/linear.gdshaderinc"
+// Light relief carves the CC0 dungeons' stone, the one CC0 stone that reads
+// clean carved (PIX-529); every other CC0 tile layer lies flat.
+#define RELIEF_OTHER_JOINT RELIEF_JOINT
 #include "res://shaders/relief.gdshaderinc"
 
 global uniform float world_time;

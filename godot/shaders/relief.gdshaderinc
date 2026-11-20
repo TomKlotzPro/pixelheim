@@ -4,11 +4,13 @@
 // a stall's stripes into grain). Three forms:
 // - carved (RELIEF_CARVED): paving, floors and stone walls, each stone
 //   bevelled from its joints, rising from the joint to a flat top within two
-//   pixels. A joint is a short run of pixels a step darker than this one
-//   (RELIEF_JOINT, or the Medieval Age's stone sets' own step in
-//   `relief_joints`, Relief.joints(): 0 there for a tile that is no stone);
-//   a dark band wider than that (a wall's face, the dark beyond a room, the
-//   air) is none;
+//   pixels, each bevel fading towards the joints across it (a stone's top
+//   its own, never a course's ruled line). A joint is a short run of pixels
+//   a step darker than this one (the Medieval Age's stone sets' own step in
+//   `relief_joints`, Relief.joints(): 0 there for a tile that is no stone;
+//   RELIEF_OTHER_JOINT on any other sheet, none unless the shader asks); a
+//   dark band wider than that (a wall's face, the dark beyond a room, the
+//   air) is none, and a stone too thin either way to carve stays flat;
 // - domed (RELIEF_DOMED): what stands (props, lamps, stalls, crates, trees),
 //   rounded from its outline: low by an edge (a texel under half alpha
 //   within six pixels), high in the middle;
@@ -52,14 +54,23 @@ const int RELIEF_DOMED = 2;
 // copy of its edge each side (use_texture_padding, test_relief).
 const float RELIEF_PITCH = 18.0;
 // A joint is this much darker than the stone by it (the sandstone's 10%, the
-// floors' more), where no step map says otherwise (the CC0 sheets).
+// floors' more): the CC0 dungeons' stone's (dungeon.gdshader).
 const float RELIEF_JOINT = 0.08;
+// The joint step on a sheet with no step map (the CC0 sheets): none, so their
+// tile layers lie flat (a ruin's and a CC0 room's thin bricks turned to a
+// checker), unless the shader defines it before its include
+// (dungeon.gdshader: the dungeons' stone reads clean).
+#ifndef RELIEF_OTHER_JOINT
+#define RELIEF_OTHER_JOINT 0.0
+#endif
 // How steep a stone's bevel is at its joint (half that a pixel further in):
-// at 0.45 a lamp 20 px off moved 0.4% of the City's pixels, unseen.
-const float RELIEF_CARVE = 1.5;
-// A stone no more than five pixels across (a floor brick's height) is too
-// thin to carve along that axis: bright and dark rows else.
-const float RELIEF_THIN = 0.0;
+// at 0.45 a lamp 20 px off moved 0.4% of the City's pixels, unseen; at 1.5
+// with its courses whole they read as ruled lines.
+const float RELIEF_CARVE = 1.2;
+// A course's joint runs on across the paving: its bevels (a stone's top and
+// foot) half as steep as a stone's ends, or the courses read as stripes
+// (0.7: a course's top +7 levels over half the City's square).
+const float RELIEF_COURSE = 0.5;
 // How steep a prop's dome is at its outline: its outline is dark, so the
 // slope shows a pixel or two inside it, a gentle roundness.
 const float RELIEF_DOME = 2.0;
@@ -78,7 +89,9 @@ float relief_h(vec4 c) {
 // its region on the sheet (`keep` 0; the region snapped to whole texels, as
 // the desktop renderer hands it over in half floats), a tile's on its tile of
 // the TileSet's padded sheet, clamped (1: a tap past its edge reads the edge,
-// so a piece's cut is no outline) or wrapped (2: a fill tiles with itself, so
+// so a piece's cut is no outline) or, for a fill (2), clamped across (its
+// tiles are laid at random, and at the paving's edge the column wrapped
+// round drew a joint that isn't there) and wrapped down (its courses run on:
 // a joint on its top row is the row under the tile above's too).
 ivec2 relief_texel(vec2 uv, vec2 px, vec4 region, vec2 off, int keep) {
 	vec2 texel = floor(uv / px);
@@ -90,17 +103,17 @@ ivec2 relief_texel(vec2 uv, vec2 px, vec4 region, vec2 off, int keep) {
 	if (keep == 1) {
 		return ivec2(clamp(texel + off, lo, lo + 15.0));
 	}
-	return ivec2(lo + mod(texel + off - lo, 16.0));
+	return ivec2(vec2(clamp(texel.x + off.x, lo.x, lo.x + 15.0), lo.y + mod(texel.y + off.y - lo.y, 16.0)));
 }
 
 // How much darker a joint is by the pixel at `uv` on a sheet `sheet` texels
 // wide: the Medieval Age's step for its tile on a tile layer (0: no stone),
-// RELIEF_JOINT on any other.
+// RELIEF_OTHER_JOINT on any other.
 float relief_joint(ivec2 sheet, vec2 uv, vec2 px, bool tiles) {
 	if (tiles && all(equal(sheet, textureSize(relief_joints, 0) * int(RELIEF_PITCH)))) {
 		return texelFetch(relief_joints, ivec2(floor(floor(uv / px) / RELIEF_PITCH)), 0).r;
 	}
-	return RELIEF_JOINT;
+	return RELIEF_OTHER_JOINT;
 }
 
 // The step from height `b` to `a`, its grain cored out and capped by how dark
@@ -143,8 +156,10 @@ vec2 relief_ray(float c, vec3 q, float joint) {
 // A stone's pixel, bevelled from its joints (the heights out left, right,
 // up and down): only on a stone's top, never where a neighbour is lighter
 // by a step (inside a joint, by its darker corner, on a darker stone by a
-// lighter one: specks once), nor along an axis it is too thin on
-// (RELIEF_THIN).
+// lighter one: specks once), nor on a stone no more than five pixels across
+// either way (a floor brick's 3-px row: carved across only, a mark at each
+// brick's end). Each bevel fades towards the joints across it, so a
+// course's tops are each stone's, never one bright line.
 vec3 relief_carved(float c, vec3 l, vec3 r, vec3 u, vec3 d, float joint, vec4 region) {
 	vec2 form = vec2(0.0);
 	if (max(max(l.x, r.x), max(u.x, d.x)) * (1.0 - joint) <= c) {
@@ -152,7 +167,9 @@ vec3 relief_carved(float c, vec3 l, vec3 r, vec3 u, vec3 d, float joint, vec4 re
 		vec2 rr = relief_ray(c, r, joint);
 		vec2 ru = relief_ray(c, u, joint);
 		vec2 rd = relief_ray(c, d, joint);
-		form = vec2((rr.x - rl.x) * (rl.y > 0.0 && rr.y > 0.0 ? RELIEF_THIN : 1.0), (ru.x - rd.x) * (ru.y > 0.0 && rd.y > 0.0 ? RELIEF_THIN : 1.0));
+		if (!(rl.y > 0.0 && rr.y > 0.0) && !(ru.y > 0.0 && rd.y > 0.0)) {
+			form = vec2((rr.x - rl.x) * (1.0 - max(ru.x, rd.x)), (ru.x - rd.x) * (1.0 - max(rl.x, rr.x)) * RELIEF_COURSE);
+		}
 	}
 	return relief_slope(form * RELIEF_CARVE + relief_tone(l.x, r.x, u.x, d.x), region);
 }
