@@ -291,9 +291,10 @@ func _process(delta: float) -> void:
 		if lamp.has_meta("tint"):
 			lamp.color = DesktopLook.canvas_color(lamp.get_meta("tint"), DesktopLook.linear)
 		var energy := float(lamp.get_meta("energy", 1.0)) * (day if lamp.get_meta("by_day", false) else dark)
-		# The fallen hero's lantern goes out as they put it away (PIX-530):
-		# no pool without its source in hand.
-		if lamp == lantern and (lantern.get_parent() as Player).dead:
+		# The hero's lantern burns only in the real dark, and goes out as the
+		# fallen hero puts it away (PIX-530): the glass in their hand is lit
+		# by this (lantern.visible), so the pool never burns round a cold one.
+		if lamp == lantern and (dark < Lights.LANTERN_DARK or (lantern.get_parent() as Player).dead):
 			energy = 0.0
 		if lamp.get_meta("flicker", false) and not still:
 			energy *= Lights.flicker(t, float(lamp.get_meta("phase", 0.0)), lamp.get_meta("blaze", false))

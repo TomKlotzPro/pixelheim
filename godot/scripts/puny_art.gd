@@ -208,7 +208,9 @@ const SHIELD_HIDDEN := [[8, 15], [21, 24]]
 ## near hand, up and up-left beside the screen-right hand, left behind the
 ## back (the far hand: the shield's in front), down-left beside the
 ## screen-right hand (it shares left's shield, in front on the left). Its
-## bottom row is the feet's last.
+## bottom row is the feet's last. A frame whose arm swings off that place
+## (a step: the box stands still, the arm doesn't) slides it in to the hand
+## (held_at).
 const LANTERN_AT := {
 	0: [-9, 8, true], 1: [-9, 8, true], 2: [1, 8, true], 3: [1, 8, true],
 	4: [6, 8, true], 5: [6, 8, true], 6: [3, 8, false], 7: [5, 8, true],
@@ -655,15 +657,55 @@ static var _figures: Array[Rect2i] = []
 ## Where the Tin Lantern hangs in a frame of the puny sheet (PIX-530): its
 ## top-left pixel in the 32 px cell ("at") and whether it is drawn in front
 ## of the figure ("front"); {} where it's put away: shown while the hero
-## stands, walks or is first hurt (columns 0-3 and 18-19), never while the
-## main hand swings, draws or casts (4-17), flies up to the face (20) nor
-## as the hero falls (21-23). Read every tick, so plain comparisons.
+## stands, walks or is hurt (columns 0-3 and 18-20: kept against the arm as
+## the hands fly up, so a hit never blinks it out under its burning pool),
+## never while the main hand swings, draws or casts (4-17) nor as the hero
+## falls (21-23). Read every tick: worked out once per frame.
 static func held_at(row: int, column: int) -> Dictionary:
-	if not (column < 4 or column == 18 or column == 19) or not LANTERN_AT.has(row):
+	if not (column < 4 or (column >= 18 and column <= 20)) or not LANTERN_AT.has(row):
 		return {}
+	var index := row * 24 + column
+	if not _hangs.has(index):
+		_hangs[index] = _hang(row, column)
+	return _hangs[index]
+
+
+static var _hangs := {}
+static var _template: Image
+
+
+## One frame's lantern: LANTERN_AT's place, slid toward the figure's middle
+## a pixel at a time until its ink meets the template's (the review: in a
+## step the arm swings but the box stands, and it hung a pixel off the hand).
+static func _hang(row: int, column: int) -> Dictionary:
 	var place: Array = LANTERN_AT[row]
 	var used := _figure(row * 24 + column)
-	return {"at": Vector2i(used.position.x + used.size.x / 2 + int(place[0]), used.position.y + int(place[1])), "front": place[2]}
+	var middle := used.position.x + used.size.x / 2
+	var at := Vector2i(middle + int(place[0]), used.position.y + int(place[1]))
+	var toward := signi(middle - at.x - String(LampArt.HAND[0]).length() / 2)
+	if _template == null:
+		_template = (load(path(BASE)) as Texture2D).get_image()
+	var frame := _template.get_region(Rect2i(column * 32, row * 32, 32, 32))
+	for _step in 3:
+		if touches_hand(frame, at):
+			break
+		at.x += toward
+	return {"at": at, "front": place[2]}
+
+
+## Whether the lantern's ink at `at` overlaps or shares an edge with the
+## ink of `frame` (a 32 px cell): held, not floating beside the hand.
+static func touches_hand(frame: Image, at: Vector2i) -> bool:
+	for y in LampArt.HAND.size():
+		var line := String(LampArt.HAND[y])
+		for x in line.length():
+			if line[x] == ".":
+				continue
+			var p := at + Vector2i(x, y)
+			for near: Vector2i in [p, p + Vector2i.LEFT, p + Vector2i.RIGHT, p + Vector2i.UP, p + Vector2i.DOWN]:
+				if Rect2i(0, 0, 32, 32).has_point(near) and frame.get_pixelv(near).a > 0.0:
+					return true
+	return false
 
 
 ## The bare figure in each frame (the template's), so a plume or a swung

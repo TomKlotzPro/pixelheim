@@ -8,11 +8,13 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 
 var _items := {}
 var _settlers: Array[String] = []
+var _steps := 0.0
 
 
 func before_each() -> void:
 	_items = GameState.pack.items.duplicate()
 	_settlers = GameState.settlement.settlers.duplicate()
+	_steps = GameState.world.steps
 	GameState.pack.items.erase(Lights.HAND_LANTERN)
 	GameState.settlement.settlers.erase("frost_aske")
 
@@ -20,6 +22,7 @@ func before_each() -> void:
 func after_each() -> void:
 	GameState.pack.items = _items
 	GameState.settlement.settlers.assign(_settlers)
+	GameState.world.steps = _steps
 
 
 # --- The item ---------------------------------------------------------------
@@ -62,12 +65,11 @@ func test_no_light_follows_a_hero_with_none_and_the_lantern_brings_it() -> void:
 	assert_eq(float(rig.lantern.get_meta("energy")), 0.0, "sold, its light goes")
 
 
-## The pool burns only with its source in sight (the review: the hero fell
-## and lay dead, the lantern put away, the pool still round them).
-func test_the_fallen_hero_puts_the_lantern_out() -> void:
+## A rig lighting a world on `map`, the hero carrying the lantern.
+func _lit_rig(map: String) -> LightRig:
 	var world: World = preload("res://test/bare_world.gd").new()
 	add_child_autofree(world)
-	world.map = MapData.load_by_id("seacave")
+	world.map = MapData.load_by_id(map)
 	var hero: Player = preload("res://test/bare_hero.gd").new()
 	world.add_child(hero)
 	var rig: LightRig = preload("res://scripts/light_rig.gd").new()
@@ -76,6 +78,14 @@ func test_the_fallen_hero_puts_the_lantern_out() -> void:
 	rig.give_lantern(hero)
 	GameState.pack.add_item(Lights.HAND_LANTERN)
 	GameState.pack_changed()
+	return rig
+
+
+## The pool burns only with its source in sight (the review: the hero fell
+## and lay dead, the lantern put away, the pool still round them).
+func test_the_fallen_hero_puts_the_lantern_out() -> void:
+	var rig := _lit_rig("seacave")
+	var hero := rig.lantern.get_parent() as Player
 	rig._process(1.0 / 60.0)
 	assert_true(rig.lantern.visible, "carried underground, it burns")
 	hero.dead = true
@@ -84,6 +94,19 @@ func test_the_fallen_hero_puts_the_lantern_out() -> void:
 	hero.dead = false
 	rig._process(1.0 / 60.0)
 	assert_true(rig.lantern.visible, "back in hand, it burns again")
+
+
+## Lit only in the real dark (the review: a room's dim day burnt a faint
+## pool round a cold glass, the glass in hand reads lantern.visible).
+func test_the_lantern_is_out_in_a_room_by_day_and_lit_there_at_night() -> void:
+	var rig := _lit_rig("town_shop")
+	GameState.world.steps = 0.2 * DayNight.DAY_CYCLE_STEPS
+	rig._process(1.0 / 60.0)
+	assert_gt(rig.dark, 0.1, "a room is dim by day")
+	assert_false(rig.lantern.visible, "but no lantern is lit by day")
+	GameState.world.steps = Prologue.night_steps()
+	rig._process(1.0 / 60.0)
+	assert_true(rig.lantern.visible, "lit in the room at night")
 
 
 # --- The save ---------------------------------------------------------------
@@ -104,13 +127,39 @@ func test_the_lantern_hangs_in_the_hand_inside_the_cell() -> void:
 	for row in 8:
 		for column in 24:
 			var hand := PunyArt.held_at(row, column)
-			var shown := column < 4 or column == 18 or column == 19
-			assert_eq(not hand.is_empty(), shown, "row %d column %d: in hand standing, walking or first hurt, put away otherwise" % [row, column])
+			var shown := column < 4 or (column >= 18 and column <= 20)
+			assert_eq(not hand.is_empty(), shown, "row %d column %d: in hand standing, walking or hurt, put away otherwise" % [row, column])
 			if hand.is_empty():
 				continue
 			var at: Vector2i = hand["at"]
 			assert_true(Rect2i(0, 0, 32, 32).encloses(Rect2i(at, size)), "row %d column %d: never cut by the cell" % [row, column])
 			assert_lte(at.y + size.y, PunyArt._figure(row * 24 + column).end.y, "row %d column %d: never below the feet" % [row, column])
+
+
+## Held, never floating a pixel off the hand (the review: mid-step the arm
+## swings but the figure's box stands still): in every frame it shows, an
+## inked pixel of the lantern overlaps or shares an edge with the bare
+## figure's, the template every hero is dressed over.
+func test_the_lantern_touches_the_figure_in_every_frame() -> void:
+	var template: Image = (load(PunyArt.path(PunyArt.BASE)) as Texture2D).get_image()
+	for row in 8:
+		for column in 24:
+			var hand := PunyArt.held_at(row, column)
+			if hand.is_empty():
+				continue
+			var frame := template.get_region(Rect2i(column * 32, row * 32, 32, 32))
+			var gap := 99
+			for y in LampArt.HAND.size():
+				var line := String(LampArt.HAND[y])
+				for x in line.length():
+					if line[x] == ".":
+						continue
+					var p: Vector2i = hand["at"] + Vector2i(x, y)
+					for fy in 32:
+						for fx in 32:
+							if frame.get_pixel(fx, fy).a > 0.0:
+								gap = mini(gap, absi(fx - p.x) + absi(fy - p.y))
+			assert_lte(gap, 1, "row %d column %d: in the hand, not beside it" % [row, column])
 
 
 ## Never on the shield's side (the review's down-left, row 7, hung both on

@@ -59,6 +59,10 @@ const LANTERN_ENERGY := 0.3
 ## The light the hero carries (PIX-530): no light follows a hero without
 ## one; the Tin Lantern in their pack burns round them in the dark.
 const HAND_LANTERN := "tin_lantern"
+## How dark it must be before it is lit (PIX-530): never by a room's dim
+## day nor a rainy one, so the glass in hand and the pool round the hero
+## light together, and the hint that Odo sells one waits for the same dark.
+const LANTERN_DARK := 0.5
 const EMBER_ENERGY := 0.5
 const CANDLE_ENERGY := 0.55
 ## The sun through a window at noon: added to a room a little dim by day.

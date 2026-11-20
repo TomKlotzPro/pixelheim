@@ -22,7 +22,7 @@ func before_first_map(flags: HarnessFlags) -> void:
 ## The first night under the sky with none carried, once the story has
 ## begun (never on the Night of Ash, never in a cave): Odo sells them.
 func every_second(world: World) -> void:
-	if world.lights.dark > 0.5 and Lights.under_sky(world.map) and GameState.progression.prologue == Prologue.DONE and not Lights.carried(GameState.pack.items):
+	if world.lights.dark > Lights.LANTERN_DARK and Lights.under_sky(world.map) and GameState.progression.prologue == Prologue.DONE and not Lights.carried(GameState.pack.items):
 		world.hud.hint("lantern")
 
 
