@@ -57,6 +57,14 @@ const LAMP_FOOT := Rect2(4, 7, 8, 9)
 const STATUE_FOOT := Rect2(3, 6, 10, 10)
 const BARREL_FOOT := Rect2(2, 5, 12, 11)
 const CRATE_FOOT := Rect2(1, 4, 14, 12)
+## How far up its cell a barrel's or a crate's picture stands (PIX-515). The
+## hero is in a cell by their feet and drawn up from them, so one stopped
+## beside a low store drawn on the cell's bottom edge stood clear above it,
+## open ground drawn where the cell blocked: a playtest's hero could not
+## walk "between" Odo's and Vex's crates from the cells they stand on. This
+## far up, its base is level with the feet of whoever stands in the middle
+## of the next cell (its keeper) and its lid with a hero's at the cell's top.
+const STORE_RISE := 4
 const SMALL_WELL_FOOT := Rect2(1, 3, 14, 13)
 ## The roofed well blocks all it is drawn over (PIX-505: only its rim did,
 ## and the hero stood on its roof, seen through it): its rim is its foot,

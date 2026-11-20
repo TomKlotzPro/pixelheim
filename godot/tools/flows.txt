@@ -1043,6 +1043,19 @@ cap-kept | --map town --prologue 4 --talk-to innkeeper --keys e,e,e,e,i,x,x,e,es
 # with Reduce motion the sparks stay down.
 ash-fires | --map town --prologue 8 --at 26,12 | night=8 fires=houses 9 flames [1-9][0-9]{2} smoke 9 sparks 9 coals 9 | story town night
 ash-fires-still | --map town --prologue 8 --at 26,12 still | fires=houses 9 flames [1-9][0-9]{2} smoke 9 sparks 0 coals 9 | story town night
+# A burning home bars the way (PIX-515: the hero walked in at Odo's door
+# and stood among the flames, unhurt): walking up at the door stops below
+# it, and so does a roll; put out, the home lets the hero in.
+ash-home-barred | --map town --prologue 8 --at 30,11 --walk u,u,u,u | cell=\(30, 11\) night=8 | story town night
+ash-home-roll | --map town --prologue 8 --at 30,11 --keys w,shift,wait | cell=\(30, 11\) night=8 | story town night combat
+ash-home-doused | --map town --prologue 8 douse --at 30,11 --walk u,u | cell=\(30, [89]\) night=8 | story town night
+# The keepers' crates west of the square block the cells they are drawn on
+# (PIX-515: drawn low in their cells, a hero stopped beside one stood clear
+# above it): held left at (35, 27) and right at (31, 27), Vex's stops the
+# hero either side, and the row between it and Odo's is open.
+ash-crate-west | --map town --prologue 8 --at 35,27 --walk l,l,l | cell=\(34, 27\) | story town night
+ash-crate-east | --map town --prologue 8 --at 31,27 --walk r,r,r | cell=\(32, 27\) | story town night
+ash-crate-gap | --map town --prologue 8 --at 35,26 --walk l,l,l | cell=\(3[01], 26\) | story town night
 # The well and the burning homes take E from beside them (PIX-460: one
 # cell and one facing each): below the well facing away from it (its own
 # cell, so it holds on Shade's CC0 art as on the paid), and facing away

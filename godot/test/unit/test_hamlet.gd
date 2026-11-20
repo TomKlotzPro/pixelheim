@@ -251,6 +251,10 @@ func test_barrels_and_crates_are_at_the_folk_s_scale() -> void:
 				assert_true(HamletArt.PIECES.has(art), "%s's %s is drawn" % [map_id, kind])
 				assert_lte(_height(art), 12, "%s's %s (%s) stands below a villager's shoulder" % [map_id, kind, art])
 				assert_eq(HamletArt.cells_wide(art), 1, "%s on its one cell" % art)
+				# PIX-515: a hero stopped at the top of its cell is drawn with
+				# their feet 3 px down it; the store's picture reaches them.
+				var top := 16 - HamletArt.size(art).y + HamletArt.inked(art).position.y - PunyProps.STORE_RISE
+				assert_between(top, 0, 3, "%s's %s (%s) is drawn beside a hero it stops" % [map_id, kind, art])
 	assert_eq(Hamlet.store("mountain_road", "barrel", Vector2i.ZERO), "tub", "the smith quenches in a tub")
 	assert_eq(Hamlet.store("mountain_road", "crate", Vector2i.ZERO), "coal")
 	assert_eq(Hamlet.store("frostgate", "crate", Vector2i(7, 38)), "woodpile_snow", "the hermit's woodpile by his hut")
