@@ -188,31 +188,29 @@ func test_a_drawn_town_leaves_no_plain_piece_flat() -> void:
 	KeptGround.forget()
 
 
-## The Medieval Age's stone, from ids alone (no pack needed): every
-## paving's fill and edge stones but the gravel's, the cobbles' and the edge
-## stones at MOTTLED (a mottle, lumped), the rest at JOINT; a room's floor
-## and planks, the keep's and Morvax's stone walls, the rampart; never the
-## town's plaster nor a roof (PIX-529's review: left flat, the cobbled
-## street, the basket and the floors showed nothing).
+## The Medieval Age's stone, from ids alone (no pack needed): only great
+## stones, the flags', the sandstone's and the mossy flags' fills, the
+## keep's and Morvax's stone walls, the rampart; never the gravel, the
+## cobbles, the setts, any set's edge stones (lumped, hatch strokes round a
+## paving's rim), the basket's bricks, a room's floor or planks (3-px rows
+## pillowed, a corrugation), the town's plaster nor a roof (PIX-529's
+## pictures: a set that reads noisy goes flat).
 func test_the_carved_stones() -> void:
 	var stone := Relief.carved()
-	var edges := Relief.edges()
 	var at := func(cell: Variant) -> int:
 		return int(cell[1]) * PunyTown.COLUMNS + int(cell[0])
 	for look: String in Streets.LOOKS:
 		var paving: Dictionary = Streets.LOOKS[look]
-		var step: Variant = null if look == "gravel" else (Relief.MOTTLED if paving["fill"] == Streets.COBBLES else Relief.JOINT)
 		for fill: Array in paving["fill"]:
-			assert_eq(stone.get(at.call(fill)), step, "%s's fill" % look)
-			assert_false(at.call(fill) in edges, "a fill wraps")
+			assert_eq(stone.get(at.call(fill)), Relief.JOINT if look in Relief.FLAGS and paving["fill"] != Streets.COBBLES else null, "%s's fill" % look)
 		for row: int in Streets.BLOCK.size():
 			for column: int in (Streets.BLOCK[row] as Array).size():
-				var edge: int = at.call(Vector2i(paving["edges"]) + Vector2i(column, row))
 				if int(Streets.BLOCK[row][column]) >= 0:
-					assert_eq(stone.get(edge), null if look == "gravel" else Relief.MOTTLED, "%s's edge stones" % look)
-					assert_eq(edge in edges, look != "gravel", "%s's edge stones keep to their piece" % look)
-	for tile: int in PunyInterior.STONE + PunyInterior.PLANKS + Rampart.WALL.values() + Rampart.TOWER:
+					assert_false(stone.has(at.call(Vector2i(paving["edges"]) + Vector2i(column, row))), "%s's edge stones lie flat" % look)
+	for tile: int in Rampart.WALL.values() + Rampart.TOWER:
 		assert_eq(stone.get(tile), Relief.JOINT, "tile %d carved" % tile)
+	for tile: int in PunyInterior.STONE + PunyInterior.PLANKS:
+		assert_false(stone.has(tile), "a room's floor lies flat")
 	for offset: int in PunyInterior.WALL_SETS.values():
 		assert_true(stone.has(int(PunyInterior.WALLS[0]) + offset), "a stone wall")
 	for tile: int in PunyInterior.WALLS.values():
@@ -221,11 +219,8 @@ func test_the_carved_stones() -> void:
 	var map := Relief.joints().get_image()
 	assert_eq(map.get_size(), Vector2i(PunyTown.COLUMNS, PunyTown.ROWS), "a texel a tile")
 	assert_almost_eq(map.get_pixel(24, 32).r, Relief.JOINT, 0.01, "a sandstone flag")
-	assert_almost_eq(map.get_pixel(27, 109).r, Relief.JOINT, 0.01, "a basket brick")
-	assert_almost_eq(map.get_pixel(30, 40).r, Relief.MOTTLED, 0.01, "a cobble")
-	assert_eq(map.get_pixel(30, 40).g, 0.0, "a fill wraps")
-	assert_almost_eq(map.get_pixel(34, 48).r, Relief.MOTTLED, 0.01, "an edge stone")
-	assert_eq(map.get_pixel(34, 48).g, 1.0, "an edge stone keeps to its piece")
+	for flat: Vector2i in [Vector2i(27, 109), Vector2i(30, 40), Vector2i(34, 48)]:
+		assert_eq(map.get_pixel(flat.x, flat.y).r, 0.0, "a basket brick, a cobble, an edge stone")
 	var plaster: int = PunyInterior.WALLS[0]
 	assert_eq(map.get_pixel(plaster % PunyTown.COLUMNS, plaster / PunyTown.COLUMNS).r, 0.0, "plaster")
 
@@ -245,16 +240,14 @@ func test_the_tile_sheets_are_padded_as_the_relief_reads_them() -> void:
 			assert_true(source.use_texture_padding, "padded")
 
 
-## Relief's forms and the shader's are the same numbers, its mottle's step
-## between the stones' and the cobbles'; a CC0 sheet's tile layer carves
+## Relief's forms and the shader's are the same numbers; a CC0 sheet's tile
+## layer carves
 ## only in the dungeons' own shader (a ruin's and a CC0 room's thin bricks
 ## turned to a checker).
 func test_the_forms_match_the_shader() -> void:
 	var include := FileAccess.get_file_as_string("res://shaders/relief.gdshaderinc")
-	for line: String in ["RELIEF_PLAIN = %d;" % Relief.PLAIN, "RELIEF_CARVED = %d;" % Relief.CARVED, "RELIEF_DOMED = %d;" % Relief.DOMED, "RELIEF_PITCH = 18.0;", "#define RELIEF_OTHER_JOINT 0.0", "RELIEF_MOTTLED = 0.12;"]:
+	for line: String in ["RELIEF_PLAIN = %d;" % Relief.PLAIN, "RELIEF_CARVED = %d;" % Relief.CARVED, "RELIEF_DOMED = %d;" % Relief.DOMED, "RELIEF_PITCH = 18.0;", "#define RELIEF_OTHER_JOINT 0.0"]:
 		assert_string_contains(include, line)
-	assert_lt(Relief.JOINT, 0.12, "a stone's joint is no mottle")
-	assert_gt(Relief.MOTTLED, 0.12, "the cobbles' is")
 	var dungeon := FileAccess.get_file_as_string("res://shaders/dungeon.gdshader")
 	var asks := dungeon.find("#define RELIEF_OTHER_JOINT RELIEF_JOINT")
 	assert_gt(asks, -1, "the dungeons' stone carves")

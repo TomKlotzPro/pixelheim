@@ -16,10 +16,10 @@ const PLAIN := 0
 const CARVED := 1
 const DOMED := 2
 ## How much darker than a stone its joint is: one tone step (the
-## sandstone's 10%, the floors' and the walls' more).
+## sandstone's 10%, the walls' more).
 const JOINT := 0.08
-## The cobbles' step: a mottle of three tones, only the darkest a joint.
-const MOTTLED := 0.17
+## The pavings carved: great flags, each stone wider than its bevels.
+const FLAGS := ["flags", "sandstone", "mossy"]
 
 static var _materials := {}
 static var _joints: ImageTexture
@@ -78,56 +78,35 @@ static func worn(node: Node) -> int:
 
 
 ## The Medieval Age's stone, tile id -> how much darker its joints are:
-## every paving's fill but the gravel's (pebbles, no joints), the cobbles'
-## at MOTTLED; every set's edge stones (edges()), at MOTTLED; a room's
-## stone floor and planks; the keep's and Morvax's stone walls (not the
-## town's plaster); the rampart's walls and towers. In the shader a big
-## stone is bevelled, a small one (a brick's 3-px row) a pillow, a mottle
-## (a cobble, an edge stone) lumped (PIX-529's pictures).
+## the great flags' fills (FLAGS), the keep's and Morvax's stone walls (not
+## the town's plaster), the rampart's walls and towers. All else lies flat,
+## as PIX-529's pictures had it: the gravel (pebbles, no joints); the
+## cobbles, the setts and every set's edge stones (a mottle: lumped, a
+## band of slanted dark hatch strokes round the City's basket and the
+## observatory yard's rim); the basket's bricks, a room's stone floor and
+## planks (3-px rows: pillowed, a bright row over a dark one, a
+## corrugation).
 static func carved() -> Dictionary:
 	var out := {}
-	for look: String in Streets.LOOKS:
-		var paving: Dictionary = Streets.LOOKS[look]
-		if look == "gravel":
-			continue
-		for fill: Array in paving["fill"]:
-			out[int(fill[1]) * PunyTown.COLUMNS + int(fill[0])] = MOTTLED if paving["fill"] == Streets.COBBLES else JOINT
-	for tile: int in edges():
-		out[tile] = MOTTLED
+	for look: String in FLAGS:
+		for fill: Array in Streets.LOOKS[look]["fill"]:
+			out[int(fill[1]) * PunyTown.COLUMNS + int(fill[0])] = JOINT
 	var walls: Array = []
 	for offset: int in PunyInterior.WALL_SETS.values():
 		walls.append_array(PunyInterior.WALLS.values().map(func(tile: int) -> int: return tile + offset))
-	for tile: int in PunyInterior.STONE + PunyInterior.PLANKS + walls + Rampart.WALL.values() + Rampart.TOWER:
+	for tile: int in walls + Rampart.WALL.values() + Rampart.TOWER:
 		out[tile] = JOINT
 	return out
 
 
-## Every paving's edge stones but the gravel's (its 12x4 block's pieces):
-## small soft stones in a mottle as the cobbles are, and no fill, so the
-## shader keeps its taps on the piece (a street one cell wide is all edge).
-static func edges() -> Array[int]:
-	var out: Array[int] = []
-	for look: String in Streets.LOOKS:
-		var paving: Dictionary = Streets.LOOKS[look]
-		for row: int in Streets.BLOCK.size():
-			for column: int in (Streets.BLOCK[row] as Array).size():
-				var edge := Vector2i(paving["edges"]) + Vector2i(column, row)
-				var tile := edge.y * PunyTown.COLUMNS + edge.x
-				if look != "gravel" and int(Streets.BLOCK[row][column]) >= 0 and tile not in out:
-					out.append(tile)
-	return out
-
-
 ## carved() as a texture, a texel a tile of the sheet (its red the step, 0
-## for no stone; its green 1 for an edge stone, its taps mirrored at the
-## piece's edge, not wrapped), for the shaders' `relief_joints`: made from ids, with the pack
-## or without.
+## for no stone), for the shaders' `relief_joints`: made from ids, with the
+## pack or without.
 static func joints() -> ImageTexture:
 	if _joints == null:
-		var map := Image.create(PunyTown.COLUMNS, PunyTown.ROWS, false, Image.FORMAT_RG8)
+		var map := Image.create(PunyTown.COLUMNS, PunyTown.ROWS, false, Image.FORMAT_R8)
 		var stone := carved()
-		var edge := edges()
 		for tile: int in stone:
-			map.set_pixel(tile % PunyTown.COLUMNS, tile / PunyTown.COLUMNS, Color(stone[tile], 1.0 if tile in edge else 0.0, 0.0))
+			map.set_pixel(tile % PunyTown.COLUMNS, tile / PunyTown.COLUMNS, Color(stone[tile], 0.0, 0.0))
 		_joints = ImageTexture.create_from_image(map)
 	return _joints

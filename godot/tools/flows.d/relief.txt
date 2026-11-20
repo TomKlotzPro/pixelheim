@@ -6,10 +6,11 @@
 # they still do (the shaders light them as before), and it says off.
 relief-town | --map town --town-tier 4 --at 40,24 night --relief on | map=town relief=on pieces [1-9]\d* | town night
 relief-off | --map town --town-tier 4 --at 40,24 night --relief off | map=town relief=off pieces [1-9]\d* | town night
-# PIX-529: the depth from the art's forms. The forge at night, its stone
-# floor carved (each brick a pillow), its plaster walls flat, its furniture
-# domed; the Frostgate's observatory yard between its lamps, its flags
-# carved, its edge stones lumped and the snow by them plain. Both hold
-# only that the pieces are dressed: the pictures hold the look.
+# PIX-529: the depth from the art's forms. The forge at night, its floor
+# and its plaster walls flat (nothing carved there: its 3-px brick rows
+# were a corrugation), its furniture domed; the Frostgate's observatory
+# yard between its lamps, its flags carved, its edge stones and the snow
+# by them plain. Both hold only that the pieces are dressed: the pictures
+# hold the look.
 relief-room | --map town_smith night --relief on | map=town_smith relief=on pieces [1-9]\d* | rooms night
 relief-frost | --map frostgate --at 27,9 night --relief on | map=frostgate relief=on pieces [1-9]\d* | field night

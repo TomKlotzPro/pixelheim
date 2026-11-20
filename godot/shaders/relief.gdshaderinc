@@ -10,10 +10,11 @@
 //   `relief_joints`, Relief.joints(): 0 there for a tile that is no stone;
 //   RELIEF_OTHER_JOINT on any other sheet, none unless the shader asks); a
 //   dark band wider than that (a wall's face, the dark beyond a room, the
-//   air) is none. A stone five pixels or less across (a brick's 3-px row)
-//   is a pillow instead, and a mottle (the cobbles, every set's edge
-//   stones: a step over RELIEF_MOTTLED) has no joints to trust, so its
-//   light patches are lumps, from the tones three pixels round;
+//   air) is none. A stone five pixels or less across (a wall's thin
+//   course) is a pillow instead. Only great stones carve: the cobbles and
+//   every set's edge stones (a mottle: hatch strokes round a paving's rim)
+//   and the 3-px brick rows (the basket, a room's floor: a corrugation)
+//   lie flat (Relief.carved());
 // - domed (RELIEF_DOMED): what stands (props, lamps, stalls, crates, trees),
 //   rounded from its outline: low by an edge (a texel under half alpha
 //   within six pixels), high in the middle;
@@ -75,19 +76,10 @@ const float RELIEF_CARVE = 1.2;
 // (0.7: a course's top +7 levels over half the City's square; 0.5: the gate
 // road's one-stone strip under the lantern a ladder's rungs).
 const float RELIEF_COURSE = 0.35;
-// How steep a small stone's pillow is by its joints (a brick's 3-px row: at
-// 0.8 every row of the City's basket read as a ruled stripe, at 0.6 the
-// forge's floor sparkled).
+// How steep a small stone's pillow is by its joints (a wall's thin course;
+// the basket's and the floors' 3-px rows were a corrugation at 0.4, ruled
+// stripes at 0.8: they lie flat).
 const float RELIEF_PILLOW = 0.4;
-// A step over this is a mottle's (Relief.MOTTLED: the cobbles, every set's
-// edge stones)...
-const float RELIEF_MOTTLED = 0.12;
-// ...and how steep its lumps are, by the share one side is lighter (2.5
-// moved 0.8% of Upper Street's cobbles under its lamps, barely seen).
-const float RELIEF_MOTTLE = 4.0;
-// ...each tap counting no more than this far off the pixel's own tone (the
-// cobbles' joints' 29%): a paving's dark outline made its rim a dark band.
-const float RELIEF_LUMP = 0.3;
 // How steep a prop's dome is at its outline: its outline is dark, so the
 // slope shows a pixel or two inside it, a gentle roundness.
 const float RELIEF_DOME = 2.0;
@@ -102,25 +94,14 @@ float relief_h(vec4 c) {
 	return dot(to_light(c.rgb), vec3(0.299, 0.587, 0.114)) * c.a;
 }
 
-// Whether the carved tile at `lo` on a sheet of texels `px` wraps down: any
-// but a paving's edge stones on the Medieval Age's sheet (Relief.joints()'
-// green), whose taps are mirrored at the piece's edge instead: wrapped, the
-// rim's outline read from its top row lit a band along the City's basket;
-// clamped, the outline read three times made every stone by the rim fall
-// off, a dark band round the observatory's yard.
-bool relief_wraps(vec2 px, vec2 lo) {
-	return !all(equal(ivec2(round(1.0 / px)), textureSize(relief_joints, 0) * int(RELIEF_PITCH))) || texelFetch(relief_joints, ivec2(lo / RELIEF_PITCH), 0).g < 0.5;
-}
-
 // The texel `off` from the pixel at `uv`, kept on its piece: a sprite's on
 // its region on the sheet (`keep` 0; the region snapped to whole texels, as
 // the desktop renderer hands it over in half floats), a tile's on its tile of
 // the TileSet's padded sheet, clamped (1: a tap past its edge reads the edge,
 // so a piece's cut is no outline) or, carved (2), clamped across (its
 // tiles are laid at random, and at the paving's edge the column wrapped
-// round drew a joint that isn't there) and, for a fill, wrapped down (its
-// courses run on: a joint on its top row is the row under the tile above's
-// too); a paving's edge stones are no fill: mirrored (relief_wraps).
+// round drew a joint that isn't there) and wrapped down (its courses run
+// on: a joint on its top row is the row under the tile above's too).
 ivec2 relief_texel(vec2 uv, vec2 px, vec4 region, vec2 off, int keep) {
 	vec2 texel = floor(uv / px);
 	if (keep == 0) {
@@ -130,9 +111,6 @@ ivec2 relief_texel(vec2 uv, vec2 px, vec4 region, vec2 off, int keep) {
 	vec2 lo = floor(texel / RELIEF_PITCH) * RELIEF_PITCH + 1.0;
 	if (keep == 1) {
 		return ivec2(clamp(texel + off, lo, lo + 15.0));
-	}
-	if (!relief_wraps(px, lo)) {
-		return ivec2(lo + 15.0 - abs(15.0 - abs(texel + off - lo)));
 	}
 	return ivec2(vec2(clamp(texel.x + off.x, lo.x, lo.x + 15.0), lo.y + mod(texel.y + off.y - lo.y, 16.0)));
 }
@@ -184,13 +162,6 @@ vec2 relief_ray(float c, vec3 q, float joint) {
 	return vec2(0.0, d1 || d2 || d3 ? 1.0 : 0.0);
 }
 
-// The heights `q` one way from a mottle's pixel of height `c`, as its lumps
-// count them: no more than RELIEF_LUMP off its own, and level with it when
-// the paving ends within them (the air, height 0, past its rounded corners).
-vec3 relief_near(vec3 q, float c) {
-	return any(lessThan(q, vec3(0.001))) ? vec3(c) : clamp(q, vec3(c * (1.0 - RELIEF_LUMP)), vec3(c * (1.0 + RELIEF_LUMP)));
-}
-
 // A stone's pixel, bevelled from its joints (the heights out left, right,
 // up and down): only on a stone's top, never where a neighbour is lighter
 // by a step (inside a joint, by its darker corner, on a darker stone by a
@@ -199,18 +170,13 @@ vec3 relief_near(vec3 q, float c) {
 // joint on each axis, whole, at RELIEF_PILLOW, but not across a stone of two
 // pixels or less (carved as a big stone, only each brick's end showed, a
 // mark; left flat, the bricks were; every pixel of a tiny stone sloped was
-// grain). On a bigger stone each bevel fades towards the joints across it,
-// so a course's tops are each stone's, never one bright line. A mottle's
-// (a step over RELIEF_MOTTLED) joints are broken dashes, so its pillows
-// came out a speckle: it slopes by how much lighter its pixels are one way
-// than the other, three a side, relative to its own tone and each no more
-// than a joint's step off it (RELIEF_LUMP), a lump a light patch.
+// grain). On a bigger stone an end's bevel runs the stone's whole height,
+// only its corner pixel faded (faded two pixels in from each course, a
+// 2-3 px pill was left mid-height: rows of rivets on the squares), and a
+// course's fades towards the stone's ends, so its tops are each stone's,
+// never one bright line.
 vec3 relief_carved(float c, vec3 l, vec3 r, vec3 u, vec3 d, float joint, vec4 region) {
 	vec2 form = vec2(0.0);
-	if (joint > RELIEF_MOTTLED) {
-		vec2 lump = vec2(dot(relief_near(l, c) - relief_near(r, c), vec3(1.0)), dot(relief_near(d, c) - relief_near(u, c), vec3(1.0)));
-		return relief_slope(lump / (3.0 * max(c, 0.02)) * RELIEF_MOTTLE, region);
-	}
 	if (max(max(l.x, r.x), max(u.x, d.x)) * (1.0 - joint) <= c) {
 		vec2 rl = relief_ray(c, l, joint);
 		vec2 rr = relief_ray(c, r, joint);
@@ -220,7 +186,7 @@ vec3 relief_carved(float c, vec3 l, vec3 r, vec3 u, vec3 d, float joint, vec4 re
 		if ((rl.y > 0.0 && rr.y > 0.0) || (ru.y > 0.0 && rd.y > 0.0)) {
 			form = bevel * vec2(min(rl.x, rr.x) < 0.5 ? RELIEF_PILLOW : 0.0, min(ru.x, rd.x) < 0.5 ? RELIEF_PILLOW : 0.0);
 		} else {
-			form = bevel * vec2(1.0 - max(ru.x, rd.x), (1.0 - max(rl.x, rr.x)) * RELIEF_COURSE) * RELIEF_CARVE;
+			form = bevel * vec2(max(ru.x, rd.x) < 1.0 ? 1.0 : 0.5, (1.0 - max(rl.x, rr.x)) * RELIEF_COURSE) * RELIEF_CARVE;
 		}
 	}
 	return relief_slope(form + relief_tone(l.x, r.x, u.x, d.x), region);
