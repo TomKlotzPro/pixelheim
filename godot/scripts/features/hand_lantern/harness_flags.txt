@@ -1,0 +1,4 @@
+# The hand lantern's harness flags (PIX-530): `flag | takes | does`, as the
+# core's (scripts/harness_flags.txt), in its table after feature.gd's
+# flags_after().
+handlantern |  | the hero carries the Tin Lantern (PIX-530): lit in their hand at night and underground; the report adds handlight=

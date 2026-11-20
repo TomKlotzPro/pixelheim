@@ -1,19 +1,19 @@
 class_name NightShadows
 ## areas: town field dungeon night
-## The rules of the shadows the lantern and the lamps cast in the dark
+## The rules of the shadows the lamps cast in the dark
 ## (PIX-490): what blocks their light, from what footprint, and which few
 ## lights cast. Until now a light shone through everything. A house, a
 ## cliff or a dungeon's wall blocks it by its cells; what stands among the
 ## actors (a tree, a rock, a stall, a cart, a barrel) by the foot it stands
 ## on, its body's box or the bottom of its picture; a villager or the hero
-## by their feet, for the lamps only. The hero's lantern always casts, and
-## the lamps nearest the hero up to a cap; the others light as before.
+## by their feet. Only the lamps nearest the hero cast, up to a cap; the
+## others light as before, and the lantern the hero carries never casts
+## (v0.389: its shadows read as a field of view).
 ## Pure rules: NightShadowsLayer lays the occluders, the LightRig picks the
 ## lights frame by frame.
 
-## How many lamps cast besides the hero's lantern, in the browser as on
-## the desktop (three cost the web build's frame about 0.3 ms of 16.7:
-## perf.md).
+## How many lamps cast, in the browser as on the desktop (three cost the
+## web build's frame about 0.3 ms of 16.7: perf.md).
 const LAMPS := 3
 ## A lamp casts only within this many pixels of the hero's feet (past the
 ## screen's edge), and its shadows come and go over this many seconds, so
@@ -52,8 +52,7 @@ const NEAR_WALL := 0.125
 ## cell: a camp's torch against its tent, a lantern hung under a tree)
 ## casts nothing (PIX-495): so near, the foot's shadow took a quarter of
 ## the pool in one hard-edged wedge as far as the light reached. Its light
-## is soft all round as before, and the hero's lantern still casts from
-## the thing.
+## is soft all round as before.
 const AGAINST := 16.0
 ## A villager's or the hero's feet, in pixels.
 const FEET := Vector2(8, 3)
@@ -64,9 +63,9 @@ const FEET := Vector2(8, 3)
 const SCENERY := Lights.FLOOR
 const FOLK := 1 << 11
 ## The outlines round the blocks of tall cells (cliffs, ramparts, houses)
-## have a bit of their own: they block the lamps and the lantern, whose
-## pools are small, and not the lightning's light (PIX-491), which reaches
-## the whole view from beyond it - a shadow runs on to the end of its
+## have a bit of their own: they block the lamps, whose pools are small,
+## and not the lightning's light (PIX-491), which reaches the whole view
+## from beyond it - a shadow runs on to the end of its
 ## light, so one house laid a whole square in shadow, and the ring of rock
 ## round a valley the whole valley.
 const WALLS := 1 << 12
