@@ -217,6 +217,13 @@ func test_the_sea_breaks_on_what_juts_into_it() -> void:
 	assert_eq(_code(mask, Vector2i(31, 27)), PunyTerrain.SPAN_BIT, "the jetty spans the sea: its posts")
 	assert_eq(surf.call(Vector2i(31, 27)), 0.0)
 	assert_eq(PunyTerrain.water_near(mask, Vector2i(33, 30), 8), "", "and the sea is still no inland water")
+	# region_tint reads a sea over BEACH_SURF as a rock's steep foot, its
+	# waterline at the cell's edge: never a beach's, however open.
+	for y in saltmere.size.y:
+		for x in saltmere.size.x:
+			var breaks: float = surf.call(Vector2i(x, y))
+			if breaks > PunyTerrain.BEACH_SURF + 0.01:
+				assert_almost_eq(breaks, PunyTerrain.ROCK_SURF, 0.01, "steep only by a rock: %s" % Vector2i(x, y))
 	# A straight beach with a point a cell out of it, and a rock by the sea.
 	var grid := {}
 	for y in 9:

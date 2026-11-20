@@ -64,17 +64,24 @@ const float STREAK_EVERY = 26.0;
 // pile, a wake, a bend's froth (PIX-532).
 const vec3 RIVER_LIP = vec3(0.506, 0.898, 0.937);
 // A bridge's piles stand every PILE_EVERY pixels, as Shade's legs under his
-// planks (875-877), the heap at each swelling to PILE_R and sinking to
-// 0.6 of it; a wake runs WAKE_LONG downstream, its arms opening
-// WAKE_SPREAD a pixel, in dashes WAKE_DASH long (its arms reach 3.8 from
-// the pile: they never cross the next's); on still water a post's ring
-// grows to RIPPLE.
+// planks (875-877), the heap at each swelling to about PILE_R and sinking
+// to nothing, each its own size, beat, pace and quiet spells (all alike, a
+// row of mounds); a wake runs up to WAKE_LONG downstream (each pile's its
+// own length, dashes and quiet spells: all alike they read as a comb), its
+// arms opening WAKE_SPREAD a pixel, in dashes about WAKE_DASH long (its
+// arms reach 3.1 from the pile at most: they never line up with the
+// next's); on still water a post's ring grows to RIPPLE.
 const float PILE_EVERY = 8.0;
 const float PILE_R = 2.0;
-const float WAKE_LONG = 8.0;
+const float WAKE_LONG = 6.0;
 const float WAKE_SPREAD = 0.35;
 const float WAKE_DASH = 5.0;
 const float RIPPLE = 3.5;
+// A river's lap is white only where it is a line, the bank's distance
+// growing LAP_LINE a pixel or more (a straight bank's grows 1): where it
+// flattens (a convex corner) the band spread into a white triangle, so
+// there it thins to his rim's colour by how steep it still is.
+const float LAP_LINE = 0.6;
 // A running river froths in a bend: within BEND_FROTH of the corner its
 // banks turn round (fading out inside the cell), out to BEND_BANK past the
 // lap's line.
@@ -287,6 +294,9 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	vec2 bend;
 	int bank_ground;
 	float in_water = bank_in_water(px, local_px, code, bend, bank_ground);
+	// How fast it deepens here, read before any branch (the derivative needs
+	// its neighbours to have worked it out too).
+	float slope = fwidth(in_water);
 	int tone = code / 16;
 	if (tone == 0) {
 		return INLAND_NONE;
@@ -352,7 +362,13 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 		float broken = sin((px.x + drift.x) * 0.35 - (px.y + drift.y) * 0.2 - world_time * 1.3)
 			+ sin((px.x + drift.x) * 0.13 + (px.y + drift.y) * 0.31 + world_time * 0.7);
 		if (abs(in_water - lap) < 0.5 && broken > (still ? 0.2 : -0.4)) {
-			water = still ? moonlit(mix(water, water_foam(tone), 0.35)) : moonlit(WHITE_WATER);
+			if (still) {
+				water = moonlit(mix(water, water_foam(tone), 0.35));
+			} else if (slope > LAP_LINE) {
+				water = moonlit(WHITE_WATER);
+			} else if (threshold < slope * 0.4) {
+				water = moonlit(RIVER_LIP);
+			}
 		}
 	}
 	// Where it meets a bridge's piles (PIX-532): on a river a heap white at
@@ -387,25 +403,28 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 		float face = toward.x != 0 ? float(cell.x + max(toward.x, 0)) : float(cell.y + max(toward.y, 0));
 		float pile = round((toward.x != 0 ? local_px.y : local_px.x) / PILE_EVERY) + face * 7.1 + float(side / 2) * 3.3;
 		float beat = hash(vec2(pile, 2.9));
+		float pace = hash(vec2(pile, 8.3));
 		if (still) {
 			float r = 1.0 + RIPPLE * fract(world_time * 0.35 + beat);
 			float ring = length(vec2(off, edge));
 			if (abs(ring - r) < 0.5 && threshold > r / (RIPPLE + 1.0)) {
 				water = moonlit(water_lip(tone));
 			}
-		} else if (dot(vec2(toward), flow) > 0.5) {
-			// Heaped against the pile, taller than wide, swelling and
-			// sinking, its rim ragged with the churn.
-			float heap = PILE_R * (0.6 + 0.3 * (1.0 + sin(world_time * 2.3 + beat * TAU))) + 0.25 * churn;
+		} else if (dot(vec2(toward), flow) > 0.5 && sin(world_time * 0.7 + pace * TAU + 1.3) > -0.2) {
+			// Heaped against the pile, taller than wide, each its own size,
+			// swelling and sinking to nothing, its rim ragged with the churn;
+			// and now and then a pile quiet a while.
+			float heap = PILE_R * (0.6 + 0.6 * pace) * (0.2 + 0.8 * sin(world_time * (1.6 + 1.4 * pace) + beat * TAU)) + 0.25 * churn;
 			float ring = length(vec2(off * 1.3, edge));
 			if (ring < heap + 1.0) {
 				water = moonlit(ring > heap ? WHITE_WATER : RIVER_LIP);
 			}
-		} else if (dot(vec2(toward), flow) < -0.5 && edge < WAKE_LONG) {
+		} else if (dot(vec2(toward), flow) < -0.5 && edge < WAKE_LONG && sin(world_time * 0.8 + pace * TAU) > -0.3) {
 			// Two arms opening downstream in dashes, whole near the pile.
+			float wake = WAKE_LONG * (0.45 + 0.55 * pace);
 			float arm = abs(abs(off) - (1.0 + edge * WAKE_SPREAD));
-			float dash = fract((edge - world_time * STREAK_SPEED) / WAKE_DASH + beat);
-			if (arm < 0.5 && dash < 0.6 && threshold > (edge - WAKE_LONG * 0.4) / (WAKE_LONG * 0.6)) {
+			float dash = fract((edge - world_time * STREAK_SPEED) / (WAKE_DASH * (0.6 + 0.8 * beat)) + beat);
+			if (arm < 0.5 && dash < 0.6 && threshold > (edge - wake * 0.4) / (wake * 0.6)) {
 				water = moonlit(RIVER_LIP);
 			}
 		}

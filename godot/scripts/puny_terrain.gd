@@ -448,11 +448,14 @@ static func water_depth(grid: Dictionary, cell: Vector2i, size: Vector2i, west: 
 ## How hard the sea breaks on its cell `cell` (PIX-532, the water mask's
 ## blue on the sea), 0 to 1: ROCK_SURF by the rock's foot, POST_SURF round
 ## a pier's posts, and by a beach as much as open sea lies within two cells
-## (SURF_OPEN), so a point breaks white and a cove laps; nothing on a
-## straight beach, nor a cell off the land. The map's edge carried on.
-const ROCK_SURF := 0.8
+## (SURF_OPEN, up to BEACH_SURF), so a point breaks white and a cove laps;
+## nothing on a straight beach, nor a cell off the land. The map's edge
+## carried on. Only a rock's foot reaches ROCK_SURF: region_tint reads it as
+## steep, Shade's water beginning at the cell's edge, not 4 px past it.
+const ROCK_SURF := 1.0
 const POST_SURF := 0.6
-const SURF_OPEN := Vector2(0.62, 0.9)
+const BEACH_SURF := 0.8
+const SURF_OPEN := Vector2(0.62, 0.8)
 
 
 static func surf_at(grid: Dictionary, cell: Vector2i, size: Vector2i) -> float:
@@ -477,7 +480,7 @@ static func surf_at(grid: Dictionary, cell: Vector2i, size: Vector2i) -> float:
 		for dx in range(-2, 3):
 			var tile: String = grid.get(Vector2i(clampi(cell.x + dx, 0, size.x - 1), clampi(cell.y + dy, 0, size.y - 1)), "")
 			open += int(tile != "dock" and _wet.has(tile))
-	return maxf(surf, smoothstep(SURF_OPEN.x, SURF_OPEN.y, open / 25.0))
+	return maxf(surf, BEACH_SURF * smoothstep(SURF_OPEN.x, SURF_OPEN.y, open / 25.0))
 
 
 ## Inland water's code (the mask's alpha) on a cell of tile `tile`: its
