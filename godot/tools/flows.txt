@@ -52,7 +52,7 @@ mist-dawn | --map town --at 64,22 --hour 05:30 | map=town mist=\d\.\d\d over [1-
 mist-still | --map town --at 64,22 --hour 05:30 still | map=town mist=\d\.\d\d over [1-9]\d* still | town field
 mist-noon | --map town --at 64,22 --hour 12:00 | map=town mist= | town field
 mist-reach | --map overworld --at 40,36 --hour 06:30 | map=overworld mist=\d\.\d\d over [1-9]\d* | field
-mist-ash | --map overworld --at 30,20 --hour 05:30 | map=overworld mist= | field
+mist-ash | --map overworld --at 48,10 --hour 05:30 | map=overworld mist= | field
 # On the Ash's edge by the river the river's mist still lies (where it lies is
 # the cells', not the air the hero stands in); over a line the wisps lie on
 # with the world, none drawn a map away.
