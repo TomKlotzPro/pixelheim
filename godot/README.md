@@ -518,7 +518,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/create_screen.gd` — Hero creation (CharacterCreation.tsx): seven roles with their pitch, the hero as they will start (every role in the same plain clothes, their first weapon in hand: PIX-391), their stats against the whole roster, the skills they start with, a name, and how the game opens
 - `scripts/cutscene.gd` — A story moment (PIX-31): a scene from assets/data/story.json played as ordered steps over a letterboxed stage, so writing one is editing data.
 - `scripts/dawn_screen.gd` — The dawn after the Night of Ash (PIX-197), played on the town itself rather than told over it.
-- `scripts/day_night.gd` — The day/night wheel, ported verbatim from src/render/dayNight.ts: one deterministic clock turned by steps walked, interpolating sky-tint stops.
+- `scripts/day_night.gd` — The day/night wheel: one deterministic clock turned by steps walked, its hours, when night falls and where the sun stands.
 - `scripts/desktop_look.gd` — The desktop app's extras (PIX-227).
 - `scripts/dialogue_box.gd` — A conversation: the speaker in a portrait slot and a gold name tab on the window's edge, one line at a time in the body type, and the keys that move it on (ADVANCE_DIALOGUE).
 - `scripts/discovery.gd` — Fog-of-war bookkeeping, ported from src/world/discover.ts: the hero sees SIGHT_RADIUS tiles around themselves (Chebyshev), and what was seen stays seen.
@@ -614,7 +614,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/map_screen.gd` — The map screen (M/Tab): a map in a window, painted with the tiles' map colours where the hero has been and night where they haven't (mapColors.ts port), the hero, the waypoints and the lairs the bounty board has posted (PIX-156) marked
 - `scripts/map_view.gd` — One visit to a map, as drawn (PIX-136): Shade's ground, houses, rooms and dungeons, the props, field scatter, chests and door signs, the house's placed furniture, and the invisible boxes on what the hero can't walk into.
 - `scripts/marks.gd` — The marks over the world (PIX-284, PIX-289), one family in the UI's palette
-- `scripts/motes.gd` — The small life of the world (PIX-225): fireflies at dusk and night over the grass and in the woods, leaves falling in the forests, dust floating in a room's light, embers off forges, hearths and camp fires, dust and splashes under the hero's feet, sparks where steel meets armour.
+- `scripts/motes.gd` — The small life of the world (PIX-225): fireflies at dusk and night over the grass and in the woods, dawn's mist over the river and the grass (PIX-526), leaves falling in the forests, dust floating in a room's light, embers off forges, hearths and camp fires, dust and splashes under the hero's feet, sparks where steel meets armour.
 - `scripts/npc.gd` — A villager: their Puny sheet (PunyArt, PIX-130), a body the hero bumps into, and — for wanderers — an amble around the pacing loop, walking the way they step.
 - `scripts/npcs.gd` — Villagers (assets/data/npcs.json): the fixed townsfolk, tier-gated settlers included, and the recruits who wait in the wilds until they move to town.
 - `scripts/open_ground.gd` — The Medieval Age's greens and snow laid as patches over Shade's grass (PIX-305), so a meadow's hollows and the snow's drifts have edges of their own, tufted the way the pack's sample maps lay them

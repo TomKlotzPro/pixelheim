@@ -204,7 +204,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        share: [1, 2, 3, 4, look]
+        share: [1, 2, 3, 4, 5, look]
     env:
       SCREEN: "-screen 0 2560x1440x24"
       # Software rendering on a slow runner: the watchdog, a backstop for a
@@ -278,10 +278,10 @@ jobs:
         timeout-minutes: 20
         run: |
           set +e
-          GITHUB_ACTIONS= GITHUB_STEP_SUMMARY= xvfb-run -a -s "$SCREEN" bash godot/tools/flows.sh --shard "$SHARE/4" -j "$(nproc)" 2>&1 | tee "windowed-$SHARE.txt"
+          GITHUB_ACTIONS= GITHUB_STEP_SUMMARY= xvfb-run -a -s "$SCREEN" bash godot/tools/flows.sh --shard "$SHARE/5" -j "$(nproc)" 2>&1 | tee "windowed-$SHARE.txt"
           status=${PIPESTATUS[0]}
           ran=$(grep -E "^Release flows:" "windowed-$SHARE.txt" | sed -E 's/^Release flows: //')
-          echo "**Release flows, windowed, share $SHARE of 4:** ${ran:-no result}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Release flows, windowed, share $SHARE of 5:** ${ran:-no result}" >> "$GITHUB_STEP_SUMMARY"
           grep -E "^FAIL " "windowed-$SHARE.txt" | while read -r _ name _ why; do
             echo "::error title=flow $name failed in a window::$why"
             echo "- **$name** failed: $why" >> "$GITHUB_STEP_SUMMARY"

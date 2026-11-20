@@ -201,6 +201,12 @@ static func before_first_map(flags: HarnessFlags) -> void:
 	# `--day N`: the morning of day N, its patches grown (PIX-250).
 	if flags.has("--day"):
 		GameState.world.steps = float(int(flags.value("--day")) * DayNight.DAY_CYCLE_STEPS)
+	# `--hour HH:MM` (PIX-526): that hour of the run's day, a day running from six to six.
+	if flags.has("--hour"):
+		var hour := flags.value("--hour").split(":")
+		var minute := int(hour[0]) * 60 + int(hour[1])
+		GameState.world.steps = Gathering.day_of(GameState.world.steps) * DayNight.DAY_CYCLE_STEPS \
+			+ fposmod(float(minute - DayNight.MORNING_MINUTE), float(DayNight.DAY_CYCLE_STEPS))
 	# `--seen` and `--hunted`: stories told and named monsters slain before
 	# the first map is drawn, so the gates they open stand open (PIX-254).
 	for story_id: String in flags.list("--seen"):

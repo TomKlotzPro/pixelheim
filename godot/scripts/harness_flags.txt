@@ -32,6 +32,7 @@ shadows |  | the night's shadows on (Options: Shadows), as a player can set them
 --bells | <n> | the Night of Bells at its beat n (PIX-253 step 9: 1 the lanterns, 2 the embers and roofs, 3 Fafnyr on the square): the story set up to it in a Village building its Town, the night begun on the town map and moved on; the report adds bells=, lit=, burning= and jobs= | bells | 30
 --house-tier | <n> | the hero's house at that tier
 --day | <n> | the world's clock on the morning of day n: that day's patches (PIX-250) and weather; the report adds day= and patches=
+--hour | <hh:mm> | the world's clock at that hour of the run's day (a day runs from six to six: 05:30 is its last half hour), set before the first map: its light, its mist, its lamps and windows and its folk as that hour has them, and the cell --at stands the hero on no walk that would turn the clock on (PIX-526) | hour | 121
 --map | <id> | boot at that map's spawn, not where the save stands
 title |  | the title over the world, as a launch shows it (with --keys, its menu walked) | title | 320
 --title-at | <s> | with title: the launch's entrance played (harness runs skip it) and held s seconds in, for the shot (PIX-392): down from the stars, the dragon's pass, the name forged, the menu; past its end it has settled, and a key skips it; the report adds titlebeat=

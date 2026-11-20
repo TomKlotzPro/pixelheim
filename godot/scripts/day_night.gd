@@ -1,8 +1,8 @@
 class_name DayNight
 ## areas: field night
-## The day/night wheel, ported verbatim from src/render/dayNight.ts:
-## one deterministic clock turned by steps walked, interpolating sky-tint
-## stops. Applied as a full-screen overlay color.
+## The day/night wheel: one deterministic clock turned by steps walked, its
+## hours, when night falls and where the sun stands. The light by the hour
+## is Lights.DAY_LIGHT's.
 
 ## A step walked is a minute: a day is 1440 steps (PIX-246; it was 480, two
 ## minutes of walking, and a day went by too fast). Time stands still while
@@ -10,18 +10,6 @@ class_name DayNight
 const DAY_CYCLE_STEPS := 1440
 ## The cycle starts in the morning: its first step is six o'clock.
 const MORNING_MINUTE := 360
-
-## [position in cycle 0..1, overlay color]
-const SKY_STOPS := [
-	[0.00, Color(0, 0, 0, 0.0)],  # day
-	[0.45, Color(0, 0, 0, 0.0)],
-	[0.55, Color(1.0, 122 / 255.0, 50 / 255.0, 0.13)],  # dusk
-	[0.65, Color(10 / 255.0, 16 / 255.0, 48 / 255.0, 0.36)],  # night
-	[0.85, Color(10 / 255.0, 16 / 255.0, 48 / 255.0, 0.36)],
-	[0.93, Color(1.0, 190 / 255.0, 110 / 255.0, 0.1)],  # dawn
-	[1.00, Color(0, 0, 0, 0.0)],
-]
-
 
 ## The sun over the open air (PIX-449): up from the night's end (0.92 of the
 ## cycle, about five) to its start (0.58, about eight in the evening), so
@@ -52,6 +40,23 @@ static func is_night(steps: float) -> bool:
 static func is_dusk(steps: float) -> bool:
 	var t := fposmod(steps, float(DAY_CYCLE_STEPS)) / DAY_CYCLE_STEPS
 	return t >= 0.47 and t < 0.58
+
+
+## The evening's windows (PIX-526): each lights at its own minute between
+## these shares of the day (18:15 to 19:45), one by one before the street
+## lamps, which light with the night (is_night, 19:55).
+const WINDOWS_FIRST := 12.25 / 24.0
+const WINDOWS_LAST := 13.75 / 24.0
+
+
+## Whether the window on `cell` is lit already in the evening before the
+## night (PIX-526): through the dusk from its own minute on, each window at
+## its own; never by day, and the night's own lighting is is_night's.
+static func lit_before_night(steps: float, cell: Vector2i) -> bool:
+	if not is_dusk(steps):
+		return false
+	var t := fposmod(steps, float(DAY_CYCLE_STEPS)) / DAY_CYCLE_STEPS
+	return t >= lerpf(WINDOWS_FIRST, WINDOWS_LAST, float(absi(hash(cell)) % 1000) / 1000.0)
 
 
 ## The clock's hour and minute at `steps` (PIX-246): the cycle's start is
@@ -94,15 +99,3 @@ static func sun(steps: float) -> Vector3:
 	var height := sin(PI * up)
 	var cast := SHADOW_WAY.normalized() * minf(SHADOW_NOON / height, SHADOW_LONGEST)
 	return Vector3(cast.x, cast.y, pow(height, SHADOW_FADE))
-
-
-static func sky_at(steps: float) -> Color:
-	var t := fposmod(steps, float(DAY_CYCLE_STEPS)) / DAY_CYCLE_STEPS
-	var i := 0
-	while i < SKY_STOPS.size() - 2 and SKY_STOPS[i + 1][0] < t:
-		i += 1
-	var from: Array = SKY_STOPS[i]
-	var to: Array = SKY_STOPS[i + 1]
-	var span: float = to[0] - from[0]
-	var k: float = (t - from[0]) / span if span > 0 else 0.0
-	return (from[1] as Color).lerp(to[1], k)
