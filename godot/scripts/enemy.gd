@@ -329,14 +329,10 @@ func _ready() -> void:
 
 
 ## What the world asks of its drawing (Foes, each frame): the words over its
-## head make way for a hero standing under them, its tag is its pack's one or
-## not, and reads the pack's level (EnemyDrawing).
+## head make way for a hero standing under them, and its tag reads the
+## pack's level (EnemyDrawing).
 func make_way(hero: Vector2, delta: float) -> void:
 	drawing.make_way(hero, delta)
-
-
-func lead_tag(leads: bool) -> void:
-	drawing.lead_tag(leads)
 
 
 func show_level(level: int) -> void:

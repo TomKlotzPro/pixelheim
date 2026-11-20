@@ -21,8 +21,18 @@ const LOOK_SECONDS := 0.5
 const BENCH: Array[int] = [1659, 1661]
 const BENCH_AT := Vector2(0, 3)
 
-## The body the hero bumps into (_ready says why this shape).
+## The body the hero bumps into (_ready says why this shape), at its
+## shortest; body_of is each villager's own.
 const BODY := Vector2(20, 17)
+## How far under their middle the body ends, and the furthest over it that
+## it begins: the hero, stopped there, still stands in the cell above (the
+## villager beside them, for E).
+const BODY_FOOT := 14.0
+const BODY_TOP := -13.0
+## A figure's width (the hero's and every Puny villager's, at most), and
+## how far under its middle its feet are drawn.
+const FIGURE_WIDE := 14.0
+const FIGURE_FOOT := 3.0
 
 var world: World
 var data: Dictionary
@@ -87,11 +97,16 @@ func _ready() -> void:
 	# At 6 px (as wide as a Mini World villager, before everyone who talks
 	# got a Puny figure of the hero's size, PIX-405) the hero stopped 11 px
 	# off, half over Bram, Vex and Odo.
+	# Over them it runs as high as their head does (PIX-515, body_of): the
+	# hero came 10 px off from above, whoever they were, and stood half
+	# over Maren, Bram and Sela, behind them and under their "!".
+	_crown = Ink.crown(sprite.sprite_frames, _poses(sprite.sprite_frames), sprite.position, sprite.scale)
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
-	rect.size = BODY
+	var box := body_of(_crown)
+	rect.size = box.size
 	shape.shape = rect
-	shape.position = Vector2(0, 5.5)
+	shape.position = box.get_center()
 	add_child(shape)
 	body = shape
 	# The bench's free end blocks its cell as he does his, with the art or
@@ -101,6 +116,43 @@ func _ready() -> void:
 		end.shape = rect
 		end.position = shape.position + Vector2(TILE, 0)
 		add_child(end)
+
+
+## The body of a villager whose head reaches `crown` (from their middle,
+## Ink.crown): BODY's, begun high enough that the hero, stopped on it from
+## above (the foot of Player.BODY on its top, the feet drawn FIGURE_FOOT
+## under the hero's middle), stands over their head, not on it (PIX-515),
+## on a whole pixel, and never lower than it was or higher than BODY_TOP.
+static func body_of(crown: float) -> Rect2:
+	var top := clampf(floorf(crown + Player.BODY_AT.y + Player.BODY.y / 2.0 - FIGURE_FOOT), BODY_TOP, BODY_FOOT - BODY.y)
+	return Rect2(-BODY.x / 2.0, top, BODY.x, BODY_FOOT - top)
+
+
+## Every pose they stand and walk in, whichever way they face.
+static func _poses(frames: SpriteFrames) -> Array:
+	var poses := []
+	for way: String in PunyArt.DIRS:
+		poses.append(PunyArt.pick(frames, "idle", way))
+		poses.append(PunyArt.pick(frames, "walk", way))
+	return poses
+
+
+## Where they are drawn in the world, head to feet, for the E plate to
+## stand by (Interaction).
+func figure() -> Rect2:
+	return Rect2(position.x - FIGURE_WIDE / 2.0, position.y + _crown, FIGURE_WIDE, FIGURE_FOOT - _crown)
+
+
+## The highest their head reaches, from their middle (Ink.crown).
+var _crown := 0.0
+## E's plate stands on them (Interaction): it has their mark's place over
+## their head, so the mark waits (PIX-515: both stood there, and from
+## above, on the hero).
+var prompted := false:
+	set(value):
+		prompted = value
+		if _mark != null:
+			_mark.visible = not value
 
 
 ## Home for the night (PIX-149): out of sight and out of the way.
@@ -215,6 +267,7 @@ func _refresh_mark() -> void:
 	if kind == "":
 		return
 	_mark = mark_sprite(kind, story)
+	_mark.visible = not prompted
 	_place_mark()
 	add_child(_mark)
 
@@ -254,12 +307,8 @@ func _place_mark() -> void:
 ## head reaches standing or walking, whichever way they face, so it neither
 ## bobs as they breathe, step and look about nor touches their head.
 static func mark_spot(size: Vector2, frames: SpriteFrames, anim: String, at: Vector2, scale: Vector2) -> Vector2:
-	var poses := []
-	for way: String in PunyArt.DIRS:
-		poses.append(PunyArt.pick(frames, "idle", way))
-		poses.append(PunyArt.pick(frames, "walk", way))
 	var head := Ink.head(frames, Ink.rest_pose(frames, anim), at, scale)
-	return Vector2(Marks.centred(size.x, head.get_center().x), floorf(Ink.crown(frames, poses, at, scale) - MARK_CLEAR - size.y))
+	return Vector2(Marks.centred(size.x, head.get_center().x), floorf(Ink.crown(frames, _poses(frames), at, scale) - MARK_CLEAR - size.y))
 
 
 ## A step a beat toward their spot on the square: the longer way first, the

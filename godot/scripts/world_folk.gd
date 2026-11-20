@@ -85,13 +85,19 @@ func respawn() -> void:
 	spawn_for(world.map)
 
 
-## The villager beside the hero, faced side first: {npc, side} or {}.
+## The villager beside the hero, faced side first: {npc, side, who (the
+## one standing there)} or {}.
 func beside() -> Dictionary:
 	var occupied := {}
+	var standing := {}
 	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
 		if not villager.away:
 			occupied[villager.cell] = villager.data
-	return Npcs.beside(occupied, world.player_cell, Vector2i(world.player.facing))
+			standing[villager.cell] = villager
+	var found := Npcs.beside(occupied, world.player_cell, Vector2i(world.player.facing))
+	if not found.is_empty():
+		found["who"] = standing[world.player_cell + Vector2i(found["side"])]
+	return found
 
 
 ## The village's hours (PIX-149): lamps and windows lit at night, and the
