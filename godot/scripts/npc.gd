@@ -110,16 +110,17 @@ func _ready() -> void:
 ## He lies on his back, head to the west: his standing figure turned on its
 ## side (the Medieval Age's folk are drawn only standing, and a Puny
 ## figure's fall is cut where no dye reaches: he fell in another man's
-## clothes). The beam is AshArt's charred log lying north to south across his
-## legs, FireArt's flames along its far side (on it they hid it and him,
-## and at its north end the hero come down the road) and a blaze's light of
-## its own.
+## clothes). The beam is AshArt's charred log lying east to west along his
+## legs and lower body, as the Ash's fallen logs lie, his head and chest
+## clear of its west end (turned north to south beside him it read as a
+## burning fence post standing by a lump); FireArt's flames stand on its
+## middle, clear of him and of its east end, with a blaze's light of its own.
 ## Where the figure's frame stands on the cell, turned.
 const TURNED_AT := Vector2(-3, 4)
 ## Where the beam lies from his middle, where each flame stands on it (from
 ## its middle), and how far its light reaches.
-const BEAM_AT := Vector2(6, 0)
-const BEAM_FLAMES: Array[Vector2] = [Vector2(5, 0), Vector2(4, 9)]
+const BEAM_AT := Vector2(9, 3)
+const BEAM_FLAMES: Array[Vector2] = [Vector2(-3, 0), Vector2(3, 0)]
 const BEAM_LIGHT := 44.0
 ## Where his mark's tail points, from the cell's middle: the top of his
 ## chest, as low as it goes without hiding him (a head higher, as over a
@@ -144,7 +145,6 @@ func _pin() -> void:
 	beam.position = BEAM_AT
 	var timber := Sprite2D.new()
 	timber.texture = AshArt.texture("beam")
-	timber.rotation = PI / 2.0
 	beam.add_child(timber)
 	var size: Vector2i = FireArt.KINDS["lick"]
 	for i in BEAM_FLAMES.size():
