@@ -2169,6 +2169,10 @@ msgid "A Real Fight"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A Rounder Hand"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A SAFER MIREFEN AND DEEPWOOD: the Mirefen's mimic pack is gone (its trapped chest waits in the far west, by Grandmother Gulp), and the Deepwood's trolls no longer stand at its gate"
 msgstr ""
 
@@ -3694,6 +3698,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Every way out of a map reads as a way on: the road runs right to it, through an opening wide enough to look walkable, and a signpost names where it leads"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Every word you read is in a new, rounder typeface: the dialogue, the menus, the HUD, the journal, the shops and every screen"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5510,6 +5518,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Pitched Tents"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Pixel letters stay where they belong: the title, the damage, gold and XP numbers over the world, and the keys"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7586,6 +7598,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The test suite tightened its bolts: shared walking, chasing and fighting helpers replace a dozen private copies, and the equip/drop/skill-point wiring got its first direct tests"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The text is a little larger, and every page keeps its room, with Large text too"
 msgstr ""
 
 #: assets/data/changelog.json

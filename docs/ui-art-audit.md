@@ -30,7 +30,7 @@ Audit of v0.293.0 (2026-10-28). No game code changed.
 | UI art | 1x art shown at `UI_SCALE` 2: one art pixel is 2x2 canvas pixels | `UiStyle.UI_SCALE` |
 | World art | Shade's 16 px tiles at camera `ZOOM` 3: one art pixel is 3x3 canvas pixels | `CameraRig.ZOOM` |
 | Icons | Shade's packs are 16x16 (survival 114, skills 88, jewelry 27, armour sheet 480x768 on a 16 grid). They are shown at 32x32 in the slots and lists, so 2x, the same as the UI | `ItemIcons`, `HudDock._skills` |
-| Type | Pixeloid Sans 9 px at 2x (18), or 3x (27) for titles. The logo is Press Start 2P | `UiStyle.TEXT`/`BIG` |
+| Type | Nunito at 20, or 30 for titles, smooth at whole pixels, its line box cut to 22 / 33 (PIX-533). Pixeloid Sans 9 px at 2x for keycaps and 1x in the world (floats) for what stays pixel. The logo is Press Start 2P | `UiStyle.TEXT`/`BIG`, `UiStyle.pixel_font` |
 
 So a UI kit must be drawn at the size of Shade's icon pixels: **1-pixel strokes at 1x, meant to be shown at 2x**. A 16x16 icon must sit in a slot whose frame is 4 art pixels or less per side. A kit drawn "hi-res" (2–3 px strokes meant for 1x display), or with anti-aliasing, would show pixels of a different size from everything else and is out. The world is at 3x and the UI at 2x on purpose: marks drawn over the world (`Marks`, the world keycap) use the world grid.
 

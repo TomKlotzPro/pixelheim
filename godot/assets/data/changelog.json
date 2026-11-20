@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.391.0",
+      "date": "2026-11-20",
+      "codename": "A Rounder Hand",
+      "notes": [
+        "Every word you read is in a new, rounder typeface: the dialogue, the menus, the HUD, the journal, the shops and every screen",
+        "Pixel letters stay where they belong: the title, the damage, gold and XP numbers over the world, and the keys",
+        "The text is a little larger, and every page keeps its room, with Large text too"
+      ]
+    },
+    {
       "version": "0.390.0",
       "date": "2026-11-19",
       "codename": "Fronts of Their Own",

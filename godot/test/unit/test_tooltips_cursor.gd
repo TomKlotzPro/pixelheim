@@ -20,7 +20,7 @@ func test_a_tooltip_is_parchment_in_brass_with_ink() -> void:
 	var panel := words.get_theme_stylebox("panel", &"TooltipPanel")
 	assert_true(panel is StyleBoxTexture and (panel as StyleBoxTexture).texture == UiStyle.tooltip().texture, "the tooltip's slip")
 	assert_eq(words.get_theme_color("font_color"), UiStyle.INK)
-	assert_eq(words.get_theme_font_size("font_size"), UiStyle.TEXT, "never below 2x")
+	assert_eq(words.get_theme_font_size("font_size"), UiStyle.TEXT, "at the reading size")
 
 
 func test_a_scrollbar_is_slim_brass_on_dark_wood() -> void:

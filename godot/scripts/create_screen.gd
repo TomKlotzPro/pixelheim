@@ -100,7 +100,7 @@ func _open() -> void:
 	name_field.placeholder_text = "Dragonsbane..."
 	name_field.custom_minimum_size = Vector2(320, 38)
 	name_field.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	name_field.add_theme_font_size_override("font_size", 18)
+	name_field.add_theme_font_size_override("font_size", UiStyle.TEXT)
 	name_field.add_theme_stylebox_override("normal", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 8))
 	name_field.add_theme_stylebox_override("focus", UiStyle.box(UiStyle.CARD, UiStyle.LAMP, 8))
 	name_field.add_theme_color_override("font_color", UiStyle.INK)

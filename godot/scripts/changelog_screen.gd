@@ -61,7 +61,12 @@ func _release(release: Dictionary) -> Control:
 	var name := UiStyle.strong(release["codename"], 16, UiStyle.INK)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(name)
-	head.add_child(UiStyle.label(release["date"], 12, UiStyle.FADED))
+	var date := UiStyle.label(release["date"], 12, UiStyle.FADED)
+	# 4 px off the scrollbar: Nunito's last digit has no trailing pixel (PIX-533).
+	var room := StyleBoxEmpty.new()
+	room.content_margin_right = 4
+	date.add_theme_stylebox_override("normal", room)
+	head.add_child(date)
 	for note: String in release["notes"]:
 		var line := UiStyle.label("·  " + note, 12, UiStyle.INK)
 		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

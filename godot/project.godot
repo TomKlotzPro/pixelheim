@@ -49,7 +49,7 @@ window/stretch/aspect="keep"
 
 [gui]
 
-theme/custom_font="res://assets/fonts/PixeloidSans.ttf"
+theme/custom_font="res://assets/fonts/Nunito-Regular.ttf"
 
 [internationalization]
 
