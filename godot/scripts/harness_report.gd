@@ -740,6 +740,13 @@ func field_maps() -> String:
 	return str(screen.painting.sheets.size()) if screen != null else ""
 
 
+func field_mist() -> String:
+	var air: Atmosphere = world.atmosphere
+	if air == null or air.mist <= 0.05 or air.mist_cells == 0:
+		return ""
+	return "%.2f over %d%s" % [air.mist, air.mist_cells, " still" if air.mist_still else ""]
+
+
 func field_morvax() -> String:
 	var villager: Npc = harness.villager(Homecoming.MORVAX)
 	if villager == null:

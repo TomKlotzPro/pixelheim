@@ -8,9 +8,10 @@ extends Node
 ## atmosphere.gdshader: haze, fog, frost, mist, rain's veil and the colour
 ## mood); and what falls or drifts over the view, in the world - rain and its
 ## splashes, snow, the Ash's embers, the coast's salt spray - and the small
-## life of the world (PIX-225, Motes): fireflies, falling leaves, a room's
-## dust, and the bursts the world asks for (dust and splashes underfoot,
-## sparks off armour). With reduced motion nothing falls, rises or blows.
+## life of the world (PIX-225, Motes): fireflies, dawn's mist (PIX-526),
+## falling leaves, a room's dust, and the bursts the world asks for (dust
+## and splashes underfoot, sparks off armour). With reduced motion nothing
+## falls, rises or blows; the dawn's mist still lies there, still.
 
 var world: World
 ## How much of each air (Weather.KINDS), 0..1, and of the rain.
@@ -21,6 +22,31 @@ var _map_of: MapData
 ## What falls or drifts, by name: "drops", "splashes", "snow", "embers", "ash",
 ## "spray", "fireflies", "leaves", "room_dust".
 var particles := {}
+## Dawn's mist (PIX-526): how thick it lies, how many misty cells round the
+## view its wisps rise from (Motes.mist_points) and whether they lie still
+## (Reduce motion); drawn wisp by wisp under the actors by `mist_node`, made
+## the first dawn it's needed, from dice of its own (Motes.MIST_SEED). Each
+## wisp where it lies, its drift (px a second), its age (seconds) and its
+## look (Motes.WISPS).
+var mist := 0.0
+var mist_cells := 0
+var mist_still := false
+var mist_node: Node2D
+var _mist_points := PackedVector2Array()
+var _mist_at := Rect2i()
+var _mist_map: MapData
+var _mist_dice: RandomNumberGenerator
+var _wisp_at := PackedVector2Array()
+var _wisp_way := PackedVector2Array()
+var _wisp_age := PackedFloat32Array()
+var _wisp_look := PackedInt32Array()
+## Each drawn map's ground as drawn and what its cells were found to be
+## (Motes.mist_points' `seen`), by its view's instance id, while the hero's
+## map stays the same.
+var _mist_seen := {}
+## How many cells the view may move in a frame and its wisps drift on with
+## it; further (a door's cut, the harness's --at), they all rise anew.
+const MIST_JUMP := 4
 ## The bursts, a few of each kind taken in turn, so a quick second one
 ## doesn't cut the first short: "dust", "splash", "sparks", "remains".
 var bursts := {}
@@ -146,6 +172,7 @@ func _fall(arrived: bool) -> void:
 		"leaves": weights["woods"] * (1.0 - 0.5 * rain),
 		# Fainter at night, when it shows only in the candles' light.
 		"room_dust": 1.0 - 0.6 * world.lights.dark if map != null and PunyInterior.is_room(map.id) else 0.0,
+		"mist": Motes.mist(map, air, GameState.world.steps, rain),
 	}
 	if arrived:
 		_room = Motes.room_rect(map) if amounts["room_dust"] > 0.0 else Rect2()
@@ -181,6 +208,105 @@ func _fall(arrived: bool) -> void:
 	# once they stand over it (PIX-315).
 	if arrived and _room.has_area():
 		_fall_again = 2
+	_lay_mist(amounts["mist"], view, arrived)
+
+
+## Dawn's mist over the view (PIX-526), `amount` thick: its wisps rising
+## from the misty cells of every map drawn round it (the view and two cells
+## more each side, so none pops in at its edge), laid again as the view
+## moves a cell, a wisp left behind rising again in it; on a new map, or
+## the view gone far at once, every wisp rises anew, as if it had lain a
+## while. Still with reduced motion, there all the same.
+func _lay_mist(amount: float, view: Array[Vector2], arrived: bool) -> void:
+	mist = amount
+	mist_still = GameState.settings.reduce_motion
+	if amount <= 0.05 or world.view == null:
+		mist_cells = 0
+		if mist_node != null:
+			mist_node.visible = false
+		return
+	if mist_node == null:
+		# It lies on the ground: over every map's ground and houses, under
+		# everyone standing (just before world.actors), not over them as the
+		# rest.
+		mist_node = Node2D.new()
+		mist_node.draw.connect(_draw_mist)
+		world.add_child(mist_node)
+		world.move_child(mist_node, world.actors.get_index())
+		_mist_dice = RandomNumberGenerator.new()
+		_mist_dice.seed = Motes.MIST_SEED
+		_wisp_at.resize(Motes.MIST_WISPS)
+		_wisp_way.resize(Motes.MIST_WISPS)
+		_wisp_age.resize(Motes.MIST_WISPS)
+		_wisp_look.resize(Motes.MIST_WISPS)
+	var top := Vector2i((view[0] / MapView.TILE).floor())
+	var cells := Rect2i(top, Vector2i((view[1] / MapView.TILE).ceil()) + Vector2i.ONE).grow(2)
+	var moved := arrived or world.map != _mist_map or (cells.position - _mist_at.position).length_squared() > MIST_JUMP * MIST_JUMP
+	if arrived or world.map != _mist_map:
+		_mist_seen.clear()
+	if moved or cells != _mist_at:
+		_mist_at = cells
+		_mist_map = world.map
+		_mist_points = _mist_over(world.view, Vector2i.ZERO, cells)
+		if world.neighbours != null:
+			for id: String in world.neighbours.drawn:
+				var beside: Dictionary = world.neighbours.drawn[id]
+				if beside["state"] == "ready":
+					var drawn: MapView = beside["view"]
+					_mist_points.append_array(_mist_over(drawn, Vector2i(drawn.offset / MapView.TILE), cells))
+		mist_cells = _mist_points.size()
+	mist_node.visible = mist_cells > 0
+	if not mist_node.visible:
+		return
+	if moved:
+		for i in Motes.MIST_WISPS:
+			_rise(i, Motes.MIST_LIFE * i / Motes.MIST_WISPS)
+	else:
+		var delta := get_process_delta_time()
+		var room := Rect2(Vector2(cells.position * MapView.TILE), Vector2(cells.size * MapView.TILE))
+		for i in Motes.MIST_WISPS:
+			_wisp_age[i] += delta
+			if _wisp_age[i] >= Motes.MIST_LIFE:
+				_rise(i, _wisp_age[i] - Motes.MIST_LIFE)
+			elif not room.has_point(_wisp_at[i]):
+				_rise(i, 0.0)
+			elif not mist_still:
+				_wisp_at[i] += _wisp_way[i] * delta
+	# A view with fewer misty cells than wisps doesn't crowd them all there.
+	mist_node.modulate.a = amount * minf(1.0, float(mist_cells) / Motes.MIST_WISPS)
+	mist_node.queue_redraw()
+
+
+## Where wisps rise among `cells` on the map `drawn` shows, laid at `origin`
+## (Motes.mist_points), its ground and what its cells were found to be kept
+## from the last time.
+func _mist_over(drawn: MapView, origin: Vector2i, cells: Rect2i) -> PackedVector2Array:
+	var id := drawn.get_instance_id()
+	if not _mist_seen.has(id):
+		_mist_seen[id] = [drawn.look(), {}]
+	var kept: Array = _mist_seen[id]
+	return Motes.mist_points(kept[0], drawn.data.size, origin, cells, drawn.data.regions, kept[1])
+
+
+## Wisp `i` rises from a misty cell, `age` seconds into its life, drifted
+## that far already (unless still).
+func _rise(i: int, age: float) -> void:
+	var way := Vector2.from_angle(deg_to_rad(_mist_dice.randf_range(-Motes.MIST_SPREAD, Motes.MIST_SPREAD)))
+	_wisp_way[i] = way * _mist_dice.randf_range(Motes.MIST_SPEED.x, Motes.MIST_SPEED.y)
+	_wisp_at[i] = _mist_points[_mist_dice.randi() % _mist_points.size()] + (Vector2.ZERO if mist_still else _wisp_way[i] * age)
+	_wisp_age[i] = age
+	_wisp_look[i] = _mist_dice.randi() % Motes.WISPS.size()
+
+
+## Each wisp at whole pixels, as faint as its life has it, in the scene's
+## light (gold at dawn).
+func _draw_mist() -> void:
+	var strip := Motes.mist_strip()
+	var size := Motes.WISP_SIZE
+	for i in Motes.MIST_WISPS:
+		var alpha := Motes.mist_alpha(_wisp_age[i] / Motes.MIST_LIFE)
+		if alpha > 0.0:
+			mist_node.draw_texture_rect_region(strip, Rect2((_wisp_at[i] - size / 2.0).floor(), size), Rect2(Vector2(_wisp_look[i] * size.x, 0), size), Color(1, 1, 1, alpha))
 
 
 ## A footfall on `tile` at `at`: a little dust off dry ground, a splash in
