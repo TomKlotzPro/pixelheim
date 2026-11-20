@@ -2133,6 +2133,10 @@ msgid "A LUTE AND A VAULT: Loras wants his lute back from a Deepwood troll, and 
 msgstr "UN LUTH ET UN COFFRE : Loras veut reprendre son luth à un troll des Bois-Profonds, et Mirelle veut deux gemmes pour la première étagère de sa chambre forte - plus besoin de les payer pour qu'ils s'installent"
 
 #: assets/data/changelog.json
+msgid "A Light of Your Own"
+msgstr "Une lumière à soi"
+
+#: assets/data/changelog.json
 msgid "A Little Night Music"
 msgstr "Une petite musique de nuit"
 
@@ -4289,6 +4293,10 @@ msgid "Hero creation shows the hero as they will really start, without the colou
 msgstr "La création du héros le montre tel qu'il commencera vraiment, sans les couleurs que personne ne gardait ; les stats ont leurs icônes, des crans face au meilleur de tous les rôles et leur nom complet, et les compétences de départ sont des pastilles avec leur icône, un clic ou PgUp/PgDn pour lire chacune"
 
 #: assets/data/changelog.json
+msgid "Heroes made before this version have no lantern: buy yours at Odo's"
+msgstr "Les héros créés avant cette version n'ont pas de lanterne : achetez la vôtre chez Odo"
+
+#: assets/data/changelog.json
 msgid "Heroes saved before this update don't load any more (the game isn't in beta yet); their slot says so and can be cleared"
 msgstr "Les héros sauvegardés avant cette mise à jour ne se chargent plus (le jeu n'est pas encore en bêta) ; leur emplacement l'indique et peut être vidé"
 
@@ -5061,6 +5069,10 @@ msgid "No Sale by Accident"
 msgstr "Rien sans le vouloir"
 
 #: assets/data/changelog.json
+msgid "No light follows the hero any more: at night the town's lamps, the lit windows, the fires and the torches light the way"
+msgstr "Plus aucune lumière ne suit le héros : la nuit, les lampes de la ville, les fenêtres allumées, les feux et les torches éclairent le chemin"
+
+#: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
 msgstr "Fini les embuscades. Les monstres sont désormais VISIBLES dans les terres sauvages - regardez-les rôder, choisissez vos combats"
 
@@ -5177,6 +5189,10 @@ msgid "Odo goes general goods: food, sundries, and he still buys anything"
 msgstr "Odo passe au bazar : nourriture, articles divers, et il achète toujours de tout"
 
 #: assets/data/changelog.json
+msgid "Odo sells a Tin Lantern for 40 gold: carried in the hand away from the shield, its glass cold by day and lit at night, it brings your own pool of light back"
+msgstr "Odo vend une Lanterne en fer-blanc pour 40 pièces d'or : portée à la main, du côté opposé au bouclier, sa vitre froide le jour et allumée la nuit, elle vous rend votre propre halo de lumière"
+
+#: assets/data/changelog.json
 msgid "Oilskin"
 msgstr "Ciré"
 
@@ -5283,6 +5299,10 @@ msgstr "Sur le web, la musique s'efface désormais aussi en douceur quand une sc
 #: assets/data/changelog.json
 msgid "On the web, the music now fades out softly as you go through a door or a gate and comes back after, instead of stopping dead mid-note while the new place is built"
 msgstr "Sur le web, la musique s'efface désormais en douceur quand on passe une porte ou une grille, puis revient, au lieu de s'arrêter net au milieu d'une note pendant que le nouveau lieu se construit"
+
+#: assets/data/changelog.json
+msgid "Once Aske settles in Pixelheim, the lantern reaches a third further"
+msgstr "Une fois Aske installé à Pixelheim, la lanterne porte un tiers plus loin"
 
 #: assets/data/changelog.json
 msgid "Once Rimefang falls, an ice slide takes you back down to the foot of Liane's stair"
@@ -7207,6 +7227,10 @@ msgstr "La première préparation fonctionne à chaque étape : à l'étal de 
 #: assets/data/changelog.json
 msgid "The first dream's voice is Morvax's now"
 msgstr "La voix du premier rêve est désormais celle de Morvax"
+
+#: assets/data/changelog.json
+msgid "The first night under the sky without one, a hint says where to buy it"
+msgstr "La première nuit à la belle étoile sans lanterne, un conseil vous dit où en acheter une"
 
 #: assets/data/changelog.json
 msgid "The first quest you take shows where the journal is, and every accepted quest says so"

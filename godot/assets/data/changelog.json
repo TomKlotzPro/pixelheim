@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.393.0",
+      "date": "2026-11-20",
+      "codename": "A Light of Your Own",
+      "notes": [
+        "No light follows the hero any more: at night the town's lamps, the lit windows, the fires and the torches light the way",
+        "Odo sells a Tin Lantern for 40 gold: carried in the hand away from the shield, its glass cold by day and lit at night, it brings your own pool of light back",
+        "Once Aske settles in Pixelheim, the lantern reaches a third further",
+        "The first night under the sky without one, a hint says where to buy it",
+        "Heroes made before this version have no lantern: buy yours at Odo's"
+      ]
+    },
+    {
       "version": "0.392.0",
       "date": "2026-11-20",
       "codename": "Golden Hours",

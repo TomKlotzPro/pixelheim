@@ -2133,6 +2133,10 @@ msgid "A LUTE AND A VAULT: Loras wants his lute back from a Deepwood troll, and 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A Light of Your Own"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A Little Night Music"
 msgstr ""
 
@@ -4289,6 +4293,10 @@ msgid "Hero creation shows the hero as they will really start, without the colou
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Heroes made before this version have no lantern: buy yours at Odo's"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Heroes saved before this update don't load any more (the game isn't in beta yet); their slot says so and can be cleared"
 msgstr ""
 
@@ -5061,6 +5069,10 @@ msgid "No Sale by Accident"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "No light follows the hero any more: at night the town's lamps, the lit windows, the fires and the torches light the way"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
 msgstr ""
 
@@ -5177,6 +5189,10 @@ msgid "Odo goes general goods: food, sundries, and he still buys anything"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Odo sells a Tin Lantern for 40 gold: carried in the hand away from the shield, its glass cold by day and lit at night, it brings your own pool of light back"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Oilskin"
 msgstr ""
 
@@ -5282,6 +5298,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On the web, the music now fades out softly as you go through a door or a gate and comes back after, instead of stopping dead mid-note while the new place is built"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Once Aske settles in Pixelheim, the lantern reaches a third further"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7206,6 +7226,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The first dream's voice is Morvax's now"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The first night under the sky without one, a hint says where to buy it"
 msgstr ""
 
 #: assets/data/changelog.json
