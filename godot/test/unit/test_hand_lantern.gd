@@ -62,6 +62,30 @@ func test_no_light_follows_a_hero_with_none_and_the_lantern_brings_it() -> void:
 	assert_eq(float(rig.lantern.get_meta("energy")), 0.0, "sold, its light goes")
 
 
+## The pool burns only with its source in sight (the review: the hero fell
+## and lay dead, the lantern put away, the pool still round them).
+func test_the_fallen_hero_puts_the_lantern_out() -> void:
+	var world: World = preload("res://test/bare_world.gd").new()
+	add_child_autofree(world)
+	world.map = MapData.load_by_id("seacave")
+	var hero: Player = preload("res://test/bare_hero.gd").new()
+	world.add_child(hero)
+	var rig: LightRig = preload("res://scripts/light_rig.gd").new()
+	rig.world = world
+	world.add_child(rig)
+	rig.give_lantern(hero)
+	GameState.pack.add_item(Lights.HAND_LANTERN)
+	GameState.pack_changed()
+	rig._process(1.0 / 60.0)
+	assert_true(rig.lantern.visible, "carried underground, it burns")
+	hero.dead = true
+	rig._process(1.0 / 60.0)
+	assert_false(rig.lantern.visible, "put away as the hero falls, it goes out")
+	hero.dead = false
+	rig._process(1.0 / 60.0)
+	assert_true(rig.lantern.visible, "back in hand, it burns again")
+
+
 # --- The save ---------------------------------------------------------------
 
 func test_the_lantern_is_kept_in_the_save() -> void:
@@ -80,13 +104,26 @@ func test_the_lantern_hangs_in_the_hand_inside_the_cell() -> void:
 	for row in 8:
 		for column in 24:
 			var hand := PunyArt.held_at(row, column)
-			var shown := column < 4 or (column >= 18 and column < 21)
-			assert_eq(not hand.is_empty(), shown, "row %d column %d: in hand standing, walking or hurt, put away otherwise" % [row, column])
+			var shown := column < 4 or column == 18 or column == 19
+			assert_eq(not hand.is_empty(), shown, "row %d column %d: in hand standing, walking or first hurt, put away otherwise" % [row, column])
 			if hand.is_empty():
 				continue
 			var at: Vector2i = hand["at"]
 			assert_true(Rect2i(0, 0, 32, 32).encloses(Rect2i(at, size)), "row %d column %d: never cut by the cell" % [row, column])
 			assert_lte(at.y + size.y, PunyArt._figure(row * 24 + column).end.y, "row %d column %d: never below the feet" % [row, column])
+
+
+## Never on the shield's side (the review's down-left, row 7, hung both on
+## the screen-left hand): where both are drawn in front, they hang either
+## side of the figure's middle. A shield's x is its middle, the lantern's
+## its left column.
+func test_the_lantern_never_hangs_on_the_shield_side() -> void:
+	var half := String(LampArt.HAND[0]).length() / 2
+	for row in 8:
+		var shield: Array = PunyArt.SHIELD_AT[row - row % 2]
+		var lantern: Array = PunyArt.LANTERN_AT[row]
+		if shield[2] and lantern[2]:
+			assert_ne(signf(float(shield[0])), signf(float(int(lantern[0]) + half)), "row %d: the lantern in the hand away from the shield" % row)
 
 
 func test_the_glass_lights_only_where_the_glass_is() -> void:

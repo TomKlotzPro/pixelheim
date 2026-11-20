@@ -82,7 +82,7 @@ const PER_ITEM := 15
 ## a boss's glow round its feet, under every actor and pickup standing in
 ## it, none of them tinted. It is the bit a shadow falls on too (PIX-490,
 ## NightShadows): a canvas item takes a light's shadows only when its light
-## bits meet the light's shadow bits, in both renderers, so the lantern's
+## bits meet the light's shadow bits, in both renderers, so a lamp's
 ## shadows lie on the floor and never black out the tree that casts them,
 ## nor anyone standing there.
 const FLOOR := 1 << 10

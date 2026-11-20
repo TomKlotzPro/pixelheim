@@ -250,8 +250,8 @@ func hint_there(seen_id: String) -> bool:
 		"potion":
 			return GameState.hero.hp * 2 < int(GameState.hero.stats["maxHp"])
 		"lantern":
-			# Bought while it waited, or the dawn come (PIX-530).
-			return not Lights.carried(GameState.pack.items) and world.lights.dark > 0.5
+			# Bought while it waited, the dawn come, or under the ground (PIX-530).
+			return not Lights.carried(GameState.pack.items) and world.lights.dark > 0.5 and Lights.under_sky(world.map)
 	return true
 
 

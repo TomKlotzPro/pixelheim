@@ -203,14 +203,15 @@ const SHIELD_HIDDEN := [[8, 15], [21, 24]]
 ## Where the Tin Lantern hangs in the main hand (PIX-530), the one away from
 ## the shield, per row (down 0 clockwise; the ways between are their own:
 ## a hand turns with the body): [x of its left column from the figure's
-## middle, y of its top row below the figure's top, drawn in front]. Down,
-## down-right and down-left beside the screen-left hand, right and up-right
-## below the near hand, up and up-left beside the screen-right hand, left
-## behind the back (the far hand: the shield's in front). Its bottom row
-## is the feet's last.
+## middle, y of its top row below the figure's top, drawn in front]. Down
+## and down-right beside the screen-left hand, right and up-right below the
+## near hand, up and up-left beside the screen-right hand, left behind the
+## back (the far hand: the shield's in front), down-left beside the
+## screen-right hand (it shares left's shield, in front on the left). Its
+## bottom row is the feet's last.
 const LANTERN_AT := {
 	0: [-9, 8, true], 1: [-9, 8, true], 2: [1, 8, true], 3: [1, 8, true],
-	4: [6, 8, true], 5: [6, 8, true], 6: [3, 8, false], 7: [-8, 8, true],
+	4: [6, 8, true], 5: [6, 8, true], 6: [3, 8, false], 7: [5, 8, true],
 }
 
 ## The bare template whose frames say where each head ends.
@@ -654,11 +655,11 @@ static var _figures: Array[Rect2i] = []
 ## Where the Tin Lantern hangs in a frame of the puny sheet (PIX-530): its
 ## top-left pixel in the 32 px cell ("at") and whether it is drawn in front
 ## of the figure ("front"); {} where it's put away: shown while the hero
-## stands, walks or is hurt (columns 0-3 and 18-20), never while the main
-## hand swings, draws or casts (4-17) nor as the hero falls (21-23). Read
-## every tick, so plain comparisons.
+## stands, walks or is first hurt (columns 0-3 and 18-19), never while the
+## main hand swings, draws or casts (4-17), flies up to the face (20) nor
+## as the hero falls (21-23). Read every tick, so plain comparisons.
 static func held_at(row: int, column: int) -> Dictionary:
-	if not (column < 4 or (column >= 18 and column < 21)) or not LANTERN_AT.has(row):
+	if not (column < 4 or column == 18 or column == 19) or not LANTERN_AT.has(row):
 		return {}
 	var place: Array = LANTERN_AT[row]
 	var used := _figure(row * 24 + column)

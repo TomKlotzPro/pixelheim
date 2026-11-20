@@ -291,6 +291,10 @@ func _process(delta: float) -> void:
 		if lamp.has_meta("tint"):
 			lamp.color = DesktopLook.canvas_color(lamp.get_meta("tint"), DesktopLook.linear)
 		var energy := float(lamp.get_meta("energy", 1.0)) * (day if lamp.get_meta("by_day", false) else dark)
+		# The fallen hero's lantern goes out as they put it away (PIX-530):
+		# no pool without its source in hand.
+		if lamp == lantern and (lantern.get_parent() as Player).dead:
+			energy = 0.0
 		if lamp.get_meta("flicker", false) and not still:
 			energy *= Lights.flicker(t, float(lamp.get_meta("phase", 0.0)), lamp.get_meta("blaze", false))
 		# A way out breathes (PIX-292), held still with reduced motion.
