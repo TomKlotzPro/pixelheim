@@ -217,9 +217,28 @@ func test_wall_pieces_hang_on_bare_wall() -> void:
 				assert_does_not_have([PunyTown.WINDOW, PunyTown.DOOR], built.get(piece["cell"], -1), "%s: the %s at %s on bare wall" % [map_id, piece.get("art", ""), piece["cell"]])
 
 
-func test_pixelheim_keeps_its_houses() -> void:
-	var town := MapData.load_by_id("town")
-	assert_eq(PunyTown.plan(town.grid, Hamlet.house_style("town")), PunyTown.plan(town.grid), "no style in town")
+## PIX-525: every house front in town was Shade's cream timber. Each house
+## now wears its own front where it stood, its windows and door where they
+## were, no chimney added, and no two houses three cells apart or less
+## wear the same, at every age.
+func test_pixelheim_s_houses_each_wear_a_front_of_their_own() -> void:
+	assert_eq(Hamlet.look_of("town"), "", "the town keeps no look (its stores, ways and homes)")
+	for age in Town.MAX_TIER + 1:
+		var map := MapData.load_tiered("town", Town.projects_through(age), 1)
+		var plain := PunyTown.plan(map.grid)
+		var own := PunyTown.plan(map.grid, Hamlet.house_style("town"))
+		assert_eq(own["pieces"].keys(), plain["pieces"].keys(), "age %d: every house stands where it stood" % age)
+		assert_eq(own["decor"], plain["decor"], "age %d: no chimney added" % age)
+		for cell: Vector2i in plain["pieces"]:
+			if plain["pieces"][cell] in [PunyTown.WINDOW, PunyTown.DOOR]:
+				assert_eq(own["pieces"][cell], plain["pieces"][cell], "age %d: the window or door at %s stays" % [age, cell])
+		var houses := PunyTown.houses(map.grid)
+		for house: Dictionary in houses:
+			assert_true(Hamlet.FRONTS.has(house["door"]), "age %d: the house at %s has its front" % [age, house["door"]])
+		for a in houses.size():
+			for b in range(a + 1, houses.size()):
+				if (houses[a]["rect"] as Rect2i).grow(4).intersects(houses[b]["rect"]):
+					assert_ne(Hamlet.FRONTS.get(houses[a]["door"]), Hamlet.FRONTS.get(houses[b]["door"]), "age %d: %s and %s wear fronts of their own" % [age, houses[a]["door"], houses[b]["door"]])
 
 
 func test_the_frostgate_roofs_lie_under_snow_and_no_wall_does() -> void:

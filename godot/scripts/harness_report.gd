@@ -525,6 +525,22 @@ func field_free() -> String:
 	return str(GameState.free_slot()) if flags.has("launch") else ""
 
 
+func field_fronts() -> String:
+	if world.map == null or world.map.id != "town" or world.view == null or world.view.buildings["pieces"].is_empty():
+		return ""
+	var middles := [PunyTown.WALL]
+	for own: Array in Hamlet.FRONTS.values():
+		if not own.is_empty():
+			middles.append(own[1])
+	var worn := {}
+	for tile: int in world.view.buildings["pieces"].values():
+		if tile in middles:
+			worn[tile] = true
+	var ivy: Array = Yards.IVY_RAGGED.values() + Yards.IVY_FULL.values()
+	var climbing: int = world.view.buildings["decor"].values().filter(func(tile: int) -> bool: return tile in ivy).size()
+	return "%d:fronts%d,ivy%d" % [GameState.town_tier(), worn.size(), climbing]
+
+
 func field_frozen() -> String:
 	var view: MapView = world.view
 	if view == null or view.frozen == null:

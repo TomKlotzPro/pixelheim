@@ -461,7 +461,7 @@
     {
       "tier": 3,
       "houses": [
-        {"rect": [53, 22, 61, 25], "roof": "roof", "door": [57, 25], "yard": [53, 22, 62, 26], "about": "a gabled house on the east lawn, a verge between its back and Forge Lane (where the forge sends the hero out, facing south); its yard clears the two trees east of it that hid its woodpile and its roof's corner"}
+        {"rect": [53, 22, 61, 25], "roof": "roof_teal", "door": [57, 25], "yard": [53, 22, 62, 26], "about": "a gabled house on the east lawn, a verge between its back and Forge Lane (where the forge sends the hero out, facing south); its yard clears the two trees east of it that hid its woodpile and its roof's corner"}
       ],
       "requires": [
         {
@@ -841,8 +841,8 @@
     {
       "tier": 4,
       "houses": [
-        {"rect": [4, 15, 9, 18], "roof": "roof_slate", "door": [6, 18], "about": "the west woods cleared for a house under the mountain"},
-        {"rect": [72, 33, 80, 36], "roof": "roof_thatch", "door": [76, 36], "yard": [72, 37, 80, 38], "about": "a farmstead where the south-east woods meet the field"}
+        {"rect": [4, 15, 9, 18], "roof": "roof_blue", "door": [6, 18], "about": "the west woods cleared for a house under the mountain"},
+        {"rect": [72, 33, 80, 36], "roof": "roof_crimson", "door": [76, 36], "yard": [72, 37, 80, 38], "about": "a farmstead where the south-east woods meet the field"}
       ],
       "requires": [
         {

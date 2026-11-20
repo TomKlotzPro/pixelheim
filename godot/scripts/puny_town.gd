@@ -20,13 +20,15 @@ const SHEET := "res://assets/puny/medieval/punyworld-atlas.png"
 const COLUMNS := 220
 const ROWS := 132
 
-## Roof kind -> rows down the atlas to that colour's copy of the pieces.
+## Roof kind -> rows down the atlas to that colour's copy of the pieces;
+## blue, crimson and teal are the Town's and the City's new houses' (PIX-525).
 const ROOF_ROWS := {
-	"roof": 0, "roof_awning": 0, "roof_thatch": 16, "roof_moss": 76, "roof_slate": 91,
+	"roof": 0, "roof_awning": 0, "roof_thatch": 16, "roof_blue": 31, "roof_crimson": 46, "roof_teal": 61,
+	"roof_moss": 76, "roof_slate": 91,
 }
 ## The roof pieces (terracotta) sit in columns 76-119 of rows 0-15; the
-## colour copies repeat that block lower down. Walls, doors and windows are
-## shared by every colour.
+## colour copies repeat that block lower down, 15 rows apart after the
+## terracotta's 16. Walls, doors and windows are shared by every colour.
 const ROOF_COLS := Vector2i(76, 119)
 const ROOF_BLOCK_ROWS := 16
 
@@ -98,21 +100,19 @@ static func compose(grid: Dictionary, style := {}) -> Dictionary:
 ## (what the tests check). A `style` (Hamlet.house_style, PIX-313) builds
 ## them in a settlement's own grammar: its `walls` (sets of [left end,
 ## middle, right end] for Shade's timber frame's, one per house in turn,
-## PIX-400; [] keeps his), a `chimney` on every roof (but a house with one
-## of the settlement's own `stacks` cells: a forge's stack, a shed's door).
+## PIX-400; [] keeps his) or its `fronts` (a set by door, PIX-525), a
+## `chimney` on every roof (but a house with one of the settlement's own
+## `stacks` cells: a forge's stack, a shed's door).
 static func plan(grid: Dictionary, style := {}) -> Dictionary:
 	var pieces := {}
 	var decor := {}
 	var freed: Array[Vector2i] = []
-	# Each house its own walls, the style's sets in turn (PIX-400: Saltmere's
-	# three were one cottage three times); an empty set keeps Shade's timber.
-	var walls: Array = style.get("walls", [])
 	var stacks: Array = style.get("stacks", [])
 	var blobs := _blobs(grid)
 	for i in blobs.size():
 		var house := {}
 		_building(blobs[i], grid, house, decor, style.get("chimney", false) and not blobs[i].any(func(cell: Vector2i) -> bool: return cell in stacks))
-		var own: Array = walls[i % walls.size()] if not walls.is_empty() else []
+		var own: Array = walls_of(style, i, _door(blobs[i], grid))
 		var swap := {WALL_LEFT: own[0], WALL: own[1], WALL_RIGHT: own[2]} if not own.is_empty() else {}
 		for cell: Vector2i in house:
 			pieces[cell] = swap.get(house[cell], house[cell])
@@ -120,6 +120,18 @@ static func plan(grid: Dictionary, style := {}) -> Dictionary:
 			if not pieces.has(cell):
 				freed.append(cell)
 	return {"pieces": pieces, "decor": decor, "freed": freed}
+
+
+## The walls the `i`th house, its door at `door`, wears in `style`: its
+## `fronts`' set by door (PIX-525: by door, so a house keeps its front as
+## the ages raise more), else the `walls`' sets in turn (PIX-400:
+## Saltmere's three were one cottage three times); [] keeps Shade's timber.
+static func walls_of(style: Dictionary, i: int, door: Vector2i) -> Array:
+	var fronts: Dictionary = style.get("fronts", {})
+	if fronts.has(door):
+		return fronts[door]
+	var walls: Array = style.get("walls", [])
+	return walls[i % walls.size()] if not walls.is_empty() else []
 
 
 ## Whether `tile` is a house's wall (its timber, a settlement's own, a
@@ -168,12 +180,18 @@ static func houses(grid: Dictionary) -> Array[Dictionary]:
 		for cell: Vector2i in blob:
 			low = Vector2i(mini(low.x, cell.x), mini(low.y, cell.y))
 			high = Vector2i(maxi(high.x, cell.x), maxi(high.y, cell.y))
-		var door := Vector2i(-1, -1)
-		for cell: Vector2i in blob:
-			if cell.y == high.y and String(grid[cell]).begins_with("door"):
-				door = cell
-		out.append({"rect": Rect2i(low, high - low + Vector2i.ONE), "kind": roof_kind(blob, grid), "door": door})
+		out.append({"rect": Rect2i(low, high - low + Vector2i.ONE), "kind": roof_kind(blob, grid), "door": _door(blob, grid)})
 	return out
+
+
+## A house's door: the last one on its bottom row ((-1, -1) for none).
+static func _door(blob: Array, grid: Dictionary) -> Vector2i:
+	var bottom: int = blob.map(func(cell: Vector2i) -> int: return cell.y).max()
+	var door := Vector2i(-1, -1)
+	for cell: Vector2i in blob:
+		if cell.y == bottom and String(grid[cell]).begins_with("door"):
+			door = cell
+	return door
 
 
 ## The roof a house wears: the kind most of its roof cells are.
@@ -368,7 +386,8 @@ static func tileset() -> TileSet:
 ## Every tile a house may be built of, in each roof colour, the flowers
 ## (PunyProps.FLOWERS), Pixelheim's rampart and gatehouse (Rampart) and the
 ## streets' paving (Streets), the open ground's patches of green and snow
-## (OpenGround, PIX-305) and the settlements' own walls (Hamlet, PIX-313).
+## (OpenGround, PIX-305), the settlements' own walls (Hamlet, PIX-313) and
+## the ivy up the town's (Yards, PIX-525).
 static func pieces() -> Array[int]:
 	var base: Array = GABLE_TOP + GABLE_FOOT + GABLE_EAVE + GABLE_WALL + CHIMNEY + WING_TOP + WING_UPPER + WING_RIDGE \
 		+ WING_LOWER + WING_EAVE + UPPER_FILL + LOWER_FILL + [WALL_LEFT, WALL, WALL_RIGHT, WINDOW, DOOR]
@@ -383,7 +402,7 @@ static func pieces() -> Array[int]:
 			if tinted not in out:
 				out.append(tinted)
 	var more: Array = PunyProps.FLOWERS + Rampart.WALL.values() + [Rampart.GATE, Rampart.ROOF_BURNT] + Rampart.TOWER + Rampart.ROOF \
-		+ Streets.pieces() + OpenGround.pieces() + Hamlet.pieces()
+		+ Streets.pieces() + OpenGround.pieces() + Hamlet.pieces() + Yards.IVY_RAGGED.values() + Yards.IVY_FULL.values()
 	for tile: int in more:
 		if tile not in out:
 			out.append(tile)
