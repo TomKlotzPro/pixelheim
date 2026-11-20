@@ -118,9 +118,12 @@ const float ROCK_FOOT = 6.0;
 // over as much of the shore as it broke on (a point's reaching past the
 // lighthouse's foot, 4 px out), BREAK_HEAP at the most and never all of it
 // (HEAP_THICK): a storm's ran into the red's plateau, a white slab with a
-// ruled edge. Its crest wavers a pixel either way along the shore, so a
-// rock's straight foot never draws a ruled line. A storm whitens every
-// shore (STORM_SURF a wind above 1).
+// ruled edge. Each wave its own crest: wavering CREST_WAVER either way over
+// CREST_BENDS pixels and broken off in gaps CREST_GAPS across, about
+// CREST_GAP of it, so a rock's straight foot never draws a ruled line (a
+// pixel's waver over 5 drew one band under the headland); and its spent
+// foam its own grain, a hash a pixel (a Bayer step drew a ruled row of dots
+// under it). A storm whitens every shore (STORM_SURF a wind above 1).
 const float SWELL_SPEED = 1.1;
 const float SWELL_LATE = 2.0;
 const float SWELL_BENDS = 56.0;
@@ -132,6 +135,10 @@ const float WASH_BODY = 3.0;
 const float RUN_IN = 0.3;
 const float BACKWASH = 4.0;
 const float STORM_SURF = 0.5;
+const float CREST_WAVER = 1.5;
+const float CREST_BENDS = 4.0;
+const float CREST_GAPS = 6.0;
+const float CREST_GAP = 0.4;
 // A pier's posts: one each POST_EVERY pixels under each side, a half-gap
 // from the cell's ends so no ring is cut there. A post froths only near its
 // swell's top (past POST_PEAK), and on each swell only some do (POST_QUIET
@@ -229,8 +236,10 @@ vec4 sea_foam(vec2 px, float red, float surf) {
 	float wind = clamp(world_wind, 0.0, 2.0);
 	float run = min(wind, 1.0);
 	float white = clamp(surf + (wind - 1.0) * STORM_SURF, 0.0, 1.0);
-	float c = fract(wash_beat(px) / TAU);
-	float threshold = bayer_at(px);
+	float beat = wash_beat(px) / TAU;
+	float c = fract(beat);
+	float wave = floor(beat);
+	float grain = hash(px + vec2(wave * 3.7, 1.3));
 	float broken = value_noise(px / 3.0 + vec2(world_time * 0.6, 0.0));
 	float churn = hash(px + floor(world_time * 3.0));
 	float from = WASH_FROM * (1.0 - 0.5 * steep);
@@ -238,14 +247,15 @@ vec4 sea_foam(vec2 px, float red, float surf) {
 	if (c < RUN_IN) {
 		float k = c / RUN_IN;
 		float front = from * run * (1.0 - k) * (1.0 - k);
-		float waver = (value_noise(px / 5.0 + 3.3) - 0.5) * 2.0;
-		if (abs(d - front - waver) < 0.5 + white && broken > 0.4 - white * 0.1) {
+		float waver = (value_noise(px / CREST_BENDS + 3.3 + wave * 1.9) - 0.5) * 2.0 * CREST_WAVER;
+		bool gap = value_noise(px / CREST_GAPS + 7.7 + wave * 2.3) < CREST_GAP;
+		if (!gap && abs(d - front - waver) < 0.5 + white && broken > 0.4 - white * 0.1) {
 			return vec4(front < breaks && churn < white * 0.9 ? WHITE_WATER : SEA_FOAM, 1.0);
 		}
 		// Its spent foam behind, in patches (a plain dither drew a cove's
 		// whole ring in an even checkered band).
 		float trail = d - front;
-		if (trail > 0.0 && trail < WASH_BODY * run && broken > 0.35 && threshold < (1.0 - trail / WASH_BODY) * 0.75) {
+		if (trail > 0.0 && trail < WASH_BODY * run && broken > 0.35 && grain < (1.0 - trail / WASH_BODY) * 0.75) {
 			return vec4(SEA_FOAM_SHADE, 1.0);
 		}
 	} else {
@@ -255,7 +265,7 @@ vec4 sea_foam(vec2 px, float red, float surf) {
 			return vec4(WHITE_WATER, 1.0);
 		}
 		float back = BACKWASH * (1.0 - 0.5 * steep) * run * k;
-		if (d >= 0.0 && abs(d - back) < 1.0 && broken > 0.4 && threshold < (1.0 - k) * 0.6) {
+		if (d >= 0.0 && abs(d - back) < 1.0 && broken > 0.4 && grain < (1.0 - k) * 0.6) {
 			// Spent foam first, then lace as it thins: his shallows' light
 			// alone hardly shows on them.
 			return vec4(k < 0.5 ? SEA_FOAM_SHADE : SEA_LACE, 1.0);

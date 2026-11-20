@@ -363,6 +363,10 @@ func test_boats_ride_still_with_reduce_motion() -> void:
 	assert_eq(boats.size(), 3, "Saltmere's three boats")
 	for boat: AnimatedSprite2D in boats:
 		assert_false(boat.is_playing(), "a boat at %s holds still" % boat.position)
+		# Moored off the jetty, its foam and spray too, never on the planks.
+		var at := boat.global_position
+		for x in range(int(at.x), int(at.x) + boat.sprite_frames.get_frame_texture("default", 0).get_width()):
+			assert_ne(map.tile_at(Vector2i(floori(x / 16.0), floori((at.y + 8.0) / 16.0))), "dock", "a boat at %s clear of the jetty at x %d" % [at, x])
 
 
 ## Greyhold's fort lived in (PIX-399): its barracks, stable and smithy stand

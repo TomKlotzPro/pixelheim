@@ -67,20 +67,24 @@ const vec3 RIVER_LIP = vec3(0.506, 0.898, 0.937);
 // planks (875-877), the heap at each swelling to about PILE_R and sinking
 // to nothing, each its own size, beat, pace and quiet spells (all alike, a
 // row of mounds); a wake runs up to WAKE_LONG downstream (each pile's its
-// own length, dashes and quiet spells: all alike they read as a comb), its
-// arms opening WAKE_SPREAD a pixel, in dashes about WAKE_DASH long (its
-// arms reach 3.1 from the pile at most: they never line up with the
-// next's); on still water a post's ring grows to RIPPLE.
+// own length, dashes and quiet spells: all alike they read as a comb, and
+// most of them quiet at a time), its arms starting a pixel below the face
+// at the leg's sides and opening WAKE_SPREAD a pixel, in dashes about
+// WAKE_DASH long (opening a third as fast from the face, they hung as
+// drips; only the longest reach 3.5 from the pile, so two seldom meet);
+// on still water a post's ring grows to RIPPLE.
 const float PILE_EVERY = 8.0;
 const float PILE_R = 2.0;
-const float WAKE_LONG = 6.0;
-const float WAKE_SPREAD = 0.35;
+const float WAKE_LONG = 4.0;
+const float WAKE_SPREAD = 1.0;
 const float WAKE_DASH = 5.0;
 const float RIPPLE = 3.5;
 // A river's lap is white only where it is a line, the bank's distance
-// growing LAP_LINE a pixel or more (a straight bank's grows 1): where it
-// flattens (a convex corner) the band spread into a white triangle, so
-// there it thins to his rim's colour by how steep it still is.
+// growing LAP_LINE a pixel or more (a straight bank's grows 1), read from
+// the art's pixels beside (fwidth read it across the screen's: a hairline
+// on the art pixel's edge): where it flattens (a convex corner) the band
+// spread into a white triangle, so there it thins to his rim's colour by
+// how steep it still is.
 const float LAP_LINE = 0.6;
 // A running river froths in a bend: within BEND_FROTH of the corner its
 // banks turn round (fading out inside the cell), out to BEND_BANK past the
@@ -294,15 +298,15 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	vec2 bend;
 	int bank_ground;
 	float in_water = bank_in_water(px, local_px, code, bend, bank_ground);
-	// How fast it deepens here, read before any branch (the derivative needs
-	// its neighbours to have worked it out too).
-	float slope = fwidth(in_water);
 	int tone = code / 16;
 	if (tone == 0) {
 		return INLAND_NONE;
 	}
 	ivec2 cell = ivec2(floor(local_px / CELL));
 	float threshold = bayer_at(px);
+	// Foam's own dither (PIX-532): a hash a pixel, new every so often; a
+	// Bayer step drew a bend's froth as a checkerboard.
+	float grain = hash(px + vec2(floor(world_time * 1.5) * 7.3, 0.4));
 	if (in_water < 0.0) {
 		vec4 reed = tone == TONE_MIRE && in_water > -9.0 ? reeds(px, local_px, bend) : vec4(0.0);
 		if (reed.a > 0.0) {
@@ -364,10 +368,17 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 		if (abs(in_water - lap) < 0.5 && broken > (still ? 0.2 : -0.4)) {
 			if (still) {
 				water = moonlit(mix(water, water_foam(tone), 0.35));
-			} else if (slope > LAP_LINE) {
-				water = moonlit(WHITE_WATER);
-			} else if (threshold < slope * 0.4) {
-				water = moonlit(RIVER_LIP);
+			} else {
+				int near_code;
+				vec2 near_bend;
+				int near_ground;
+				float slope = max(abs(bank_in_water(px + vec2(1.0, 0.0), local_px + vec2(1.0, 0.0), near_code, near_bend, near_ground) - in_water),
+					abs(bank_in_water(px + vec2(0.0, 1.0), local_px + vec2(0.0, 1.0), near_code, near_bend, near_ground) - in_water));
+				if (slope > LAP_LINE) {
+					water = moonlit(WHITE_WATER);
+				} else if (grain < slope * 0.4) {
+					water = moonlit(RIVER_LIP);
+				}
 			}
 		}
 	}
@@ -419,12 +430,11 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 			if (ring < heap + 1.0) {
 				water = moonlit(ring > heap ? WHITE_WATER : RIVER_LIP);
 			}
-		} else if (dot(vec2(toward), flow) < -0.5 && edge < WAKE_LONG && sin(world_time * 0.8 + pace * TAU) > -0.3) {
-			// Two arms opening downstream in dashes, whole near the pile.
-			float wake = WAKE_LONG * (0.45 + 0.55 * pace);
-			float arm = abs(abs(off) - (1.0 + edge * WAKE_SPREAD));
+		} else if (dot(vec2(toward), flow) < -0.5 && edge > 1.0 && edge < WAKE_LONG && sin(world_time * 0.8 + pace * TAU) > 0.2) {
+			// Two arms opening downstream from the leg's sides in dashes.
+			float arm = abs(abs(off) - (0.5 + (edge - 0.5) * WAKE_SPREAD));
 			float dash = fract((edge - world_time * STREAK_SPEED) / (WAKE_DASH * (0.6 + 0.8 * beat)) + beat);
-			if (arm < 0.5 && dash < 0.6 && threshold > (edge - wake * 0.4) / (wake * 0.6)) {
+			if (arm < 0.5 && dash < 0.6 && edge < WAKE_LONG * (0.7 + 0.3 * pace)) {
 				water = moonlit(RIVER_LIP);
 			}
 		}
@@ -434,7 +444,7 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	if (!still && (land & 3) != 0 && (land & 3) != 3 && (land & 12) != 0 && (land & 12) != 12) {
 		vec2 corner = vec2((land & 2) != 0 ? CELL : 0.0, (land & 8) != 0 ? CELL : 0.0);
 		float from = length(into - corner);
-		if (from < BEND_FROTH && in_water < LAP_OUT + BEND_BANK && threshold > from / BEND_FROTH && churn > -0.5) {
+		if (from < BEND_FROTH && in_water < LAP_OUT + BEND_BANK && grain > from / BEND_FROTH && churn > -0.5) {
 			water = moonlit(in_water < LAP_OUT ? WHITE_WATER : RIVER_LIP);
 		}
 	}
