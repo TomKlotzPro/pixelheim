@@ -153,6 +153,7 @@ func _lineup() -> void:
 					if dir == "down":
 						var label := Label.new()
 						label.text = entry[0]
+						label.add_theme_font_override("font", UiStyle.pixel_font())
 						label.add_theme_font_size_override("font_size", 5)
 						label.position = sprite.position + Vector2(-12, 9)
 						world.add_child(label)

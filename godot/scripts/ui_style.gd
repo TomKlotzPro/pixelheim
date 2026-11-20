@@ -7,20 +7,31 @@ class_name UiStyle
 ## windows the world dims to a warm dark where text is cream and focus gold.
 ## Every frame is pixel art drawn here from the palette at 1x and shown at
 ## UI_SCALE, so the chrome sits on a pixel grid like the world does.
-## Type, all pixel fonts on the frames' grid: every letter at 2x or 3x of its
-## own pixels, never 1x, so text is as crisp and as heavy as the chrome round
-## it: Pixeloid Sans (and Bold) for everything, 18 on the canvas, or 27 for
-## screen titles and what is read across the room. The title's logo keeps
-## Press Start 2P (`logo_font`). Both OFL.
+## Type (PIX-533): what is read is Nunito (and Bold), a rounded sans, at
+## whole pixels, 20 on the canvas or 30 for screen titles and what is read
+## across the room: grey antialiased, light hinting (its x-height and
+## baseline on the pixel grid), its line box cut to the pixel face's (22,
+## 33), so every row keeps the room it was laid out for. Pixel type stays
+## where a smooth face can't go: the title's logo and menu (Press Start 2P,
+## `logo_font`), and Pixeloid Sans Bold (`pixel_font`) for the numbers over
+## the world (drawn at 9 px and enlarged 3x by the camera: a smooth face
+## goes mushy) and the keycaps' letters (pixel art like their caps; Nunito
+## has no arrows). All OFL.
 
 ## Canvas pixels per pixel of UI art.
 const UI_SCALE := 2
-## The fonts' own pixel sizes: what fixed-size rendering scales from.
+## The pixel fonts' own pixel sizes: what fixed-size rendering scales from.
 const BODY_PX := 9
 const LOGO_PX := 8
 ## Text on the canvas: what's read, and what's read at a glance.
-const TEXT := 18
-const BIG := 27
+const TEXT := 20
+const BIG := 30
+## Nunito's line box cut (top, bottom) to Pixeloid's (PIX-533): its ascent
+## and descent are 21 and 8 at TEXT, 31 and 11 at BIG; cut, 18 and 4 (22) and
+## 27 and 6 (33), the boxes every page was laid out for, baseline and all.
+## The spacing is in pixels whatever the size, so each size has its own.
+const TRIM := Vector2i(-3, -4)
+const TRIM_BIG := Vector2i(-4, -5)
 
 ## The dark: outlines, shadows, and what the world dims to behind a screen.
 const NIGHT := Color("1c120a")
@@ -67,8 +78,9 @@ const PLANK := 44
 
 static var _frames := {}
 static var _logo_font: FontFile
-static var _body_font: FontFile
-static var _bold_font: FontFile
+static var _pixel: FontFile
+## Nunito's cuts by weight and size ("bold big"), each with its trim.
+static var _type: Dictionary[String, Font] = {}
 
 ## GegX's UI kit (PIX-385): its pieces by UiStyle's names, and where the
 ## private art installs them (scripts/fetch-private-art.sh). Without them
@@ -82,8 +94,8 @@ static var _kit_pieces := {}
 
 
 ## Once, before any screen is built: the body font (the project's default,
-## gui/theme/custom_font) renders at its pixel size and scales whole, and a
-## control nobody sized reads at TEXT.
+## gui/theme/custom_font) is set up as above, and a control nobody sized
+## reads in it at TEXT.
 static func setup() -> void:
 	ThemeDB.fallback_font = body_font()
 	ThemeDB.fallback_font_size = TEXT
@@ -95,6 +107,9 @@ static func setup() -> void:
 	# Tooltips and scrollbars (PIX-384) go in the engine's own theme: the
 	# root's stops at a CanvasLayer, and every screen is one.
 	var engine := ThemeDB.get_default_theme()
+	# It took the project's font as the bare file, untrimmed, at 16 (PIX-533).
+	engine.default_font = body_font()
+	engine.default_font_size = TEXT
 	# Godot's type names, spelt so tools/i18n.py doesn't take them for words.
 	var tip := "tooltip_label".to_pascal_case()
 	engine.set_stylebox("panel", "tooltip_panel".to_pascal_case(), tooltip())
@@ -241,8 +256,9 @@ static func label(text: String, font_size: int, color: Color, at := Vector2.ZERO
 ## The type a size asks for (see above), on any control: TEXT below 24,
 ## BIG from 24.
 static func sized(node: Control, font_size: int, bold := false) -> Control:
-	node.add_theme_font_override("font", bold_font() if bold else body_font())
-	node.add_theme_font_size_override("font_size", BIG if font_size >= 24 else TEXT)
+	var big := font_size >= 24
+	node.add_theme_font_override("font", bold_font(big) if bold else body_font(big))
+	node.add_theme_font_size_override("font_size", BIG if big else TEXT)
 	return node
 
 
@@ -266,16 +282,48 @@ static func strong(text: String, font_size: int, color: Color, at := Vector2.ZER
 	return node
 
 
-static func body_font() -> FontFile:
-	if _body_font == null:
-		_body_font = _pixel_font(load("res://assets/fonts/PixeloidSans.ttf"), BODY_PX)
-	return _body_font
+## Nunito at TEXT, or `big` at BIG: each size's face carries its own trim,
+## so draw it at that size (`sized` keeps the two together).
+static func body_font(big := false) -> Font:
+	return _cut(false, big)
 
 
-static func bold_font() -> FontFile:
-	if _bold_font == null:
-		_bold_font = _pixel_font(load("res://assets/fonts/PixeloidSans-Bold.ttf"), BODY_PX)
-	return _bold_font
+static func bold_font(big := false) -> Font:
+	return _cut(true, big)
+
+
+static func _cut(bold: bool, big: bool) -> Font:
+	var key := "%s %s" % [bold, big]
+	if not _type.has(key):
+		var cut := FontVariation.new()
+		cut.base_font = _smooth_font(bold)
+		var trim := TRIM_BIG if big else TRIM
+		cut.spacing_top = trim.x
+		cut.spacing_bottom = trim.y
+		_type[key] = cut
+	return _type[key]
+
+
+## A Nunito file set to draw smooth on the pixel grid: grey, light hinting,
+## whole pixels; the arrows it lacks drawn by the pixel face of its weight.
+static func _smooth_font(bold: bool) -> FontFile:
+	var font: FontFile = load("res://assets/fonts/Nunito-Bold.ttf" if bold else "res://assets/fonts/Nunito-Regular.ttf")
+	font.antialiasing = TextServer.FONT_ANTIALIASING_GRAY
+	font.hinting = TextServer.HINTING_LIGHT
+	font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+	var pixel := pixel_font() if bold else _pixel_font(load("res://assets/fonts/PixeloidSans.ttf"), BODY_PX)
+	font.fallbacks = [pixel] as Array[Font]
+	return font
+
+
+## Pixeloid Sans Bold at its own 9 px, scaled whole (PIX-533): the numbers
+## over the world, drawn at 9 and enlarged 3x by the camera (a smooth face
+## goes mushy so), and the keycaps' letters, pixel art like their caps
+## (Nunito has no arrows).
+static func pixel_font() -> FontFile:
+	if _pixel == null:
+		_pixel = _pixel_font(load("res://assets/fonts/PixeloidSans-Bold.ttf"), BODY_PX)
+	return _pixel
 
 
 ## A framed surface. Screens describe it by colour and padding, as they
@@ -741,6 +789,8 @@ static func keycap(key: String, small := false, slim := false) -> PanelContainer
 	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	cap.add_theme_stylebox_override("panel", keycap_style(false, small, UI_SCALE, slim))
 	cap.label = strong(key, TEXT, INK)
+	cap.label.add_theme_font_override("font", pixel_font())
+	cap.label.add_theme_font_size_override("font_size", BODY_PX * UI_SCALE)
 	cap.label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cap.label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	cap.add_child(cap.label)
@@ -759,7 +809,7 @@ static func world_keycap(key: String) -> PanelContainer:
 	cap.world = true
 	cap.add_theme_stylebox_override("panel", keycap_style(false, false, 1))
 	cap.label = Label.new()
-	cap.label.add_theme_font_override("font", bold_font())
+	cap.label.add_theme_font_override("font", pixel_font())
 	cap.label.add_theme_font_size_override("font_size", BODY_PX)
 	cap.label.add_theme_color_override("font_color", INK)
 	cap.label.add_theme_constant_override("line_spacing", -2)

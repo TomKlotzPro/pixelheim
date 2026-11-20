@@ -148,7 +148,7 @@ func raise_bars() -> void:
 	# Its level by the health bar (PIX-188), coloured by the gap to the
 	# hero's: seen once the hero is near enough to be noticed, before the charge.
 	var level := Bestiary.level_of(fighter)
-	# On the night's plate (the pixel font draws no outline), over every actor
+	# On the night's plate (no outline round its words), over every actor
 	# (the y-sort would put a hero standing above the foe on top of it).
 	level_tag = PanelContainer.new()
 	level_tag.add_theme_stylebox_override("panel", UiStyle.plate(6))
