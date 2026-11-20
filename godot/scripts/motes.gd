@@ -1,12 +1,13 @@
 class_name Motes
 ## areas: field rank
 ## The small life of the world (PIX-225): fireflies at dusk and night over
-## the grass and in the woods, leaves falling in the forests, dust floating
-## in a room's light, embers off forges, hearths and camp fires, dust and
-## splashes under the hero's feet, sparks where steel meets armour. What
-## glows (fireflies, embers, sparks) ignores the dark and blooms at night;
-## the rest takes the scene's light. Pure: what each looks like and when it
-## shows. The Atmosphere node keeps them over the view and fires the bursts.
+## the grass and in the woods, dawn's mist over the river and the grass
+## (PIX-526), leaves falling in the forests, dust floating in a room's
+## light, embers off forges, hearths and camp fires, dust and splashes under
+## the hero's feet, sparks where steel meets armour. What glows (fireflies,
+## embers, sparks) ignores the dark and blooms at night; the rest takes the
+## scene's light. Pure: what each looks like and when it shows. The
+## Atmosphere node keeps them over the view and fires the bursts.
 
 ## What the hero's feet kick up from the ground: its dust's colour...
 const DUST := {
@@ -39,6 +40,146 @@ static func fireflies(map: MapData, air: String, dark: float, rain: float) -> fl
 	if map.id == "town" and (GameState.progression.prologue != Prologue.DONE or GameState.progression.bells != Bells.NONE):
 		return 0.0
 	return clampf((dark - FIREFLY_DUSK) / (FIREFLY_NIGHT - FIREFLY_DUSK), 0.0, 1.0) * (1.0 - rain)
+
+
+## Dawn's mist (PIX-526): low over the river and the grass from first light,
+## thickest from five till twenty past six, gone by twenty to eight (clock
+## minutes).
+const MIST_FROM := 260
+const MIST_FULL := 300
+const MIST_THINS := 380
+const MIST_GONE := 460
+## The airs it never lies in: the Ash too hot, the Frostgate's snow, the
+## coast with its own sea mist.
+const NO_MIST := ["ash", "frost", "coast"]
+## What it lies over: a map's own tiles.
+const MISTY := {"grass": true, "flowers": true, "crops": true, "water": true}
+## How fast a wisp drifts east, px a second, slowest and fastest.
+const MIST_SPEED := Vector2(1.5, 3.5)
+## A wisp, three ways, in Shade's whites (HamletArt.INKS: "y" its core, "s"
+## his snow white its rim): long, short and full, two lobes. Each WISP_SIZE,
+## the same either way, longer than tall.
+const WISP_SIZE := Vector2(24, 5)
+const WISPS := [
+	[
+		"........ssssssss........",
+		"...sssssyyyyyyyysssss...",
+		"sssyyyyyyyyyyyyyyyyyysss",
+		"...sssssyyyyyyyysssss...",
+		"........ssssssss........",
+	], [
+		"......ssssssssssss......",
+		"....ssyyyyyyyyyyyyss....",
+		"...syyyyyyyyyyyyyyyys...",
+		"....ssyyyyyyyyyyyyss....",
+		"......ssssssssssss......",
+	], [
+		"....ssss........ssss....",
+		"..ssyyyyssssssssyyyyss..",
+		"ssyyyyyyyyyyyyyyyyyyyyss",
+		"..ssyyyyyyyyyyyyyyyyss..",
+		"....ssssssssssssssss....",
+	],
+]
+
+
+## How thick dawn's mist lies, 0..1: under the sky at first light, but not
+## in the rain, not the night the village burns or holds. Where it lies is
+## mist_points' (not over the airs of NO_MIST, cell by cell): the air the
+## hero stands in turned the whole mist off and on at a region's edge.
+static func mist(map: MapData, steps: float, rain: float) -> float:
+	if not Lights.under_sky(map):
+		return 0.0
+	# Not the night the village burns nor the night it holds, nor their dawns.
+	if map.id == "town" and not Weather.village_rains():
+		return 0.0
+	var minute := DayNight.minute_of(steps)
+	return clampf(minf(inverse_lerp(MIST_FROM, MIST_FULL, minute), inverse_lerp(MIST_GONE, MIST_THINS, minute)), 0.0, 1.0) * (1.0 - rain)
+
+
+## Where the mist's wisps rise on a map drawn at `origin` (its cell (0, 0)
+## in the hero's map's cells), among `cells` (the hero's map's): from each
+## cell of `grid` (the ground as drawn) with a misty cell west of it, two
+## east and one north, so none rises at a path's edge or against a house's
+## foot (drawn a little over the cell below it); at a jitter of its own, so
+## they never line up. A cell off the map counts as misty: the map beside
+## carries the mist on and nothing stops at a line. A cell whose region's
+## air is in NO_MIST (`regions`) is not misty. `seen` keeps what each of the
+## map's cells was found to be from one call to the next (its point, or
+## Vector2.INF), so a view moved a cell looks again only at the cells new
+## to it: looking at the whole view every step cost about a millisecond.
+static func mist_points(grid: Dictionary, size: Vector2i, origin: Vector2i, cells: Rect2i, regions := {}, seen := {}) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	var own := cells.intersection(Rect2i(origin, size))
+	var shift := Vector2(origin * MapView.TILE)
+	for y in range(own.position.y - origin.y, own.end.y - origin.y):
+		for x in range(own.position.x - origin.x, own.end.x - origin.x):
+			var cell := Vector2i(x, y)
+			var point: Variant = seen.get(cell)
+			if point == null:
+				point = _rises(grid, regions, cell)
+				seen[cell] = point
+			if point != Vector2.INF:
+				points.append(shift + (point as Vector2))
+	return points
+
+
+## Where on `cell` a wisp rises, in the map's pixels, or Vector2.INF when it
+## doesn't: misty there, one cell west, two east and one north.
+static func _rises(grid: Dictionary, regions: Dictionary, cell: Vector2i) -> Vector2:
+	for near: Vector2i in [Vector2i.LEFT, Vector2i.ZERO, Vector2i.RIGHT, Vector2i(2, 0), Vector2i.UP]:
+		if not _misty(grid, regions, cell + near):
+			return Vector2.INF
+	var h := absi(hash(cell))
+	return Vector2(cell * MapView.TILE) + Vector2(2 + h % 12, 2 + (h >> 8) % 12)
+
+
+## Whether the mist lies on `cell` of `grid`: its ground misty, its air not
+## one of NO_MIST, off the map misty.
+static func _misty(grid: Dictionary, regions: Dictionary, cell: Vector2i) -> bool:
+	return MISTY.has(grid.get(cell, "grass")) and not (Weather.AIRS.get(regions.get(cell, ""), "") in NO_MIST)
+
+
+## Dawn's mist is drawn wisp by wisp by the Atmosphere, from dice of its
+## own (MIST_SEED), not as particles: Godot's CPUParticles2D draws from the
+## game's dice as it is made, and emitting from points it draws one for
+## every particle, a fixed seed or not (PIX-526's probe), which shifted
+## every seeded flow at six. How many wisps lie over the view at once, how
+## long each lies (seconds), how far either side of east it drifts
+## (degrees), and how thick it is at its thickest, from MIST_RISE to
+## MIST_SINK of its life.
+const MIST_WISPS := 96
+const MIST_LIFE := 9.0
+const MIST_SPREAD := 12.0
+const MIST_PEAK := 0.3
+const MIST_RISE := 0.3
+const MIST_SINK := 0.7
+const MIST_SEED := 526
+
+static var _mist_strip: ImageTexture
+
+
+## The wisps side by side, both inks opaque: how faint a wisp lies is its
+## life's (mist_alpha).
+static func mist_strip() -> ImageTexture:
+	if _mist_strip == null:
+		var frame := String(WISPS[0][0]).length()
+		var image := Image.create(frame * WISPS.size(), WISPS[0].size(), false, Image.FORMAT_RGBA8)
+		for i in WISPS.size():
+			var rows: Array = WISPS[i]
+			for y in rows.size():
+				for x in frame:
+					var ink := String(rows[y])[x]
+					if ink != ".":
+						image.set_pixel(i * frame + x, y, HamletArt.INKS[ink] as Color)
+		_mist_strip = ImageTexture.create_from_image(image)
+	return _mist_strip
+
+
+## How thick a wisp lies `share` of the way through its life: rising out of
+## nothing, lying a while, sinking back.
+static func mist_alpha(share: float) -> float:
+	return MIST_PEAK * clampf(minf(share / MIST_RISE, (1.0 - share) / (1.0 - MIST_SINK)), 0.0, 1.0)
 
 
 ## Whether steel throws sparks off a foe.

@@ -1,29 +1,31 @@
 extends GutTest
-## The day/night wheel must match dayNight.ts: clear sky through the day,
-## warm dusk, a long blue night, and a wrap back to dawn-lit day.
+## The day/night wheel: its clock, when night falls, where the sun stands
+## and when the evening's windows light.
 
 
-func test_daytime_is_untinted() -> void:
-	assert_eq(DayNight.sky_at(0).a, 0.0)
-	assert_eq(DayNight.sky_at(0.3 * DayNight.DAY_CYCLE_STEPS).a, 0.0)
-
-
-func test_night_reaches_full_tint() -> void:
-	var night := DayNight.sky_at(0.7 * DayNight.DAY_CYCLE_STEPS)
-	assert_almost_eq(night.a, 0.36, 0.001)
-	assert_gt(night.b, night.r, "night leans blue")
-
-
-func test_dusk_leans_warm() -> void:
-	var dusk := DayNight.sky_at(0.55 * DayNight.DAY_CYCLE_STEPS)
-	assert_gt(dusk.r, dusk.b, "dusk leans orange")
-	assert_gt(dusk.a, 0.0)
-
-
-func test_cycle_wraps() -> void:
-	var day_one := DayNight.sky_at(100)
-	var day_two := DayNight.sky_at(100 + DayNight.DAY_CYCLE_STEPS)
-	assert_almost_eq(day_one.a, day_two.a, 0.001)
+func test_the_evenings_windows_light_one_by_one_before_the_lamps() -> void:
+	# PIX-526: each window at its own minute through the dusk.
+	var cells: Array[Vector2i] = []
+	for i in 200:
+		cells.append(Vector2i(i % 23 + 3, 5 + 2 * floori(i / 23.0)))
+	var lit := func(share: float) -> int:
+		return cells.filter(func(cell: Vector2i) -> bool: return DayNight.lit_before_night(share * DayNight.DAY_CYCLE_STEPS, cell)).size()
+	assert_gt(DayNight.WINDOWS_FIRST, 0.47, "inside the dusk")
+	assert_eq(lit.call(DayNight.WINDOWS_FIRST - 0.002), 0, "none before the first")
+	assert_eq(lit.call(DayNight.WINDOWS_LAST + 0.001), cells.size(), "all by the last")
+	assert_false(DayNight.is_night((DayNight.WINDOWS_LAST + 0.001) * DayNight.DAY_CYCLE_STEPS), "before the lamps")
+	var half: int = lit.call((DayNight.WINDOWS_FIRST + DayNight.WINDOWS_LAST) / 2.0)
+	assert_between(half, 50, 150, "about half by the halfway minute")
+	var before := 0
+	for minute in range(0, 91, 10):
+		var now: int = lit.call(DayNight.WINDOWS_FIRST + minute / 1440.0)
+		assert_gte(now, before, "none goes out again")
+		before = now
+	for share: float in [0.25, 0.7, 0.95]:
+		assert_eq(lit.call(share), 0, "none by day, at night (is_night's) or at dawn: %s" % share)
+	var steps := (DayNight.WINDOWS_FIRST + DayNight.WINDOWS_LAST) / 2.0 * DayNight.DAY_CYCLE_STEPS
+	for cell in cells:
+		assert_eq(DayNight.lit_before_night(steps, cell), DayNight.lit_before_night(steps, cell), "each its own minute, every time")
 
 
 func test_a_day_is_a_day_of_minutes() -> void:

@@ -9,9 +9,16 @@ class_name Lights
 ## night. Pure helpers; the LightRig does the per-frame work.
 
 const DAY := Color(1, 1, 1)
-## Gold at dawn, orange at dusk, a deep blue night the lights cut through.
+## Gold at dawn, then a pale gold morning until about eight (PIX-526: six
+## o'clock looked like noon).
 const DAWN := Color(1.0, 0.86, 0.72)
-const DUSK := Color(1.0, 0.86, 0.74)
+const MORNING := Color(1.0, 0.94, 0.8)
+## The evening, two hours of it (PIX-526: dusk was one flat orange wash):
+## peach at six, rose at seven, violet at eight; then a deep blue night the
+## lights cut through.
+const PEACH := Color(1.0, 0.84, 0.68)
+const ROSE := Color(0.96, 0.7, 0.72)
+const VIOLET := Color(0.62, 0.52, 0.78)
 const NIGHT := Color(0.3, 0.34, 0.56)
 ## Under the mountain and in caves: a cold dark the torches warm.
 const UNDERGROUND := Color(0.36, 0.34, 0.46)
@@ -23,10 +30,13 @@ const ASH_NIGHT := Color(0.56, 0.34, 0.32)
 ## day and only a little darker at night).
 const INDOOR_DAY := Color(0.86, 0.82, 0.77)
 const INDOOR_NIGHT := Color(0.4, 0.35, 0.4)
-## [position in the day's wheel 0..1 (DayNight), the world's light then].
+## [position in the day's wheel 0..1 (DayNight: hours after six over 24),
+## the world's light then]. The night's end stays at 0.86 and the dawn at
+## 0.93, where the Night of Bells' dawn reads them (Bells.sky_at: 0.91).
 const DAY_LIGHT := [
-	[0.0, DAY], [0.45, DAY], [0.53, DUSK], [0.62, NIGHT],
-	[0.86, NIGHT], [0.93, DAWN], [1.0, DAY],
+	[0.0, MORNING], [2.0 / 24.0, DAY], [11.0 / 24.0, DAY],
+	[12.0 / 24.0, PEACH], [13.0 / 24.0, ROSE], [14.0 / 24.0, VIOLET], [15.25 / 24.0, NIGHT],
+	[0.86, NIGHT], [0.93, DAWN], [1.0, MORNING],
 ]
 ## The shapes' colours: warm flame, a window's candle, cold magic.
 const FIRE := Color(1.0, 0.62, 0.3)
