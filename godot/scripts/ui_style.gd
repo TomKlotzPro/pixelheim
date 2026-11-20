@@ -494,10 +494,17 @@ static func plank_ink(lit: bool) -> Color:
 
 
 ## A tab (PIX-385: the journal's, the codex's, the dialogue's name): the
-## kit's, lit brass when `chosen`; without it, a plank lit as before.
+## kit's, lit brass when `chosen`; without it, a plank lit as before. Its
+## words stand 2 px further in on the left and 3 on the right (PIX-533):
+## Nunito's last letter has no trailing pixel, and the kit's face has a
+## shadow on its left that its right lacks. No more: the pack's eight
+## French tabs must still end INSET clear of the page's corner.
 static func tab(chosen: bool, padding := 6) -> StyleBoxTexture:
 	var kit := _kit("tab_selected" if chosen else "tab", padding)
-	return kit if kit != null else plank(chosen, padding)
+	var style := kit if kit != null else plank(chosen, padding)
+	style.content_margin_left += 2
+	style.content_margin_right += 3
+	return style
 
 
 ## A button that is a tab (the pack's, the counter's): the kit's tab, lit
@@ -624,6 +631,11 @@ static func button_keyed(node: Button, key: String, text: String) -> void:
 		row.add_child(cap)
 		var words := label("", TEXT, plank_ink(false))
 		words.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		# Nunito's last letter has no trailing pixel (PIX-533): the words
+		# keep 3 px off the frame, as the cap's own edge keeps off it.
+		var tail := StyleBoxEmpty.new()
+		tail.content_margin_right = 3
+		words.add_theme_stylebox_override("normal", tail)
 		row.add_child(words)
 		node.add_child(row)
 		row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

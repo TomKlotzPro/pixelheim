@@ -32,7 +32,12 @@ func test_a_control_nobody_sized_reads_in_the_trimmed_face() -> void:
 
 func test_every_character_of_the_catalogues_has_a_glyph() -> void:
 	var chars := {}
-	for path: String in ["res://locale/fr.po", "res://locale/en.po"]:
+	var paths: Array[String] = ["res://locale/fr.po", "res://locale/en.po"]
+	# The data's words too: names, letters and lines that reach Text.t from there.
+	for file: String in DirAccess.get_files_at("res://assets/data"):
+		if file.ends_with(".json"):
+			paths.append("res://assets/data/" + file)
+	for path: String in paths:
 		for c in FileAccess.get_file_as_string(path):
 			if c.unicode_at(0) >= 0x20:
 				chars[c] = true
