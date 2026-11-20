@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.390.0",
+      "date": "2026-11-19",
+      "codename": "Fronts of Their Own",
+      "notes": [
+        "No two neighbouring houses in town share a front any more: plain timber, cross braces, a diamond lattice, light or reddish planks, and stone for the hall and the forge",
+        "Ivy climbs the older walls as the town grows",
+        "The newest houses wear roofs in blue, crimson and teal"
+      ]
+    },
+    {
       "version": "0.389.0",
       "date": "2026-11-18",
       "codename": "Out of Sight",

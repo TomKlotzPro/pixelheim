@@ -59,6 +59,7 @@ fort | on a place someone holds (Hamlet.HELD, Greyhold): who holds it, its house
 fought | with fight kill: the fight's game seconds from the first swing until the foe (its pack) fell or stood down and the health its blows took from the hero (a level-up's heal giving none back), or until the hero fell, then fell: 12.4s -18 (PIX-410)
 frames | with crossing: the walk's frames, the most work and the 99th percentile in ms: 240 max 3.1 p99 2.4 (PIX-269)
 free | with launch: the slot New Game makes its hero in, 0 when none is free (PIX-303: never one holding a save the game can't read)
+fronts | on the town (with the paid pack): its age, how many fronts its houses wear between them (Hamlet.FRONTS) and the cells of ivy on their walls: 4:fronts7,ivy16 (PIX-525)
 frozen | on a map with ice: what draws it frozen (frozen.gdshaderinc) - the ground in the open air, the floor in a cave - its cells and the cold lights over them: ground 145 lights 6 (PIX-255, PIX-398)
 gate | the gate the story keeps shut that said its line on this run (PIX-254)
 hamlet | on a settlement beyond Pixelheim: its look and its dressing counted by how each piece stands: fishing:line1,moored2,stand4,wall3 (PIX-313)

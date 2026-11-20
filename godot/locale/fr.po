@@ -4041,6 +4041,10 @@ msgid "From the Town on, the square is laid in flagstones with grass in the join
 msgstr "Dès la Ville, la place est dallée, avec de l'herbe dans les joints, dans une bordure de pavés"
 
 #: assets/data/changelog.json
+msgid "Fronts of Their Own"
+msgstr "Chacun sa façade"
+
+#: assets/data/changelog.json
 msgid "Frost creeps over the stair down to the ice cave in Liane's room"
 msgstr "Le givre gagne l'escalier qui descend à la grotte de glace, dans la chambre de Liane"
 
@@ -4439,6 +4443,10 @@ msgstr "Iva la guérisseuse est coincée dans les Marais de Fange, à trois rose
 #: assets/data/changelog.json
 msgid "Iva's marsh lies west of the gate, as it always did"
 msgstr "Le marais d'Iva est à l'ouest de la porte, comme il l'a toujours été"
+
+#: assets/data/changelog.json
+msgid "Ivy climbs the older walls as the town grows"
+msgstr "Le lierre grimpe sur les vieux murs à mesure que la ville grandit"
 
 #: assets/data/changelog.json
 msgid "Jewelry grants stats while worn: +STR charms, +INT pendants, +DEX rings - and a strength charm literally helps you carry more"
@@ -5055,6 +5063,10 @@ msgstr "Fini les bandes jaunes tramées là où une région rencontre une route�
 #: assets/data/changelog.json
 msgid "No teleporting over-encumbered. Lighten the pack."
 msgstr "Pas de téléportation en surcharge. Allégez votre sac."
+
+#: assets/data/changelog.json
+msgid "No two neighbouring houses in town share a front any more: plain timber, cross braces, a diamond lattice, light or reddish planks, and stone for the hall and the forge"
+msgstr "Deux maisons voisines n'ont plus la même façade : colombages simples, croisillons, treillis en losanges, planches claires ou rougeâtres, et pierre pour la mairie et la forge"
 
 #: assets/data/changelog.json
 msgid "Nobody Home"
@@ -7387,6 +7399,10 @@ msgstr "La musique et les bruitages arrivent juste après, en arrière-plan ; 
 #: assets/data/changelog.json
 msgid "The name warning goes with your first letter, and the night's level-up names its keys"
 msgstr "L'avertissement sur le nom part dès la première lettre, et la montée de niveau de la nuit nomme ses touches"
+
+#: assets/data/changelog.json
+msgid "The newest houses wear roofs in blue, crimson and teal"
+msgstr "Les maisons les plus récentes ont des toits bleus, cramoisis et sarcelle"
 
 #: assets/data/changelog.json
 msgid "The night classes stepped into the light: the necromancer's robes and the rogue's leathers brightened so they read on every lawn"

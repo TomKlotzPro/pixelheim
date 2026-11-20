@@ -128,6 +128,14 @@ houses-hamlet | --map town --town-tier 1 | map=town houses=1:10 | town
 houses-village | --map town --town-tier 2 --at 76,10 | map=town cell=\(76, 10\) houses=2:12 | town
 houses-town | --map town --town-tier 3 --at 57,26 | map=town cell=\(57, 26\) houses=3:15 | town
 houses-city | --map town --town-tier 4 --at 76,37 | map=town cell=\(76, 37\) houses=4:17 | town
+# House fronts of their own (PIX-525): the Ashes' hall alone in the fort's
+# stone, from the Hamlet on no two neighbours alike (timber plain, crossed or
+# in diamonds, planks light and dark, the hall and the forge in stone), ivy
+# up the older walls from the Village, more each age; with the paid pack
+# (on Shade's CC0 art alone, none).
+fronts-ashes | --map town --town-tier 0 | map=town fronts=(0:fronts1,ivy0)? | town
+fronts-village | --map town --town-tier 2 | map=town fronts=(2:fronts7,ivy3)? | town
+fronts-city-night | --map town --town-tier 4 night | map=town fronts=(4:fronts7,ivy16)? | town night
 # Out of the village through its gate and back in (PIX-248: one rampart,
 # the gate three wide between its towers): up the gate road, through the
 # middle of the gate and through its side, onto the road just past the gate
