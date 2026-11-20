@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
-  Currently v0.390 - 1.0 has to be earned.
+  Currently v0.391 - 1.0 has to be earned.
 </p>
 
 ---
@@ -101,7 +101,7 @@ docs/                  screenshots, and the reports behind two big changes (Soli
 - **Rules are pure.** Game rules live in static GDScript classes with no nodes, so they test fast; scenes draw, move and route input. Everything that persists changes only through `GameState`.
 - **The data is edited where it lives.** Maps (`godot/assets/maps/`, or a sketch in `godot/maps-src/` run through `mapgen.py`) and data tables (`godot/assets/data/`) are the source; the unit tests check every map file (known tiles, the spawn and every way's landing on open ground, the packs in their regions) and every chest (its own id, known loot, clear of the packs).
 - **Our own save format.** Saves are Pixelheim's own (v5): a section for each part of the game, a card the Saves screen reads alone, the fog of war packed a bit per cell (a fully explored hero's save is 9 KB, written in about a millisecond), and every write read back before it replaces the last. Until the beta a change that old saves can't take bumps the version, with no migration; compatibility comes back at the beta.
-- **The look lives in one place.** `ui_style.gd` draws every window and picks every font size; pixel fonts render at whole sizes only.
+- **The look lives in one place.** `ui_style.gd` draws every window and picks every font size; text renders at whole pixel sizes only, the pixel fonts at whole multiples.
 - **Verified by playing.** Besides the unit tests, `godot/tools/flows.sh` walks the release flows (spawn, doors, chests, shops, crafting, quests, rank-ups, fights, death, saves, conversations, smooth walking) through a real window and checks each one, several at a time, each the same run every time (stepped on the game's own clock, with the same dice, and hunted for flakes every night); every pull request runs them headless, and boots every map by day and at night, after the unit tests, and runs them again in a virtual window beside that, leaving every flow's picture and the look book on the pull request (on Shade's free art only).
 
 ## History
@@ -124,4 +124,4 @@ Pixelheim began as a React + TypeScript + PixiJS game in the browser. It moved t
 
 ## License
 
-The code is MIT. The art in `godot/assets/puny/` is Shade's CC0 work (see its `LICENSE.txt`); his paid packs (Medieval Age and the icon packs) are licensed to the author and kept private, as are GegX's Pixel UI Kit and ninth-jedi's Farm Animals (credited in the game's credits), and Leohpaz's sound and music bundles. Fonts: Pixeloid (OFL) and Press Start 2P (OFL).
+The code is MIT. The art in `godot/assets/puny/` is Shade's CC0 work (see its `LICENSE.txt`); his paid packs (Medieval Age and the icon packs) are licensed to the author and kept private, as are GegX's Pixel UI Kit and ninth-jedi's Farm Animals (credited in the game's credits), and Leohpaz's sound and music bundles. Fonts: Nunito (OFL), Pixeloid (OFL) and Press Start 2P (OFL).

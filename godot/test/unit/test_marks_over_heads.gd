@@ -10,7 +10,7 @@ extends GutTest
 
 
 func _face() -> Font:
-	return UiStyle.bold_font()
+	return UiStyle.pixel_font()
 
 
 ## The middle of the figure's top HEAD_ROWS drawn rows in `anim`'s first
@@ -60,7 +60,7 @@ func test_a_glyph_is_measured_by_its_ink_not_its_box() -> void:
 	assert_eq(Ink.of_text("!", _face(), UiStyle.BODY_PX), Rect2(0, 2, 2, 7))
 	assert_eq(Ink.of_text("?", _face(), UiStyle.BODY_PX), Rect2(0, 2, 6, 7))
 	assert_eq(_face().get_string_size("!", HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BODY_PX).x, 3.0, "its box runs a pixel past its ink")
-	assert_eq(Ink.of_text("!", _face(), UiStyle.TEXT), Rect2(0, 4, 4, 14), "at 2x, every pixel twice")
+	assert_eq(Ink.of_text("!", _face(), UiStyle.BODY_PX * 2), Rect2(0, 4, 4, 14), "at 2x, every pixel twice")
 	assert_eq(Ink.of_text("12", _face(), UiStyle.BODY_PX), Rect2(0, 2, 13, 7), "a word's ink runs across its glyphs")
 	assert_eq(Ink.of_text("", _face(), UiStyle.BODY_PX), Rect2(), "nothing drawn, no ink")
 
