@@ -760,7 +760,8 @@ func field_mist() -> String:
 	var air: Atmosphere = world.atmosphere
 	if air == null or air.mist <= 0.05 or air.mist_cells == 0:
 		return ""
-	return "%.2f over %d%s" % [air.mist, air.mist_cells, " still" if air.mist_still else ""]
+	var astray := air.wisps_astray()
+	return "%.2f over %d%s%s" % [air.mist, air.mist_cells, " still" if air.mist_still else "", " astray %d" % astray if astray > 0 else ""]
 
 
 func field_morvax() -> String:

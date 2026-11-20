@@ -53,6 +53,11 @@ mist-still | --map town --at 64,22 --hour 05:30 still | map=town mist=\d\.\d\d o
 mist-noon | --map town --at 64,22 --hour 12:00 | map=town mist= | town field
 mist-reach | --map overworld --at 40,36 --hour 06:30 | map=overworld mist=\d\.\d\d over [1-9]\d* | field
 mist-ash | --map overworld --at 30,20 --hour 05:30 | map=overworld mist= | field
+# On the Ash's edge by the river the river's mist still lies (where it lies is
+# the cells', not the air the hero stands in); over a line the wisps lie on
+# with the world, none drawn a map away.
+mist-ash-edge | --map overworld --at 40,27 --hour 05:30 | map=overworld mist=\d\.\d\d over [1-9]\d* | field
+mist-line | --map overworld --at 94,33 --hour 05:30 seamless --walk r,r,r | map=deepwood mist=\d\.\d\d over [1-9]\d* | field travel
 lamps-dusk | --map town --at 40,13 --hour 19:30 | lamplight=posts 0/[1-9]\d* panes \d+ flames 0 beams 0 | town night
 lamps-dark | --map town --at 40,13 --hour 20:30 | lamplight=posts ([1-9]\d*)/\1 panes \d+ flames 0 beams 0 | town night
 pools-dusk | --map town --town-tier 4 --at 40,24 --hour 19:30 | map=town nightshadows=lights 0 of 3 lamps 0 feet [1-9]\d* walls [1-9]\d* | town night

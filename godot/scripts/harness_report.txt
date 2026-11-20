@@ -80,7 +80,7 @@ lived | on the town (with the paid pack): its age, the market's stalls, wares an
 logged | with floats: the lines the battle log showed (PIX-245)
 mapped | the Post's roads drawn in gold on the map's page while the map is open, by place: saltmere,blackiron (PIX-322)
 maps | the maps drawn on the map's page, while the map is open: 7 on the Reach's with every region found (PIX-269)
-mist | at dawn under the sky: the mist's strength and the misty cells its wisps rise from round the view, still when Reduce motion holds them: 1.00 over 212 still (PIX-526)
+mist | at dawn under the sky: the mist's strength and the misty cells its wisps rise from round the view, still when Reduce motion holds them, and how many wisps are drawn away from the view (none should be: a line's crossing once left them all a map away): 1.00 over 212 still (PIX-526)
 morvax | Morvax on the hero's map: his cell, and bench when he sits on his bench by the fountain (PIX-253 step 10)
 motes | with rankup: the ascension's motes and sparks flying (PIX-244)
 music | with fled or music: the track playing (PIX-251), ashnight while the Night of Ash runs (PIX-498)

@@ -24,23 +24,21 @@ static func _hour(hour: int, minute := 0) -> float:
 func test_mist_lies_at_dawn_over_the_river_and_the_grass() -> void:
 	# PIX-526: dawn pale gold, mist over the river and the grass.
 	var overworld := MapData.load_by_id("overworld")
-	assert_eq(Motes.mist(overworld, "", _hour(5, 30), 0.0), 1.0, "thick at half past five")
-	assert_between(Motes.mist(overworld, "", _hour(6, 30), 0.0), 0.5, 0.99, "thinning by half past six")
+	assert_eq(Motes.mist(overworld, _hour(5, 30), 0.0), 1.0, "thick at half past five")
+	assert_between(Motes.mist(overworld, _hour(6, 30), 0.0), 0.5, 0.99, "thinning by half past six")
 	for hour: int in [4, 12, 23]:
-		assert_eq(Motes.mist(overworld, "", _hour(hour), 0.0), 0.0, "none at %d" % hour)
-	assert_eq(Motes.mist(overworld, "", _hour(19, 30), 0.0), 0.0, "none at dusk")
-	assert_eq(Motes.mist(overworld, "", _hour(5, 30), 1.0), 0.0, "none in the rain")
-	for air: String in Motes.NO_MIST:
-		assert_eq(Motes.mist(overworld, air, _hour(5, 30), 0.0), 0.0, "none in the %s air" % air)
-	assert_eq(Motes.mist(MapData.load_by_id("town_inn"), "", _hour(5, 30), 0.0), 0.0, "none indoors")
+		assert_eq(Motes.mist(overworld, _hour(hour), 0.0), 0.0, "none at %d" % hour)
+	assert_eq(Motes.mist(overworld, _hour(19, 30), 0.0), 0.0, "none at dusk")
+	assert_eq(Motes.mist(overworld, _hour(5, 30), 1.0), 0.0, "none in the rain")
+	assert_eq(Motes.mist(MapData.load_by_id("town_inn"), _hour(5, 30), 0.0), 0.0, "none indoors")
 	var town := MapData.load_by_id("town")
 	GameState.progression.bells = Bells.NONE
-	assert_eq(Motes.mist(town, "", _hour(5, 30), 0.0), 1.0, "over the village's river")
+	assert_eq(Motes.mist(town, _hour(5, 30), 0.0), 1.0, "over the village's river")
 	GameState.progression.prologue = Prologue.SCAVENGER
-	assert_eq(Motes.mist(town, "", _hour(5, 30), 0.0), 0.0, "not the night it burns")
+	assert_eq(Motes.mist(town, _hour(5, 30), 0.0), 0.0, "not the night it burns")
 	GameState.progression.prologue = Prologue.DONE
 	GameState.progression.bells = Bells.HOLD
-	assert_eq(Motes.mist(town, "", _hour(5, 30), 0.0), 0.0, "nor the night it holds")
+	assert_eq(Motes.mist(town, _hour(5, 30), 0.0), 0.0, "nor the night it holds")
 
 
 func test_a_wisp_is_symmetric_in_shades_whites_and_fades_in_and_out() -> void:
@@ -107,11 +105,14 @@ func test_mist_rises_from_misty_runs_only() -> void:
 	for i in points.size():
 		assert_eq(moved[i], points[i] + Vector2(origin) * tile, "moved by its offset, jitter and all")
 	assert_eq(Motes.mist_points(grid, size, Vector2i.ZERO, whole), points, "the same every time")
-	var coast := {}
-	for x in size.x:
-		coast[Vector2i(x, 3)] = "coast"
-	for point in Motes.mist_points(grid, size, Vector2i.ZERO, whole, coast):
-		assert_ne(int(point.y / tile), 3, "none over the coast's own sea")
+	# The airs it never lies in, cell by cell (each region named as its air),
+	# not by the air the hero stands in, which turned it all off at an edge.
+	for air: String in Motes.NO_MIST:
+		var regions := {}
+		for x in size.x:
+			regions[Vector2i(x, 3)] = air
+		for point in Motes.mist_points(grid, size, Vector2i.ZERO, whole, regions):
+			assert_ne(int(point.y / tile), 3, "none over the %s's own ground" % air)
 
 
 func test_fireflies_come_out_at_dusk_and_night_in_the_open() -> void:

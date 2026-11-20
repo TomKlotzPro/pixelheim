@@ -84,10 +84,11 @@ const WISPS := [
 
 
 ## How thick dawn's mist lies, 0..1: under the sky at first light, but not
-## in the airs of NO_MIST, not in the rain, not the night the village burns
-## or holds.
-static func mist(map: MapData, air: String, steps: float, rain: float) -> float:
-	if not Lights.under_sky(map) or air in NO_MIST:
+## in the rain, not the night the village burns or holds. Where it lies is
+## mist_points' (not over the airs of NO_MIST, cell by cell): the air the
+## hero stands in turned the whole mist off and on at a region's edge.
+static func mist(map: MapData, steps: float, rain: float) -> float:
+	if not Lights.under_sky(map):
 		return 0.0
 	# Not the night the village burns nor the night it holds, nor their dawns.
 	if map.id == "town" and not Weather.village_rains():
@@ -170,7 +171,7 @@ static func mist_strip() -> ImageTexture:
 				for x in frame:
 					var ink := String(rows[y])[x]
 					if ink != ".":
-						image.set_pixel(i * frame + x, y, HamletArt.INKS[ink])
+						image.set_pixel(i * frame + x, y, HamletArt.INKS[ink] as Color)
 		_mist_strip = ImageTexture.create_from_image(image)
 	return _mist_strip
 

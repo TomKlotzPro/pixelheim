@@ -125,6 +125,26 @@ func _process(delta: float) -> void:
 func carry_on() -> void:
 	_map_of = world.map
 	_fall_again = 2
+	_carry_mist()
+
+
+## Dawn's mist over a line: World._shift_world moved its node with the
+## world, so its wisps and points move into the new map's cells and it
+## stands at the origin again. None rises anew (the whole mist would jump at
+## the line), and what each drawn map's cells were found to be stays: it is
+## in their own cells.
+func _carry_mist() -> void:
+	if mist_node == null:
+		return
+	var by := mist_node.position
+	mist_node.position = Vector2.ZERO
+	for i in _wisp_at.size():
+		_wisp_at[i] += by
+	for i in _mist_points.size():
+		_mist_points[i] += by
+	_mist_at.position += Vector2i((by / MapView.TILE).round())
+	if _mist_map != null:
+		_mist_map = world.map
 
 
 ## Frames until what falls starts again (carry_on), 0 when it needn't.
@@ -172,10 +192,13 @@ func _fall(arrived: bool) -> void:
 		"leaves": weights["woods"] * (1.0 - 0.5 * rain),
 		# Fainter at night, when it shows only in the candles' light.
 		"room_dust": 1.0 - 0.6 * world.lights.dark if map != null and PunyInterior.is_room(map.id) else 0.0,
-		"mist": Motes.mist(map, air, GameState.world.steps, rain),
+		"mist": Motes.mist(map, GameState.world.steps, rain),
 	}
 	if arrived:
 		_room = Motes.room_rect(map) if amounts["room_dust"] > 0.0 else Rect2()
+	# The mist rises anew on a new map only, not as the ash comes late (below):
+	# the first step into the Ash by the river at dawn made it jump.
+	var new_map := arrived
 	# The Ash's ash (PIX-308) made the first time it's breathed: a particle
 	# system draws from the game's dice as it's made, and one made up front
 	# shifted every seeded harness fight after it.
@@ -208,7 +231,7 @@ func _fall(arrived: bool) -> void:
 	# once they stand over it (PIX-315).
 	if arrived and _room.has_area():
 		_fall_again = 2
-	_lay_mist(amounts["mist"], view, arrived)
+	_lay_mist(amounts["mist"], view, new_map)
 
 
 ## Dawn's mist over the view (PIX-526), `amount` thick: its wisps rising
@@ -220,8 +243,12 @@ func _fall(arrived: bool) -> void:
 func _lay_mist(amount: float, view: Array[Vector2], arrived: bool) -> void:
 	mist = amount
 	mist_still = GameState.settings.reduce_motion
+	if arrived:
+		_mist_seen.clear()
 	if amount <= 0.05 or world.view == null:
 		mist_cells = 0
+		# Shown again, every wisp rises anew.
+		_mist_map = null
 		if mist_node != null:
 			mist_node.visible = false
 		return
@@ -242,8 +269,6 @@ func _lay_mist(amount: float, view: Array[Vector2], arrived: bool) -> void:
 	var top := Vector2i((view[0] / MapView.TILE).floor())
 	var cells := Rect2i(top, Vector2i((view[1] / MapView.TILE).ceil()) + Vector2i.ONE).grow(2)
 	var moved := arrived or world.map != _mist_map or (cells.position - _mist_at.position).length_squared() > MIST_JUMP * MIST_JUMP
-	if arrived or world.map != _mist_map:
-		_mist_seen.clear()
 	if moved or cells != _mist_at:
 		_mist_at = cells
 		_mist_map = world.map
@@ -266,7 +291,10 @@ func _lay_mist(amount: float, view: Array[Vector2], arrived: bool) -> void:
 		var room := Rect2(Vector2(cells.position * MapView.TILE), Vector2(cells.size * MapView.TILE))
 		for i in Motes.MIST_WISPS:
 			_wisp_age[i] += delta
-			if _wisp_age[i] >= Motes.MIST_LIFE:
+			if _wisp_age[i] >= Motes.MIST_LIFE and mist_still:
+				# Still, it only breathes: fading out and in again where it lies.
+				_wisp_age[i] -= Motes.MIST_LIFE
+			elif _wisp_age[i] >= Motes.MIST_LIFE:
 				_rise(i, _wisp_age[i] - Motes.MIST_LIFE)
 			elif not room.has_point(_wisp_at[i]):
 				_rise(i, 0.0)
@@ -277,6 +305,17 @@ func _lay_mist(amount: float, view: Array[Vector2], arrived: bool) -> void:
 	mist_node.queue_redraw()
 
 
+## How many wisps are drawn more than MIST_JUMP cells off the cells round
+## the view: none, unless the world moved them away (the report's mist=).
+func wisps_astray() -> int:
+	var near := Rect2(Vector2(_mist_at.position * MapView.TILE), Vector2(_mist_at.size * MapView.TILE)).grow(MIST_JUMP * MapView.TILE)
+	var astray := 0
+	for at: Vector2 in _wisp_at:
+		if not near.has_point(mist_node.position + at):
+			astray += 1
+	return astray
+
+
 ## Where wisps rise among `cells` on the map `drawn` shows, laid at `origin`
 ## (Motes.mist_points), its ground and what its cells were found to be kept
 ## from the last time.
@@ -285,7 +324,7 @@ func _mist_over(drawn: MapView, origin: Vector2i, cells: Rect2i) -> PackedVector
 	if not _mist_seen.has(id):
 		_mist_seen[id] = [drawn.look(), {}]
 	var kept: Array = _mist_seen[id]
-	return Motes.mist_points(kept[0], drawn.data.size, origin, cells, drawn.data.regions, kept[1])
+	return Motes.mist_points(kept[0] as Dictionary, drawn.data.size, origin, cells, drawn.data.regions, kept[1] as Dictionary)
 
 
 ## Wisp `i` rises from a misty cell, `age` seconds into its life, drifted
