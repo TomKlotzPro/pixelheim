@@ -135,6 +135,8 @@
 {"shot": "greyhold_keep_night", "area": "regions", "map": "greyhold", "cell": [36, 15], "time": "night"}
 {"shot": "frostgate_night", "area": "regions", "map": "frostgate", "cell": [28, 12], "time": "night"}
 {"shot": "coast", "area": "regions", "map": "saltmere", "cell": [33, 27], "time": "day"}
+# The sea's foam catching the moon (PIX-532).
+{"shot": "coast_night", "area": "regions", "map": "saltmere", "cell": [33, 27], "time": "night"}
 {"shot": "saltmere_fields", "area": "regions", "map": "saltmere", "cell": [8, 8], "time": "day"}
 {"shot": "saltmere_fields_night", "area": "regions", "map": "saltmere", "cell": [8, 8], "time": "night"}
 {"shot": "greyhold_fields", "area": "regions", "map": "greyhold", "cell": [12, 30], "time": "day"}

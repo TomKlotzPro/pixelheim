@@ -42,6 +42,9 @@ const INKS := {
 	"C": Color("e0884a"), "z": Color("1d1b22"), "Z": Color("3b3944"), "a": Color("f8ac34"), "Y": Color("fbe08a"),
 	"q": Color("fff4c0"), "Q": Color("e8b84a"), "g": Color("4d587a"), "G": Color("5e769e"), "w": Color("596b7a"),
 	"W": Color("8ea6b8"), "m": Color("3e9e94"), "M": Color("8fd8c8"),
+	# The sea breaking (PIX-532): his white water (overworld tiles 598-601,
+	# his falls) and his sea foam (his sand shore's ring, 282-286).
+	"A": Color("9dfffe"), "J": Color("9feadd"),
 }
 ## A glint's beats over the Vault's gold once its door stands open: most
 ## beats dark, then a star that opens and closes.
@@ -1078,27 +1081,46 @@ static func bunting(cells: int) -> Dictionary:
 
 
 ## Boat `name` afloat (Saltmere's at the jetty, PIX-313): two beats, riding
-## a pixel higher then lower on the swell, the water lapping white at its
-## bow and stern, AFLOAT_PAD clear either side.
+## a pixel higher then lower on the swell, the sea breaking along its
+## waterline (PIX-532): Shade's foam on every pixel of water by the hull
+## there, broken on the row under it, white at its bow and stern as it
+## settles (a spray over them) and drawn back as it rises, in whole pixels,
+## AFLOAT_PAD clear either side.
 static func afloat(name: String) -> SpriteFrames:
 	if not _afloat.has(name):
 		var frames := SpriteFrames.new()
 		frames.set_animation_speed("default", AFLOAT_FPS)
 		var hull := picture(name)
 		var size := hull.get_size()
-		var foam := Color(INKS["y"], 0.8)
-		var lap := Color(INKS["s"], 0.6)
+		var foam: Color = INKS["J"]
+		var white: Color = INKS["A"]
 		for beat in 2:
 			var image := Image.create(size.x + AFLOAT_PAD * 2, size.y + 1, false, Image.FORMAT_RGBA8)
 			image.blend_rect(hull, Rect2i(Vector2i.ZERO, size), Vector2i(AFLOAT_PAD, beat))
+			var placed := image.duplicate() as Image
 			var water := size.y - WATERLINE + beat
-			for side: int in [0, 1]:
-				var x := 0 if side == 0 else size.x + AFLOAT_PAD * 2 - 2
-				image.set_pixel(x + beat, water, foam)
-				image.set_pixel(x + 1 - beat, water + 1, lap)
+			var width := image.get_width()
+			for row: int in [water, water + 1]:
+				for x in width:
+					if _drawn_at(placed, x, row) or (row == water + 1 and (x + beat) % 2 != 0):
+						continue
+					if _drawn_at(placed, x - 1, row) or _drawn_at(placed, x + 1, row) or _drawn_at(placed, x, row - 1):
+						image.set_pixel(x, row, foam)
+			for x: int in [1, width - 2]:
+				if beat == 1:
+					image.set_pixel(x - 1 if x == 1 else x + 1, water, white)
+					image.set_pixel(x, water, white)
+					image.set_pixel(x, water - 1, white)
+				else:
+					image.set_pixel(x, water + 1, foam)
 			frames.add_frame("default", ImageTexture.create_from_image(image))
 		_afloat[name] = frames
 	return _afloat[name]
+
+
+## Whether `image` has a pixel drawn at (x, y); none off its edges.
+static func _drawn_at(image: Image, x: int, y: int) -> bool:
+	return x >= 0 and y >= 0 and x < image.get_width() and y < image.get_height() and image.get_pixel(x, y).a > 0.0
 
 
 ## The glint over the open Vault's gold: GLINT_BEATS beats, a small star

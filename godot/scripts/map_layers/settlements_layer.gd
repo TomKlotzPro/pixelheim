@@ -165,7 +165,9 @@ static func _decor_hamlet(view: MapView) -> void:
 				boat.sprite_frames = HamletArt.afloat(piece["art"])
 				boat.centered = false
 				boat.frame = absi(hash(cell)) % 2
-				boat.play()
+				# Still with Reduce motion, as the sea is (PIX-532).
+				if not GameState.settings.reduce_motion:
+					boat.play()
 				stand_on(view, boat, cell, Vector2(-HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
 			_:
 				if piece.get("lamp", false):
