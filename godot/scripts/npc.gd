@@ -74,6 +74,8 @@ func _ready() -> void:
 	sprite.animation_changed.connect(_place_mark)
 	gait = Gait.new(sprite, art, size)
 	_was = position
+	if Prologue.pinned(data, GameState.progression.prologue):
+		_pin()
 
 	# The body is the villager's feet and the ground before them, so the hero,
 	# whose box is only their feet, stops a step away instead of standing half
@@ -101,6 +103,88 @@ func _ready() -> void:
 		end.shape = rect
 		end.position = shape.position + Vector2(TILE, 0)
 		add_child(end)
+
+
+## Lying pinned under a burning beam on the Night of Ash (PIX-515: Bram
+## stood in the street with no beam while his line said he lay under one).
+## He lies on his back, head to the west: his standing figure turned on its
+## side (the Medieval Age's folk are drawn only standing, and a Puny
+## figure's fall is cut where no dye reaches: he fell in another man's
+## clothes). The beam is AshArt's charred log lying north to south across his
+## legs, FireArt's flames along its far side (on it they hid it and him,
+## and at its north end the hero come down the road) and a blaze's light of
+## its own.
+## Where the figure's frame stands on the cell, turned.
+const TURNED_AT := Vector2(-3, 4)
+## Where the beam lies from his middle, where each flame stands on it (from
+## its middle), and how far its light reaches.
+const BEAM_AT := Vector2(6, 0)
+const BEAM_FLAMES: Array[Vector2] = [Vector2(5, 0), Vector2(4, 9)]
+const BEAM_LIGHT := 44.0
+## Where his mark's tail points, from the cell's middle: the top of his
+## chest, as low as it goes without hiding him (a head higher, as over a
+## villager standing, it was on the face of a hero come down the road).
+const PINNED_MARK := Vector2(-3, 0)
+## The beam's going (unpin): it shifts, then rolls away east, so far, fading.
+const SHIFT := 2.0
+const SHIFT_SECONDS := 0.25
+const ROLL := 22.0
+const ROLL_SECONDS := 0.6
+## The beam while they lie under it, else null.
+var beam: Node2D
+var _stood := Vector2.ZERO
+
+
+func _pin() -> void:
+	_stood = sprite.position
+	sprite.stop()
+	sprite.rotation = -PI / 2.0
+	sprite.position = TURNED_AT
+	beam = Node2D.new()
+	beam.position = BEAM_AT
+	var timber := Sprite2D.new()
+	timber.texture = AshArt.texture("beam")
+	timber.rotation = PI / 2.0
+	beam.add_child(timber)
+	var size: Vector2i = FireArt.KINDS["lick"]
+	for i in BEAM_FLAMES.size():
+		var flame := AnimatedSprite2D.new()
+		flame.sprite_frames = FireArt.frames("lick", i % FireArt.VARIANTS)
+		flame.centered = false
+		flame.offset = Vector2(-(size.x / 2), -size.y)
+		flame.position = BEAM_FLAMES[i]
+		flame.frame = i * 4
+		flame.speed_scale = FireArt.pace({"cell": home, "frame": i}, GameState.settings.reduce_motion)
+		flame.material = Lights.unshaded()
+		beam.add_child(flame)
+		flame.play()
+	beam.add_child(Lights.blaze(Vector2.ZERO, BEAM_LIGHT))
+	add_child(beam)
+
+
+## The beam off them (the hero's shoulder to it: Interaction.talk): it
+## shifts, rolls away and is gone, and they get up. With Reduce motion it
+## only fades. It goes while the talk holds the world still.
+func unpin() -> void:
+	if beam == null or beam.process_mode == Node.PROCESS_MODE_ALWAYS:
+		return
+	beam.process_mode = Node.PROCESS_MODE_ALWAYS
+	var tween := beam.create_tween()
+	if not GameState.settings.reduce_motion:
+		tween.tween_property(beam, "position:x", beam.position.x + SHIFT, SHIFT_SECONDS)
+		tween.tween_property(beam, "position:x", beam.position.x + ROLL, ROLL_SECONDS).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tween.parallel()
+	tween.tween_property(beam, "modulate:a", 0.0, ROLL_SECONDS).set_ease(Tween.EASE_IN)
+	tween.tween_callback(_stand)
+
+
+func _stand() -> void:
+	beam.queue_free()
+	beam = null
+	sprite.rotation = 0.0
+	sprite.position = _stood
+	_idle("down")
+	_place_mark()
 
 
 ## Home for the night (PIX-149): out of sight and out of the way.
@@ -243,7 +327,9 @@ static func mark_tone(kind: String, story: bool) -> String:
 ## after a step (PIX-243), and a figure's head isn't always where its frame's
 ## middle is.
 func _place_mark() -> void:
-	if _mark != null:
+	if _mark != null and beam != null:
+		_mark.position = Vector2(Marks.centred(_mark.texture.get_width(), PINNED_MARK.x), PINNED_MARK.y - _mark.texture.get_height())
+	elif _mark != null:
 		_mark.position = mark_spot(_mark.texture.get_size(), sprite.sprite_frames, sprite.animation, sprite.position, sprite.scale)
 
 
@@ -299,7 +385,7 @@ func _step_to(next: Vector2i) -> void:
 ## the way they went, then a look that way before they turn back to face the
 ## street - by their side, from their back.
 func _physics_process(delta: float) -> void:
-	if away:
+	if away or beam != null:
 		return
 	var moved := (position - _was).length()
 	_was = position
