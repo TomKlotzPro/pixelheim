@@ -249,7 +249,7 @@ func _tap_bar() -> void:
 		button.text = word
 		button.focus_mode = Control.FOCUS_NONE
 		button.custom_minimum_size = Vector2(button_px * (1.15 if column else 1.0), button_px)
-		button.add_theme_font_override("font", UiStyle.bold_font())
+		button.add_theme_font_override("font", UiStyle.pixel_font())
 		# An arrow reads big; a word smaller, so it fits its button.
 		button.add_theme_font_size_override("font_size", roundi(button_px * (0.4 if word.length() == 1 else 0.24)))
 		var face := Color(UiStyle.WOOD_DARK, 0.85) if mine else Color(UiStyle.NIGHT, 0.8)

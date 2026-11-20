@@ -257,6 +257,6 @@ func test_every_floating_word_is_ringed_in_the_dark() -> void:
 			for y in [-1, 0, 1]:
 				if x != 0 or y != 0:
 					assert_has(ways, Vector2(x, y), "%s: ringed at (%d, %d)" % [label.text, x, y])
-		assert_eq(look.font, UiStyle.bold_font(), "%s: the same face" % label.text)
+		assert_eq(look.font, UiStyle.pixel_font(), "%s: the pixel face" % label.text)
 		assert_eq(look.font_size, UiStyle.BODY_PX, "%s: at its own size" % label.text)
 	assert_eq((labels[0] as Label).label_settings.font_color, WorldFx.GAIN_TONES["gold"], "in its own colour still")
