@@ -57,7 +57,7 @@ Steps 3 and 5-8 can go in the feature's folder instead (above). In the shared re
 
 ## How to verify
 
-`godot/tools/check.sh quick` before every PR (under a minute, headless: the checks, GUT, the boots and the flows the diff could break; `--plan` shows what it would run). CI runs the rest on the PR: GUT, the export, every map booted, every flow headless and windowed in four shares, the look book. A flow that timed out under load: run it alone (`godot/tools/flows.sh --quiet <name>`) before believing it. Details in `verify.md`.
+`godot/tools/check.sh quick` before every PR (under a minute, headless: the checks, GUT, the boots and the flows the diff could break; `--plan` shows what it would run). CI runs the rest on the PR: GUT, the export, every map booted, every flow headless and windowed in five shares, the look book. A flow that timed out under load: run it alone (`godot/tools/flows.sh --quiet <name>`) before believing it. Details in `verify.md`.
 
 ## How to finish
 
