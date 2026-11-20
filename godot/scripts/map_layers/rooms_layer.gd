@@ -78,6 +78,10 @@ static func _build_room(view: MapView, data: MapData) -> Node2D:
 			layer.position.y = -6
 		if frost != null and part in ["floor", "rug", "pieces"]:
 			layer.material = frost
+		elif part in ["pieces", "objects", "tops", "lifted"]:
+			# The furniture stands: domed in Light relief, where the floor
+			# and the stone walls are carved (Relief.dress, PIX-529).
+			layer.material = Relief.material(Relief.DOMED, true)
 		root.add_child(layer)
 		if part == "walls":
 			_day_windows(view, root)
