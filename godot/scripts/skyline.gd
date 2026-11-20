@@ -75,7 +75,9 @@ const ICONS := {
 ##   screen colours each house by it, PIX-266);
 ## - smoke: where each roof's smoke rises, in map pixels;
 ## - lamps: the cells the town's lamps light at night;
-## - ruins: the burnt houses, in the block's cells, smouldering.
+## - ruins: the burnt houses, in the block's cells, smouldering;
+## - hall: the town hall's house, in the block's cells (PIX-516: dark and
+##   scorched on the Night of Ash from afar too).
 ## `town` is the town map as it has grown, `ruins` its burnt houses (Town.ruins'
 ## rects).
 static func plan(grid: Dictionary, town: MapData, ruins: Array = []) -> Dictionary:
@@ -301,6 +303,8 @@ static func _houses(town: MapData, room: Rect2i, cols: Array[Vector2i], rows: Ar
 			out["decor"][chimney] = CHIMNEY
 			out["smoke"].append(Vector2(chimney * PunyTerrain.TILE) + SMOKE_AT)
 		out["icons"][Vector2i(door_x, rect.end.y - 1)] = ICONS.get(kind, ICONS["roof"])
+		if (town.portals.get(door, {}) as Dictionary).get("mapId", "") == "town_hall":
+			out["hall"] = rect
 	return taken
 
 
