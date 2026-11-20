@@ -116,11 +116,12 @@ func build(view: MapView, slices: Slicer) -> void:
 		slices.add("decor_ruins", func() -> void: _decor_ruins(view))
 
 
-## The town hall's house on the town's map, in cells (empty anywhere else):
-## the house whose door leads into it.
+## The town hall's house in cells (empty where there is none): on the town's
+## map the house whose door leads into it, on the Reach its small self in the
+## village far off (Skyline's `hall`).
 static func hall(view: MapView) -> Rect2i:
 	if view.data.id != "town":
-		return Rect2i()
+		return view.skyline.get("hall", Rect2i())
 	for door: Vector2i in view.data.portals:
 		if view.data.portals[door].get("mapId", "") == "town_hall":
 			return PunyTown.house_of(view.data.grid, door)
