@@ -39,7 +39,7 @@ const JITTER := 3
 ## sill, the ash.
 const RAIL_TOP := 6
 const POST_TOP := 5
-const RUBBLE_TOP := 6
+const RUBBLE_TOP := 6 - PunyProps.STORE_RISE
 const ROOF_AT := 10
 const SILL := 11
 const ASH_AT := 12
@@ -62,7 +62,7 @@ const SMOKE_ABOVE := 120
 ## flame's foot in map pixels, `sort` the line it is drawn in front of
 ## (y-sorted with the actors), both whole pixels; `on` says what burns: a
 ## "rail", a "side"'s posts, a corner "post", "rubble", the "heart" where the
-## house fell in, a "roof" or a "window".
+## house fell in, its open "door", a "roof" or a "window".
 static func plan(rect: Rect2i, tiles: Dictionary) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	var front := float(rect.end.y * TILE + 1)
@@ -113,6 +113,10 @@ static func plan(rect: Rect2i, tiles: Dictionary) -> Array[Dictionary]:
 					var edge := x == rect.position.x or x == rect.end.x - 1 or y == rect.position.y or y == rect.end.y - 1
 					if not edge:
 						floor_cells.append(cell)
+					else:
+						# The doorway burns too (PIX-515): the fire bars it
+						# (CampsLayer._bar), so it is seen to.
+						out.append(_flame(top + Vector2(8, ASH_AT), top.y + ASH_AT, "tongue", cell, "door"))
 	# Where the house fell in: a blaze or two on its floor, spread across it
 	# in the middle rows, and a lick here and there on the fallen timbers.
 	if not floor_cells.is_empty():
