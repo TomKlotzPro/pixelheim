@@ -2177,6 +2177,10 @@ msgid "A Real Fight"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A Rounder Hand"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A SAFER MIREFEN AND DEEPWOOD: the Mirefen's mimic pack is gone (its trapped chest waits in the far west, by Grandmother Gulp), and the Deepwood's trolls no longer stand at its gate"
 msgstr ""
 
@@ -3257,6 +3261,10 @@ msgid "Dangerous ground is visible: wild terrain grows dark tufts on the map"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Dawn comes pale gold, with mist over the river and the grass that lifts as the morning warms; six o'clock no longer looks like noon"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Dead Centre"
 msgstr ""
 
@@ -3346,6 +3354,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "During the Night of Ash, the map, the journal, the arrow and the gold \"!\" all point to whoever needs you next, and Elder Maren no longer plays her dawn scene before her turn, so a new player can't get stuck at the shrine"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Dusk lasts two hours: peach, then rose, then violet, with its long shadows"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3702,6 +3714,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Every way out of a map reads as a way on: the road runs right to it, through an opening wide enough to look walkable, and a signpost names where it leads"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Every word you read is in a new, rounder typeface: the dialogue, the menus, the HUD, the journal, the shops and every screen"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4114,6 +4130,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Gold at Work"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Golden Hours"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5518,6 +5538,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Pitched Tents"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Pixel letters stay where they belong: the title, the damage, gold and XP numbers over the world, and the keys"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7597,6 +7621,10 @@ msgid "The test suite tightened its bolts: shared walking, chasing and fighting 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The text is a little larger, and every page keeps its room, with Large text too"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The three renderers now share one camera, one day/night clock and one interaction-prompt rule - the classic renderer's prompt had quietly drifted; it agrees with the others again"
 msgstr ""
 
@@ -7714,6 +7742,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The wind moves the world: trees, wheat and flowers sway, their tops more than their feet, as gusts roll across the land"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The windows light one by one before the street lamps, and a lamp's pool of light now waits for its glass to be lit"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8174,6 +8206,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "With Reduce motion the mist doesn't drift"
 msgstr ""
 
 #: assets/data/changelog.json

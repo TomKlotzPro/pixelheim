@@ -253,3 +253,41 @@ func test_a_lit_window_is_its_glass_not_an_orb() -> void:
 	var grand := Yards.SQUARE_LAMPS.size() if GameState.town_tier() >= Yards.SQUARE_LAMPS_AGE else 0
 	assert_eq(looks.get("double", 0), grand, "the square's corners a lantern either side, from the Town age")
 	assert_eq(int(looks.get("post", 0)) + int(looks.get("bracket", 0)) + int(looks.get("double", 0)), view.lamps.size(), "every lamp in a look of its own")
+
+
+func test_a_pool_of_light_waits_for_its_glass() -> void:
+	# PIX-526: at dusk a cold lamp's or a dark window's pool showed on the
+	# ground; the evening's windows light one by one before the lamps.
+	GameState.progression.prologue = Prologue.DONE
+	GameState.settlement.town_tier = 3
+	GameState.settlement.projects.assign(Town.projects_through(3))
+	GameState.world.steps = 13.0 / 24.0 * DayNight.DAY_CYCLE_STEPS
+	var view := _view(MapData.load_tiered("town", Town.projects_through(3), 1))
+	var pools: Array = view.lamps.filter(func(lamp: Dictionary) -> bool: return is_instance_valid(lamp["glow"]) and (lamp["glow"] as Node).has_meta("light"))
+	assert_gt(pools.size(), 0, "the street lamps throw pools")
+	for lamp: Dictionary in pools:
+		var light: Node = (lamp["glow"] as Node).get_meta("light")
+		assert_true(light.get_meta("unlit", false), "no pool under a cold lamp at seven")
+	if PunyTown.available():
+		var lit: Array = view.panes.filter(func(pane: Node2D) -> bool: return pane.visible)
+		assert_between(lit.size(), 1, view.panes.size() - 1, "some windows lit at seven, not all")
+		for pane: Node2D in view.panes:
+			if pane.has_meta("light"):
+				assert_eq((pane.get_meta("light") as Node).get_meta("unlit", false), not pane.visible, "a window's pool with its glass")
+	GameState.world.steps = 0.75 * DayNight.DAY_CYCLE_STEPS
+	view.set_night(true)
+	for pane: Node2D in view.panes:
+		assert_true(pane.visible, "every window lit at night")
+	for glow: Node2D in view.night_glows:
+		if glow.has_meta("light") and is_instance_valid(glow.get_meta("light")):
+			assert_false((glow.get_meta("light") as Node).get_meta("unlit", false), "every pool with its light at night")
+	GameState.world.steps = 0.25 * DayNight.DAY_CYCLE_STEPS
+	view.set_night(false)
+	for pane: Node2D in view.panes:
+		assert_false(pane.visible, "no window lit by day")
+	# A room's candles keep their pools as PIX-311 left them.
+	var room := _view(MapData.load_tiered("town_inn", [], 1))
+	room.set_night(true)
+	room.set_night(false)
+	for flame: Node2D in room.flames:
+		assert_false((flame.get_meta("light") as Node).has_meta("unlit"), "a room's candles lit by their own dark")

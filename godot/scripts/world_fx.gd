@@ -119,7 +119,7 @@ func _floating(text: String, color: Color) -> Label:
 	var label := Label.new()
 	label.text = text
 	var look := LabelSettings.new()
-	look.font = UiStyle.bold_font()
+	look.font = UiStyle.pixel_font()
 	look.font_size = UiStyle.BODY_PX
 	look.font_color = color
 	look.stacked_shadow_count = RING.size()
@@ -211,7 +211,7 @@ func reach() -> Array[Rect2]:
 		var rows := Gains.rows(due["gains"])
 		var wide := 0.0
 		for row in rows:
-			wide = maxf(wide, Ink.of_text(Gains.line(row), UiStyle.bold_font(), UiStyle.BODY_PX).size.x + GAIN_ROW)
+			wide = maxf(wide, Ink.of_text(Gains.line(row), UiStyle.pixel_font(), UiStyle.BODY_PX).size.x + GAIN_ROW)
 		var at: Vector2 = due["at"]
 		out.append(Rect2(at.x - wide / 2.0, at.y - GAIN_ROW * rows.size(), wide, GAIN_ROW * rows.size()).grow_individual(0.0, REACH, 0.0, 0.0))
 	return out
@@ -262,7 +262,7 @@ static func _drawn(label: Label) -> Rect2:
 static func _ink(label: Label) -> Rect2:
 	# Measured once a text: the pass that keeps words clear asks every frame.
 	if label.get_meta("inked", "") != label.text:
-		label.set_meta("ink", Ink.of_text(label.text, UiStyle.bold_font(), UiStyle.BODY_PX))
+		label.set_meta("ink", Ink.of_text(label.text, UiStyle.pixel_font(), UiStyle.BODY_PX))
 		label.set_meta("inked", label.text)
 	return label.get_meta("ink")
 
@@ -501,11 +501,11 @@ func _gain_row(row: Dictionary) -> Node2D:
 func _fit_row(line: Node2D) -> void:
 	var label: Label = line.get_node("text")
 	label.size = label.get_minimum_size()
-	var words := UiStyle.bold_font().get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BODY_PX)
+	var words := UiStyle.pixel_font().get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BODY_PX)
 	var ink := _ink(label)
 	var then: Label = line.get_node_or_null("then")
 	# The XP after the gold, a space's width on (the face's own).
-	var gap := UiStyle.bold_font().get_string_size(" ", HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BODY_PX).x
+	var gap := UiStyle.pixel_font().get_string_size(" ", HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BODY_PX).x
 	var after := gap + _ink(then).size.x if then != null else 0.0
 	var icon: Sprite2D = line.get_node_or_null("icon")
 	var side := icon.texture.get_size().x * icon.scale.x if icon != null else 0.0

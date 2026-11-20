@@ -47,6 +47,12 @@ func step_noon() -> void:
 	GameState.world.steps = (Gathering.day_of(GameState.world.steps) + 0.25) * DayNight.DAY_CYCLE_STEPS
 
 
+func step_hour() -> void:
+	# `--hour` (PIX-526): the hour asked, not the minutes from the hero's
+	# spawn to the cell --at stood them on, as a step a minute.
+	world.last_player_position = world.player.position
+
+
 func step_dusk() -> void:
 	# Evening (PIX-159): the town's folk on the square.
 	GameState.world.steps = (Gathering.day_of(GameState.world.steps) + 0.5) * DayNight.DAY_CYCLE_STEPS
@@ -153,6 +159,7 @@ func _lineup() -> void:
 					if dir == "down":
 						var label := Label.new()
 						label.text = entry[0]
+						label.add_theme_font_override("font", UiStyle.pixel_font())
 						label.add_theme_font_size_override("font_size", 5)
 						label.position = sprite.position + Vector2(-12, 9)
 						world.add_child(label)
