@@ -361,6 +361,10 @@ func _plan_houses() -> void:
 	# Beyond Pixelheim each settlement builds in its own grammar (PIX-313).
 	house_style = Hamlet.house_style(data.id) if near else {}
 	buildings = PunyTown.compose(data.grid, house_style) if near else {"pieces": {}, "decor": {}, "freed": []}
+	# Ivy up the town's older walls, more each age (PIX-525): over the walls,
+	# under no light of their own.
+	if data.id == "town":
+		buildings["decor"].merge(Yards.ivy(buildings["pieces"], GameState.town_tier()))
 	# What a house covers is house: its corners stop the hero and villagers
 	# too; the roof cells it leaves open are ground.
 	for cell: Vector2i in buildings["pieces"]:

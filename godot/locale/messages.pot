@@ -4041,6 +4041,10 @@ msgid "From the Town on, the square is laid in flagstones with grass in the join
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fronts of Their Own"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Frost creeps over the stair down to the ice cave in Liane's room"
 msgstr ""
 
@@ -4438,6 +4442,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Iva's marsh lies west of the gate, as it always did"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Ivy climbs the older walls as the town grows"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5054,6 +5062,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "No teleporting over-encumbered. Lighten the pack."
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "No two neighbouring houses in town share a front any more: plain timber, cross braces, a diamond lattice, light or reddish planks, and stone for the hall and the forge"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7386,6 +7398,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The name warning goes with your first letter, and the night's level-up names its keys"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The newest houses wear roofs in blue, crimson and teal"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -43,12 +43,31 @@ const LOOKS := {
 const PLANKS := [5558, 5559, 5561]
 const WHITEWASH := [723, 724, 725]
 const FORT := [3799, 3800, 3801]
+## PIX-525's: Shade's timber with cross braces (row 6) and with a lattice
+## of diamonds (row 8), reddish planks (row 29) and Morvax's bigger stone
+## blocks (row 17). Each tile of the braces stands whole on its own, so a
+## window cutting them leaves them even.
+const CROSS := [1390, 1391, 1392]
+const DIAMOND := [1830, 1831, 1832]
+const DARK_PLANKS := [6438, 6439, 6441]
+const SMITHY := [3802, 3803, 3805]
 const HOUSES := {
 	"fishing": {"walls": [WHITEWASH, [], PLANKS]},
 	"fort": {"walls": [FORT]},
 	"frost": {"walls": [FORT, [], PLANKS], "snow": true},
 	"mine": {"walls": [FORT, PLANKS]},
-	"smithy": {"walls": [[3802, 3803, 3805]]},
+	"smithy": {"walls": [SMITHY]},
+}
+## Pixelheim's house fronts by door (PIX-525: every one was Shade's cream
+## timber, only the roofs told them apart): no two houses three cells apart
+## or less wear the same, the hall and the forge in stone. By door, not in
+## turn, so a house keeps its front as the ages raise more ([]: Shade's
+## timber). The town keeps no look (look_of), so no chimney is added.
+const FRONTS := {
+	Yards.INN: CROSS, Yards.ODO: [], Yards.FARM: DARK_PLANKS, Yards.MAREN: CROSS, Yards.UPPER: PLANKS,
+	Yards.SLATE: [], Yards.FORGE: SMITHY, Yards.VEX: PLANKS, Yards.HALL: FORT, Yards.WEST: DIAMOND,
+	Yards.LANE_WEST: CROSS, Yards.HOME: [], Yards.LANE_EAST: DIAMOND, Yards.LAWN: CROSS,
+	Yards.THATCH: PLANKS, Yards.MOSS: DARK_PLANKS, Yards.STEAD: DARK_PLANKS,
 }
 ## Sheds, not homes, by their door: no chimney on the roof, no smoke from
 ## the door (PIX-400's review: the Frostgate's woodshed under a chimney
@@ -228,8 +247,11 @@ static func is_way(map_id: String, tile: String) -> bool:
 	return tile in WAYS and tile not in YARDS.get(look_of(map_id), [])
 
 
-## The houses' style on map `map_id` (PunyTown.plan): {} where none is set.
+## The houses' style on map `map_id` (PunyTown.plan): {} where none is set;
+## the town's its FRONTS alone (PIX-525).
 static func house_style(map_id: String) -> Dictionary:
+	if map_id == "town":
+		return {"fronts": FRONTS}
 	var look := look_of(map_id)
 	if look == "":
 		return {}
@@ -418,15 +440,17 @@ static func kept_on(map: MapData, decks: Variant = null) -> Dictionary:
 	return out
 
 
-## Every Medieval Age tile a look's houses add (their walls): made up
-## front with the town's (PunyTown.pieces).
+## Every Medieval Age tile a look's houses and Pixelheim's fronts add
+## (their walls): made up front with the town's (PunyTown.pieces).
 static func pieces() -> Array[int]:
 	var out: Array[int] = []
+	var sets: Array = FRONTS.values()
 	for look: String in HOUSES:
-		for walls: Array in HOUSES[look]["walls"]:
-			for tile: int in walls:
-				if tile not in out:
-					out.append(tile)
+		sets.append_array(HOUSES[look]["walls"])
+	for walls: Array in sets:
+		for tile: int in walls:
+			if tile not in out:
+				out.append(tile)
 	return out
 
 
@@ -435,9 +459,9 @@ static func pieces() -> Array[int]:
 ## the report's `homes=` and the tests tell houses apart by (PIX-400).
 static func homes(map: MapData) -> Array[String]:
 	var out: Array[String] = []
-	var walls: Array = house_style(map.id).get("walls", [])
+	var style := house_style(map.id)
 	var houses := PunyTown.houses(map.grid)
 	for i in houses.size():
-		var own: Array = walls[i % walls.size()] if not walls.is_empty() else []
+		var own := PunyTown.walls_of(style, i, houses[i]["door"])
 		out.append("%s/%d" % [houses[i]["kind"], own[1] if not own.is_empty() else PunyTown.WALL])
 	return out
