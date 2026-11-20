@@ -53,8 +53,12 @@ const DEBRIS := [703, 784, 811, 838]
 const CHIMNEY := 2093
 const SMOKE_AT := Vector2(8, 5)
 ## Without the paid Medieval Age pack, a house is Shade's one-tile house in
-## the colour nearest its roof (his overworld sheet is CC0).
-const ICONS := {"roof": 932, "roof_awning": 932, "roof_thatch": 734, "roof_moss": 923, "roof_slate": 923}
+## the colour nearest its roof (his overworld sheet is CC0). He drew teal
+## and red one-tile houses and no blue: a blue roof takes the teal's (PIX-525).
+const ICONS := {
+	"roof": 932, "roof_awning": 932, "roof_thatch": 734, "roof_moss": 923, "roof_slate": 923,
+	"roof_blue": 923, "roof_crimson": 932, "roof_teal": 923,
+}
 
 
 ## The village in the overworld's block (empty without one):

@@ -12,6 +12,7 @@ const TILE_INFO := {
 	"sand": true, "bridge": true, "marsh": true, "ash": true, "crops": true,
 	"trophy_shelf": false, "garden": false, "wall": false, "floor": true,
 	"roof": false, "roof_slate": false, "roof_thatch": false, "roof_awning": false, "roof_moss": false,
+	"roof_blue": false, "roof_crimson": false, "roof_teal": false,
 	"sign_goods": false, "sign_smith": false, "sign_potion": false, "sign_inn": false,
 	"fence": false, "flowers": true, "barrel": false, "crate": false, "well": false,
 	"lamp": false, "anvil": false, "forge": false, "shelf": false, "cauldron": false,

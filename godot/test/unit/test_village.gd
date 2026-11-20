@@ -120,6 +120,28 @@ func test_each_age_stands_more_houses_and_keeps_the_last() -> void:
 		before = rects
 
 
+## PIX-525: the Town's and the City's new houses wear the roof colours the
+## town never had, one each; no house before them wears one.
+func test_the_new_houses_wear_the_new_roof_colours() -> void:
+	var fresh := ["roof_blue", "roof_crimson", "roof_teal"]
+	var worn: Array = []
+	for tier: int in AGES:
+		var map := MapData.load_tiered("town", Town.projects_through(tier), 1)
+		for house: Dictionary in PunyTown.houses(map.grid):
+			if house["kind"] in fresh and house["kind"] not in worn:
+				assert_gte(tier, 3, "%s waits for the Town" % house["kind"])
+				worn.append(house["kind"])
+	worn.sort()
+	assert_eq(worn, fresh, "the Town's and the City's houses wear blue, crimson and teal")
+	var raised: Array = []
+	for entry: Dictionary in Town.ages():
+		for house: Dictionary in entry.get("houses", []):
+			if int(entry["tier"]) >= 3:
+				raised.append(house["roof"])
+	raised.sort()
+	assert_eq(raised, fresh, "one new colour on each house the Town and the City raise")
+
+
 ## The houses an age raises stand once the whole age is built, never
 ## before, and on ground nobody needs: open ground off the roads, no
 ## door, portal or step, nothing a project builds or stakes, no house's

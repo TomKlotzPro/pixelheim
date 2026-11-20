@@ -38,6 +38,8 @@ class_name Yards
 ## clear of every villager's place and pacing, the square's boards, stalls
 ## and lanterns, the post and wherever the story stands someone (`kept`).
 ## A piece by a house (`by`, its door) stands only once the house does.
+## Ivy climbs the older houses' corners from the Village, more each age
+## (PIX-525, `ivy`): tiles on the houses' decor layer, no piece of dressing.
 ## Only with the paid pack: without it the town's houses aren't drawn, so
 ## nothing hangs on them or stands beside them. Pure: MapView draws it.
 
@@ -197,6 +199,32 @@ const HEDGES := [[Vector2i(26, 3), Vector2i(36, 3), 2], [Vector2i(18, 3), Vector
 const HEDGE := [BUSH, ROSES, BOX_BUSH, BUSH, LAVENDER, BOX_BUSH, BLUEBELLS, BUSH, BERRIES]
 ## A house's window boxes, all one colour, picked by its door.
 const WINDOW_BOXES := ["window_box", "window_box_gold", "window_box_white", "window_box_blue"]
+## Ivy up a house's front from its corner (PIX-525), `wide` cells along the
+## wall, with the age it comes at; a later, wider patch at the same corner
+## grows over the last, so they stay in age order. Only on a house that
+## stood the age before, on bare wall, never at a lamp's or a lantern's
+## corner; the hall's on both its corners, so its front stays even.
+const IVY := [
+	{"cell": Vector2i(19, 10), "wide": 1, "age": 2},
+	{"cell": Vector2i(27, 19), "wide": 1, "age": 2},
+	{"cell": Vector2i(4, 25), "wide": 1, "age": 2},
+	{"cell": Vector2i(26, 10), "wide": 1, "age": 3},
+	{"cell": Vector2i(63, 10), "wide": 1, "age": 3},
+	{"cell": Vector2i(19, 25), "wide": 1, "age": 3},
+	{"cell": Vector2i(26, 10), "wide": 2, "age": 4},
+	{"cell": Vector2i(27, 19), "wide": 2, "age": 4},
+	{"cell": Vector2i(56, 10), "wide": 2, "age": 4},
+	{"cell": Vector2i(35, 19), "wide": 2, "age": 4},
+	{"cell": Vector2i(45, 19), "wide": 2, "age": 4},
+	{"cell": Vector2i(5, 32), "wide": 1, "age": 4},
+	{"cell": Vector2i(58, 10), "wide": 1, "age": 4},
+]
+## The pack's ivy (the mid-green band; the yellow-green above reads as
+## moss), rooted along its foot and ragged at its top, by the corner it
+## grows from: a patch's corner cell full, its inner end ragged towards the
+## wall (or its only cell).
+const IVY_RAGGED := {"left": 3177, "right": 2957}
+const IVY_FULL := {"left": 3178, "right": 2958}
 ## The market (PIX-382 step 4): Mabel's stalls with their counters bare
 ## (HamletArt.STALLS), each trade's wares laid on its counter (`on`: where
 ## the ware's top left lies from the cell's: its foot on the counter, 6 px
@@ -307,6 +335,21 @@ static func window_boxes(pieces: Dictionary, age: int) -> Array[Dictionary]:
 		if pieces[cell] != PunyTown.WINDOW or (cell.x * 5 + cell.y * 3) % Town.MAX_TIER >= age:
 			continue
 		out.append({"art": WINDOW_BOXES[_door_of(pieces, cell).x % WINDOW_BOXES.size()], "cell": cell, "wall": true, "age": age})
+	return out
+
+
+## The ivy on the houses (`pieces`, as PunyTown drew them) at `age`: cell ->
+## the pack's tile, for the houses' decor layer. None where no house stands.
+static func ivy(pieces: Dictionary, age: int) -> Dictionary:
+	var out := {}
+	for entry: Dictionary in IVY:
+		var corner: Vector2i = entry["cell"]
+		if int(entry["age"]) > age or not pieces.has(corner):
+			continue
+		var side := "left" if not pieces.has(corner + Vector2i.LEFT) else "right"
+		var wide: int = entry["wide"]
+		for i in wide:
+			out[corner + Vector2i(i if side == "left" else -i, 0)] = (IVY_RAGGED if i == wide - 1 else IVY_FULL)[side]
 	return out
 
 

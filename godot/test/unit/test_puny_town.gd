@@ -121,7 +121,7 @@ func test_the_roof_light_knows_every_piece_of_every_house() -> void:
 	var map := PunyTown.roof_map()
 	var houses: Array[Dictionary] = []
 	for tier: String in TIERS:
-		houses.append(PunyTown.plan(_load(tier).grid)["pieces"])
+		houses.append(PunyTown.plan(_load(tier).grid, Hamlet.house_style("town"))["pieces"])
 	for kind: String in PunyTown.ROOF_ROWS:
 		houses.append(PunyTown.wing_house(Rect2i(0, 0, 5, 6), 2, kind))
 		var grid := _grid(["RRRRRRRRR", "RRRRRRRRR", "RRRRRRRRR", "RRRRRRRRR", "RRRRRRRRR", "RRRRRRRRR", "RRRRDRRRR"])
@@ -140,6 +140,37 @@ func test_the_roof_light_knows_every_piece_of_every_house() -> void:
 			var copy := tile + (texel.g8 - 128) * PunyTown.COLUMNS
 			assert_ne(copy, tile)
 			assert_eq(map.get_pixel(copy % PunyTown.COLUMNS, copy / PunyTown.COLUMNS).r8, texel.r8, "the roof piece %d's copy %d lies on its slope" % [tile, copy])
+
+
+## PIX-525: a roof colour is a map tile too: the hero can't walk on it, the
+## map paints it in its colour and far off without the pack it is one of
+## Shade's CC0 one-tile houses.
+func test_every_roof_colour_is_a_tile_with_its_map_colour_and_far_icon() -> void:
+	for kind: String in PunyTown.ROOF_ROWS:
+		assert_true(WorldTiles.TILE_INFO.has(kind), "%s is a map tile" % kind)
+		assert_false(WorldTiles.is_walkable(kind), "%s blocks" % kind)
+		assert_true(Atlas.ROOFS.has(kind), "%s has its colour on the map" % kind)
+		assert_true(Skyline.ICONS.has(kind), "%s has its house far off" % kind)
+
+
+## PIX-525: each roof colour's rows lead to a whole copy of the
+## terracotta's pieces (a wrong row draws a gable cut from another one).
+func test_each_roof_colour_is_the_terracottas_pieces_in_its_block() -> void:
+	if not PunyTown.available():
+		pass_test("Medieval Age pack not installed here (scripts/fetch-private-art.sh).")
+		return
+	var sheet: Image = (load(PunyTown.SHEET) as Texture2D).get_image()
+	for kind: String in PunyTown.ROOF_ROWS:
+		var rows: int = PunyTown.ROOF_ROWS[kind]
+		for tile: int in PunyTown.roof_slopes():
+			var copy := tile + rows * PunyTown.COLUMNS
+			var differ := 0
+			for y in 16:
+				for x in 16:
+					var a := sheet.get_pixel(tile % PunyTown.COLUMNS * 16 + x, tile / PunyTown.COLUMNS * 16 + y).a8
+					var b := sheet.get_pixel(copy % PunyTown.COLUMNS * 16 + x, copy / PunyTown.COLUMNS * 16 + y).a8
+					differ += int(a != b)
+			assert_eq(differ, 0, "%s: the piece %d's copy %d is its shape" % [kind, tile, copy])
 
 
 func test_the_pack_draws_when_installed() -> void:

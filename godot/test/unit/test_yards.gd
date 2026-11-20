@@ -12,7 +12,7 @@ const Hamlets := preload("res://test/unit/test_hamlet.gd")
 ## laid: {map, kept, grown, built, planned}.
 static func _town(age: int) -> Dictionary:
 	var map := MapData.load_tiered("town", Town.projects_through(age), 1)
-	var built := PunyTown.plan(map.grid)
+	var built := PunyTown.plan(map.grid, Hamlet.house_style("town"))
 	for cell: Vector2i in built["pieces"]:
 		if not String(map.grid[cell]).begins_with("door"):
 			map.grid[cell] = "roof"
@@ -209,3 +209,36 @@ func test_nothing_stands_under_the_square_lamps() -> void:
 				for lamp: Vector2i in Yards.SQUARE_LAMPS:
 					var off := cell - lamp
 					assert_false(absi(off.x) <= side and off.y >= -up and off.y <= 0, "age %d: %s stands in the lamp at %s" % [age, cell, lamp])
+
+
+## PIX-525: ivy climbs the older houses' corners from the Village, more
+## each age and keeping the last's: on a front's bare wall, never over a
+## window, a door or what hangs there (a lantern, a lamp, a window box),
+## only on a house that stood the age before, in tiles made up front.
+func test_ivy_climbs_the_older_walls_more_each_age() -> void:
+	var before := {}
+	for age in Town.MAX_TIER + 1:
+		var town := _town(age)
+		var built: Dictionary = town["built"]["pieces"]
+		var ivy := Yards.ivy(built, age)
+		if age < 2:
+			assert_eq(ivy.size(), 0, "age %d: no ivy yet" % age)
+		else:
+			assert_gt(ivy.size(), before.size(), "age %d: more ivy than the age before" % age)
+		for cell: Vector2i in before:
+			assert_true(ivy.has(cell), "age %d keeps the ivy at %s" % [age, cell])
+		var hung := {}
+		for piece: Dictionary in town["planned"]["pieces"]:
+			if piece["kind"] == "wall":
+				for cell: Vector2i in piece["cells"]:
+					hung[cell] = true
+		for cell: Vector2i in ivy:
+			assert_true(built.has(cell) and not built.has(cell + Vector2i.DOWN), "age %d: the ivy at %s on a house's front" % [age, cell])
+			assert_does_not_have([PunyTown.WINDOW, PunyTown.DOOR], built.get(cell, -1), "age %d: the ivy at %s on bare wall" % [age, cell])
+			assert_false(hung.has(cell), "age %d: the ivy at %s clear of what hangs on the wall" % [age, cell])
+			assert_has(PunyTown.pieces(), ivy[cell], "age %d: the ivy at %s made up front" % [age, cell])
+		before = ivy
+	for entry: Dictionary in Yards.IVY:
+		var age := int(entry["age"])
+		assert_gte(age, 2, "%s: from the Village" % entry["cell"])
+		assert_true(_town(age - 1)["built"]["pieces"].has(entry["cell"]), "%s: on a house that stood the age before" % entry["cell"])

@@ -40,11 +40,13 @@ const MAX_TILE := 12
 ## The Reach's page goes by the Ashenreach's id, the plane's middle.
 const REACH := "overworld"
 ## Each roof's colour on the map: Shade's roofs as the town wears them
-## (PunyTown.ROOF_ROWS), terracotta, straw, moss and slate. The map coloured
+## (PunyTown.ROOF_ROWS), terracotta, straw, moss and slate, and the Town's
+## and the City's new blue, crimson and teal (PIX-525). The map coloured
 ## every roof one brown, and the village read as a brown smear.
 const ROOFS := {
 	"roof": Color("a4553c"), "roof_awning": Color("a4553c"), "roof_thatch": Color("c49a4a"),
 	"roof_moss": Color("6b8a3e"), "roof_slate": Color("5d6a80"),
+	"roof_blue": Color("4f6d96"), "roof_crimson": Color("a93f41"), "roof_teal": Color("237581"),
 }
 ## Between a label and what it names, and the page's edge.
 const GAP := 4.0
