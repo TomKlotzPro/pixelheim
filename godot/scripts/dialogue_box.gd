@@ -20,6 +20,9 @@ var npc: Dictionary
 var choices: Array = []
 var on_choice := Callable()
 var page := 0
+## A page turned to the next (PIX-515: Bram's beam comes off as the line
+## that shifts it is read).
+signal turned
 var text: Label
 var counter: Label
 var hints: HBoxContainer
@@ -194,6 +197,7 @@ func _advance() -> void:
 		_close(true)
 		return
 	page += 1
+	turned.emit()
 	Sound.play("ui_page")
 	_show()
 

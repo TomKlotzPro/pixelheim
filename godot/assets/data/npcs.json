@@ -84,9 +84,10 @@
       ],
       "minTownTier": 0,
       "prologue": {
-        "x": 60,
+        "x": 62,
         "y": 12,
         "step": 3,
+        "pinned": true,
         "lines": [
           "(A man lies pinned under a burning beam. You put your shoulder to it. It shifts - then rolls away.)",
           "The beam - you got it off - thank you. Thank you. I'm Bram. I'll live, I think. Probably.",

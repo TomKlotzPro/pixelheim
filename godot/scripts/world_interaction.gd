@@ -405,6 +405,13 @@ func talk(npc: Dictionary) -> void:
 		if GameState.progression.prologue != Prologue.DONE:
 			npc = npc.duplicate()
 			npc["lines"] = Prologue.lines_of(npc, GameState.progression.prologue)
+			# The beam comes off the one pinned as the line that shifts it
+			# is read (PIX-515), or as the hero leaves before: the night
+			# moves on either way (Questing._prologue_talk).
+			if Prologue.pinned(npc, GameState.progression.prologue) and Prologue.step_of(npc["id"]) == GameState.progression.prologue:
+				var free: Callable = world.folk.unpin.bind(String(npc["id"]))
+				box.turned.connect(free)
+				box.tree_exited.connect(free)
 		box.npc = npc
 		world.add_child(box)
 		return

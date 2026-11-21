@@ -417,6 +417,18 @@ road | --prologue 1 | map=overworld cell=\(48, 34\) | story travel
 # [23][80], a field having no "|", and five steps down from 27 end by 32;
 # so (34, 30), the roof's own cell on the pack, passes here: the body over
 # the roof is test_puny_props', test_hero_seen's and test_night_shadows').
+# Bram lies pinned under a burning beam until the hero shifts it (PIX-515:
+# he stood in the street with no beam): there through the hounds and on his
+# own step, off as his first line is turned (the talk still open), and off
+# for a hero who leaves at that line; without the paid pack too. Its cell
+# east of him is blocked while it lies there (from the east the hero stood
+# in its fire).
+ash-beam | --prologue 3 --at 62,11 --lang en | night=3 beam=pinned | story town night
+ash-beam-hounds | --prologue 6 --at 62,11 --lang en | night=6 beam=pinned | story town night
+ash-beam-off | --prologue 3 --at 62,11 --keys e,e,wait,wait,wait --lang en | open=dialogue_box night=3 beam=gone | story town night
+ash-beam-left | --prologue 3 --at 62,11 --keys e,esc,wait,wait,wait --lang en | night=4 beam=gone | story town night
+ash-beam-cc0 | --prologue 3 --at 62,11 --keys e,e,e,e,wait,wait --lang en cc0 | night=4 beam=gone | story town night
+ash-beam-east | --prologue 3 --at 65,12 --walk l,l,l,l,l,l,l,l --lang en | cell=\(64, 12\) night=3 beam=pinned | story town night
 # The line stays up through the embers' fight too (ash-line-embers: the
 # hero strikes first, as ash-mend, the embers slow to start it on the pack).
 ash-line | --prologue 6 --at 40,8 --wait 3 --lang en | night=6 mobs=2 nightline=shown fight | story combat night

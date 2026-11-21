@@ -139,6 +139,18 @@ const LOG := [
 	".KDDKKKKKKKKKKK.",
 	"..KKNQQNQQQNQQ..",
 ]
+## The burning beam across Bram on the Night of Ash (PIX-515): the same
+## charred log a little longer, lying on a man instead of in its ash,
+## embers in its cracks.
+const BEAM := [
+	"..KKKKKKKKKKKKKKKK..",
+	".KDDKXNXNXXNXNXXNXK.",
+	"KDMDKXXNKXNXXNXXNXNK",
+	"KMLMKNNNNNEKNNNNXNNK",
+	"KDMDKNNNNNNNNKNNENNK",
+	".KDDKNXNXNNNNNNNNNK.",
+	"..KKKKKKKKKKKKKKKK..",
+]
 const TILE := 16
 ## A dead tree's picture is two cells tall, its foot at the bottom.
 const SNAG_HEIGHT := 32
@@ -146,7 +158,7 @@ const SNAG_HEIGHT := 32
 static var _textures := {}
 
 
-## A piece's picture by name: "shoring", "spoil_a", "spoil_b", "log", or
+## A piece's picture by name: "shoring", "spoil_a", "spoil_b", "log", "beam", or
 ## "snag_<n>" (SNAGS), made once a session.
 static func texture(name: String) -> Texture2D:
 	if not _textures.has(name):
@@ -154,7 +166,8 @@ static func texture(name: String) -> Texture2D:
 	return _textures[name]
 
 
-## Piece `name`, drawn: 16 px wide, a cell tall (a dead tree two).
+## Piece `name`, drawn: 16 px wide, a cell tall (a dead tree two); the
+## beam its own rows and no more.
 static func draw(name: String) -> Image:
 	var rows: Array = []
 	var height := TILE
@@ -167,10 +180,13 @@ static func draw(name: String) -> Image:
 			rows = SPOIL_B
 		"log":
 			rows = LOG
+		"beam":
+			rows = BEAM
+			height = rows.size()
 		_:
 			rows = SNAGS[int(name.trim_prefix("snag_")) % SNAGS.size()]
 			height = SNAG_HEIGHT
-	var image := Image.create(TILE, height, false, Image.FORMAT_RGBA8)
+	var image := Image.create((rows[0] as String).length(), height, false, Image.FORMAT_RGBA8)
 	image.fill(Color(0, 0, 0, 0))
 	# Feet on the bottom row (the heaps one up, on the ground's middle).
 	var top := height - rows.size() - (2 if name.begins_with("spoil") or name == "log" else 0)
