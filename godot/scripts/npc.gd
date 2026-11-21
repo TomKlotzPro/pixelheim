@@ -133,6 +133,10 @@ const ROLL := 22.0
 const ROLL_SECONDS := 0.6
 ## The beam while they lie under it, else null.
 var beam: Node2D
+## The beam's cell east of them, blocked while it lies there as a bench's
+## free end is: from the east the hero stood in its fire, the flames over
+## their legs.
+var _beam_body: CollisionShape2D
 var _stood := Vector2.ZERO
 
 
@@ -160,6 +164,12 @@ func _pin() -> void:
 		flame.play()
 	beam.add_child(Lights.blaze(Vector2.ZERO, BEAM_LIGHT))
 	add_child(beam)
+	_beam_body = CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = BODY
+	_beam_body.shape = rect
+	_beam_body.position = Vector2(TILE, 5.5)
+	add_child(_beam_body)
 
 
 ## The beam off them (the hero's shoulder to it: Interaction.talk): it
@@ -181,6 +191,8 @@ func unpin() -> void:
 func _stand() -> void:
 	beam.queue_free()
 	beam = null
+	_beam_body.queue_free()
+	_beam_body = null
 	sprite.rotation = 0.0
 	sprite.position = _stood
 	_idle("down")
