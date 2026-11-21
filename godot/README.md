@@ -637,7 +637,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/rankup_screen.gd` — The ascension (RankUpOverlay.tsx, useRankUp; PIX-244 made it a moment).
 - `scripts/reach_plane.gd` — The Reach as one plane (One Reach, PIX-269, step 3).
 - `scripts/rebuild_rise.gd` — A building rising on the town's tour (PIX-264).
-- `scripts/relief.gd` — Light relief's plain material (PIX-528): what a map draws with no material of its own (a prop, a lamp post, a crate, a stall, a cart, a room's furniture) wears shaders/relief.gdshader, so the lamps and the lantern shape it as they shape the ground and the houses (region_tint, roof_light).
+- `scripts/relief.gd` — Light relief's materials and the stone it carves (PIX-528, PIX-529)
 - `scripts/reveal_screen.gd` — The town risen (PIX-147): after a project is funded, the camera walks the town to what was built
 - `scripts/ring_toss_screen.gd` — The festival's ring toss (PIX-159): a ring slides along the rail, back and forth, quicker each throw; E throws it, and it lands if it's over the peg.
 - `scripts/road_shape.gd` — The shape of a country road's ends and turns (PIX-404), as a mask the ground's shader reads (shaders/road_shape.gdshaderinc).

@@ -59,6 +59,8 @@ static func _build_dungeon(view: MapView, data: MapData) -> Node2D:
 		laid.light_mask |= Lights.FLOOR
 	var swaps: Dictionary = view.dressing["swaps"]
 	view.dungeon_objects = MapView.tile_layer_of(dungeon.tileset)
+	# Its barrels, crates and stairs stand: domed in Light relief (PIX-529).
+	view.dungeon_objects.material = Relief.material(Relief.DOMED, true)
 	view.wall_torches = []
 	for cell: Vector2i in data.grid:
 		var tile: String = data.grid[cell]
@@ -141,6 +143,9 @@ static func _stone(view: MapView, data: MapData) -> ShaderMaterial:
 	stone.set_shader_parameter("cells_soft", cells)
 	stone.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
 	stone.set_shader_parameter("look", int(DungeonLook.SHADER.get(String(view.dressing.get("look", "")), 0)))
+	# Light relief carves the CC0 stone; the Medieval Age's floor blocks laid
+	# with it are no stone in this map, so they stay flat (PIX-529).
+	stone.set_shader_parameter("relief_joints", Relief.joints())
 	return stone
 
 

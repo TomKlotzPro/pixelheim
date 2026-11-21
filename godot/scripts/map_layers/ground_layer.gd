@@ -135,6 +135,9 @@ static func _ground_layers(view: MapView) -> Node2D:
 	view.ground_tint = ShaderMaterial.new()
 	view.ground_tint.shader = preload("res://shaders/region_tint.gdshader")
 	view.ground_tint.set_shader_parameter("tint_map", view.kept.tint_map)
+	# Light relief's stone, for what of it carves the Medieval Age's sheet
+	# (PIX-529); the ground itself stays plain, as each copy does unless told.
+	view.ground_tint.set_shader_parameter("relief_joints", Relief.joints())
 	view.ground_tint.set_shader_parameter("map_pixels", Vector2(view.data.size * TILE))
 	# Where the map lies in the plane: what the shader's slow noise and the
 	# water's light read, so they run on unbroken into a map beside it.
@@ -199,7 +202,10 @@ static func _ground_layers(view: MapView) -> Node2D:
 	if PunyTown.available():
 		view.paving_layer = MapView.tile_layer_of(PunyTown.tileset())
 		if view.kept.crowns_toned:
-			view.paving_layer.material = view.ground_tint
+			# Its stones carved in Light relief (PIX-529), the snow by them
+			# plain: a copy, as the wear and the verges wear the ground's.
+			view.paving_layer.material = _toning(view)
+			(view.paving_layer.material as ShaderMaterial).set_shader_parameter("relief_form", Relief.CARVED)
 		root.add_child(view.paving_layer)
 	view.wear_layer = MapView.tile_layer_of(RoadWear.tileset())
 	view.wear_layer.material = view.ground_tint
@@ -234,12 +240,16 @@ static func _ground_layers(view: MapView) -> Node2D:
 	view.rim_layer.light_mask |= Lights.FLOOR
 	root.add_child(view.rim_layer)
 	view.decor_sway = _swaying(view, TREE_SWAY, true)
+	view.decor_still = _toning(view)
+	view.decor_still.set_shader_parameter("relief_form", Relief.DOMED)
+	view.decor_still.set_shader_parameter("relief_tiles", false)
 	view.woods_sway = _swaying(view, TREE_SWAY, true)
 	view.woods_sway.set_shader_parameter("strength", 0.0)
 	view.flowers_sway = _swaying(view, FLOWER_SWAY, false)
 	view.flowers_sway.set_shader_parameter("strength", 0.0)
 	view.canopy = _toning(view)
 	view.canopy.set_shader_parameter("canopy", CANOPY_SWAY)
+	view.canopy.set_shader_parameter("relief_form", Relief.DOMED)
 	view.crown_layer = MapView.tile_layer_of(PunyTerrain.tileset())
 	view.crown_layer.position = view.ground_layer.position
 	# Under snow the pines on the ridges whiten with the ground (PIX-169),
@@ -277,6 +287,7 @@ static func _ground_layers(view: MapView) -> Node2D:
 		# Its woods and fields lean in the wind together.
 		view._growth_layer = MapView.tile_layer_of(PunyTerrain.tileset())
 		view._growth_layer.material = _swaying(view, TREE_SWAY, false)
+		(view._growth_layer.material as ShaderMaterial).set_shader_parameter("relief_form", Relief.DOMED)
 		root.add_child(view._growth_layer)
 	# Shade's flowers, flat on the ground (the hero walks through them).
 	if not view.outdoor_props["flat"].is_empty():
@@ -452,11 +463,15 @@ static func _ground_pieces(view: MapView) -> void:
 
 
 ## The ground's toning, leaning in the wind `sway` pixels at the top: each
-## sprite on its own beat (`alone`), or a layer's tiles together.
+## sprite on its own beat (`alone`: a tree, domed in Light relief, PIX-529),
+## or a layer's tiles together.
 static func _swaying(view: MapView, sway: float, alone: bool) -> ShaderMaterial:
 	var material := _toning(view)
 	material.set_shader_parameter("sway", sway)
 	material.set_shader_parameter("sway_alone", alone)
+	if alone:
+		material.set_shader_parameter("relief_form", Relief.DOMED)
+		material.set_shader_parameter("relief_tiles", false)
 	return material
 
 

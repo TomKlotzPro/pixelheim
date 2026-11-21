@@ -78,6 +78,10 @@ static func _build_room(view: MapView, data: MapData) -> Node2D:
 			layer.position.y = -6
 		if frost != null and part in ["floor", "rug", "pieces"]:
 			layer.material = frost
+		elif part in ["pieces", "objects", "tops", "lifted"]:
+			# The furniture stands: domed in Light relief, where the stone
+			# walls are carved and the floor lies flat (Relief.dress, PIX-529).
+			layer.material = Relief.material(Relief.DOMED, true)
 		root.add_child(layer)
 		if part == "walls":
 			_day_windows(view, root)
@@ -104,6 +108,11 @@ static func _build_free_room(view: MapView, data: MapData) -> Node2D:
 		for node: Node2D in _free_pieces(view.buildings.get(part, {})):
 			if frost != null and part in ["floor", "rug", "pieces"] and node is TileMapLayer:
 				node.material = frost
+			elif part in ["pieces", "objects"] and node.material == null:
+				# The furniture stands: domed in Light relief, as with the
+				# pack; the floor, walls and rugs lie flat on CC0 sheets
+				# (relief.gdshaderinc's RELIEF_OTHER_JOINT, PIX-529).
+				node.material = Relief.material(Relief.DOMED, node is TileMapLayer)
 			root.add_child(node)
 		if part == "walls":
 			_free_windows(view, root)

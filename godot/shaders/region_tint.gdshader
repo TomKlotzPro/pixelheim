@@ -39,8 +39,9 @@ shader_type canvas_item;
 // no map beside it has ice), its shore rounded and bent off the grid, the
 // snow under it a ghost and its frost over the snow by the shore.
 //
-// Light relief (PIX-528, relief.gdshaderinc): the lamps and the lantern shape
-// the ground, the decor and the trees by their own light and dark.
+// Light relief (PIX-528, PIX-529, relief.gdshaderinc): the lamps and the
+// lantern shape the decor and the trees (domed) and the Frostgate's paving
+// (carved), as `relief_form` says; the open ground stays plain.
 
 #include "res://shaders/wind.gdshaderinc"
 #include "res://shaders/linear.gdshaderinc"
@@ -71,6 +72,10 @@ uniform float dissolve = 0.0;
 uniform bool ice_life = false;
 uniform sampler2D ice_map : filter_linear, repeat_disable;
 uniform vec2 ice_pixels = vec2(1.0);
+// Light relief's form (Relief.PLAIN, CARVED, DOMED: the ground plain) and
+// whether this draws a tile layer.
+uniform int relief_form = 0;
+uniform bool relief_tiles = true;
 // The open air's ice a colder blue than the cave's, to read on the snow.
 const vec3 OPEN_ICE = vec3(0.82, 0.88, 0.95);
 
@@ -259,11 +264,11 @@ void fragment() {
 	if (sway_alone) {
 		base.a *= see_through(world_pos - plane_origin, sorted_on);
 	}
-	// Light relief (PIX-528), of the art as it is drawn here: none on the
-	// water, a puddle, the ice or a bank drawn again over Shade's; the snow's
-	// specks soft, the joints between stones shaped (RELIEF_GROUND_DARK).
-	if (relief > 0.0 && !water && !puddle && !iced && inland == INLAND_NONE) {
-		NORMAL_MAP = RELIEF_NORMAL(RELIEF_SOFT_GRAIN, RELIEF_GROUND_DARK, true);
+	// Light relief (PIX-528, PIX-529), of the art as it is drawn here, in its
+	// form: none on the water, a puddle, the ice or a bank drawn again over
+	// Shade's.
+	if (relief > 0.0 && relief_form != RELIEF_PLAIN && !water && !puddle && !iced && inland == INLAND_NONE) {
+		NORMAL_MAP = RELIEF_SHAPE(relief_form, relief_tiles);
 	} else {
 		NORMAL_MAP = RELIEF_FLAT;
 	}
