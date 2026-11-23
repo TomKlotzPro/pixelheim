@@ -1,6 +1,19 @@
 {
   "releases": [
     {
+      "version": "0.398.0",
+      "date": "2026-11-23",
+      "codename": "Loose Ends",
+      "notes": [
+        "The lantern hint keeps quiet on the story's nights and only speaks under the sky",
+        "The waystation huts' and the Mirefen stilt huts' windows light one by one in the evening, like the town's",
+        "Liane's Lantern lights the way when you carry it, like a Tin Lantern",
+        "The Tin Lantern has an icon of its own at Odo's: the iron and glass lantern you carry",
+        "On the Night of Ash the empty hall's hearth and candles are out",
+        "A chosen row in Options keeps its words clear of the frame"
+      ]
+    },
+    {
       "version": "0.397.0",
       "date": "2026-11-23",
       "codename": "Edged in Light",

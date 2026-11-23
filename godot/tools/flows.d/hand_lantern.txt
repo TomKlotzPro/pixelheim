@@ -19,3 +19,6 @@ hand-lantern-hint | --map saltmere --at 24,19 night hints --wait 1.2 | map=saltm
 hand-lantern-hint-held | --map saltmere --at 24,19 night hints handlantern --wait 1.2 | map=saltmere hint=(?!.*lantern).* | field night
 hand-lantern-hint-cave | --map seacave hints --wait 1.2 | map=seacave hint=(?!.*lantern).* | dungeon
 hand-lantern-hint-ash | --prologue 6 --at 40,8 hints --wait 1.2 | map=town night=6 hint=(?!.*lantern).* handlight= | story night
+# PIX-535: never on the Night of Bells either (it stood over « Light the
+# five lanterns »).
+hand-lantern-hint-bells | --map town --bells 1 hints --wait 1.2 | map=town bells=lanterns hint=(?!.*lantern).* handlight= | story town night

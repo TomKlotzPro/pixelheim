@@ -171,6 +171,10 @@ var day_glows: Array[Node2D] = []
 ## windows' glass, a room's candles and sconces (their halos) and the day
 ## through its windows (their lights).
 var panes: Array[Node2D] = []
+## The lit windows off the town's glass (PIX-535: a waystation hut's, a
+## stilt hut's and its halo), lit with `panes` one by one in the evening,
+## each by the `cell` it says (it stands on its hut's root, not on the map).
+var hut_glows: Array[Node2D] = []
 var flames: Array[Node2D] = []
 var beams: Array[PointLight2D] = []
 ## The sun's shafts into the Deepwood's glades by day (PIX-309).
@@ -832,7 +836,7 @@ func _free_room_lights() -> void:
 		_add_candle(at)
 	var objects: Dictionary = buildings.get("objects", {})
 	for cell: Vector2i in objects:
-		if objects[cell] == "h:lantern":
+		if objects[cell] == "h:lantern" and not untended():
 			var lit := Sprite2D.new()
 			lit.texture = HamletArt.texture("lantern_lit")
 			lit.centered = false
@@ -843,10 +847,20 @@ func _free_room_lights() -> void:
 			night_glows.append(lit)
 
 
+## Whether nobody tends this room's fires (PIX-535): the hall on the Night
+## of Ash, empty and its table bare (PIX-516), kept its hearth and candles
+## burning. Out that night; the morning's hall is drawn anew, and they burn.
+## The one place that says so: RoomsLayer bares its table by it.
+func untended() -> bool:
+	return data.id == "town_hall" and GameState.progression.prologue != Prologue.DONE
+
+
 ## A hearth's or a forge's fire (PIX-225): its warmth on the room, its
 ## light from `at`, embers rising off it at `embers_at`, and since PIX-402
 ## a fire seen burning there (FireArt's lick, its foot on the embers).
 func _add_hearth(at: Vector2, embers_at: Vector2) -> void:
+	if untended():
+		return
 	props.add_child(Lights.make(at, 96.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
 	var embers := _still(Motes.make_embers())
 	embers.position = embers_at
@@ -868,6 +882,8 @@ func _add_hearth(at: Vector2, embers_at: Vector2) -> void:
 ## A candle's or a sconce's flame at `at` (PIX-311): lit at night, a halo
 ## round it and its light on the floor round it.
 func _add_candle(at: Vector2) -> void:
+	if untended():
+		return
 	var halo := _add_halo(at, CANDLE_HALO, CANDLE_HALO_PEAK)
 	var light := Lights.make(at + Vector2(0, TILE / 2.0), CANDLE_REACH, Lights.CANDLE, Lights.CANDLE_ENERGY, true)
 	props.add_child(light)
@@ -1147,9 +1163,9 @@ func set_night(night: bool) -> void:
 			layer.set_night(self, night)
 	# A pane a layer keeps dark (`dark`: the hall on the Night of Ash, PIX-516)
 	# stays so as the evening lights the rest one by one.
-	for pane in panes:
+	for pane in panes + hut_glows:
 		if is_instance_valid(pane):
-			_show(pane, not pane.get_meta("dark", false) and (night or DayNight.lit_before_night(GameState.world.steps, Vector2i(pane.position / TILE))))
+			_show(pane, not pane.get_meta("dark", false) and (night or DayNight.lit_before_night(GameState.world.steps, pane.get_meta("cell", Vector2i(pane.position / TILE)))))
 
 
 ## `glow` shown or not, and under the sky its pool of light with it

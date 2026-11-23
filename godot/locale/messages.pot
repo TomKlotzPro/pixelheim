@@ -2261,6 +2261,10 @@ msgid "A burnt stead's door now shows a steady pale star while something waits i
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A chosen row in Options keeps its words clear of the frame"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr ""
 
@@ -4697,6 +4701,10 @@ msgid "Levels come more slowly, and from Greyhold on the bosses want bought gear
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Liane's Lantern lights the way when you carry it, like a Tin Lantern"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Liane's observatory and Greyhold's keep open into rooms now, not straight into a cave: Liane's room with her desk and books, and Captain Hale's hall with his table, banners and armour"
 msgstr ""
 
@@ -5310,6 +5318,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On the Night of Ash only the survivors are about, the shut gates say why, and nobody talks of rebuilding before the dawn decides it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "On the Night of Ash the empty hall's hearth and candles are out"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7137,6 +7149,10 @@ msgid "The Tidecaller wears Tam's stewpot as a crown; once he falls, the tide do
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Tin Lantern has an icon of its own at Odo's: the iron and glass lantern you carry"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Trees Came Back"
 msgstr ""
 
@@ -7434,6 +7450,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The land heals round the lamps: each morning a lit waystation lamp's ring reaches one cell further into the ash, from bare earth at its edge to grass, flowers and saplings by the lamp, up to five cells; no night pack rises inside a ring, and the Ash's heat and embers fade over healed ground"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The lantern hint keeps quiet on the story's nights and only speaks under the sky"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7842,6 +7862,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The ways between maps are natural passes now: the cliffs part and the road runs through, with no signposts, no name boxes and no framed caves or torches"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The waystation huts' and the Mirefen stilt huts' windows light one by one in the evening, like the town's"
 msgstr ""
 
 #: assets/data/changelog.json

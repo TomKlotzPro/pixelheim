@@ -202,6 +202,7 @@ static var _day_panes: ImageTexture
 static var _recess_panes: ImageTexture
 static var _hand: ImageTexture
 static var _hand_glass: ImageTexture
+static var _icon: ImageTexture
 
 
 ## The street lamp, cold (its post and lantern, by day and night alike).
@@ -216,6 +217,28 @@ static func post() -> ImageTexture:
 const HAND := [".o.", "oio", "oGo", "ogo", "ooo"]
 ## Its glass lit, in LIT's colours: drawn over HAND, unshaded, in the dark.
 const HAND_LIT := ["...", "...", ".Y.", ".a.", "..."]
+## The Tin Lantern on Odo's shelf and in the pack (PIX-535), HAND at an
+## icon's size: its ring, its iron cap, the candle seen through its glass
+## and its foot, as wide and tall as Shade's icons beside it in a list (his
+## tile for it read as a small brazier, half their size).
+const ICON := [
+	"................",
+	"......oooo......",
+	".....oihhio.....",
+	".....oiooio.....",
+	"....oooooooo....",
+	"..oilhhlliiiko..",
+	"..oooooooooooo..",
+	"...oiGGggggio...",
+	"...olGggYggio...",
+	"...olGgYYggio...",
+	"...olggYaggio...",
+	"...oiggaaggio...",
+	"..oooooooooooo..",
+	"..oilhhlliiiko..",
+	"..oooooooooooo..",
+	"................",
+]
 
 
 ## How big the lamp is, in pixels: its foot on the bottom row.
@@ -262,6 +285,13 @@ static func hand() -> ImageTexture:
 	if _hand == null:
 		_hand = ImageTexture.create_from_image(picture(HAND))
 	return _hand
+
+
+## The Tin Lantern's icon (ICON), 16x16.
+static func icon() -> ImageTexture:
+	if _icon == null:
+		_icon = ImageTexture.create_from_image(picture(ICON))
+	return _icon
 
 
 ## Its glass lit (HAND_LIT), clear but for the glass: over hand() at night.

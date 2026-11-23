@@ -69,6 +69,9 @@ const LANTERN_ENERGY := 0.3
 ## The light the hero carries (PIX-530): no light follows a hero without
 ## one; the Tin Lantern in their pack burns round them in the dark.
 const HAND_LANTERN := "tin_lantern"
+## Every lantern that lights the way when carried (PIX-535): Odo's, and
+## Liane's, the relic under Rimefang, « the only warm thing down here ».
+const LANTERNS: Array[String] = [HAND_LANTERN, "lianes_lantern"]
 ## How dark it must be before it is lit (PIX-530): never by a room's dim
 ## day nor a rainy one, so the glass in hand and the pool round the hero
 ## light together, and the hint that Odo sells one waits for the same dark.
@@ -124,9 +127,9 @@ static func under_sky(map: MapData) -> bool:
 	return map != null and map.style != "cave" and not PunyInterior.is_room(map.id)
 
 
-## Whether a pack's `items` hold the hero's lantern (PIX-530).
+## Whether a pack's `items` hold a lantern (PIX-530; Liane's too, PIX-535).
 static func carried(items: Dictionary) -> bool:
-	return int(items.get(HAND_LANTERN, 0)) > 0
+	return LANTERNS.any(func(id: String) -> bool: return int(items.get(id, 0)) > 0)
 
 
 ## How dark a light is, 0 by day to 1 at night: how strongly lamps and

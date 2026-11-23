@@ -225,7 +225,7 @@ func build(view: MapView, slices: Slicer) -> void:
 
 
 ## A stilt hut on its two cells, its pool and ladder reaching down onto the
-## walk before it; its window lit at night (no light of its own).
+## walk before it; its window lit from its evening minute (no light of its own).
 func _raise_hut(view: MapView, hut: Vector2i) -> void:
 	var at := Vector2(0, TILE + MireArt.HUT_BELOW - MireArt.HUT_SIZE.y)
 	var root := stand_on(view, _sprite(MireArt.texture("hut")), hut, at)
@@ -234,14 +234,16 @@ func _raise_hut(view: MapView, hut: Vector2i) -> void:
 	lit.position = at - Vector2(0, TILE)
 	lit.visible = false
 	root.add_child(lit)
-	view.night_glows.append(lit)
 	var halo := _sprite(MireArt.halo(MapView.HALO_TINT, MapView.LAMP_HALO - 3, MapView.LAMP_HALO_PEAK))
 	halo.centered = true
 	halo.material = Lights.glow()
 	halo.position = at - Vector2(0, TILE) + Vector2(MireArt.HUT_WINDOW.get_center())
 	halo.visible = false
 	root.add_child(halo)
-	view.night_glows.append(halo)
+	# Lit at its own minute of the evening, as the town's windows (PIX-535).
+	for glow: Node2D in [lit, halo]:
+		glow.set_meta("cell", hut)
+		view.hut_glows.append(glow)
 	for cell: Vector2i in [hut, hut + Vector2i.RIGHT]:
 		block(view, cell)
 	# It casts as the trees do (PIX-524), from its stilts' foot on its cells,

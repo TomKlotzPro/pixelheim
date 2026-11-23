@@ -291,3 +291,68 @@ func test_a_pool_of_light_waits_for_its_glass() -> void:
 	room.set_night(false)
 	for flame: Node2D in room.flames:
 		assert_false((flame.get_meta("light") as Node).has_meta("unlit"), "a room's candles lit by their own dark")
+
+
+## PIX-535: a waystation hut's window and the Mirefen stilt huts' lit all at
+## once at 19:55, with the lamps. Each lights at its own minute of the
+## evening, as the town's (DayNight.lit_before_night), and all by night.
+func test_the_huts_windows_light_one_by_one_as_the_towns() -> void:
+	GameState.progression.prologue = Prologue.DONE
+	var kept_post := GameState.post
+	GameState.post = PostState.new()
+	var done := Town.done_projects(GameState.settlement)
+	for place: String in Routes.places():
+		if not Routes.station(place).is_empty():
+			Routes.tally(GameState.post, place, "bram", Routes.station_at(place))
+			done.append(String(Routes.station(place)["work"]))
+	GameState.settlement.projects.assign(done)
+	for map: String in [Routes.MAP, "mirefen"]:
+		GameState.world.steps = 0.25 * DayNight.DAY_CYCLE_STEPS
+		var view := _view(MapData.load_by_id(map))
+		assert_gt(view.hut_glows.size(), 1, "%s: its huts' windows" % map)
+		var minutes := {}
+		for share: float in [0.25, 12.5 / 24.0, 13.0 / 24.0, 13.5 / 24.0, 13.8 / 24.0]:
+			GameState.world.steps = share * DayNight.DAY_CYCLE_STEPS
+			view.set_night(false)
+			for glow: Node2D in view.hut_glows:
+				var cell: Vector2i = glow.get_meta("cell")
+				assert_eq(glow.visible, DayNight.lit_before_night(GameState.world.steps, cell), "%s %s at %.2f: lit from its own minute" % [map, cell, share])
+				if glow.visible and not minutes.has(cell):
+					minutes[cell] = share
+		assert_gt(minutes.values().max(), minutes.values().min(), "%s: not all at once" % map)
+		assert_true(view.hut_glows.all(func(glow: Node2D) -> bool: return glow.visible), "%s: all lit before the lamps" % map)
+		view.set_night(true)
+		assert_true(view.hut_glows.all(func(glow: Node2D) -> bool: return glow.visible), "%s: and through the night" % map)
+	GameState.post = kept_post
+
+
+## PIX-535: on the Night of Ash the empty hall's hearth and candles still
+## burnt. Out that night; the next day they burn again.
+func test_the_halls_fires_are_out_on_the_night_of_ash() -> void:
+	if not PunyTown.available():
+		# Without the pack the lantern by the thrones keeps its glass dark.
+		var lit_glass := func(view: MapView) -> int:
+			return view.night_glows.filter(func(glow: Node2D) -> bool: return glow is Sprite2D and (glow as Sprite2D).texture == HamletArt.texture("lantern_lit")).size()
+		GameState.progression.prologue = 6
+		var free := _view(MapData.load_tiered("town_hall", [], 1))
+		assert_eq(lit_glass.call(free) + free.flames.size(), 0, "no lit glass, no candle in the empty hall")
+		GameState.progression.prologue = Prologue.DONE
+		assert_gt(lit_glass.call(_view(MapData.load_tiered("town_hall", [], 1))), 0, "the next day its lantern lights")
+		return
+	var fires := func(view: MapView) -> int:
+		return view.props.find_children("*", "AnimatedSprite2D", true, false).size() + view.flames.size()
+	GameState.progression.prologue = 6
+	var ash := _view(MapData.load_tiered("town_hall", [], 1))
+	assert_eq(fires.call(ash), 0, "no hearth, no candle in the empty hall")
+	assert_eq(ash.props.find_children("*", "PointLight2D", true, false).size(), ash.beams.size(), "and no light but the windows'")
+	var drawn: Array = []
+	for part: String in ["objects", "tops", "lifted"]:
+		drawn += (ash.buildings[part] as Dictionary).values()
+	for tile: int in drawn:
+		assert_does_not_have(PunyInterior.FLAMES, tile, "no flame left in Shade's tiles")
+	assert_has(drawn, PunyInterior.UNLIT[808], "the candelabra stands unlit by the thrones")
+	assert_has(drawn, PunyInterior.UNLIT[588], "and the ledger desk's candle")
+	GameState.progression.prologue = Prologue.DONE
+	assert_gt(fires.call(_view(MapData.load_tiered("town_hall", [], 1))), 1, "the next day they burn again")
+	GameState.progression.prologue = 6
+	assert_gt(fires.call(_view(MapData.load_tiered("town_inn", [], 1))), 0, "Sela's hearth burns that night")

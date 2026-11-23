@@ -152,3 +152,16 @@ func test_a_language_chosen_over_the_title_opens_options_again_there() -> void:
 	assert_eq(_menu.options[_menu.selected]["label"], "Options", "the title's choice is Options")
 	assert_true(options.on_top())
 	assert_eq(OptionsScreen.back_at, -1, "once")
+
+
+## PIX-535: Options' lit row held its value 2 px off the rim on the right,
+## its label 3 px on the left. 2 px more on the right, on every row.
+func test_options_rows_keep_the_value_off_the_rim() -> void:
+	var options: OptionsScreen = add_child_autofree(OptionsScreen.new())
+	var lit := 0
+	for line: PanelContainer in options.find_children("*", "PanelContainer", true, false):
+		var rim := line.get_theme_stylebox("panel")
+		if rim.has_meta("chosen"):
+			lit += 1
+			assert_eq(rim.content_margin_right, rim.content_margin_left + 2.0, "the lit row's value 2 px further in")
+	assert_eq(lit, 1, "one row lit")

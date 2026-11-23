@@ -4,6 +4,8 @@ class_name ItemIcons
 ## (PIX-138), as mapped in assets/puny/icons.json:
 ## - "free/<sheet>@c,r": a cell of his CC0 icon sheets in assets/puny/icons/;
 ## - "medieval@<tile>": a tile of the Medieval Age atlas (food, furniture);
+## - "drawn@lantern": the Tin Lantern, drawn in code in his palette
+##   (LampArt.ICON, PIX-535: no icon of his reads as the lantern in hand);
 ## - anything else: a file of his paid icon packs, which scripts/
 ##   fetch-private-art.sh copies from the private pixelheim-assets repo into
 ##   assets/puny/shade/ (git-ignored), "@c,r" picking a cell of a sheet.
@@ -35,6 +37,8 @@ static func source(item_id: String) -> String:
 static func resolve(src: String) -> Dictionary:
 	if src.begins_with("medieval@"):
 		return {"path": PunyTown.SHEET, "cell": Vector2i(-1, -1), "tile": int(src.get_slice("@", 1))}
+	if src.begins_with("drawn@"):
+		return {"path": "", "cell": Vector2i(-1, -1), "tile": -1}  # no file: LampArt's
 	var file := src.get_slice("@", 0)
 	var cell := Vector2i(-1, -1)
 	if "@" in src:
@@ -130,6 +134,9 @@ static func _texture(src: String) -> Texture2D:
 		return null
 	if _cache.has(src):
 		return _cache[src]
+	if src == "drawn@lantern":
+		_cache[src] = LampArt.icon()
+		return _cache[src]
 	var where := resolve(src)
 	if not ResourceLoader.exists(where["path"]):
 		return null
@@ -177,7 +184,7 @@ static func private_files() -> Array[String]:
 	var files: Array[String] = []
 	for group: String in ["items", "ailments", "effects", "screens", "stats"]:
 		for src: String in _data().get(group, {}).values():
-			if not src.begins_with("free/") and not src.begins_with("medieval@"):
+			if not src.begins_with("free/") and not src.begins_with("medieval@") and not src.begins_with("drawn@"):
 				var file := src.get_slice("@", 0)
 				if file not in files:
 					files.append(file)
