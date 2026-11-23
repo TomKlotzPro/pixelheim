@@ -55,6 +55,17 @@ func _key(action: StringName) -> void:
 	get_viewport().push_input(event)
 
 
+## PIX-543: the card's last line read as standing on the frame's foot. It
+## keeps the frame's padding and FOOT more under it.
+func test_the_cards_last_line_stands_clear_of_its_foot() -> void:
+	var menu := _pause() as PauseScreen
+	await wait_process_frames(2)
+	var column := menu.card.get_child(0) as Control
+	var last := column.get_child(column.get_child_count() - 1) as Control
+	var under := menu.card.get_global_rect().end.y - last.get_global_rect().end.y
+	assert_gte(under, float(UiStyle.INSET + PauseScreen.FOOT), "room under the last line")
+
+
 func test_esc_on_saves_or_options_goes_back_to_the_menu() -> void:
 	for index: int in [1, 2]:
 		var menu := _pause()
