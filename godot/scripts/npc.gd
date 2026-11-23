@@ -25,10 +25,12 @@ const BENCH_AT := Vector2(0, 3)
 ## shortest; body_of is each villager's own.
 const BODY := Vector2(20, 17)
 ## How far under their middle the body ends, and the furthest over it that
-## it begins: the hero, stopped there, still stands in the cell above (the
-## villager beside them, for E).
+## it begins: the hero, stopped there, stands a pixel short of the middle
+## of the cell above, and walks that row's middle past them, as the next
+## column's (PIX-484); higher, and the tallest (Old Hessa, the Mayor, the
+## Smith) stopped a hero walking by along the row over them.
 const BODY_FOOT := 14.0
-const BODY_TOP := -13.0
+const BODY_TOP := -8.0
 ## A figure's width (the hero's and every Puny villager's, at most), and
 ## how far under its middle its feet are drawn.
 const FIGURE_WIDE := 14.0
@@ -122,7 +124,9 @@ func _ready() -> void:
 ## Ink.crown): BODY's, begun high enough that the hero, stopped on it from
 ## above (the foot of Player.BODY on its top, the feet drawn FIGURE_FOOT
 ## under the hero's middle), stands over their head, not on it (PIX-515),
-## on a whole pixel, and never lower than it was or higher than BODY_TOP.
+## on a whole pixel, and never lower than it was or higher than BODY_TOP
+## (the tallest's head then reaches a few pixels up the hero's feet, drawn
+## over them).
 static func body_of(crown: float) -> Rect2:
 	var top := clampf(floorf(crown + Player.BODY_AT.y + Player.BODY.y / 2.0 - FIGURE_FOOT), BODY_TOP, BODY_FOOT - BODY.y)
 	return Rect2(-BODY.x / 2.0, top, BODY.x, BODY_FOOT - top)

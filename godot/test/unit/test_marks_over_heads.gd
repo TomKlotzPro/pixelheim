@@ -362,9 +362,11 @@ func _hero_foot() -> float:
 ## they were, and stood half over Maren, Bram and Sela, hidden behind them
 ## and under their "!" (PIX-484 had fixed the sides only). A villager's body
 ## begins as high as their head reaches, so the hero's feet stop over their
-## head, with the paid figures and without: never on it, never so far that
-## the hero has left the cell above (E still meets them), and its foot
-## where it was, so the row under them is still walked.
+## head, with the paid figures and without, and its foot where it was, so
+## the row under them is still walked. Never further than the middle of the
+## cell above: a hero walking that row's middle passes them, as the next
+## column's is passed (PIX-484), so the tallest's head (Old Hessa's, the
+## Mayor's) reaches a few pixels up the hero's feet.
 func test_the_hero_stops_clear_of_a_villager_from_above() -> void:
 	var feet: float = Player.BODY_AT.y + Player.BODY.y / 2.0
 	var was := PunyTown.withheld
@@ -380,8 +382,8 @@ func test_the_hero_stops_clear_of_a_villager_from_above() -> void:
 			# The hero's middle over theirs, stopped on their body.
 			var apart := feet - body.position.y
 			var who := "%s (%s)" % [sprite, "free" if withheld else "paid"]
-			assert_lte(foot - apart, crown, "%s: the hero's feet over their head (%s px apart, their head %s up)" % [who, apart, -crown])
-			assert_lt(apart, 24.0, "%s: the hero still in the cell above" % who)
+			assert_lt(apart, 16.0, "%s: the middle of the row above is free" % who)
+			assert_lte(foot - apart, crown if apart < 15.0 else crown + 5.0, "%s: the hero's feet over their head (%s px apart, their head %s up)" % [who, apart, -crown])
 			assert_eq(body.end.y, Npc.BODY_FOOT, "%s: the row under them as it was" % who)
 			assert_eq(body.size.x, Npc.BODY.x, "%s: and their sides" % who)
 			if sprite == "maren":

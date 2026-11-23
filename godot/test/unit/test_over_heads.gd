@@ -180,6 +180,50 @@ func test_a_blow_dealt_never_floats_over_the_heros_head() -> void:
 	assert_lte(taken.end.y, hero.position.y, "over their head, off their face")
 
 
+## PIX-515 (review): with a number, a win or a mark at both sides of the
+## foe already, the number stayed over it and stepped up over the hero's
+## head all the same. It takes the far side then, off the hero's column.
+func test_a_blow_dealt_in_a_crowd_keeps_off_the_heros_head() -> void:
+	var fx := WorldFx.new()
+	add_child_autofree(fx)
+	var foe := Vector2(200, 200)
+	var hero := Rect2(foe + Vector2(0, -TILE) + Foes.HERO.position, Foes.HERO.size)
+	var sides: Array[Rect2] = [hero, Rect2(foe.x - 34.0, foe.y - 40.0, 26.0, 40.0), Rect2(foe.x + 8.0, foe.y - 40.0, 26.0, 40.0)]
+	fx.keep_clear([] as Array[Rect2], [] as Array[Rect2], sides)
+	fx.float_number(14, foe + Vector2(0, -18), Color.WHITE, false, autofree(Node.new()))
+	var dealt: Rect2 = fx.shown()[0]
+	assert_true(dealt.position.x >= hero.end.x or dealt.end.x <= hero.position.x, "%s beside the hero %s, not over their head" % [dealt, hero])
+
+
+## PIX-515 (review): blows joined into one number (PIX-334) jumped from
+## side to side, each stepping aside of the number it replaced, 18 px left
+## then right and 6 px lower at every blow. The number counts up where it
+## was: over its foe, or at the same side of a hero standing there.
+func test_blows_joined_count_up_in_one_place() -> void:
+	var fx := WorldFx.new()
+	add_child_autofree(fx)
+	var foe := Vector2(100, 200)
+	var who: Node = autofree(Node.new())
+	for blow in 4:
+		fx.float_number(3, foe + Vector2(0, -18), Color.WHITE, false, who)
+		assert_eq(fx.shown().size(), 1, "one number, the last on its way out")
+		assert_almost_eq(fx.shown()[0].get_center().x, foe.x, 4.5, "blow %s over its foe" % (blow + 1))
+	# Another foe, the hero in the cell over it.
+	foe.x = 300.0
+	var hero := Rect2(foe + Vector2(0, -TILE) + Foes.HERO.position, Foes.HERO.size)
+	fx.keep_clear([] as Array[Rect2], [] as Array[Rect2], [hero] as Array[Rect2])
+	var other: Node = autofree(Node.new())
+	var side := 0.0
+	for blow in 4:
+		fx.float_number(3, foe + Vector2(0, -18), Color.WHITE, false, other)
+		assert_eq(fx.shown().size(), 2, "the first foe's number and this one's")
+		var at: Rect2 = fx.shown()[1]
+		if blow == 0:
+			side = signf(at.get_center().x - foe.x)
+		assert_eq(signf(at.get_center().x - foe.x), side, "blow %s at the side the first took" % (blow + 1))
+		assert_almost_eq(absf(at.get_center().x - foe.x), WorldFx.ASIDE_NEAR, 4.5, "and as near")
+
+
 ## PIX-515: a hound's 14 stood between its tag and the last hound's gold,
 ## three rows on one spot. With a win over its foe a number comes up beside
 ## the tag, its rise ending under the win; alone it rises over the tag as it

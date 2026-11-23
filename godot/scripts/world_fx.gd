@@ -214,7 +214,8 @@ func keep_clear(reserved: Array[Rect2], over: Array[Rect2] = [], figures: Array[
 ## a word is there (a 14 stood between a hound's tag and the last hound's
 ## gold, three rows on one spot). The side away from the hero first, the
 ## nearest place its whole rise is clear of everything; with none, where it
-## was (keep_clear steps it up).
+## was (keep_clear steps it up), or the far side at ASIDE_MOST when that
+## step would end over the hero's head.
 func step_aside(label: Label) -> void:
 	var ink := _ink(label)
 	var rect := Rect2(label.position + ink.position, ink.size)
@@ -235,6 +236,11 @@ func step_aside(label: Label) -> void:
 				label.position += Vector2(side * off, ASIDE_DROP)
 				return
 		off += 2.0
+	# Both sides taken (a pack's busiest fight) and the hero over it: the far
+	# side all the same, where keep_clear's step up is beside the hero, not
+	# over their head.
+	if not _figures.is_empty() and _figures[0].intersects(over.grow_individual(0.0, MOST_LIFT, 0.0, 0.0)):
+		label.position += Vector2(away * ASIDE_MOST, ASIDE_DROP)
 
 
 ## What rises over the world now, where it's drawn: each win whole, then
@@ -252,7 +258,10 @@ func shown() -> Array[Rect2]:
 		if not rects.is_empty():
 			out.append(rects.reduce(func(whole: Rect2, rect: Rect2) -> Rect2: return whole.merge(rect), rects[0]))
 	for stand: Node in get_children():
-		if stand.has_meta("word") and not stand.is_queued_for_deletion() and is_instance_valid(stand.get_meta("word")):
+		# Not a word on its way out: a number joined into the next (PIX-334)
+		# is freed at the frame's end, and the next stepped aside of it,
+		# side to side at every blow (PIX-515).
+		if stand.has_meta("word") and not stand.is_queued_for_deletion() and is_instance_valid(stand.get_meta("word")) and not (stand.get_meta("word") as Node).is_queued_for_deletion():
 			out.append(_drawn(stand.get_meta("word")))
 	return out
 
@@ -345,19 +354,25 @@ func float_number(value: int, at: Vector2, color: Color, crit := false, who: Obj
 	var key := "%d:%s" % [who.get_instance_id(), color.to_html()] if who != null else ""
 	var now := GameClock.seconds()
 	var last: Dictionary = _numbers.get(key, {})
-	if not last.is_empty() and now - float(last["at"]) <= NUMBER_JOIN_S and is_instance_valid(last["word"]):
+	var joined: bool = not last.is_empty() and now - float(last["at"]) <= NUMBER_JOIN_S and is_instance_valid(last["word"])
+	if joined:
 		(last["word"] as Node).queue_free()
 		value += int(last["value"])
 		crit = crit or bool(last["crit"])
 	var label := _floating(str(value) + ("!" if crit else ""), UiStyle.BRASS_LIGHT if crit else color)
 	label.position = Vector2(Ink.centred(_ink(label), at.x + randf_range(-4.0, 4.0)), roundf(at.y - (4 if crit else 0)))
 	label.z_index = Foes.OVER_TAGS + (1 if crit else 0)
+	# Counting up where the number it takes over began (PIX-515: placed
+	# anew, it went from one side of its foe to the other at every blow).
+	if joined:
+		var spot: Vector2 = last["spot"]
+		label.position = Vector2(Ink.centred(_ink(label), spot.x), spot.y)
 	# The hero's own (a blow taken, a heal) belongs over their head.
-	if world == null or who != world.player:
+	elif world == null or who != world.player:
 		step_aside(label)
 	_stand(label)
 	if key != "":
-		_numbers[key] = {"word": label, "value": value, "crit": crit, "at": now}
+		_numbers[key] = {"word": label, "value": value, "crit": crit, "at": now, "spot": Vector2(label.position.x + _ink(label).get_center().x, label.position.y)}
 	# The foes gone by leave their keys: let them go now and then.
 	if _numbers.size() > 64:
 		for stale: String in _numbers.keys():

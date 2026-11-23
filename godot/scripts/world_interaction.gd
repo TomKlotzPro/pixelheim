@@ -792,6 +792,8 @@ func update_prompt() -> void:
 		# By the one standing there, not their cell (folk_spot).
 		_fresh_key()
 		_show_at(folk_spot((beside["who"] as Npc).figure(), prompt_label.size, beside["side"] == Vector2i.DOWN))
+		# Their mark back while a word rising there hides the plate.
+		(beside["who"] as Npc).prompted = prompt_label.visible
 		return
 	var target := _prompt_target(facing_cell())
 	if target.has_area():
