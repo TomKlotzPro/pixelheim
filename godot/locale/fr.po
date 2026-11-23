@@ -1889,6 +1889,14 @@ msgid "Tidecutter"
 msgstr "Tranche-marée"
 
 #: assets/data/catalog.json
+msgid "Tin Lantern"
+msgstr "Lanterne en fer-blanc"
+
+#: assets/data/catalog.json
+msgid "Tin, horn and a stub of candle. Carry it and it lights your way at night and under the ground. Odo swears it has never once gone out. Odo has never once gone out after dark."
+msgstr "Du fer-blanc, de la corne et un bout de chandelle. Gardez-la sur vous : elle éclaire votre chemin la nuit et sous terre. Odo jure qu'elle ne s'est jamais éteinte. Odo n'est jamais sorti une fois la nuit tombée."
+
+#: assets/data/catalog.json
 msgid "Tower Shield"
 msgstr "Pavois"
 
@@ -2123,6 +2131,10 @@ msgstr "UNE COURBE DE BUTIN QUI DONNE ENVIE : les étages de la montagne donne
 #: assets/data/changelog.json
 msgid "A LUTE AND A VAULT: Loras wants his lute back from a Deepwood troll, and Mirelle wants two gems for her vault's first shelf - no more paying them to move"
 msgstr "UN LUTH ET UN COFFRE : Loras veut reprendre son luth à un troll des Bois-Profonds, et Mirelle veut deux gemmes pour la première étagère de sa chambre forte - plus besoin de les payer pour qu'ils s'installent"
+
+#: assets/data/changelog.json
+msgid "A Light of Your Own"
+msgstr "Une lumière à soi"
 
 #: assets/data/changelog.json
 msgid "A Little Night Music"
@@ -4057,6 +4069,10 @@ msgid "From the Town on, the square is laid in flagstones with grass in the join
 msgstr "Dès la Ville, la place est dallée, avec de l'herbe dans les joints, dans une bordure de pavés"
 
 #: assets/data/changelog.json
+msgid "From the next day the hall is whole again, lit at night, its feast laid"
+msgstr "Dès le lendemain, la mairie est de nouveau intacte, éclairée la nuit, son festin dressé"
+
+#: assets/data/changelog.json
 msgid "Fronts of Their Own"
 msgstr "Chacun sa façade"
 
@@ -4281,6 +4297,10 @@ msgid "Hero creation shows the hero as they will really start, without the colou
 msgstr "La création du héros le montre tel qu'il commencera vraiment, sans les couleurs que personne ne gardait ; les stats ont leurs icônes, des crans face au meilleur de tous les rôles et leur nom complet, et les compétences de départ sont des pastilles avec leur icône, un clic ou PgUp/PgDn pour lire chacune"
 
 #: assets/data/changelog.json
+msgid "Heroes made before this version have no lantern: buy yours at Odo's"
+msgstr "Les héros créés avant cette version n'ont pas de lanterne : achetez la vôtre chez Odo"
+
+#: assets/data/changelog.json
 msgid "Heroes saved before this update don't load any more (the game isn't in beta yet); their slot says so and can be cleared"
 msgstr "Les héros sauvegardés avant cette mise à jour ne se chargent plus (le jeu n'est pas encore en bêta) ; leur emplacement l'indique et peut être vidé"
 
@@ -4435,6 +4455,10 @@ msgstr "Dans les fins, les villageois se tiennent de nouveau chez eux, et non pl
 #: assets/data/changelog.json
 msgid "In-world lettering is TRUE pixel text: door signs on wooden plates, the talk prompt and battle damage numbers use a hand-built bitmap font, crisp at any zoom"
 msgstr "Les inscriptions du monde sont du VRAI texte pixel : les enseignes sur plaques de bois, l'invite de dialogue et les chiffres de dégâts en combat utilisent une police bitmap faite main, nette à tout niveau de zoom"
+
+#: assets/data/changelog.json
+msgid "Inside, the council's table is bare that night: no feast laid in an empty hall"
+msgstr "À l'intérieur, la table du conseil est nue cette nuit-là : pas de festin dressé dans une salle vide"
 
 #: assets/data/changelog.json
 msgid "Inside: your own bed (free rest, forever - the inn can keep its prices) and a storage barrel"
@@ -5053,6 +5077,10 @@ msgid "No Sale by Accident"
 msgstr "Rien sans le vouloir"
 
 #: assets/data/changelog.json
+msgid "No light follows the hero any more: at night the town's lamps, the lit windows, the fires and the torches light the way"
+msgstr "Plus aucune lumière ne suit le héros : la nuit, les lampes de la ville, les fenêtres allumées, les feux et les torches éclairent le chemin"
+
+#: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
 msgstr "Fini les embuscades. Les monstres sont désormais VISIBLES dans les terres sauvages - regardez-les rôder, choisissez vos combats"
 
@@ -5169,6 +5197,10 @@ msgid "Odo goes general goods: food, sundries, and he still buys anything"
 msgstr "Odo passe au bazar : nourriture, articles divers, et il achète toujours de tout"
 
 #: assets/data/changelog.json
+msgid "Odo sells a Tin Lantern for 40 gold: carried in the hand away from the shield, its glass cold by day and lit at night, it brings your own pool of light back"
+msgstr "Odo vend une Lanterne en fer-blanc pour 40 pièces d'or : portée à la main, du côté opposé au bouclier, sa vitre froide le jour et allumée la nuit, elle vous rend votre propre halo de lumière"
+
+#: assets/data/changelog.json
 msgid "Oilskin"
 msgstr "Ciré"
 
@@ -5245,6 +5277,10 @@ msgid "On the Night of Ash only the survivors are about, the shut gates say why,
 msgstr "Pendant la Nuit des cendres, seuls les survivants sont là, les portes fermées disent pourquoi, et personne ne parle de reconstruire avant que l'aube n'en décide"
 
 #: assets/data/changelog.json
+msgid "On the Night of Ash the town hall stands dark and scorched, its windows unlit, from the square and from the road"
+msgstr "Pendant la Nuit des Cendres, la mairie est sombre et noircie, ses fenêtres éteintes, vue de la place comme de la route"
+
+#: assets/data/changelog.json
 msgid "On the Night of Ash, the well and the burning homes now show E, and answer from any cell beside them"
 msgstr "Pendant la Nuit des Cendres, le puits et les maisons en feu affichent désormais E, et répondent depuis n'importe quelle case voisine"
 
@@ -5275,6 +5311,10 @@ msgstr "Sur le web, la musique s'efface désormais aussi en douceur quand une sc
 #: assets/data/changelog.json
 msgid "On the web, the music now fades out softly as you go through a door or a gate and comes back after, instead of stopping dead mid-note while the new place is built"
 msgstr "Sur le web, la musique s'efface désormais en douceur quand on passe une porte ou une grille, puis revient, au lieu de s'arrêter net au milieu d'une note pendant que le nouveau lieu se construit"
+
+#: assets/data/changelog.json
+msgid "Once Aske settles in Pixelheim, the lantern reaches a third further"
+msgstr "Une fois Aske installé à Pixelheim, la lanterne porte un tiers plus loin"
 
 #: assets/data/changelog.json
 msgid "Once Rimefang falls, an ice slide takes you back down to the foot of Liane's stair"
@@ -6877,6 +6917,10 @@ msgid "The HUD's Map button speaks a proper event now instead of faking an M key
 msgstr "Le bouton Carte de l'interface émet désormais un vrai événement au lieu de simuler un appui sur M - il fonctionne même après que vous avez réassigné vos touches"
 
 #: assets/data/changelog.json
+msgid "The Hall Stands Dark"
+msgstr "La mairie dans le noir"
+
+#: assets/data/changelog.json
 msgid "The Hall of Echoes death spike is softened: shades calmed down a little"
 msgstr "Le pic de morts de la Salle des échos est adouci : les spectres se sont un peu calmés"
 
@@ -7199,6 +7243,10 @@ msgstr "La première préparation fonctionne à chaque étape : à l'étal de 
 #: assets/data/changelog.json
 msgid "The first dream's voice is Morvax's now"
 msgstr "La voix du premier rêve est désormais celle de Morvax"
+
+#: assets/data/changelog.json
+msgid "The first night under the sky without one, a hint says where to buy it"
+msgstr "La première nuit à la belle étoile sans lanterne, un conseil vous dit où en acheter une"
 
 #: assets/data/changelog.json
 msgid "The first quest you take shows where the journal is, and every accepted quest says so"
@@ -10807,6 +10855,10 @@ msgstr "Six touches prises : placez {skill} dans Compétences ({key:skills})."
 #: assets/data/hints.json
 msgid "Banked gold earns a little daily and is safe when you fall."
 msgstr "L'or en banque rapporte chaque jour et reste à l'abri si vous tombez."
+
+#: assets/data/hints.json
+msgid "Dark out? Odo sells lanterns: carry one and it lights your way."
+msgstr "Il fait noir ? Odo vend des lanternes qui éclairent votre chemin."
 
 #: assets/data/hints.json
 msgid "Face the notice board and press {key:interact} to fund the village's projects."

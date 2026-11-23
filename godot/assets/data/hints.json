@@ -47,5 +47,8 @@
   },
   "bank": {
     "text": "Banked gold earns a little daily and is safe when you fall."
+  },
+  "lantern": {
+    "text": "Dark out? Odo sells lanterns: carry one and it lights your way."
   }
 }

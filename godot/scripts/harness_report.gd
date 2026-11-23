@@ -559,6 +559,22 @@ func field_gate() -> String:
 	return world.interaction.gate_said
 
 
+func field_hall() -> String:
+	var view: MapView = world.view
+	if view == null:
+		return ""
+	if world.map.id == "town_hall" and view.buildings.has("tops"):
+		var table := PunyInterior.placed(world.map.id + world.map.variant, "council")
+		var laid := func(cell: Vector2i) -> bool: return table.has_point(cell)
+		return "laid" if (view.buildings["tops"] as Dictionary).keys().any(laid) else "bare"
+	var house := CampsLayer.hall(view)
+	if house.size == Vector2i.ZERO or not view.layers.has("pieces"):
+		return ""
+	var lit := view.panes.filter(func(pane: Node2D) -> bool:
+		return is_instance_valid(pane) and pane.visible and house.has_point(Vector2i(pane.position) / MapView.TILE)).size()
+	return "%s panes %d" % ["scorched" if view.layers.has("ashen") else "whole", lit]
+
+
 func field_hamlet() -> String:
 	if world.view == null or String(world.view.hamlet.get("look", "")) == "":
 		return ""

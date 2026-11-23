@@ -314,6 +314,15 @@ static func _ground_layers(view: MapView) -> Node2D:
 			houses.material = snowed
 		root.add_child(houses)
 		view.layers[part] = houses
+		# The hall on the Night of Ash, scorched (PIX-516, CampsLayer): its
+		# pieces on a layer of their own, darkened as the gatehouse's are;
+		# the town is drawn anew after the dawn, without it.
+		if part == "pieces" and GameState.progression.prologue != Prologue.DONE and CampsLayer.hall(view).size != Vector2i.ZERO:
+			var ashen := MapView.tile_layer_of(PunyTown.tileset())
+			ashen.material = PunyTown.roof_light()
+			ashen.modulate = Rampart.SCORCHED
+			root.add_child(ashen)
+			view.layers["ashen"] = ashen
 	return root
 
 
@@ -448,6 +457,7 @@ static func _ground_pieces(view: MapView) -> void:
 	if view.layers.has("flowers"):
 		for cell: Vector2i in view.outdoor_props["flat"]:
 			PunyTown.place(view.layers["flowers"], cell, view.outdoor_props["flat"][cell])
+	var hall := CampsLayer.hall(view) if view.layers.has("ashen") else Rect2i()
 	for part: String in ["pieces", "decor"]:
 		if view.layers.has(part):
 			for cell: Vector2i in view.buildings[part]:
@@ -455,6 +465,8 @@ static func _ground_pieces(view: MapView) -> void:
 				var layer: TileMapLayer = view.layers[part]
 				if part == "pieces" and view.layers.has("snowed") and not PunyTown.is_wall(tile):
 					layer = view.layers["snowed"]
+				elif part == "pieces" and hall.has_point(cell):
+					layer = view.layers["ashen"]
 				PunyTown.place(layer, cell, tile)
 	if view.sliced:
 		for layer: Node in view.ground.get_children():

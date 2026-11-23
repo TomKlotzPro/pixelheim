@@ -184,6 +184,14 @@ static func houses(grid: Dictionary) -> Array[Dictionary]:
 	return out
 
 
+## The house whose door is `door`: its cells' bounding box, empty for none.
+static func house_of(grid: Dictionary, door: Vector2i) -> Rect2i:
+	for house: Dictionary in houses(grid):
+		if house["door"] == door:
+			return house["rect"]
+	return Rect2i()
+
+
 ## A house's door: the last one on its bottom row ((-1, -1) for none).
 static func _door(blob: Array, grid: Dictionary) -> Vector2i:
 	var bottom: int = blob.map(func(cell: Vector2i) -> int: return cell.y).max()

@@ -291,6 +291,19 @@ static func furnish(room_key: String, grid: Dictionary, reserved: Dictionary) ->
 	return out
 
 
+## The vignette `name` of `room_key` with nothing on it, in `dressed`
+## (furnish's): what is laid on its tables (`tops`) and burns over them
+## (`lifted`) gone, the tables and seats left. The hall's council table on
+## the Night of Ash (PIX-516: its feast was laid for nobody).
+static func bare(dressed: Dictionary, room_key: String, name: String) -> void:
+	var rect := placed(room_key, name)
+	for kind: String in ["tops", "lifted"]:
+		var laid: Dictionary = dressed[kind]
+		for cell: Vector2i in laid.keys():
+			if rect.has_point(cell):
+				laid.erase(cell)
+
+
 ## The cells the layout of `room_key` gives the vignette `name` (PIX-338:
 ## the village's ledger on its table in the hall, E reads it there), with or
 ## without the pack; empty when the room has none.
