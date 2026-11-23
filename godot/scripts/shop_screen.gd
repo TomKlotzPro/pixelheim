@@ -256,7 +256,8 @@ func _open() -> void:
 
 
 func _command(event: InputEvent) -> Callable:
-	# The card pages whatever it asks: the price is at its foot.
+	# The card pages whatever it asks: the price stands over the keys, out of
+	# what scrolls.
 	var command := Layout.paging(about, event)
 	if command.is_valid():
 		return command
