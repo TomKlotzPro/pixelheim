@@ -14241,10 +14241,6 @@ msgid "Aske has opened Liane's door at the head of the Frostgate pass. Her sums 
 msgstr "Aske a ouvert la porte de Liane, au sommet du col de la Porte-Givre. Ses calculs sont toujours sur le bureau de sa chambre."
 
 #: assets/data/progression.json
-msgid "Aske is putting out every lamp in Pixelheim but five: the lanterns on the square, between the two boards. Light them, and the dragon comes down where you're ready."
-msgstr "Aske éteint toutes les lampes de Pixelheim sauf cinq : les lanternes de la place, entre les deux panneaux. Allumez-les, et le dragon descendra là où vous l'attendez."
-
-#: assets/data/progression.json
 msgid "Aske last. He's kept Liane's door shut fifty years because she asked him to. North, up the Frostgate road. Tell him he can stop."
 msgstr "Aske en dernier. Il garde la porte de Liane fermée depuis cinquante ans parce qu'elle le lui a demandé. Au nord, par la route de la Porte-Givre. Dites-lui qu'il peut arrêter."
 
@@ -14743,6 +14739,10 @@ msgstr "Cinq lanternes sur la place, et Aske éteint toutes les autres lampes de
 #: assets/data/progression.json
 msgid "Five lanterns on the square. Street by street, Pixelheim puts its lamps out. He'll come down where you're ready."
 msgstr "Cinq lanternes sur la place. Rue après rue, Pixelheim éteint ses lampes. Il descendra là où vous l'attendez."
+
+#: assets/data/progression.json
+msgid "Five lanterns stand on the square, between the two boards. Light them all: every other lamp in Pixelheim goes out then, and the dragon comes down where you're ready."
+msgstr "Cinq lanternes attendent sur la place, entre les deux panneaux. Allumez-les toutes : les autres lampes de Pixelheim s'éteindront alors, et le dragon descendra là où vous l'attendez."
 
 #: assets/data/progression.json
 msgid "Five lanterns, courier, one for each of us who climbed. Light them. He'll come where the light is."

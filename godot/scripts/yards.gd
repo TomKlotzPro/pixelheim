@@ -393,7 +393,7 @@ static func _standing() -> Dictionary:
 			for offset: Vector2i in Npcs.LOOP if npc.get("wander", false) else [Vector2i.ZERO]:
 				_stood[Vector2i(int(npc["x"]), int(npc["y"])) + offset] = true
 	var spots: Array = Town.lanterns() + Post.house_cells()
-	spots.append_array([Town.project_board(), Town.bounty_board(), Post.box_cell(), Bells.landing(), Homecoming.bench(), Town.ashes_tent([])])
+	spots.append_array([Town.project_board(), Town.bounty_board(), Post.box_cell(), Bells.landing(), Homecoming.bench(), Town.ashes_tent([]), Town.ashes_tent([]) + Vector2i.RIGHT])
 	for at: Dictionary in Town.festival("stalls") + [Town.festival("barker"), Town.ashes_wake()]:
 		spots.append(Vector2i(int(at["x"]), int(at["y"])))
 	for cell: Vector2i in spots:

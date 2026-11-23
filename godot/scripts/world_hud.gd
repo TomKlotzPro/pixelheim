@@ -255,10 +255,12 @@ func hint_there(seen_id: String) -> bool:
 			return GameState.hero.hp * 2 < int(GameState.hero.stats["maxHp"])
 		"lantern":
 			# Bought while it waited, the dawn come, or under the ground (PIX-530);
-			# and never on a story night (PIX-535: over the Night of Bells'
+			# only once the lamps are lit (PIX-543: the evening's rose passes
+			# LANTERN_DARK half an hour before them, and it said "Dark out?" in
+			# daylight); and never on a story night (PIX-535: over the Night of Bells'
 			# « Light the five lanterns » it pointed another way, as on the Ash).
 			var story := GameState.progression
-			return not Lights.carried(GameState.pack.items) and world.lights.dark > Lights.LANTERN_DARK and Lights.under_sky(world.map) \
+			return not Lights.carried(GameState.pack.items) and world.lights.dark > Lights.LANTERN_DARK and DayNight.is_night(GameState.world.steps) and Lights.under_sky(world.map) \
 				and story.prologue == Prologue.DONE and story.bells == Bells.NONE
 	return true
 

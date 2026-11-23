@@ -24,6 +24,8 @@ const NIGHT := Color(0.3, 0.34, 0.56)
 const UNDERGROUND := Color(0.36, 0.34, 0.46)
 ## The Night of Ash: the sky red with the burning village.
 const ASH_NIGHT := Color(0.56, 0.34, 0.32)
+## Its dawn (PIX-543): grey over the ashes, the fires and the lamps out.
+const ASH_DAWN := Color(0.8, 0.79, 0.84)
 ## Indoors: a little dim and warm by day, so the day through the windows
 ## pools on the floor below them; at night dark but where the hearth and the
 ## candles burn, the corners left in shadow (PIX-311: rooms were lit flat by

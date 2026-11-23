@@ -33,6 +33,10 @@ const ROOM_GLOW := 0.7
 ## The light now and how dark it is (0 by day, 1 at night).
 var light := Color.WHITE
 var dark := 0.0
+## How far the Night of Ash's red has turned to its dawn's grey (PIX-543:
+## the DawnScreen's, "Dawn came grey" stood over the night's red and its
+## lit lamps); 0 again once the day begins.
+var ash_dawn := 0.0
 ## The water's reflections, the cloud shadows and the region's air (PIX-224,
 ## the Atmosphere node sets it), under the glow on its layer, and the map the
 ## reflections were laid out for; the world's clock and the wind's strength
@@ -242,7 +246,7 @@ func light_for(map: MapData) -> Color:
 		# A region dungeon's floor may keep its own dark (PIX-255).
 		return Color(map.light, 1.0) if map.light.a > 0.0 else Lights.UNDERGROUND
 	if GameState.progression.prologue != Prologue.DONE and map.id == "town":
-		return Lights.ASH_NIGHT
+		return Lights.ASH_NIGHT.lerp(Lights.ASH_DAWN, ash_dawn)
 	if PunyInterior.is_room(map.id):
 		return Lights.indoor(GameState.world.steps)
 	return Lights.outdoor(GameState.world.steps)
