@@ -106,11 +106,45 @@ func test_small_things_grow_by_region_where_no_decor_does() -> void:
 		var share := grown * 100.0 / open
 		assert_almost_eq(share, float(Scatter.DETAIL[tile][0]), 1.5, "%s grows small things in about %d%% of its open cells" % [tile, Scatter.DETAIL[tile][0]])
 		# The meadow and the grove round a lamp (PIX-323) are a few cells
-		# each, in flower on purpose; the reeds a line along a bank (PIX-390).
-		if tile not in ["meadow", "grove", "bank"]:
+		# each, in flower on purpose; the reeds a line along a bank (PIX-390),
+		# the marram a line along a beach's edge (PIX-543).
+		if tile not in ["meadow", "grove", "bank", "dune"]:
 			assert_between(share, 6.0, 14.0, "denser than the field's old 3%%, never a carpet")
 	assert_eq(Scatter.detail({Vector2i.ZERO: "path"}, Vector2i.ZERO), "", "nothing on a road")
 	assert_eq(Scatter.detail({Vector2i.ZERO: "forest"}, Vector2i.ZERO), "", "nor under the trees")
+
+
+## PIX-543: Saltmere's sand met its grass and its road on the cells' own
+## straight lines. Marram grows on the sand's first cell by them, on any of
+## its eight sides, and on the grass's last by the sand, each tuft against
+## the line; nowhere out on the open beach.
+func test_marram_grows_where_the_sand_meets_the_grass() -> void:
+	var grid := {}
+	for y in 40:
+		for x in 40:
+			grid[Vector2i(x, y)] = "grass" if x < 20 else "sand"
+	var edge := 0
+	for y in 40:
+		edge += int(Scatter.detail(grid, Vector2i(20, y)) != "")
+		assert_eq(GroundDetail.spot(Scatter.detail_variant(grid, Vector2i(20, y))).x, 0, "against the grass west of it, over the line")
+		for x in range(21, 40):
+			assert_eq(Scatter.detail(grid, Vector2i(x, y)), "", "none out on the open beach")
+	assert_between(edge, 22, 38, "most of the edge's cells, not every one")
+	var grassy := 0
+	for y in 40:
+		if Scatter.choice(grid, Vector2i(19, y)) < 0 and Scatter.detail(grid, Vector2i(19, y)) != "":
+			grassy += 1
+			assert_gte(GroundDetail.spot(Scatter.detail_variant(grid, Vector2i(19, y))).x, 8, "the grass's own out over the sand east of it")
+	assert_gt(grassy, 20, "and on the grass's side of the line")
+	var under := {Vector2i(3, 3): "sand", Vector2i(3, 2): "path", Vector2i(4, 3): "sand"}
+	assert_eq(GroundDetail.spot(Scatter.detail_variant(under, Vector2i(3, 3))).y, 0, "and against a road north of it")
+	for beside: String in Scatter.DUNES:
+		var grown := 0
+		for n in 50:
+			var cell := Vector2i(n * 3, 7)
+			grown += int(Scatter.detail({cell: "sand", cell + Vector2i(-1, 1): beside}, cell) != "")
+		assert_gt(grown, 15, "by %s too, across a corner" % beside)
+	assert_eq(Scatter.detail({Vector2i.ZERO: "sand", Vector2i.RIGHT: "shore"}, Vector2i.ZERO), "", "none by the water alone")
 
 
 func test_the_mires_grass_grows_the_mires_small_things() -> void:

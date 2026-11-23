@@ -298,8 +298,8 @@ die | die | map=town_inn cell=\(2, 3\) | combat rooms
 # gate, on the road where the night began; in the village that night and at
 # the Ashes after, beside Sela's tent, not on it.
 die-road | --prologue 1 die --wait 1.5 | map=overworld cell=\(48, 34\) night=1 | combat story night
-die-tent-night | --prologue 6 die --wait 1.5 | map=town cell=\(44, 27\) night=6 | combat story night
-die-tent | --map town --town-tier 0 die --wait 1.5 | map=town cell=\(44, 27\) night=0 | combat town
+die-tent-night | --prologue 6 die --wait 1.5 | map=town cell=\(43, 27\) night=6 | combat story night
+die-tent | --map town --town-tier 0 die --wait 1.5 | map=town cell=\(43, 27\) night=0 | combat town
 # The saves screen (PIX-129).
 saves | saves | open=saves_screen | save screen
 # A hero's first word with Maren after the night is her tin (PIX-253):
@@ -1028,6 +1028,11 @@ dawn | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5 | open=da
 dawn-pan | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 3 | open=dawn_screen dawn=fires quiet flames [1-9]\d* fires=houses [1-9].* hour=23:16 moon | story screen night
 dawn-told | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 10 --lang en | open=dawn_screen dawn=talk told keys fires= hour=04:48 sun | story screen night
 dawn-told-cc0 | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 10 cc0 | open=dawn_screen dawn=talk told keys fires= hour=04:48 sun | story screen night
+# PIX-543: "Dawn came grey" stood over a lamp-lit night square under the
+# clock's sun. The street lamps burn through the pan and are out with the
+# night once the telling begins (its grey light is test_lights').
+dawn-lamps-pan | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 3 | open=dawn_screen hour=23:16 moon lamplight=posts ([1-9]\d*)/\1 .* | story screen night
+dawn-lamps-out | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 10 | open=dawn_screen hour=04:48 sun lamplight=posts 0/[1-9]\d* .* | story screen night
 # After a real night every hero has put fires out with buckets: a fire out
 # keeps its place in the list with its flames freed, and the dawn stopped on
 # the first of them (no pan, no telling, the dock up). `douse` puts one out

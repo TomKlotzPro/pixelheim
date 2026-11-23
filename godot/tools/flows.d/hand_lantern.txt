@@ -16,6 +16,10 @@ hand-lantern-cave | --map seacave handlantern | map=seacave handlight=lantern 96
 hand-lantern-aske | --map town --at 40,13 night handlantern --hunted rimefang | map=town handlight=lantern 128 lit home=aske | town night story
 hand-lantern-buy | --map town_shop shop --keys s,s,s,s,s,e | map=town_shop open=shop_screen gold=460 handlight=lantern 96 dark | rooms trade screen
 hand-lantern-hint | --map saltmere --at 24,19 night hints --wait 1.2 | map=saltmere hint=lantern | field night
+# PIX-543: not in the evening before the lamps light (it spoke from 19:22,
+# in the rose light), and from their minute on.
+hand-lantern-hint-dusk | --map saltmere --at 24,19 --hour 19:40 hints --wait 1.2 | map=saltmere hint=(?!.*lantern).* | field night
+hand-lantern-hint-lamps | --map saltmere --at 24,19 --hour 20:00 hints --wait 1.2 | map=saltmere hint=lantern | field night
 hand-lantern-hint-held | --map saltmere --at 24,19 night hints handlantern --wait 1.2 | map=saltmere hint=(?!.*lantern).* | field night
 hand-lantern-hint-cave | --map seacave hints --wait 1.2 | map=seacave hint=(?!.*lantern).* | dungeon
 hand-lantern-hint-ash | --prologue 6 --at 40,8 hints --wait 1.2 | map=town night=6 hint=(?!.*lantern).* handlight= | story night

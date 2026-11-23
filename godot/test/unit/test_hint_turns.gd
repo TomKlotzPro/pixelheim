@@ -577,11 +577,12 @@ func test_the_journals_hint_stops_once_the_journal_was_opened() -> void:
 ## never shows later in a cave.
 func test_the_lanterns_hint_keeps_off_story_nights_and_out_of_caves() -> void:
 	var story := GameState.progression
-	var was := [story.prologue, story.bells, GameState.pack.items.duplicate()]
+	var was := [story.prologue, story.bells, GameState.pack.items.duplicate(), GameState.world.steps]
 	for id: String in Lights.LANTERNS:
 		GameState.pack.items.erase(id)
 	world.lights = autofree(LightRig.new())
 	world.lights.dark = 1.0
+	GameState.world.steps = 0.75 * DayNight.DAY_CYCLE_STEPS
 	world.map.style = "overworld"
 	story.prologue = Prologue.DONE
 	story.bells = Bells.LANTERNS
@@ -591,6 +592,14 @@ func test_the_lanterns_hint_keeps_off_story_nights_and_out_of_caves() -> void:
 	assert_false(hud.hint_there("lantern"), "nor on the Night of Ash")
 	story.prologue = Prologue.DONE
 	assert_true(hud.hint_there("lantern"), "any other night under the sky")
+	# PIX-543: the evening's rose is past LANTERN_DARK half an hour before
+	# the lamps light, and it said "Dark out?" in daylight.
+	world.lights.dark = 0.6
+	GameState.world.steps = 0.57 * DayNight.DAY_CYCLE_STEPS
+	assert_false(hud.hint_there("lantern"), "not in the evening, the lamps still cold")
+	GameState.world.steps = 0.58 * DayNight.DAY_CYCLE_STEPS
+	assert_true(hud.hint_there("lantern"), "from the minute they light")
+	world.lights.dark = 1.0
 	var card := hud.title_card("The Sea Cave", "")
 	hud.hint("lantern")
 	assert_eq([_up(), hud.hint_held()], ["", "lantern"], "held behind the card")
@@ -602,3 +611,4 @@ func test_the_lanterns_hint_keeps_off_story_nights_and_out_of_caves() -> void:
 	story.prologue = was[0]
 	story.bells = was[1]
 	GameState.pack.items = was[2]
+	GameState.world.steps = was[3]

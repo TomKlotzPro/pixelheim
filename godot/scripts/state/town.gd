@@ -307,6 +307,8 @@ static func stall_crates(done: Array) -> Dictionary:
 	return out
 
 
+## Sela's tent on the square while the inn is rubble (PIX-146), or (-1, -1):
+## its west cell, of two (PIX-543).
 static func ashes_tent(done: Array) -> Vector2i:
 	if "the_inn" in done:
 		return Vector2i(-1, -1)

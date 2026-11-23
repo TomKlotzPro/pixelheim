@@ -14241,10 +14241,6 @@ msgid "Aske has opened Liane's door at the head of the Frostgate pass. Her sums 
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Aske is putting out every lamp in Pixelheim but five: the lanterns on the square, between the two boards. Light them, and the dragon comes down where you're ready."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Aske last. He's kept Liane's door shut fifty years because she asked him to. North, up the Frostgate road. Tell him he can stop."
 msgstr ""
 
@@ -14742,6 +14738,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Five lanterns on the square. Street by street, Pixelheim puts its lamps out. He'll come down where you're ready."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Five lanterns stand on the square, between the two boards. Light them all: every other lamp in Pixelheim goes out then, and the dragon comes down where you're ready."
 msgstr ""
 
 #: assets/data/progression.json

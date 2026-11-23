@@ -52,6 +52,9 @@ func test_each_place_has_its_own_dark() -> void:
 	var town := MapData.load_by_id("town")
 	GameState.progression.prologue = Prologue.SCAVENGER
 	assert_eq(rig.light_for(town), Lights.ASH_NIGHT, "the night the village burns")
+	rig.ash_dawn = 1.0
+	assert_eq(rig.light_for(town), Lights.ASH_DAWN, "and its dawn, grey over the ashes (PIX-543)")
+	assert_lt(Lights.darkness(Lights.ASH_DAWN), Lights.RIM_DUSK, "light enough that nothing rims or burns as at night")
 
 
 func test_a_light_comes_up_with_the_dark_and_fire_flickers() -> void:
