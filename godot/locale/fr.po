@@ -7741,8 +7741,8 @@ msgid "The title screen lives: stars, embers, bobbing monsters, a breathing drag
 msgstr "L'écran titre s'anime : étoiles, braises, monstres qui se dandinent, un dragon qui respire"
 
 #: assets/data/changelog.json
-msgid "The title screen plays the menu theme in its orchestral version, strings and horns before the pixel world begins"
-msgstr "L'écran titre joue le thème du menu dans sa version orchestrale, cordes et cors avant que le monde en pixels ne commence"
+msgid "The title screen plays the menu theme in its orchestral version, a grander welcome before the pixel world begins"
+msgstr "L'écran titre joue le thème du menu dans sa version orchestrale, un accueil plus grand avant que le monde en pixels ne commence"
 
 #: assets/data/changelog.json
 msgid "The title's menu carries no mark on « What's new » any more: its four planks stand plain, and the version line under them still opens the notes"

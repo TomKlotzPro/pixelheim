@@ -7741,7 +7741,7 @@ msgid "The title screen lives: stars, embers, bobbing monsters, a breathing drag
 msgstr ""
 
 #: assets/data/changelog.json
-msgid "The title screen plays the menu theme in its orchestral version, strings and horns before the pixel world begins"
+msgid "The title screen plays the menu theme in its orchestral version, a grander welcome before the pixel world begins"
 msgstr ""
 
 #: assets/data/changelog.json
