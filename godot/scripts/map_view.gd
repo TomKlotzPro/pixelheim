@@ -836,7 +836,7 @@ func _free_room_lights() -> void:
 		_add_candle(at)
 	var objects: Dictionary = buildings.get("objects", {})
 	for cell: Vector2i in objects:
-		if objects[cell] == "h:lantern":
+		if objects[cell] == "h:lantern" and not _untended():
 			var lit := Sprite2D.new()
 			lit.texture = HamletArt.texture("lantern_lit")
 			lit.centered = false
@@ -850,6 +850,7 @@ func _free_room_lights() -> void:
 ## Whether nobody tends this room's fires (PIX-535): the hall on the Night
 ## of Ash, empty and its table bare (PIX-516), kept its hearth and candles
 ## burning. Out that night; the morning's hall is drawn anew, and they burn.
+## The one place that says so: RoomsLayer bares its table by it.
 func _untended() -> bool:
 	return data.id == "town_hall" and GameState.progression.prologue != Prologue.DONE
 

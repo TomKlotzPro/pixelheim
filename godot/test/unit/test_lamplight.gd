@@ -330,7 +330,14 @@ func test_the_huts_windows_light_one_by_one_as_the_towns() -> void:
 ## burnt. Out that night; the next day they burn again.
 func test_the_halls_fires_are_out_on_the_night_of_ash() -> void:
 	if not PunyTown.available():
-		pass_test("the paid rooms aren't installed")
+		# Without the pack the lantern by the thrones keeps its glass dark.
+		var lit_glass := func(view: MapView) -> int:
+			return view.night_glows.filter(func(glow: Node2D) -> bool: return glow is Sprite2D and (glow as Sprite2D).texture == HamletArt.texture("lantern_lit")).size()
+		GameState.progression.prologue = 6
+		var free := _view(MapData.load_tiered("town_hall", [], 1))
+		assert_eq(lit_glass.call(free) + free.flames.size(), 0, "no lit glass, no candle in the empty hall")
+		GameState.progression.prologue = Prologue.DONE
+		assert_gt(lit_glass.call(_view(MapData.load_tiered("town_hall", [], 1))), 0, "the next day its lantern lights")
 		return
 	var fires := func(view: MapView) -> int:
 		return view.props.find_children("*", "AnimatedSprite2D", true, false).size() + view.flames.size()
@@ -338,6 +345,13 @@ func test_the_halls_fires_are_out_on_the_night_of_ash() -> void:
 	var ash := _view(MapData.load_tiered("town_hall", [], 1))
 	assert_eq(fires.call(ash), 0, "no hearth, no candle in the empty hall")
 	assert_eq(ash.props.find_children("*", "PointLight2D", true, false).size(), ash.beams.size(), "and no light but the windows'")
+	var drawn: Array = []
+	for part: String in ["objects", "tops", "lifted"]:
+		drawn += (ash.buildings[part] as Dictionary).values()
+	for tile: int in drawn:
+		assert_does_not_have(PunyInterior.FLAMES, tile, "no flame left in Shade's tiles")
+	assert_has(drawn, PunyInterior.UNLIT[808], "the candelabra stands unlit by the thrones")
+	assert_has(drawn, PunyInterior.UNLIT[588], "and the ledger desk's candle")
 	GameState.progression.prologue = Prologue.DONE
 	assert_gt(fires.call(_view(MapData.load_tiered("town_hall", [], 1))), 1, "the next day they burn again")
 	GameState.progression.prologue = 6

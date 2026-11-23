@@ -49,6 +49,9 @@ const FLAMES := {
 	145: Vector2(7.5, 10.5), 159: Vector2(7.5, 7.5), 585: Vector2(6.5, 6.5),
 	588: Vector2(7.5, 2.5), 808: Vector2(7.5, 2.5),
 }
+## Each of them put out (PIX-535): Shade's frame of the same piece without
+## its flame, which is part of his tile (159 is 145's sconce burning higher).
+const UNLIT := {145: 144, 159: 144, 585: 584, 588: 587, 808: 807}
 const DOOR := 3875
 ## The way down (PIX-256): Shade's stairwell from his royal castle sample, a
 ## flight of stone steps going down into the dark (on his stone floor), in
@@ -302,6 +305,15 @@ static func bare(dressed: Dictionary, room_key: String, name: String) -> void:
 		for cell: Vector2i in laid.keys():
 			if rect.has_point(cell):
 				laid.erase(cell)
+
+
+## A room's candles and sconces put out (PIX-535): the flame is in Shade's
+## tile, so each is drawn as his unlit frame, and nothing is left to light.
+static func snuff(dressed: Dictionary) -> void:
+	for kind: String in ["objects", "tops", "lifted"]:
+		var laid: Dictionary = dressed[kind]
+		for cell: Vector2i in laid:
+			laid[cell] = UNLIT.get(laid[cell], laid[cell])
 
 
 ## The cells the layout of `room_key` gives the vignette `name` (PIX-338:

@@ -134,7 +134,7 @@ static func _texture(src: String) -> Texture2D:
 		return null
 	if _cache.has(src):
 		return _cache[src]
-	if src.begins_with("drawn@"):
+	if src == "drawn@lantern":
 		_cache[src] = LampArt.icon()
 		return _cache[src]
 	var where := resolve(src)
