@@ -47,4 +47,5 @@ void fragment() {
 	COLOR = c;
 	NORMAL_MAP = RELIEF_FLAT;
 	rim_open = relief_rimmed ? RIM_OPEN(0) : vec4(0.0);
+	RIM_SKY;
 }

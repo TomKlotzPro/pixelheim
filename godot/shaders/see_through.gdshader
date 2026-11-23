@@ -27,4 +27,5 @@ void fragment() {
 		NORMAL_MAP = RELIEF_FLAT;
 	}
 	rim_open = RIM_OPEN(0);
+	RIM_SKY;
 }

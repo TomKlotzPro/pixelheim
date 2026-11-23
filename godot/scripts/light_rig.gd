@@ -33,6 +33,8 @@ const ROOM_GLOW := 0.7
 ## The light now and how dark it is (0 by day, 1 at night).
 var light := Color.WHITE
 var dark := 0.0
+## How much cloud covers the sky here, 0..1 (rain, the mire's fog, snow).
+var overcast := 0.0
 ## How far the Night of Ash's red has turned to its dawn's grey (PIX-543:
 ## the DawnScreen's, "Dawn came grey" stood over the night's red and its
 ## lit lamps); 0 again once the day begins.
@@ -193,6 +195,20 @@ static func rim_strength(dark_now: float) -> float:
 	return Lights.RIM * smoothstep(Lights.RIM_DUSK, Lights.LANTERN_DARK, dark_now) if rim_on else 0.0
 
 
+## The moon's rim (PIX-545), as the shaders make it of `light_rim` and the
+## sun's w: a clear night's under the sky, none through cloud, underground,
+## indoors or through the Night of Ash's smoke.
+func moon_rim(map: MapData, dark_now: float, overcast_now: float) -> float:
+	return rim_strength(dark_now) * moon(map, dark_now, overcast_now)
+
+
+## The shaders' `rim_flash` global (PIX-545, Storm sets it): the lightning's
+## rim, as bright as its `flash` is now; none by day, nor for the `soft`
+## flash of Reduce motion or the Flashes option off.
+static func flash_rim(dark_now: float, flash: float, soft: bool) -> float:
+	return 0.0 if soft else rim_strength(dark_now) * flash
+
+
 ## The hero's lantern, at their feet: it burns only while they carry one
 ## (PIX-530, Lights.carried: no light follows a hero without one, the night
 ## is its lamps', windows', fires' and torches') and only shows when it's
@@ -277,7 +293,7 @@ func _process(delta: float) -> void:
 	# Rain darkens and cools the light, and the lamps come up a little; under
 	# rain, fog or snow the sky is all cloud.
 	var rain := 0.0
-	var overcast := 0.0
+	overcast = 0.0
 	if world.atmosphere != null:
 		rain = world.atmosphere.rain
 		overcast = maxf(rain, maxf(world.atmosphere.weights.get("mire", 0.0), world.atmosphere.weights.get("frost", 0.0)))

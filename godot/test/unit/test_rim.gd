@@ -45,13 +45,17 @@ func test_only_what_stands_is_rimmed() -> void:
 			assert_gt(define, -1, "%s rims" % file)
 			assert_lt(define, code.find("#include \"res://shaders/relief.gdshaderinc\""), "%s defines it before the include" % file)
 			assert_string_contains(code, "rim_open = ", "%s finds its open sides" % file)
+			assert_lt(code.find("rim_open = "), code.find("\tRIM_SKY;\n"), "%s takes the moon's tone once its sides are found (PIX-545)" % file)
 		else:
 			assert_false(code.contains("RELIEF_RIM"), "%s never rims (the ground, houses, dungeon floors)" % file)
 	var include := FileAccess.get_file_as_string("res://shaders/relief.gdshaderinc")
-	var block := include.substr(include.find("#ifdef RELIEF_RIM\n\t"))
+	var block := include.substr(include.find("#ifdef RELIEF_RIM\n\tvec4 edge"))
 	block = block.substr(0, block.find("#endif"))
-	assert_string_contains(block, "!LIGHT_IS_DIRECTIONAL", "never from the lightning")
-	assert_string_contains(block, "light_rim > 0.0", "nothing by day")
+	assert_string_contains(block, "light_rim > 0.0 && !LIGHT_IS_DIRECTIONAL", "a lamp's rim: nothing by day, never the lightning's sky")
+	assert_string_contains(block, "LIGHT_IS_DIRECTIONAL && rim_flash > 0.0", "the lightning's own, by its flash (PIX-545)")
+	assert_string_contains(include, "* light_rim * clamp(sun.w, 0.0, 1.0)", "the moon's: nothing by day, by the moon's share")
+	assert_true(ProjectSettings.has_setting("shader_globals/rim_flash"), "a global the shaders read")
+	assert_string_contains(FileAccess.get_file_as_string("res://scripts/storm.gd"), "global_shader_parameter_set(\"rim_flash\", LightRig.flash_rim(", "set with every flash")
 
 
 ## A carved or plain piece never rims, nor a lamp's own post (its light pools

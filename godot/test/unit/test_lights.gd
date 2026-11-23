@@ -73,6 +73,34 @@ func test_no_moon_through_the_night_of_ashs_smoke_or_its_dawn() -> void:
 	assert_eq(rig.moon(floor, 1.0, 0.0), 0.0, "none under the ground")
 
 
+## The moon's rim on what stands (PIX-545): a clear night's under the sky
+## alone, and the lightning's, as bright as its flash, never the soft kind.
+func test_the_moon_and_the_lightning_rim_what_stands() -> void:
+	var rim_on := LightRig.rim_on
+	LightRig.rim_on = true
+	var rig: LightRig = autofree(LightRig.new())
+	var town := MapData.load_by_id("town")
+	assert_eq(rig.moon_rim(town, 1.0, 0.0), Lights.RIM, "whole under a clear night's moon")
+	assert_eq(rig.moon_rim(town, 1.0, 1.0), 0.0, "none through cloud")
+	assert_almost_eq(rig.moon_rim(town, 1.0, 0.5), 0.5 * Lights.RIM, 0.001, "half through half a sky of it")
+	assert_eq(rig.moon_rim(town, 0.0, 0.0), 0.0, "none by day")
+	assert_eq(rig.moon_rim(town, Lights.RIM_DUSK, 0.0), 0.0, "none until the dusk")
+	var floor := MapData.new()
+	floor.style = "cave"
+	assert_eq(rig.moon_rim(floor, 1.0, 0.0), 0.0, "none under the ground")
+	assert_eq(rig.moon_rim(MapData.load_by_id("town_smith"), 1.0, 0.0), 0.0, "none in a room")
+	GameState.progression.prologue = Prologue.SCAVENGER
+	assert_eq(rig.moon_rim(town, Lights.darkness(rig.light_for(town)), 0.0), 0.0, "none through the Night of Ash's smoke")
+	assert_eq(LightRig.flash_rim(1.0, 1.0, false), Lights.RIM, "the lightning's, whole at its flash's height at night")
+	assert_eq(LightRig.flash_rim(1.0, 0.25, false), 0.25 * Lights.RIM, "fading as the flash does")
+	assert_eq(LightRig.flash_rim(1.0, 0.0, false), 0.0, "none between two strikes")
+	assert_eq(LightRig.flash_rim(0.0, 1.0, false), 0.0, "none by day")
+	assert_eq(LightRig.flash_rim(1.0, Weather.SOFT_LIGHT, true), 0.0, "none for the soft flash (Reduce motion, Flashes off)")
+	LightRig.rim_on = false
+	assert_eq(rig.moon_rim(MapData.load_by_id("town"), 1.0, 0.0) + LightRig.flash_rim(1.0, 1.0, false), 0.0, "--rim off holds both back")
+	LightRig.rim_on = rim_on
+
+
 func test_a_light_comes_up_with_the_dark_and_fire_flickers() -> void:
 	var lamp := Lights.make(Vector2(10, 20), 64.0, Lights.LAMP, 0.5, true)
 	autofree(lamp)

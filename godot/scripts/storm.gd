@@ -215,6 +215,8 @@ func _shine(now: float) -> void:
 	bolt.color = color
 	sky.energy = energy * (1.0 - SHADOW_DEPTH) if bolt.visible else energy
 	bolt.energy = energy * SHADOW_DEPTH / BOLT_ALPHA
+	# And it rims what stands from above (PIX-545), never the soft kind.
+	RenderingServer.global_shader_parameter_set("rim_flash", LightRig.flash_rim(world.lights.dark, flash if sky.visible else 0.0, soft))
 	_panes.clear()
 	if inside and flash > 0.0:
 		# After the LightRig has set them for the hour: the day through the
@@ -234,6 +236,7 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_PAUSED and sky != null:
 		sky.visible = false
 		bolt.visible = false
+		RenderingServer.global_shader_parameter_set("rim_flash", 0.0)
 		for lit: Array in _panes:
 			if is_instance_valid(lit[0]):
 				lit[0].color = lit[1]

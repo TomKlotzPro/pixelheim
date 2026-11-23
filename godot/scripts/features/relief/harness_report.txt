@@ -2,4 +2,4 @@
 # (scripts/harness_report.txt), which it joins after its head, by name; its
 # function is `field_relief(report)` in feature.gd.
 relief | on a map: Light relief on or off, and how many pieces wear its materials (Relief.material(): a standing sprite domed, a tile layer carved): on pieces 412 (PIX-528, PIX-529)
-rim | on a map: the lights' rim on or off (--rim) and its strength now, 0 by day, 1 at night (LightRig.rim_strength): on 1.00 (PIX-531)
+rim | on a map: the lights' rim on or off (--rim) and its strength now, 0 by day, 1 at night (LightRig.rim_strength), then the moon's rim (a clear night's under the sky, LightRig.moon_rim) and the lightning's (its flash now, LightRig.flash_rim): on 1.00 moon 1.00 flash 0.00 (PIX-531, PIX-545)

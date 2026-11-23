@@ -25,4 +25,5 @@ void fragment() {
 		NORMAL_MAP = RELIEF_FLAT;
 	}
 	rim_open = relief_form == RELIEF_DOMED && relief_rimmed ? RIM_OPEN(relief_tiles ? 1 : 0) : vec4(0.0);
+	RIM_SKY;
 }
