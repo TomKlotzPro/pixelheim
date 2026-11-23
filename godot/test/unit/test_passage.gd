@@ -46,7 +46,7 @@ class SpyRig extends CameraRig:
 	func cut() -> void:
 		cuts += 1
 
-	func set_bounds(_rect: Rect2, _under_dock := false, at_once := true) -> void:
+	func set_bounds(_rect: Rect2, at_once := true) -> void:
 		bounds_cut.append(at_once)
 
 	func shift(_by: Vector2) -> void:

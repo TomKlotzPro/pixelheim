@@ -602,3 +602,82 @@ func test_the_lanterns_hint_keeps_off_story_nights_and_out_of_caves() -> void:
 	story.prologue = was[0]
 	story.bells = was[1]
 	GameState.pack.items = was[2]
+
+
+## PIX-543: « Quest accepted » and the Next line showed through each other,
+## one fading in over the other fading out. They take the place in turn: the
+## line is gone before a message comes, and back once it has gone. PIX-537:
+## on the Night of Ash the line that names the key (Shift to roll, 1 for
+## your skill) stays, the message standing over it.
+func test_the_line_and_a_message_take_the_place_in_turn() -> void:
+	assert_true(Hud.line_shows("Find Sela's tent", false, false, false))
+	assert_false(Hud.line_shows("Find Sela's tent", false, true, false), "a message has its place")
+	assert_true(Hud.line_shows("Roll through a lunge (Shift to roll)", false, true, true), "the Night of Ash: both, one over the other")
+	assert_false(Hud.line_shows("Find Sela's tent", true, false, false), "a fight fades it")
+	assert_false(Hud.line_shows("", false, false, true), "no words, no line")
+	var messages := world.messages
+	messages.flash("The gate is barred.")
+	assert_true(messages.up(), "the place is the message's from the first")
+	messages.message_fade.custom_step(Messages.GIVE_WAY_S - 0.01)
+	assert_eq(messages.message_box.modulate.a, 0.0, "not yet shown while the line fades out")
+	messages.message_fade.custom_step(0.1)
+	assert_gt(messages.message_box.modulate.a, 0.0, "then it comes")
+	messages.message_fade.custom_step(30.0)
+	assert_false(messages.up(), "gone: the line's turn")
+
+
+## PIX-537: « The hounds fall back to ash. Someone is calling from Upper
+## Street. » stood on over « Find Sela's tent » after Bram's talk. A plain
+## message from before the night's step is old news once the step moves on;
+## one said with the step, and a tagged one, are read to their end.
+func test_a_message_from_before_the_nights_step_gives_way() -> void:
+	var story := GameState.progression
+	var was := story.prologue
+	var messages := world.messages
+	story.prologue = Prologue.HOUNDS
+	messages.update()
+	messages.flash("The hounds fall back to ash. Someone is calling from Upper Street.")
+	story.prologue = Prologue.BRAM
+	messages.update()
+	messages.message_fade.custom_step(1.0)
+	assert_true(messages.up(), "said with its step: it stays")
+	messages._message_since -= Messages.PLAIN_MESSAGE_S + 0.1
+	story.prologue = Prologue.SELA
+	messages.update()
+	messages.message_fade.custom_step(0.5)
+	assert_false(messages.up(), "the step moved on: old news, faded out")
+	messages.flash("Quest accepted: The Cheese Run.")
+	messages._message_since -= Messages.PLAIN_MESSAGE_S + 0.1
+	story.prologue = Prologue.CAP
+	messages.update()
+	messages.message_fade.custom_step(1.0)
+	assert_true(messages.up(), "a tagged one is read to its end")
+	story.prologue = was
+
+
+## PIX-543: the session's first message, its words not laid out when it was
+## flashed, stood a screen high as it faded in (the pale band on the Night of
+## Ash's first frame): the plate was fitted only once it showed. It is fitted
+## while it still waits for the line to leave (GIVE_WAY_S), nothing to see yet.
+func test_a_message_is_laid_out_before_it_shows() -> void:
+	var story := GameState.progression
+	var was := story.prologue
+	story.prologue = Prologue.DONE
+	hud.objective_box = PanelContainer.new()
+	hud.objective_label = Label.new()
+	hud.objective_box.add_child(hud.objective_label)
+	hud.root.add_child(hud.objective_box)
+	var messages := world.messages
+	messages.flash("The hounds fall back to ash. Someone is calling from Upper Street.")
+	# A frame for the words to lay out, the wait held where it is.
+	messages.message_fade.pause()
+	await wait_process_frames(1)
+	hud.update_objective()
+	story.prologue = was
+	var plate := messages.message_box
+	assert_eq(plate.modulate.a, 0.0, "still waiting its turn")
+	var line := messages.message_label.get_line_height()
+	var pad := plate.get_theme_stylebox("panel").get_minimum_size()
+	assert_between(plate.size.y, line, 2 * line + pad.y + 4, "a line or two high")
+	assert_lte(plate.size.x, Messages.MESSAGE_WIDTH + pad.x, "no wider than a message")
+	assert_gte(plate.position.y, 0.0, "its top on the screen")

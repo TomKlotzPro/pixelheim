@@ -34,4 +34,4 @@ On the web build `GameState.boot` reads the browser's saves, which are empty in 
 
 ## Known
 
-- The camera keeps inside the maps drawn. Where no map lies beyond the edge (a dungeon, a house, the Reach's rim), the hero stands off centre near it, as designed. On the Reach the maps beside are drawn a moment after the hero arrives, and the camera eases out to them: `start`'s first look waits for that (it once showed the hero held at the map's edge).
+- The camera keeps inside the maps drawn. Where no map lies beyond the edge (a dungeon, a house, the Reach's rim), the hero stands off centre near it, as designed; past a south edge it looks as far as the dock covers, on every map (`CameraRig.south_edge`, PIX-539), so the last rows stand above the dock. On the Reach the maps beside are drawn a moment after the hero arrives, and the camera eases out to them: `start`'s first look waits for that (it once showed the hero held at the map's edge).

@@ -683,10 +683,12 @@ func field_hudclash() -> String:
 		return ""
 	if hud.boss_bar.showing():
 		shown.append(["bar", hud.boss_bar.plate.get_global_rect()])
-	# The objective's line gives way to a message where it stands.
-	if messages.message_box.modulate.a > 0.0:
+	# The objective's line gives way to a message where it stands; on the
+	# Night of Ash both show, the message over the line (PIX-537).
+	var plate_up := messages.message_box.modulate.a > 0.0
+	if plate_up:
 		shown.append(["plate", messages.message_box.get_global_rect()])
-	elif hud.objective_box.modulate.a > 0.0:
+	if hud.objective_box.modulate.a > 0.0 and (not plate_up or Prologue.line_stays(GameState.progression.prologue)):
 		shown.append(["next", hud.objective_box.get_global_rect()])
 	shown.append(["hero", hud.hero_on_screen()])
 	var clashes: PackedStringArray = []

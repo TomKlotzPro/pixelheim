@@ -1098,10 +1098,10 @@ func lamps_out() -> void:
 		night_glows.erase(glow)
 		# Its light gone with it, so the square's own lights have the
 		# ground's blocks to themselves (PIX-285, test_night_light).
-		var light: Node = glow.get_meta("light", null)
-		if is_instance_valid(light):
-			light.free()
-		glow.remove_meta("light")
+		if glow.has_meta("light"):
+			if is_instance_valid(glow.get_meta("light")):
+				(glow.get_meta("light") as Node).free()
+			glow.remove_meta("light")
 
 
 ## The fire on ruin `ruin`, if it still burns, put out (CampsLayer).

@@ -546,10 +546,9 @@ func _enter_map(next: MapData, arrival: Vector2i, how: int) -> void:
 		# A hub grown since the hero was last there has its tour (PIX-324).
 		stage.play_hub_tour.call_deferred()
 	folk.keep_hours(true)
-	# Under the sky the camera may look past the south edge, under the dock.
 	# Held to the map at once, or eased back to it where nothing cuts (the
 	# maps beside a map drawn again come back in a moment).
-	camera_rig.set_bounds(Rect2(Vector2.ZERO, Vector2(next.size * TILE)), next.style != "cave" and PunyTerrain.is_outdoor(next.grid), Passage.does(how, Passage.PLACED))
+	camera_rig.set_bounds(Rect2(Vector2.ZERO, Vector2(next.size * TILE)), Passage.does(how, Passage.PLACED))
 	if leaving:
 		foes.spawn_for(next)
 	# The dodge taught on the way out to where packs roam, after the first
