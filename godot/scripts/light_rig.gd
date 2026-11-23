@@ -178,6 +178,17 @@ static func relief_strength() -> float:
 	return Lights.RELIEF if GameState.settings.relief else 0.0
 
 
+## The rim on what stands, false only for the harness's `--rim off` (PIX-531).
+static var rim_on := true
+
+
+## The shaders' `light_rim` global (PIX-531) when it is `dark_now` dark: none by
+## day nor by a room's dim day, whole from where the hand lantern lights.
+## The relief's setting is not read: the rim needs none of its normals.
+static func rim_strength(dark_now: float) -> float:
+	return Lights.RIM * smoothstep(Lights.RIM_DUSK, Lights.LANTERN_DARK, dark_now) if rim_on else 0.0
+
+
 ## The hero's lantern, at their feet: it burns only while they carry one
 ## (PIX-530, Lights.carried: no light follows a hero without one, the night
 ## is its lamps', windows', fires' and torches') and only shows when it's
@@ -286,6 +297,8 @@ func _process(delta: float) -> void:
 	RenderingServer.global_shader_parameter_set("sun", Vector4(sun.x, sun.y, sun.z * (1.0 - overcast), moon))
 	# The lamps and the lantern shape the art, with Light relief on (PIX-528).
 	RenderingServer.global_shader_parameter_set("relief", relief_strength())
+	# And rim what stands on its side facing them, in the dark (PIX-531).
+	RenderingServer.global_shader_parameter_set("light_rim", rim_strength(dark))
 	var still: bool = GameState.settings.reduce_motion
 	var t := GameClock.seconds()
 	# The day through a room's window follows the sky, not the room's dark

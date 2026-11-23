@@ -557,7 +557,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/features/mirefen/mire_dressing.gd` — The Mirefen alive (PIX-401, the v0.307 world audit: « a uniform fen of puddles and a few shrubs, one ruin and two camps »)
 - `scripts/features/night_shadows/feature.gd` — The lamps' shadows in the harness (PIX-490)
 - `scripts/features/night_shadows/night_shadows_layer.gd` — What blocks the lamps' light on a map (PIX-490), once everything stands
-- `scripts/features/relief/feature.gd` — Light relief in the harness (PIX-528): `--relief` and the report's relief=, their rows beside this script and their flows in tools/flows.d/relief.txt.
+- `scripts/features/relief/feature.gd` — Light relief in the harness (PIX-528): `--relief` and the report's relief=, and the lights' rim's `--rim` and rim= (PIX-531), their rows beside this script and their flows in tools/flows.d/relief.txt.
 - `scripts/features/storm/feature.gd` — Thunderstorms in the harness (PIX-491): `storm`, `drying` and `--strike`, the puddles' layer (PuddlesLayer) and the report's storm=, their rows beside this script and their flows in tools/flows.d/storm.txt.
 - `scripts/features/storm/puddles_layer.gd` — What the rain leaves on a map under the sky (PIX-491)
 - `scripts/features/waysides/feature.gd` — The Reach's wayside lanterns in the harness (PIX-397, step 4)

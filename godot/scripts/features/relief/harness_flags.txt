@@ -2,3 +2,4 @@
 # core's (scripts/harness_flags.txt), in its table after feature.gd's
 # flags_after().
 --relief | <on|off> | Light relief forced on or off for the run, whatever the player's setting (PIX-528); the report's relief= says which
+--rim | <on|off> | the lights' rim on what stands held back (off) for a picture beside one with it (PIX-531); the report's rim= says which

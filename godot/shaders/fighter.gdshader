@@ -3,11 +3,16 @@ shader_type canvas_item;
 // silhouette rather than a brightened tint; a death dissolves it pixel by
 // pixel, the pixels about to go glowing like embers. Both by the sprite's own
 // texels, so the art stays crisp. The fighter sets `flash` and `dissolve`
-// (0..1) on its own copy of the material. On the desktop app's linear canvas
-// (PIX-227) the flash fades as it does in the browser; `ember`, a colour,
-// reaches it already linear.
+// (0..1) on its own copy of the material; the villagers share one, never
+// flashed (Npc). On the desktop app's linear canvas (PIX-227) the flash fades
+// as it does in the browser; `ember`, a colour, reaches it already linear.
+// In the dark the lights rim its edge on the side facing them (PIX-531,
+// relief.gdshaderinc's RELIEF_RIM); its normal stays flat, so the Light
+// relief never shapes a face.
 
 #include "res://shaders/linear.gdshaderinc"
+#define RELIEF_RIM
+#include "res://shaders/relief.gdshaderinc"
 
 uniform float flash : hint_range(0.0, 1.0) = 0.0;
 // Texels darker than this keep their colour through a flash (PIX-497: the
@@ -24,8 +29,11 @@ float hash(vec2 p) {
 
 void fragment() {
 	vec4 c = COLOR;  // already the texel times the modulate
-	vec3 shown = to_display(c.rgb);
-	c.rgb = to_canvas(mix(shown, vec3(1.0), flash * step(keep, max(shown.r, max(shown.g, shown.b)))));
+	// Unflashed, untouched: on the linear canvas the round trip isn't exact.
+	if (flash > 0.0) {
+		vec3 shown = to_display(c.rgb);
+		c.rgb = to_canvas(mix(shown, vec3(1.0), flash * step(keep, max(shown.r, max(shown.g, shown.b)))));
+	}
 	if (dissolve > 0.0) {
 		float h = hash(floor(UV / TEXTURE_PIXEL_SIZE));
 		if (h < dissolve) {
@@ -35,4 +43,6 @@ void fragment() {
 		}
 	}
 	COLOR = c;
+	NORMAL_MAP = RELIEF_FLAT;
+	rim_open = RIM_OPEN(0);
 }

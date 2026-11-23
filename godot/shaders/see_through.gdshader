@@ -3,10 +3,12 @@ shader_type canvas_item;
 // them (PIX-429, see_through.gdshaderinc): the roofed well and the other
 // props of tiles, the mire's reeds. Its sprite's origin is its foot
 // (MapLayer.see_through). The lamps and the lantern shape it, domed from its
-// outline (Light relief, PIX-528, PIX-529, relief.gdshaderinc).
+// outline (Light relief, PIX-528, PIX-529, relief.gdshaderinc), and in the
+// dark rim its side facing them (PIX-531, RELIEF_RIM).
 
 #include "res://shaders/linear.gdshaderinc"
 #include "res://shaders/see_through.gdshaderinc"
+#define RELIEF_RIM
 #include "res://shaders/relief.gdshaderinc"
 
 varying vec2 canvas_pos;
@@ -24,4 +26,5 @@ void fragment() {
 	} else {
 		NORMAL_MAP = RELIEF_FLAT;
 	}
+	rim_open = RIM_OPEN(0);
 }
