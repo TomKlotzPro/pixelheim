@@ -2793,6 +2793,10 @@ msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "At night the lamps, windows, fires, torches, candles and a carried lantern edge whoever stands near them, on the side facing the flame, in the light's own colour"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "At night your lantern and the three nearest lamps, torches or fires cast soft shadows on the ground"
 msgstr ""
 
@@ -3514,6 +3518,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Easy on the Eyes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Edged in Light"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5158,6 +5166,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Nothing Wasted"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Nothing by day, and the same with the Light relief on or off"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7358,6 +7370,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The hero's fall plays at its full quality again"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The hero, villagers, foes and the props that stand (crates, stall wares, a room's furniture) catch it; the ground, houses and trees don't"
 msgstr ""
 
 #: assets/data/changelog.json
