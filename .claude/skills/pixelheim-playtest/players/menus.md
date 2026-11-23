@@ -14,6 +14,8 @@ Then one session per preset, for what the plain launch doesn't reach. Stop each 
 
 ## Route
 
+Start with what the last runs left: Clear warnings, the Saves keys (D, X, C, and V on an empty clipboard), Language, Reduce motion, Salvage, and Vex's Craft tab.
+
 1. **The title's menu**: every entry. Go in and come back out with Esc.
 2. **Options**: change every setting and change it back, Language too (it reloads the game). Skip Fullscreen, since the headless browser shows nothing of it. Rebind one key, use the new key in the game, then set it back. Try Reduce motion on, then off.
 3. **The saves screen**, if the title has one.

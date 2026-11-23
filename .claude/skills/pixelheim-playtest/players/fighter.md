@@ -17,7 +17,7 @@ play.py makes every such fight real: the foe can hurt you. Never pass `kill` or 
 
 ## Route
 
-Start with the last runs' gaps: one session `--role warrior --level 20 --flags "fight elite --foe orc"` covers keys 5 and 6 and the cleave's measure; then the cleric, the paladin or the necromancer.
+The 2026-11-23 run measured the level-20 elite orc (cleave band about 0.55 s, every 4.5 s; it hits one cell off and misses at two; rolls through it are clean), keys 5 and 6, the cleric, the ranger at 3 and 4 cells, and the fall. Start with what no run has reached: the paladin and the necromancer, then the mage and the rogue, each against a pack and a shooter.
 
 Play four roles, about 15 looks each: **warrior**, **ranger**, **mage**, **rogue**. If looks are left, add the cleric, paladin or necromancer. Use level 5 or 10 for each, so you have skills, and play one role at level 20: keys 5 and 6 hold the skills of levels 11 and 14, so a level 10 hero has nothing there. A melee role and the ranger each fight an elite: watch its cleave and roll through it once.
 
