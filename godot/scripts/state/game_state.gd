@@ -40,8 +40,9 @@ signal hp_changed(hp: int, max_hp: int)
 signal saved(how: int)
 ## The hero crossed into a new rank (useRankUp): the ascension scene plays.
 signal ranked_up(title: String)
-## Levels were gained (the level-up fanfare).
-signal leveled_up(level: int)
+## Levels were gained (the level-up fanfare); `ranked` when they crossed
+## into a new rank too, whose ascension then takes the moment (PIX-536).
+signal leveled_up(level: int, ranked: bool)
 ## A skill the hero can now use (PIX-160: its first-time hint).
 ## `key`: the dock key (1-6) it took, 0 when all six were taken (PIX-190).
 signal skill_learned(entry: Dictionary, key: int)

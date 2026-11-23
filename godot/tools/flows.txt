@@ -298,8 +298,8 @@ die | die | map=town_inn cell=\(2, 3\) | combat rooms
 # gate, on the road where the night began; in the village that night and at
 # the Ashes after, beside Sela's tent, not on it.
 die-road | --prologue 1 die --wait 1.5 | map=overworld cell=\(48, 34\) night=1 | combat story night
-die-tent-night | --prologue 6 die --wait 1.5 | map=town cell=\(44, 27\) night=6 | combat story night
-die-tent | --map town --town-tier 0 die --wait 1.5 | map=town cell=\(44, 27\) night=0 | combat town
+die-tent-night | --prologue 6 die --wait 1.5 | map=town cell=\(43, 27\) night=6 | combat story night
+die-tent | --map town --town-tier 0 die --wait 1.5 | map=town cell=\(43, 27\) night=0 | combat town
 # The saves screen (PIX-129).
 saves | saves | open=saves_screen | save screen
 # A hero's first word with Maren after the night is her tin (PIX-253):
@@ -436,13 +436,15 @@ ash-beam-left | --prologue 3 --at 62,11 --keys e,esc,wait,wait,wait --lang en | 
 ash-beam-cc0 | --prologue 3 --at 62,11 --keys e,e,e,e,wait,wait --lang en cc0 | night=4 beam=gone | story town night
 ash-beam-east | --prologue 3 --at 65,12 --walk l,l,l,l,l,l,l,l --lang en | cell=\(64, 12\) night=3 beam=pinned | story town night
 # The line stays up through the embers' fight too (ash-line-embers: the
-# hero strikes first, as ash-mend, the embers slow to start it on the pack).
+# hero strikes first, as ash-mend, the embers slow to start it on the pack),
+# and under a message, which stands over it that night (PIX-537: ash-roll
+# and ash-skill, the plate up and the line shown).
 ash-line | --prologue 6 --at 40,8 --wait 3 --lang en | night=6 mobs=2 nightline=shown fight | story combat night
 ash-line-cc0 | --prologue 6 --at 40,8 --wait 3 --lang en cc0 | night=6 mobs=2 nightline=shown fight | story combat night
 ash-line-embers | --prologue 9 --at 38,23 --keys a,j,wait,wait --lang en | night=9 mobs=3 nightline=shown fight | story combat night
-ash-roll | --prologue 6 --at 40,8 --keys shift --lang en | night=3 mobs=2 plate=A roll like that slips their teeth\. Someone is calling from Upper Street\. | story combat night
+ash-roll | --prologue 6 --at 40,8 --keys shift --lang en | night=3 mobs=2 nightline=shown plate=A roll like that slips their teeth\. Someone is calling from Upper Street\. | story combat night
 ash-roll-cc0 | --prologue 6 --at 40,8 --keys shift --lang fr cc0 | night=3 mobs=2 plate=Une roulade pareille, et leurs crocs mordent le vide\. Quelqu'un appelle depuis la Grand-Rue\. | story combat night lang
-ash-skill | --prologue 9 --at 38,23 --keys 1 --lang en | night=5 mobs=3 plate=Your skill answers the fire\. Maren is waiting at the shrine\. | story combat night
+ash-skill | --prologue 9 --at 38,23 --keys 1 --lang en | night=5 mobs=3 nightline=shown fight plate=Your skill answers the fire\. Maren is waiting at the shrine\. | story combat night
 ash-skill-cc0 | --prologue 9 --at 38,23 --keys 1 --lang fr cc0 | night=5 mobs=3 plate=Votre compétence répond au feu\. Maren attend au sanctuaire\. | story combat night lang
 ash-mend-idle | --prologue 9 --at 38,23 wounded --role cleric --keys 1 --lang en | hp=28 night=9 mobs=3 | story combat night
 ash-mend | --prologue 9 --at 38,23 wounded --role cleric --keys a,j,wait,wait,1 --lang en | night=5 mobs=3 plate=Your skill answers the fire\. Maren is waiting at the shrine\. | story combat night
@@ -1028,6 +1030,11 @@ dawn | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5 | open=da
 dawn-pan | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 3 | open=dawn_screen dawn=fires quiet flames [1-9]\d* fires=houses [1-9].* hour=23:16 moon | story screen night
 dawn-told | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 10 --lang en | open=dawn_screen dawn=talk told keys fires= hour=04:48 sun | story screen night
 dawn-told-cc0 | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 10 cc0 | open=dawn_screen dawn=talk told keys fires= hour=04:48 sun | story screen night
+# PIX-543: "Dawn came grey" stood over a lamp-lit night square under the
+# clock's sun. The street lamps burn through the pan and are out with the
+# night once the telling begins (its grey light is test_lights').
+dawn-lamps-pan | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 3 | open=dawn_screen hour=23:16 moon lamplight=posts ([1-9]\d*)/\1 .* | story screen night
+dawn-lamps-out | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 10 | open=dawn_screen hour=04:48 sun lamplight=posts 0/[1-9]\d* .* | story screen night
 # After a real night every hero has put fires out with buckets: a fire out
 # keeps its place in the list with its flames freed, and the dawn stopped on
 # the first of them (no pan, no telling, the dock up). `douse` puts one out

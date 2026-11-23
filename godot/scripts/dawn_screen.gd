@@ -23,6 +23,10 @@ extends Screen
 const FIRES_SECONDS := 7.0
 ## The morning's grey, before the day's own sky takes over.
 const DAWN_GREY := Color(0.42, 0.36, 0.4, 0.22)
+## How far the night's red has drained by the time the last fire is out
+## (LightRig.ash_dawn): still night under the clock's moon; the dawn's grey
+## comes whole in the dark, with the clock's hour (PIX-543).
+const FIRES_OUT := 0.4
 
 var world: World
 var on_done := Callable()
@@ -68,6 +72,8 @@ func _open() -> void:
 				(node as Node).process_mode = Node.PROCESS_MODE_ALWAYS
 	world.camera_rig.follows = false
 	world.camera_rig.camera.process_mode = Node.PROCESS_MODE_ALWAYS
+	# And the light turns under the held world (PIX-543): the LightRig's.
+	world.lights.process_mode = Node.PROCESS_MODE_ALWAYS
 	# The dock goes as it does in talk (PIX-509); the rest of the HUD stays,
 	# for its sky and its clock.
 	world.hud.dock.visible = false
@@ -151,6 +157,7 @@ func _fires() -> void:
 			.set_delay(0.4 + (FIRES_SECONDS - 1.2) * n / maxf(1.0, order.size() - 1))
 	var sky: ColorRect = world.hud.sky_overlay
 	_flow.tween_property(sky, "color", DAWN_GREY, FIRES_SECONDS)
+	_flow.tween_property(world.lights, "ash_dawn", FIRES_OUT, FIRES_SECONDS)
 	# The clock keeps the night's hour through the pan and is set to the
 	# dawn's once, in the dark (PIX-512: run forward over the pan, it spun
 	# through a whole day when the night's walk had passed the dawn's hour).
@@ -202,6 +209,10 @@ func _place_everyone() -> void:
 	world.camera_rig.camera.global_position = MapView.center(Town.square())
 	world.hud.sky_overlay.color = DAWN_GREY
 	world.hud.update_clock(Prologue.dawn_steps())
+	# The dawn's light whole and the street lamps out with the night (PIX-543:
+	# the clock said 04:48 under a sun, over a lamp-lit night square).
+	world.lights.ash_dawn = 1.0
+	world.view.set_night(false)
 
 
 func _stand(villager: Npc, cell: Vector2i) -> void:
@@ -391,6 +402,8 @@ func close() -> void:
 	world.camera_rig.camera.offset = Vector2.ZERO
 	world.camera_rig.camera.process_mode = Node.PROCESS_MODE_INHERIT
 	world.camera_rig.follows = true
+	world.lights.process_mode = Node.PROCESS_MODE_INHERIT
+	world.lights.ash_dawn = 0.0
 	world.hud.dock.visible = true
 	if is_instance_valid(world.view.props):
 		world.view.props.process_mode = Node.PROCESS_MODE_INHERIT

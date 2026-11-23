@@ -193,6 +193,8 @@ var _night := -1
 var post_box: Sprite2D
 ## The post house behind it once built (PIX-325); null elsewhere.
 var post_house: Sprite2D
+## The patches over an untended room's fires (PIX-543, PunyInterior.cold).
+var cold_mouths: Array[Sprite2D] = []
 ## Morvax's tally marks on his forge's wall (PIX-253 step 8; PIX-325 adds
 ## the courier's lamps); null elsewhere.
 var tally_marks: TallyMarks
@@ -807,6 +809,15 @@ func _decor_lights() -> void:
 			# it (PIX-225).
 			var fire: Vector2 = Vector2(cell * TILE) + PunyInterior.FIRE_TILES[tile]
 			_add_hearth(fire, fire + Vector2(0, 2))
+			# Out, its mouth is cold too (PIX-543: Shade's tile keeps its
+			# embers), under the same patch every visit.
+			if untended():
+				var cold := Sprite2D.new()
+				cold.texture = PunyInterior.cold(tile)
+				cold.centered = false
+				cold.position = Vector2(cell * TILE)
+				props.add_child(cold)
+				cold_mouths.append(cold)
 		elif tile == PunyTown.DOOR and skyline.is_empty():
 			SettlementsLayer._add_chimney_smoke(self, cell)
 	# A room's candles and sconces burn at night, each warming the floor
@@ -1098,10 +1109,10 @@ func lamps_out() -> void:
 		night_glows.erase(glow)
 		# Its light gone with it, so the square's own lights have the
 		# ground's blocks to themselves (PIX-285, test_night_light).
-		var light: Node = glow.get_meta("light", null)
-		if is_instance_valid(light):
-			light.free()
-		glow.remove_meta("light")
+		if glow.has_meta("light"):
+			if is_instance_valid(glow.get_meta("light")):
+				(glow.get_meta("light") as Node).free()
+			glow.remove_meta("light")
 
 
 ## The fire on ruin `ruin`, if it still burns, put out (CampsLayer).

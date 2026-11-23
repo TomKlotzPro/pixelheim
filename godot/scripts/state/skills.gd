@@ -351,7 +351,7 @@ static func readout(stat: String, hero: HeroState, pack: InventoryState) -> Stri
 			parts.append(Text.t("HP %d") % hero.stats["maxHp"])
 			if Catalog.role(hero.role_id)["resource"] == "endurance":
 				parts.append("%s %d" % [resource_label(hero.role_id), hero.stats["maxMp"]])
-				parts.append(Text.t("regen %d/turn") % stamina_regen(hero))
+				parts.append(Text.t("regen %d/s") % stamina_regen(hero))
 	return " · ".join(parts)
 
 

@@ -32,3 +32,15 @@ func test_a_sign_keeps_its_icon_in_another_language() -> void:
 		assert_true(ShopSign.ICONS.has(sign_def["label"]), "%s keeps its icon" % sign_def["label"])
 	assert_ne(Catalog.item_name("bread"), "Bread", "the rest of the data does speak French")
 	Text.apply("en")
+
+
+## PIX-543: Odo's plate, over a door near the top of the screen, was cut by
+## the edge. The whole plate stays on the canvas; elsewhere it stands over
+## its door as it did.
+func test_a_doors_plate_keeps_to_the_screen() -> void:
+	var view := Vector2(1280, 720)
+	var plate := Vector2(190, 72)
+	assert_eq(Hud.plate_spot(Vector2(640, 300), plate, view), Vector2(545, 228), "over its door")
+	assert_eq(Hud.plate_spot(Vector2(640, 60), plate, view).y, Hud.PLATE_EDGE, "pushed down under the top edge")
+	assert_eq(Hud.plate_spot(Vector2(20, 300), plate, view).x, Hud.PLATE_EDGE, "and in from the left")
+	assert_eq(Hud.plate_spot(Vector2(1270, 300), plate, view).x, 1280 - 190 - Hud.PLATE_EDGE, "and from the right")

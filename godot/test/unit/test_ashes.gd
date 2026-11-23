@@ -63,6 +63,14 @@ func test_the_keepers_trade_from_stalls_and_sela_keeps_a_tent() -> void:
 	var map := _town()
 	assert_eq(map.tile_at(Vector2i(33, 25)), "crate", "Odo's stall")
 	assert_ne(Town.ashes_tent([]), Vector2i(-1, -1))
+	# PIX-543: a tent that reads as one, two cells wide (it was a triangle the
+	# hero's size), on open ground, Sela standing at its east side.
+	var tent := Town.ashes_tent([])
+	assert_eq(HamletArt.cells_wide(CampsLayer.PAVILION), 2)
+	for cell: Vector2i in [tent, tent + Vector2i.RIGHT]:
+		assert_eq(MapData.load_tiered("town", [], 1).tile_at(cell), "path", "pitched on the square at %s" % cell)
+	var sela: Dictionary = on_square[ids.find("innkeeper")]
+	assert_eq(Vector2i(int(sela["x"]), int(sela["y"])), tent + Vector2i(2, 0), "Sela beside her tent")
 
 
 func test_hilda_crafts_at_her_stall() -> void:

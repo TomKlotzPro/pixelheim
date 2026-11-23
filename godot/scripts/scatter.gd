@@ -50,11 +50,20 @@ const DETAIL := {
 	# the bank's foot, so a straight shore reads as a riverside; the
 	# Mirefen's pools along the mire's too (PIX-401).
 	"bank": [45, ["reeds"]],
+	# A beach's first cell by the grass, the woods or a road, and the grass's
+	# last by the beach (PIX-543: `dune`): Shade's sand meets them on the
+	# cells' own straight lines, so marram grows along both sides of the
+	# line, each tuft against it (detail_variant), the grass's own out over
+	# the sand, and it reads as a dune's ragged foot.
+	"dune": [75, ["tuft", "tuft", "tuft", "tuft_small", "tuft_small"]],
 }
 
 
 ## The land a bank of reeds grows by: grass, and the mire (PIX-401).
 const BANKS := ["grass", "marsh"]
+## The ground marram creeps onto the sand from (`dune`), on any of the
+## eight sides.
+const DUNES := ["grass", "flowers", "forest", "path"]
 
 
 ## The ridges' decor stands on their rim (PIX-309): this share (%) of the
@@ -102,12 +111,14 @@ static func _rim_share(grid: Dictionary, cell: Vector2i) -> int:
 
 ## The small detail a cell grows ("" for none): one of DETAIL's kinds for
 ## its tile (the mire's grass is the mire's, PunyTerrain.REGION_GRASS; the
-## river's water by grass is its bank's shallows), never where choice grows
-## something.
+## river's water by grass is its bank's shallows, the sand by grass its
+## dune), never where choice grows something.
 static func detail(grid: Dictionary, cell: Vector2i, region := "") -> String:
 	var tile: String = grid.get(cell, "")
 	if tile == "water" and [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN].any(func(step: Vector2i) -> bool: return grid.get(cell + step, "") in BANKS):
 		tile = "bank"
+	elif _dune(grid, cell):
+		tile = "dune"
 	if not DETAIL.has(tile) or choice(grid, cell) >= 0:
 		return ""
 	if tile == "grass" and PunyTerrain.REGION_GRASS.has(region):
@@ -125,6 +136,12 @@ static func detail(grid: Dictionary, cell: Vector2i, region := "") -> String:
 ## grass above it).
 static func detail_variant(grid: Dictionary, cell: Vector2i) -> int:
 	var pick := _detail_hash(cell) >> 13
+	if _dune(grid, cell):
+		# A dune's marram stands against the line (PIX-543): the sand's by its
+		# grass, the grass's by its sand.
+		var across: Array = DUNES if grid[cell] == "sand" else ["sand"]
+		var line := func(step: Vector2i) -> bool: return grid.get(cell + step, "") in across
+		return GroundDetail.dune_variant(line.call(Vector2i.LEFT), line.call(Vector2i.RIGHT), line.call(Vector2i.UP), line.call(Vector2i.DOWN), pick)
 	if grid.get(cell, "") != "water":
 		return pick % GroundDetail.VARIANTS.size()
 	# Any dry ground beside it is land the bank is drawn back from (a forest,
@@ -132,6 +149,15 @@ static func detail_variant(grid: Dictionary, cell: Vector2i) -> int:
 	# edge the water runs on.
 	var land := func(step: Vector2i) -> bool: return grid.has(cell + step) and not PunyTerrain.is_wet(grid[cell + step])
 	return GroundDetail.bank_variant(land.call(Vector2i.LEFT), land.call(Vector2i.RIGHT), land.call(Vector2i.UP), land.call(Vector2i.DOWN), pick)
+
+
+## Whether `cell` lies along a dune's line (PIX-543): sand with DUNES'
+## ground on any of its eight sides, or grass with sand straight beside it.
+static func _dune(grid: Dictionary, cell: Vector2i) -> bool:
+	var tile: String = grid.get(cell, "")
+	if tile == "sand":
+		return range(-1, 2).any(func(dy: int) -> bool: return range(-1, 2).any(func(dx: int) -> bool: return grid.get(cell + Vector2i(dx, dy), "") in DUNES))
+	return tile == "grass" and [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN].any(func(step: Vector2i) -> bool: return grid.get(cell + step, "") == "sand")
 
 
 static func _detail_hash(cell: Vector2i) -> int:

@@ -54,7 +54,9 @@ func _info() -> String:
 	var blockers := Town.age_blockers(building, GameState.progression, GameState.settlement)
 	for need: Dictionary in Town.age(building)["requires"]:
 		lines.append("%s %s" % [Text.t("Needed:") if need["line"] in blockers else Text.t("Done:"), need["line"]])
-	lines.append(Text.t("When it's done: %s.") % Text.listed(Town.tier(building)["perks"]).to_lower())
+	# The perks are written as they read here, mid-sentence (PIX-540: lower-cased
+	# whole, the list said "odo pays", "hilda forges").
+	lines.append(Text.t("When it's done: %s.") % Text.listed(Town.tier(building)["perks"]))
 	return "\n".join(lines)
 
 

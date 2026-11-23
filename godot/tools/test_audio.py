@@ -168,8 +168,13 @@ class AudioTest(unittest.TestCase):
         # PIX-416: as the v0.307 tracks are heard (-37.5 LUFS off their mono
         # renders, 3 LU more on both channels), so a place changing its
         # track never jumps in level.
+        # music_prep never lifts a track past the peak ceiling (gain_for), so a
+        # wide one (the orchestral title, v0.396) may sit below, its peak at it.
         for slot, track in installed_music():
-            self.assertAlmostEqual(track["loudness"], MUSIC["loudness"], delta=0.5, msg=slot)
+            if track["loudness"] < MUSIC["loudness"] - 0.5:
+                self.assertAlmostEqual(track["peak"], MUSIC["peak"], delta=0.5, msg="%s: quiet without its peak at the ceiling" % slot)
+            else:
+                self.assertAlmostEqual(track["loudness"], MUSIC["loudness"], delta=0.5, msg=slot)
 
     def test_the_bundles_tracks_keep_to_their_budget(self):
         # PIX-416: every byte of them is in the web build's download.

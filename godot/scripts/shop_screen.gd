@@ -35,6 +35,7 @@ const BAR := 16.0
 const PADDING := UiStyle.INSET
 ## A tab, standing on the pages' top edge.
 const TAB_HEIGHT := 36.0
+const TAB_GAP := 4.0
 ## The most of a wide row a tag or a price takes before it wraps, so the
 ## name beside it keeps room.
 const NOTE_SHARE := 0.4
@@ -126,11 +127,11 @@ func _open() -> void:
 	purse.position = Vector2(1060, 20)
 	add_child(purse)
 
-	var tab_row := HBoxContainer.new()
-	# Clear of the page's corners, as the pack's (PIX-388).
-	tab_row.position = Vector2(GOODS.position.x + INSET, GOODS.position.y - TAB_HEIGHT)
-	tab_row.custom_minimum_size.y = TAB_HEIGHT
-	tab_row.add_theme_constant_override("separation", 4)
+	# Clear of the pages' corners, as the pack's (PIX-388): `_place` stands
+	# each on a page's top edge (`tab_spots`).
+	var tab_row := Control.new()
+	tab_row.position.y = GOODS.position.y - TAB_HEIGHT
+	tab_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for index in tabs.size():
 		var button := UiStyle.button(tabs[index], switch.bind(index))
 		tab_buttons.append(button)
@@ -172,10 +173,10 @@ func _open() -> void:
 	about.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	about.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	about.get_v_scroll_bar().changed.connect(_set_footer)
-	inside.add_child(about)
+	inside.add_child(Layout.lined(about))
 	var info := VBoxContainer.new()
 	info.add_theme_constant_override("separation", 8)
-	about.add_child(info)
+	about.add_child(Layout.beside_bar(info))
 	card_head = HBoxContainer.new()
 	card_head.add_theme_constant_override("separation", 10)
 	info.add_child(card_head)
@@ -185,7 +186,8 @@ func _open() -> void:
 	card_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	card_icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	card_head.add_child(card_icon)
-	card_name = UiStyle.strong("", 16, UiStyle.INK)
+	# Reading size as its lines are (PIX-543: "Weight 1" stood larger than the name).
+	card_name = UiStyle.strong("", UiStyle.reading(16), UiStyle.INK)
 	card_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	card_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card_name.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -218,7 +220,9 @@ func _open() -> void:
 	after_row = HBoxContainer.new()
 	for row: HBoxContainer in [price_row, after_row]:
 		row.add_theme_constant_override("separation", 10)
-		info.add_child(row)
+		# Over the keys, out of what scrolls (PIX-543: in Large reading text
+		# the price and the gold after were a page down, and E bought unseen).
+		inside.add_child(row)
 	# How many of a stack (PIX-336): a key and a plank each way, all of it.
 	picker = Layout.flow(8)
 	picker.add_child(UiStyle.button("-", func() -> void: _pick(amount - 1), "{key:move_left}"))
@@ -252,7 +256,8 @@ func _open() -> void:
 
 
 func _command(event: InputEvent) -> Callable:
-	# The card pages whatever it asks: the price is at its foot.
+	# The card pages whatever it asks: the price stands over the keys, out of
+	# what scrolls.
 	var command := Layout.paging(about, event)
 	if command.is_valid():
 		return command
@@ -504,7 +509,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				var cost := trade.forge_price(instance, smithing, past)
 				var row := {
 					"label": _gear_label(instance), "tag": Text.t("  (worn)").strip_edges() if pack.is_equipped(uid) else "", "icon": instance["itemId"],
-					"detail": _describe(instance["itemId"], instance), "verb": "Temper +1",
+					"detail": _describe(instance["itemId"], instance) + ("" if maxed else _tempered(instance)), "verb": "Temper +1",
 					"enabled": not maxed and pack.gold >= cost,
 					"action": func() -> void: _after(trade.upgrade_gear(uid), "Hilda tempers it: +1.", "Not enough gold, or it can take no more."),
 				}
@@ -615,11 +620,38 @@ static func _reveal(id: int, side: int, index: int) -> void:
 	screen.scrolls[side].ensure_control_visible(screen.lists[side].get_child(index) as Control)
 
 
+## Where each tab starts (PIX-543), given their `widths` and the `pages`
+## whose top edges they stand on: touching the one before, INSET clear of a
+## page's corners, a tab that would pass a page's right corner starting on
+## the next page (Hilda's fifth, Craft, stood over the card's corner).
+static func tab_spots(widths: Array[float], pages: Array[Rect2]) -> Array[float]:
+	var spots: Array[float] = []
+	var page := 0
+	var x := pages[0].position.x + INSET
+	for width in widths:
+		while x + width > pages[page].end.x - INSET and page + 1 < pages.size():
+			page += 1
+			x = pages[page].position.x + INSET
+		spots.append(x)
+		x += width + TAB_GAP
+	return spots
+
+
 ## The pages, lists and card where this tab has them: Buy and Sell three
 ## columns, the others a wide list and the card.
 func _place() -> void:
 	var paired := _paired()
 	var rects := [GOODS, PACK] if paired else [WIDE, SIDE]
+	var widths: Array[float] = []
+	for button in tab_buttons:
+		widths.append(button.get_combined_minimum_size().x)
+	var edges: Array[Rect2] = [GOODS, CARD, PACK]
+	if not paired:
+		edges = [WIDE, SIDE]
+	var spots := tab_spots(widths, edges)
+	for index in tab_buttons.size():
+		tab_buttons[index].position = Vector2(spots[index], 0)
+		tab_buttons[index].size = Vector2(widths[index], TAB_HEIGHT)
 	for side in 2:
 		var rect: Rect2 = rects[side]
 		pages[side].position = rect.position
@@ -981,6 +1013,20 @@ static func _describe(item_id: String, instance := {}) -> String:
 	]
 	lines.append_array(_lines(item_id, instance))
 	return "\n".join(lines)
+
+
+## What a tempering would make of the piece, under its words (PIX-543: the
+## card said "Temper +1" and not of what), as the Stats sheet says "With a
+## point:"; nothing for a piece with no number the forge raises.
+static func _tempered(instance: Dictionary) -> String:
+	var item := Catalog.item(instance["itemId"])
+	var after: int = int(instance.get("bonus", 0)) + int(instance.get("deepBonus", 0)) + 1
+	var parts: Array[String] = []
+	if item.has("damage"):
+		parts.append(Text.t("Damage %d") % (int(item["damage"]) + after))
+	if item.has("armor"):
+		parts.append(Text.t("Armor %d") % (int(item["armor"]) + after))
+	return "" if parts.is_empty() else "\n\n" + Text.t("Tempered: %s") % ", ".join(parts)
 
 
 ## The numbers that matter, a line each.

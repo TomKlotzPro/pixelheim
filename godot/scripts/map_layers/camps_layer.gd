@@ -29,6 +29,11 @@ const CAMP_RING := [
 	Vector2i(2, 1), Vector2i(0, -2),
 ]
 const TENT_FOOT := Rect2(1, 5, 14, 11)
+## Sela's tent on the square while the inn is rubble (PIX-543: Shade's
+## one-tile tent was a triangle the hero's size, hidden behind them): the
+## sutler's tent the hubs pitch (HubArt, drawn in code, so it stands without
+## the pack), two cells wide on the post house's foot.
+const PAVILION := "sutler_tent"
 const TORCH_FOOT := Rect2(5, 9, 6, 7)
 ## A burning house lights the ground as a few soft pools (PIX-285): one for
 ## each part of it at most FIRE_POOL cells a side, from the part's middle
@@ -55,7 +60,8 @@ static func plan_in(view: MapView) -> void:
 		# Sela's tent on the square while the inn is rubble (PIX-146).
 		var tent := Town.ashes_tent(Town.done_projects(GameState.settlement))
 		if tent.x >= 0:
-			view.camps[tent] = {"kind": "tent", "tile": TENTS["marsh"]}
+			view.camps[tent] = {"kind": "pavilion"}
+			view.data.covered[tent + Vector2i.RIGHT] = true
 		# Mirelle's counting table by the hall once she's settled, her
 		# ledger open on it (PIX-338).
 		var desk := Town.bank_desk().position
@@ -142,9 +148,10 @@ func set_night(view: MapView, _night: bool) -> void:
 			pane.set_meta("dark", true)
 			pane.visible = false
 			# The LightRig shows a light by its energy: none thrown below it.
-			var light: Variant = pane.get_meta("light", null)
-			if is_instance_valid(light):
-				(light as Node).set_meta("energy", 0.0)
+			# A far pane has none (get_meta with a null default still
+			# logs an error for a missing key: PIX-538).
+			if pane.has_meta("light") and is_instance_valid(pane.get_meta("light")):
+				(pane.get_meta("light") as Node).set_meta("energy", 0.0)
 
 
 ## The town's ruins smoking, and on the night of the fire still burning
@@ -413,7 +420,7 @@ static func pitch_tent(view: MapView, cell: Vector2i) -> void:
 
 ## A camp's tent or torch: sorted among the actors at its foot, which blocks.
 static func _add_camp_piece(view: MapView, cell: Vector2i, piece: Dictionary) -> void:
-	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post": MapView.HAMLET_FOOT, "post_house": POST_HOUSE_FOOT, "desk": DESK_FOOT}.get(piece["kind"], TORCH_FOOT)
+	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post": MapView.HAMLET_FOOT, "post_house": POST_HOUSE_FOOT, "pavilion": POST_HOUSE_FOOT, "desk": DESK_FOOT}.get(piece["kind"], TORCH_FOOT)
 	var root := Node2D.new()
 	root.position = Vector2(cell * TILE) + Vector2(0, foot.end.y)
 	root.add_to_group("decor")
@@ -449,6 +456,10 @@ static func _add_camp_piece(view: MapView, cell: Vector2i, piece: Dictionary) ->
 		view.post_house = Sprite2D.new()
 		view.post_house.texture = HamletArt.texture("post_house")
 		sprite = view.post_house
+	elif piece["kind"] == "pavilion":
+		var pavilion := Sprite2D.new()
+		pavilion.texture = HamletArt.texture(PAVILION)
+		sprite = pavilion
 	else:
 		var tent := Sprite2D.new()
 		tent.texture = RoomArt.texture(piece["art"]) if piece.has("art") else PunyTerrain.sheet().tile_texture(piece["tile"])
@@ -458,8 +469,8 @@ static func _add_camp_piece(view: MapView, cell: Vector2i, piece: Dictionary) ->
 			view._add_candle(Vector2(cell * TILE) + DESK_FLAME)
 	sprite.set("centered", false)
 	sprite.position = Vector2(0, -foot.end.y - (LampArt.STAKE_LIFT if piece["kind"] == "torch" else 0))
-	if piece["kind"] in ["post", "post_house"]:
-		sprite.position.y = TILE - HamletArt.size("post_box" if piece["kind"] == "post" else "post_house").y - foot.end.y
+	if piece["kind"] in ["post", "post_house", "pavilion"]:
+		sprite.position.y = TILE - HamletArt.size({"post": "post_box", "pavilion": PAVILION}.get(piece["kind"], "post_house")).y - foot.end.y
 	root.add_child(sprite)
 	# A tent, a board, the post box and its house cast as the trees do
 	# (PIX-524); a torch's flame doesn't.

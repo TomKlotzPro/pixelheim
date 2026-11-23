@@ -206,6 +206,16 @@ static func bank_variant(west: bool, east: bool, north: bool, south: bool, pick:
 	return VARIANTS.size() + across + BANK_ACROSS.size() * down
 
 
+## The variant of a dune's marram by the sides its line lies on (PIX-543:
+## the sand's grass, the grass's sand), among a bank's spots: against that
+## side, the other way round from the reeds, so the tufts stand over the
+## line the sand meets the grass on; `pick` chooses where no side says.
+static func dune_variant(west: bool, east: bool, north: bool, south: bool, pick: int) -> int:
+	var across := 0 if west else (1 if east else 2 + pick % 2)
+	var down := 2 if north else (1 if south else (pick >> 1) % 2 * 3)
+	return VARIANTS.size() + across + BANK_ACROSS.size() * down
+
+
 ## Every drawing at every spot, one sheet, drawn once; every tile made with
 ## the tileset, so laying one never changes it (One Reach, PIX-269).
 static func tileset() -> TileSet:

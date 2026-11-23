@@ -33,6 +33,10 @@ const ROOM_GLOW := 0.7
 ## The light now and how dark it is (0 by day, 1 at night).
 var light := Color.WHITE
 var dark := 0.0
+## How far the Night of Ash's red has turned to its dawn's grey (PIX-543:
+## the DawnScreen's, "Dawn came grey" stood over the night's red and its
+## lit lamps); 0 again once the day begins.
+var ash_dawn := 0.0
 ## The water's reflections, the cloud shadows and the region's air (PIX-224,
 ## the Atmosphere node sets it), under the glow on its layer, and the map the
 ## reflections were laid out for; the world's clock and the wind's strength
@@ -235,14 +239,29 @@ static func cloud_noise() -> NoiseTexture2D:
 
 
 ## The light for the map the hero is on, at this hour.
+## Whether the map is the village on the Night of Ash, through its dawn too.
+static func ash_night(map: MapData) -> bool:
+	return GameState.progression.prologue != Prologue.DONE and map.id == "town"
+
+
+## The moon's share (the sun's w): the night's dark under the sky, none
+## through cloud, nor through the Night of Ash's smoke. The night is told by
+## its state, not its colour: its dawn greys the light (ash_dawn) while the
+## smoke still hangs.
+func moon(map: MapData, darkness_now: float, overcast: float) -> float:
+	if not Lights.under_sky(map) or ash_night(map):
+		return 0.0
+	return darkness_now * (1.0 - overcast)
+
+
 func light_for(map: MapData) -> Color:
 	if map == null:
 		return Lights.DAY
 	if map.style == "cave":
 		# A region dungeon's floor may keep its own dark (PIX-255).
 		return Color(map.light, 1.0) if map.light.a > 0.0 else Lights.UNDERGROUND
-	if GameState.progression.prologue != Prologue.DONE and map.id == "town":
-		return Lights.ASH_NIGHT
+	if ash_night(map):
+		return Lights.ASH_NIGHT.lerp(Lights.ASH_DAWN, ash_dawn)
 	if PunyInterior.is_room(map.id):
 		return Lights.indoor(GameState.world.steps)
 	return Lights.outdoor(GameState.world.steps)
@@ -293,8 +312,7 @@ func _process(delta: float) -> void:
 	# cloud, nor through the Night of Ash's smoke.
 	var outside := Lights.under_sky(world.map)
 	var sun := DayNight.sun(GameState.world.steps) if outside else Vector3.ZERO
-	var moon := dark * (1.0 - overcast) if outside and light_for(world.map) != Lights.ASH_NIGHT else 0.0
-	RenderingServer.global_shader_parameter_set("sun", Vector4(sun.x, sun.y, sun.z * (1.0 - overcast), moon))
+	RenderingServer.global_shader_parameter_set("sun", Vector4(sun.x, sun.y, sun.z * (1.0 - overcast), moon(world.map, dark, overcast)))
 	# The lamps and the lantern shape the art, with Light relief on (PIX-528).
 	RenderingServer.global_shader_parameter_set("relief", relief_strength())
 	# And rim what stands on its side facing them, in the dark (PIX-531).

@@ -69,6 +69,8 @@ func test_older_saves_walk_from_their_spec() -> void:
 func test_crossing_a_rank_sends_the_ascension_once() -> void:
 	var titles: Array[String] = []
 	state.ranked_up.connect(func(title: String) -> void: titles.append(title))
+	var ranked: Array[bool] = []
+	state.leveled_up.connect(func(_level: int, crossed: bool) -> void: ranked.append(crossed))
 	var hero: HeroState = state.hero
 	hero.level = 4
 	hero.xp_to_next = HeroState.xp_to_next_for(4)
@@ -80,3 +82,5 @@ func test_crossing_a_rank_sends_the_ascension_once() -> void:
 	hero.xp = hero.xp_to_next
 	state.spoils.grant_levels()
 	assert_eq(titles, ["Warrior"], "level 6 is no new rank")
+	# PIX-536: the world's LEVEL UP gives way to the ascension, at level 5 only.
+	assert_eq(ranked, [true, false] as Array[bool])

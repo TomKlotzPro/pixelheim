@@ -546,10 +546,9 @@ func _enter_map(next: MapData, arrival: Vector2i, how: int) -> void:
 		# A hub grown since the hero was last there has its tour (PIX-324).
 		stage.play_hub_tour.call_deferred()
 	folk.keep_hours(true)
-	# Under the sky the camera may look past the south edge, under the dock.
 	# Held to the map at once, or eased back to it where nothing cuts (the
 	# maps beside a map drawn again come back in a moment).
-	camera_rig.set_bounds(Rect2(Vector2.ZERO, Vector2(next.size * TILE)), next.style != "cave" and PunyTerrain.is_outdoor(next.grid), Passage.does(how, Passage.PLACED))
+	camera_rig.set_bounds(Rect2(Vector2.ZERO, Vector2(next.size * TILE)), Passage.does(how, Passage.PLACED))
 	if leaving:
 		foes.spawn_for(next)
 	# The dodge taught on the way out to where packs roam, after the first
@@ -924,10 +923,13 @@ func _build_hud() -> void:
 	hud.build()
 	GameState.hp_changed.connect(hud.on_hp_changed)
 	soundscape.listen()
-	GameState.leveled_up.connect(func(_level: int) -> void:
+	GameState.leveled_up.connect(func(_level: int, ranked: bool) -> void:
 		Sound.play("level_up")
 		soundscape.heard_hp = GameState.hero.hp
-		fx.level_up_burst()
+		# The ascension opens in the same tick and holds the world still: a
+		# burst begun now froze half-popped behind it (PIX-536).
+		if not ranked:
+			fx.level_up_burst()
 	)
 	GameState.gold_changed.connect(func(_gold: int) -> void: hud.dock.refresh())
 	GameState.inventory_changed.connect(hud.dock.refresh)

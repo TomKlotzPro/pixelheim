@@ -109,7 +109,8 @@ func test_the_beats_come_in_order_and_each_is_a_step() -> void:
 
 
 func test_the_line_above_the_dock_says_how_far_each_beat_has_got() -> void:
-	assert_string_contains(Bells.objective(Bells.LANTERNS, 3, 0, 0, 0.0), "Light the five lanterns on the square (3/5)")
+	# The HUD's plate says "Next" before it (PIX-541: "Next Next: Light...").
+	assert_eq(Bells.objective(Bells.LANTERNS, 3, 0, 0, 0.0), "Light the five lanterns on the square (3/5)")
 	assert_string_contains(Bells.objective(Bells.EMBERS, 0, 2, 1, 0.0), "Drive off the embers and douse the fires")
 	assert_string_contains(Bells.objective(Bells.HOLD, 0, 0, 0, 83.2), "1:24")
 

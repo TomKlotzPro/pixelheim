@@ -106,6 +106,34 @@ func test_a_press_on_a_typing_caption_shows_it_whole_and_waits_for_the_next() ->
 	await _end(scene)
 
 
+## PIX-543: two lines of the large type stood their first line over the
+## picture's edge. The lower bar rises with a tall caption, its margin kept
+## over it, its foot still the screen's.
+func test_the_lower_bar_rises_with_a_two_line_large_caption() -> void:
+	var was: bool = GameState.settings.large_text
+	GameState.settings.large_text = true
+	# After a beat, as every scene's first caption comes after its fade: the
+	# screen's entrance still moves what stands on it for 0.2 s.
+	var scene := _scene([
+		{"kind": "wait", "seconds": 0.3},
+		{"kind": "caption", "text": "A village under a mountain, and glad of it, most days of the week, though nobody up the street would say so to a stranger come asking after the road.", "hold": 30.0},
+	])
+	for i in 600:
+		if scene.caption.text != "":
+			break
+		await get_tree().process_frame
+	# Shown whole: a line still typing wraps only as its letters come.
+	scene._command(_press("interact")).call()
+	for i in 12:
+		await get_tree().process_frame
+	GameState.settings.large_text = was
+	assert_eq(scene.caption.get_line_count(), 2, "two lines of the large type")
+	assert_gt(scene.lower.size.y, float(Cutscene.BAR), "the bar is taller for them")
+	assert_eq(scene.lower.position.y, scene.caption.position.y - 14.0, "and stands its margin above the caption")
+	assert_eq(scene.lower.position.y + scene.lower.size.y, Cutscene.VIEW.y, "its foot at the screen's")
+	await _end(scene)
+
+
 ## PIX-513: the mountain path's sky lay over the click catcher, and its
 ## caption heard no click. Whatever the stage, the catcher lies over
 ## everything, and nothing else of the scene takes the mouse from it.

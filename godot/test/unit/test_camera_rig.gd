@@ -71,3 +71,33 @@ func test_a_map_smaller_than_the_view_stands_in_its_middle() -> void:
 	assert_eq(CameraRig.held(40.0, 0.0, 1344.0, 213.0), 213.0, "held off the left edge")
 	assert_eq(CameraRig.held(1300.0, 0.0, 1344.0, 213.0), 1131.0, "and the right")
 	assert_eq(CameraRig.held(600.0, 0.0, 1344.0, 213.0), 600.0, "free between")
+
+
+## PIX-539: in the sea cave the hero walked row 27 under the Next line and
+## the dock, the camera held at the map's edge (only maps under the sky let
+## it look past, PIX-269). On every cave and room the camera looks past the
+## south edge by what the dock covers, and no floor lies in the last row, so
+## the lowest floor that can be walked stands clear of the Next line.
+func test_the_lowest_floor_of_a_cave_or_a_room_stands_over_the_next_line() -> void:
+	# The dock as it stands on the 1280x720 canvas (HudDock.top).
+	var dock := 598.0
+	var half := 360.0 / CameraRig.ZOOM
+	var checked := 0
+	for file: String in DirAccess.get_files_at("res://assets/maps"):
+		if not file.ends_with(".json") or file == "interactables.json":
+			continue
+		var map := MapData.load_from("res://assets/maps/" + file)
+		if PunyTerrain.is_outdoor(map.grid):
+			continue
+		var lowest := 0
+		for cell: Vector2i in map.grid:
+			if map.is_walkable(cell):
+				lowest = maxi(lowest, cell.y)
+		# Where the camera stands with the hero at the south edge, and their
+		# feet on the screen then.
+		var middle := CameraRig.held(INF, 0.0, CameraRig.south_edge(map.size.y * MapView.TILE, dock, CameraRig.ZOOM), half)
+		var feet := 360.0 + ((lowest + 1) * MapView.TILE - middle) * CameraRig.ZOOM
+		assert_lte(feet, dock - HudDock.NEXT_RISE, "%s: row %d" % [file, lowest])
+		checked += 1
+	assert_gt(checked, 10, "the caves and the rooms")
+	assert_eq(CameraRig.south_edge(480.0, 720.0, 3.0), 480.0, "no dock yet: the map's own edge")

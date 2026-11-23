@@ -52,6 +52,25 @@ func test_each_place_has_its_own_dark() -> void:
 	var town := MapData.load_by_id("town")
 	GameState.progression.prologue = Prologue.SCAVENGER
 	assert_eq(rig.light_for(town), Lights.ASH_NIGHT, "the night the village burns")
+	rig.ash_dawn = 1.0
+	assert_eq(rig.light_for(town), Lights.ASH_DAWN, "and its dawn, grey over the ashes (PIX-543)")
+	assert_lt(Lights.darkness(Lights.ASH_DAWN), Lights.RIM_DUSK, "light enough that nothing rims or burns as at night")
+
+
+## The moon shone through the Night of Ash's smoke from the first frame of
+## its dawn's pan: the night was told by its colour, which the dawn greys.
+func test_no_moon_through_the_night_of_ashs_smoke_or_its_dawn() -> void:
+	var rig: LightRig = autofree(LightRig.new())
+	var town := MapData.load_by_id("town")
+	assert_eq(rig.moon(town, 1.0, 0.0), 1.0, "a clear night's moon")
+	assert_eq(rig.moon(town, 1.0, 1.0), 0.0, "none through cloud")
+	GameState.progression.prologue = Prologue.SCAVENGER
+	for share: float in [0.0, 0.01, 0.5, 1.0]:
+		rig.ash_dawn = share
+		assert_eq(rig.moon(town, Lights.darkness(rig.light_for(town)), 0.0), 0.0, "none through the smoke, the dawn %s in" % share)
+	var floor := MapData.new()
+	floor.style = "cave"
+	assert_eq(rig.moon(floor, 1.0, 0.0), 0.0, "none under the ground")
 
 
 func test_a_light_comes_up_with_the_dark_and_fire_flickers() -> void:

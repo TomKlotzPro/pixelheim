@@ -352,6 +352,16 @@ func test_the_halls_fires_are_out_on_the_night_of_ash() -> void:
 		assert_does_not_have(PunyInterior.FLAMES, tile, "no flame left in Shade's tiles")
 	assert_has(drawn, PunyInterior.UNLIT[808], "the candelabra stands unlit by the thrones")
 	assert_has(drawn, PunyInterior.UNLIT[588], "and the ledger desk's candle")
+	# PIX-543: Shade's oven keeps embers in its tile; a patch draws them cold.
+	assert_eq(ash.cold_mouths.size(), 1, "the hearth's mouth is patched cold")
+	var patch := PunyInterior.cold(2565).get_image()
+	var cold := 0
+	for y in patch.get_height():
+		for x in patch.get_width():
+			var ink := patch.get_pixel(x, y)
+			cold += int(ink.a > 0.5)
+			assert_true(ink.a < 0.5 or ink.s < PunyInterior.EMBER_ABOVE, "no ember left at %d,%d" % [x, y])
+	assert_between(cold, 4, 24, "only the mouth's embers are painted over")
 	GameState.progression.prologue = Prologue.DONE
 	assert_gt(fires.call(_view(MapData.load_tiered("town_hall", [], 1))), 1, "the next day they burn again")
 	GameState.progression.prologue = 6

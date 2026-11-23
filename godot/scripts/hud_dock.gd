@@ -23,6 +23,9 @@ const TAG_RISE := 10
 ## Where the HUD's "Next" line stands over the dock (Hud.update_objective):
 ## the menu opens over it, clear of it (PIX-388: it hid the line's end).
 const NEXT_RISE := 38
+## How much taller the line stands in Large reading text, BIG's line box
+## for TEXT's (PIX-543: it grew down onto the dock's rim).
+const NEXT_LARGE := 11
 const PORTRAIT := 40
 const BARS := {
 	"hp": [Color("d8433f"), Color("ff8a80")],
@@ -127,7 +130,7 @@ func top() -> float:
 
 ## Where the HUD's words over the dock begin: the "Next" line's top.
 func words_top() -> float:
-	return plate.position.y - NEXT_RISE
+	return plate.position.y - NEXT_RISE - (NEXT_LARGE if GameState.settings.large_text else 0)
 
 
 ## Experience: a strip across the dock under the frame's top edge (PIX-388):

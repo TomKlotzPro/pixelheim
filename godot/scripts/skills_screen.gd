@@ -18,6 +18,8 @@ const TOP := PAGE.position.y + UiStyle.INSET
 const COLUMN_X := [104, 467, 830]
 const PATH_CARD := Vector2(346, 56)
 const NODE_CARD := Vector2(346, 40)
+## An icon's art across, in a node's row.
+const ICON := 32.0
 
 ## Grid cell -> {kind: "path"|"node", entry}; cells (col, row): the path
 ## graph on rows 0-1 (branch a, b), the tree's tiers on rows 2-7.
@@ -200,9 +202,16 @@ func _node_card(entry: Dictionary, chosen: bool) -> Control:
 	var icon := UiStyle.row_icon(ItemIcons.skill(entry["skill"]["name"]) if entry.has("skill") else null)
 	# Out of reach, faded as its name is and as the dock fades a slot.
 	icon.modulate.a = 1.0 if owned or buyable else 0.55
+	# The art's whole width (PIX-543): overhanging its room, it met the row's
+	# frame on one side and the numeral on the other.
+	icon.custom_minimum_size.x = ICON
+	(icon.get_child(0) as Control).position.x = 0
 	head.add_child(icon)
+	# One numeral a name (PIX-543): the row's says the tier, so an upgrade's
+	# own ("Power Strike II" on row II) isn't said twice.
+	var badge: String = TIER_BADGES[int(entry["tier"])]
 	var name := UiStyle.label(
-		"%s %s" % [TIER_BADGES[int(entry["tier"])], entry["name"]], 15,
+		"%s %s" % [badge, String(entry["name"]).trim_suffix(" " + badge)], 15,
 		UiStyle.LAMP if owned else (UiStyle.INK if buyable else UiStyle.FADED)
 	)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL

@@ -61,10 +61,9 @@ var _stopped := false
 ## hero stands on, and the maps drawn beside it (One Reach, PIX-269, step
 ## 5); the bounds as they're held now, eased toward those as they grow or
 ## shrink (a map beside the hero's drawn, or let go) so the view never
-## jumps; and whether it may look past their south edge under the dock.
+## jumps.
 var _bounds := Rect2()
 var _held := Rect2()
-var _under_dock := false
 ## How fast the bounds ease to new ones, per second.
 const BOUNDS_EASE := 6.0
 
@@ -95,11 +94,9 @@ func attach(player: Player) -> void:
 ## entered), or easing out to it or in from it (One Reach, PIX-269: the
 ## maps beside the hero's drawn or let go) - a camera pressed against an
 ## edge that opens drifts out over what's beyond rather than jumping.
-## Under the sky (`under_dock`) it may look past the south edge as far as
-## the dock covers, so a road out to the south stands above the dock.
-func set_bounds(rect: Rect2, under_dock := false, cut := true) -> void:
+## It may look past the south edge as far as the dock covers (south_edge).
+func set_bounds(rect: Rect2, cut := true) -> void:
 	_bounds = rect
-	_under_dock = under_dock
 	if cut or not _held.has_area():
 		_held = rect
 	_hold()
@@ -113,13 +110,22 @@ func _hold() -> void:
 	# Not while something else frames the shot (the overview frees it).
 	if camera == null or not _held.has_area() or not follows:
 		return
-	var below := (720.0 - dock_top()) / camera.zoom.y if _under_dock else 0.0
-	var limits := [int(floorf(_held.position.x)), int(floorf(_held.position.y)), int(ceilf(_held.end.x)), int(ceilf(_held.end.y + below))]
+	var limits := [int(floorf(_held.position.x)), int(floorf(_held.position.y)), int(ceilf(_held.end.x)), int(ceilf(south_edge(_held.end.y, dock_top(), camera.zoom.y)))]
 	if [camera.limit_left, camera.limit_top, camera.limit_right, camera.limit_bottom] != limits:
 		camera.limit_left = limits[0]
 		camera.limit_top = limits[1]
 		camera.limit_right = limits[2]
 		camera.limit_bottom = limits[3]
+
+
+## How far south the camera may look over bounds ending at `bottom` (world
+## pixels): past them by what the dock covers, so a map's last rows stand
+## above the dock, a road out to the south under the sky (PIX-269: the
+## ground goes on under the dock) and a cave's or a room's floor alike
+## (PIX-539: held at a cave's edge, the hero walked its south rows under
+## the dock and the Next line).
+static func south_edge(bottom: float, dock: float, zoom: float) -> float:
+	return bottom + (720.0 - dock) / zoom
 
 
 ## The held bounds a frame nearer the wanted ones, each edge easing on its

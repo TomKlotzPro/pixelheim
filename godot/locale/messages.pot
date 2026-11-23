@@ -213,7 +213,7 @@ msgid "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried 
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "A creeping rot that poisons for several turns."
+msgid "A creeping rot that poisons for 4 seconds."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -337,7 +337,7 @@ msgid "A soldier's badge from Greyhold, the tower on it worn smooth by a thumb."
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "A staggering bash that can stun the enemy for a turn."
+msgid "A staggering bash that can stun the enemy for a second."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1561,7 +1561,7 @@ msgid "Sela's Stew Recipe"
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "Sets the enemy ablaze, burning it for several turns."
+msgid "Sets the enemy ablaze, burning it for 3 seconds."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -2321,6 +2321,10 @@ msgid "A fine or epic drop's name rises over the fallen foe in its colour"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A fine piece's French name no longer stacks two « de », and a door's name plate stays whole at the top of the screen"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A first-time tip now shows while the thing it's about is there, and waits for a better moment otherwise: no roll tip after the fight, no board tip inside the hall"
 msgstr ""
 
@@ -2793,6 +2797,10 @@ msgid "At full health a potion or a meal is kept and a line says why, as is a ma
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "At level 5 the rank-up opens with no LEVEL UP left frozen behind you"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
 msgstr ""
 
@@ -2810,6 +2818,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "At the Bench"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "At the forge the card shows what tempering makes before you pay, and Hilda's tabs keep off the panel's corner"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3162,6 +3174,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Clear Screen"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Clear Sight"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4457,6 +4473,10 @@ msgid "In caves and mines, water drips and stones tumble, where a hearth used to
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "In caves and rooms the hero never walks under the HUD: the view stops above it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "In hero creation, the name field keeps taking letters after Enter on an empty name, and Esc goes back to the title"
 msgstr ""
 
@@ -4646,6 +4666,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Large reading text now grows every text you read: the pack, the journal, the skills and the counter's card"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Large reading text: cards end on a whole line, the price and your gold stay beside Buy, words keep clear of the scrollbar, plates, captions, the pause card and the journal keep their margins, and the pack shows five whole rows"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5117,6 +5141,10 @@ msgid "No Sale by Accident"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "No console error and no pale band as the Night of Ash begins"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "No light follows the hero any more: at night the town's lamps, the lit windows, the fires and the torches light the way"
 msgstr ""
 
@@ -5317,6 +5345,10 @@ msgid "On a phone, first-time tips now name what you can touch on screen instead
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On the Night of Ash a message stands above the Next line instead of hiding it, so the key to press stays in sight; elsewhere the two take turns"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "On the Night of Ash only the survivors are about, the shut gates say why, and nobody talks of rebuilding before the dawn decides it"
 msgstr ""
 
@@ -5334,6 +5366,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On the Night of Ash, the well and the burning homes now show E, and answer from any cell beside them"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "On the Night of Bells the journal says the lamps go out once every lantern is lit"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6217,6 +6253,10 @@ msgid "Skills names the path you walk in one line that fits"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Skills show their icon whole and their rank once; regeneration reads per second, and a skill lasts seconds, not turns"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Slaying one makes you a Boss slayer: +10% damage for 10 minutes, counting down at the top left"
 msgstr ""
 
@@ -6905,6 +6945,10 @@ msgid "The Deepwood is a real forest: thickets and glades, trees of mixed sizes 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Deepwood pond's reflection fades out instead of ending in a square, and marram grows along Saltmere's sand line"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Dragon Post: once the story is done, Fafnyr flies the furthest piece of each day's post himself - fast, warm, occasionally on fire"
 msgstr ""
 
@@ -7074,6 +7118,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Night of Ash stays night until its dawn, and the dawn's clock no longer spins through the day"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Night of Ash's dawn comes grey, its street lamps going out as it breaks; that night Sela's tent is a real tent, and the hall's oven is cold"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7454,6 +7502,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The lantern hint keeps quiet on the story's nights and only speaks under the sky"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The lantern hint waits until the street lamps are lit"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8165,6 +8217,10 @@ msgid "Vex's quest can finally be taken: he talks before he trades while Greens 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Village projects write Odo, Hilda and Vex with capitals, the Night of Bells says Next only once, and the Stats header counts down as you spend"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Villagers and foes drawn like you turn smoothly too"
 msgstr ""
 
@@ -8717,10 +8773,6 @@ msgid "A breath and a roar."
 msgstr ""
 
 #: assets/data/combat.json
-msgid "A creeping rot that poisons for turns."
-msgstr ""
-
-#: assets/data/combat.json
 msgid "A creeping rot."
 msgstr ""
 
@@ -8797,7 +8849,7 @@ msgid "A sickness with a name on it."
 msgstr ""
 
 #: assets/data/combat.json
-msgid "A staggering bash that can stun for a turn."
+msgid "A staggering bash that can stun for a second."
 msgstr ""
 
 #: assets/data/combat.json
@@ -9965,7 +10017,7 @@ msgid "Serenity"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "Sets the enemy ablaze for several turns."
+msgid "Sets the enemy ablaze for 3 seconds."
 msgstr ""
 
 #: assets/data/combat.json
@@ -14241,10 +14293,6 @@ msgid "Aske has opened Liane's door at the head of the Frostgate pass. Her sums 
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Aske is putting out every lamp in Pixelheim but five: the lanterns on the square, between the two boards. Light them, and the dragon comes down where you're ready."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Aske last. He's kept Liane's door shut fifty years because she asked him to. North, up the Frostgate road. Tell him he can stop."
 msgstr ""
 
@@ -14742,6 +14790,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Five lanterns on the square. Street by street, Pixelheim puts its lamps out. He'll come down where you're ready."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Five lanterns stand on the square, between the two boards. Light them all: every other lamp in Pixelheim goes out then, and the dragon comes down where you're ready."
 msgstr ""
 
 #: assets/data/progression.json
@@ -16865,15 +16917,7 @@ msgid "A fountain on the square, Fafnyr's scale set in its basin."
 msgstr ""
 
 #: assets/data/town.json
-msgid "A fountain plaza and new houses"
-msgstr ""
-
-#: assets/data/town.json
 msgid "A fountain sings in the plaza. Builders raise new roofs. Word spreads."
-msgstr ""
-
-#: assets/data/town.json
-msgid "A lamplit avenue to the mountain gate and flowers around the square"
 msgstr ""
 
 #: assets/data/town.json
@@ -16945,10 +16989,6 @@ msgid "Cozy Hut"
 msgstr ""
 
 #: assets/data/town.json
-msgid "Every door open again: the store, the forge, the brewery and the inn"
-msgstr ""
-
-#: assets/data/town.json
 msgid "Flower beds"
 msgstr ""
 
@@ -16989,7 +17029,7 @@ msgid "Hilda's forge"
 msgstr ""
 
 #: assets/data/town.json
-msgid "Hope comes home: bring two of the relics back to Pixelheim"
+msgid "Hope comes home - bring two of the relics back to Pixelheim"
 msgstr ""
 
 #: assets/data/town.json
@@ -17029,10 +17069,6 @@ msgid "Market stalls"
 msgstr ""
 
 #: assets/data/town.json
-msgid "Market stalls and street lamps dress the square"
-msgstr ""
-
-#: assets/data/town.json
 msgid "Mason Dorran"
 msgstr ""
 
@@ -17042,10 +17078,6 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "Mend the river bridge"
-msgstr ""
-
-#: assets/data/town.json
-msgid "Merchants pay 20% more for everything you sell"
 msgstr ""
 
 #: assets/data/town.json
@@ -17097,15 +17129,11 @@ msgid "Rebuilt from the ashes, roof by stubborn roof. Now it can grow."
 msgstr ""
 
 #: assets/data/town.json
-msgid "Rent rises: every till fills a tenth faster"
-msgstr ""
-
-#: assets/data/town.json
 msgid "Sela's inn with real beds, and roofs over Upper Street's and Hearth Lane's families."
 msgstr ""
 
 #: assets/data/town.json
-msgid "Someone has chosen to live here: bring one settler home"
+msgid "Someone has chosen to live here - bring one settler home"
 msgstr ""
 
 #: assets/data/town.json
@@ -17173,7 +17201,7 @@ msgid "The bells ring as you walk in. Pixelheim knows what fell on the mountain 
 msgstr ""
 
 #: assets/data/town.json
-msgid "The dragon comes back: hold the square till dawn and set him free"
+msgid "The dragon comes back - hold the square till dawn and set him free"
 msgstr ""
 
 #: assets/data/town.json
@@ -17181,7 +17209,7 @@ msgid "The five climbers in bronze on the square. Heroes walk taller past it: +5
 msgstr ""
 
 #: assets/data/town.json
-msgid "The five come home: bring all four relics to Maren. The fountain will still want Fafnyr's scale"
+msgid "The five come home - bring all four relics to Maren. The fountain will still want Fafnyr's scale"
 msgstr ""
 
 #: assets/data/town.json
@@ -17198,10 +17226,6 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "The inn and the homes"
-msgstr ""
-
-#: assets/data/town.json
-msgid "The inn honors its patron: rest costs half"
 msgstr ""
 
 #: assets/data/town.json
@@ -17262,6 +17286,38 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "What Fafnyr left: footings, cinders, and the people too stubborn to leave."
+msgstr ""
+
+#: assets/data/town.json
+msgid "a fountain plaza and new houses"
+msgstr ""
+
+#: assets/data/town.json
+msgid "a lamplit avenue to the mountain gate and flowers around the square"
+msgstr ""
+
+#: assets/data/town.json
+msgid "a night at the inn leaves you rested for a while"
+msgstr ""
+
+#: assets/data/town.json
+msgid "every door open again: the store, the forge, the brewery and the inn"
+msgstr ""
+
+#: assets/data/town.json
+msgid "market stalls and street lamps dress the square"
+msgstr ""
+
+#: assets/data/town.json
+msgid "merchants pay 20% more for everything you sell"
+msgstr ""
+
+#: assets/data/town.json
+msgid "rent rises: every till fills a tenth faster"
+msgstr ""
+
+#: assets/data/town.json
+msgid "the inn honors its patron: rest costs half"
 msgstr ""
 
 #: assets/maps/interactables.json
@@ -19349,6 +19405,10 @@ msgid "Temper +1"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "Tempered: %s"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "That takes %dg and a gem."
 msgstr ""
 
@@ -19684,10 +19744,6 @@ msgstr ""
 msgid "(embers %d, fires %d)"
 msgstr ""
 
-#: scripts/state/bells.gd
-msgid "Next: %s"
-msgstr ""
-
 #: scripts/state/bestiary.gd
 msgid "%s by night"
 msgstr ""
@@ -19921,6 +19977,14 @@ msgid "Bounty %dg, and %s"
 msgstr ""
 
 #: scripts/state/inventory_state.gd
+msgid "Epic {item}"
+msgstr ""
+
+#: scripts/state/inventory_state.gd
+msgid "Fine {item}"
+msgstr ""
+
+#: scripts/state/inventory_state.gd
 msgid "{item} {affix}"
 msgstr ""
 
@@ -19938,6 +20002,10 @@ msgstr ""
 
 #: scripts/state/journal.gd
 msgid "Town and people"
+msgstr ""
+
+#: scripts/state/main_quest.gd
+msgid "Next: %s"
 msgstr ""
 
 #: scripts/state/posting.gd
@@ -20133,7 +20201,7 @@ msgid "powers bows, daggers and DEX skills"
 msgstr ""
 
 #: scripts/state/skills.gd
-msgid "regen %d/turn"
+msgid "regen %d/s"
 msgstr ""
 
 #: scripts/state/skills.gd

@@ -316,6 +316,39 @@ static func snuff(dressed: Dictionary) -> void:
 			laid[cell] = UNLIT.get(laid[cell], laid[cell])
 
 
+## A fire's colours are this saturated or more in Shade's tiles (his embers
+## 0.57 to 0.92); his oven's stone and its outline are under it (0.42 at
+## most).
+const EMBER_ABOVE := 0.5
+static var _cold := {}
+
+
+## A hearth's or a forge's mouth gone cold (PIX-543): Shade drew the embers
+## in his tile and no cold oven, so the hall's still glowed on the Night of
+## Ash with its fire out (PIX-535). A patch to lay over the fire's tile
+## `tile` and the one east of it (FIRE_TILES: an oven's mouth lies across
+## both): every pixel in a fire's colour as the tiles' darkest, the mouth's
+## own dark, and the rest clear.
+static func cold(tile: int) -> ImageTexture:
+	if not _cold.has(tile):
+		var at := Vector2i(tile % PunyTown.COLUMNS, tile / PunyTown.COLUMNS) * 16
+		var art := (load(PunyTown.SHEET) as Texture2D).get_image().get_region(Rect2i(at, Vector2i(32, 16)))
+		var dark := Color.WHITE
+		for y in art.get_height():
+			for x in art.get_width():
+				var ink := art.get_pixel(x, y)
+				if ink.a > 0.5 and ink.get_luminance() < dark.get_luminance():
+					dark = ink
+		var patch := Image.create(art.get_width(), art.get_height(), false, Image.FORMAT_RGBA8)
+		for y in art.get_height():
+			for x in art.get_width():
+				var ink := art.get_pixel(x, y)
+				if ink.a > 0.5 and ink.s >= EMBER_ABOVE:
+					patch.set_pixel(x, y, dark)
+		_cold[tile] = ImageTexture.create_from_image(patch)
+	return _cold[tile]
+
+
 ## The cells the layout of `room_key` gives the vignette `name` (PIX-338:
 ## the village's ledger on its table in the hall, E reads it there), with or
 ## without the pack; empty when the room has none.

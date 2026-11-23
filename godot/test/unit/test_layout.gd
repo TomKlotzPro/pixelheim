@@ -198,3 +198,34 @@ func test_a_line_cut_with_no_ellipsis_is_found() -> void:
 	assert_eq(Layout.overflows(get_tree().root, VIEW).size(), 1, "cut at 200 px")
 	Layout.ellipsis(line)
 	assert_eq(Layout.overflows(get_tree().root, VIEW).size(), 0, "an ellipsis says so")
+
+
+## PIX-543: a paged card's window ended through its last line's letters. In
+## `Layout.lined` it ends on a whole line: as it opens, when its words
+## change, and at every page; and its words stand clear of its scrollbar.
+func test_a_lined_cards_window_ends_on_a_whole_line() -> void:
+	var words := UiStyle.label("", 30, UiStyle.INK)
+	words.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	words.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.add_child(Layout.beside_bar(words))
+	var holder := Layout.lined(scroll)
+	holder.size = Vector2(300, 200)
+	add_child_autofree(holder)
+	var line := words.get_line_height() + words.get_theme_constant("line_spacing")
+	assert_ne(200 % line, 0, "a window that would cut a line")
+	for step: Array in [["one two three four five six seven eight nine ten ".repeat(8), 0], ["eleven twelve thirteen ".repeat(30), 0], ["", 50], ["", 500]]:
+		if step[0] != "":
+			words.text = step[0]
+		scroll.scroll_vertical += int(step[1])
+		await wait_process_frames(3)
+		var foot := scroll.scroll_vertical + scroll.size.y
+		assert_lte(scroll.size.y, 200.0, "inside its holder")
+		# On a line's edge, or under its letters in the space between two.
+		var into := fmod(foot, line)
+		assert_true(into < 0.5 or into >= words.get_line_height() - Layout.SLACK, "the foot clear of a line's letters: %s of %s at %s" % [scroll.size.y, line, scroll.scroll_vertical])
+		assert_lte(words.get_global_rect().end.x, scroll.get_v_scroll_bar().get_global_rect().position.x - Layout.BAR_GAP + 0.5, "clear of the scrollbar")
+	words.text = "short"
+	await wait_process_frames(3)
+	assert_eq(scroll.size.y, 200.0, "words that fit keep the whole window")

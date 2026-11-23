@@ -37,6 +37,10 @@ const HERO_BODY := Rect2(-8, -16, 16, 22)
 ## The main quest's next step, quietly above the dock (PIX-144): a dark
 ## pill holding "Next" and the step.
 var objective_box: PanelContainer
+## The line's fade, in or out (update_objective), and the gap a message
+## standing over it keeps (PIX-537).
+var _line_fade: Tween
+const LINE_GAP := 6.0
 var objective_label: Label
 ## Its "Next" tag, kept to size with its words (World.apply_video).
 var objective_tag: Label
@@ -86,6 +90,8 @@ const ARROW_INSET := 26.0
 ## How far the arrow keeps from the hero's figure, on the screen (PIX-462:
 ## against their side at the Blackiron Shafts' first step, it read as theirs).
 const ARROW_CLEAR := 24.0
+## The least between a door's plate and the canvas's edge (PIX-543).
+const PLATE_EDGE := 8.0
 
 
 ## The layer and its widgets, in the order they stand: the sky's tint, a
@@ -251,10 +257,12 @@ func hint_there(seen_id: String) -> bool:
 			return GameState.hero.hp * 2 < int(GameState.hero.stats["maxHp"])
 		"lantern":
 			# Bought while it waited, the dawn come, or under the ground (PIX-530);
-			# and never on a story night (PIX-535: over the Night of Bells'
+			# only once the lamps are lit (PIX-543: the evening's rose passes
+			# LANTERN_DARK half an hour before them, and it said "Dark out?" in
+			# daylight); and never on a story night (PIX-535: over the Night of Bells'
 			# « Light the five lanterns » it pointed another way, as on the Ash).
 			var story := GameState.progression
-			return not Lights.carried(GameState.pack.items) and world.lights.dark > Lights.LANTERN_DARK and Lights.under_sky(world.map) \
+			return not Lights.carried(GameState.pack.items) and world.lights.dark > Lights.LANTERN_DARK and DayNight.is_night(GameState.world.steps) and Lights.under_sky(world.map) \
 				and story.prologue == Prologue.DONE and story.bells == Bells.NONE
 	return true
 
@@ -461,9 +469,12 @@ func on_hp_changed(hp: int, max_hp: int) -> void:
 
 ## The line above the dock (PIX-144): the main quest's next step, faded out
 ## in a fight (never on the Night of Ash, whose line names the fight's key:
-## PIX-507), under a flashing message and once the story is done; hidden
-## while the world is paused (menus, conversations, cutscenes: the world's
-## _notification).
+## PIX-507), while a message has its place and once the story is done;
+## hidden while the world is paused (menus, conversations, cutscenes: the
+## world's _notification). The line and a message take the place in turn,
+## one gone before the other comes (PIX-543: they showed through each
+## other); on the Night of Ash the message stands over the line instead
+## (PIX-537: it hid the key the step teaches).
 func update_objective() -> void:
 	var messages: Messages = world.messages
 	# Where the hero is headed (PIX-239): the followed quest or the story's
@@ -485,9 +496,12 @@ func update_objective() -> void:
 	objective_box.position.y = dock.words_top() if dock != null and dock.top() > 0 else 690.0 - 38
 	# A message stands where the objective line does and grows upward, so a
 	# long one (a barred gate, a quest's words) never runs under the dock.
-	if messages.message_box.modulate.a > 0.0:
+	# Fitted from the moment it is up, before it shows (PIX-543: the first
+	# of a session, not laid out yet, stood a screen high as it faded in).
+	var beside := Prologue.line_stays(GameState.progression.prologue)
+	if messages.up():
 		messages.fit()
-	messages.message_box.position.y = objective_box.position.y + objective_box.size.y - messages.message_box.size.y
+	messages.message_box.position.y = objective_box.position.y + (-LINE_GAP if beside else objective_box.size.y) - messages.message_box.size.y
 	# The battle log stands on the objective line, or on a taller message
 	# (PIX-211), and grows upward, so a long kill never runs into either.
 	var under := objective_box.position.y
@@ -496,11 +510,22 @@ func update_objective() -> void:
 	messages.log_box.reset_size()
 	messages.log_box.position.y = under - 6 - messages.log_box.size.y
 	var fought: bool = world.foes.in_fight() and not Prologue.line_stays(GameState.progression.prologue)
-	var show: bool = text != "" and not fought and messages.message_box.modulate.a < 0.05
+	var show := line_shows(text, fought, messages.up() or messages.message_box.modulate.a >= 0.05, beside)
 	var target := 1.0 if show else 0.0
 	if objective_box.get_meta("fading_to", -1.0) != target:
 		objective_box.set_meta("fading_to", target)
-		objective_box.create_tween().tween_property(objective_box, "modulate:a", target, 0.3)
+		# One fade at a time: two on the line fought over it.
+		if _line_fade != null:
+			_line_fade.kill()
+		_line_fade = objective_box.create_tween()
+		_line_fade.tween_property(objective_box, "modulate:a", target, 0.3 if show else Messages.GIVE_WAY_S)
+
+
+## Whether the line above the dock shows: it has words, no fight fades it,
+## and no message has its place (`message`), unless the message stands
+## over it (`beside`: the Night of Ash, PIX-537).
+static func line_shows(text: String, fought: bool, message: bool, beside: bool) -> bool:
+	return text != "" and not fought and (beside or not message)
 
 
 ## Where the hero is headed, looked at again now: the active lead, and the
@@ -669,7 +694,15 @@ func update_nameplate() -> void:
 	# Over the board, wherever the camera has the door on screen.
 	var top := Vector2(nameplate_door.x * TILE + TILE / 2.0, nameplate_door.y * TILE - nameplate_over)
 	var screen := get_viewport().get_canvas_transform() * top
-	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
+	nameplate.position = plate_spot(screen, nameplate.size, get_viewport().get_visible_rect().size)
+
+
+## Where a door's plate stands: its foot's middle on `foot`, and the whole of
+## it `PLATE_EDGE` inside a `view`-sized canvas (PIX-543: under a door near
+## the top of the screen the plate's first line was cut by the edge).
+static func plate_spot(foot: Vector2, plate: Vector2, view: Vector2) -> Vector2:
+	var spot := (foot - Vector2(plate.x / 2.0, plate.y)).round()
+	return Vector2(clampf(spot.x, PLATE_EDGE, maxf(PLATE_EDGE, view.x - plate.x - PLATE_EDGE)), clampf(spot.y, PLATE_EDGE, maxf(PLATE_EDGE, view.y - plate.y - PLATE_EDGE)))
 
 
 ## The arrow itself (Marks, PIX-284): a bevelled arrow in the dock's brass,

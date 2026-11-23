@@ -1650,8 +1650,24 @@ msgid "Tam's ladle. Gods. He cooked for us all the way up - stew on a mountain, 
 msgstr "Tam's ladle. Gods. He cooked for us all the way up - stew on a mountain, in the snow."
 
 #: assets/data/town.json
+msgid "Hope comes home - bring two of the relics back to Pixelheim"
+msgstr "Hope comes home - bring two of the relics back to Pixelheim"
+
+#: assets/data/town.json
+msgid "Someone has chosen to live here - bring one settler home"
+msgstr "Someone has chosen to live here - bring one settler home"
+
+#: assets/data/town.json
 msgid "The bells ring as you walk in. Pixelheim knows what fell on the mountain - and Bram has been telling everyone he always knew."
 msgstr "The bells ring as you walk in. Pixelheim knows what fell on the mountain - and Bram has been telling everyone he always knew."
+
+#: assets/data/town.json
+msgid "The dragon comes back - hold the square till dawn and set him free"
+msgstr "The dragon comes back - hold the square till dawn and set him free"
+
+#: assets/data/town.json
+msgid "The five come home - bring all four relics to Maren. The fountain will still want Fafnyr's scale"
+msgstr "The five come home - bring all four relics to Maren. The fountain will still want Fafnyr's scale"
 
 #: scripts/elite_brain.gd
 msgid "%s howls - the forest answers!"

@@ -302,6 +302,38 @@ func test_tabs_stand_apart_on_their_pages_edge() -> void:
 	UiStyle.withheld = withheld
 
 
+## PIX-543: Hilda's fifth tab stood over the card's corner at Buy, where
+## the goods' page is too narrow for five: each tab stands whole on one page's
+## edge, clear of its corners, in either language.
+func test_the_smithys_tabs_keep_to_a_page_at_buy() -> void:
+	for language in LANGUAGES:
+		Text.apply(language)
+		GameState.trade.stall_shop = Economy.shop_at("town_smith")
+		var counter := ShopScreen.new()
+		add_child_autofree(counter)
+		await wait_process_frames(3)
+		assert_gt(counter.tab_buttons.size(), 4, language)
+		for button in counter.tab_buttons:
+			var tab := button.get_global_rect()
+			var on := [ShopScreen.GOODS, ShopScreen.CARD, ShopScreen.PACK].filter(func(page: Rect2) -> bool:
+				return tab.position.x >= page.position.x + UiStyle.INSET and tab.end.x <= page.end.x - UiStyle.INSET)
+			assert_eq(on.size(), 1, "%s: %s on one page's edge, %s" % [language, button.text, tab])
+	Text.apply("en")
+
+
+## PIX-543: the journal's page stands as high as the title, whose foot sat on
+## the first tab: its tabs start a gap past the title's words.
+func test_the_journals_tabs_stand_past_its_title() -> void:
+	for language in LANGUAGES:
+		Text.apply(language)
+		var journal := JournalScreen.new()
+		add_child_autofree(journal)
+		await wait_process_frames(3)
+		var title: Label = journal.get_children().filter(func(child: Node) -> bool: return child is Label)[0]
+		assert_gte(journal.tabs_row.get_global_rect().position.x, title.position.x + Layout.words_width(title) + UiStyle.GAP, language)
+	Text.apply("en")
+
+
 ## PIX-488: the hall's card starts on the chosen work's word, so a card that
 ## runs long (large text, French) never hides what a work does under its foot.
 func test_the_halls_card_starts_on_the_chosen_work() -> void:
@@ -315,5 +347,18 @@ func test_the_halls_card_starts_on_the_chosen_work() -> void:
 	assert_true(screen.info.text.begins_with(String(screen._chosen_project().get("name", "?"))), screen.info.text)
 	screen._select(1)
 	assert_true(screen.info.text.begins_with(String(screen._chosen_project().get("name", "?"))), screen.info.text)
+	screen.close()
+	await get_tree().process_frame
+
+
+## PIX-540: the age's perks read mid-sentence and keep their people's
+## capitals (lower-cased whole, they said "odo pays", "hilda forges").
+func test_the_halls_perks_name_people_with_capitals() -> void:
+	Text.apply("en")
+	var screen: Screen = TownHallScreen.new()
+	add_child(screen)
+	await wait_process_frames(2)
+	assert_string_contains(screen.info.text, "When it's done: every door open again")
+	assert_string_contains(screen.info.text, "; Odo pays a tenth more, Hilda forges and Vex brews")
 	screen.close()
 	await get_tree().process_frame

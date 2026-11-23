@@ -46,6 +46,11 @@ const float SPILL = 4.0;
 // Still water mirrors this much deeper and stronger, wavering less.
 const float STILL_REACH = 1.5;
 const float STILL_STRENGTH = 1.35;
+// Where the bank steps back a column over (a pond's arm beside its body),
+// the mirror eases out over this many pixels before the step (PIX-543: it
+// stopped dead on the column's edge, a lighter rectangle in the Deepwood's
+// pond).
+const float STEP_FADE = 10.0;
 
 #include "res://shaders/water_bank.gdshaderinc"
 
@@ -57,6 +62,18 @@ bool looks_like_water(vec3 c, int tone) {
 		return c.g >= c.r * 0.95 && c.g > c.b * 0.9 && dot(c, vec3(0.3, 0.6, 0.1)) < 0.4;
 	}
 	return c.b > 0.12 && c.b > c.r * 1.8 && c.b > c.g * 0.75;
+}
+
+// How much of its mirror the water a column over (`side`: -1 west, 1 east)
+// shows level with `px`, 0..1; 1 where that column is land (the mirror runs
+// up to a bank beside it).
+float mirror_beside(vec2 cell, vec2 px, float side, float deepest) {
+	vec4 beside = texture(water_map, (cell + vec2(side, 0.0) - mirror_origin + 0.5) * CELL / map_pixels);
+	if (beside.r <= 0.5) {
+		return 1.0;
+	}
+	float shore = (cell.y - round(beside.g * 255.0)) * CELL - SPILL;
+	return clamp(1.0 - (px.y - shore) / deepest, 0.0, 1.0);
 }
 
 void fragment() {
@@ -87,7 +104,12 @@ void fragment() {
 			int bank_ground;
 			if (at.y > 0.0 && !looks_like_water(image, tone)
 					&& (tone == 0 || bank_in_water(px, px - mirror_origin * CELL, bank_code, bend, bank_ground) >= 0.0)) {
-				float fade = (1.0 - depth / deepest) * strength * (still ? STILL_STRENGTH : 1.0);
+				float fade = 1.0 - depth / deepest;
+				// Eased down to the column beside's own where that is fainter.
+				float across = px.x - cell.x * CELL;
+				fade = min(fade, mix(mirror_beside(cell, px, -1.0, deepest), fade, clamp(across / STEP_FADE, 0.0, 1.0)));
+				fade = min(fade, mix(mirror_beside(cell, px, 1.0, deepest), fade, clamp((CELL - across) / STEP_FADE, 0.0, 1.0)));
+				fade *= strength * (still ? STILL_STRENGTH : 1.0);
 				vec3 tinted = image * (tone == TONE_MIRE ? vec3(0.62, 0.7, 0.55) : vec3(0.62, 0.86, 1.0));
 				COLOR = vec4(to_canvas(mix(seen, tinted, fade)), 1.0);
 			}

@@ -35,6 +35,8 @@ var actors: Node2D
 var tint: ColorRect
 var ash: CPUParticles2D
 var caption: Label
+## The letterbox's lower bar, which a tall caption raises.
+var lower: ColorRect
 var front: Control
 var black: ColorRect
 ## What takes the mouse, over everything else of the scene.
@@ -87,6 +89,8 @@ func _open() -> void:
 		bar.size = Vector2(VIEW.x, BAR)
 		bar.position.y = 0 if top else VIEW.y - BAR
 		add_child(bar)
+		if not top:
+			lower = bar
 	caption = UiStyle.label("", UiStyle.reading(18), UiStyle.CREAM, Vector2(90, VIEW.y - BAR + 26))
 	caption.custom_minimum_size = Vector2(VIEW.x - 180, 0)
 	caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -228,6 +232,10 @@ func _caption(text: String, hold: float) -> void:
 	# the bottom edge.
 	caption.size = Vector2(VIEW.x - 180, 0)
 	caption.position.y = VIEW.y - 14 - caption.get_minimum_size().y
+	# The bar rises with a tall one (PIX-543: two lines of the large type
+	# stood their first line over the picture's edge), its margin kept.
+	lower.size.y = maxf(BAR, caption.get_minimum_size().y + 2 * 14)
+	lower.position.y = VIEW.y - lower.size.y
 	caption.visible_ratio = 1.0 if still else 0.0
 	var typing: Tween
 	if not still:
