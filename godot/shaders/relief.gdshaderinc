@@ -2,10 +2,11 @@
 // they light, its depth from the forms drawn, never from its pattern (a
 // pixel's own light and dark turned the snow, the City's basket paving and
 // a stall's stripes into grain). Three forms:
-// - carved (RELIEF_CARVED): paving, floors and stone walls, each stone
-//   bevelled from its joints, rising from the joint to a flat top within two
-//   pixels, each bevel fading towards the joints across it (a stone's top
-//   its own, never a course's ruled line). A joint is a short run of pixels
+// - carved (RELIEF_CARVED): great flags, stone walls and the rampart, each
+//   stone bevelled from its joints, rising from the joint to a flat top
+//   within two pixels; a course's top and foot fade towards the stone's
+//   ends, while an end bevels the stone's full height, only its corner pixel
+//   at half (a stone's top its own, never a course's ruled line). A joint is a short run of pixels
 //   a step darker than this one (the Medieval Age's stone sets' own step in
 //   `relief_joints`, Relief.joints(): 0 there for a tile that is no stone;
 //   RELIEF_OTHER_JOINT on any other sheet, none unless the shader asks); a

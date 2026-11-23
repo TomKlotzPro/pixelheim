@@ -1,8 +1,8 @@
 shader_type canvas_item;
 // Light relief on a plain piece (PIX-528, PIX-529, Relief.material()): a
 // prop, a lamp post, a crate, a stall, a room's furniture domed from its
-// outline; a tile layer (the town's paving, a room's floor and stone walls,
-// the rampart) carved from its stones' joints, where its sheet has stone
+// outline; a tile layer (a square's great flags, stone walls, the rampart)
+// carved from its stones' joints, where its sheet has stone
 // there (relief.gdshaderinc). Its colour is the texel's, untouched.
 
 #include "res://shaders/linear.gdshaderinc"
