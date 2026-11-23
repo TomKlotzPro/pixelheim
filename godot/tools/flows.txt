@@ -44,6 +44,23 @@ shadows-noon | --map town --at 40,13 noon | map=town shadows=standing [1-9]\d* h
 shadows-dusk | --map town --at 40,13 dusk | map=town shadows=standing [1-9]\d* houses \d+ sun [1-9]\d | town
 shadows-night | --map town --at 40,13 night | map=town shadows=standing [1-9]\d* houses \d+ sun 0 | town night
 shadows-wood | --map deepwood noon | map=deepwood shadows=(standing [1-9]\d* houses 0 sun 100)? | field
+# The golden hours (PIX-526): dawn's mist over the town's river and the
+# Reach's grass (still with Reduce motion), none by day nor over the Ash;
+# at 19:30 the windows lighting one by one with every street lamp still
+# cold and no pool under one, at 20:30 every lamp lit.
+mist-dawn | --map town --at 64,22 --hour 05:30 | map=town mist=\d\.\d\d over [1-9]\d* | town field
+mist-still | --map town --at 64,22 --hour 05:30 still | map=town mist=\d\.\d\d over [1-9]\d* still | town field
+mist-noon | --map town --at 64,22 --hour 12:00 | map=town mist= | town field
+mist-reach | --map overworld --at 40,36 --hour 06:30 | map=overworld mist=\d\.\d\d over [1-9]\d* | field
+mist-ash | --map overworld --at 48,10 --hour 05:30 | map=overworld mist= | field
+# On the Ash's edge by the river the river's mist still lies (where it lies is
+# the cells', not the air the hero stands in); over a line the wisps lie on
+# with the world, none drawn a map away.
+mist-ash-edge | --map overworld --at 40,27 --hour 05:30 | map=overworld mist=\d\.\d\d over [1-9]\d* | field
+mist-line | --map overworld --at 94,33 --hour 05:30 seamless --walk r,r,r | map=deepwood mist=\d\.\d\d over [1-9]\d* | field travel
+lamps-dusk | --map town --at 40,13 --hour 19:30 | lamplight=posts 0/[1-9]\d* panes \d+ flames 0 beams 0 | town night
+lamps-dark | --map town --at 40,13 --hour 20:30 | lamplight=posts ([1-9]\d*)/\1 panes \d+ flames 0 beams 0 | town night
+pools-dusk | --map town --town-tier 4 --at 40,24 --hour 19:30 | map=town nightshadows=lights 0 of 3 lamps 0 feet [1-9]\d* walls [1-9]\d* | town night
 # Through the nearest door into one of its rooms (PIX-129).
 portal | --map town portal | map=town_.* | town travel
 # A shoulder over a door (PIX-434): two steps along the wall stop the hero
@@ -400,6 +417,18 @@ road | --prologue 1 | map=overworld cell=\(48, 34\) | story travel
 # [23][80], a field having no "|", and five steps down from 27 end by 32;
 # so (34, 30), the roof's own cell on the pack, passes here: the body over
 # the roof is test_puny_props', test_hero_seen's and test_night_shadows').
+# Bram lies pinned under a burning beam until the hero shifts it (PIX-515:
+# he stood in the street with no beam): there through the hounds and on his
+# own step, off as his first line is turned (the talk still open), and off
+# for a hero who leaves at that line; without the paid pack too. Its cell
+# east of him is blocked while it lies there (from the east the hero stood
+# in its fire).
+ash-beam | --prologue 3 --at 62,11 --lang en | night=3 beam=pinned | story town night
+ash-beam-hounds | --prologue 6 --at 62,11 --lang en | night=6 beam=pinned | story town night
+ash-beam-off | --prologue 3 --at 62,11 --keys e,e,wait,wait,wait --lang en | open=dialogue_box night=3 beam=gone | story town night
+ash-beam-left | --prologue 3 --at 62,11 --keys e,esc,wait,wait,wait --lang en | night=4 beam=gone | story town night
+ash-beam-cc0 | --prologue 3 --at 62,11 --keys e,e,e,e,wait,wait --lang en cc0 | night=4 beam=gone | story town night
+ash-beam-east | --prologue 3 --at 65,12 --walk l,l,l,l,l,l,l,l --lang en | cell=\(64, 12\) night=3 beam=pinned | story town night
 # The line stays up through the embers' fight too (ash-line-embers: the
 # hero strikes first, as ash-mend, the embers slow to start it on the pack).
 ash-line | --prologue 6 --at 40,8 --wait 3 --lang en | night=6 mobs=2 nightline=shown fight | story combat night

@@ -1125,21 +1125,35 @@ func _add_halo(at: Vector2, radius: int, peak: float, tint := HALO_TINT) -> Spri
 
 
 ## Lamps and windows for the hour: lit from dusk's end to dawn, cold by day;
-## a room's windows full of the day until then (PIX-311).
+## a room's windows full of the day until then (PIX-311). Every second the
+## evening's windows light one by one before the lamps (PIX-526,
+## DayNight.lit_before_night).
 func set_night(night: bool) -> void:
-	if int(night) == _night:
-		return
-	_night = int(night)
-	for glow in night_glows:
-		if is_instance_valid(glow):
-			glow.visible = night
-	for pane in day_glows:
+	if int(night) != _night:
+		_night = int(night)
+		for glow in night_glows:
+			if is_instance_valid(glow):
+				_show(glow, night)
+		for pane in day_glows:
+			if is_instance_valid(pane):
+				pane.visible = not night
+		# After the glows, so a layer may keep one dark (PIX-362: Lantern
+		# Night's lamps waiting for Fafnyr).
+		for layer: MapLayer in _layers.values():
+			layer.set_night(self, night)
+	for pane in panes:
 		if is_instance_valid(pane):
-			pane.visible = not night
-	# After the glows, so a layer may keep one dark (PIX-362: Lantern
-	# Night's lamps waiting for Fafnyr).
-	for layer: MapLayer in _layers.values():
-		layer.set_night(self, night)
+			_show(pane, night or DayNight.lit_before_night(GameState.world.steps, Vector2i(pane.position / TILE)))
+
+
+## `glow` shown or not, and under the sky its pool of light with it
+## (PIX-526: a lamp's or a window's pool came up with the dusk while its
+## glass was still cold). A room's candles keep theirs (PIX-311).
+func _show(glow: Node2D, on: bool) -> void:
+	glow.visible = on
+	var light: Variant = glow.get_meta("light") if glow.has_meta("light") else null
+	if is_instance_valid(light) and Lights.under_sky(data):
+		(light as Node).set_meta("unlit", not on)
 
 
 ## Deals day `day`'s wild patches, unless they're dealt already; whether

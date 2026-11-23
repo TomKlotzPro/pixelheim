@@ -76,8 +76,9 @@ const LANTERN_REACH := 96.0
 ## flames burning could (the report's nightshadows=).
 var casting: Array[PointLight2D] = []
 var candidates := 0
-## No cloud shadows while true: the harness's motion check (PIX-275) finds
-## the hero by its shirt's exact reds, which a shadow drifting over it changes.
+## No cloud shadows, and plain daylight under the sky, while true: the
+## harness's motion check (PIX-275) finds the hero by its shirt's exact reds,
+## which a shadow drifting over it or the golden hours' tint change (PIX-526).
 var clear_sky := false
 ## The clouds' noise: one seamless sheet, CLOUD_PX square.
 const CLOUD_PX := 256
@@ -229,6 +230,11 @@ func light_for(map: MapData) -> Color:
 
 func _process(delta: float) -> void:
 	light = light_for(world.map)
+	# The motion check walks in plain daylight (PIX-526): it finds the hero by
+	# the shirt's exact reds, which the golden hours' tint and grey change, as
+	# a cloud's shadow does (clear_sky).
+	if clear_sky and Lights.under_sky(world.map):
+		light = Lights.DAY
 	# Rain darkens and cools the light, and the lamps come up a little; under
 	# rain, fog or snow the sky is all cloud.
 	var rain := 0.0
@@ -282,6 +288,9 @@ func _process(delta: float) -> void:
 		if lamp.has_meta("tint"):
 			lamp.color = DesktopLook.canvas_color(lamp.get_meta("tint"), DesktopLook.linear)
 		var energy := float(lamp.get_meta("energy", 1.0)) * (day if lamp.get_meta("by_day", false) else dark)
+		# A lamp's or a window's pool waits for its glass (MapView._show, PIX-526).
+		if lamp.get_meta("unlit", false):
+			energy = 0.0
 		if lamp.get_meta("flicker", false) and not still:
 			energy *= Lights.flicker(t, float(lamp.get_meta("phase", 0.0)), lamp.get_meta("blaze", false))
 		# A way out breathes (PIX-292), held still with reduced motion.

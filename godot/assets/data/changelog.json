@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.392.0",
+      "date": "2026-11-20",
+      "codename": "Golden Hours",
+      "notes": [
+        "Dawn comes pale gold, with mist over the river and the grass that lifts as the morning warms; six o'clock no longer looks like noon",
+        "Dusk lasts two hours: peach, then rose, then violet, with its long shadows",
+        "The windows light one by one before the street lamps, and a lamp's pool of light now waits for its glass to be lit",
+        "With Reduce motion the mist doesn't drift"
+      ]
+    },
+    {
       "version": "0.391.0",
       "date": "2026-11-20",
       "codename": "A Rounder Hand",

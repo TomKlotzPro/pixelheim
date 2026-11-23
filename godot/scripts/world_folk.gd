@@ -78,6 +78,15 @@ func _process(_delta: float) -> void:
 		_come.call(villager)
 
 
+## The beam off the villager `id` lies pinned under (PIX-515, Npc.unpin).
+func unpin(id: String) -> void:
+	if not is_inside_tree():
+		return
+	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
+		if villager.data["id"] == id:
+			villager.unpin()
+
+
 ## A recruit settled or the town grew: redraw who stands on this map.
 func respawn() -> void:
 	for villager: Npc in get_tree().get_nodes_in_group("npcs"):

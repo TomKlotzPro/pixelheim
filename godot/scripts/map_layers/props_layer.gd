@@ -120,6 +120,7 @@ static func _light_fountain(view: MapView, root: Node2D, jet: AnimatedSprite2D, 
 	view.night_glows.append(lit)
 	var light := Lights.make(Vector2(cell * TILE) + FOUNTAIN_POOL, FOUNTAIN_REACH, Lights.ICE, FOUNTAIN_ENERGY)
 	view.props.add_child(light)
+	lit.set_meta("light", light)
 	lit.tree_exiting.connect(light.queue_free)
 
 

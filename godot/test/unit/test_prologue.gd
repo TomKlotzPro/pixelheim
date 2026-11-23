@@ -261,6 +261,11 @@ func test_a_survivor_plays_their_scene_only_on_their_step() -> void:
 	assert_eq(Prologue.lines_of(said["villager_bram"], Prologue.BRAM), freed)
 	assert_ne(Prologue.lines_of(said["villager_bram"], Prologue.HOUNDS), freed, "still pinned")
 	assert_ne(Prologue.lines_of(said["villager_bram"], Prologue.MAREN), freed, "no beam lifted twice")
+	# PIX-515: and he lies under it until then, he alone.
+	for step: int in Prologue.ORDER:
+		assert_eq(Prologue.pinned(said["villager_bram"], step), Prologue.ORDER.find(step) <= Prologue.ORDER.find(Prologue.BRAM), "beat %d" % step)
+		assert_false(Prologue.pinned(said["elder"], step))
+	assert_false(Prologue.pinned(said["villager_bram"], Prologue.DONE), "nor any day after")
 	assert_ne(Prologue.lines_of(said["innkeeper"], Prologue.BRAM), Prologue.lines_of(said["innkeeper"], Prologue.FIRES), "before and after")
 	for id: String in said:
 		for step: int in Prologue.ORDER:
