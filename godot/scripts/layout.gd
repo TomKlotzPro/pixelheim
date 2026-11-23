@@ -19,6 +19,8 @@ const CLEAR := &"layout_clear"
 ## where what scrolls has no words to measure.
 const PAGE_KEYS := "{key:page_up}/{key:page_down}"
 const PAGE_LINE := 32
+## Between a paged card's words and its scrollbar.
+const BAR_GAP := 8
 ## What must never start a wrapped line, when a space stands before it.
 const MARKS := "?!:;»-"
 ## A plain, a no-break and a narrow no-break space.
@@ -212,6 +214,73 @@ static func line_of(scroll: ScrollContainer) -> int:
 		if label != null:
 			line = maxi(line, label.get_line_height() + label.get_theme_constant("line_spacing"))
 	return line if line > 0 else PAGE_LINE
+
+
+## `scroll` in a holder that takes its place on the card, its window ending
+## on a whole line (PIX-543: a paged card's last line was cut through its
+## letters wherever the card's foot fell): the window is drawn back to the
+## top of the line its foot would cut. Looked at every frame it is on the
+## tree, not as the scrollbar says its words changed: a label still settles
+## a frame after that (it stood 18 px down as it rewrapped, in the web
+## build, and the window stopped mid-line). Add what it returns where the
+## scroll would go.
+static func lined(scroll: ScrollContainer) -> Control:
+	var holder := Control.new()
+	holder.size_flags_horizontal = scroll.size_flags_horizontal
+	holder.size_flags_vertical = scroll.size_flags_vertical
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(scroll)
+	# By id (PIX-503's rule): the frame's signal outlives a card freed at once.
+	var fit := Layout._fit_lines.bind(holder.get_instance_id())
+	holder.resized.connect(fit)
+	holder.tree_entered.connect(Layout._watch_lines.bind(holder.get_instance_id(), fit, true))
+	holder.tree_exiting.connect(Layout._watch_lines.bind(holder.get_instance_id(), fit, false))
+	return holder
+
+
+static func _fit_lines(id: int) -> void:
+	var holder := instance_from_id(id) as Control
+	if holder != null and holder.is_visible_in_tree():
+		var scroll := holder.get_child(0) as ScrollContainer
+		scroll.size = Vector2(holder.size.x, whole_lines(scroll, holder.size.y))
+
+
+static func _watch_lines(id: int, fit: Callable, on: bool) -> void:
+	var frame := (instance_from_id(id) as Control).get_tree().process_frame
+	if on and not frame.is_connected(fit):
+		frame.connect(fit)
+	elif not on and frame.is_connected(fit):
+		frame.disconnect(fit)
+
+
+## `words` in a paged card's window, a gap clear of its scrollbar (PIX-543:
+## a full line's last letters met it). The lists keep the slim bar's room.
+static func beside_bar(words: Control) -> MarginContainer:
+	var margin := MarginContainer.new()
+	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_theme_constant_override("margin_right", BAR_GAP)
+	margin.add_child(words)
+	return margin
+
+
+## How much of `room` under `scroll`'s top shows whole lines only, where it
+## stands in its words: `room` less the part of a line its foot would cut.
+static func whole_lines(scroll: ScrollContainer, room: float) -> float:
+	var tall := room
+	for node in scroll.find_children("*", "", true, false):
+		var label := node as Label
+		if label == null or not label.is_visible_in_tree():
+			continue
+		var line := label.get_line_height() + label.get_theme_constant("line_spacing")
+		# From where the words lie in what scrolls: at a page turned the
+		# window hasn't moved them yet.
+		var top := label.global_position.y - (scroll.get_child(0) as Control).global_position.y - scroll.scroll_vertical
+		var cut := floori((room - top) / line)
+		var shown := room - top - cut * line
+		if cut >= 0 and cut < label.get_line_count() and shown > 0.5 and shown < label.get_line_height() - SLACK:
+			tall = minf(tall, top + cut * line)
+	return tall if tall > 0.0 else room
 
 
 ## A footer's `line` with the page keys named before its own, for a screen

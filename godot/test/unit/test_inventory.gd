@@ -170,3 +170,10 @@ func test_the_pack_lists_by_kind_value_weight_or_name() -> void:
 func _value(row: Dictionary) -> int:
 	return Economy.gear_value(row["piece"]) if row["kind"] == "gear" else int(Catalog.item(row["item_id"])["value"])
 
+
+
+## PIX-543: with Large reading text the pack's list ended through its fifth
+## row. Its window is whole rows.
+func test_the_large_list_ends_on_a_whole_row() -> void:
+	var pitch := InventoryScreen.ROW_HEIGHT + 4
+	assert_eq((InventoryScreen.LIST_LARGE + 4) % pitch, 0)

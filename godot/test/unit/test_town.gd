@@ -335,3 +335,11 @@ func test_a_night_at_the_inn_wakes_at_dawn_and_halves_in_a_town() -> void:
 	state.pack.gold = 0
 	state.hero.hp = 1
 	assert_eq(state.upkeep.rest_at_inn(), "No coin, no bed: a night costs 5 gold.")
+
+
+## PIX-543: the hall reads "Needed: <line>", so a line with a colon of its
+## own read « Requis : L'espoir revient : rapporter… ».
+func test_a_requirement_line_has_no_colon_of_its_own() -> void:
+	for age: int in [2, 3, 4]:
+		for need: Dictionary in Town.age(age)["requires"]:
+			assert_false(String(need["line"]).contains(":"), need["line"])

@@ -106,6 +106,14 @@ func test_fine_and_epic_gear_carry_affixes_that_count() -> void:
 	var epic := InventoryState.create_gear("iron_sword", "epic", _dice([0.0, 0.1, 0.5, 0.9, 0.5]))
 	assert_eq(epic["affixes"].size(), 2)
 	assert_string_contains(InventoryState.gear_name(fine), "Fine Iron Sword of ")
+	# PIX-543: French read « Cape de voyageur de qualité de célérité », two « de ».
+	Text.apply("fr")
+	var french := InventoryState.gear_name(fine)
+	var french_epic := InventoryState.gear_name(epic)
+	Text.apply("en")
+	assert_string_starts_with(french, "Superbe épée de fer d", "the adjective first, the item's capital gone to it")
+	assert_false(french.contains("de qualité"), french)
+	assert_string_contains(french_epic, "Épée de fer épique d")
 	var pack := InventoryState.new()
 	pack.gear.append(fine)
 	pack.equipped["weapon"] = fine["uid"]

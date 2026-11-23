@@ -32,7 +32,7 @@ func test_the_stat_sheet_reads_like_the_webs() -> void:
 			["intelligence", "powers INT skills", "powers INT skills"],
 			["dexterity", "powers bows, daggers and DEX skills", "powers bows, daggers and DEX skills"],
 			["defense", "DEF 8 · turns aside 71% of a level-1 hit", "DEF 9 · turns aside 74% of a level-1 hit"],
-			["endurance", "HP 42 · EN 8 · regen 2/turn", "HP 43 · EN 10 · regen 2/turn"],
+			["endurance", "HP 42 · EN 8 · regen 2/s", "HP 43 · EN 10 · regen 2/s"],
 		],
 		"mage": [
 			["strength", "carry 69", "carry 72"],
@@ -305,3 +305,17 @@ func test_forgetting_the_training_without_the_gold_changes_nothing() -> void:
 	assert_true(state.training.forget_training())
 	assert_eq(state.pack.gold, 0)
 
+
+
+## PIX-543: the game runs in real time, and an ailment's turn is a second
+## (Ailments.TURN_SECONDS): a skill's words count seconds, and count them right.
+func test_no_skill_speaks_of_turns() -> void:
+	assert_eq(Ailments.TURN_SECONDS, 1.0, "the words say seconds for turns")
+	var number := RegEx.create_from_string("(\\d+) seconds")
+	for role: String in ["warrior", "ranger", "mage", "cleric", "necromancer", "rogue"]:
+		for node: Dictionary in Skills.tree(role):
+			var words := String(node.get("description", ""))
+			assert_false(words.to_lower().contains("turn"), "%s: %s" % [node["id"], words])
+			var found := number.search(words)
+			if found != null and node.get("skill", {}).has("inflicts"):
+				assert_eq(int(found.get_string(1)), int(node["skill"]["inflicts"]["turns"]), words)

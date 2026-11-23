@@ -102,11 +102,13 @@ func _open() -> void:
 	closing_actions = [&"journal"]
 	layer = 5
 	dim()
-	add_child(UiStyle.title("Journal"))
+	var title := UiStyle.title("Journal")
+	add_child(title)
 	tabs_row = HBoxContainer.new()
 	# On the pages' top edge, INSET in from its corner, as every screen's
-	# tabs (PIX-388).
-	tabs_row.position = Vector2(AT.x + UiStyle.INSET, AT.y - 36)
+	# tabs (PIX-388), and a gap past the title: this page stands high, and
+	# the title's foot sat on the first tab (PIX-543).
+	tabs_row.position = Vector2(maxf(AT.x + UiStyle.INSET, title.position.x + Layout.words_width(title) + UiStyle.GAP), AT.y - 36)
 	tabs_row.custom_minimum_size.y = 36
 	tabs_row.add_theme_constant_override("separation", 4)
 	add_child(tabs_row)

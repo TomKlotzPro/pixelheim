@@ -90,6 +90,8 @@ const ARROW_INSET := 26.0
 ## How far the arrow keeps from the hero's figure, on the screen (PIX-462:
 ## against their side at the Blackiron Shafts' first step, it read as theirs).
 const ARROW_CLEAR := 24.0
+## The least between a door's plate and the canvas's edge (PIX-543).
+const PLATE_EDGE := 8.0
 
 
 ## The layer and its widgets, in the order they stand: the sky's tint, a
@@ -692,7 +694,15 @@ func update_nameplate() -> void:
 	# Over the board, wherever the camera has the door on screen.
 	var top := Vector2(nameplate_door.x * TILE + TILE / 2.0, nameplate_door.y * TILE - nameplate_over)
 	var screen := get_viewport().get_canvas_transform() * top
-	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
+	nameplate.position = plate_spot(screen, nameplate.size, get_viewport().get_visible_rect().size)
+
+
+## Where a door's plate stands: its foot's middle on `foot`, and the whole of
+## it `PLATE_EDGE` inside a `view`-sized canvas (PIX-543: under a door near
+## the top of the screen the plate's first line was cut by the edge).
+static func plate_spot(foot: Vector2, plate: Vector2, view: Vector2) -> Vector2:
+	var spot := (foot - Vector2(plate.x / 2.0, plate.y)).round()
+	return Vector2(clampf(spot.x, PLATE_EDGE, maxf(PLATE_EDGE, view.x - plate.x - PLATE_EDGE)), clampf(spot.y, PLATE_EDGE, maxf(PLATE_EDGE, view.y - plate.y - PLATE_EDGE)))
 
 
 ## The arrow itself (Marks, PIX-284): a bevelled arrow in the dock's brass,
