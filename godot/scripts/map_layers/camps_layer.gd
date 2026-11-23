@@ -142,9 +142,10 @@ func set_night(view: MapView, _night: bool) -> void:
 			pane.set_meta("dark", true)
 			pane.visible = false
 			# The LightRig shows a light by its energy: none thrown below it.
-			var light: Variant = pane.get_meta("light", null)
-			if is_instance_valid(light):
-				(light as Node).set_meta("energy", 0.0)
+			# A far pane has none (get_meta with a null default still
+			# logs an error for a missing key: PIX-538).
+			if pane.has_meta("light") and is_instance_valid(pane.get_meta("light")):
+				(pane.get_meta("light") as Node).set_meta("energy", 0.0)
 
 
 ## The town's ruins smoking, and on the night of the fire still burning

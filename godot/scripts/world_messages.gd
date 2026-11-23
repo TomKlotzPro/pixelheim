@@ -45,6 +45,9 @@ const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"
 ## A plain message gives way to the next after this long; a tagged one
 ## (a quest, a level) is always read to its end (PIX-211).
 const PLAIN_MESSAGE_S := 1.2
+## A message comes up once the line above the dock has had this long to
+## fade out of its place (PIX-543: the two showed through each other).
+const GIVE_WAY_S := 0.15
 ## The widest a message's words run before they wrap.
 const MESSAGE_WIDTH := 860.0
 ## Lines the battle log has shown on this visit (the harness reports it: a
@@ -286,6 +289,13 @@ var _shown := {}
 var _message_now := ""
 var _message_tagged := false
 var _message_since := 0.0
+## The Night of Ash's step as update() last saw it (_old_news).
+var _step := Prologue.DONE
+
+
+## Whether a message has the plate, showing or about to (GIVE_WAY_S).
+func up() -> bool:
+	return _message_now != ""
 
 
 ## A message for the objective's plate (PIX-211): it waits behind the one
@@ -394,6 +404,7 @@ func update() -> void:
 	log_box.visible = Screen.holds() == 0
 	_drop_past()
 	_hold_hint_for_card()
+	_old_news()
 	var fighting := _fighting()
 	if _message_now != "" and not _message_tagged and GameClock.seconds() - _message_since >= PLAIN_MESSAGE_S:
 		# A plain message gives way to whatever comes next.
@@ -409,6 +420,32 @@ func update() -> void:
 	while not line.is_empty():
 		_say(line)
 		line = _log.next(fighting)
+
+
+## The Night of Ash moved on a step: a plain message from before it is old
+## news and fades out now, once it has had a plain one's time (PIX-537:
+## « The hounds fall back to ash » stood on after Bram's talk, the pouch's
+## line into the village and its hounds). One said with the step stays.
+func _old_news() -> void:
+	var step := GameState.progression.prologue
+	if step == _step:
+		return
+	_step = step
+	if _message_now != "" and not _message_tagged and GameClock.seconds() - _message_since >= PLAIN_MESSAGE_S:
+		message_fade.kill()
+		message_fade = create_tween()
+		_fade_away()
+
+
+## The plate fades out, and the next has its turn.
+func _fade_away() -> void:
+	message_fade.tween_property(message_box, "modulate:a", 0.0, 0.4)
+	var shown := _shown
+	message_fade.tween_callback(func() -> void:
+		_plate.gone(shown)
+		_message_now = ""
+		update()
+	)
 
 
 ## A boss's fall, its card up: what can wait and already shows on the plate
@@ -540,12 +577,10 @@ func _show_message(text: String) -> void:
 	if message_fade != null:
 		message_fade.kill()
 	message_fade = create_tween()
+	# A new one waits for the line to leave its place, laid out meanwhile
+	# (Hud.update_objective); one taking over from another has it already.
+	if message_box.modulate.a <= 0.0:
+		message_fade.tween_interval(GIVE_WAY_S)
 	message_fade.tween_property(message_box, "modulate:a", 1.0, 0.15)
 	message_fade.tween_interval(UiStyle.reading_seconds(text))
-	message_fade.tween_property(message_box, "modulate:a", 0.0, 0.4)
-	var shown := _shown
-	message_fade.tween_callback(func() -> void:
-		_plate.gone(shown)
-		_message_now = ""
-		update()
-	)
+	_fade_away()

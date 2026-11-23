@@ -406,7 +406,7 @@ func _frame(views: Array[MapView]) -> void:
 	var bounds := Seam.bounds_of(ids)
 	var here := origin()
 	var rect := Rect2(Vector2((bounds.position - here) * MapView.TILE), Vector2(bounds.size * MapView.TILE))
-	world.camera_rig.set_bounds(rect, true, false)
+	world.camera_rig.set_bounds(rect, false)
 	if ridge == null:
 		ridge = Sprite2D.new()
 		ridge.texture = Seam.ridge_texture()

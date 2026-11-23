@@ -37,6 +37,10 @@ const HERO_BODY := Rect2(-8, -16, 16, 22)
 ## The main quest's next step, quietly above the dock (PIX-144): a dark
 ## pill holding "Next" and the step.
 var objective_box: PanelContainer
+## The line's fade, in or out (update_objective), and the gap a message
+## standing over it keeps (PIX-537).
+var _line_fade: Tween
+const LINE_GAP := 6.0
 var objective_label: Label
 ## Its "Next" tag, kept to size with its words (World.apply_video).
 var objective_tag: Label
@@ -461,9 +465,12 @@ func on_hp_changed(hp: int, max_hp: int) -> void:
 
 ## The line above the dock (PIX-144): the main quest's next step, faded out
 ## in a fight (never on the Night of Ash, whose line names the fight's key:
-## PIX-507), under a flashing message and once the story is done; hidden
-## while the world is paused (menus, conversations, cutscenes: the world's
-## _notification).
+## PIX-507), while a message has its place and once the story is done;
+## hidden while the world is paused (menus, conversations, cutscenes: the
+## world's _notification). The line and a message take the place in turn,
+## one gone before the other comes (PIX-543: they showed through each
+## other); on the Night of Ash the message stands over the line instead
+## (PIX-537: it hid the key the step teaches).
 func update_objective() -> void:
 	var messages: Messages = world.messages
 	# Where the hero is headed (PIX-239): the followed quest or the story's
@@ -485,9 +492,12 @@ func update_objective() -> void:
 	objective_box.position.y = dock.words_top() if dock != null and dock.top() > 0 else 690.0 - 38
 	# A message stands where the objective line does and grows upward, so a
 	# long one (a barred gate, a quest's words) never runs under the dock.
-	if messages.message_box.modulate.a > 0.0:
+	# Fitted from the moment it is up, before it shows (PIX-543: the first
+	# of a session, not laid out yet, stood a screen high as it faded in).
+	var beside := Prologue.line_stays(GameState.progression.prologue)
+	if messages.up():
 		messages.fit()
-	messages.message_box.position.y = objective_box.position.y + objective_box.size.y - messages.message_box.size.y
+	messages.message_box.position.y = objective_box.position.y + (-LINE_GAP if beside else objective_box.size.y) - messages.message_box.size.y
 	# The battle log stands on the objective line, or on a taller message
 	# (PIX-211), and grows upward, so a long kill never runs into either.
 	var under := objective_box.position.y
@@ -496,11 +506,22 @@ func update_objective() -> void:
 	messages.log_box.reset_size()
 	messages.log_box.position.y = under - 6 - messages.log_box.size.y
 	var fought: bool = world.foes.in_fight() and not Prologue.line_stays(GameState.progression.prologue)
-	var show: bool = text != "" and not fought and messages.message_box.modulate.a < 0.05
+	var show := line_shows(text, fought, messages.up() or messages.message_box.modulate.a >= 0.05, beside)
 	var target := 1.0 if show else 0.0
 	if objective_box.get_meta("fading_to", -1.0) != target:
 		objective_box.set_meta("fading_to", target)
-		objective_box.create_tween().tween_property(objective_box, "modulate:a", target, 0.3)
+		# One fade at a time: two on the line fought over it.
+		if _line_fade != null:
+			_line_fade.kill()
+		_line_fade = objective_box.create_tween()
+		_line_fade.tween_property(objective_box, "modulate:a", target, 0.3 if show else Messages.GIVE_WAY_S)
+
+
+## Whether the line above the dock shows: it has words, no fight fades it,
+## and no message has its place (`message`), unless the message stands
+## over it (`beside`: the Night of Ash, PIX-537).
+static func line_shows(text: String, fought: bool, message: bool, beside: bool) -> bool:
+	return text != "" and not fought and (beside or not message)
 
 
 ## Where the hero is headed, looked at again now: the active lead, and the

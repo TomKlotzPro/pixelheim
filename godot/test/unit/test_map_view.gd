@@ -99,3 +99,21 @@ func _check_camps(map_id: String) -> void:
 		assert_false(map.portals.has(cell))
 		if view.camps[cell]["kind"] == "tent":
 			assert_eq(view.camps[cell]["tile"], CampsLayer.TENTS[map.region_at(cell)])
+
+
+## PIX-538: every plain start logged « The object does not have any 'meta'
+## values with the key 'light' » twice as the Night of Ash began: the hall's
+## panes in the village far off carry no light, and get_meta with a null
+## default still logs for a missing key.
+func test_the_far_halls_panes_go_dark_without_an_error() -> void:
+	var was := GameState.progression.prologue
+	GameState.progression.prologue = Prologue.SCAVENGER
+	var view := MapView.new(MapData.load_by_id("overworld"), null)
+	view.skyline = {"hall": Rect2i(10, 10, 4, 4)}
+	var pane: Sprite2D = autofree(Sprite2D.new())
+	pane.position = Vector2(11, 11) * MapView.TILE
+	view.panes.append(pane)
+	CampsLayer.new().set_night(view, true)
+	GameState.progression.prologue = was
+	assert_false(pane.visible, "dark on the night nobody is in the hall")
+	assert_engine_error_count(0, "a pane with no light of its own")
