@@ -6,6 +6,8 @@ extends Screen
 ## Enter takes it, Esc resumes. The world holds still.
 
 const Options := preload("res://scripts/options_screen.gd")
+## More room under the card's last line than its frame's padding.
+const FOOT := 8
 
 var world: World
 var options: Array[Dictionary] = []
@@ -29,7 +31,11 @@ func _open() -> void:
 	card.custom_minimum_size = Vector2(340, 340)
 	# Centred whatever its words (PIX-213: French ran it off-centre).
 	card.resized.connect(func() -> void: card.position = ((Vector2(1280, 720) - card.size) / 2.0).round())
-	card.add_theme_stylebox_override("panel", UiStyle.window(UiStyle.INSET))
+	# A little more under the last line (PIX-543: it read as standing on the
+	# frame's foot, whose page edge is drawn inside the padding).
+	var page := UiStyle.window(UiStyle.INSET).duplicate() as StyleBoxTexture
+	page.content_margin_bottom += FOOT
+	card.add_theme_stylebox_override("panel", page)
 	add_child(card)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 12)

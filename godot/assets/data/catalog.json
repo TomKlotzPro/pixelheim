@@ -2256,7 +2256,7 @@
         },
         {
           "name": "Shield Slam",
-          "description": "A staggering bash that can stun the enemy for a turn.",
+          "description": "A staggering bash that can stun the enemy for a second.",
           "unlockLevel": 3
         },
         {
@@ -2292,7 +2292,7 @@
         },
         {
           "name": "Ignite",
-          "description": "Sets the enemy ablaze, burning it for several turns.",
+          "description": "Sets the enemy ablaze, burning it for 3 seconds.",
           "unlockLevel": 3
         },
         {
@@ -2472,7 +2472,7 @@
         },
         {
           "name": "Blight",
-          "description": "A creeping rot that poisons for several turns.",
+          "description": "A creeping rot that poisons for 4 seconds.",
           "unlockLevel": 3
         },
         {

@@ -28,8 +28,9 @@ const PAGE := Rect2(416, 96, 784, 536)
 ## strip under it room for a whole name, three lines about it and the news.
 const LIST := Vector2(PAGE.size.x - 2 * UiStyle.INSET, 390)
 ## What the list gives the strip under it with Large reading text (PIX-484):
-## five rows, and three lines of the big type about the chosen one.
-const LIST_LARGE := 294
+## five whole rows (PIX-543: 294 cut the fifth's foot, which read as a list
+## stopped mid-row), and three lines of the big type about the chosen one.
+const LIST_LARGE := 5 * 56 + 4 * 4
 ## The most lines about the chosen row before they page.
 const ABOUT_LINES := 3
 const LIST_TOP := PAGE.position.y + UiStyle.INSET

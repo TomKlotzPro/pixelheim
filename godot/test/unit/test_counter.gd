@@ -243,3 +243,12 @@ func test_the_trophy_still_sweetens_every_sale_by_a_tenth() -> void:
 	state.settlement.house["trophies"] = ["gem"]
 	assert_eq(state.trade.item_pays("wolf_pelt"), floori(base * 1.1))
 	assert_eq(state.trade.gear_pays(rusty), floori(gear_base * 1.1))
+
+
+## PIX-543: the Forge's card said "Temper +1" and not what the +1 made of the
+## piece. It says the number after, as the Stats sheet's "With a point:".
+func test_the_forge_says_what_a_tempering_makes() -> void:
+	var sword := {"itemId": "iron_sword", "bonus": 2, "rarity": "common"}
+	var after := int(Catalog.item("iron_sword")["damage"]) + 3
+	assert_string_ends_with(ShopScreen._tempered(sword), "Tempered: Damage %d" % after)
+	assert_eq(ShopScreen._tempered({"itemId": "bread", "bonus": 0}), "", "nothing for what the forge raises no number of")

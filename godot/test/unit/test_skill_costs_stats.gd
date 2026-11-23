@@ -97,8 +97,13 @@ func test_the_trees_cards_wear_icons_and_keep_one_edge() -> void:
 	for entry: Dictionary in Skills.tree("mage"):
 		var card: Control = autofree(screen._node_card(entry, false))
 		var room: Control = card.get_child(0).get_child(0)
-		assert_eq(room.custom_minimum_size, Vector2(24, 24), "%s: the same room" % entry["id"])
+		assert_eq(room.custom_minimum_size, Vector2(SkillsScreen.ICON, 24), "%s: the same room, the art's whole width (PIX-543)" % entry["id"])
 		var art := room.get_child(0) as TextureRect
+		assert_eq(art.position.x, 0.0, "%s: the art inside its room, off the frame and the numeral" % entry["id"])
+		# One numeral a name (PIX-543: "II Fireball II").
+		var name := (card.get_child(0).get_child(1) as Label).text
+		var numerals := Array(name.split(" ")).filter(func(word: String) -> bool: return word in SkillsScreen.TIER_BADGES)
+		assert_eq(numerals.size(), 1, "%s: %s" % [entry["id"], name])
 		if not entry.has("skill"):
 			assert_null(art.texture, "%s: no icon to borrow" % entry["id"])
 		elif ItemIcons.stat("strength") != null:
@@ -267,3 +272,16 @@ func test_a_refused_slot_flashes_and_settles() -> void:
 	dock.refuse(9)
 	await wait_seconds(HudDockScript.REFUSED_S + 0.1)
 	assert_eq(slot.modulate, Color.WHITE, "and back")
+
+
+## PIX-543: in Large reading text the "Next" line grew down onto the dock's
+## rim. It stands as much higher as its line is taller.
+func test_the_next_line_keeps_its_margin_in_large_text() -> void:
+	_lend("warrior")
+	var dock := _dock()
+	await wait_process_frames(2)
+	var normal: float = dock.words_top()
+	GameState.settings.large_text = true
+	var large: float = dock.words_top()
+	GameState.settings.large_text = false
+	assert_eq(normal - large, float(HudDock.NEXT_LARGE))

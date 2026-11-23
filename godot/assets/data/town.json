@@ -221,12 +221,12 @@
         {
           "kind": "relics",
           "count": 2,
-          "line": "Hope comes home: bring two of the relics back to Pixelheim"
+          "line": "Hope comes home - bring two of the relics back to Pixelheim"
         },
         {
           "kind": "settlers",
           "count": 1,
-          "line": "Someone has chosen to live here: bring one settler home"
+          "line": "Someone has chosen to live here - bring one settler home"
         }
       ],
       "opens": {
@@ -467,7 +467,7 @@
         {
           "kind": "relics",
           "count": 4,
-          "line": "The five come home: bring all four relics to Maren. The fountain will still want Fafnyr's scale"
+          "line": "The five come home - bring all four relics to Maren. The fountain will still want Fafnyr's scale"
         }
       ],
       "opens": {
@@ -847,7 +847,7 @@
       "requires": [
         {
           "kind": "freed",
-          "line": "The dragon comes back: hold the square till dawn and set him free"
+          "line": "The dragon comes back - hold the square till dawn and set him free"
         }
       ],
       "opens": {

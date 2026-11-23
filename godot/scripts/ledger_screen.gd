@@ -58,13 +58,14 @@ func _open() -> void:
 	add_child(card)
 	info_scroll = ScrollContainer.new()
 	info_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	card.add_child(info_scroll)
+	card.add_child(Layout.lined(info_scroll))
 	# Large text reaches the page's words too (PIX-214). As wide as the
-	# window leaves it: beside its scrollbar when there is one.
+	# window leaves it: beside its scrollbar when there is one, a gap clear
+	# of it (PIX-543: « 10 % au total. » ran into it).
 	info = UiStyle.label("", UiStyle.reading(14), UiStyle.INK)
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	info_scroll.add_child(info)
+	info_scroll.add_child(Layout.beside_bar(info))
 	# The footer names the key once there is more to read, and only then.
 	info_scroll.get_v_scroll_bar().changed.connect(_set_keys)
 

@@ -1948,7 +1948,7 @@
         "branch": 1,
         "tier": 0,
         "name": "Shield Slam",
-        "description": "A staggering bash that can stun for a turn.",
+        "description": "A staggering bash that can stun for a second.",
         "kind": "active",
         "skill": {
           "name": "Shield Slam",
@@ -2225,7 +2225,7 @@
         "branch": 1,
         "tier": 0,
         "name": "Ignite",
-        "description": "Sets the enemy ablaze for several turns.",
+        "description": "Sets the enemy ablaze for 3 seconds.",
         "kind": "active",
         "skill": {
           "name": "Ignite",
@@ -3647,7 +3647,7 @@
         "branch": 1,
         "tier": 0,
         "name": "Blight",
-        "description": "A creeping rot that poisons for turns.",
+        "description": "A creeping rot that poisons for 4 seconds.",
         "kind": "active",
         "skill": {
           "name": "Blight",

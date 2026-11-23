@@ -7,9 +7,6 @@ extends Resource
 ## and since PIX-191 its affixes ({stat: n}) and how deep it was forged (deep);
 ## `forged` once Hilda forged or reforged it for gold (PIX-374: never junk).
 
-## Rarity name prefixes (RARITIES in rarity.ts); common pieces have none.
-const RARITY_LABELS := {"common": "", "fine": "Fine", "epic": "Epic"}
-
 static var _uid_counter := 0
 
 var gold := 0
@@ -108,12 +105,18 @@ static func roman(number: int) -> String:
 ## "Fine Iron Sword of Might", "Abyssal Starfall Staff of Insight": the
 ## rarity (or the deep tier), the item, its strongest affix (PIX-191).
 static func gear_name(instance: Dictionary) -> String:
-	var label: String = Text.t(RARITY_LABELS.get(instance["rarity"], ""))
-	if int(instance.get("deep", 0)) > 0:
-		label = deep_name(int(instance["deep"]))
 	var name := Catalog.item_name(instance["itemId"])
-	# Named, not positional: French puts the rarity after the item (PIX-196).
-	var titled := Text.t("{rarity} {item}").format({"rarity": label, "item": name}) if label != "" else name
+	# Named, not positional: French puts a deep tier after the item (PIX-196)
+	# and a fine piece's adjective before it, taking its capital ({lower}):
+	# « de qualité » before an affix's « de » stacked two (PIX-543).
+	var slots := {"item": name, "lower": name.left(1).to_lower() + name.substr(1)}
+	var titled := name
+	if int(instance.get("deep", 0)) > 0:
+		titled = Text.t("{rarity} {item}").format(slots.merged({"rarity": deep_name(int(instance["deep"]))}))
+	elif instance["rarity"] == "fine":
+		titled = Text.t("Fine {item}").format(slots)
+	elif instance["rarity"] == "epic":
+		titled = Text.t("Epic {item}").format(slots)
 	var affixes: Dictionary = instance.get("affixes", {})
 	if affixes.is_empty():
 		return titled

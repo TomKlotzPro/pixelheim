@@ -213,8 +213,8 @@ msgid "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried 
 msgstr "Une louche de cuisinier en fer noir, le manche entouré de toile à voile. Tam l'avait emportée pour l'ascension, il y a cinquante ans, et la mer l'a rendue. L'une des reliques que les cinq ont laissées derrière eux."
 
 #: assets/data/catalog.json
-msgid "A creeping rot that poisons for several turns."
-msgstr "Une pourriture rampante qui empoisonne pendant plusieurs tours."
+msgid "A creeping rot that poisons for 4 seconds."
+msgstr "Une pourriture rampante qui empoisonne pendant 4 secondes."
 
 #: assets/data/catalog.json
 msgid "A cruel arrowhead that leaves the wound poisoned."
@@ -337,8 +337,8 @@ msgid "A soldier's badge from Greyhold, the tower on it worn smooth by a thumb."
 msgstr "Un insigne de soldat de Greyhold, dont la tour a été polie par un pouce."
 
 #: assets/data/catalog.json
-msgid "A staggering bash that can stun the enemy for a turn."
-msgstr "Un choc à faire chanceler, qui peut étourdir l'ennemi pendant un tour."
+msgid "A staggering bash that can stun the enemy for a second."
+msgstr "Un choc à faire chanceler, qui peut étourdir l'ennemi pendant une seconde."
 
 #: assets/data/catalog.json
 msgid "A stone mortar from a burnt stead in the Ash Fields, cracked through and still green inside. VEX is scratched on the base."
@@ -1561,8 +1561,8 @@ msgid "Sela's Stew Recipe"
 msgstr "Recette de ragoût de Sela"
 
 #: assets/data/catalog.json
-msgid "Sets the enemy ablaze, burning it for several turns."
-msgstr "Embrase l'ennemi, qui brûle pendant plusieurs tours."
+msgid "Sets the enemy ablaze, burning it for 3 seconds."
+msgstr "Embrase l'ennemi, qui brûle pendant 3 secondes."
 
 #: assets/data/catalog.json
 msgid "Shadow Cloak"
@@ -8717,10 +8717,6 @@ msgid "A breath and a roar."
 msgstr "Un souffle et un rugissement."
 
 #: assets/data/combat.json
-msgid "A creeping rot that poisons for turns."
-msgstr "Une pourriture rampante qui empoisonne pendant plusieurs tours."
-
-#: assets/data/combat.json
 msgid "A creeping rot."
 msgstr "Une pourriture rampante."
 
@@ -8797,8 +8793,8 @@ msgid "A sickness with a name on it."
 msgstr "Une maladie qui a déjà son destinataire."
 
 #: assets/data/combat.json
-msgid "A staggering bash that can stun for a turn."
-msgstr "Un choc qui fait vaciller et peut étourdir un tour."
+msgid "A staggering bash that can stun for a second."
+msgstr "Un choc qui fait vaciller et peut étourdir une seconde."
 
 #: assets/data/combat.json
 msgid "A staggering bash."
@@ -9965,8 +9961,8 @@ msgid "Serenity"
 msgstr "Sérénité"
 
 #: assets/data/combat.json
-msgid "Sets the enemy ablaze for several turns."
-msgstr "Embrase l'ennemi pendant plusieurs tours."
+msgid "Sets the enemy ablaze for 3 seconds."
+msgstr "Embrase l'ennemi pendant 3 secondes."
 
 #: assets/data/combat.json
 msgid "Shade"
@@ -16989,8 +16985,8 @@ msgid "Hilda's forge"
 msgstr "La forge de Hilda"
 
 #: assets/data/town.json
-msgid "Hope comes home: bring two of the relics back to Pixelheim"
-msgstr "L'espoir revient : rapporter deux des reliques à Pixelheim"
+msgid "Hope comes home - bring two of the relics back to Pixelheim"
+msgstr "L'espoir revient - rapporter deux des reliques à Pixelheim"
 
 #: assets/data/town.json
 msgid "It wants rope, and the best rope is in Saltmere"
@@ -17105,8 +17101,8 @@ msgid "Sela's inn with real beds, and roofs over Upper Street's and Hearth Lane'
 msgstr "L'auberge de Sela, avec de vrais lits, et des toits pour les familles de la Grand-Rue et de la ruelle du Foyer."
 
 #: assets/data/town.json
-msgid "Someone has chosen to live here: bring one settler home"
-msgstr "Quelqu'un a choisi de vivre ici : faire venir un nouvel habitant"
+msgid "Someone has chosen to live here - bring one settler home"
+msgstr "Quelqu'un a choisi de vivre ici - faire venir un nouvel habitant"
 
 #: assets/data/town.json
 msgid "Street lamps"
@@ -17173,16 +17169,16 @@ msgid "The bells ring as you walk in. Pixelheim knows what fell on the mountain 
 msgstr "Les cloches sonnent à votre arrivée. Pixelheim sait ce qui est tombé sur la montagne, et Bram raconte à tout le monde qu'il l'a toujours su."
 
 #: assets/data/town.json
-msgid "The dragon comes back: hold the square till dawn and set him free"
-msgstr "Le dragon revient : tenez la place jusqu'à l'aube et libérez-le"
+msgid "The dragon comes back - hold the square till dawn and set him free"
+msgstr "Le dragon revient - tenez la place jusqu'à l'aube et libérez-le"
 
 #: assets/data/town.json
 msgid "The five climbers in bronze on the square. Heroes walk taller past it: +5% XP from every kill."
 msgstr "Les cinq grimpeurs, en bronze, sur la place. Les héros se redressent en passant devant : +5 % d'XP par ennemi vaincu."
 
 #: assets/data/town.json
-msgid "The five come home: bring all four relics to Maren. The fountain will still want Fafnyr's scale"
-msgstr "Les cinq rentrent : rapporter les quatre reliques à Maren. La fontaine voudra encore l'écaille de Fafnyr"
+msgid "The five come home - bring all four relics to Maren. The fountain will still want Fafnyr's scale"
+msgstr "Les cinq rentrent - rapporter les quatre reliques à Maren. La fontaine voudra encore l'écaille de Fafnyr"
 
 #: assets/data/town.json
 msgid "The fountain"
@@ -19349,6 +19345,10 @@ msgid "Temper +1"
 msgstr "Forger +1"
 
 #: scripts/shop_screen.gd
+msgid "Tempered: %s"
+msgstr "Après la forge : %s"
+
+#: scripts/shop_screen.gd
 msgid "That takes %dg and a gem."
 msgstr "Il faut %d o et une gemme."
 
@@ -19921,6 +19921,14 @@ msgid "Bounty %dg, and %s"
 msgstr "Prime %d o, et %s"
 
 #: scripts/state/inventory_state.gd
+msgid "Epic {item}"
+msgstr "{item} épique"
+
+#: scripts/state/inventory_state.gd
+msgid "Fine {item}"
+msgstr "Superbe {lower}"
+
+#: scripts/state/inventory_state.gd
 msgid "{item} {affix}"
 msgstr "{item} {affix}"
 
@@ -20133,8 +20141,8 @@ msgid "powers bows, daggers and DEX skills"
 msgstr "renforce arcs, dagues et compétences de DEX"
 
 #: scripts/state/skills.gd
-msgid "regen %d/turn"
-msgstr "régén. %d/tour"
+msgid "regen %d/s"
+msgstr "régén. %d/s"
 
 #: scripts/state/skills.gd
 msgid "skill power %d"
