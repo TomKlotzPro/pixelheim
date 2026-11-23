@@ -359,7 +359,9 @@ static var _wet := {}
 ## out into the water. Green counts the water cells straight above (/255), so
 ## reflections.gdshader finds the bank that a cell's water mirrors. Inland
 ## (PIX-306), blue is how far the bank lies (water_depth / DEPTH_CELLS) and
-## alpha the water's code (water_code / 255); both 0 on the sea and the land.
+## alpha the water's code (water_code / 255); on the sea (PIX-532) blue is
+## how hard it breaks (`surf_at`) and alpha SPAN_BIT on a pier's cell; both
+## 0 on the land.
 static func water_map(grid: Dictionary, size: Vector2i, map_id := "") -> ImageTexture:
 	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	var above := PackedInt32Array()
@@ -413,6 +415,11 @@ static func water_rows(image: Image, grid: Dictionary, from: int, to: int, above
 				code = water_code(tile, tone, west[x] + east, north + south)
 				if cells == 1:
 					_mark_bank(image, grid, cell, tone, tiles, wet_above)
+			else:
+				# The sea (PIX-532): how hard it breaks here, and a pier's own
+				# cell a span (tone 0) for its posts.
+				depth = 0.0 if tile == "dock" else surf_at(grid, cell, size)
+				code = SPAN_BIT if tile == "dock" else 0
 			image.set_pixelv(cell, Color(1.0, mini(above[x], 255) / 255.0, depth, code / 255.0))
 			above[x] += 1
 
@@ -436,6 +443,44 @@ static func water_depth(grid: Dictionary, cell: Vector2i, size: Vector2i, west: 
 			if not is_wet(grid.get(_inside(cell + step * reach, size), "")):
 				return reach
 	return depth
+
+
+## How hard the sea breaks on its cell `cell` (PIX-532, the water mask's
+## blue on the sea), 0 to 1: ROCK_SURF by the rock's foot, POST_SURF round
+## a pier's posts, and by a beach as much as open sea lies within two cells
+## (SURF_OPEN, up to BEACH_SURF), so a point breaks white and a cove laps;
+## nothing on a straight beach, nor a cell off the land. The map's edge
+## carried on. Only a rock's foot reaches ROCK_SURF: region_tint reads it as
+## steep, Shade's water beginning at the cell's edge, not 4 px past it.
+const ROCK_SURF := 1.0
+const POST_SURF := 0.6
+const BEACH_SURF := 0.8
+const SURF_OPEN := Vector2(0.62, 0.8)
+
+
+static func surf_at(grid: Dictionary, cell: Vector2i, size: Vector2i) -> float:
+	# Every sea cell asks as its row is worked out (Saltmere's 768, about
+	# 2 ms in all), so the loops read the grid and _wet straight.
+	is_wet("")
+	var surf := 0.0
+	var ashore := false
+	for y in range(maxi(cell.y - 1, 0), mini(cell.y + 2, size.y)):
+		for x in range(maxi(cell.x - 1, 0), mini(cell.x + 2, size.x)):
+			var tile: String = grid.get(Vector2i(x, y), "")
+			if tile == "dock":
+				surf = maxf(surf, POST_SURF)
+			elif not _wet.has(tile):
+				ashore = true
+				if GROUND.get(tile, "") == "cliff":
+					surf = maxf(surf, ROCK_SURF)
+	if not ashore:
+		return surf
+	var open := 0
+	for dy in range(-2, 3):
+		for dx in range(-2, 3):
+			var tile: String = grid.get(Vector2i(clampi(cell.x + dx, 0, size.x - 1), clampi(cell.y + dy, 0, size.y - 1)), "")
+			open += int(tile != "dock" and _wet.has(tile))
+	return maxf(surf, BEACH_SURF * smoothstep(SURF_OPEN.x, SURF_OPEN.y, open / 25.0))
 
 
 ## Inland water's code (the mask's alpha) on a cell of tile `tile`: its

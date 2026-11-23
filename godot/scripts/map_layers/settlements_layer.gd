@@ -165,8 +165,14 @@ static func _decor_hamlet(view: MapView) -> void:
 				boat.sprite_frames = HamletArt.afloat(piece["art"])
 				boat.centered = false
 				boat.frame = absi(hash(cell)) % 2
-				boat.play()
-				stand_on(view, boat, cell, Vector2(-HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
+				# Still with Reduce motion, as the sea is (PIX-532).
+				if not GameState.settings.reduce_motion:
+					boat.play()
+				# Moored off a pier beside it by its foam's pad, so its spray
+				# never lands on the planks (PIX-532).
+				var wide := HamletArt.cells_wide(String(piece["art"]))
+				var off := HamletArt.AFLOAT_PAD * (int(view.data.grid.get(cell + Vector2i.LEFT, "") == "dock") - int(view.data.grid.get(cell + Vector2i(wide, 0), "") == "dock"))
+				stand_on(view, boat, cell, Vector2(off - HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
 			_:
 				if piece.get("lamp", false):
 					# A wayside lamp (PIX-397): the town's street lamp, its foot,

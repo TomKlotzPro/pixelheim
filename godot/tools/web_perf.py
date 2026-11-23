@@ -32,7 +32,9 @@ EXPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "export"
 # with a flash held, the bolt's light casting every frame, as no storm
 # ever does for more than a few. Light relief (PIX-528): the Reach's and
 # the City's nights with it on, and again with it off (`-flat`), so its cost
-# reads off one run. test_harness_flags reads these lines.
+# reads off one run. Saltmere's coast at night, its lighthouse and the
+# jetty's lamps lit (PIX-532: the sea's foam). test_harness_flags reads
+# these lines.
 RUNS = {
     "storm": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night storm cpu perf --wait 2 --shot user://web_perf.png",
     "strike": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night storm --strike held cpu perf --wait 2 --shot user://web_perf.png",
@@ -41,6 +43,7 @@ RUNS = {
     "town": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night --relief on cpu perf --wait 2 --shot user://web_perf.png",
     "town-flat": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night --relief off cpu perf --wait 2 --shot user://web_perf.png",
     "line": "--fixed-fps 60 -- --screenshot --map overworld --at 93,33 seamless --walk r,r,r cpu crossing --wait 1 --shot user://web_perf.png",
+    "coast": "--fixed-fps 60 -- --screenshot --map saltmere --routes saltmere:7 --at 33,27 night cpu perf --wait 2 --shot user://web_perf.png",
 }
 
 

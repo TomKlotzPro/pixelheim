@@ -197,14 +197,76 @@ func test_land_away_from_the_water_and_the_sea_carry_nothing() -> void:
 			coast[Vector2i(x, y)] = "sea" if y >= 3 else ("shore" if y == 2 else "sand")
 	var sea := _mask(coast, Vector2i(6, 6), "saltmere")
 	for cell: Vector2i in [Vector2i(3, 1), Vector2i(3, 2), Vector2i(3, 4)]:
-		assert_eq(_code(sea, cell), 0, "the sea and its shore keep Shade's own depths: %s" % cell)
+		assert_eq(_code(sea, cell), 0, "the sea keeps Shade's depths, tone 0; a straight beach breaks nowhere: %s" % cell)
 		assert_eq(sea.get_pixelv(cell).b, 0.0)
+
+
+## The sea's surf (PIX-532, its blue): white where it breaks on what juts
+## into it (a point, the rock's foot, a pier's posts), a lap in a cove.
+func test_the_sea_breaks_on_what_juts_into_it() -> void:
+	var saltmere := MapData.load_by_id("saltmere")
+	var mask := _mask(saltmere.grid, saltmere.size, "saltmere")
+	var surf := func(cell: Vector2i) -> float: return mask.get_pixelv(cell).b
+	assert_gte(surf.call(Vector2i(5, 26)), PunyTerrain.ROCK_SURF - 0.01, "the west headland's foot")
+	for cell: Vector2i in [Vector2i(30, 27), Vector2i(32, 27)]:
+		assert_gte(surf.call(cell), PunyTerrain.POST_SURF - 0.01, "round the jetty's posts: %s" % cell)
+	assert_gt(surf.call(Vector2i(37, 30)), 0.5, "the point's tip")
+	assert_gt(surf.call(Vector2i(36, 30)), 0.3, "its flank")
+	assert_lt(surf.call(Vector2i(17, 21)), 0.1, "a cove laps")
+	assert_eq(surf.call(Vector2i(20, 31)), 0.0, "the open sea")
+	assert_eq(_code(mask, Vector2i(31, 27)), PunyTerrain.SPAN_BIT, "the jetty spans the sea: its posts")
+	assert_eq(surf.call(Vector2i(31, 27)), 0.0)
+	assert_eq(PunyTerrain.water_near(mask, Vector2i(33, 30), 8), "", "and the sea is still no inland water")
+	# region_tint reads a sea over BEACH_SURF as a rock's steep foot, its
+	# waterline at the cell's edge: never a beach's, however open.
+	for y in saltmere.size.y:
+		for x in saltmere.size.x:
+			var breaks: float = surf.call(Vector2i(x, y))
+			if breaks > PunyTerrain.BEACH_SURF + 0.01:
+				assert_almost_eq(breaks, PunyTerrain.ROCK_SURF, 0.01, "steep only by a rock: %s" % Vector2i(x, y))
+	# A straight beach with a point a cell out of it, and a rock by the sea.
+	var grid := {}
+	for y in 9:
+		for x in 12:
+			grid[Vector2i(x, y)] = "sand" if y < 3 else ("shore" if y == 3 else "sea")
+	grid[Vector2i(5, 3)] = "sand"
+	grid[Vector2i(11, 3)] = "mountain"
+	var coast := _mask(grid, Vector2i(12, 9), "saltmere")
+	assert_eq(coast.get_pixel(1, 3).b, 0.0, "a straight beach laps")
+	assert_gt(coast.get_pixel(5, 4).b, 0.0, "off the point's tip it breaks")
+	assert_gt(coast.get_pixel(4, 4).b, 0.0, "and off its flank")
+	assert_almost_eq(coast.get_pixel(10, 3).b, PunyTerrain.ROCK_SURF, 0.01, "white by the rock")
+
+
+## No inland water lies within two cells of the sea, on any map: the shaders
+## read the sea's blue as how hard it breaks and inland water's as how far
+## its bank lies, and the mask read smoothly between them would mix the two.
+func test_no_inland_water_meets_the_sea() -> void:
+	var coasts := 0
+	for entry: Array in _maps():
+		var data: MapData = entry[2]
+		var seas: Array[Vector2i] = []
+		var inland: Array[Vector2i] = []
+		for cell: Vector2i in data.grid:
+			var tile: String = data.grid[cell]
+			var ground := PunyTerrain.ground_at(data.grid, cell)
+			if tile in ["water", "bridge"] or (tile == "dock" and ground == "river"):
+				inland.append(cell)
+			elif tile in ["shore", "sea", "deep_sea", "dock"]:
+				seas.append(cell)
+		coasts += int(not seas.is_empty())
+		var nearest := 1 << 20
+		for cell: Vector2i in inland:
+			for sea: Vector2i in seas:
+				nearest = mini(nearest, maxi(absi(cell.x - sea.x), absi(cell.y - sea.y)))
+		assert_gt(nearest, 2, "%s: inland water %d cells from the sea" % [entry[0], nearest])
+	assert_gt(coasts, 0, "Saltmere's sea among the maps")
 
 
 func test_a_mask_worked_out_a_row_at_a_time_is_the_whole() -> void:
 	# KeptGround works the water out a row a slice beside the hero; the
 	# banks it marks on the row below must survive that row's own turn.
-	for map_id: String in ["overworld", "town", "mirefen", "deepwood"]:
+	for map_id: String in ["overworld", "town", "mirefen", "deepwood", "saltmere"]:
 		var data := MapData.load_by_id(map_id)
 		var whole := _mask(data.grid, data.size, map_id)
 		var sliced := Image.create(data.size.x, data.size.y, false, Image.FORMAT_RGBA8)
