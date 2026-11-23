@@ -1,20 +1,20 @@
 shader_type canvas_item;
-// Light relief on a plain piece (PIX-528, Relief.material()): a prop, a lamp
-// post, a crate, a stall, a room's furniture, drawn as it is, its normal from
-// its own light and dark for the lamps and the lantern (relief.gdshaderinc).
-// Its colour is the texel's, untouched. A tile layer's material says it is
-// no sprite cut from a sheet (`cut`: relief.gdshaderinc's relief_uv); a tile
-// layer is the ground (the town's cobbles and paving, a room's floor), its
-// grain and its dark the ground's, as region_tint's.
+// Light relief on a plain piece (PIX-528, PIX-529, Relief.material()): a
+// prop, a lamp post, a crate, a stall, a room's furniture domed from its
+// outline; a tile layer (a square's great flags, stone walls, the rampart)
+// carved from its stones' joints, where its sheet has stone
+// there (relief.gdshaderinc). Its colour is the texel's, untouched.
 
 #include "res://shaders/linear.gdshaderinc"
 #include "res://shaders/relief.gdshaderinc"
 
-uniform bool cut = true;
+// Relief.PLAIN, CARVED or DOMED, and whether it draws a tile layer.
+uniform int relief_form = 1;
+uniform bool relief_tiles = false;
 
 void fragment() {
 	if (relief > 0.0) {
-		NORMAL_MAP = RELIEF_NORMAL(cut ? RELIEF_GRAIN : RELIEF_SOFT_GRAIN, cut ? RELIEF_DARK : RELIEF_GROUND_DARK, cut);
+		NORMAL_MAP = RELIEF_SHAPE(relief_form, relief_tiles);
 	} else {
 		NORMAL_MAP = RELIEF_FLAT;
 	}

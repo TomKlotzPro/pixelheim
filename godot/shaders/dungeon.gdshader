@@ -21,6 +21,9 @@ shader_type canvas_item;
 // never smudged nor a field of checks.
 
 #include "res://shaders/linear.gdshaderinc"
+// Light relief carves the CC0 dungeons' stone, the one CC0 stone that reads
+// clean carved (PIX-529); every other CC0 tile layer lies flat.
+#define RELIEF_OTHER_JOINT RELIEF_JOINT
 #include "res://shaders/relief.gdshaderinc"
 
 global uniform float world_time;
@@ -344,10 +347,11 @@ void fragment() {
 			c = wall_of(c, px, in_cell, m.r > 0.5, th);
 		}
 	}
-	// Light relief (PIX-528): the torches shape the stone, never the sea's
-	// pools (a cell the sea reaches stays flat).
+	// Light relief (PIX-528, PIX-529): the torches shape the stone, carved
+	// from its joints, never the sea's pools (a cell the sea reaches stays
+	// flat), nor the Medieval Age's floor blocks (no stone in Relief.joints()).
 	if (relief > 0.0 && m.g == 0.0) {
-		NORMAL_MAP = RELIEF_NORMAL(RELIEF_GRAIN, RELIEF_DARK, false);
+		NORMAL_MAP = RELIEF_SHAPE(RELIEF_CARVED, true);
 	} else {
 		NORMAL_MAP = RELIEF_FLAT;
 	}
