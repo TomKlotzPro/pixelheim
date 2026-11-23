@@ -30,6 +30,17 @@
 // is ours: with the relief off it lights as Godot lights an item with no
 // normal map, and every shader writing NORMAL_MAP has it. Its shadows take
 // the art's colour (below), as on every floor (frozen, puddles, stair_frost).
+//
+// The rim (PIX-531, a shader that defines RELIEF_RIM before its include: the
+// characters, the domed props, the see-through ones): in the dark, each lamp,
+// torch, fire or lantern adds a dim tone of its own colour to the edge
+// texels of what stands, on its sides and top facing it, near it only. An
+// edge texel is an opaque one with a neighbour under half alpha (RIM_OPEN,
+// four taps on its piece, set in fragment() as `rim_open = RIM_OPEN(keep);`),
+// so the rim is one whole art pixel thick and never outside the silhouette;
+// it needs none of the relief's normals and shows with Light relief on or
+// off. Nothing by day (the `light_rim` global, LightRig), from the
+// lightning, or at a light's heart.
 
 // 0 with Light relief off, Lights.RELIEF on (LightRig).
 global uniform float relief;
@@ -222,6 +233,55 @@ vec3 relief_domed(vec4 c, vec4 l, vec4 r, vec4 u, vec4 d, vec3 la, vec3 ra, vec3
 // has a joint step there; only the branch taken is read.
 #define RELIEF_SHAPE(form, tiles) ((form) == RELIEF_DOMED ? RELIEF_DOME_NORMAL(tiles) : ((form) == RELIEF_CARVED && RELIEF_JOINT_HERE(tiles) > 0.0 ? RELIEF_CARVE_NORMAL(tiles) : RELIEF_FLAT))
 
+#ifdef RELIEF_RIM
+// 0 by day, Lights.RIM in the dark (LightRig.rim_strength). Not `rim`:
+// relief_domed's local of that name then read the global, and the web's
+// shader failed to compile.
+global uniform float light_rim;
+// Which sides of this texel lie open (1 where the neighbour left, right, up
+// or down on the screen is under half alpha), from fragment() to light();
+// light() lights no foot (below), but a piece flipped upside down needs it.
+varying vec4 rim_open;
+// How bright the rim is, a share of the light's own colour and energy, and
+// the most of the light's colour it adds on the screen: a dim tone of the
+// light, never its glass (a forge's fires, stronger than a lamp, edged its
+// furnaces in salmon).
+const float RIM_GLOW = 2.0;
+const float RIM_MOST = 0.45;
+// How squarely an open side must face the light before it lights (0: a side
+// lit as soon as the light is anywhere on its half; a sprite sparkled).
+const float RIM_TURN = 0.25;
+// The rim is whole where the light's falloff (its texture's alpha, 1 at its
+// heart, 0 at its edge) is over RIM_NEAR and gone under RIM_FAR: near a
+// light only (by the relief's whole reach, a prop between a window and a
+// lamp across the square took a rim from each, a ruled outline).
+const float RIM_FAR = 0.2;
+const float RIM_NEAR = 0.5;
+// No rim where the light's falloff is over this: at its heart, light from
+// all round (a lamp's own glass, the hero's own lantern at their feet).
+const float RIM_HEART = 0.85;
+
+// The open sides as the screen shows them: a flipped piece is mirrored on
+// the screen, never in its UV (its region's size is negative).
+vec4 rim_sides(vec4 a, vec4 region) {
+	vec4 open = step(a, vec4(0.5));
+	if (region.z < 0.0) {
+		open.xy = open.yx;
+	}
+	if (region.w < 0.0) {
+		open.zw = open.wz;
+	}
+	return open;
+}
+
+// This texel's open sides (none for a texel under half alpha, or by day),
+// its taps kept on its piece (`keep` as relief_texel's: a frame's or a
+// piece's cut is no edge). So a side drawn flush with its piece's cut is
+// never rimmed: read past the region as air, a boarded ruin's long straight
+// side took a ruled line. TEXTURE is read inline, in fragment().
+#define RIM_OPEN(keep) (light_rim > 0.0 && RELIEF_TAP(0.0, 0.0, keep).a >= 0.5 ? rim_sides(vec4(RELIEF_TAP(-1.0, 0.0, keep).a, RELIEF_TAP(1.0, 0.0, keep).a, RELIEF_TAP(0.0, -1.0, keep).a, RELIEF_TAP(0.0, 1.0, keep).a), REGION_RECT) : vec4(0.0))
+#endif
+
 // Off, or the lightning's flat sky: the light as Godot gives it with no
 // normal map (a directional light's alpha is its energy again, as in
 // puddles.gdshader). On, a lamp lights each pixel by its slope towards the
@@ -231,14 +291,37 @@ vec3 relief_domed(vec4 c, vec4 l, vec4 r, vec4 u, vec4 d, vec3 la, vec3 ra, vec3
 // at its light's edge.
 void light() {
 	float shade = 1.0;
+	// Towards the light and up, whichever way Godot hands it over.
+	vec3 to_light = LIGHT_DIRECTION * (LIGHT_DIRECTION.z < 0.0 ? -1.0 : 1.0);
 	if (relief > 0.0 && !LIGHT_IS_DIRECTIONAL) {
-		// Towards the light and up, whichever way Godot hands it over.
-		vec3 to_light = LIGHT_DIRECTION * (LIGHT_DIRECTION.z < 0.0 ? -1.0 : 1.0);
 		float lit = 1.0 + dot(NORMAL.xy, to_light.xy) / max(NORMAL.z * to_light.z, 0.05);
 		float near = smoothstep(0.0, RELIEF_FADE, LIGHT_COLOR.a);
 		shade = clamp(mix(1.0, lit, near * min(relief, 1.0)), RELIEF_SHADE_MIN, 2.0);
 	}
 	LIGHT = vec4(LIGHT_COLOR.rgb * COLOR.rgb * LIGHT_ENERGY * shade, LIGHT_IS_DIRECTIONAL ? 1.0 : LIGHT_COLOR.a);
+#ifdef RELIEF_RIM
+	// The rim (PIX-531): an open side facing this light takes its colour,
+	// by how squarely it faces it and the light's own falloff (LIGHT.a
+	// again, as Godot blends it), none at the light's heart. Only the sides
+	// and the top: a light lower on the screen stands in front, between us
+	// and what it lights, and lights its face, no rim (rimmed, a lamp's own
+	// lanterns took a ruled line along their feet from its pool below them).
+	// A dark edge (the outline Shade draws round a figure) takes it whole, a
+	// light one less: added whole, a forge's furnaces turned near white
+	// where they faced each other's fire, and the glow bloomed it.
+	if (light_rim > 0.0 && !LIGHT_IS_DIRECTIONAL) {
+		vec2 way = to_light.xy / max(length(to_light.xy), 0.0001);
+		float facing = max(max(-way.x * rim_open.x, way.x * rim_open.y), -way.y * rim_open.z);
+		float reach = smoothstep(RIM_FAR, RIM_NEAR, LIGHT_COLOR.a) * (1.0 - smoothstep(RIM_HEART - 0.1, RIM_HEART, LIGHT_COLOR.a));
+		float dark_edge = 1.0 - clamp(dot(to_display(COLOR.rgb), vec3(0.299, 0.587, 0.114)), 0.0, 1.0);
+		// What it adds on the screen, where Godot multiplies it by LIGHT.a:
+		// a tone of the light's shown colour, turned into the canvas's light
+		// (exact over the dark outline; added raw on the desktop's linear
+		// canvas, RIM_MOST showed about 0.7 of the light, not 0.45).
+		float shown = min(LIGHT_ENERGY * RIM_GLOW * light_rim * smoothstep(RIM_TURN, 1.0, facing) * reach * LIGHT_COLOR.a, RIM_MOST);
+		LIGHT.rgb += to_canvas(to_display(LIGHT_COLOR.rgb) * shown * dark_edge * COLOR.a) / max(LIGHT_COLOR.a, 0.001);
+	}
+#endif
 	// A night shadow (PIX-528): Godot blends a shadowed pixel from this light
 	// to the light's shadow colour, which never met the art's own colour, so
 	// over ground darker than about 0.43 a shadow's soft edge came out

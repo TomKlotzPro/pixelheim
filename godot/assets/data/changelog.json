@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.397.0",
+      "date": "2026-11-23",
+      "codename": "Edged in Light",
+      "notes": [
+        "At night the lamps, windows, fires, torches, candles and a carried lantern edge whoever stands near them, on the side facing the flame, in the light's own colour",
+        "The hero, villagers, foes and the props that stand (crates, stall wares, a room's furniture) catch it; the ground, houses and trees don't",
+        "Nothing by day, and the same with the Light relief on or off"
+      ]
+    },
+    {
       "version": "0.396.0",
       "date": "2026-11-23",
       "codename": "A Grander Welcome",

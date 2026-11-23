@@ -38,6 +38,7 @@ story quest rank: assets/data/progression.json
 town story quest save: assets/data/post.json
 dungeon field +icecave* +frostgate*: shaders/frozen.*
 town field night dungeon rooms: shaders/relief.*
+town field title combat story night: shaders/fighter.*
 dungeon +seacave* +shafts* +cellars* +icecave* +vault*: shaders/dungeon.* shaders/torch_motes.*
 rooms +observatory*: shaders/stair_frost.*
 travel field +deepwood* +blackiron* +mirefen* +saltmere* +mountain_road* +overworld*: shaders/road_shape.*

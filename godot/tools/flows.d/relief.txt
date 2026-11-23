@@ -14,3 +14,11 @@ relief-off | --map town --town-tier 4 --at 40,24 night --relief off | map=town r
 # hold the look.
 relief-room | --map town_smith night --relief on | map=town_smith relief=on pieces [1-9]\d* | rooms night
 relief-frost | --map frostgate --at 27,9 night --relief on | map=frostgate relief=on pieces [1-9]\d* | field night
+# PIX-531: the lights' rim on what stands, with the relief on or off: whole
+# at night, none by day (outdoors, and a room's dim day at the run's first
+# hour, six in the morning), held back by --rim off. The pictures hold the
+# look.
+rim-night | --map town --town-tier 4 --at 40,24 night | map=town rim=on 1\.00 | town night
+rim-day | --map town --town-tier 4 --at 40,24 | map=town rim=on 0\.00 | town
+rim-off | --map town --town-tier 4 --at 40,24 night --rim off | map=town rim=off 0\.00 | town night
+rim-room-day | --map town_smith | map=town_smith rim=on 0\.00 | rooms

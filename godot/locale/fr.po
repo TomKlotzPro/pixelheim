@@ -2793,6 +2793,10 @@ msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
 msgstr "La nuit, ses fenêtres et ses lanternes s'allument, et la fumée monte de ses toits"
 
 #: assets/data/changelog.json
+msgid "At night the lamps, windows, fires, torches, candles and a carried lantern edge whoever stands near them, on the side facing the flame, in the light's own colour"
+msgstr "La nuit, les lampes, les fenêtres, les feux, les torches, les bougies et une lanterne portée soulignent d'un liseré, dans leur propre couleur, quiconque se tient près d'elles, du côté tourné vers la flamme"
+
+#: assets/data/changelog.json
 msgid "At night your lantern and the three nearest lamps, torches or fires cast soft shadows on the ground"
 msgstr "La nuit, votre lanterne et les trois lampes, torches ou feux les plus proches projettent des ombres douces au sol"
 
@@ -3515,6 +3519,10 @@ msgstr "Plus lisible : les listes reposent sur des pages au lieu du monde asso
 #: assets/data/changelog.json
 msgid "Easy on the Eyes"
 msgstr "Doux pour les yeux"
+
+#: assets/data/changelog.json
+msgid "Edged in Light"
+msgstr "Bordés de lumière"
 
 #: assets/data/changelog.json
 msgid "Eight new items, and five of them can ONLY be made, never bought: from the Reedwoven Buckler to Scaled Mail"
@@ -5159,6 +5167,10 @@ msgstr "Rien sous le pied"
 #: assets/data/changelog.json
 msgid "Nothing Wasted"
 msgstr "Rien de perdu"
+
+#: assets/data/changelog.json
+msgid "Nothing by day, and the same with the Light relief on or off"
+msgstr "Rien de jour, et pareil avec le Relief des lumières activé ou non"
 
 #: assets/data/changelog.json
 msgid "Nothing playing is cut when they arrive: the next sound and the next change of place use them"
@@ -7359,6 +7371,10 @@ msgstr "La chute du héros a désormais son propre son, et les escaliers et les 
 #: assets/data/changelog.json
 msgid "The hero's fall plays at its full quality again"
 msgstr "La chute du héros retrouve sa pleine qualité"
+
+#: assets/data/changelog.json
+msgid "The hero, villagers, foes and the props that stand (crates, stall wares, a room's furniture) catch it; the ground, houses and trees don't"
+msgstr "Le héros, les villageois, les ennemis et les objets debout (caisses, marchandises des étals, meubles d'une pièce) le reçoivent ; le sol, les maisons et les arbres non"
 
 #: assets/data/changelog.json
 msgid "The hounds' lesson ends with your first roll and the embers' with your first skill, not only when they all fall"

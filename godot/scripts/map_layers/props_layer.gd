@@ -153,6 +153,8 @@ static func _add_lamp_post(view: MapView, root: Node2D, cell: Vector2i, sort_y: 
 	post.centered = false
 	post.position = top
 	post.flip_h = flip
+	# Domed, never rimmed by its own pool (PIX-531).
+	post.material = Relief.lamp_post()
 	root.add_child(post)
 	var flame := AnimatedSprite2D.new()
 	flame.sprite_frames = drawn["lit"]

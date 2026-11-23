@@ -23,6 +23,8 @@ const FLAGS := ["flags", "sandstone", "mossy"]
 
 static var _materials := {}
 static var _joints: ImageTexture
+## lamp_post()'s key among the materials, past every form's two.
+const LAMP_POST := 6
 
 
 ## The one material every piece of a `form` shares (`tiles`: a tile layer,
@@ -37,6 +39,17 @@ static func material(form: int, tiles: bool) -> ShaderMaterial:
 		made.set_shader_parameter("relief_joints", joints())
 		_materials[key] = made
 	return _materials[key]
+
+
+## A street lamp's post (PIX-531): domed as every prop, but the lights never
+## rim it. Its own light pools at its foot, between the square's two
+## lanterns, and rimmed their inner sides: a lamp lit by its own pool.
+static func lamp_post() -> ShaderMaterial:
+	if not _materials.has(LAMP_POST):
+		var made := material(DOMED, false).duplicate() as ShaderMaterial
+		made.set_shader_parameter("relief_rimmed", false)
+		_materials[LAMP_POST] = made
+	return _materials[LAMP_POST]
 
 
 ## `node` and everything under it: each tile layer with no material of its

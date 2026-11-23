@@ -163,6 +163,13 @@ static func soft() -> Texture2D:
 ## it, in pixels: lower lights graze, and shape it further from them.
 const RELIEF := 1.0
 const RELIEF_HEIGHT := 40.0
+## How strongly the lights rim what stands on its side facing them in the
+## dark (PIX-531, the shaders' `light_rim`), and how dark it must be before
+## any rim shows: none by day nor by a room's dim day (0.26 at noon, 0.32 at
+## six in the morning), so a window's sunbeam never rims; whole from
+## LANTERN_DARK.
+const RIM := 1.0
+const RIM_DUSK := 0.35
 
 
 ## A light at `at` reaching `radius` pixels, of `color`, at full `energy`

@@ -52,6 +52,16 @@ var _step_dir := "down"
 var _was := Vector2.ZERO
 var _facing := "down"
 var _look_left := 0.0
+## The villagers' one material (PIX-531): the fighters' shader, so the lights
+## rim them as they rim the hero and the foes. A villager is never flashed
+## nor dissolved, so all share it, and they still draw together.
+static var _rim: ShaderMaterial
+
+
+static func rim_material() -> ShaderMaterial:
+	if _rim == null:
+		_rim = Juice.fighter_material()
+	return _rim
 
 
 func _ready() -> void:
@@ -67,6 +77,7 @@ func _ready() -> void:
 	sprite.sprite_frames = PunyArt.frames(art)
 	sprite.scale = Vector2.ONE * size
 	sprite.position = Vector2(0, PunyArt.lift(art) * size)
+	sprite.material = rim_material()
 	sprite.play(PunyArt.pick(sprite.sprite_frames, "idle", "down"))
 	# Offset the idle phase per villager so the square doesn't breathe in unison.
 	sprite.frame = Npcs.id_hash(data["id"]) % 2
