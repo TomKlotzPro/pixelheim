@@ -2101,6 +2101,10 @@ msgid "A Game's Face"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A Grander Welcome"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A HERO PLATE: your portrait, pixel bars for health, mana and experience, your gold, and each screen one click or key away"
 msgstr ""
 
@@ -7734,6 +7738,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The title screen lives: stars, embers, bobbing monsters, a breathing dragon"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The title screen plays the menu theme in its orchestral version, strings and horns before the pixel world begins"
 msgstr ""
 
 #: assets/data/changelog.json
