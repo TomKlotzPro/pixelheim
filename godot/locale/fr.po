@@ -2573,6 +2573,10 @@ msgid "A slain slime bursts into two small slimes; the Dire Wolf darts in to bit
 msgstr "Un slime vaincu éclate en deux petits slimes ; le loup sinistre s'élance pour mordre puis recule, un seul de la meute à la fois"
 
 #: assets/data/changelog.json
+msgid "A slope facing away from a lamp keeps half its light; the relief stays off by default (Options: Light relief)"
+msgstr "Un versant tourné à l'opposé d'une lampe garde la moitié de sa lumière ; le relief reste désactivé par défaut (Options : Relief des lumières)"
+
+#: assets/data/changelog.json
 msgid "A small quill writes by the clock whenever the game saves at a moment that matters, and the pause menu says how long ago it last saved"
 msgstr "Une petite plume écrit près de l'horloge chaque fois que le jeu sauvegarde à un moment qui compte, et le menu pause indique depuis quand il a sauvegardé"
 
@@ -3873,6 +3877,10 @@ msgid "Figures shed their 2D outline in 3D: brighter, chunkier heroes, villagers
 msgstr "Les personnages perdent leur contour 2D en 3D : héros, villageois et monstres plus lumineux et plus trapus, ancrés au sol par une douce ombre de contact"
 
 #: assets/data/changelog.json
+msgid "Fire and Water"
+msgstr "Le feu et l'eau"
+
+#: assets/data/changelog.json
 msgid "Fireflies"
 msgstr "Lucioles"
 
@@ -3975,6 +3983,10 @@ msgstr "Les Éclairs se désactivent dans les Options ; désactivés, ou avec 
 #: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
 msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la surprise a disparu"
+
+#: assets/data/changelog.json
+msgid "Foam catches the moon at night, whiter in a storm; with Reduce motion it lies still"
+msgstr "L'écume accroche la lune la nuit, plus blanche dans l'orage ; avec Réduire les animations, elle reste immobile"
 
 #: assets/data/changelog.json
 msgid "Foes Come Alive"
@@ -4421,6 +4433,10 @@ msgid "In a conversation, Esc now says « quitter » in French"
 msgstr "Dans une conversation, la touche Esc indique désormais « quitter » en français"
 
 #: assets/data/changelog.json
+msgid "In a fight, a foe's \"!\" stands over that foe, your blows' numbers come up at the foe's side rather than over your head, and a level-up's burst is drawn behind you"
+msgstr "En combat, le « ! » d'un ennemi se place au-dessus de lui, les nombres de vos coups apparaissent à côté de l'ennemi plutôt qu'au-dessus de votre tête, et l'éclat d'un niveau gagné se dessine derrière vous"
+
+#: assets/data/changelog.json
 msgid "In caves and mines, water drips and stones tumble, where a hearth used to crackle"
 msgstr "Dans les grottes et les mines, l'eau goutte et des pierres dégringolent, là où crépitait un âtre"
 
@@ -4475,6 +4491,10 @@ msgstr "Dans l'ombre"
 #: assets/data/changelog.json
 msgid "Into the Woods"
 msgstr "Au cœur des bois"
+
+#: assets/data/changelog.json
+msgid "It breaks white on the point, at the foot of the rocks, round the jetty's posts and along the boats"
+msgstr "Elle se brise en blanc sur la pointe, au pied des rochers, autour des pieux de la jetée et le long des barques"
 
 #: assets/data/changelog.json
 msgid "It grows as you rebuild it, from the Town Hall alone among the ashes to the city's lamps and fountain"
@@ -5279,6 +5299,10 @@ msgstr "Pendant la Nuit des cendres, seuls les survivants sont là, les portes f
 #: assets/data/changelog.json
 msgid "On the Night of Ash the town hall stands dark and scorched, its windows unlit, from the square and from the road"
 msgstr "Pendant la Nuit des Cendres, la mairie est sombre et noircie, ses fenêtres éteintes, vue de la place comme de la route"
+
+#: assets/data/changelog.json
+msgid "On the Night of Ash, Bram lies pinned under a burning beam until you put your shoulder to it: it rolls away and he gets up"
+msgstr "Pendant la Nuit des Cendres, Bram est coincé sous une poutre en flammes jusqu'à ce que vous y mettiez l'épaule : elle roule au loin et il se relève"
 
 #: assets/data/changelog.json
 msgid "On the Night of Ash, the well and the burning homes now show E, and answer from any cell beside them"
@@ -6213,6 +6237,10 @@ msgid "Snow lies in drifts with blue shadows, and the Mirefen is murk, sedge and
 msgstr "La neige s'amoncelle en congères aux ombres bleues, et les Marais de Fange sont faits de vase, de laîches et de flaques au lieu de points de camouflage"
 
 #: assets/data/changelog.json
+msgid "Snow, water, cobbles, room floors, plaster, the houses and awnings stay smooth, so patterns no longer turn to grain"
+msgstr "La neige, l'eau, les pavés, les sols des pièces, le crépi, les maisons et les auvents restent lisses : les motifs ne tournent plus au grain"
+
+#: assets/data/changelog.json
 msgid "Soft Doors"
 msgstr "Portes en douceur"
 
@@ -6957,6 +6985,10 @@ msgid "The Letters tab no longer claims your satchel is empty while you carry th
 msgstr "L'onglet Lettres ne prétend plus que votre sacoche est vide quand vous portez la lettre du chancelier"
 
 #: assets/data/changelog.json
+msgid "The Light relief takes its depth from the shapes drawn, not from each pixel's shade: a square's great flags, a keep's stone walls and the rampart are bevelled at their joints, and crates, stalls, lamp posts and trees' crowns are rounded from their outline"
+msgstr "Le Relief des lumières tire sa profondeur des formes dessinées, et non plus de la teinte de chaque pixel : les grandes dalles d'une place, les murs de pierre d'un donjon et le rempart sont biseautés à leurs joints, et les caisses, les étals, les lampadaires et les cimes des arbres sont arrondis depuis leur contour"
+
+#: assets/data/changelog.json
 msgid "The Long Way Round"
 msgstr "Le Détour"
 
@@ -7157,8 +7189,16 @@ msgid "The bar at the bottom is new: the portrait framed with its rank in gold, 
 msgstr "La barre du bas fait peau neuve : le portrait encadré avec son rang en or, des barres de vie et d'énergie encadrées, l'XP en bande crantée sur le dessus, les compétences dans des cases en bois avec leur touche sur un petit onglet et un voile qui se retire pendant la recharge ; et Menu ouvre un vrai menu de jeu, chaque écran avec son icône, son nom et sa touche"
 
 #: assets/data/changelog.json
+msgid "The barrels and crates by the doors are drawn where they block, so the gap west of the square reads as it walks"
+msgstr "Les tonneaux et les caisses devant les portes sont dessinés là où ils bloquent : le passage à l'ouest de la place se lit comme il se traverse"
+
+#: assets/data/changelog.json
 msgid "The breeze is back in 3D: grass, flowers, forest and marsh sway, water shimmers - the same two-frame breath as the classic renderer"
 msgstr "La brise revient en 3D : herbe, fleurs, forêt et marais ondulent, l'eau miroite - le même souffle en deux images que le rendu classique"
+
+#: assets/data/changelog.json
+msgid "The burning homes that night bar the way, a flame in their doorway, until a bucket puts them out"
+msgstr "Les maisons en feu, cette nuit-là, barrent le passage, une flamme dans l'embrasure, jusqu'à ce qu'un seau les éteigne"
 
 #: assets/data/changelog.json
 msgid "The camera no longer leans ahead of your hero: it made them slip back on screen as they set off, and the world scrolls crisp again"
@@ -7299,6 +7339,10 @@ msgstr "La terre guérie autour d'une lanterne s'effiloche désormais au contact
 #: assets/data/changelog.json
 msgid "The hero no longer grows a little with each rank"
 msgstr "Le héros ne grandit plus un peu à chaque rang"
+
+#: assets/data/changelog.json
+msgid "The hero stops clear of a villager talked to from above, and the E stands at their side, never on the hero"
+msgstr "Le héros s'arrête à distance d'un villageois abordé par le haut, et le E se place à côté de lui, jamais sur le héros"
 
 #: assets/data/changelog.json
 msgid "The hero walks in four beats, rising as the feet pass, each step timed to the ground it covers, so the feet no longer slide"
@@ -7573,6 +7617,10 @@ msgid "The ridge between regions shows where you've seen it, waypoints and goals
 msgstr "La crête entre les régions apparaît là où vous l'avez vue, les relais et les objectifs restent sur la page, et un objectif sous terre s'affiche à sa porte"
 
 #: assets/data/changelog.json
+msgid "The rivers heap foam at each bridge pile with a wake downstream, froth in their bends, and the Mirefen's boardwalks ring their posts"
+msgstr "Les rivières amassent l'écume contre chaque pile de pont avec un sillage en aval, moussent dans leurs méandres, et les pontons des Marais de Fange cerclent leurs pieux"
+
+#: assets/data/changelog.json
 msgid "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave"
 msgstr "Les routes vers les Marais de Fange et les Bois-Profonds sortent par la crête au lieu d'entrer dans une grotte"
 
@@ -7595,6 +7643,10 @@ msgstr "L'écran des sauvegardes tient de nouveau avec tous les emplacements rem
 #: assets/data/changelog.json
 msgid "The screens the menu opens share one frame now: the same margins, tabs that stand clear on the page's edge, a dimmed look for the tabs you can't open, a clearer chosen card at rank-up, 44 px planks on the pause and saves screens, a wider dialogue box with its portrait framed, and the map in line with the rest; the menu no longer hides your next objective, and on a pad the bar and the menu show the pad's buttons"
 msgstr "Les écrans ouverts par le menu partagent désormais un même cadre : les mêmes marges, des onglets bien posés sur le bord de la page, un aspect estompé pour ceux qu'on ne peut pas ouvrir, une carte choisie plus nette à la montée de rang, des planches de 44 px aux écrans de pause et de sauvegarde, une boîte de dialogue plus large au portrait encadré, et la carte alignée sur le reste ; le menu ne cache plus votre prochain objectif, et à la manette la barre et le menu montrent les boutons de la manette"
+
+#: assets/data/changelog.json
+msgid "The sea rolls in to the beach a swell at a time and draws back as a lace of foam, each stretch of shore a little sooner or later than the next"
+msgstr "La mer monte sur la plage vague après vague et se retire en dentelle d'écume, chaque bout de rivage un peu plus tôt ou plus tard que le suivant"
 
 #: assets/data/changelog.json
 msgid "The six regions now lie around the Ashenreach the way their roads run: the roads into the Blackiron valley, the Mirefen, the Deepwood and Saltmere moved, and every pass is three wide"

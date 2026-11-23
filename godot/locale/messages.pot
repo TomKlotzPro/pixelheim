@@ -2573,6 +2573,10 @@ msgid "A slain slime bursts into two small slimes; the Dire Wolf darts in to bit
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A slope facing away from a lamp keeps half its light; the relief stays off by default (Options: Light relief)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A small quill writes by the clock whenever the game saves at a moment that matters, and the pause menu says how long ago it last saved"
 msgstr ""
 
@@ -3873,6 +3877,10 @@ msgid "Figures shed their 2D outline in 3D: brighter, chunkier heroes, villagers
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fire and Water"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fireflies"
 msgstr ""
 
@@ -3974,6 +3982,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Foam catches the moon at night, whiter in a storm; with Reduce motion it lies still"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4421,6 +4433,10 @@ msgid "In a conversation, Esc now says « quitter » in French"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "In a fight, a foe's \"!\" stands over that foe, your blows' numbers come up at the foe's side rather than over your head, and a level-up's burst is drawn behind you"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "In caves and mines, water drips and stones tumble, where a hearth used to crackle"
 msgstr ""
 
@@ -4474,6 +4490,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Into the Woods"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "It breaks white on the point, at the foot of the rocks, round the jetty's posts and along the boats"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5278,6 +5298,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On the Night of Ash the town hall stands dark and scorched, its windows unlit, from the square and from the road"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "On the Night of Ash, Bram lies pinned under a burning beam until you put your shoulder to it: it rolls away and he gets up"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6213,6 +6237,10 @@ msgid "Snow lies in drifts with blue shadows, and the Mirefen is murk, sedge and
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Snow, water, cobbles, room floors, plaster, the houses and awnings stay smooth, so patterns no longer turn to grain"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Soft Doors"
 msgstr ""
 
@@ -6957,6 +6985,10 @@ msgid "The Letters tab no longer claims your satchel is empty while you carry th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Light relief takes its depth from the shapes drawn, not from each pixel's shade: a square's great flags, a keep's stone walls and the rampart are bevelled at their joints, and crates, stalls, lamp posts and trees' crowns are rounded from their outline"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Long Way Round"
 msgstr ""
 
@@ -7157,7 +7189,15 @@ msgid "The bar at the bottom is new: the portrait framed with its rank in gold, 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The barrels and crates by the doors are drawn where they block, so the gap west of the square reads as it walks"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The breeze is back in 3D: grass, flowers, forest and marsh sway, water shimmers - the same two-frame breath as the classic renderer"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The burning homes that night bar the way, a flame in their doorway, until a bucket puts them out"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7298,6 +7338,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The hero no longer grows a little with each rank"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The hero stops clear of a villager talked to from above, and the E stands at their side, never on the hero"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7573,6 +7617,10 @@ msgid "The ridge between regions shows where you've seen it, waypoints and goals
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The rivers heap foam at each bridge pile with a wake downstream, froth in their bends, and the Mirefen's boardwalks ring their posts"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave"
 msgstr ""
 
@@ -7594,6 +7642,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The screens the menu opens share one frame now: the same margins, tabs that stand clear on the page's edge, a dimmed look for the tabs you can't open, a clearer chosen card at rank-up, 44 px planks on the pause and saves screens, a wider dialogue box with its portrait framed, and the map in line with the rest; the menu no longer hides your next objective, and on a pad the bar and the menu show the pad's buttons"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The sea rolls in to the beach a swell at a time and draws back as a lace of foam, each stretch of shore a little sooner or later than the next"
 msgstr ""
 
 #: assets/data/changelog.json

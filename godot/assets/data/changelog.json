@@ -1,6 +1,25 @@
 {
   "releases": [
     {
+      "version": "0.395.0",
+      "date": "2026-11-23",
+      "codename": "Fire and Water",
+      "notes": [
+        "The sea rolls in to the beach a swell at a time and draws back as a lace of foam, each stretch of shore a little sooner or later than the next",
+        "It breaks white on the point, at the foot of the rocks, round the jetty's posts and along the boats",
+        "The rivers heap foam at each bridge pile with a wake downstream, froth in their bends, and the Mirefen's boardwalks ring their posts",
+        "Foam catches the moon at night, whiter in a storm; with Reduce motion it lies still",
+        "On the Night of Ash, Bram lies pinned under a burning beam until you put your shoulder to it: it rolls away and he gets up",
+        "The burning homes that night bar the way, a flame in their doorway, until a bucket puts them out",
+        "The barrels and crates by the doors are drawn where they block, so the gap west of the square reads as it walks",
+        "The hero stops clear of a villager talked to from above, and the E stands at their side, never on the hero",
+        "In a fight, a foe's \"!\" stands over that foe, your blows' numbers come up at the foe's side rather than over your head, and a level-up's burst is drawn behind you",
+        "The Light relief takes its depth from the shapes drawn, not from each pixel's shade: a square's great flags, a keep's stone walls and the rampart are bevelled at their joints, and crates, stalls, lamp posts and trees' crowns are rounded from their outline",
+        "Snow, water, cobbles, room floors, plaster, the houses and awnings stay smooth, so patterns no longer turn to grain",
+        "A slope facing away from a lamp keeps half its light; the relief stays off by default (Options: Light relief)"
+      ]
+    },
+    {
       "version": "0.394.0",
       "date": "2026-11-23",
       "codename": "The Hall Stands Dark",
