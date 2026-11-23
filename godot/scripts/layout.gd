@@ -243,6 +243,18 @@ static func _fit_lines(id: int) -> void:
 	if holder != null and holder.is_visible_in_tree():
 		var scroll := holder.get_child(0) as ScrollContainer
 		scroll.size = Vector2(holder.size.x, whole_lines(scroll, holder.size.y))
+		# The words run on to a whole page (PIX-543: the last page, the
+		# scroll held at its end, began through a line's letters): their
+		# reach past the window a whole number of lines, as a page turns,
+		# by room under them in their `beside_bar` margin.
+		var words := scroll.get_child(0) as MarginContainer
+		if words == null:
+			return
+		var below := words.get_theme_constant("margin_bottom")
+		var over := words.get_minimum_size().y - below - scroll.size.y
+		var pad := roundi(fposmod(-over, line_of(scroll))) if over > SLACK else 0
+		if pad != below:
+			words.add_theme_constant_override("margin_bottom", pad)
 
 
 static func _watch_lines(id: int, fit: Callable, on: bool) -> void:
