@@ -81,10 +81,13 @@ const float WAKE_DASH = 5.0;
 const float RIPPLE = 3.5;
 // A pile's quiet spell eases in and out (PIX-544): its beat's sine was cut
 // at a line, so a heap still full or a whole wake went in one frame. Over
-// QUIET_EASE either side of that line the foam now goes from none to all
-// (about 0.7 s), the heap's rim drawing in to the pile and the wake's arms
-// back to the leg, in whole pixels.
+// QUIET_EASE either side of that line a heap now goes from none to all
+// (about 0.7 s), its rim drawing in to the pile in whole pixels. A wake is
+// only two or three rows of two pixels, so it takes WAKE_EASE (about 0.9 s)
+// and goes a pixel at a time, from its far row back to the leg: cut by its
+// length alone, its rows all went within a quarter of a second.
 const float QUIET_EASE = 0.25;
+const float WAKE_EASE = 0.36;
 // A river's lap is white only where it is a line, the bank's distance
 // growing LAP_LINE a pixel or more (a straight bank's grows 1), read from
 // the art's pixels beside (fwidth read it across the screen's: a hairline
@@ -294,14 +297,14 @@ vec4 reeds(vec2 px, vec2 local_px, vec2 bend) {
 	return vec4(0.0);
 }
 
-// Draws inland water and its bank over the ground's pixel at `at` (plane
-// pixels), `base` its colour as shown; says what it made of it.
-// How much of a pile's foam is up, 0..1: its beat's sine, eased across
-// the line it falls quiet under.
-float foam_up(float beat_sine, float quiet_under) {
-	return smoothstep(quiet_under - QUIET_EASE, quiet_under + QUIET_EASE, beat_sine);
+// How much of a pile's foam is up, 0..1: its beat's sine, eased `ease`
+// either side of the line it falls quiet under.
+float foam_up(float beat_sine, float quiet_under, float ease) {
+	return smoothstep(quiet_under - ease, quiet_under + ease, beat_sine);
 }
 
+// Draws inland water and its bank over the ground's pixel at `at` (plane
+// pixels), `base` its colour as shown; says what it made of it.
 int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	vec2 px = floor(at) + 0.5;
 	// Where the pixel lies in the mask (a texel a cell), as the sea's reads.
@@ -430,11 +433,11 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 		float beat = hash(vec2(pile, 2.9));
 		float pace = hash(vec2(pile, 8.3));
 		if (still) {
-			// Out from the post itself (PIX-544): begun a pixel out, a ring
-			// was there all at once.
-			float r = (1.0 + RIPPLE) * fract(world_time * 0.35 + beat);
+			// Frayed out by a hash a pixel (PIX-544), as the rest of the
+			// foam: it went by the Bayer step.
+			float r = 1.0 + RIPPLE * fract(world_time * 0.35 + beat);
 			float ring = length(vec2(off, edge));
-			if (abs(ring - r) < 0.5 && threshold > r / (RIPPLE + 1.0)) {
+			if (abs(ring - r) < 0.5 && hash(px + 5.7) > r / (RIPPLE + 1.0)) {
 				water = moonlit(water_lip(tone));
 			}
 		} else if (dot(vec2(toward), flow) > 0.5) {
@@ -442,7 +445,7 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 			// swelling and sinking to nothing, its rim ragged with the churn;
 			// and now and then a pile quiet a while, its heap drawn in to
 			// nothing first.
-			float up = foam_up(sin(world_time * 0.7 + pace * TAU + 1.3), -0.2);
+			float up = foam_up(sin(world_time * 0.7 + pace * TAU + 1.3), -0.2, QUIET_EASE);
 			float heap = up * (PILE_R * (0.6 + 0.6 * pace) * (0.2 + 0.8 * sin(world_time * (1.6 + 1.4 * pace) + beat * TAU)) + 0.25 * churn + 1.0) - 1.0;
 			float ring = length(vec2(off * 1.3, edge));
 			if (ring < heap + 1.0) {
@@ -450,11 +453,14 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 			}
 		} else if (dot(vec2(toward), flow) < -0.5 && edge > 1.0 && edge < WAKE_LONG) {
 			// Two arms opening downstream from the leg's sides in dashes,
-			// drawn back to the leg before a quiet spell.
-			float up = foam_up(sin(world_time * 0.8 + pace * TAU), 0.2);
+			// drawn back to the leg before a quiet spell: a pixel at a time,
+			// the far row first, each row's left before its right.
+			float up = foam_up(sin(world_time * 0.8 + pace * TAU), 0.2, WAKE_EASE);
+			float reach = WAKE_LONG * (0.7 + 0.3 * pace);
+			float gone = (edge - 1.5 + (off < 0.0 ? 0.25 : 0.75)) / ceil(reach - 1.5);
 			float arm = abs(abs(off) - (0.5 + (edge - 0.5) * WAKE_SPREAD));
 			float dash = fract((edge - world_time * STREAK_SPEED) / (WAKE_DASH * (0.6 + 0.8 * beat)) + beat);
-			if (arm < 0.5 && dash < 0.6 && edge < up * WAKE_LONG * (0.7 + 0.3 * pace)) {
+			if (arm < 0.5 && dash < 0.6 && edge < reach && up > gone) {
 				water = moonlit(RIVER_LIP);
 			}
 		}
