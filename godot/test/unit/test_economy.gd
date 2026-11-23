@@ -21,8 +21,8 @@ func _stand_in(map_id: String) -> void:
 
 func test_stock_matches_the_web() -> void:
 	var expected := {
-		"odo@1": "bread,cheese_wheel,apple,dried_meat,furn_candles,furn_plant",
-		"odo@3": "bread,cheese_wheel,apple,dried_meat,furn_candles,furn_plant,furn_rug,furn_bench",
+		"odo@1": "bread,cheese_wheel,apple,dried_meat,tin_lantern,furn_candles,furn_plant",
+		"odo@3": "bread,cheese_wheel,apple,dried_meat,tin_lantern,furn_candles,furn_plant,furn_rug,furn_bench",
 		"smith@1": "rusty_sword,hunting_bow,traveler_cloak,wool_gloves,worn_boots",
 		# Each class finds its first tier at the third stage (PIX-294): a
 		# weapon for its stat and a charm for its neck.

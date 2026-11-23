@@ -1,5 +1,5 @@
 extends GutTest
-## The shadows the lantern and the lamps cast in the dark (PIX-490): what
+## The shadows the lamps cast in the dark (PIX-490): what
 ## blocks a light and from what footprint (NightShadows), the occluders a
 ## map lays (NightShadowsLayer), what a shadow falls on, and the few lights
 ## that cast (the cap, the LightRig).

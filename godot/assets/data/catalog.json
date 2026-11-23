@@ -1630,6 +1630,14 @@
       "quest": true,
       "description": "An iron-bound box with a caravan's mark. Something has chewed one corner."
     },
+    "tin_lantern": {
+      "name": "Tin Lantern",
+      "category": "misc",
+      "sprite": "lantern",
+      "weight": 1,
+      "value": 40,
+      "description": "Tin, horn and a stub of candle. Carry it and it lights your way at night and under the ground. Odo swears it has never once gone out. Odo has never once gone out after dark."
+    },
     "lianes_lantern": {
       "name": "Liane's Lantern",
       "category": "misc",

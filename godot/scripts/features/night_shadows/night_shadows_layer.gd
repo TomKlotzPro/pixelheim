@@ -1,7 +1,7 @@
 class_name NightShadowsLayer
 extends MapLayer
 ## areas: town field dungeon night
-## What blocks the lantern's and the lamps' light on a map (PIX-490), once
+## What blocks the lamps' light on a map (PIX-490), once
 ## everything stands: a LightOccluder2D at the foot of each thing among the
 ## actors, worked out from the thing itself (its body's box, or the bottom
 ## of its picture: NightShadows), never placed by hand, so a prop a feature
