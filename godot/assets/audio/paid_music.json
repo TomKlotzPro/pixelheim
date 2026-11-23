@@ -6,9 +6,9 @@
   "budgetMiB": 40,
   "tracks": {
     "title": {
-      "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/01-Main_Menu.wav"],
-      "runnerUp": "V02 01_Title_Theme_II_Retro (47 s, loud from its first bar)",
-      "why": "the bundle's own menu theme"
+      "from": ["LEOHPAZ_RPG-Music-V01_Orchestral.zip", "LEOHPAZ_RPG-Music_Orchestral/RPG-Music_Orchestral/01-Main_Menu_Orchestral.wav"],
+      "runnerUp": "the retro 01-Main_Menu it replaced (Tom: « la musique du menu est boring »)",
+      "why": "Tom's pick by ear, 2026-11-23, from seven retro and two orchestral title candidates: the bundle's menu theme in its orchestral version, the only orchestral track in the game, heard before the pixel world begins"
     },
     "town": {
       "from": ["LEOHPAZ_RPG-Music_Retro.zip", "LEOHPAZ_RPG-Music_Retro/RPG-Music-Pack/02-Home_Town.wav"],
