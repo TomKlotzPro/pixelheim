@@ -38,10 +38,15 @@ class MusicPrepTest(unittest.TestCase):
             if "intro" in entry:
                 self.assertGreater(entry["intro"][2], 0, "%s: the handover, in seconds" % slot)
 
+    # The title's theme is orchestral, Tom's pick by ear (2026-11-23): heard
+    # before the pixel world begins.
+    ORCHESTRAL = {"title"}
+
     def test_every_track_is_a_retro_one_from_a_zip(self):
         for slot, (zip_name, member) in self.sources():
             self.assertEqual(os.path.basename(zip_name), zip_name, slot)
-            self.assertRegex(zip_name, r"^LEOHPAZ_RPG-Music.*_Retro\.zip$", "%s: the retro versions, to match the pixel art" % slot)
+            kind = "Orchestral" if slot in self.ORCHESTRAL else "Retro"
+            self.assertRegex(zip_name, r"^LEOHPAZ_RPG-Music.*_%s\.zip$" % kind, "%s: the %s version, to match the pixel art" % (slot, kind.lower()))
             self.assertRegex(member.lower(), r"\.(wav|ogg)$", slot)
             self.assertNotIn("..", member, slot)
 

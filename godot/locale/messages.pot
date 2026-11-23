@@ -2101,6 +2101,10 @@ msgid "A Game's Face"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A Grander Welcome"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A HERO PLATE: your portrait, pixel bars for health, mana and experience, your gold, and each screen one click or key away"
 msgstr ""
 
@@ -7737,11 +7741,19 @@ msgid "The title screen lives: stars, embers, bobbing monsters, a breathing drag
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The title screen plays the menu theme in its orchestral version, a grander welcome before the pixel world begins"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The title's menu carries no mark on « What's new » any more: its four planks stand plain, and the version line under them still opens the notes"
 msgstr ""
 
 #: assets/data/changelog.json
 msgid "The title's menu is calmer: no flames by the chosen plank, only its lift and warm glow, and unread notes show as a small gold seal on « What's new » rather than a red box beside it; the strike no longer bares the screen's edge as it shakes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The title's menu, the chapter cards, the dawn's title and the cutscenes' names are in the game's rounder type too; only the PIXELHEIM logo stays in pixel letters"
 msgstr ""
 
 #: assets/data/changelog.json

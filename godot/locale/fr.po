@@ -2101,6 +2101,10 @@ msgid "A Game's Face"
 msgstr "Le visage du jeu"
 
 #: assets/data/changelog.json
+msgid "A Grander Welcome"
+msgstr "Un accueil plus grand"
+
+#: assets/data/changelog.json
 msgid "A HERO PLATE: your portrait, pixel bars for health, mana and experience, your gold, and each screen one click or key away"
 msgstr "UNE PLAQUE DE HÉROS : votre portrait, des barres en pixels pour la santé, le mana et l'expérience, votre or, et chaque écran à un clic ou une touche"
 
@@ -7737,12 +7741,20 @@ msgid "The title screen lives: stars, embers, bobbing monsters, a breathing drag
 msgstr "L'écran titre s'anime : étoiles, braises, monstres qui se dandinent, un dragon qui respire"
 
 #: assets/data/changelog.json
+msgid "The title screen plays the menu theme in its orchestral version, a grander welcome before the pixel world begins"
+msgstr "L'écran titre joue le thème du menu dans sa version orchestrale, un accueil plus grand avant que le monde en pixels ne commence"
+
+#: assets/data/changelog.json
 msgid "The title's menu carries no mark on « What's new » any more: its four planks stand plain, and the version line under them still opens the notes"
 msgstr "Le menu de l'écran titre ne porte plus aucune marque sur « Quoi de neuf » : ses quatre planches restent nues, et la ligne de version en dessous ouvre toujours les nouveautés"
 
 #: assets/data/changelog.json
 msgid "The title's menu is calmer: no flames by the chosen plank, only its lift and warm glow, and unread notes show as a small gold seal on « What's new » rather than a red box beside it; the strike no longer bares the screen's edge as it shakes"
 msgstr "Le menu de l'écran titre est plus sobre : plus de flammes autour de la planche choisie, seulement son relief et sa lueur chaude, et les nouveautés non lues sont signalées par un petit sceau doré sur « Quoi de neuf » plutôt que par une case rouge à côté ; le choc du nom ne découvre plus le bord de l'écran en tremblant"
+
+#: assets/data/changelog.json
+msgid "The title's menu, the chapter cards, the dawn's title and the cutscenes' names are in the game's rounder type too; only the PIXELHEIM logo stays in pixel letters"
+msgstr "Le menu de l'écran titre, les cartes de chapitre, le titre de l'aube et les noms des cinématiques passent eux aussi à la police plus ronde du jeu ; seul le logo PIXELHEIM garde ses lettres en pixels"
 
 #: assets/data/changelog.json
 msgid "The title's village is richer and deeper: moonlight shafts, drifting ash, a tree and a lantern banner framing the view, market stalls, bunting, the lit fountain and hens asleep by the barrel; and the menu stands on wooden planks right under the name, with no line between them now, the chosen one lifted between two flames"

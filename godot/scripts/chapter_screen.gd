@@ -4,7 +4,7 @@ extends Screen
 ## A chapter card (PIX-253 step 2, v2 §5: "Main quests stand out"): when a
 ## chapter of the main story opens, its number and title over the world in
 ## the style of the dawn's "Day one" - "Chapter 3" in gold, "The Letter to
-## Blackiron" under it in the title's type - a breath held, and the world
+## Blackiron" under it in a title card's type - a breath held, and the world
 ## again. Shown once each (MainQuest.card_due; Stage waits for the world to
 ## be free). The world holds still meanwhile; E or Esc lets it go sooner.
 ## With Reduce motion the words fade in where they stand, nothing slides.
@@ -20,9 +20,8 @@ const DIM := 0.7
 const OUTLINE := 8
 ## Between the number and the title.
 const GAP := 14.0
-## The title's type, a multiple of the logo face's 8 px, the largest that
-## fits across the screen: the dawn's "Pixelheim" stands at 6.
-const TITLE_SCALES := [4, 3]
+## How wide the title may run: past it at UiStyle.TITLE, it is set at
+## TITLE_SMALL (the dawn's "Pixelheim" stands at TITLE).
 const TITLE_ROOM := 1160.0
 
 ## The chapter, from 1.
@@ -49,8 +48,7 @@ func _open() -> void:
 	_number = _line(UiStyle.heading(MainQuest.continued_word() if continued else Text.t("Chapter %d") % number, 27, UiStyle.GOLD))
 	var title := MainQuest.title_of(number)
 	_title = _line(UiStyle.heading(title, 54, UiStyle.CREAM))
-	_title.add_theme_font_override("font", UiStyle.logo_font())
-	_title.add_theme_font_size_override("font_size", UiStyle.LOGO_PX * title_scale(title))
+	UiStyle.titled(_title, title_small(title))
 	Sound.play("chapter")
 	_come_in.call_deferred()
 
@@ -69,13 +67,14 @@ func _line(label: Label) -> Label:
 	return label
 
 
-## The title's type for `title`: the largest of TITLE_SCALES whose line fits
-## (the logo face is 8 px a letter, every letter as wide).
-static func title_scale(title: String) -> int:
-	for scale: int in TITLE_SCALES:
-		if title.length() * UiStyle.LOGO_PX * scale <= TITLE_ROOM:
-			return scale
-	return TITLE_SCALES[-1]
+## Whether `title` takes the smaller title type to fit across the screen,
+## in the player's language.
+static func title_small(title: String) -> bool:
+	return title_width(Text.t(title), UiStyle.TITLE) > TITLE_ROOM
+
+
+static func title_width(title: String, font_size: int) -> float:
+	return UiStyle.title_font().get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
 
 
 ## The card comes in, once the box has placed its lines: the world dims, the

@@ -330,8 +330,7 @@ func _day_card() -> void:
 	_card.position = Vector2(0, 250)
 	_card.size = Vector2(1280, 160)
 	var title := UiStyle.heading(String(card["title"]), 54, UiStyle.CREAM)
-	title.add_theme_font_override("font", UiStyle.logo_font())
-	title.add_theme_font_size_override("font_size", UiStyle.LOGO_PX * 6)
+	UiStyle.titled(title)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_card.add_child(title)
 	var day := UiStyle.heading(String(card["subtitle"]), 27, UiStyle.GOLD)

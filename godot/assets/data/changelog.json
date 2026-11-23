@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.396.0",
+      "date": "2026-11-23",
+      "codename": "A Grander Welcome",
+      "notes": [
+        "The title screen plays the menu theme in its orchestral version, a grander welcome before the pixel world begins",
+        "The title's menu, the chapter cards, the dawn's title and the cutscenes' names are in the game's rounder type too; only the PIXELHEIM logo stays in pixel letters"
+      ]
+    },
+    {
       "version": "0.395.0",
       "date": "2026-11-23",
       "codename": "Fire and Water",

@@ -372,7 +372,7 @@ func _lair() -> Control:
 	return root
 
 
-## A name to remember, in the logo's capitals over the scene, a line beneath.
+## A name to remember, in a title card's capitals over the scene, a line beneath.
 func _card(text: String, sub: String) -> void:
 	Sound.play("cutscene_card")
 	var card := VBoxContainer.new()
@@ -382,8 +382,7 @@ func _card(text: String, sub: String) -> void:
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var name := Label.new()
 	name.text = text.to_upper()
-	name.add_theme_font_override("font", UiStyle.logo_font())
-	name.add_theme_font_size_override("font_size", 32)
+	UiStyle.titled(name, true)
 	name.add_theme_color_override("font_color", UiStyle.GOLD)
 	name.add_theme_color_override("font_outline_color", Color("140a03"))
 	name.add_theme_constant_override("outline_size", 10)
@@ -586,7 +585,8 @@ func _ash() -> CPUParticles2D:
 	return flakes
 
 
-## PIXELHEIM slammed onto the dark with a flash.
+## PIXELHEIM slammed onto the dark with a flash: the game's logo, so in
+## the logo's pixel type as on the title (PIX-534 keeps it).
 func _logo(hold: float) -> void:
 	var word := Label.new()
 	word.text = "PIXELHEIM"
