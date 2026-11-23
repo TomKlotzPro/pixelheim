@@ -14,4 +14,4 @@ Fonts for the Godot build (scripts/ui_style.gd).
   and words floating over the world, the keycaps' letters, and the arrows
   Nunito lacks (its fallback, ← ↑ → ↓).
 - press-start-2p.woff2     Press Start 2P by CodeMan38, SIL Open Font License
-  1.1. The title's logo and menu (UiStyle.logo_font).
+  1.1. The PIXELHEIM logo only (UiStyle.logo_font).
