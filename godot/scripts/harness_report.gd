@@ -559,6 +559,22 @@ func field_gate() -> String:
 	return world.interaction.gate_said
 
 
+func field_hall() -> String:
+	var view: MapView = world.view
+	if view == null:
+		return ""
+	if world.map.id == "town_hall" and view.buildings.has("tops"):
+		var table := PunyInterior.placed(world.map.id + world.map.variant, "council")
+		var laid := func(cell: Vector2i) -> bool: return table.has_point(cell)
+		return "laid" if (view.buildings["tops"] as Dictionary).keys().any(laid) else "bare"
+	var house := CampsLayer.hall(view)
+	if house.size == Vector2i.ZERO or not view.layers.has("pieces"):
+		return ""
+	var lit := view.panes.filter(func(pane: Node2D) -> bool:
+		return is_instance_valid(pane) and pane.visible and house.has_point(Vector2i(pane.position) / MapView.TILE)).size()
+	return "%s panes %d" % ["scorched" if view.layers.has("ashen") else "whole", lit]
+
+
 func field_hamlet() -> String:
 	if world.view == null or String(world.view.hamlet.get("look", "")) == "":
 		return ""
@@ -754,6 +770,14 @@ func field_mapped() -> String:
 func field_maps() -> String:
 	var screen := _map_screen()
 	return str(screen.painting.sheets.size()) if screen != null else ""
+
+
+func field_mist() -> String:
+	var air: Atmosphere = world.atmosphere
+	if air == null or air.mist <= 0.05 or air.mist_cells == 0:
+		return ""
+	var astray := air.wisps_astray()
+	return "%.2f over %d%s%s" % [air.mist, air.mist_cells, " still" if air.mist_still else "", " astray %d" % astray if astray > 0 else ""]
 
 
 func field_morvax() -> String:

@@ -3,8 +3,9 @@ extends Node
 ## areas: field night
 ## The world's light, frame by frame (PIX-221): the darkness for the place
 ## and the hour (Lights' colours) on a CanvasModulate, and every light in the
-## "lights" group brought up as it gets dark - fires flickering, the hero's
-## lantern with them. With reduced motion, nothing flickers.
+## "lights" group brought up as it gets dark - fires flickering, the lantern
+## the hero carries with them (PIX-530: none without one). With reduced
+## motion, nothing flickers.
 ##
 ## And the open air's motion (PIX-223): the world's clock and the wind that
 ## the shaders read (shaders/wind.gdshaderinc), the banks mirrored in the
@@ -64,20 +65,21 @@ var wind := 1.0
 var gale := 0.0
 ## How dark a cloud's shadow is at its heart, in full day.
 const CLOUD_SHADE := 0.17
-## Where the hero carries the lantern, from their feet: at their feet
+## Where the lantern the hero carries burns, from their feet: at their feet
 ## since it casts shadows (PIX-490; it was 6 pixels up, at the chest), as
 ## the hero's body keeps their feet out of every wall, and a light inside a
 ## wall's cell is shut in, its whole pool gone dark under a north wall.
 const LANTERN_AT := Vector2.ZERO
 ## How far the hero's lantern reaches untrimmed, in pixels.
 const LANTERN_REACH := 96.0
-## The lights casting shadows now (PIX-490, NightShadows): the lantern
-## and the lamps nearest the hero, up to the cap; and how many of the
+## The lights casting shadows now (PIX-490, NightShadows): the lamps
+## nearest the hero, up to the cap, never the lantern; and how many of the
 ## flames burning could (the report's nightshadows=).
 var casting: Array[PointLight2D] = []
 var candidates := 0
-## No cloud shadows while true: the harness's motion check (PIX-275) finds
-## the hero by its shirt's exact reds, which a shadow drifting over it changes.
+## No cloud shadows, and plain daylight under the sky, while true: the
+## harness's motion check (PIX-275) finds the hero by its shirt's exact reds,
+## which a shadow drifting over it or the golden hours' tint change (PIX-526).
 var clear_sky := false
 ## The clouds' noise: one seamless sheet, CLOUD_PX square.
 const CLOUD_PX := 256
@@ -176,16 +178,21 @@ static func relief_strength() -> float:
 	return Lights.RELIEF if GameState.settings.relief else 0.0
 
 
-## The hero carries a lantern: it only shows when it's dark. Once Aske
-## lives in Pixelheim he keeps it trimmed (PIX-255: his perk, the settlers'
-## `lantern` share), and it reaches that much further, from the moment he
-## comes home.
+## The hero's lantern, at their feet: it burns only while they carry one
+## (PIX-530, Lights.carried: no light follows a hero without one, the night
+## is its lamps', windows', fires' and torches') and only shows when it's
+## dark. Once Aske lives in Pixelheim he keeps it trimmed (PIX-255: his
+## perk, the settlers' `lantern` share), and it reaches that much further,
+## from the moment he comes home. The light stays on the hero unlit without
+## one: the shadows read where the hero stands from it.
 func give_lantern(player: Player) -> void:
 	lantern = Lights.make(LANTERN_AT, lantern_reach(GameState.holdings.settler_share("lantern")), Lights.LANTERN, Lights.LANTERN_ENERGY, true)
 	# The hero never blocks their own lantern (PIX-490).
 	lantern.shadow_item_cull_mask = NightShadows.LANTERN
 	player.add_child(lantern)
-	GameState.settlers_changed.connect(_trim_lantern)
+	_tend_lantern()
+	GameState.settlers_changed.connect(_tend_lantern)
+	GameState.inventory_changed.connect(_tend_lantern)
 
 
 ## How far the hero's lantern reaches, in pixels, with `share` more.
@@ -193,9 +200,12 @@ static func lantern_reach(share: float) -> float:
 	return LANTERN_REACH * (1.0 + share)
 
 
-func _trim_lantern() -> void:
+## The lantern trimmed as far as Aske keeps it, and lit only while the
+## hero carries one: at energy 0 the frame keeps it hidden.
+func _tend_lantern() -> void:
 	if is_instance_valid(lantern):
 		lantern.texture_scale = lantern_reach(GameState.holdings.settler_share("lantern")) * 2.0 / Lights.TEXTURE_PX
+		lantern.set_meta("energy", Lights.LANTERN_ENERGY if Lights.carried(GameState.pack.items) else 0.0)
 
 
 ## Seamless soft noise for the clouds: big puffs with ragged rims.
@@ -229,6 +239,11 @@ func light_for(map: MapData) -> Color:
 
 func _process(delta: float) -> void:
 	light = light_for(world.map)
+	# The motion check walks in plain daylight (PIX-526): it finds the hero by
+	# the shirt's exact reds, which the golden hours' tint and grey change, as
+	# a cloud's shadow does (clear_sky).
+	if clear_sky and Lights.under_sky(world.map):
+		light = Lights.DAY
 	# Rain darkens and cools the light, and the lamps come up a little; under
 	# rain, fog or snow the sky is all cloud.
 	var rain := 0.0
@@ -282,6 +297,12 @@ func _process(delta: float) -> void:
 		if lamp.has_meta("tint"):
 			lamp.color = DesktopLook.canvas_color(lamp.get_meta("tint"), DesktopLook.linear)
 		var energy := float(lamp.get_meta("energy", 1.0)) * (day if lamp.get_meta("by_day", false) else dark)
+		# The hero's lantern burns only in the real dark, and goes out as the
+		# fallen hero puts it away (PIX-530): the glass in their hand is lit
+		# by this (lantern.visible), so the pool never burns round a cold one.
+		# A lamp's or a window's pool waits for its glass (MapView._show, PIX-526).
+		if lamp.get_meta("unlit", false) or (lamp == lantern and (dark < Lights.LANTERN_DARK or (lantern.get_parent() as Player).dead)):
+			energy = 0.0
 		if lamp.get_meta("flicker", false) and not still:
 			energy *= Lights.flicker(t, float(lamp.get_meta("phase", 0.0)), lamp.get_meta("blaze", false))
 		# A way out breathes (PIX-292), held still with reduced motion.
@@ -294,8 +315,8 @@ func _process(delta: float) -> void:
 	_cast_shadows(flames, delta)
 
 
-## The lantern and the nearest of `flames` (the map's lamps, torches and
-## fires burning now) cast shadows (PIX-490, NightShadows): on the floor
+## The nearest of `flames` (the map's lamps, torches and fires burning
+## now) cast shadows (PIX-490, NightShadows), never the lantern: on the floor
 ## alone (Lights.FLOOR), each leaving a share of its light in its shadow,
 ## a lamp's fading in and out as the hero nears and leaves it. Only where
 ## the map has occluders (not in a room), in the dark, and with the

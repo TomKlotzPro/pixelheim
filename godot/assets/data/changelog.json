@@ -1,6 +1,39 @@
 {
   "releases": [
     {
+      "version": "0.394.0",
+      "date": "2026-11-23",
+      "codename": "The Hall Stands Dark",
+      "notes": [
+        "On the Night of Ash the town hall stands dark and scorched, its windows unlit, from the square and from the road",
+        "Inside, the council's table is bare that night: no feast laid in an empty hall",
+        "From the next day the hall is whole again, lit at night, its feast laid"
+      ]
+    },
+    {
+      "version": "0.393.0",
+      "date": "2026-11-20",
+      "codename": "A Light of Your Own",
+      "notes": [
+        "No light follows the hero any more: at night the town's lamps, the lit windows, the fires and the torches light the way",
+        "Odo sells a Tin Lantern for 40 gold: carried in the hand away from the shield, its glass cold by day and lit at night, it brings your own pool of light back",
+        "Once Aske settles in Pixelheim, the lantern reaches a third further",
+        "The first night under the sky without one, a hint says where to buy it",
+        "Heroes made before this version have no lantern: buy yours at Odo's"
+      ]
+    },
+    {
+      "version": "0.392.0",
+      "date": "2026-11-20",
+      "codename": "Golden Hours",
+      "notes": [
+        "Dawn comes pale gold, with mist over the river and the grass that lifts as the morning warms; six o'clock no longer looks like noon",
+        "Dusk lasts two hours: peach, then rose, then violet, with its long shadows",
+        "The windows light one by one before the street lamps, and a lamp's pool of light now waits for its glass to be lit",
+        "With Reduce motion the mist doesn't drift"
+      ]
+    },
+    {
       "version": "0.391.0",
       "date": "2026-11-20",
       "codename": "A Rounder Hand",

@@ -1889,6 +1889,14 @@ msgid "Tidecutter"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Tin Lantern"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Tin, horn and a stub of candle. Carry it and it lights your way at night and under the ground. Odo swears it has never once gone out. Odo has never once gone out after dark."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Tower Shield"
 msgstr ""
 
@@ -2122,6 +2130,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A LUTE AND A VAULT: Loras wants his lute back from a Deepwood troll, and Mirelle wants two gems for her vault's first shelf - no more paying them to move"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A Light of Your Own"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3253,6 +3265,10 @@ msgid "Dangerous ground is visible: wild terrain grows dark tufts on the map"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Dawn comes pale gold, with mist over the river and the grass that lifts as the morning warms; six o'clock no longer looks like noon"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Dead Centre"
 msgstr ""
 
@@ -3342,6 +3358,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "During the Night of Ash, the map, the journal, the arrow and the gold \"!\" all point to whoever needs you next, and Elder Maren no longer plays her dawn scene before her turn, so a new player can't get stuck at the shrine"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Dusk lasts two hours: peach, then rose, then violet, with its long shadows"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4049,6 +4069,10 @@ msgid "From the Town on, the square is laid in flagstones with grass in the join
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "From the next day the hall is whole again, lit at night, its feast laid"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fronts of Their Own"
 msgstr ""
 
@@ -4114,6 +4138,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Gold at Work"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Golden Hours"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4266,6 +4294,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Hero creation shows the hero as they will really start, without the colour looks nobody kept; the stats have icons, pips against the best of all the roles and their full names, and the starting skills are chips with their icons, a click or PgUp/PgDn reading each"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Heroes made before this version have no lantern: buy yours at Odo's"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4422,6 +4454,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "In-world lettering is TRUE pixel text: door signs on wooden plates, the talk prompt and battle damage numbers use a hand-built bitmap font, crisp at any zoom"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Inside, the council's table is bare that night: no feast laid in an empty hall"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5041,6 +5077,10 @@ msgid "No Sale by Accident"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "No light follows the hero any more: at night the town's lamps, the lit windows, the fires and the torches light the way"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
 msgstr ""
 
@@ -5157,6 +5197,10 @@ msgid "Odo goes general goods: food, sundries, and he still buys anything"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Odo sells a Tin Lantern for 40 gold: carried in the hand away from the shield, its glass cold by day and lit at night, it brings your own pool of light back"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Oilskin"
 msgstr ""
 
@@ -5233,6 +5277,10 @@ msgid "On the Night of Ash only the survivors are about, the shut gates say why,
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On the Night of Ash the town hall stands dark and scorched, its windows unlit, from the square and from the road"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "On the Night of Ash, the well and the burning homes now show E, and answer from any cell beside them"
 msgstr ""
 
@@ -5262,6 +5310,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On the web, the music now fades out softly as you go through a door or a gate and comes back after, instead of stopping dead mid-note while the new place is built"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Once Aske settles in Pixelheim, the lantern reaches a third further"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6865,6 +6917,10 @@ msgid "The HUD's Map button speaks a proper event now instead of faking an M key
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Hall Stands Dark"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Hall of Echoes death spike is softened: shades calmed down a little"
 msgstr ""
 
@@ -7186,6 +7242,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The first dream's voice is Morvax's now"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The first night under the sky without one, a hint says where to buy it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7725,6 +7785,10 @@ msgid "The wind moves the world: trees, wheat and flowers sway, their tops more 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The windows light one by one before the street lamps, and a lamp's pool of light now waits for its glass to be lit"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The woods are worked out once a session: going back into the Deepwood, or seeing it drawn in beside you, now takes half the time, and the towns and the snowy north are quicker too"
 msgstr ""
 
@@ -8182,6 +8246,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "With Reduce motion the mist doesn't drift"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -10786,6 +10854,10 @@ msgstr ""
 
 #: assets/data/hints.json
 msgid "Banked gold earns a little daily and is safe when you fall."
+msgstr ""
+
+#: assets/data/hints.json
+msgid "Dark out? Odo sells lanterns: carry one and it lights your way."
 msgstr ""
 
 #: assets/data/hints.json

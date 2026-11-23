@@ -33,6 +33,10 @@ static func _plan_room(view: MapView) -> void:
 	# keepers and the hero's own furniture.
 	var placed: Array = GameState.household.furniture() if view.data.id == "town_house" else []
 	var dressed := PunyInterior.furnish(view.data.id + view.data.variant, view.data.grid, PunyInterior.reserved(view.data, placed))
+	# Nobody is in the hall on the Night of Ash and nothing is laid there
+	# (PIX-516); the morning's hall is drawn anew, as every room come to is.
+	if view.data.id == "town_hall" and GameState.progression.prologue != Prologue.DONE:
+		PunyInterior.bare(dressed, view.data.id + view.data.variant, "council")
 	view.buildings = {
 		"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "walls": room["walls"], "void": room["void"], "over": room["over"],
 		"rug": dressed["rug"], "objects": dressed["objects"], "tops": dressed["tops"], "lifted": dressed["lifted"], "art": dressed["art"],

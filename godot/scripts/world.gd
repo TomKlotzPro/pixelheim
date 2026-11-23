@@ -897,7 +897,7 @@ func _spawn_player() -> void:
 	player.world = self
 	actors.add_child(player)
 	# Light and darkness (PIX-221): the world's light for the hour, and the
-	# hero's lantern for when it's dark.
+	# lantern the hero carries for when it's dark (PIX-530: none without one).
 	lights = preload("res://scripts/light_rig.gd").new()
 	lights.world = self
 	add_child(lights)
