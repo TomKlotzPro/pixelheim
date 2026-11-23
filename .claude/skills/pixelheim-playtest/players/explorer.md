@@ -6,11 +6,11 @@
 
 Give `--at` an open cell. On a solid one (overworld 2,2), the harness shoves the hero about and leaves it stuck: start again elsewhere, and don't report it.
 
-**Model:** Sonnet. A seam or a layering fault takes a careful eye on the picture.
+**Model:** Fable (`lessons.md`, 2026-11-23). A seam or a layering fault takes a careful eye on the picture.
 
 ## Route
 
-Begin with the places the last entry in `lessons.md` says nobody reached, then pick until you have five or six, about 12 looks each, rather than many short visits:
+Begin with stairs down and back up (the Greyhold cellars, the Blackiron shafts) and the inn, smithy and alchemist doors: no run has reached them since 2026-11-07. Then the Reach's rim, a map's edges, and any other place the last entry in `lessons.md` says nobody reached. After that, pick until you have five or six places, about 12 looks each, rather than many short visits:
 
 - **The village and its gate**: the bridge, the river banks, the walls, the gate out to the overworld.
 - **The lines between maps**, which you walk over with no door:

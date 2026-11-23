@@ -13,8 +13,10 @@ Quote the words from `look`'s `text` and `hud` when they show them, so the quote
 
 ## Route
 
+Start with what the last runs left: Ana, Joss, the dog and the cat; buckets 2 and 3 with the caller's later lines; the Sell and Craft tabs; a level-up; hero creation with « Texte de lecture agrandi » on; the first caption read whole.
+
 1. **The title and its menu**, then the options screen.
-2. **Making a hero**: choose each role in turn and read its description before you type the name.
+2. **Making a hero**: choose each role in turn and read its description before you type the name. play.py can't type « é »: don't test an accented name.
 3. **The opening scene, the Night of Ash and the dawn**: read every box.
 4. **In the village**: talk to each person you meet, and open each screen at least once (I, M, Q, C, K, B, Esc). A shop's list of goods, the bank and the notice board. Then with « Texte de lecture agrandi » on: the ledger screens (the mayor's works, the bank) and each counter.
 5. **One fight**, for the numbers and words it shows.
@@ -26,7 +28,7 @@ Quote the words from `look`'s `text` and `hud` when they show them, so the quote
 - **English left over**: any English word on a French screen, apart from names.
 - **Mistakes**: spelling, grammar, gender and number agreement, a word missing.
 - **One voice**: the game's own words (menus, hints, items, quests) say « vous » to the player; a « tu » there is a finding. In a conversation a character may say « tu » (a child, an old friend, Bram), but one character should keep to one of the two.
-- **The game's names**: la Marche, Fernoir, la Porte-Givre, les Bois-Profonds. One place written two ways is a finding.
+- **The game's names**: la Marche, Fernoir, la Porte-Givre, les Bois-Profonds. One place written two ways is a finding. A short form in a stats column (« o ») beside the full word in a sentence (« or ») is not a second spelling.
 - **The player is neutral**: « vous avez atteint », not « vous êtes arrivé ».
 - **Typography**, the game's French house style (`.claude/skills/pixelheim-godot/release.md`). Report typography only against these rules: a form they don't name is not a finding.
   - a narrow no-break space before `: ; ! ?` and inside « » (U+202F; on screen it looks like a thin space, and the mark never starts a line);

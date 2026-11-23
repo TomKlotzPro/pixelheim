@@ -13,9 +13,9 @@ The game runs as the web build in a headless Chrome, driven by `godot/tools/play
 - `triage.md`: how the findings are merged, reproduced and filed in Linear.
 - `lessons.md`: what each run taught, and the rule it changed. **Read it before you play**: its rules overrule this page where they disagree.
 
-The players run on Fable (since 2026-11-13), the newcomer and the explorer on Sonnet until `lessons.md` compares them. The orchestrator and the triage run on Opus: they set these rules, confirm every finding before it reaches Linear, and change the rules after each run.
+All five players run on Fable: fighter, french and menus since 2026-11-13, the newcomer and the explorer since 2026-11-23, after the newcomer's comparison. The orchestrator and the triage run on Opus: they set these rules, confirm every finding before it reaches Linear, and change the rules after each run.
 
-**A focus run** (`args.focus`) points the players at one change. The orchestrator writes the focus from the code as built. It checks every claim against the code and the config (for foes, combat.json's `tricks.about`), gives each trick's rest and when a screen shows it, and asks its questions of taste (fair, fun, too long) as summary verdicts, not findings.
+**A focus run** (`args.focus`) points the players at one change. The orchestrator writes the focus from the code as built. It checks every claim against the code and the config, not just one (for foes, combat.json's `tricks.about`). That covers what blocks and what doesn't, the exact moment a change shows ("from the dawn scene", never "the next day"), each trick's rest and when a screen shows it, and any list of exceptions, taken from the code's callers rather than the notes (the pixel face: `UiStyle.pixel_font`). Each point names a place to see it (map and cell, or a preset) and the setting it needs, if any. For a subtle effect it says how to see it, or leaves it to Tom. Each point goes to the one or two players whose page it fits; their other looks stay on their routes. Questions of taste (fair, fun, too long) are asked as summary verdicts, not findings. The workflow's Focus step checks the focus against the code before the players get it.
 
 ## Safety, always
 
@@ -39,10 +39,10 @@ Each turn is one command: `look`, then think, then `keys`. The game runs only du
 - **`keys`**: keys separated by commas. A key alone is tapped; `right:1.2` holds it 1.2 s of game time; `up+left:0.5` holds both; `wait:2` presses nothing for 2 s. A one-letter key also types its letter (`R,o,b,i,n` types a name; `Robin` in one piece is no key and types nothing), and `backspace` deletes one. `keys` prints the state after its last key, but no picture.
 - **`look`**: a screenshot (read it with the Read tool) and the state: `map`, `cell`, `hp`/`maxHp`, `mana`/`maxMana`, `level`, `gold`, `hour`, `night`, `paused`, `ailments` (the hero's: `poison`, `burn`, `stun`), `open` (the screens open), `text` (the words on the top screen, cut near 2000 characters with a line saying how many more; a caption still typing out ends in `[still typing]`), `focus` (the words of each chosen thing, one list apiece: in the pack and at a counter the lit tab, then the chosen row, the one E would take), `hud` (the HUD's words: messages, hints, a door's nameplate), `quest` (the "Next" line), `foes` (within 12 cells, with their hp, cell, `ailments` and `mode`: `chase`, `flee`... or the wind-up it is in by name, as `bite`, `aim`, `cleave`, `crouch`, `dart`, `guard`, `shimmer`, `faded`, `pile`; the whole list is in `playtest.md`), `npcs` (the villagers within 12 cells: name and cell), `doors` (the ways in and out within 12 cells: cell and the map they lead to), `seconds` (the game's clock, which runs on under a menu), `played` (seconds in play only: time a fight or a tell by it), `fading` (true when a fade outlasted `keys`' wait), `errors` (console errors since the last look) and `webgl` (a count of the headless Chrome's own WebGL warnings).
 - **`keys` waits out a fade or a reload** (a door, Enter on Begin, Quit to title, the Language row, a paste), up to 5 s of the game. No `wait` is needed after those keys. If the state says `fading: true`, the fade outlasted that: send `wait:1` before you trust the state.
-- **`look`'s state is the frame its picture shows.** When the two disagree, it is the game's doing, not the tool's.
+- **`look`'s state is the frame its picture shows.** When the two disagree, it is the game's doing, not the tool's. One exception, until play.py counts it: right after a door, `fading` misses the door's dissolve (a quarter second). So a picture of the old place with no hero, while the state names the new map, is the dissolve's first frame. Send `wait:1` and look again before reporting it.
 - **Reading a talk with E in a loop**: stop once `open` no longer lists the talk. The next E acts on whatever opened next, and a shop's counter opens on Buy.
 - **A caption types for up to 9 s.** Send `wait:3` until `text` no longer ends in `[still typing]`, look, then press E once.
-- **Spend your looks.** Your brief gives a budget, about 60 to 80 looks. `start`'s first picture counts as a look: read it. Look after every move that could change something: a door, a fight, a menu, a line of text. Between looks, `keys`' own state is often enough to know you moved. Don't stop before your budget while your route or checklist has items left: few findings mean keep looking, not stop. In a run with a focus, once the focus is covered, spend the looks left on your page's route, its unreached items first. When one step holds you more than six looks, report it and go past it the way your brief says, instead of trying it again.
+- **Spend your looks.** Your brief gives a budget, about 60 to 80 looks. `start`'s first picture counts as a look: read it. Look after every move that could change something: a door, a fight, a menu, a line of text. Between looks, `keys`' own state is often enough to know you moved. Read the `cell` in `keys`' state before you look. If it didn't change, the look will show nothing new. Don't stop before your budget while your route or checklist has items left: few findings mean keep looking, not stop. In a run with a focus, once the focus is covered, spend the looks left on your page's route, its unreached items first. When one step holds you more than six looks, report it and go past it the way your brief says, instead of trying it again.
 - **The state says where you are, the picture says how it looks.** Trust the state for map, cell, health and quest, and quote `text` and `hud` for on-screen words. Trust the screenshot for what a player sees. When the two disagree, that is a finding.
 - **Walk with short holds** (0.2 to 0.5 s) near things, and longer ones to travel: `right:1` walks one second of the game. If two holds don't change `cell`, you are blocked: look at why before you push again.
 - **Keep a log as you go**: the `start` line and each `keys` you sent, in order. A finding's steps come from it, and triage replays them as they are.
@@ -70,14 +70,17 @@ The play.py name of each key is in brackets.
 
 In menus, W/S or the arrows choose, E or Enter confirms, and Esc goes back. A rebound key replaces the letter key; the arrows, Enter, Space and Tab always keep working.
 
-A text field (the hero's name) types every one-letter key, `e`, `w` and `s` too: `backspace` takes a letter out, and `enter` confirms it. To talk to someone, face them first: tap the arrow toward them (`left:0.1`), then `e`.
+A text field (the hero's name) types every one-letter key, `e`, `w` and `s` too: `backspace` takes a letter out, and `enter` confirms it. After the last opening caption, read `open` before you type: an E sent as a caption fades lands in the name field, and an E on an empty card skips the next caption. To talk to someone, face them first: tap the arrow toward them (`left:0.1`), then `e`.
+
+**Facing.** E, and a sword, axe, hammer, dagger or fist, act on the one cell the hero faces, never a diagonal: step level with the target first. A swing lasts about 0.3 s, and a turn tapped inside it is lost. After a command that ends in `j`, send `wait:0.3` before a turn tap. Before calling a miss or a dead E, check the facing in the picture: the face shows when the hero faces down, and the swing's arc is drawn on the facing side.
 
 ### Where a session starts
 
 - **No option**: a plain launch from the title, as a new player sees it. `--lang fr` sets the browser to French.
 - **`--role`, `--level`, `--map`, `--at x,y`**: a throwaway hero of that role and level, standing there. It skips the title and the Night of Ash, and starts in the Hamlet by day.
-- **`--flags "..."`**: more harness presets (`godot/scripts/harness_flags.txt`).
+- **`--flags "..."`**: more harness presets. play.py hands these words to the game as they are (it refuses only `kill`). The game knows the flags listed in `godot/scripts/harness_flags.txt` and in each feature's `godot/scripts/features/*/harness_flags.txt` (`handlantern` is in hand_lantern's). A flag it doesn't know is skipped, with a warning in `errors`. A wrong `--map`, `--foe` or `--talk-to` id still boots and costs a look (a wrong foe id comes out as a nameless Lv 1 foe): use the ids your page or playtest.md gives.
   - `night`: the night;
+  - `handlantern`: the Tin Lantern in the hero's hand, lit at night and underground;
   - `--town-tier 0`: the village in its ashes;
   - `fight --foe orc`: a foe beside the hero. play.py makes it a real fight: the foe can hurt you;
   - `--foe-distance 3`: the foe that far off;
@@ -111,6 +114,7 @@ A finding without proof is not reported.
 - **A screenshot** that shows it (the path `look` gave). For something that moves, two or three in a row. Cite only screenshots you have read.
 - **The state** at that moment (the JSON `look` printed, or the part that matters).
 - **The steps**: the `start` options and every `keys` from the start to the moment you saw it, from your log. Triage replays exactly these.
+- **Judge at the picture's own size.** Enlarge a crop only to check what you already see there (an overlap, a seam). A thing seen only enlarged is not a finding. Before calling a layering fault on the hero, turn them with a short tap and look again: their back at night is a dark shape that blends with dark things behind it. A lone E cap marks something to use: press E there before you report it.
 - **For a bug, try it twice.** Say whether it happened again (`seen twice: yes/no`). If you could only guess at it, it is not a bug: report it as confusing or polish (S4 when unsure), with its screenshot. The summary is for your route, the tool and, in a run with a focus, the verdicts the focus asks for (fair, fun, readable, drags), with their numbers. Those verdicts are not findings; anything else you saw is a finding or nothing. A "seen but too weak" list in the summary is a list of findings you didn't send: send each one at S4 with its screenshot, and triage drops what's weak.
 
 ## Don't report
@@ -127,6 +131,7 @@ A finding without proof is not reported.
   - The day clock turns only while the hero walks (PIX-246): standing still or `wait` leaves the hour as it was, so waiting never brings the dawn.
   - A footer key that answers by saying where to do it tells the truth (Skills' F names Old Hessa's shrine). A choice that can be undone (a path) is design.
   - `--level` 5, 10 and 20 dress every role in the same kit (`harness_boot.gd` KITS), so heroes of different roles look alike: that is the preset, not the game.
+  - Large reading text enlarges what is read at length: dialogue, captions, hints, messages, descriptions and cards (`UiStyle.reading`). Menu rows, lists and hero creation keep their size.
   - A greyed button or row is one you can't use yet (no name typed, no points to spend, not enough gold). Report it only when nothing on screen says why and a player would be stuck.
 - **What is already ticketed.** Triage checks Linear; you don't need to.
 

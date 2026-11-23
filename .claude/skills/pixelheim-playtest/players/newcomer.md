@@ -4,7 +4,7 @@
 
 **Start:** a plain launch: `start` with no option, in English. A fresh profile, so the game is new to you.
 
-**Model:** Sonnet. This player needs judgment more than anything else.
+**Model:** Fable (`lessons.md`, 2026-11-23). This player needs judgment more than anything else.
 
 ## Route
 
@@ -18,6 +18,8 @@
 If one step holds you more than six looks, report it and go past it: `stop`, then `start --map town --at 11,8 --flags "--prologue 5"` and `keys "w, e"` (Maren, the night's last step) to play on from the dawn.
 
 Stop when your looks run out, or when you have handed in two quests outside the village.
+
+Steps 5 and 6 are this page's gap: no newcomer run has handed in a quest outside the village or fallen. In a run with a focus, play your share of it from the plain start, then go for a quest whose place is outside the gate.
 
 ## Check, all along
 

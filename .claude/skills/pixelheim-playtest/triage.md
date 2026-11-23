@@ -7,6 +7,7 @@ The triage runs on Opus. A player can be wrong; nothing they report reaches Line
 - **Two findings are one** when they show the same fault in the same place: same map and nearby cells, or the same screen, with the same symptom. Keep the clearest screenshot and the shortest steps, and keep the other players' names as "also seen by".
 - **The same fault in several places** (one typography rule broken on five screens, one seam on three lines between maps) is one finding listing every place.
 - **Read each player's summary too.** An observation left there that can cost the player gold, progress or a choice (something bought, a quest taken without asking) gets one replay for its picture, like a finding with no screenshot (step 2), and is kept or dropped the same way.
+- **The code decides what is by design, not the focus.** When the run has a focus, the focus can be wrong (2026-11-23: "the water beside them stops you"). A drop or design question the focus caused names its line (step 4).
 - **Check Linear.** Search the open Pixelheim issues, and the closed ones of the last month, for the same thing. Already ticketed and still open: drop it, and note the ticket. Closed but back: keep it, and link the old ticket ("came back after PIX-NNN").
 
 ## 2. Confirm
@@ -16,6 +17,8 @@ The triage runs on Opus. A player can be wrong; nothing they report reaches Line
   - Seen once in two tries: **flaky**. Keep it, and say so in the ticket.
   - Not seen: **dropped**. Keep a line about it for `lessons.md`, since a false alarm teaches the rules something.
   - The steps can't be replayed (the player's log was incomplete): try once to reach the same place another way, else drop it.
+- **A console error is a bug whose proof is `errors`, not the picture.** Replay it whatever its severity, and keep it if `errors` shows it again.
+- **Keep your helper scripts in your own replay folder**, never in a shared one: two replays run at once.
 - **A finding with no screenshot** (only the state's words, or the code) gets one replay for its picture before it is kept. Without a picture, drop it.
 - **A confusing or polish finding isn't replayed.** Judge it from its screenshots: would most players agree? Keep it only if yes.
 - **Re-rate the severity** with `SKILL.md`'s table, from what you saw yourself.

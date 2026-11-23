@@ -1,9 +1,10 @@
 export const meta = {
   name: 'pixelheim-playtest',
-  description: 'Agents play Pixelheim unseen (the web build in a headless Chrome) on Fable or Sonnet; an Opus triage replays every bug and files what holds in Linear',
-  whenToUse: 'A playtest after a big release, or when Tom asks for one. args: {run: "2026-11-07", players?: ["newcomer","fighter","explorer","french","menus"], compare?: "newcomer" | "none", model?: "fable", focus?: string, looks?: 70, file?: true}. compare plays that player on its other model too, and "none" compares nobody; model puts every player on one model; focus points the players at one change, written from the code as built. Needs godot/tools/play.py (PIX-423) and the pixelheim-playtest skill on main. The main session applies the lessons it returns.',
+  description: 'Agents play Pixelheim unseen (the web build in a headless Chrome) on Fable; an Opus triage replays every bug and files what holds in Linear',
+  whenToUse: 'A playtest after a big release, or when Tom asks for one. args: {run: "2026-11-07", players?: ["newcomer","fighter","explorer","french","menus"], compare?: "explorer", model?: "fable", focus?: string | {all?, newcomer?, fighter?, explorer?, french?, menus?}, looks?: 70, file?: true}. compare is a player id, played on its other model too; there is no comparison by default. model puts every player on one model. focus points the players at one change, written from the code as built: a string goes to every player; an object gives `all` to every player and each player\'s own key to that player only. A Focus step checks it against the code before the players get it. Needs godot/tools/play.py (PIX-423) and the pixelheim-playtest skill on main. The main session applies the lessons it returns.',
   phases: [
     { title: 'Build', detail: 'one web export of main, with the private art, shared by every player' },
+    { title: 'Focus', detail: 'with a focus: each claim checked against the code, a place and a setting for each point' },
     { title: 'Play', detail: 'each player plays its own session and reports findings with proof' },
     { title: 'Triage', detail: 'findings merged and checked against Linear; each bug replayed on Opus' },
     { title: 'File', detail: 'what held filed in the Agent Playtests project, with screenshots' },
@@ -12,12 +13,12 @@ export const meta = {
 }
 
 // Who plays, and on which model (Tom, 2026-11-13: Fable as much as useful;
-// Opus orchestrates and triages). The newcomer and the explorer stay on Sonnet
-// until a run compares them. lessons.md may move a player to another model.
+// Opus orchestrates and triages). All five on Fable since 2026-11-23 (newcomer
+// compared: Fable held 14 of 17, Sonnet 2 of 6). lessons.md may move a player.
 const PLAYERS = {
-  newcomer: 'sonnet',
+  newcomer: 'fable',
   fighter: 'fable',
-  explorer: 'sonnet',
+  explorer: 'fable',
   french: 'fable',
   menus: 'fable',
 }
@@ -32,7 +33,11 @@ const RUN_DIR = `/Users/klotztom/playground/pixelheim-playtests/${a.run}`
 const LOOKS = a.looks || 70
 const FILE = a.file !== false
 const chosen = a.players || Object.keys(PLAYERS)
-const compare = a.compare === undefined ? 'newcomer' : a.compare === 'none' ? null : a.compare
+const compare = a.compare && a.compare !== 'none' ? a.compare : null
+// A string goes to every player; {all?, <player>?} splits it per player.
+let focus = typeof a.focus === 'string' ? { all: a.focus } : a.focus || null
+const focusFor = (id) => (focus ? [focus.all, focus[id]].filter(Boolean).join('\n') : '')
+const focusText = () => Object.entries(focus).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n')
 
 const SAFETY = [
   'Never run godot with a window, shot.sh, flows.sh without --quiet, lookbook.sh, or any --slot.',
@@ -72,6 +77,42 @@ const build = await agent(
 )
 if (!build || !build.ok) return { run: a.run, error: 'build failed', build }
 log(`v${build.version} at ${build.head}, exported to ${build.export}`)
+
+// ---------------------------------------------------------------- Focus
+// SKILL.md's focus check was skipped twice (2026-11-15, 2026-11-23): a step of its own.
+let corrections = []
+if (focus) {
+  phase('Focus')
+  const keys = ['all', ...chosen]
+  const FOCUSED = {
+    type: 'object',
+    properties: {
+      focus: {
+        type: 'object',
+        properties: Object.fromEntries(keys.map((k) => [k, { type: 'string' }])),
+        description: 'the corrected focus: `all` for every player, a player\'s key for that player only',
+      },
+      corrections: { type: 'array', items: { type: 'string' }, description: 'each claim corrected or point completed, one line each with its file:line' },
+    },
+    required: ['focus', 'corrections'],
+  }
+  const checked = await agent(
+    `Check a Pixelheim playtest's focus before the players get it. Read ${SKILL}/SKILL.md ("A focus run"), lessons.md and the players' pages ` +
+    `(${SKILL}/players/), then the game's code and config in ${REPO}/godot (main at ${build.head}, v${build.version}). Don't play the game, and change nothing in the repo.\n\n` +
+    `- Check every claim against the code, file:line, and correct the ones it contradicts: what blocks and what doesn't, the exact moment a change shows ` +
+    `(never "the next day"), each trick's rest, and any list of exceptions, taken from the code's callers rather than the notes.\n` +
+    `- Give each point a place to see it (map and cell, or a play.py preset from playtest.md) and the setting it needs, if any. ` +
+    `For a subtle effect, say how to see it (a crop, or a pair of looks with and without it), or leave it to Tom.\n` +
+    `- Questions of taste (fair, fun, too long) stay summary verdicts, not findings.\n` +
+    `- Keep each point where it was given. A point in \`all\` that fits only one or two players' pages moves to theirs (this run's players: ${chosen.join(', ')}).\n\n` +
+    `The focus, as given (JSON):\n${JSON.stringify(focus, null, 1)}`,
+    { label: 'check the focus', phase: 'Focus', schema: FOCUSED },
+  )
+  if (!checked) return { run: a.run, error: 'the focus check returned nothing', build }
+  focus = checked.focus
+  corrections = checked.corrections
+  corrections.forEach((c) => log(`focus: ${c}`))
+}
 
 // ----------------------------------------------------------------- Play
 phase('Play')
@@ -120,9 +161,9 @@ const reports = await parallel(sessions.map((s) => () =>
     `Read first, in this order: ${SKILL}/SKILL.md, ${SKILL}/lessons.md, ${SKILL}/players/${s.id}.md, and ` +
     `${REPO}/.claude/skills/pixelheim-godot/playtest.md (play.py's commands and options). Run play.py from ${REPO}.\n\n` +
     `The game: v${build.version}, exported at ${build.export}. Run play.py as \`${build.python} godot/tools/play.py\`, always with \`--port ${s.port}\`, and \`--dir\` under ${s.dir} on each start ` +
-    `(a new subfolder per session if your brief starts several). Keep your log of commands in ${s.dir} too. ` +
+    `(a new subfolder per session if your brief starts several). Keep your log of commands, and any helper script, in ${s.dir} too. ` +
     `Your budget: ${LOOKS} looks. Look at each screenshot yourself with the Read tool.\n\n` +
-    (a.focus ? `This run's focus: ${a.focus}\nOnce it is covered, spend the looks left on your page's route, its unreached items first.\n\n` : '') +
+    (focusFor(s.id) ? `This run's focus: ${focusFor(s.id)}\nOnce it is covered, spend the looks left on your page's route, its unreached items first.\n\n` : '') +
     `Rules:\n- ${SAFETY}`,
     { label: s.label, phase: 'Play', schema: REPORT, model: s.model },
   ).then((r) => (r ? { ...s, ...r } : { ...s, looks: 0, reached: 'nothing', summary: 'the agent returned nothing', findings: [] })),
@@ -143,7 +184,7 @@ const MERGED = {
           ...FINDING.properties,
           key: { type: 'string', description: 'a short unique slug' },
           players: { type: 'array', items: { type: 'string' }, description: 'the session labels that reported it' },
-          replay: { type: 'boolean', description: 'true for a bug of S1 to S3: it must be replayed before filing' },
+          replay: { type: 'boolean', description: 'true for a bug of S1 to S3, or a console error of any severity: it must be replayed before filing' },
           note: { type: 'string', description: 'why kept, the Linear ticket it came back after, or how it was judged' },
         },
         required: [...FINDING.required, 'key', 'players', 'replay', 'note'],
@@ -166,9 +207,12 @@ const merged = all.length === 0 ? { kept: [], dropped: [] } : await agent(
   `- Merge the findings that are one fault; its \`players\` are the \`player\` labels of every finding merged into it, exactly as written.\n` +
   `- Check Linear for each (open Pixelheim issues, and those closed in the last month). ${LINEAR}\n` +
   `- Bugs of S1 to S3: keep them with replay=true; the replays run after you.\n` +
+  `- A finding whose proof is the console's \`errors\` is kept with replay=true whatever its severity.\n` +
   `- Confusing and polish findings, and S4 bugs: judge each from its screenshots (Read them) and keep only what most players would agree with, replay=false.\n` +
   `- Read the players' summaries below too (triage.md, step 1). An observation left there that can cost the player gold, progress or a choice ` +
   `is kept as a bug with replay=true: \`players\` is that session's label, its steps are what the summary gives, and it has no screenshots yet.\n\n` +
+  (focus ? `This run's focus, as the players got it (each line's key: all, or the one player it went to). The code, not the focus, decides what is by design, ` +
+    `and a drop the focus caused names its line (triage.md):\n${focusText()}\n\n` : '') +
   `The findings (JSON):\n${JSON.stringify(all, null, 1)}\n\n` +
   `Players' summaries:\n${reports.map((r) => `- ${r.label}: ${r.summary}`).join('\n')}`,
   { label: 'merge and judge', phase: 'Triage', schema: MERGED },
@@ -190,9 +234,11 @@ const replayed = await parallel(toReplay.map((f, i) => () =>
   agent(
     `Replay one finding from a Pixelheim playtest, step 2 of ${SKILL}/triage.md. Read ${SKILL}/SKILL.md, triage.md and ` +
     `${REPO}/.claude/skills/pixelheim-godot/playtest.md first.\n\nThe game is exported at ${build.export}. Run play.py from ${REPO} as \`${build.python} godot/tools/play.py\`, always with \`--port ${8800 + i * 5}\`, ` +
-    `and \`--dir ${RUN_DIR}/replay-${f.key}\` (a new subfolder for the second try). ` +
+    `and \`--dir ${RUN_DIR}/replay-${f.key}\` (a new subfolder for the second try). Keep any helper script in that folder, never in a shared one: other replays run at the same time. ` +
     `Start a fresh session with the finding's start options and send its keys in order; look where the player saw it, and try twice. ` +
-    `You may read the game's code to understand what you see. Re-rate the severity from what you saw yourself.\n\nThe finding:\n${JSON.stringify(f, null, 1)}\n\nRules:\n- ${SAFETY}`,
+    `You may read the game's code to understand what you see. Re-rate the severity from what you saw yourself.\n\n` +
+    (focus ? `This run's focus, as the players got it. The code, not the focus, decides what is by design:\n${focusText()}\n\n` : '') +
+    `The finding:\n${JSON.stringify(f, null, 1)}\n\nRules:\n- ${SAFETY}`,
     { label: `replay ${f.key}`, phase: 'Triage', schema: VERDICT },
   ).then((v) => ({ ...f, verdict: v || { verdict: 'dropped', severity: f.severity, screenshots: [], note: 'the replay returned nothing' } })),
 ))
@@ -263,6 +309,8 @@ const lessons = await agent(
   `(which rule would have stopped them), players who got stuck or wasted looks (on the rules or the tool), checklist items nobody reached, ` +
   `and${compare ? ` the comparison of ${compare} on both models (findings held, false alarms, looks used): which model should it run on, and should another player move too?` : ' whether each player\'s model fits.'} ` +
   `Change nothing yourself: the main session applies them.\n\n` +
+  (focus ? `This run's focus, as the players got it (look for drops it caused, and which line):\n${focusText()}\n` +
+    `The Focus step's corrections: ${JSON.stringify(corrections)}\n\n` : '') +
   `Per session: ${JSON.stringify(stats)}\n\nPlayers' summaries:\n${reports.map((r) => `- ${r.label}: ${r.summary}`).join('\n')}\n\n` +
   `Held: ${JSON.stringify(held.map((f) => ({ title: f.title, kind: f.kind, severity: f.severity, players: f.players, note: f.note })))}\n\n` +
   `Dropped: ${JSON.stringify([...merged.dropped, ...replayDrops])}`,

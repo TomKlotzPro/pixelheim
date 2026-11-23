@@ -10,6 +10,148 @@ Each entry holds:
 
 ## Runs
 
+### 2026-11-23, v0.398.0 (the fifth run: a focus on v0.373 to v0.398, the newcomer compared)
+
+**Players:** all five, 70 looks each. Fighter, french and menus ran on Fable and the explorer on Sonnet. The newcomer ran on both models, the comparison owed since 2026-11-13. The run used the shipped workflow with `args.focus`. The main session wrote the focus from the release notes and checked only the lantern against the code. It had seven points: Nunito type, night light and the Tin Lantern, golden hours, the Night of Ash, foam, the Mirefen boardwalks and house fronts. Every player got all seven. Triage and the 11 replays ran on Opus, and filing ran on Sonnet.
+
+**Findings:** 73 sent. They merged into 27 held and 19 dropped: 16 on judgment and 3 by replay. Triage replayed 11 bugs. 8 were confirmed (2 of those re-rated to S4 polish), none was flaky, and 3 were not seen again. Filed:
+- S2, confirmed: PIX-536. The rank-up opens over a frozen, dimmed "LEVEL UP" float behind the hero. spoils.gd sends leveled_up and ranked_up in one tick, so every hero sees it at level 5.
+- S3, confirmed by replay:
+  - PIX-538: a console error ('meta' key 'light') as the Night of Ash begins. All five players saw it. The likely source is camps_layer.gd:145.
+  - PIX-539: at the sea cave's south edge, the hero hides behind the Next plate and the dock. In caves the camera stops at the map's edge (world.gd:552).
+  - PIX-540: Village projects writes Odo, Hilda and Vex in lowercase (the to_lower in town_hall_screen.gd:57).
+  - PIX-541: the Night of Bells' Next line reads "Next Next:" (bells.gd:255).
+  - PIX-542: the Stats header keeps saying "5 stat points to spend" while points are spent. LedgerScreen._refresh never redraws the intro.
+- S3, judged: PIX-537. On the Night of Ash, a message plate stands where the Next line goes. It came back after PIX-507.
+- S4: PIX-543 lists 20 nits. Two of them were confirmed by replay and are Tom's call: the Tin Lantern is too faint to notice underground, and the Mirefen shallows read as water a hero shouldn't cross.
+
+| session | looks | sent | held | dropped |
+|---|---|---|---|---|
+| newcomer (sonnet) | 63 | 6 | 2 (538 confirmed; 1 nit) | 4 |
+| newcomer (fable) | 69 | 17 | 14 (537; 538, 539, 540 confirmed; 10 nits) | 3 |
+| fighter (fable) | 70 | 11 | 9 (538, 541 confirmed; 7 nits) | 2 |
+| explorer (sonnet) | 63 | 5 | 2 (2 nits) | 3 |
+| french (fable) | 70 | 16 | 15 (537; 536, 538, 541 confirmed; 11 nits) | 5 |
+| menus (fable) | 70 | 18 | 13 (537; 538, 542 confirmed; 10 nits) | 4 |
+
+**False alarms, and the rule that stops each:**
+- Five drops came from the focus text, and two held findings are design questions it caused. The main session wrote that text and checked it against the code only for the lantern.
+  - "Light relief is off by default; no edge light on the hero" (newcomer fable, french). The rim light (PIX-531) never reads that setting (light_rig.gd rim_strength), and no player could see it at screenshot size. The focus said neither. Rule: a focus says which setting an effect needs, if any. For a subtle effect it says how to see it (a crop, or a pair of looks with and without the light), or leaves it to Tom.
+  - "No foam at the burnt bridge's piles" (newcomer fable). The gate bridge is burnt for a new hero, and the focus named no whole bridge. Rule: a focus gives each claim a place to see it (map and cell, or a preset).
+  - "The hall is whole at 05:35" (newcomer sonnet). The focus said "whole again from the next day", and two points earlier "a day runs from 06:00 to 06:00". In fact the hall is whole from the dawn scene on. Rule: a focus names the moment, never "the next day".
+  - "The inventory tabs' count badges look like pixel digits" (newcomer sonnet). Three players also sent "floating words (LEVEL UP, an item's name, 'blocked') are in pixel letters", which triage held for Tom. The focus took the pixel face's places from the notes: the logo, the number floats and the key caps. In the code, every world float and the footer's key buttons use UiStyle.pixel_font (world_fx.gd, screen.gd:252). Rule: a list of exceptions comes from the code's callers, not from the notes. The French reader's look at that same point still found the S2 (PIX-536).
+  - "Large reading text changes nothing on Options and Create" (newcomer sonnet). It enlarges what is read at length (UiStyle.reading: dialogue, captions, hints, messages, descriptions, cards), not menu rows. The focus asked for "Large text on as well as off" without saying what it enlarges. Rule: SKILL.md's don't-report list says it.
+  - Held, but by design: "the hero walks over the sides of a Mirefen walk" (four players, one replay). The focus said "the water beside them stops you". Since PIX-519's review (84e48e70, mire_dressing.gd), the one-cell shallows beside each walk can be waded. Kept as a nit for how they read.
+  - SKILL.md has said since 2026-11-15 that the orchestrator checks a focus against the code. That rule was broken a second time. Rule: the workflow checks the focus in a step of its own before the players get it.
+- Three replay drops trace to the tool or to the hero's facing:
+  - "Entering the town hall on the Night of Ash shows the town outside, with no hero" (explorer sonnet). The tool's `fading` doesn't count a door's dissolve (play_bridge.gd fading()), so `keys` answered on the dissolve's first frame. SKILL.md told the explorer that when the picture and the state disagree, "it is the game's doing, not the tool's". The Fable newcomer met the same frame and sent `wait:2` instead. Rule: that line gets an exception for doors until the tool counts the dissolve.
+  - "Swings at an Ash Hound north of the hero do no damage" (fighter fable, explorer sonnet). The hero still faced down. A command that ends in `j` makes the next one start mid-swing (about 0.29 s), and a turn tapped inside a swing is thrown away (player.gd returns before `_face()`). Rule: wait 0.3 s after a swing before a turn tap, and check the facing in the picture before calling a miss.
+  - "The burnt bridge's beam is drawn over the hero's head" (french). It is the hero's back at night: dark hair in front of a dark log. Rule: turn the hero and look again before calling a layering fault on them.
+- The rest were judgment calls:
+  - "E does nothing beside pinned Bram" (menus), and the "E does nothing" part of the Sela's tent finding (fighter). Both times the hero stood diagonal to the person. Rule: E and a melee blow act on the one cell the hero faces, never a diagonal.
+  - "An E cap floats over open sea" (menus). It marks a fishing spot. Rule: press E on a lone cap before reporting it.
+  - "The Ash hall's hearth glows" (menus) shows only at 4x zoom. "The gate's name plate sits on the hero's head" (menus) turns out not to, once enlarged. Rule: judge at the picture's own size, and enlarge only to check what you already see there.
+  - "Dusk looks like full night at 20:05" (newcomer sonnet). A focus question of taste was sent as a finding. SKILL.md already says not to.
+  - "The first E on the Leather Cap didn't equip it" (newcomer fable). It happened once in four tries, and the try-it-twice rule covers that.
+  - Four more were by design or a matter of taste:
+    - Bram pinned while the talk says the beam rolled away (fighter): it matches PIX-515's design.
+    - The scorched hall's chimney smokes (french): it reads as the fire's smoke.
+    - The Tin Lantern's pun (explorer) is wanted.
+    - « or » in a sentence and « o » in a column (french) are each consistent in their place.
+  - "The 'p_elem->_root' console error after Vex's quest" (french) was dropped: seen once, with nothing on screen. Both Stats replays then logged the same error on their first close and reopen of C. That makes three sightings on two screens, so it should not have been dropped. Rule: a console error is replayed whatever its severity, and its proof is `errors`, not the picture.
+
+**Stuck or wasted looks:**
+- Every session used 63 to 70 of its 70 looks. No step held anyone more than six looks, and the Fable newcomer was never unsure for more than two.
+- Every player covered all seven focus points. Six sessions each judged the golden hours and the night light, and five walked the Mirefen boardwalk. Meanwhile each page's route lost those looks (below). Rule: a focus gives each point to the one or two players whose page it fits.
+- Wrong ids boot anyway and cost a look. `--foe dire_wolf` spawned a nameless Lv 1 foe at 0/0 hp (fighter). `--map cave` and `--talk-to vex` cost the French reader 2 looks.
+- `handlantern` is listed in godot/scripts/features/hand_lantern/harness_flags.txt, not in scripts/harness_flags.txt, the only file SKILL.md names (newcomer fable, french). Seven features keep their own flags file this way.
+- The menu tester lost 3 looks by looking before checking whether `keys` had moved the hero. It also typed an E into the name field as the last caption faded, as the newcomer did on 2026-11-07. The Fable newcomer's E loop skipped the third opening caption.
+- `keys` doesn't carry `errors`, so rechecking an error costs a look (fighter). `--at` with `fight` on Saltmere moved the hero a cell and ran 3.5 s before the first look (fighter).
+- The explorer needed about 20 `keys` calls to reach the hounds, Bram and Sela, so it saw the burning homes only from the street.
+- Process: two replay agents wrote a helper named p.sh in the same scratchpad, and one overwrote the other. Four `keys` from one went into the other's session on port 8800, so the swing replay may have been disturbed.
+- Good habits, again: every player wrote a logging wrapper, the French reader's typo.py checked 460 strings, and the fighter timed the cleave with until.py.
+
+**Checklist items nobody reached:**
+- newcomer (both models): a quest outside the village, and a fall. No newcomer run on record has reached either.
+- explorer: stairs in a dungeon and the inn, smithy and alchemist doors (all unreached since 2026-11-07), the Reach's rim, the map edges, and a flame-barred doorway seen up close.
+- fighter: the paladin and the necromancer (unreached in all four fighter runs), the mage and the rogue, the shooters, and packs by day. Reached at last: the level-20 elite's cleave measured, keys 5 and 6, the cleric, the ranger at 3 and 4 cells, and the fall.
+- french: Ana, Joss, the dog and the cat (a second run), buckets 2 and 3 and the caller's later lines, the Sell and Craft tabs, a level-up, hero creation with Large text, and the first caption read whole. A name with « é » can't be tested, because play.py can't type it.
+- menus: Clear warnings and the Saves keys D, X, C and V (the V paste is unreached since 2026-11-13), Language, Reduce motion, Salvage, and Vex's Craft tab.
+- In the focus: foam on rocks, and at a whole bridge's piles. Nobody could judge the rim light at screenshot size.
+
+**The newcomer, Sonnet against Fable:**
+
+| | Sonnet | Fable |
+|---|---|---|
+| looks | 63 of 70 | 69 of 70 |
+| sent | 6 | 17 |
+| held | 2, each also found by three or more others | 14: alone on PIX-539 and PIX-540, first on PIX-537 |
+| false alarms | 4: two by design (half caused by the focus), one taste verdict sent as a finding, one too weak to tell | 3: one mix-up of the rim with Light relief (caused by the focus), one weak, one seen once in four tries |
+| reached | the Night of Ash by play up to Sela, the rest by presets; no quest handed in | the whole Night of Ash to its dawn, Odo, Maren's quest handed in; no quest outside the village |
+
+- Fable met the door's dissolve, saw it for the tool's frame and waited it out. On Sonnet, the explorer sent the same frame as a bug.
+- Sonnet added nothing alone: each of its two held findings was also found by three or more others.
+- The Sonnet explorer has the same profile: 5 sent and 2 held (the Deepwood pond found alone). Its 2 replay drops came from the tool and from the swing timing.
+- **Verdict:** the newcomer moves to Fable, and the explorer moves with it, so all five players run on Fable. The comparison is settled. The default `compare` becomes none, which saves a sixth 70-look session per run. If Tom wants the explorer proven, `compare: "explorer"` plays it on Sonnet as well.
+
+**Verdicts for Tom (the summaries', not findings):**
+- Night without a lantern: no player found the ground too dark to play. What goes dark is people and foes:
+  - Dire Wolves are black on dark, and only their "!" shows until they are adjacent (fighter).
+  - The hero's back, Bram between the lamps, and the villager south of the burnt bridge go near-black (newcomer fable, french).
+  - The open overworld off the road is the darkest place (newcomer sonnet, menus).
+- With the Tin Lantern: a warm pool about 3 cells wide (2 to 5, by player). It is enough to fight by, but not to see a pack coming. It shows little under the marsh mist and underground (PIX-543). Whether 40 gold should buy more light is Tom's call.
+- The rim light: one player saw it faintly on Sela and a stall, and five could not make it out at screenshot size. Light relief is off by default, and its comment keeps it off "until PIX-529", which shipped in v0.395.
+- Golden hours: good. Dawn is pale gold with mist, dusk goes peach, rose, then violet, and the windows light before the lamps (newcomer fable, french). Two Sonnet players found 19:30 to 20:15 short, which is taste.
+- The Night of Ash plays cleanly from end to end (newcomer fable).
+- Fighter numbers:
+  - The level-20 elite orc's cleave band shows for about 0.55 s, every 4.5 s or so. It hit for 11 one cell off and missed at two cells. Two rolls through it were both clean.
+  - Skill 5 did 112 for 10 EN, and skill 6 healed 47 for 10. Skills 1, 2 and 4 cost 4, 6 and 12, as the dock says.
+  - The ranger misses at 4 cells and hits for 21 at 3.
+  - The cleric's skill 2 on a guarding crab's front floats "blocked" and does 9. A struck bone pile did not rise.
+  - The fall: the hero wakes in the inn's bed, and gold goes from 30 to 20.
+- Two questions from the drops:
+  - A turn tapped inside a swing is lost, while J, roll and skill presses are kept for 0.15 s. That is input feel, S4 or S3.
+  - The Ash hall's oven still shows a few ember pixels. It is a small follow-up to PIX-535, if Tom wants the oven cold too.
+
+**Seen but not sent (a look next run):**
+- The 'p_elem->_root' error (self_list.h:46). It showed after Vex's quest (french) and on the first close and reopen of Stats after spending (both Stats replays). Add it to PIX-542's notes, or file it as S3.
+- The Sonnet newcomer was blocked at town 63,11 by the beam's flame until it came from above. It also found people and shops hard to find, because the town's layout moves with the tier.
+
+**Tool (lines for one play.py ticket):**
+- `fading` misses a door's dissolve (play_bridge.gd fading()). `keys` then answers on the dissolve's first frame, which shows the old map with no hero.
+- An unknown `--foe`, `--map` or `--talk-to` id boots anyway (a nameless Lv 1 foe at 0/0 hp). play.py should refuse it, as it refuses `kill`.
+- `keys`' output should carry `errors`.
+- `--at` with `fight` on Saltmere moved the hero a cell and ran 3.5 s before the first look.
+- `keys` can't type « é », or any key outside ASCII.
+- At the dawn scene, the state's `hour` (23:16) disagrees with the clock on screen (04:48).
+
+**Rules changed:**
+- SKILL.md:
+  - all five players on Fable;
+  - a focus checked claim by claim (what blocks, the exact moment, exception lists from the code), with a place for each point, and each point given to one or two players;
+  - the door's dissolve is an exception to "the state is the picture's frame";
+  - facing: E and melee act on the faced cell, a turn tap inside a swing is lost;
+  - presets live in two kinds of flags file, and a wrong id boots anyway;
+  - judge at the picture's size, turn the hero before calling a layering fault, press E on a lone cap;
+  - read `open` before typing after the captions;
+  - Large reading text enlarges reading text, not menu rows.
+- players/newcomer.md: Fable; a quest outside the village and a fall are its gap.
+- players/explorer.md: Fable; begin with stairs and the inn, smithy and alchemist doors.
+- players/fighter.md: what 2026-11-23 measured; start with the paladin and the necromancer, then the mage and the rogue.
+- players/french.md: start with what two runs left; a short form in a column is not a second spelling; no accented names.
+- players/menus.md: start with Clear warnings, the Saves keys, Language, Reduce motion, Salvage and Vex's Craft tab.
+- triage.md:
+  - a console error is replayed whatever its severity;
+  - replay helpers stay in the replay's own folder;
+  - the code, not the focus, decides what is by design.
+- pixelheim-playtest.js:
+  - all five players on Fable, and `compare` off by default;
+  - `focus` may be split per player;
+  - a Focus step on the main session's model checks the focus against the code;
+  - the focus goes to the merge, replay and lessons agents;
+  - console errors are always replayed;
+  - replay helpers stay in each replay's own folder.
+
 ### 2026-11-15, v0.369.0 (the fourth run: a focus on the tricks)
 
 **Players:** the fighter alone, on Fable, with 90 looks and a focus: the six foe tricks of PIX-489 (v0.368), with the night shadows of PIX-490 (v0.369) on the side. There was no comparison (`compare: "none"`). It ran through a copy of the workflow that adds `args.focus` to the brief (scratchpad/playtest-focus.js). Triage and the replay ran on Opus.
@@ -358,8 +500,7 @@ Each entry holds:
 - The French reader plays three sessions from presets and reports words only: folded into `players/french.md`.
 - The menu tester has no dock step, skips Fullscreen, waits 8 s at the title, looks before each E and checks the shop from a preset: folded into `players/menus.md`.
 - A finding with no screenshot gets one replay for its picture, else it is dropped: folded into `triage.md`.
-- The comparison run moves to the newcomer, Fable against Sonnet: folded into `.claude/workflows/pixelheim-playtest.js`.
-- The players run on Fable, the newcomer and explorer on Sonnet until compared: folded into `SKILL.md` and `.claude/workflows/pixelheim-playtest.js`.
+- All five players run on Fable since the newcomer's comparison (2026-11-23), and there is no comparison by default: folded into `SKILL.md`, the players' pages and `.claude/workflows/pixelheim-playtest.js`.
 - `wait:0.5` after a key that starts a fade, stop an E loop once the talk has closed, and wait out a typing caption: folded into `SKILL.md`.
 - A row's … with its words elsewhere, a footer key that says where, an undoable choice and the `--level` kit's look are not findings: folded into `SKILL.md`.
 - The summary holds no observations (a focus run's verdicts are the one exception, since 2026-11-15), and triage replays any left there that can cost the player: folded into `SKILL.md` and `triage.md`.
@@ -370,4 +511,14 @@ Each entry holds:
 - The confusing rule covers every tell; a moving tell needs two or three looks: folded into `SKILL.md`.
 - How hard a fight is and what it pays is a verdict, not a finding: folded into `SKILL.md`.
 - `start`'s picture counts as a look; a covered focus leaves its looks to the page's route: folded into `SKILL.md` and `.claude/workflows/pixelheim-playtest.js`.
-- The fighter knows the tricks as built and starts with its page's gaps (level 20 elite, cleric, paladin, necromancer): folded into `players/fighter.md`.
+- The fighter knows the tricks as built and starts with its page's gaps (since 2026-11-23: the paladin and the necromancer, then the mage and the rogue): folded into `players/fighter.md`.
+- A focus is checked claim by claim, in a workflow step of its own before the players get it: what blocks, the exact moment, lists of exceptions from the code's callers. Each point has a place, the setting it needs, and one or two players: folded into `SKILL.md` and `.claude/workflows/pixelheim-playtest.js`.
+- Right after a door, `fading` misses the door's dissolve: wait it out before you report the picture: folded into `SKILL.md`.
+- E and a melee blow act on the one cell the hero faces, and a turn tapped inside a swing is lost: wait 0.3 s after a swing: folded into `SKILL.md`.
+- Presets live in the core's flags file and in each feature's, and a wrong id boots anyway: folded into `SKILL.md`.
+- Judge at the picture's own size, turn the hero before calling a layering fault on them, and press E on a lone cap: folded into `SKILL.md`.
+- Read `open` before typing after the captions, and `keys`' `cell` before a look: folded into `SKILL.md`.
+- Large reading text enlarges reading text, not menu rows: folded into `SKILL.md`.
+- A console error is always replayed, with `errors` as its proof, and replay helpers stay in each replay's own folder: folded into `triage.md` and `.claude/workflows/pixelheim-playtest.js`.
+- The code, not the focus, decides what is by design: folded into `triage.md` and `.claude/workflows/pixelheim-playtest.js`.
+- Each player starts with what the last runs left unreached: folded into `players/*.md`.
