@@ -138,6 +138,8 @@ func set_night(view: MapView, _night: bool) -> void:
 	var house := hall(view)
 	for pane: Node2D in view.panes:
 		if is_instance_valid(pane) and house.has_point(Vector2i(pane.position) / TILE):
+			# MapView.set_night keeps a `dark` pane unlit each second after.
+			pane.set_meta("dark", true)
 			pane.visible = false
 			# The LightRig shows a light by its energy: none thrown below it.
 			var light: Variant = pane.get_meta("light", null)

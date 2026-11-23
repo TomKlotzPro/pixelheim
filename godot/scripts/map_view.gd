@@ -1145,9 +1145,11 @@ func set_night(night: bool) -> void:
 		# Night's lamps waiting for Fafnyr).
 		for layer: MapLayer in _layers.values():
 			layer.set_night(self, night)
+	# A pane a layer keeps dark (`dark`: the hall on the Night of Ash, PIX-516)
+	# stays so as the evening lights the rest one by one.
 	for pane in panes:
 		if is_instance_valid(pane):
-			_show(pane, night or DayNight.lit_before_night(GameState.world.steps, Vector2i(pane.position / TILE)))
+			_show(pane, not pane.get_meta("dark", false) and (night or DayNight.lit_before_night(GameState.world.steps, Vector2i(pane.position / TILE))))
 
 
 ## `glow` shown or not, and under the sky its pool of light with it
