@@ -63,8 +63,6 @@ var health_bar_back: ColorRect
 var bar_width := BAR_WIDTH
 ## "Lv N" beside the health bar (PIX-188).
 var level_tag: PanelContainer
-## Its tag is the one its pack shows (Foes hides the others': PIX-340).
-var tag_led := false
 ## A named foe's name over its head, or null.
 var name_plate: Label
 ## An icon for each thing ailing it beside the tag (PIX-440), built at the
@@ -176,8 +174,23 @@ func raise_bars() -> void:
 func tick() -> void:
 	if level_tag == null:
 		return
-	level_tag.visible = not foe.dying and foe.state != EnemyState.PILE and (foe.hunting or health_bar.visible or Packs.within_notice(foe.global_position, foe.world.player.global_position))
+	level_tag.visible = not foe.dying and foe.state != EnemyState.PILE and not _marked() and (foe.hunting or health_bar.visible or Packs.within_notice(foe.global_position, foe.world.player.global_position))
 	show_ailments()
+
+
+## Whether its "!" (or the fright's) stands where its tag does (mark_foot):
+## the tag waits until it has gone.
+func _marked() -> bool:
+	return name_plate == null and mark_rect().has_area()
+
+
+## Where its "!" (or the fright's) is drawn in the world while it shows, or
+## no rect: a blow's number comes up beside it (Foes, WorldFx.step_aside).
+func mark_rect() -> Rect2:
+	for burst: Sprite2D in [mark, fright_mark.get_child(0) if fright_mark != null else null]:
+		if burst != null and burst.is_visible_in_tree() and burst.get_parent().modulate.a * burst.modulate.a * burst.self_modulate.a > 0.0:
+			return Rect2(burst.global_position, burst.texture.get_size())
+	return Rect2()
 
 
 ## What stands over its head (its level tag, the ailments beside it, a named
@@ -193,21 +206,16 @@ func make_way(hero: Vector2, delta: float) -> void:
 	for words: CanvasItem in [level_tag, name_plate, ailment_row, health_bar, health_bar_back]:
 		if words != null:
 			words.modulate.a = alpha
-
-
-## Whether its tag is its pack's one; a mark up moves with it (a half's
-## "!" stands over a tag it shows, PIX-497).
-func lead_tag(leads: bool) -> void:
-	if tag_led == leads:
-		return
-	tag_led = leads
-	turned()
+	# Its "!" too (PIX-515: a hound's sat on the hero's shoulder), by the
+	# alpha its own fade leaves alone.
+	for burst: Sprite2D in [mark, fright_mark.get_child(0) if fright_mark != null else null]:
+		if burst != null:
+			burst.self_modulate.a = 0.0 if burst.is_visible_in_tree() and Foes.hero_under(Rect2(burst.global_position, burst.texture.get_size()), hero) else 1.0
 
 
 ## The level its tag reads (PIX-340: in a fight a pack's one tag reads the
 ## pack's highest), coloured by the gap to the hero's.
 func show_level(level: int) -> void:
-	lead_tag(true)
 	var words: Label = level_tag.get_child(0)
 	var text := Text.t("Lv %d") % level
 	if words.text != text:
@@ -468,14 +476,13 @@ func _place_mark(burst: Sprite2D) -> void:
 	burst.position = Vector2(Marks.centred(size.x, head.get_center().x), mark_foot() - size.y)
 
 
-## Where a mark over the head has its foot: MARK_CLEAR over the level tag
-## (PIX-188; a named foe's tag stands over its name), or over where the tag
-## stands before it is laid out.
+## Where a mark over the head has its foot: MARK_CLEAR over the head, where
+## the level tag stands, which waits until the mark has gone (tick; PIX-515:
+## over the tag, a hound's "!" stood two cells from it, on the hero's
+## shoulder; PIX-497 had put a slime's half's there already). A named foe
+## keeps its words: its mark stands over its tag (PIX-188), over its name.
 func mark_foot() -> float:
-	# A slime's half whose tag its pack's one tag hides wears its mark right
-	# over it (PIX-497): a tag's height up, over a blob 8 px tall, the "!"
-	# belonged to nothing. The half showing the tag keeps it over the tag.
-	if foe.fighter.get("small", false) and not tag_led:
+	if name_plate == null:
 		return floorf(bar_at - MARK_CLEAR)
 	var tag_top := bar_at - TAG_HEIGHT
 	if level_tag != null and level_tag.size.y > 0.0:

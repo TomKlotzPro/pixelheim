@@ -790,12 +790,17 @@ func update_prompt() -> void:
 	var water := _water_beside()
 	# The well with the bucket full has no more to give (PIX-505: its prompt stayed).
 	if not water.is_empty() and not (water["ruin"] < 0 and _bucket_full()):
+		_prompt_on(null)
 		_show_prompt(_pixels(_well_cells() if water["ruin"] < 0 else Rect2i(water["cell"], Vector2i.ONE)), water["cell"], water["ruin"] < 0)
 		return
 	var beside: Dictionary = world.folk.beside()
+	_prompt_on(beside.get("who"))
 	if not beside.is_empty():
-		var at: Vector2i = world.player_cell + Vector2i(beside["side"])
-		_show_prompt(Rect2(Vector2(at * MapView.TILE), Vector2.ONE * MapView.TILE), at)
+		# By the one standing there, not their cell (folk_spot).
+		_fresh_key()
+		_show_at(folk_spot((beside["who"] as Npc).figure(), prompt_label.size, beside["side"] == Vector2i.DOWN))
+		# Their mark back while a word rising there hides the plate.
+		(beside["who"] as Npc).prompted = prompt_label.visible
 		return
 	var target := _prompt_target(facing_cell())
 	if target.has_area():
@@ -856,6 +861,30 @@ static func prompt_spot(target: Rect2, cell: Vector2i, size: Vector2, below := f
 	return Vector2(cell.x * MapView.TILE + roundf((MapView.TILE - size.x) / 2.0), y)
 
 
+## Where the prompt `size` big stands for a villager drawn in `figure`
+## (PIX-515): over their head, PROMPT_CLEAR off, in their mark's place
+## (Npc.prompted; over their cell it covered their head). With the hero in
+## the cell `above` them the hero has that place, and under their feet the
+## plate belonged to the ground (Sela's; Bram's on the fence behind him):
+## it stands at their side, head high.
+static func folk_spot(figure: Rect2, size: Vector2, above: bool) -> Vector2:
+	if above:
+		return Vector2(figure.end.x + PROMPT_CLEAR, figure.position.y).round()
+	return Vector2(figure.get_center().x - size.x / 2.0, figure.position.y - PROMPT_CLEAR - size.y).round()
+
+
+## The villager E's plate stands on, or none: their mark waits meanwhile.
+var _prompted: Npc
+
+
+func _prompt_on(who: Variant) -> void:
+	if is_instance_valid(_prompted) and _prompted != who:
+		_prompted.prompted = false
+	_prompted = who
+	if who != null:
+		(who as Npc).prompted = true
+
+
 ## Where the well's prompt stands (PIX-505): Shade's well wears it in the
 ## middle of its roof, the cells of `target` above its rim, from every side
 ## (over it stood three cells from a hero below, and under it, facing down,
@@ -871,16 +900,24 @@ static func _pixels(cells: Rect2i) -> Rect2:
 	return Rect2(Vector2(cells.position * MapView.TILE), Vector2(cells.size * MapView.TILE))
 
 
-## The prompt over `target` (prompt_spot), bobbing a pixel; the key read
-## fresh (it may have been rebound). It waits while anything rises through
-## where it stands (PIX-465: a catch read "Sm[E] Pike").
+## The prompt over `target` (prompt_spot); the key read fresh (it may have
+## been rebound).
 func _show_prompt(target: Rect2, cell: Vector2i, well := false) -> void:
+	_fresh_key()
+	var below: bool = cell.y > world.player_cell.y
+	_show_at(well_spot(target, cell, prompt_label.size, below) if well else prompt_spot(target, cell, prompt_label.size, below))
+
+
+func _fresh_key() -> void:
 	if prompt_label is Keycap and not prompt_label.visible:
 		(prompt_label as Keycap).show_key(_interact_key())
 		prompt_label.reset_size()
+
+
+## The prompt at `spot`, bobbing a pixel. It waits while anything rises
+## through where it stands (PIX-465: a catch read "Sm[E] Pike").
+func _show_at(spot: Vector2) -> void:
 	var bob := roundf(sin(GameClock.msec() / 260.0)) if not GameState.settings.reduce_motion else 0.0
-	var below: bool = cell.y > world.player_cell.y
-	var spot := well_spot(target, cell, prompt_label.size, below) if well else prompt_spot(target, cell, prompt_label.size, below)
 	prompt_label.position = spot + Vector2(0, bob)
 	# Every place the bob takes it (a pixel up or down), so the bob doesn't
 	# blink it in and out while a word stops at its edge.

@@ -104,6 +104,12 @@ feet-mire | --map mirefen --at 25,15 --walk d,d,d | map=mirefen cell=\(25, 15\) 
 # (a first-time hint is one) stayed half hidden behind a conversation's box:
 # it is put away while Maren speaks, and back when she is done.
 stand-beside | --map town --town-tier 0 --at 36,27 --walk l,l,l | map=town cell=\(35, 27\) standoff=15,0 prompt=shown | town
+# From above too (PIX-515): walked down onto Old Hessa at the shrine, the
+# hero stops 15 px over her as beside her, a pixel short of the middle of
+# the cell above, and a hero walking along that row passes her (her body
+# as high as her head stopped them at her shoulder).
+stand-above | --map town --at 8,4 --walk d,d | map=town cell=\(8, 5\) standoff=0,15 prompt=shown | town
+walk-above | --map town --at 6,5 --walk r,r,r | map=town cell=\(9, 5\) | town
 hero-poisoned | --map town --ail poison | map=town ailing=poison:tint,bar toast=1 box, 1 line, fits hudclash=none | town combat
 log-away-talking | --map town --ail poison talk | open=dialogue_box ailing=poison:tint,bar toast=hidden | town combat story
 log-back-after | --map town --ail poison talk --keys esc | open=none toast=1 box, 1 line, fits | town combat story
