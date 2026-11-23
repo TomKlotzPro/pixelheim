@@ -219,6 +219,15 @@ func field_barred() -> String:
 	return world.barred_said
 
 
+func field_beam() -> String:
+	if GameState.progression.prologue == Prologue.DONE:
+		return ""
+	for villager: Npc in harness.get_tree().get_nodes_in_group("npcs"):
+		if (villager.data.get("prologue", {}) as Dictionary).get("pinned", false):
+			return "pinned" if villager.beam != null else "gone"
+	return ""
+
+
 func field_bells() -> String:
 	if GameState.progression.bells != Bells.NONE:
 		return Bells.beat_name(GameState.progression.bells)

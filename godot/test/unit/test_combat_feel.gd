@@ -233,7 +233,7 @@ class FakeFx extends WorldFx:
 	func float_number(_value: int, _at: Vector2, _color: Color, _crit := false, _who: Object = null) -> void:
 		pass
 
-	func skill_flash(_at: Vector2, _color: Color, _glow := true) -> void:
+	func skill_flash(_at: Vector2, _color: Color, _glow := true, _under: Node2D = null) -> void:
 		pass
 
 

@@ -149,6 +149,8 @@ static func _decor_hamlet(view: MapView) -> void:
 					var line := Sprite2D.new()
 					line.texture = HamletArt.washing(int(piece["line"]))
 					line.centered = false
+					# Cloth hangs flat in the relief (PIX-529).
+					line.use_parent_material = true
 					stand_on(view, line, cell, Vector2.ZERO)
 			"glow":
 				_add_door_glow(view, cell)
@@ -165,8 +167,14 @@ static func _decor_hamlet(view: MapView) -> void:
 				boat.sprite_frames = HamletArt.afloat(piece["art"])
 				boat.centered = false
 				boat.frame = absi(hash(cell)) % 2
-				boat.play()
-				stand_on(view, boat, cell, Vector2(-HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
+				# Still with Reduce motion, as the sea is (PIX-532).
+				if not GameState.settings.reduce_motion:
+					boat.play()
+				# Moored off a pier beside it by its foam's pad, so its spray
+				# never lands on the planks (PIX-532).
+				var wide := HamletArt.cells_wide(String(piece["art"]))
+				var off := HamletArt.AFLOAT_PAD * (int(view.data.grid.get(cell + Vector2i.LEFT, "") == "dock") - int(view.data.grid.get(cell + Vector2i(wide, 0), "") == "dock"))
+				stand_on(view, boat, cell, Vector2(off - HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
 			_:
 				if piece.get("lamp", false):
 					# A wayside lamp (PIX-397): the town's street lamp, its foot,
@@ -199,6 +207,8 @@ static func _decor_hamlet(view: MapView) -> void:
 					awning.region_enabled = true
 					awning.region_rect = Rect2(0, 0, HamletArt.size(art).x, HamletArt.AWNING)
 					awning.position = still.position
+					# Cloth hangs flat in the relief (PIX-529): its stripes no ridges.
+					awning.use_parent_material = true
 					root.add_child(awning)
 					awnings[cell] = awning
 				if potted:
@@ -251,6 +261,8 @@ static func _add_bunting(view: MapView, cell: Vector2i, cells: int, high: int) -
 	var day := Sprite2D.new()
 	day.texture = drawn["day"]
 	day.centered = false
+	# Cloth hangs flat in the relief (PIX-529).
+	day.use_parent_material = true
 	var root := stand_on(view, day, cell, at)
 	var lit := Sprite2D.new()
 	lit.texture = drawn["lit"]

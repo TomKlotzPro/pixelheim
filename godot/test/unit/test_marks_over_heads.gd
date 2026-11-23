@@ -164,7 +164,9 @@ func test_a_monsters_marks_are_centred_on_its_head() -> void:
 				var who := "%s's %s facing %s" % [species, tone, way]
 				assert_eq(burst.position, burst.position.round(), "%s: on whole pixels" % who)
 				assert_almost_eq(burst.position.x + burst.texture.get_width() / 2.0, head, 0.5, "%s: centred on the head" % who)
-				assert_lt(burst.position.y + burst.texture.get_height(), foe.drawing.bar_at - EnemyDrawing.TAG_HEIGHT, "%s: its foot over the level tag" % who)
+				# PIX-515: over the tag it stood a tag's height off its owner,
+				# on a hero in the cell above; the tag waits for it instead.
+				assert_eq(burst.position.y + burst.texture.get_height(), floorf(foe.drawing.bar_at - EnemyDrawing.MARK_CLEAR), "%s: its foot right over the head, where the tag stands" % who)
 
 
 func test_words_over_the_world_are_centred_by_their_ink() -> void:
@@ -185,6 +187,8 @@ func test_damage_numbers_land_about_the_foe_not_left_of_it() -> void:
 		assert_eq(number.position, number.position.round(), "on whole pixels")
 		assert_almost_eq(middle, 100.0, 4.5, "a few pixels either way")
 		off += middle - 100.0
+		# Each lands alone: on the last one's place it would step aside.
+		number.free()
 	assert_almost_eq(off / 40.0, 0.0, 1.5, "about the foe on average (it sat five pixels left)")
 
 
@@ -339,3 +343,81 @@ func test_the_hero_stops_clear_of_a_villager_from_the_side() -> void:
 			if sprite == "bram":
 				assert_gt(theirs + hero - 11.0, 2.0, "at the old 11 px Bram and the hero overlapped, as the playtest saw")
 	PunyTown.withheld = was
+
+
+## How far under a hero's middle their feet are drawn, standing, whichever
+## way they face: the lowest of every role's.
+func _hero_foot() -> float:
+	var low := -INF
+	for role: String in PunyArt.HEROES:
+		var art := PunyArt.hero(role)
+		var frames := PunyArt.frames(art)
+		for way: String in PunyArt.DIRS:
+			var frame := frames.get_frame_texture(PunyArt.pick(frames, "idle", way), 0)
+			low = maxf(low, PunyArt.lift(art) + Ink.used(frame).end.y - frame.get_height() / 2.0)
+	return low
+
+
+## PIX-515: from the cell above, the hero came 10 px off a villager, whoever
+## they were, and stood half over Maren, Bram and Sela, hidden behind them
+## and under their "!" (PIX-484 had fixed the sides only). A villager's body
+## begins as high as their head reaches, so the hero's feet stop over their
+## head, with the paid figures and without, and its foot where it was, so
+## the row under them is still walked. Never further than the middle of the
+## cell above: a hero walking that row's middle passes them, as the next
+## column's is passed (PIX-484), so the tallest's head (Old Hessa's, the
+## Mayor's) reaches a few pixels up the hero's feet.
+func test_the_hero_stops_clear_of_a_villager_from_above() -> void:
+	var feet: float = Player.BODY_AT.y + Player.BODY.y / 2.0
+	var was := PunyTown.withheld
+	for withheld: bool in [false, true]:
+		PunyTown.withheld = withheld
+		var foot := _hero_foot()
+		assert_lte(foot, Npc.FIGURE_FOOT, "the hero's feet as low as Npc takes them")
+		for sprite: String in PunyArt.VILLAGERS:
+			var art := PunyArt.villager(sprite)
+			var size: float = art.get("scale", 1.0)
+			var crown := _crown(PunyArt.frames(art), Vector2(0, PunyArt.lift(art) * size), size)
+			var body := Npc.body_of(crown)
+			# The hero's middle over theirs, stopped on their body.
+			var apart := feet - body.position.y
+			var who := "%s (%s)" % [sprite, "free" if withheld else "paid"]
+			assert_lt(apart, 16.0, "%s: the middle of the row above is free" % who)
+			assert_lte(foot - apart, crown if apart < 15.0 else crown + 5.0, "%s: the hero's feet over their head (%s px apart, their head %s up)" % [who, apart, -crown])
+			assert_eq(body.end.y, Npc.BODY_FOOT, "%s: the row under them as it was" % who)
+			assert_eq(body.size.x, Npc.BODY.x, "%s: and their sides" % who)
+			if sprite == "maren":
+				assert_gt(foot - 10.0 - crown, 2.0, "at the old 10 px the hero stood on Maren's head, as the playtest saw")
+	PunyTown.withheld = was
+
+
+## PIX-515: E's plate stood over a villager's cell, on their head, and with
+## the hero above them under their feet, on the ground (Sela's) or the fence
+## behind (Bram's), while their "!" sat on the hero. It stands over their
+## head, in their mark's place, which waits; with the hero above, at their
+## side: on neither figure, wherever its bob takes it.
+func test_a_villagers_plate_stands_by_them_and_never_on_the_hero() -> void:
+	var size := Vector2(13, 16)
+	var at := Vector2(104, 104)
+	var figure := Rect2(at.x - Npc.FIGURE_WIDE / 2.0, at.y - 13.0, Npc.FIGURE_WIDE, 13.0 + Npc.FIGURE_FOOT)
+	var over := Rect2(Interaction.folk_spot(figure, size, false), size)
+	assert_eq(over.end.y, figure.position.y - Interaction.PROMPT_CLEAR, "over their head")
+	assert_almost_eq(over.get_center().x, at.x, 0.5, "in its middle")
+	# The hero stopped on their body from above (the tallest role's head).
+	var feet: float = Player.BODY_AT.y + Player.BODY.y / 2.0
+	var hero := Rect2(at.x - Npc.FIGURE_WIDE / 2.0, at.y + Npc.body_of(-13.0).position.y - feet - 17.0, Npc.FIGURE_WIDE, 17.0 + Npc.FIGURE_FOOT)
+	assert_true(over.intersects(hero), "where the hero stands, from above")
+	var side := Rect2(Interaction.folk_spot(figure, size, true), size)
+	for bob: float in [-1.0, 0.0, 1.0]:
+		var plate := Rect2(side.position + Vector2(0, bob), size)
+		assert_false(plate.intersects(hero), "bobbed %s: off the hero" % bob)
+		assert_false(plate.intersects(figure), "bobbed %s: off the villager" % bob)
+	assert_eq(side.position.x, figure.end.x + Interaction.PROMPT_CLEAR, "right beside them")
+	assert_eq(side.position.y, figure.position.y, "head high, not under their feet")
+	# Their mark waits while the plate has its place.
+	var villager: Npc = autofree(Npc.new())
+	villager._mark = autofree(Npc.mark_sprite("offer", true))
+	villager.prompted = true
+	assert_false(villager._mark.visible, "the mark gone under the plate")
+	villager.prompted = false
+	assert_true(villager._mark.visible, "and back")

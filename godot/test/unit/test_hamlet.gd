@@ -9,6 +9,16 @@ const MAPS := ["saltmere", "greyhold", "frostgate", "blackiron", "mountain_road"
 ## Greyhold's fort, its walls included (PIX-399).
 const FORT := Rect2i(24, 4, 27, 23)
 
+var _still := false
+
+
+func before_each() -> void:
+	_still = GameState.settings.reduce_motion
+
+
+func after_each() -> void:
+	GameState.settings.reduce_motion = _still
+
 
 ## Every open cell reachable from `from` on `map` (without leaving `inside`,
 ## when given).
@@ -251,6 +261,10 @@ func test_barrels_and_crates_are_at_the_folk_s_scale() -> void:
 				assert_true(HamletArt.PIECES.has(art), "%s's %s is drawn" % [map_id, kind])
 				assert_lte(_height(art), 12, "%s's %s (%s) stands below a villager's shoulder" % [map_id, kind, art])
 				assert_eq(HamletArt.cells_wide(art), 1, "%s on its one cell" % art)
+				# PIX-515: a hero stopped at the top of its cell is drawn with
+				# their feet 3 px down it; the store's picture reaches them.
+				var top := 16 - HamletArt.size(art).y + HamletArt.inked(art).position.y - PunyProps.STORE_RISE
+				assert_between(top, 0, 3, "%s's %s (%s) is drawn beside a hero it stops" % [map_id, kind, art])
 	assert_eq(Hamlet.store("mountain_road", "barrel", Vector2i.ZERO), "tub", "the smith quenches in a tub")
 	assert_eq(Hamlet.store("mountain_road", "crate", Vector2i.ZERO), "coal")
 	assert_eq(Hamlet.store("frostgate", "crate", Vector2i(7, 38)), "woodpile_snow", "the hermit's woodpile by his hut")
@@ -307,6 +321,56 @@ func test_a_settlement_drawn_lays_its_dressing() -> void:
 		for cell: Vector2i in view.hamlet["blocks"]:
 			assert_true(map.covered.has(cell), "%s: what stands at %s blocks" % [map_id, cell])
 			assert_true(view.bare.has(cell), "%s: no field decor under it" % map_id)
+
+
+## A boat breaks the sea along its waterline (PIX-532): its foam Shade's
+## own colours in whole pixels, never see-through, and as much at its bow
+## as at its stern as it settles.
+func test_a_boat_breaks_the_sea_along_its_waterline() -> void:
+	var frames := HamletArt.afloat("boat")
+	var hull := HamletArt.picture("boat")
+	var foams: Array[Color] = [HamletArt.INKS["A"], HamletArt.INKS["J"]]
+	for beat in frames.get_frame_count("default"):
+		var image := frames.get_frame_texture("default", beat).get_image()
+		var pads := [0, 0]
+		for y in image.get_height():
+			for x in image.get_width():
+				var colour := image.get_pixel(x, y)
+				var at := Vector2i(x - HamletArt.AFLOAT_PAD, y - beat)
+				var on_hull := Rect2i(Vector2i.ZERO, hull.get_size()).has_point(at) and hull.get_pixelv(at).a > 0.0
+				if colour.a == 0.0 or on_hull:
+					continue
+				assert_eq(colour.a, 1.0, "beat %d: no see-through foam at %s" % [beat, Vector2i(x, y)])
+				assert_true(foams.any(func(foam: Color) -> bool: return foam.is_equal_approx(colour)), "beat %d: %s at %s is Shade's foam" % [beat, colour.to_html(), Vector2i(x, y)])
+				if x < HamletArt.AFLOAT_PAD:
+					pads[0] += 1
+				elif x >= image.get_width() - HamletArt.AFLOAT_PAD:
+					pads[1] += 1
+		if beat == 1:
+			assert_gt(pads[0], 0, "it breaks white as it settles")
+			assert_eq(pads[0], pads[1], "at its bow as at its stern")
+
+
+## Under Reduce motion the boats ride still, as the sea does (PIX-532).
+func test_boats_ride_still_with_reduce_motion() -> void:
+	GameState.settings.reduce_motion = true
+	var map := MapData.load_by_id("saltmere")
+	var root := Node2D.new()
+	add_child_autofree(root)
+	var actors := Node2D.new()
+	root.add_child(actors)
+	var view := MapView.new(map, actors)
+	view.plan(map.spawn)
+	view.build(root)
+	var boats := root.find_children("*", "AnimatedSprite2D", true, false).filter(func(node: Node) -> bool:
+		return (node as AnimatedSprite2D).sprite_frames == HamletArt.afloat("boat"))
+	assert_eq(boats.size(), 3, "Saltmere's three boats")
+	for boat: AnimatedSprite2D in boats:
+		assert_false(boat.is_playing(), "a boat at %s holds still" % boat.position)
+		# Moored off the jetty, its foam and spray too, never on the planks.
+		var at := boat.global_position
+		for x in range(int(at.x), int(at.x) + boat.sprite_frames.get_frame_texture("default", 0).get_width()):
+			assert_ne(map.tile_at(Vector2i(floori(x / 16.0), floori((at.y + 8.0) / 16.0))), "dock", "a boat at %s clear of the jetty at x %d" % [at, x])
 
 
 ## Greyhold's fort lived in (PIX-399): its barracks, stable and smithy stand

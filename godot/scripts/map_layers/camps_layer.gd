@@ -155,9 +155,42 @@ static func _decor_ruins(view: MapView) -> void:
 	var ruins := Town.ruins(Town.done_projects(GameState.settlement))
 	for i in ruins.size():
 		if burning and i not in GameState.progression.prologue_doused:
-			view.fires.append({"rect": ruins[i]["rect"], "nodes": _add_fire(view, ruins[i]["rect"]), "ruin": i})
+			var fire := {"rect": ruins[i]["rect"], "nodes": _add_fire(view, ruins[i]["rect"]), "ruin": i}
+			_bar(view, fire)
+			view.fires.append(fire)
 		else:
 			_add_smoke(view, ruins[i]["rect"])
+
+
+## A burning ruin bars the way as a standing house does (PIX-515: the hero
+## walked in at the door and stood among the flames, unhurt): one box over
+## the frame and all inside it, no further out than the frame's own posts
+## block (a cell's blocker starts 4 in and 7 down, art.md's Collision), and
+## its open cells covered, so nothing is stood or sent in there. Both go
+## with the fire (douse): the box is one of its nodes, the cells `barred`.
+static func _bar(view: MapView, fire: Dictionary) -> void:
+	var rect: Rect2i = fire["rect"]
+	var barred: Array[Vector2i] = []
+	for y in range(rect.position.y, rect.end.y):
+		for x in range(rect.position.x, rect.end.x):
+			if view.data.is_walkable(Vector2i(x, y)):
+				barred.append(Vector2i(x, y))
+				view.data.covered[Vector2i(x, y)] = true
+	fire["barred"] = barred
+	var box := Rect2(rect.position * TILE, rect.size * TILE).grow_individual(-4, -7, -4, 0)
+	var body := StaticBody2D.new()
+	var shape := CollisionShape2D.new()
+	var boxed := RectangleShape2D.new()
+	boxed.size = box.size
+	shape.shape = boxed
+	body.add_child(shape)
+	body.position = box.get_center()
+	# Not shrunk as a flame is when the fire goes out: let go at its end.
+	body.set_meta("fades", true)
+	body.add_to_group("decor")
+	# With the fire's lights and air, not the actors: no shadow is cast from it.
+	view.props.add_child(body)
+	(fire["nodes"] as Array[Node2D]).append(body)
 
 
 ## A house on fire (the Night of Ash's ruins, the Night of Bells' roofs;
@@ -289,6 +322,8 @@ static func douse(view: MapView, index: int, seconds := 1.2) -> void:
 	if fire.get("out", false):
 		return
 	fire["out"] = true
+	for cell: Vector2i in fire.get("barred", []):
+		view.data.covered.erase(cell)
 	for node: Node2D in fire["nodes"]:
 		if not is_instance_valid(node):
 			continue

@@ -76,10 +76,28 @@ var _numbers := {}
 ## after it.
 var _reserved: Array[Rect2] = []
 var _over: Array[Rect2] = []
+## The figures at that pass: nothing rises on them (PIX-515). The hero's
+## first, when there is one.
+var _figures: Array[Rect2] = []
 ## A word over the world steps up clear of a level tag or a word already
 ## there (PIX-340, keep_clear), this far apart, at most this far.
 const SLOT_MARGIN := 1.0
 const MOST_LIFT := 36.0
+## A big word keeps this much air (PIX-515: a blow's grey number touched
+## LEVEL UP's underside).
+const BIG_MARGIN := 4.0
+## Two words side by side stand a space apart (PIX-515: a foe's 11 beside
+## the hero's red 4 read "114").
+const SIDE_AIR := 3.0
+## A blow's number with no room over its foe (step_aside) comes up at the
+## foe's side: from ASIDE_NEAR to ASIDE_MOST px off, the nearest that is
+## clear, ASIDE_DROP lower, so its rise ends beside the level tag, under
+## the wins.
+const ASIDE_NEAR := 14.0
+const ASIDE_MOST := 22.0
+const ASIDE_DROP := 6.0
+## How far a number rises.
+const NUMBER_RISE := 12.0
 ## The most anything over the world goes up from where it is: a big word's
 ## rise and the most it steps up (reach).
 const REACH := 16.0 + MOST_LIFT
@@ -101,6 +119,8 @@ func float_text(text: String, at: Vector2, color: Color, big := false) -> void:
 	var label := _floating(text, color)
 	label.position = Vector2(Ink.centred(_ink(label), at.x), roundf(at.y))
 	label.z_index = Foes.OVER_TAGS + (1 if big else 0)
+	if big:
+		label.set_meta("big", true)
 	_stand(label)
 	var life := 1.8 if big else 0.6
 	var tween := label.create_tween().set_parallel()
@@ -145,7 +165,7 @@ func _stand(label: Label) -> void:
 	add_child(stand)
 	# Clear from its first frame (PIX-469: a blow landing after the frame's
 	# pass began on the tag, and stepped up a frame late).
-	keep_clear(_reserved, _over)
+	keep_clear(_reserved, _over, _figures)
 
 
 ## Each word over the world, oldest first, stepped up just clear
@@ -157,13 +177,20 @@ func _stand(label: Label) -> void:
 ## plates at the top, `over` (where they stand over the world: the boss bar,
 ## a title card, a hint): it stays under them (TextBudget.room_under,
 ## PIX-345: LEVEL UP was cut by the boss bar).
-func keep_clear(reserved: Array[Rect2], over: Array[Rect2] = []) -> void:
+## None stands on `figures`, the hero's first, then each foe's "!"
+## (PIX-515: a win's rows came up across the hero's head, their own red
+## number on their face): over them instead, where a number of the hero's
+## and what they won belong; a blow's number on a foe never goes there
+## (step_aside).
+func keep_clear(reserved: Array[Rect2], over: Array[Rect2] = [], figures: Array[Rect2] = []) -> void:
 	_reserved = reserved
 	_over = over
-	var taken: Array[Rect2] = reserved.duplicate()
+	_figures = figures
+	var taken: Array[Rect2] = reserved + figures
+	var tags := taken.duplicate()
 	for win: Dictionary in _rising:
 		if is_instance_valid(win["box"]):
-			taken.append_array(_lift_win(win, reserved, over))
+			taken.append_array(_lift_win(win, tags, over))
 	for stand: Node in get_children():
 		if not stand.has_meta("word") or stand.is_queued_for_deletion() or not is_instance_valid(stand.get_meta("word")):
 			continue
@@ -172,10 +199,48 @@ func keep_clear(reserved: Array[Rect2], over: Array[Rect2] = []) -> void:
 		# Where it would be drawn unlifted.
 		var rect := _drawn(word)
 		rect.position.y += lifted
-		lifted = minf(TextBudget.rise(taken, rect, SLOT_MARGIN, lifted, MOST_LIFT), TextBudget.room_under(over, rect, SLOT_MARGIN))
+		var margin := BIG_MARGIN if word.has_meta("big") else SLOT_MARGIN
+		lifted = minf(TextBudget.rise(taken, rect.grow_individual(SIDE_AIR, 0.0, SIDE_AIR, 0.0), margin, lifted, MOST_LIFT), TextBudget.room_under(over, rect, SLOT_MARGIN))
 		(stand as Node2D).position.y = -lifted
 		rect.position.y -= lifted
-		taken.append(rect)
+		# With its air, for the words after it.
+		taken.append(rect.grow(margin - SLOT_MARGIN))
+
+
+## A blow's number on a foe, `label` placed over it and not yet shown, put
+## at the foe's side when the place over it is taken (PIX-515): the hero
+## stands there (stepped up clear of them, the slime's 14 floated over the
+## hero's head and read as damage taken), the foe's "!" does, or a win or
+## a word is there (a 14 stood between a hound's tag and the last hound's
+## gold, three rows on one spot). The side away from the hero first, the
+## nearest place its whole rise is clear of everything; with none, where it
+## was (keep_clear steps it up), or the far side at ASIDE_MOST when that
+## step would end over the hero's head.
+func step_aside(label: Label) -> void:
+	var ink := _ink(label)
+	var rect := Rect2(label.position + ink.position, ink.size)
+	var floats := shown() + _figures
+	# Where it would go: up clear of the tags, then its rise.
+	var lifted := TextBudget.rise(_reserved, rect, SLOT_MARGIN, 0.0, MOST_LIFT)
+	var path := rect.grow_individual(SIDE_AIR, NUMBER_RISE, SIDE_AIR, 0.0).grow(SLOT_MARGIN)
+	var over := Rect2(path.position - Vector2(0, lifted), path.size)
+	if not floats.any(func(other: Rect2) -> bool: return other.intersects(over)):
+		return
+	floats.append_array(_reserved)
+	var away := 1.0 if _figures.is_empty() or rect.get_center().x >= _figures[0].get_center().x else -1.0
+	var off := ASIDE_NEAR
+	while off <= ASIDE_MOST:
+		for side: float in [away, -away]:
+			var there := Rect2(path.position + Vector2(side * off, ASIDE_DROP), path.size)
+			if not floats.any(func(other: Rect2) -> bool: return other.intersects(there)):
+				label.position += Vector2(side * off, ASIDE_DROP)
+				return
+		off += 2.0
+	# Both sides taken (a pack's busiest fight) and the hero over it: the far
+	# side all the same, where keep_clear's step up is beside the hero, not
+	# over their head.
+	if not _figures.is_empty() and _figures[0].intersects(over.grow_individual(0.0, MOST_LIFT, 0.0, 0.0)):
+		label.position += Vector2(away * ASIDE_MOST, ASIDE_DROP)
 
 
 ## What rises over the world now, where it's drawn: each win whole, then
@@ -193,7 +258,10 @@ func shown() -> Array[Rect2]:
 		if not rects.is_empty():
 			out.append(rects.reduce(func(whole: Rect2, rect: Rect2) -> Rect2: return whole.merge(rect), rects[0]))
 	for stand: Node in get_children():
-		if stand.has_meta("word") and not stand.is_queued_for_deletion() and is_instance_valid(stand.get_meta("word")):
+		# Not a word on its way out: a number joined into the next (PIX-334)
+		# is freed at the frame's end, and the next stepped aside of it,
+		# side to side at every blow (PIX-515).
+		if stand.has_meta("word") and not stand.is_queued_for_deletion() and is_instance_valid(stand.get_meta("word")) and not (stand.get_meta("word") as Node).is_queued_for_deletion():
 			out.append(_drawn(stand.get_meta("word")))
 	return out
 
@@ -286,16 +354,25 @@ func float_number(value: int, at: Vector2, color: Color, crit := false, who: Obj
 	var key := "%d:%s" % [who.get_instance_id(), color.to_html()] if who != null else ""
 	var now := GameClock.seconds()
 	var last: Dictionary = _numbers.get(key, {})
-	if not last.is_empty() and now - float(last["at"]) <= NUMBER_JOIN_S and is_instance_valid(last["word"]):
+	var joined: bool = not last.is_empty() and now - float(last["at"]) <= NUMBER_JOIN_S and is_instance_valid(last["word"])
+	if joined:
 		(last["word"] as Node).queue_free()
 		value += int(last["value"])
 		crit = crit or bool(last["crit"])
 	var label := _floating(str(value) + ("!" if crit else ""), UiStyle.BRASS_LIGHT if crit else color)
 	label.position = Vector2(Ink.centred(_ink(label), at.x + randf_range(-4.0, 4.0)), roundf(at.y - (4 if crit else 0)))
 	label.z_index = Foes.OVER_TAGS + (1 if crit else 0)
+	# Counting up where the number it takes over began (PIX-515: placed
+	# anew, it went from one side of its foe to the other at every blow).
+	if joined:
+		var spot: Vector2 = last["spot"]
+		label.position = Vector2(Ink.centred(_ink(label), spot.x), spot.y)
+	# The hero's own (a blow taken, a heal) belongs over their head.
+	elif world == null or who != world.player:
+		step_aside(label)
 	_stand(label)
 	if key != "":
-		_numbers[key] = {"word": label, "value": value, "crit": crit, "at": now}
+		_numbers[key] = {"word": label, "value": value, "crit": crit, "at": now, "spot": Vector2(label.position.x + _ink(label).get_center().x, label.position.y)}
 	# The foes gone by leave their keys: let them go now and then.
 	if _numbers.size() > 64:
 		for stale: String in _numbers.keys():
@@ -306,7 +383,7 @@ func float_number(value: int, at: Vector2, color: Color, crit := false, who: Obj
 	if crit:
 		_pop(label, tween)
 		skill_flash(at + Vector2(0, 10), UiStyle.BRASS_LIGHT)
-	tween.tween_property(label, "position:y", label.position.y - 12, life).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "position:y", label.position.y - NUMBER_RISE, life).set_ease(Tween.EASE_OUT)
 	tween.tween_property(label, "modulate:a", 0.0, life).set_delay(life * 0.4)
 	tween.chain().tween_callback(label.queue_free)
 
@@ -314,7 +391,9 @@ func float_number(value: int, at: Vector2, color: Color, crit := false, who: Obj
 ## A skill's light where it lands: the ground lit for a breath, and a soft
 ## burst that swells and fades, unless the skill's own strips stand there
 ## (`glow` false, PIX-396: they took the ground's light with the burst).
-func skill_flash(at: Vector2, color: Color, glow := true) -> void:
+## Behind `under` and moving with them when given (PIX-515: a level's two
+## bursts hid the hero whole).
+func skill_flash(at: Vector2, color: Color, glow := true, under: Node2D = null) -> void:
 	# A spell lights the ground for a breath where it lands (PIX-221).
 	var flare := Lights.make(at, 96.0, color, 0.8)
 	flare.remove_from_group("lights")
@@ -329,11 +408,15 @@ func skill_flash(at: Vector2, color: Color, glow := true) -> void:
 	burst.texture = preload("res://scripts/player.gd")._glow()
 	burst.material = Lights.glow()
 	burst.modulate = Color(color, 0.85)
-	burst.global_position = at
 	burst.scale = Vector2(0.4, 0.6)
-	burst.z_index = 5
-	add_child(burst)
-	var bloom := create_tween().set_parallel()
+	if under != null:
+		burst.show_behind_parent = true
+		under.add_child(burst)
+	else:
+		burst.z_index = 5
+		add_child(burst)
+	burst.global_position = at
+	var bloom := burst.create_tween().set_parallel()
 	bloom.tween_property(burst, "scale", Vector2(1.6, 2.2), 0.35).set_ease(Tween.EASE_OUT)
 	bloom.tween_property(burst, "modulate:a", 0.0, 0.35)
 	bloom.chain().tween_callback(burst.queue_free)
@@ -346,8 +429,8 @@ func skill_flash(at: Vector2, color: Color, glow := true) -> void:
 func level_up_burst() -> void:
 	if world.player == null:
 		return
-	skill_flash(world.player.global_position, UiStyle.GOLD)
-	skill_flash(world.player.global_position + Vector2(0, -8), UiStyle.BRASS_LIGHT)
+	skill_flash(world.player.global_position, UiStyle.GOLD, true, world.player)
+	skill_flash(world.player.global_position + Vector2(0, -8), UiStyle.BRASS_LIGHT, true, world.player)
 	float_text(Text.t("LEVEL UP"), world.player.global_position + Vector2(0, -40), UiStyle.GOLD, true)
 	world.hud.dock.flash_xp()
 
@@ -392,7 +475,7 @@ func show_gains(gains: Dictionary, at: Vector2, tallied := true) -> void:
 	Gains.merge(win["gains"], gains)
 	_lay_out(win)
 	if late:
-		var words: Array[Rect2] = _reserved.duplicate()
+		var words: Array[Rect2] = _reserved + _figures
 		for stand: Node in get_children():
 			if stand.has_meta("word") and not stand.is_queued_for_deletion() and is_instance_valid(stand.get_meta("word")):
 				words.append(_drawn(stand.get_meta("word")))

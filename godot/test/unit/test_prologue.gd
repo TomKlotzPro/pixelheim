@@ -261,6 +261,11 @@ func test_a_survivor_plays_their_scene_only_on_their_step() -> void:
 	assert_eq(Prologue.lines_of(said["villager_bram"], Prologue.BRAM), freed)
 	assert_ne(Prologue.lines_of(said["villager_bram"], Prologue.HOUNDS), freed, "still pinned")
 	assert_ne(Prologue.lines_of(said["villager_bram"], Prologue.MAREN), freed, "no beam lifted twice")
+	# PIX-515: and he lies under it until then, he alone.
+	for step: int in Prologue.ORDER:
+		assert_eq(Prologue.pinned(said["villager_bram"], step), Prologue.ORDER.find(step) <= Prologue.ORDER.find(Prologue.BRAM), "beat %d" % step)
+		assert_false(Prologue.pinned(said["elder"], step))
+	assert_false(Prologue.pinned(said["villager_bram"], Prologue.DONE), "nor any day after")
 	assert_ne(Prologue.lines_of(said["innkeeper"], Prologue.BRAM), Prologue.lines_of(said["innkeeper"], Prologue.FIRES), "before and after")
 	for id: String in said:
 		for step: int in Prologue.ORDER:
@@ -373,3 +378,18 @@ func test_a_wave_counts_only_its_own_beats_foes() -> void:
 	assert_eq(Stage.wave_left(mobs, Prologue.EMBERS, mobs[2]), [], "the last ember down, both hounds standing: the wave is down")
 	assert_eq(Stage.wave_left(mobs.slice(0, 2), Prologue.EMBERS), [], "only hounds up: no ember's wave for a skill to answer")
 	assert_eq(Stage.wave_left(mobs, Prologue.DONE), [], "nothing untagged is a wave, the night done")
+
+
+## PIX-515: a burning home bars the way (CampsLayer._bar), so the night
+## stands no one and sends no foe inside one.
+func test_nobody_stands_in_a_burning_home() -> void:
+	var stood: Array[Vector2i] = []
+	for survivor: Dictionary in Prologue.survivors():
+		stood.append(Vector2i(int(survivor["x"]), int(survivor["y"])))
+	for step: int in [Prologue.HOUNDS, Prologue.EMBERS]:
+		for at: Array in Prologue.wave(step).get("cells", []):
+			stood.append(Vector2i(int(at[0]), int(at[1])))
+	assert_gt(stood.size(), 3, "the survivors and the waves")
+	for ruin: Dictionary in Town.ruins([]):
+		for cell: Vector2i in stood:
+			assert_false((ruin["rect"] as Rect2i).has_point(cell), "%s is inside the home at %s" % [cell, ruin["rect"]])

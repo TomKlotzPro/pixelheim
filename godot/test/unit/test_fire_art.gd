@@ -122,7 +122,9 @@ func test_a_burning_ruin_burns_on_what_burns() -> void:
 			var cell: Vector2i = flame["cell"]
 			var foot: Vector2 = flame["at"]
 			assert_true(rect.has_point(cell), "a flame in the house at %s" % rect)
-			assert_ne(cell, ruin["door"], "the door stays open")
+			# PIX-515: the fire bars the door, and is seen to (it stayed open,
+			# and the hero walked in among the flames).
+			assert_eq(cell == ruin["door"], flame["on"] == "door", "only the doorway's flame in the doorway")
 			assert_has(["fence", "crate", "barrel", "ash"], String(tiles[cell]), "a flame on what burns")
 			# Its foot on its cell, or on the joint to the next, never in the air.
 			assert_true(Rect2(Vector2(cell * FireArt.TILE), Vector2.ONE * FireArt.TILE).grow(1).has_point(foot), "%s's foot on its cell" % cell)
@@ -140,6 +142,7 @@ func test_a_burning_ruin_burns_on_what_burns() -> void:
 		for side: String in sides:
 			assert_gt(sides[side], 0, "the %s of the frame at %s burns" % [side, rect])
 		assert_eq(posts, 4, "each corner post burns tall at %s" % rect)
+		assert_eq(flames.any(func(flame: Dictionary) -> bool: return flame["on"] == "door"), rect.has_point(ruin["door"]), "the doorway of %s burns" % rect)
 		assert_gt(blazes, 0, "a blaze where the house at %s fell in" % rect)
 
 

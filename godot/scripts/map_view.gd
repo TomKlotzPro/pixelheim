@@ -113,6 +113,9 @@ var decor_sway: ShaderMaterial
 var woods_sway: ShaderMaterial
 var canopy: ShaderMaterial
 var flowers_sway: ShaderMaterial
+## The same for the field decor that stands still (a rock, a stump), domed
+## in Light relief (PIX-529) where the ground stays plain.
+var decor_still: ShaderMaterial
 var tile_layer: TileMapLayer
 ## Door signs, above the world and outside the y-sort.
 var props: Node2D
@@ -556,8 +559,9 @@ func building(root: Node, slices: Slicer) -> void:
 	slices.add("set_pieces", _add_set_pieces.bind(data))
 	slices.add("rest", func() -> void:
 		furnish()
-		# Light relief on every plain piece drawn (PIX-528).
-		Relief.dress(under)
+		# Light relief on every plain piece drawn (PIX-528): the tile layers
+		# carved, what stands domed, what lies under the actors flat (PIX-529).
+		Relief.dress(under, false)
 		Relief.dress(stand)
 		_night = -1
 		set_night(DayNight.is_night(GameState.world.steps)))
@@ -577,7 +581,7 @@ func _setup(root: Node) -> void:
 	stand.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	stand.position = offset
 	stand.visible = not hidden
-	# And on what comes to stand among the actors later (PIX-528).
+	# And on what comes to stand among the actors later (PIX-528), domed.
 	stand.child_entered_tree.connect(func(node: Node) -> void: Relief.dress(node))
 	if _actor_layer != null:
 		_actor_layer.add_child(stand)
@@ -968,7 +972,7 @@ func _add_field_decor(cell: Vector2i) -> void:
 			_add_wood(piece, cell)
 	else:
 		_add_decor_sprite(PunyTerrain.SHEET, PunyTerrain.region(choice), cell, absi(hash(cell)))
-		(actors.get_child(-1) as CanvasItem).material = decor_sway if choice in Scatter.SWAYS else ground_tint
+		(actors.get_child(-1) as CanvasItem).material = decor_sway if choice in Scatter.SWAYS else decor_still
 
 
 ## A tree, a bush or a rock of the woods (Woods.pieces), its foot where the
@@ -1189,7 +1193,7 @@ func _add_solid_decor(choice: int, cell: Vector2i) -> void:
 	sprite.texture = PunyTerrain.sheet().tile_texture(choice)
 	sprite.centered = false
 	sprite.position = Vector2(0, -Scatter.FOOT.end.y)
-	sprite.material = decor_sway if choice in Scatter.SWAYS else ground_tint
+	sprite.material = decor_sway if choice in Scatter.SWAYS else decor_still
 	root.add_child(sprite)
 	var body := StaticBody2D.new()
 	var shape := CollisionShape2D.new()

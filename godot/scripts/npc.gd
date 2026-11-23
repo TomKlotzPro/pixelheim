@@ -21,8 +21,20 @@ const LOOK_SECONDS := 0.5
 const BENCH: Array[int] = [1659, 1661]
 const BENCH_AT := Vector2(0, 3)
 
-## The body the hero bumps into (_ready says why this shape).
+## The body the hero bumps into (_ready says why this shape), at its
+## shortest; body_of is each villager's own.
 const BODY := Vector2(20, 17)
+## How far under their middle the body ends, and the furthest over it that
+## it begins: the hero, stopped there, stands a pixel short of the middle
+## of the cell above, and walks that row's middle past them, as the next
+## column's (PIX-484); higher, and the tallest (Old Hessa, the Mayor, the
+## Smith) stopped a hero walking by along the row over them.
+const BODY_FOOT := 14.0
+const BODY_TOP := -8.0
+## A figure's width (the hero's and every Puny villager's, at most), and
+## how far under its middle its feet are drawn.
+const FIGURE_WIDE := 14.0
+const FIGURE_FOOT := 3.0
 
 var world: World
 var data: Dictionary
@@ -87,11 +99,16 @@ func _ready() -> void:
 	# At 6 px (as wide as a Mini World villager, before everyone who talks
 	# got a Puny figure of the hero's size, PIX-405) the hero stopped 11 px
 	# off, half over Bram, Vex and Odo.
+	# Over them it runs as high as their head does (PIX-515, body_of): the
+	# hero came 10 px off from above, whoever they were, and stood half
+	# over Maren, Bram and Sela, behind them and under their "!".
+	_crown = Ink.crown(sprite.sprite_frames, _poses(sprite.sprite_frames), sprite.position, sprite.scale)
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
-	rect.size = BODY
+	var box := body_of(_crown)
+	rect.size = box.size
 	shape.shape = rect
-	shape.position = Vector2(0, 5.5)
+	shape.position = box.get_center()
 	add_child(shape)
 	body = shape
 	# The bench's free end blocks its cell as he does his, with the art or
@@ -101,6 +118,142 @@ func _ready() -> void:
 		end.shape = rect
 		end.position = shape.position + Vector2(TILE, 0)
 		add_child(end)
+	# Laid down after the body is sized from their standing head (body_of).
+	if Prologue.pinned(data, GameState.progression.prologue):
+		_pin()
+
+
+## Lying pinned under a burning beam on the Night of Ash (PIX-515: Bram
+## stood in the street with no beam while his line said he lay under one).
+## He lies on his back, head to the west: his standing figure turned on its
+## side (the Medieval Age's folk are drawn only standing, and a Puny
+## figure's fall is cut where no dye reaches: he fell in another man's
+## clothes). The beam is AshArt's charred log lying east to west along his
+## legs and lower body, as the Ash's fallen logs lie, his head and chest
+## clear of its west end (turned north to south beside him it read as a
+## burning fence post standing by a lump); FireArt's flames stand on its
+## middle, clear of him and of its east end, with a blaze's light of its own.
+## Where the figure's frame stands on the cell, turned.
+const TURNED_AT := Vector2(-3, 4)
+## Where the beam lies from his middle, where each flame stands on it (from
+## its middle), and how far its light reaches.
+const BEAM_AT := Vector2(9, 3)
+const BEAM_FLAMES: Array[Vector2] = [Vector2(-3, 0), Vector2(3, 0)]
+const BEAM_LIGHT := 44.0
+## Where his mark's tail points, from the cell's middle: the top of his
+## chest, as low as it goes without hiding him (a head higher, as over a
+## villager standing, it was on the face of a hero come down the road).
+const PINNED_MARK := Vector2(-3, 0)
+## The beam's going (unpin): it shifts, then rolls away east, so far, fading.
+const SHIFT := 2.0
+const SHIFT_SECONDS := 0.25
+const ROLL := 22.0
+const ROLL_SECONDS := 0.6
+## The beam while they lie under it, else null.
+var beam: Node2D
+## The beam's cell east of them, blocked while it lies there as a bench's
+## free end is: from the east the hero stood in its fire, the flames over
+## their legs.
+var _beam_body: CollisionShape2D
+var _stood := Vector2.ZERO
+
+
+func _pin() -> void:
+	_stood = sprite.position
+	sprite.stop()
+	sprite.rotation = -PI / 2.0
+	sprite.position = TURNED_AT
+	beam = Node2D.new()
+	beam.position = BEAM_AT
+	var timber := Sprite2D.new()
+	timber.texture = AshArt.texture("beam")
+	beam.add_child(timber)
+	var size: Vector2i = FireArt.KINDS["lick"]
+	for i in BEAM_FLAMES.size():
+		var flame := AnimatedSprite2D.new()
+		flame.sprite_frames = FireArt.frames("lick", i % FireArt.VARIANTS)
+		flame.centered = false
+		flame.offset = Vector2(-(size.x / 2), -size.y)
+		flame.position = BEAM_FLAMES[i]
+		flame.frame = i * 4
+		flame.speed_scale = FireArt.pace({"cell": home, "frame": i}, GameState.settings.reduce_motion)
+		flame.material = Lights.unshaded()
+		beam.add_child(flame)
+		flame.play()
+	beam.add_child(Lights.blaze(Vector2.ZERO, BEAM_LIGHT))
+	add_child(beam)
+	_beam_body = CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = BODY
+	_beam_body.shape = rect
+	_beam_body.position = Vector2(TILE, 5.5)
+	add_child(_beam_body)
+
+
+## The beam off them (the hero's shoulder to it: Interaction.talk): it
+## shifts, rolls away and is gone, and they get up. With Reduce motion it
+## only fades. It goes while the talk holds the world still.
+func unpin() -> void:
+	if beam == null or beam.process_mode == Node.PROCESS_MODE_ALWAYS:
+		return
+	beam.process_mode = Node.PROCESS_MODE_ALWAYS
+	var tween := beam.create_tween()
+	if not GameState.settings.reduce_motion:
+		tween.tween_property(beam, "position:x", beam.position.x + SHIFT, SHIFT_SECONDS)
+		tween.tween_property(beam, "position:x", beam.position.x + ROLL, ROLL_SECONDS).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tween.parallel()
+	tween.tween_property(beam, "modulate:a", 0.0, ROLL_SECONDS).set_ease(Tween.EASE_IN)
+	tween.tween_callback(_stand)
+
+
+func _stand() -> void:
+	beam.queue_free()
+	beam = null
+	_beam_body.queue_free()
+	_beam_body = null
+	sprite.rotation = 0.0
+	sprite.position = _stood
+	_idle("down")
+	_place_mark()
+
+
+## The body of a villager whose head reaches `crown` (from their middle,
+## Ink.crown): BODY's, begun high enough that the hero, stopped on it from
+## above (the foot of Player.BODY on its top, the feet drawn FIGURE_FOOT
+## under the hero's middle), stands over their head, not on it (PIX-515),
+## on a whole pixel, and never lower than it was or higher than BODY_TOP
+## (the tallest's head then reaches a few pixels up the hero's feet, drawn
+## over them).
+static func body_of(crown: float) -> Rect2:
+	var top := clampf(floorf(crown + Player.BODY_AT.y + Player.BODY.y / 2.0 - FIGURE_FOOT), BODY_TOP, BODY_FOOT - BODY.y)
+	return Rect2(-BODY.x / 2.0, top, BODY.x, BODY_FOOT - top)
+
+
+## Every pose they stand and walk in, whichever way they face.
+static func _poses(frames: SpriteFrames) -> Array:
+	var poses := []
+	for way: String in PunyArt.DIRS:
+		poses.append(PunyArt.pick(frames, "idle", way))
+		poses.append(PunyArt.pick(frames, "walk", way))
+	return poses
+
+
+## Where they are drawn in the world, head to feet, for the E plate to
+## stand by (Interaction).
+func figure() -> Rect2:
+	return Rect2(position.x - FIGURE_WIDE / 2.0, position.y + _crown, FIGURE_WIDE, FIGURE_FOOT - _crown)
+
+
+## The highest their head reaches, from their middle (Ink.crown).
+var _crown := 0.0
+## E's plate stands on them (Interaction): it has their mark's place over
+## their head, so the mark waits (PIX-515: both stood there, and from
+## above, on the hero).
+var prompted := false:
+	set(value):
+		prompted = value
+		if _mark != null:
+			_mark.visible = not value
 
 
 ## Home for the night (PIX-149): out of sight and out of the way.
@@ -215,6 +368,7 @@ func _refresh_mark() -> void:
 	if kind == "":
 		return
 	_mark = mark_sprite(kind, story)
+	_mark.visible = not prompted
 	_place_mark()
 	add_child(_mark)
 
@@ -243,7 +397,9 @@ static func mark_tone(kind: String, story: bool) -> String:
 ## after a step (PIX-243), and a figure's head isn't always where its frame's
 ## middle is.
 func _place_mark() -> void:
-	if _mark != null:
+	if _mark != null and beam != null:
+		_mark.position = Vector2(Marks.centred(_mark.texture.get_width(), PINNED_MARK.x), PINNED_MARK.y - _mark.texture.get_height())
+	elif _mark != null:
 		_mark.position = mark_spot(_mark.texture.get_size(), sprite.sprite_frames, sprite.animation, sprite.position, sprite.scale)
 
 
@@ -254,12 +410,8 @@ func _place_mark() -> void:
 ## head reaches standing or walking, whichever way they face, so it neither
 ## bobs as they breathe, step and look about nor touches their head.
 static func mark_spot(size: Vector2, frames: SpriteFrames, anim: String, at: Vector2, scale: Vector2) -> Vector2:
-	var poses := []
-	for way: String in PunyArt.DIRS:
-		poses.append(PunyArt.pick(frames, "idle", way))
-		poses.append(PunyArt.pick(frames, "walk", way))
 	var head := Ink.head(frames, Ink.rest_pose(frames, anim), at, scale)
-	return Vector2(Marks.centred(size.x, head.get_center().x), floorf(Ink.crown(frames, poses, at, scale) - MARK_CLEAR - size.y))
+	return Vector2(Marks.centred(size.x, head.get_center().x), floorf(Ink.crown(frames, _poses(frames), at, scale) - MARK_CLEAR - size.y))
 
 
 ## A step a beat toward their spot on the square: the longer way first, the
@@ -299,7 +451,7 @@ func _step_to(next: Vector2i) -> void:
 ## the way they went, then a look that way before they turn back to face the
 ## street - by their side, from their back.
 func _physics_process(delta: float) -> void:
-	if away:
+	if away or beam != null:
 		return
 	var moved := (position - _was).length()
 	_was = position

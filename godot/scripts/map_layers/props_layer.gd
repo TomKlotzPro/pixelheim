@@ -48,14 +48,15 @@ static func add_puny_prop(view: MapView, prop: Dictionary) -> Node2D:
 	elif prop["kind"] in ["barrel", "crate"]:
 		# At the Puny folk's scale (PIX-313: Shade's stood as tall as the
 		# villager beside it), as the settlement keeps them (Hamlet.store);
-		# its foot, and what it blocks, as before.
+		# its foot, and what it blocks, as before, and its picture up the
+		# cell with the folk's (PunyProps.STORE_RISE).
 		var art := Hamlet.store(view.data.id, prop["kind"], prop["cell"])
 		var still := Sprite2D.new()
 		still.texture = HamletArt.texture(art)
 		still.centered = false
-		still.position = Vector2(0, TILE - HamletArt.size(art).y) - Vector2(0, sort_y)
+		still.position = Vector2(0, TILE - PunyProps.STORE_RISE - HamletArt.size(art).y) - Vector2(0, sort_y)
 		root.add_child(still)
-		ShadowsLayer.cast_art(view, art, Vector2(prop["cell"] * TILE) + Vector2(0, TILE))
+		ShadowsLayer.cast_art(view, art, Vector2(prop["cell"] * TILE) + Vector2(0, TILE - PunyProps.STORE_RISE))
 	else:
 		var lift := 0.0
 		if prop["kind"] == "shrine":

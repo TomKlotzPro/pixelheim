@@ -104,6 +104,12 @@ feet-mire | --map mirefen --at 25,15 --walk d,d,d | map=mirefen cell=\(25, 15\) 
 # (a first-time hint is one) stayed half hidden behind a conversation's box:
 # it is put away while Maren speaks, and back when she is done.
 stand-beside | --map town --town-tier 0 --at 36,27 --walk l,l,l | map=town cell=\(35, 27\) standoff=15,0 prompt=shown | town
+# From above too (PIX-515): walked down onto Old Hessa at the shrine, the
+# hero stops 15 px over her as beside her, a pixel short of the middle of
+# the cell above, and a hero walking along that row passes her (her body
+# as high as her head stopped them at her shoulder).
+stand-above | --map town --at 8,4 --walk d,d | map=town cell=\(8, 5\) standoff=0,15 prompt=shown | town
+walk-above | --map town --at 6,5 --walk r,r,r | map=town cell=\(9, 5\) | town
 hero-poisoned | --map town --ail poison | map=town ailing=poison:tint,bar toast=1 box, 1 line, fits hudclash=none | town combat
 log-away-talking | --map town --ail poison talk | open=dialogue_box ailing=poison:tint,bar toast=hidden | town combat story
 log-back-after | --map town --ail poison talk --keys esc | open=none toast=1 box, 1 line, fits | town combat story
@@ -417,6 +423,18 @@ road | --prologue 1 | map=overworld cell=\(48, 34\) | story travel
 # [23][80], a field having no "|", and five steps down from 27 end by 32;
 # so (34, 30), the roof's own cell on the pack, passes here: the body over
 # the roof is test_puny_props', test_hero_seen's and test_night_shadows').
+# Bram lies pinned under a burning beam until the hero shifts it (PIX-515:
+# he stood in the street with no beam): there through the hounds and on his
+# own step, off as his first line is turned (the talk still open), and off
+# for a hero who leaves at that line; without the paid pack too. Its cell
+# east of him is blocked while it lies there (from the east the hero stood
+# in its fire).
+ash-beam | --prologue 3 --at 62,11 --lang en | night=3 beam=pinned | story town night
+ash-beam-hounds | --prologue 6 --at 62,11 --lang en | night=6 beam=pinned | story town night
+ash-beam-off | --prologue 3 --at 62,11 --keys e,e,wait,wait,wait --lang en | open=dialogue_box night=3 beam=gone | story town night
+ash-beam-left | --prologue 3 --at 62,11 --keys e,esc,wait,wait,wait --lang en | night=4 beam=gone | story town night
+ash-beam-cc0 | --prologue 3 --at 62,11 --keys e,e,e,e,wait,wait --lang en cc0 | night=4 beam=gone | story town night
+ash-beam-east | --prologue 3 --at 65,12 --walk l,l,l,l,l,l,l,l --lang en | cell=\(64, 12\) night=3 beam=pinned | story town night
 # The line stays up through the embers' fight too (ash-line-embers: the
 # hero strikes first, as ash-mend, the embers slow to start it on the pack).
 ash-line | --prologue 6 --at 40,8 --wait 3 --lang en | night=6 mobs=2 nightline=shown fight | story combat night
@@ -1073,6 +1091,19 @@ cap-kept | --map town --prologue 4 --talk-to innkeeper --keys e,e,e,e,i,x,x,e,es
 # with Reduce motion the sparks stay down.
 ash-fires | --map town --prologue 8 --at 26,12 | night=8 fires=houses 9 flames [1-9][0-9]{2} smoke 9 sparks 9 coals 9 | story town night
 ash-fires-still | --map town --prologue 8 --at 26,12 still | fires=houses 9 flames [1-9][0-9]{2} smoke 9 sparks 0 coals 9 | story town night
+# A burning home bars the way (PIX-515: the hero walked in at Odo's door
+# and stood among the flames, unhurt): walking up at the door stops below
+# it, and so does a roll; put out, the home lets the hero in.
+ash-home-barred | --map town --prologue 8 --at 30,11 --walk u,u,u,u | cell=\(30, 11\) night=8 | story town night
+ash-home-roll | --map town --prologue 8 --at 30,11 --keys w,shift,wait | cell=\(30, 11\) night=8 | story town night combat
+ash-home-doused | --map town --prologue 8 douse --at 30,11 --walk u,u | cell=\(30, [89]\) night=8 | story town night
+# The keepers' crates west of the square block the cells they are drawn on
+# (PIX-515: drawn low in their cells, a hero stopped beside one stood clear
+# above it): held left at (35, 27) and right at (31, 27), Vex's stops the
+# hero either side, and the row between it and Odo's is open.
+ash-crate-west | --map town --prologue 8 --at 35,27 --walk l,l,l | cell=\(34, 27\) | story town night
+ash-crate-east | --map town --prologue 8 --at 31,27 --walk r,r,r | cell=\(32, 27\) | story town night
+ash-crate-gap | --map town --prologue 8 --at 35,26 --walk l,l,l | cell=\(3[01], 26\) | story town night
 # The well and the burning homes take E from beside them (PIX-460: one
 # cell and one facing each): below the well facing away from it (its own
 # cell, so it holds on Shade's CC0 art as on the paid), and facing away

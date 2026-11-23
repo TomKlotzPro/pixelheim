@@ -269,6 +269,15 @@ static func lines_of(npc: Dictionary, step: int) -> Array:
 	return at.get("before" if ORDER.find(step) < ORDER.find(theirs) else "after", at["lines"])
 
 
+## Whether the night has `npc` lying pinned under a burning beam at `step`
+## (PIX-515: Bram's `pinned`; he stood in the street while his line said he
+## lay under one): until the hero has been to them on their own step, when
+## the beam comes off (Npc.unpin) and the night moves on.
+static func pinned(npc: Dictionary, step: int) -> bool:
+	var at: Dictionary = npc.get("prologue", {})
+	return step != DONE and bool(at.get("pinned", false)) and ORDER.find(step) <= ORDER.find(int(at["step"]))
+
+
 ## Where a fresh hero stands when the night begins.
 static func start() -> Dictionary:
 	return data()["start"]

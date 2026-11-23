@@ -78,6 +78,15 @@ func _process(_delta: float) -> void:
 		_come.call(villager)
 
 
+## The beam off the villager `id` lies pinned under (PIX-515, Npc.unpin).
+func unpin(id: String) -> void:
+	if not is_inside_tree():
+		return
+	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
+		if villager.data["id"] == id:
+			villager.unpin()
+
+
 ## A recruit settled or the town grew: redraw who stands on this map.
 func respawn() -> void:
 	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
@@ -85,13 +94,19 @@ func respawn() -> void:
 	spawn_for(world.map)
 
 
-## The villager beside the hero, faced side first: {npc, side} or {}.
+## The villager beside the hero, faced side first: {npc, side, who (the
+## one standing there)} or {}.
 func beside() -> Dictionary:
 	var occupied := {}
+	var standing := {}
 	for villager: Npc in get_tree().get_nodes_in_group("npcs"):
 		if not villager.away:
 			occupied[villager.cell] = villager.data
-	return Npcs.beside(occupied, world.player_cell, Vector2i(world.player.facing))
+			standing[villager.cell] = villager
+	var found := Npcs.beside(occupied, world.player_cell, Vector2i(world.player.facing))
+	if not found.is_empty():
+		found["who"] = standing[world.player_cell + Vector2i(found["side"])]
+	return found
 
 
 ## The village's hours (PIX-149): lamps and windows lit at night, and the

@@ -276,9 +276,15 @@ func _process(_delta: float) -> void:
 	# The nearest foe hunting the hero: what stands over it turns see-through
 	# round it too (PIX-429), so a fight under the trees can be read.
 	var hunter := NOBODY
+	# What nothing rises on, and a blow's number comes up beside (PIX-515):
+	# the hero's figure first, then each foe's "!".
+	var figures: Array[Rect2] = [Rect2(hero + HERO.position, HERO.size)]
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		enemy.rest(view)
 		enemy.make_way(hero, _delta)
+		var mark: Rect2 = enemy.drawing.mark_rect()
+		if mark.has_area():
+			figures.append(mark)
 		if enemy.level_tag != null and enemy.level_tag.visible and not enemy.dying:
 			shown.append(enemy)
 		if enemy.hunting and not enemy.dying and enemy.global_position.distance_squared_to(hero) < hunter.distance_squared_to(hero):
@@ -300,30 +306,24 @@ func _process(_delta: float) -> void:
 	for index in shown.size():
 		if leads[index] != index:
 			shown[index].level_tag.visible = false
-			shown[index].lead_tag(false)
 			continue
 		shown[index].show_level(top[index])
 		kept.append(shown[index])
 		rects.append((shown[index].level_tag as Control).get_global_rect())
 	var keep := Foes.apart(rects, TAG_MARGIN)
 	var reserved: Array[Rect2] = []
-	var made_way := false
 	for index in kept.size():
 		if keep[index]:
 			# One that made way for the hero (Enemy.make_way) holds no place.
 			if kept[index].level_tag.modulate.a > 0.5:
 				reserved.append(rects[index])
-			else:
-				made_way = true
 		else:
 			kept[index].level_tag.visible = false
 	if fighting:
 		most_tags = maxi(most_tags, reserved.size())
-	# The hero it made way for holds it instead: a blow's number steps up
-	# clear of them (PIX-469: it sat over the hero's legs and chest).
-	if made_way:
-		reserved.append(Rect2(hero + HERO.position, HERO.size))
-	world.fx.keep_clear(reserved, world.hud.plates_over())
+	# Nothing rises on the hero either (PIX-469: a blow's number sat over
+	# their legs and chest; PIX-515: whether a tag made way for them or not).
+	world.fx.keep_clear(reserved, world.hud.plates_over(), figures)
 
 
 ## Whether the hero standing at `feet` is under `words` (a foe's level tag,

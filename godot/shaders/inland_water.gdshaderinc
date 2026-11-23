@@ -15,17 +15,20 @@
 // water deepens from its banks in its tone's four colours, dithered into
 // each other in whole pixels of the art as the sea's depths are, its deep
 // channel wandering; a swell of light rolls over it and glints catch. Foam
-// laps a little way out from the bank; a river's streaks drift downstream
-// and foam piles where it meets a bridge's piles. Each region has its own
-// water: clear in the Reach and the village, dark teal in the Deepwood,
-// murky olive in the Mirefen with lily pads, duckweed and reeds, icy in the
-// Frostgate.
+// laps a little way out from the bank (a river's in Shade's white water);
+// a river's streaks drift downstream, it heaps white at a bridge's piles
+// (Shade's legs, every PILE_EVERY pixels) and trails a wake past them, and
+// froths in its bends; on still water each post rings on its own beat
+// (PIX-532). Each region has its own water: clear in the Reach and the
+// village, dark teal in the Deepwood, murky olive in the Mirefen with lily
+// pads, duckweed and reeds, icy in the Frostgate.
 //
-// Included by region_tint.gdshader after its BAYER, CELL and
-// water_bank.gdshaderinc (where the bank lies, which the reflections read
-// too), reading its water_map, map_origin, mask_origin and map_pixels. All
-// of it in whole pixels of the art, and only within a cell and a half of
-// inland water (one read of the mask everywhere else).
+// Included by region_tint.gdshader after its BAYER, CELL, WHITE_WATER,
+// moonlit (foam catching the moon) and water_bank.gdshaderinc (where the
+// bank lies, which the reflections read too), reading its water_map,
+// map_origin, mask_origin and map_pixels. All of it in whole pixels of the
+// art, and only within a cell and a half of inland water (one read of the
+// mask everywhere else).
 
 // What inland_water made of a pixel: nothing (no inland water near), the
 // bank (to be toned as the land is), the water (drawn, kept as it is), or
@@ -57,6 +60,37 @@ const float LAP_SWING = 1.2;
 const float STREAK_LANE = 5.0;
 const float STREAK_SPEED = 9.0;
 const float STREAK_EVERY = 26.0;
+// Shade's river rim (overworld tiles 270-281): the body of a heap at a
+// pile, a wake, a bend's froth (PIX-532).
+const vec3 RIVER_LIP = vec3(0.506, 0.898, 0.937);
+// A bridge's piles stand every PILE_EVERY pixels, as Shade's legs under his
+// planks (875-877), the heap at each swelling to about PILE_R and sinking
+// to nothing, each its own size, beat, pace and quiet spells (all alike, a
+// row of mounds); a wake runs up to WAKE_LONG downstream (each pile's its
+// own length, dashes and quiet spells: all alike they read as a comb, and
+// most of them quiet at a time), its arms starting a pixel below the face
+// at the leg's sides and opening WAKE_SPREAD a pixel, in dashes about
+// WAKE_DASH long (opening a third as fast from the face, they hung as
+// drips; only the longest reach 3.5 from the pile, so two seldom meet);
+// on still water a post's ring grows to RIPPLE.
+const float PILE_EVERY = 8.0;
+const float PILE_R = 2.0;
+const float WAKE_LONG = 4.0;
+const float WAKE_SPREAD = 1.0;
+const float WAKE_DASH = 5.0;
+const float RIPPLE = 3.5;
+// A river's lap is white only where it is a line, the bank's distance
+// growing LAP_LINE a pixel or more (a straight bank's grows 1), read from
+// the art's pixels beside (fwidth read it across the screen's: a hairline
+// on the art pixel's edge): where it flattens (a convex corner) the band
+// spread into a white triangle, so there it thins to his rim's colour by
+// how steep it still is.
+const float LAP_LINE = 0.6;
+// A running river froths in a bend: within BEND_FROTH of the corner its
+// banks turn round (fading out inside the cell), out to BEND_BANK past the
+// lap's line.
+const float BEND_FROTH = 13.0;
+const float BEND_BANK = 3.0;
 
 // Each tone's water from its shallows to its deep (sRGB).
 const vec3 CLEAR_WATER[4] = vec3[4](
@@ -270,6 +304,9 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	}
 	ivec2 cell = ivec2(floor(local_px / CELL));
 	float threshold = bayer_at(px);
+	// Foam's own dither (PIX-532): a hash a pixel, new every so often; a
+	// Bayer step drew a bend's froth as a checkerboard.
+	float grain = hash(px + vec2(floor(world_time * 1.5) * 7.3, 0.4));
 	if (in_water < 0.0) {
 		vec4 reed = tone == TONE_MIRE && in_water > -9.0 ? reeds(px, local_px, bend) : vec4(0.0);
 		if (reed.a > 0.0) {
@@ -329,28 +366,86 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 		float broken = sin((px.x + drift.x) * 0.35 - (px.y + drift.y) * 0.2 - world_time * 1.3)
 			+ sin((px.x + drift.x) * 0.13 + (px.y + drift.y) * 0.31 + world_time * 0.7);
 		if (abs(in_water - lap) < 0.5 && broken > (still ? 0.2 : -0.4)) {
-			water = mix(water, water_foam(tone), still ? 0.35 : 0.55);
+			if (still) {
+				water = moonlit(mix(water, water_foam(tone), 0.35));
+			} else {
+				int near_code;
+				vec2 near_bend;
+				int near_ground;
+				float slope = max(abs(bank_in_water(px + vec2(1.0, 0.0), local_px + vec2(1.0, 0.0), near_code, near_bend, near_ground) - in_water),
+					abs(bank_in_water(px + vec2(0.0, 1.0), local_px + vec2(0.0, 1.0), near_code, near_bend, near_ground) - in_water));
+				if (slope > LAP_LINE) {
+					water = moonlit(WHITE_WATER);
+				} else if (grain < slope * 0.4) {
+					water = moonlit(RIVER_LIP);
+				}
+			}
 		}
 	}
-	// Where it meets a bridge's piles: on a river foam piled against them
-	// upstream and churning, ripples lapping at them on still water.
-	if (!span_at(cell)) {
-		vec2 into = local_px - vec2(cell) * CELL;
-		for (int side = 0; side < 4; side++) {
-			ivec2 toward = side == 0 ? ivec2(-1, 0) : (side == 1 ? ivec2(1, 0) : (side == 2 ? ivec2(0, -1) : ivec2(0, 1)));
-			if (!span_at(cell + toward)) {
-				continue;
+	// Where it meets a bridge's piles (PIX-532): on a river a heap white at
+	// each pile upstream and a wake trailing downstream; on still water (the
+	// mire's boardwalks) a ring round each post in the water's own lip, each
+	// on its own beat. And which sides are land, for a bend's froth below:
+	// W 1, E 2, N 4, S 8. One fetch a side.
+	vec2 into = local_px - vec2(cell) * CELL;
+	ivec2 size = textureSize(water_map, 0);
+	bool spanned = span_at(cell);
+	float churn = sin(world_time * 3.1 + (px.x + px.y) * 0.9) + sin(world_time * 1.7 - (px.x - px.y) * 0.5);
+	int land = 0;
+	for (int side = 0; side < 4; side++) {
+		ivec2 toward = side == 0 ? ivec2(-1, 0) : (side == 1 ? ivec2(1, 0) : (side == 2 ? ivec2(0, -1) : ivec2(0, 1)));
+		ivec2 next = cell + toward;
+		bool inside = next.x >= 0 && next.y >= 0 && next.x < size.x && next.y < size.y;
+		vec4 texel = texelFetch(water_map, clamp(next, ivec2(0), size - 1), 0);
+		if (inside && texel.r < 0.5) {
+			land |= 1 << side;
+		}
+		bool span = !spanned && inside && texel.r > 0.5 && (int(round(texel.a * 255.0)) / 8) % 2 == 1;
+		if (!span) {
+			continue;
+		}
+		float edge = toward.x < 0 ? into.x : (toward.x > 0 ? CELL - into.x : (toward.y < 0 ? into.y : CELL - into.y));
+		float along = toward.x != 0 ? into.y : into.x;
+		// Shade's legs every PILE_EVERY from the cell's edge: one on the edge
+		// is the cell beside's too, so it is never cut.
+		float off = along - round(along / PILE_EVERY) * PILE_EVERY;
+		// Each pile its own beat, the same from either cell it stands
+		// between: by where it stands on its face's line in the mask.
+		float face = toward.x != 0 ? float(cell.x + max(toward.x, 0)) : float(cell.y + max(toward.y, 0));
+		float pile = round((toward.x != 0 ? local_px.y : local_px.x) / PILE_EVERY) + face * 7.1 + float(side / 2) * 3.3;
+		float beat = hash(vec2(pile, 2.9));
+		float pace = hash(vec2(pile, 8.3));
+		if (still) {
+			float r = 1.0 + RIPPLE * fract(world_time * 0.35 + beat);
+			float ring = length(vec2(off, edge));
+			if (abs(ring - r) < 0.5 && threshold > r / (RIPPLE + 1.0)) {
+				water = moonlit(water_lip(tone));
 			}
-			float edge = toward.x < 0 ? into.x : (toward.x > 0 ? CELL - into.x : (toward.y < 0 ? into.y : CELL - into.y));
-			float churn = sin(world_time * 3.1 + (px.x + px.y) * 0.9) + sin(world_time * 1.7 - (px.x - px.y) * 0.5);
-			if (still) {
-				float ripple = 1.5 + 0.8 * sin(world_time * 1.1 + (px.x + px.y) * 0.2);
-				if (abs(edge - ripple) < 0.5 && churn > 0.0) {
-					water = mix(water, water_lip(tone), 0.5);
-				}
-			} else if (dot(vec2(toward), flow) > 0.5 && edge < 2.5 + 1.5 * sin(world_time * 2.3 + (px.x + px.y) * 0.4) && churn > -0.8) {
-				water = mix(water, water_foam(tone), edge < 1.5 ? 0.8 : 0.55);
+		} else if (dot(vec2(toward), flow) > 0.5 && sin(world_time * 0.7 + pace * TAU + 1.3) > -0.2) {
+			// Heaped against the pile, taller than wide, each its own size,
+			// swelling and sinking to nothing, its rim ragged with the churn;
+			// and now and then a pile quiet a while.
+			float heap = PILE_R * (0.6 + 0.6 * pace) * (0.2 + 0.8 * sin(world_time * (1.6 + 1.4 * pace) + beat * TAU)) + 0.25 * churn;
+			float ring = length(vec2(off * 1.3, edge));
+			if (ring < heap + 1.0) {
+				water = moonlit(ring > heap ? WHITE_WATER : RIVER_LIP);
 			}
+		} else if (dot(vec2(toward), flow) < -0.5 && edge > 1.0 && edge < WAKE_LONG && sin(world_time * 0.8 + pace * TAU) > 0.2) {
+			// Two arms opening downstream from the leg's sides in dashes.
+			float arm = abs(abs(off) - (0.5 + (edge - 0.5) * WAKE_SPREAD));
+			float dash = fract((edge - world_time * STREAK_SPEED) / (WAKE_DASH * (0.6 + 0.8 * beat)) + beat);
+			if (arm < 0.5 && dash < 0.6 && edge < WAKE_LONG * (0.7 + 0.3 * pace)) {
+				water = moonlit(RIVER_LIP);
+			}
+		}
+	}
+	// A running river froths in a bend: in a cell with land on one side
+	// across and one along, fading out from the corner they meet in.
+	if (!still && (land & 3) != 0 && (land & 3) != 3 && (land & 12) != 0 && (land & 12) != 12) {
+		vec2 corner = vec2((land & 2) != 0 ? CELL : 0.0, (land & 8) != 0 ? CELL : 0.0);
+		float from = length(into - corner);
+		if (from < BEND_FROTH && in_water < LAP_OUT + BEND_BANK && grain > from / BEND_FROTH && churn > -0.5) {
+			water = moonlit(in_water < LAP_OUT ? WHITE_WATER : RIVER_LIP);
 		}
 	}
 	// A river's streaks drifting downstream, mid-stream, in lanes.
