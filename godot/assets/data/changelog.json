@@ -1,6 +1,26 @@
 {
   "releases": [
     {
+      "version": "0.399.0",
+      "date": "2026-11-23",
+      "codename": "Clear Sight",
+      "notes": [
+        "At level 5 the rank-up opens with no LEVEL UP left frozen behind you",
+        "On the Night of Ash a message stands above the Next line instead of hiding it, so the key to press stays in sight; elsewhere the two take turns",
+        "No console error and no pale band as the Night of Ash begins",
+        "In caves and rooms the hero never walks under the HUD: the view stops above it",
+        "Village projects write Odo, Hilda and Vex with capitals, the Night of Bells says Next only once, and the Stats header counts down as you spend",
+        "Large reading text: cards end on a whole line, the price and your gold stay beside Buy, words keep clear of the scrollbar, plates, captions, the pause card and the journal keep their margins, and the pack shows five whole rows",
+        "Skills show their icon whole and their rank once; regeneration reads per second, and a skill lasts seconds, not turns",
+        "At the forge the card shows what tempering makes before you pay, and Hilda's tabs keep off the panel's corner",
+        "A fine piece's French name no longer stacks two « de », and a door's name plate stays whole at the top of the screen",
+        "The lantern hint waits until the street lamps are lit",
+        "The Night of Ash's dawn comes grey, its street lamps going out as it breaks; that night Sela's tent is a real tent, and the hall's oven is cold",
+        "The Deepwood pond's reflection fades out instead of ending in a square, and marram grows along Saltmere's sand line",
+        "On the Night of Bells the journal says the lamps go out once every lantern is lit"
+      ]
+    },
+    {
       "version": "0.398.0",
       "date": "2026-11-23",
       "codename": "Loose Ends",

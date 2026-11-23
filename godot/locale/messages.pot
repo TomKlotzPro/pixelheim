@@ -2321,6 +2321,10 @@ msgid "A fine or epic drop's name rises over the fallen foe in its colour"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A fine piece's French name no longer stacks two « de », and a door's name plate stays whole at the top of the screen"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A first-time tip now shows while the thing it's about is there, and waits for a better moment otherwise: no roll tip after the fight, no board tip inside the hall"
 msgstr ""
 
@@ -2793,6 +2797,10 @@ msgid "At full health a potion or a meal is kept and a line says why, as is a ma
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "At level 5 the rank-up opens with no LEVEL UP left frozen behind you"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
 msgstr ""
 
@@ -2810,6 +2818,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "At the Bench"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "At the forge the card shows what tempering makes before you pay, and Hilda's tabs keep off the panel's corner"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3162,6 +3174,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Clear Screen"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Clear Sight"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4457,6 +4473,10 @@ msgid "In caves and mines, water drips and stones tumble, where a hearth used to
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "In caves and rooms the hero never walks under the HUD: the view stops above it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "In hero creation, the name field keeps taking letters after Enter on an empty name, and Esc goes back to the title"
 msgstr ""
 
@@ -4646,6 +4666,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Large reading text now grows every text you read: the pack, the journal, the skills and the counter's card"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Large reading text: cards end on a whole line, the price and your gold stay beside Buy, words keep clear of the scrollbar, plates, captions, the pause card and the journal keep their margins, and the pack shows five whole rows"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5117,6 +5141,10 @@ msgid "No Sale by Accident"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "No console error and no pale band as the Night of Ash begins"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "No light follows the hero any more: at night the town's lamps, the lit windows, the fires and the torches light the way"
 msgstr ""
 
@@ -5317,6 +5345,10 @@ msgid "On a phone, first-time tips now name what you can touch on screen instead
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On the Night of Ash a message stands above the Next line instead of hiding it, so the key to press stays in sight; elsewhere the two take turns"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "On the Night of Ash only the survivors are about, the shut gates say why, and nobody talks of rebuilding before the dawn decides it"
 msgstr ""
 
@@ -5334,6 +5366,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On the Night of Ash, the well and the burning homes now show E, and answer from any cell beside them"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "On the Night of Bells the journal says the lamps go out once every lantern is lit"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6217,6 +6253,10 @@ msgid "Skills names the path you walk in one line that fits"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Skills show their icon whole and their rank once; regeneration reads per second, and a skill lasts seconds, not turns"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Slaying one makes you a Boss slayer: +10% damage for 10 minutes, counting down at the top left"
 msgstr ""
 
@@ -6905,6 +6945,10 @@ msgid "The Deepwood is a real forest: thickets and glades, trees of mixed sizes 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Deepwood pond's reflection fades out instead of ending in a square, and marram grows along Saltmere's sand line"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Dragon Post: once the story is done, Fafnyr flies the furthest piece of each day's post himself - fast, warm, occasionally on fire"
 msgstr ""
 
@@ -7074,6 +7118,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Night of Ash stays night until its dawn, and the dawn's clock no longer spins through the day"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Night of Ash's dawn comes grey, its street lamps going out as it breaks; that night Sela's tent is a real tent, and the hall's oven is cold"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7454,6 +7502,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The lantern hint keeps quiet on the story's nights and only speaks under the sky"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The lantern hint waits until the street lamps are lit"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8162,6 +8214,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Vex's quest can finally be taken: he talks before he trades while Greens for the Cauldron waits, in both editions"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Village projects write Odo, Hilda and Vex with capitals, the Night of Bells says Next only once, and the Stats header counts down as you spend"
 msgstr ""
 
 #: assets/data/changelog.json

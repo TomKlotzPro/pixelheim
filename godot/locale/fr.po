@@ -2321,6 +2321,10 @@ msgid "A fine or epic drop's name rises over the fallen foe in its colour"
 msgstr "Le nom d'un butin raffiné ou épique s'élève au-dessus de l'ennemi tombé, dans sa couleur"
 
 #: assets/data/changelog.json
+msgid "A fine piece's French name no longer stacks two « de », and a door's name plate stays whole at the top of the screen"
+msgstr "Le nom d'une belle pièce n'enchaîne plus deux « de », et la plaque d'une porte reste entière en haut de l'écran"
+
+#: assets/data/changelog.json
 msgid "A first-time tip now shows while the thing it's about is there, and waits for a better moment otherwise: no roll tip after the fight, no board tip inside the hall"
 msgstr "Une première astuce s'affiche désormais pendant que la chose dont elle parle est là, et attend une meilleure occasion sinon : plus d'astuce de roulade après le combat, ni de tableau d'avis dans la salle"
 
@@ -2793,6 +2797,10 @@ msgid "At full health a potion or a meal is kept and a line says why, as is a ma
 msgstr "En pleine santé, une potion ou un repas est gardé et une ligne dit pourquoi ; de même pour une potion de mana quand la réserve est pleine, ou un remède quand rien n'est à soigner"
 
 #: assets/data/changelog.json
+msgid "At level 5 the rank-up opens with no LEVEL UP left frozen behind you"
+msgstr "Au niveau 5, l'ascension s'ouvre sans laisser de NIVEAU SUPÉRIEUR figé derrière vous"
+
+#: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
 msgstr "La nuit, ses fenêtres et ses lanternes s'allument, et la fumée monte de ses toits"
 
@@ -2811,6 +2819,10 @@ msgstr "La nuit, des lanternes éclairent le bout nord du pont et les quatre emb
 #: assets/data/changelog.json
 msgid "At the Bench"
 msgstr "À l'établi"
+
+#: assets/data/changelog.json
+msgid "At the forge the card shows what tempering makes before you pay, and Hilda's tabs keep off the panel's corner"
+msgstr "À la forge, la fiche montre ce que donne la trempe avant que vous payiez, et les onglets de Hilda évitent le coin du panneau"
 
 #: assets/data/changelog.json
 msgid "At the line the region's name, music and weather take over, its creatures come out of sight, and your place is saved"
@@ -3163,6 +3175,10 @@ msgstr "Pièces dégagées"
 #: assets/data/changelog.json
 msgid "Clear Screen"
 msgstr "Écran dégagé"
+
+#: assets/data/changelog.json
+msgid "Clear Sight"
+msgstr "Bien en vue"
 
 #: assets/data/changelog.json
 msgid "Clear Signs"
@@ -4457,6 +4473,10 @@ msgid "In caves and mines, water drips and stones tumble, where a hearth used to
 msgstr "Dans les grottes et les mines, l'eau goutte et des pierres dégringolent, là où crépitait un âtre"
 
 #: assets/data/changelog.json
+msgid "In caves and rooms the hero never walks under the HUD: the view stops above it"
+msgstr "Dans les grottes et les pièces, le héros ne passe plus sous l'interface : la vue s'arrête au-dessus"
+
+#: assets/data/changelog.json
 msgid "In hero creation, the name field keeps taking letters after Enter on an empty name, and Esc goes back to the title"
 msgstr "Dans la création du héros, le champ du nom accepte toujours les lettres après Entrée sur un nom vide, et Échap revient au titre"
 
@@ -4647,6 +4667,10 @@ msgstr "Lanterne sur la route"
 #: assets/data/changelog.json
 msgid "Large reading text now grows every text you read: the pack, the journal, the skills and the counter's card"
 msgstr "Le grand texte de lecture agrandit maintenant tout ce qui se lit : le sac, le journal, les compétences et la fiche du comptoir"
+
+#: assets/data/changelog.json
+msgid "Large reading text: cards end on a whole line, the price and your gold stay beside Buy, words keep clear of the scrollbar, plates, captions, the pause card and the journal keep their margins, and the pack shows five whole rows"
+msgstr "Texte de lecture agrandi : les fiches finissent sur une ligne entière, le prix et votre or restent près d'Acheter, les mots s'écartent de la barre de défilement, les plaques, les sous-titres, la pause et le journal gardent leurs marges, et le Sac montre cinq lignes entières"
 
 #: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
@@ -5117,6 +5141,10 @@ msgid "No Sale by Accident"
 msgstr "Rien sans le vouloir"
 
 #: assets/data/changelog.json
+msgid "No console error and no pale band as the Night of Ash begins"
+msgstr "Plus d'erreur dans la console ni de bande pâle au début de la Nuit des Cendres"
+
+#: assets/data/changelog.json
 msgid "No light follows the hero any more: at night the town's lamps, the lit windows, the fires and the torches light the way"
 msgstr "Plus aucune lumière ne suit le héros : la nuit, les lampes de la ville, les fenêtres allumées, les feux et les torches éclairent le chemin"
 
@@ -5317,6 +5345,10 @@ msgid "On a phone, first-time tips now name what you can touch on screen instead
 msgstr "Sur téléphone, les astuces de découverte nomment désormais ce que vous pouvez toucher à l'écran plutôt qu'une touche du clavier"
 
 #: assets/data/changelog.json
+msgid "On the Night of Ash a message stands above the Next line instead of hiding it, so the key to press stays in sight; elsewhere the two take turns"
+msgstr "Pendant la Nuit des Cendres, un message se place au-dessus de la ligne À suivre au lieu de la cacher : la touche à presser reste en vue ; ailleurs, les deux se relaient"
+
+#: assets/data/changelog.json
 msgid "On the Night of Ash only the survivors are about, the shut gates say why, and nobody talks of rebuilding before the dawn decides it"
 msgstr "Pendant la Nuit des cendres, seuls les survivants sont là, les portes fermées disent pourquoi, et personne ne parle de reconstruire avant que l'aube n'en décide"
 
@@ -5335,6 +5367,10 @@ msgstr "Pendant la Nuit des Cendres, Bram est coincé sous une poutre en flammes
 #: assets/data/changelog.json
 msgid "On the Night of Ash, the well and the burning homes now show E, and answer from any cell beside them"
 msgstr "Pendant la Nuit des Cendres, le puits et les maisons en feu affichent désormais E, et répondent depuis n'importe quelle case voisine"
+
+#: assets/data/changelog.json
+msgid "On the Night of Bells the journal says the lamps go out once every lantern is lit"
+msgstr "Pendant la Nuit des Cloches, le journal dit que les lampes s'éteignent une fois toutes les lanternes allumées"
 
 #: assets/data/changelog.json
 msgid "On the Night of Bells, Sela brings a bowl of broth to whoever holds the square, so every class can see the dawn; the cleric starts sturdier, and the first fields ease in more gently"
@@ -6217,6 +6253,10 @@ msgid "Skills names the path you walk in one line that fits"
 msgstr "Les compétences nomment la voie que vous suivez en une ligne qui tient"
 
 #: assets/data/changelog.json
+msgid "Skills show their icon whole and their rank once; regeneration reads per second, and a skill lasts seconds, not turns"
+msgstr "Les compétences montrent leur icône en entier et leur rang une seule fois ; la régénération se lit par seconde, et une compétence dure des secondes, pas des tours"
+
+#: assets/data/changelog.json
 msgid "Slaying one makes you a Boss slayer: +10% damage for 10 minutes, counting down at the top left"
 msgstr "En abattre un fait de vous un Tueur de boss : +10 % de dégâts pendant 10 minutes, décomptés en haut à gauche"
 
@@ -6905,6 +6945,10 @@ msgid "The Deepwood is a real forest: thickets and glades, trees of mixed sizes 
 msgstr "Les Bois-Profonds sont une vraie forêt : fourrés et clairières, arbres de toutes tailles aux cimes qui se mêlent, sous-bois, ombre sous la canopée et rais de soleil dans les clairières"
 
 #: assets/data/changelog.json
+msgid "The Deepwood pond's reflection fades out instead of ending in a square, and marram grows along Saltmere's sand line"
+msgstr "Le reflet de l'étang des Bois-Profonds s'efface au lieu de finir en carré, et des oyats poussent le long du sable de Saltmere"
+
+#: assets/data/changelog.json
 msgid "The Dragon Post: once the story is done, Fafnyr flies the furthest piece of each day's post himself - fast, warm, occasionally on fire"
 msgstr "La Poste-Dragon : une fois l'histoire finie, Fafnyr porte lui-même la pièce la plus lointaine du courrier du jour - rapide, chaude, parfois en feu"
 
@@ -7075,6 +7119,10 @@ msgstr "La Nuit des cendres a sa propre musique dramatique pendant que le villag
 #: assets/data/changelog.json
 msgid "The Night of Ash stays night until its dawn, and the dawn's clock no longer spins through the day"
 msgstr "La Nuit des cendres reste la nuit jusqu'à son aube, et l'horloge de l'aube ne tourne plus à toute vitesse"
+
+#: assets/data/changelog.json
+msgid "The Night of Ash's dawn comes grey, its street lamps going out as it breaks; that night Sela's tent is a real tent, and the hall's oven is cold"
+msgstr "L'aube de la Nuit des Cendres se lève grise et ses réverbères s'éteignent ; cette nuit-là, la tente de Sela est une vraie tente et le four de la mairie est froid"
 
 #: assets/data/changelog.json
 msgid "The Open World"
@@ -7455,6 +7503,10 @@ msgstr "La terre guérit autour des lanternes : chaque matin, le cercle d'une 
 #: assets/data/changelog.json
 msgid "The lantern hint keeps quiet on the story's nights and only speaks under the sky"
 msgstr "Le conseil de la lanterne se tait pendant les nuits de l'histoire et ne parle que sous le ciel"
+
+#: assets/data/changelog.json
+msgid "The lantern hint waits until the street lamps are lit"
+msgstr "Le conseil de la lanterne attend que les réverbères soient allumés"
 
 #: assets/data/changelog.json
 msgid "The ledger keeps its text inside its frame and is named for the age: Village projects, Town works, City commissions"
@@ -8163,6 +8215,10 @@ msgstr "Vex rachète réactifs et trophées au PLEIN prix ; Hilda rachète l'a
 #: assets/data/changelog.json
 msgid "Vex's quest can finally be taken: he talks before he trades while Greens for the Cauldron waits, in both editions"
 msgstr "La quête de Vex peut enfin être acceptée : il parle avant de commercer tant que « Des herbes pour le chaudron » attend, dans les deux éditions"
+
+#: assets/data/changelog.json
+msgid "Village projects write Odo, Hilda and Vex with capitals, the Night of Bells says Next only once, and the Stats header counts down as you spend"
+msgstr "Les Chantiers du village écrivent Odo, Hilda et Vex avec une majuscule, la Nuit des Cloches ne répète plus À suivre, et l'en-tête des Stats décompte les points à mesure que vous les dépensez"
 
 #: assets/data/changelog.json
 msgid "Villagers and foes drawn like you turn smoothly too"
