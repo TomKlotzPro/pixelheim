@@ -2257,6 +2257,10 @@ msgid "A brass spyglass stands by the bend on the mountain road: at night it sho
 msgstr "Une longue-vue en laiton se dresse au tournant de la route de la montagne : la nuit, elle montre la Marche en contrebas, chaque lampe allumée brillant de sa couleur avec sa terre guérie autour ; de jour, on n'y voit que cendre et chemins"
 
 #: assets/data/changelog.json
+msgid "A bridge's foam swells and fades instead of popping: a pile's froth draws back into it and a wake shrinks a pixel at a time"
+msgstr "L'écume des ponts enfle et s'efface au lieu d'apparaître d'un coup : l'écume d'une pile s'y retire et un sillage rétrécit pixel par pixel"
+
+#: assets/data/changelog.json
 msgid "A burnt stead's door now shows a steady pale star while something waits in its ash"
 msgstr "La porte d'une ferme brûlée montre désormais une petite étoile pâle et fixe tant qu'un objet attend dans sa cendre"
 
@@ -2411,6 +2415,10 @@ msgstr "Une bête qui bondit atterrit désormais à côté de vous plutôt que s
 #: assets/data/changelog.json
 msgid "A level gained bursts in gold on the hero with LEVEL UP over their head, the experience line flashes, and the news goes on the message plate instead of slipping into the battle log"
 msgstr "Un niveau gagné éclate en or sur le héros avec NIVEAU SUPÉRIEUR au-dessus de sa tête, la ligne d'expérience s'illumine, et la nouvelle s'affiche sur le bandeau des messages au lieu de se perdre dans le journal de combat"
+
+#: assets/data/changelog.json
+msgid "A lightning flash rims everything from above in white-blue and fades with it; not under a roof, nor with Reduce motion or Flashes off"
+msgstr "Un éclair borde tout d'un liseré blanc bleuté venu d'en haut, qui s'éteint avec lui ; rien sous un toit, ni avec Réduire les animations ou l'option Éclairs coupée"
 
 #: assets/data/changelog.json
 msgid "A line about the world shows under the name, in English or French; if the load stalls it says so, and if it fails you can try again"
@@ -3207,6 +3215,10 @@ msgstr "Les falaises se dressent désormais dans la mer, le sable et les routes 
 #: assets/data/changelog.json
 msgid "Close Quarters"
 msgstr "Au corps à corps"
+
+#: assets/data/changelog.json
+msgid "Close to a lamp or a fire, the lit edge of what stands is two pixels deep on the side facing it"
+msgstr "Près d'une lanterne ou d'un feu, le bord éclairé de ce qui se dresse fait deux pixels d'épaisseur du côté de la lumière"
 
 #: assets/data/changelog.json
 msgid "Closed Roads"
@@ -4669,6 +4681,10 @@ msgid "Large reading text now grows every text you read: the pack, the journal, 
 msgstr "Le grand texte de lecture agrandit maintenant tout ce qui se lit : le sac, le journal, les compétences et la fiche du comptoir"
 
 #: assets/data/changelog.json
+msgid "Large reading text: a long card's last page starts on a whole line"
+msgstr "Texte de lecture agrandi : la dernière page d'une longue fiche commence sur une ligne entière"
+
+#: assets/data/changelog.json
 msgid "Large reading text: cards end on a whole line, the price and your gold stay beside Buy, words keep clear of the scrollbar, plates, captions, the pause card and the journal keep their margins, and the pack shows five whole rows"
 msgstr "Texte de lecture agrandi : les fiches finissent sur une ligne entière, le prix et votre or restent près d'Acheter, les mots s'écartent de la barre de défilement, les plaques, les sous-titres, la pause et le journal gardent leurs marges, et le Sac montre cinq lignes entières"
 
@@ -4975,6 +4991,10 @@ msgstr "Les monstres jouent salement désormais : les wyvernes empoisonnent, l
 #: assets/data/changelog.json
 msgid "Monsters keep hours: after dark, night packs come out in every region under the sky, wolves and skeletons in the forest, ghosts over the marsh, shades in the Deepwood, wendigos on the Frostgate Pass, a little stronger and richer than by day"
 msgstr "Les monstres ont leurs heures : à la nuit tombée, des meutes nocturnes sortent dans chaque région à ciel ouvert, loups et squelettes dans la forêt, fantômes sur le marais, spectres dans les Bois-Profonds, wendigos au col de la Porte-Givre, un peu plus forts et plus riches que le jour"
+
+#: assets/data/changelog.json
+msgid "Moon and Foam"
+msgstr "Lune et écume"
 
 #: assets/data/changelog.json
 msgid "Morvax keeps count of your lamps on his forge wall, a red stroke each, and tells you what he makes of them; as the ash heals, the map renames the Ash Fields the Greening, then the Lantern Meadows"
@@ -7709,6 +7729,10 @@ msgid "The ridge between regions shows where you've seen it, waypoints and goals
 msgstr "La crête entre les régions apparaît là où vous l'avez vue, les relais et les objectifs restent sur la page, et un objectif sous terre s'affiche à sa porte"
 
 #: assets/data/changelog.json
+msgid "The river's foam turns over a pixel at a time, and a post's ring on still water frays in as it frays out"
+msgstr "L'écume de la rivière se renouvelle pixel par pixel, et l'anneau d'un poteau en eau calme apparaît peu à peu comme il s'efface"
+
+#: assets/data/changelog.json
 msgid "The rivers heap foam at each bridge pile with a wake downstream, froth in their bends, and the Mirefen's boardwalks ring their posts"
 msgstr "Les rivières amassent l'écume contre chaque pile de pont avec un sillage en aval, moussent dans leurs méandres, et les pontons des Marais de Fange cerclent leurs pieux"
 
@@ -8163,6 +8187,10 @@ msgstr "SOUS LE CAPOT : la carte que vous parcourez est désormais dessinée p
 #: assets/data/changelog.json
 msgid "Ulla and the old guard come home to keep Pixelheim's gate, and Brother Teo hangs Greyhold's mended bell in the town hall"
 msgstr "Ulla et la vieille garde rentrent garder la porte de Pixelheim, et Frère Teo suspend la cloche réparée de Greyhold dans la mairie"
+
+#: assets/data/changelog.json
+msgid "Under a clear night's moon, what stands takes a faint cool edge on its top and its moon side; none through cloud, indoors or underground"
+msgstr "Sous la lune d'une nuit claire, ce qui se dresse prend un léger liseré froid en haut et du côté de la lune ; rien sous les nuages, à l'intérieur ni sous terre"
 
 #: assets/data/changelog.json
 msgid "Under its name, what it brings: who is back at work, the new perk, or who has moved into town"

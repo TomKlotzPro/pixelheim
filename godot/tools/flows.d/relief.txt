@@ -25,8 +25,10 @@ rim-room-day | --map town_smith | map=town_smith rim=on 0\.00 moon 0\.00 flash 0
 # PIX-545: under a clear night's moon the rim's cool base is whole (rim-night); none
 # through a storm's cloud, whose lightning rims at its flash's height
 # instead, but never the soft flash of Reduce motion, nor by day (a storm's
-# noon is dark enough for the lamps' rim, yet its lightning rims nothing).
+# noon is dark enough for the lamps' rim, yet its lightning rims nothing),
+# nor under a roof (rim-inside).
 rim-overcast | --map town --town-tier 4 --at 40,24 night storm | map=town rim=on 1\.00 moon 0\.00 flash 0\.00 | town night
 rim-lightning | --map town --town-tier 4 --at 40,24 night storm --strike held | map=town rim=on 1\.00 moon 0\.00 flash 1\.00 | town night
 rim-storm-noon | --map town --town-tier 4 --at 40,24 --hour 12:00 storm --strike held | map=town rim=on \d\.\d\d moon 0\.00 flash 0\.00 | town
 rim-still | --map town --town-tier 4 --at 40,24 night storm --strike held still | map=town rim=on 1\.00 moon 0\.00 flash 0\.00 | town night
+rim-inside | --map town_inn night storm --strike held | map=town_inn rim=on 1\.00 moon 0\.00 flash 0\.00 | rooms night
