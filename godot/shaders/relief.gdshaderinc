@@ -47,7 +47,7 @@
 // fragment() (`RIM_SKY;` after rim_open is set) and kept out of every
 // light's share in light(), so a lamp never brightens it: the moon is the
 // base, a lamp's warm rim takes over near the lamp. And a storm's lightning
-// rims the top edge white-blue, the sides at half, for as long as its flash
+// rims the top edge white-blue, the sides a quarter as much, for as long as its flash
 // (the `rim_flash` global, Storm: none for the soft flash of Reduce motion).
 
 // 0 with Light relief off, Lights.RELIEF on (LightRig).
@@ -287,6 +287,9 @@ const vec3 RIM_MOON = vec3(0.7, 0.82, 1.0);
 const float RIM_MOON_GLOW = 0.35;
 // The lightning's share of its own colour on a top edge at the flash's height.
 const float RIM_FLASH = 0.8;
+// And a side edge's share of that: it falls from above (at a half the
+// stalls' legs, the barrels and the benches were outlined all round).
+const float RIM_FLASH_SIDE = 0.25;
 
 // The open sides as the screen shows them: a flipped piece is mirrored on
 // the screen, never in its UV (its region's size is negative).
@@ -374,10 +377,10 @@ void light() {
 		float shown = min(LIGHT_ENERGY * RIM_GLOW * light_rim * turned * reach * LIGHT_COLOR.a, RIM_MOST);
 		LIGHT.rgb += to_canvas(to_display(LIGHT_COLOR.rgb) * shown * dark_edge * COLOR.a) / max(LIGHT_COLOR.a, 0.001);
 	}
-	// The lightning (PIX-545): its sky lights every top edge, the sides at
-	// half, as bright as the flash is now.
+	// The lightning (PIX-545): its sky lights every top edge, the sides far
+	// less, as bright as the flash is now.
 	if (LIGHT_IS_DIRECTIONAL && rim_flash > 0.0) {
-		float top = max(edge.z, 0.5 * max(edge.x, edge.y));
+		float top = max(edge.z, RIM_FLASH_SIDE * max(edge.x, edge.y));
 		LIGHT.rgb += to_canvas(to_display(LIGHT_COLOR.rgb) * RIM_FLASH * rim_flash * top * rim_dark(art) * COLOR.a);
 	}
 #endif

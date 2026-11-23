@@ -33,6 +33,10 @@ const ROOM_GLOW := 0.7
 ## The light now and how dark it is (0 by day, 1 at night).
 var light := Color.WHITE
 var dark := 0.0
+## How dark the hour is by itself, before the rain's and the storm's clouds
+## dim it (PIX-545: a storm's day is over LANTERN_DARK, and its lightning
+## rimmed everything at noon).
+var hour_dark := 0.0
 ## How much cloud covers the sky here, 0..1 (rain, the mire's fog, snow).
 var overcast := 0.0
 ## How far the Night of Ash's red has turned to its dawn's grey (PIX-543:
@@ -203,8 +207,9 @@ func moon_rim(map: MapData, dark_now: float, overcast_now: float) -> float:
 
 
 ## The shaders' `rim_flash` global (PIX-545, Storm sets it): the lightning's
-## rim, as bright as its `flash` is now; none by day, nor for the `soft`
-## flash of Reduce motion or the Flashes option off.
+## rim, as bright as its `flash` is now; none by day (`dark_now` is the
+## hour's own, `hour_dark`: a storm's clouds make no night of its day), nor
+## for the `soft` flash of Reduce motion or the Flashes option off.
 static func flash_rim(dark_now: float, flash: float, soft: bool) -> float:
 	return 0.0 if soft else rim_strength(dark_now) * flash
 
@@ -292,6 +297,7 @@ func _process(delta: float) -> void:
 		light = Lights.DAY
 	# Rain darkens and cools the light, and the lamps come up a little; under
 	# rain, fog or snow the sky is all cloud.
+	hour_dark = Lights.darkness(light)
 	var rain := 0.0
 	overcast = 0.0
 	if world.atmosphere != null:
