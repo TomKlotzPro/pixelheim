@@ -1,4 +1,4 @@
 # The night shadows' report field (PIX-490): `field | says`, as the core's
 # (scripts/harness_report.txt), which it joins after its head, by name; its
 # function is `field_nightshadows(report)` in feature.gd.
-nightshadows | on a map under the sky or underground: how many lights cast shadows now (the lantern and the nearest lamps) of how many may at most, how many of the map's flames near the screen could, and the occluders laid, at the feet of what stands and round its blocks of tall cells: lights 3 of 4 lamps 21 feet 180 walls 26 (PIX-490)
+nightshadows | on a map under the sky or underground: how many lights cast shadows now (the nearest lamps; never the lantern) of how many may at most, how many of the map's flames near the screen could, and the occluders laid, at the feet of what stands and round its blocks of tall cells: lights 3 of 4 lamps 21 feet 180 walls 26 (PIX-490)

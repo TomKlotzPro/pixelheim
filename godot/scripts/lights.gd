@@ -2,11 +2,11 @@ class_name Lights
 ## areas: field night
 ## Light and darkness (PIX-221). The world itself darkens with the hour (a
 ## CanvasModulate the LightRig sets) instead of a dark veil laid over it, and
-## real lights - lamps, windows, fires, torches, spells, the hero's lantern -
-## pierce the dark. This holds the colours of the day, the one soft light
-## shape every light shares, and the materials that let flames and the
-## world's own words (damage numbers, prompts, health bars) stay bright at
-## night. Pure helpers; the LightRig does the per-frame work.
+## real lights - lamps, windows, fires, torches, spells, the lantern the
+## hero carries - pierce the dark. This holds the colours of the day, the
+## one soft light shape every light shares, and the materials that let
+## flames and the world's own words (damage numbers, prompts, health bars)
+## stay bright at night. Pure helpers; the LightRig does the per-frame work.
 
 const DAY := Color(1, 1, 1)
 ## Gold at dawn, then a pale gold morning until about eight (PIX-526: six
@@ -66,6 +66,13 @@ const BLAZE_ENERGY := 0.8
 const TORCH_ENERGY := 0.7
 const WINDOW_ENERGY := 0.36
 const LANTERN_ENERGY := 0.3
+## The light the hero carries (PIX-530): no light follows a hero without
+## one; the Tin Lantern in their pack burns round them in the dark.
+const HAND_LANTERN := "tin_lantern"
+## How dark it must be before it is lit (PIX-530): never by a room's dim
+## day nor a rainy one, so the glass in hand and the pool round the hero
+## light together, and the hint that Odo sells one waits for the same dark.
+const LANTERN_DARK := 0.5
 const EMBER_ENERGY := 0.5
 const CANDLE_ENERGY := 0.55
 ## The sun through a window at noon: added to a room a little dim by day.
@@ -89,7 +96,7 @@ const PER_ITEM := 15
 ## a boss's glow round its feet, under every actor and pickup standing in
 ## it, none of them tinted. It is the bit a shadow falls on too (PIX-490,
 ## NightShadows): a canvas item takes a light's shadows only when its light
-## bits meet the light's shadow bits, in both renderers, so the lantern's
+## bits meet the light's shadow bits, in both renderers, so a lamp's
 ## shadows lie on the floor and never black out the tree that casts them,
 ## nor anyone standing there.
 const FLOOR := 1 << 10
@@ -115,6 +122,11 @@ static func indoor(steps: float) -> Color:
 ## Whether the sky is over the map: not indoors, not under the ground.
 static func under_sky(map: MapData) -> bool:
 	return map != null and map.style != "cave" and not PunyInterior.is_room(map.id)
+
+
+## Whether a pack's `items` hold the hero's lantern (PIX-530).
+static func carried(items: Dictionary) -> bool:
+	return int(items.get(HAND_LANTERN, 0)) > 0
 
 
 ## How dark a light is, 0 by day to 1 at night: how strongly lamps and

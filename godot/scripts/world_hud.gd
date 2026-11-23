@@ -249,6 +249,9 @@ func hint_there(seen_id: String) -> bool:
 			return world.map.id == "town_house"
 		"potion":
 			return GameState.hero.hp * 2 < int(GameState.hero.stats["maxHp"])
+		"lantern":
+			# Bought while it waited, the dawn come, or under the ground (PIX-530).
+			return not Lights.carried(GameState.pack.items) and world.lights.dark > Lights.LANTERN_DARK and Lights.under_sky(world.map)
 	return true
 
 

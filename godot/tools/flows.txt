@@ -1041,6 +1041,19 @@ dawn-after-buckets-cc0 | --map town --prologue 5 --at 11,8 douse --keys w,e,e,e,
 # line and open nothing.
 ash-board-shut | --map town --prologue 9 --at 37,22 --keys w,e --wait 0.5 --lang en | open=none plate=That can wait for morning\. Tonight, the village comes first\. | story night town
 ash-ledger-shut | --map town_hall --prologue 9 --at 12,5 --keys w,e --wait 0.5 --lang en | map=town_hall open=none plate=That can wait for morning\. Tonight, the village comes first\. | story night rooms
+# The hall is the night's hall too (PIX-516: it stood whole on the square,
+# windows warm, a feast laid inside for nobody; its door opens that night):
+# outside dark and scorched, inside the council table bare; with the dawn
+# whole again, and any night after lit and laid (in the Ashes, the age the
+# dawn leaves); from the Reach its small self is dark and scorched too.
+# hall= is empty without the paid pack (no lit glass, no feast).
+ash-hall-far | --prologue 1 | map=overworld hall=(scorched panes 0)? | story night travel
+day-hall-far | --map overworld --town-tier 0 night | map=overworld hall=(whole panes [1-9]\d*)? | story travel night
+ash-hall-dark | --map town --prologue 5 --at 40,22 | night=5 hall=(scorched panes 0)? | story night town
+ash-hall-bare | --map town --prologue 9 --at 40,21 --walk u,u,u | map=town_hall night=9 hall=(bare)? | story night rooms
+dawn-hall-whole | --map town --prologue 5 --at 11,8 douse --keys w,e,e,e,e,e,wait,esc --wait 2 | map=town open=none night=0 hall=(whole panes 0)? | story screen night town
+day-hall-lit | --map town --town-tier 0 --at 40,22 night | night=0 hall=(whole panes 2)? | story town night
+day-hall-laid | --map town_hall | map=town_hall night=0 hall=(laid)? | story rooms
 # On the night itself nobody but the survivors is about (PIX-510: E on the
 # banker by the road got her caravans), and a shut gate says the night's
 # line, not the story's after it (PIX-514: the bridge "burned on the Night
