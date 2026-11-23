@@ -434,10 +434,11 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 		float pace = hash(vec2(pile, 8.3));
 		if (still) {
 			// Frayed out by a hash a pixel (PIX-544), as the rest of the
-			// foam: it went by the Bayer step.
+			// foam: it went by the Bayer step. And frayed in over its first
+			// half pixel out, about 0.4 s: its first pixels came at once.
 			float r = 1.0 + RIPPLE * fract(world_time * 0.35 + beat);
 			float ring = length(vec2(off, edge));
-			if (abs(ring - r) < 0.5 && hash(px + 5.7) > r / (RIPPLE + 1.0)) {
+			if (abs(ring - r) < 0.5 && hash(px + 5.7) > max(r / (RIPPLE + 1.0), 1.0 - (r - 1.0) * 2.0)) {
 				water = moonlit(water_lip(tone));
 			}
 		} else if (dot(vec2(toward), flow) > 0.5) {

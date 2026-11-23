@@ -549,4 +549,4 @@ func test_a_piles_foam_eases_in_and_out() -> void:
 	# The rest of the river's foam: its grain turns over a pixel at a time,
 	# and a still post's ring frays out by a hash a pixel, not the Bayer step.
 	assert_string_contains(shader, "float grain = hash(px + vec2(floor(world_time * 1.5 + hash(px + 3.1)) * 7.3, 0.4));")
-	assert_string_contains(shader, "if (abs(ring - r) < 0.5 && hash(px + 5.7) > r / (RIPPLE + 1.0)) {")
+	assert_string_contains(shader, "if (abs(ring - r) < 0.5 && hash(px + 5.7) > max(r / (RIPPLE + 1.0), 1.0 - (r - 1.0) * 2.0)) {", "and frays in: none at its start, all its share half a pixel out")
