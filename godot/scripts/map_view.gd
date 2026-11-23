@@ -836,7 +836,7 @@ func _free_room_lights() -> void:
 		_add_candle(at)
 	var objects: Dictionary = buildings.get("objects", {})
 	for cell: Vector2i in objects:
-		if objects[cell] == "h:lantern" and not _untended():
+		if objects[cell] == "h:lantern" and not untended():
 			var lit := Sprite2D.new()
 			lit.texture = HamletArt.texture("lantern_lit")
 			lit.centered = false
@@ -851,7 +851,7 @@ func _free_room_lights() -> void:
 ## of Ash, empty and its table bare (PIX-516), kept its hearth and candles
 ## burning. Out that night; the morning's hall is drawn anew, and they burn.
 ## The one place that says so: RoomsLayer bares its table by it.
-func _untended() -> bool:
+func untended() -> bool:
 	return data.id == "town_hall" and GameState.progression.prologue != Prologue.DONE
 
 
@@ -859,7 +859,7 @@ func _untended() -> bool:
 ## light from `at`, embers rising off it at `embers_at`, and since PIX-402
 ## a fire seen burning there (FireArt's lick, its foot on the embers).
 func _add_hearth(at: Vector2, embers_at: Vector2) -> void:
-	if _untended():
+	if untended():
 		return
 	props.add_child(Lights.make(at, 96.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
 	var embers := _still(Motes.make_embers())
@@ -882,7 +882,7 @@ func _add_hearth(at: Vector2, embers_at: Vector2) -> void:
 ## A candle's or a sconce's flame at `at` (PIX-311): lit at night, a halo
 ## round it and its light on the floor round it.
 func _add_candle(at: Vector2) -> void:
-	if _untended():
+	if untended():
 		return
 	var halo := _add_halo(at, CANDLE_HALO, CANDLE_HALO_PEAK)
 	var light := Lights.make(at + Vector2(0, TILE / 2.0), CANDLE_REACH, Lights.CANDLE, Lights.CANDLE_ENERGY, true)

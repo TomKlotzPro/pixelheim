@@ -36,7 +36,7 @@ static func _plan_room(view: MapView) -> void:
 	# Nobody is in the hall on the Night of Ash and nothing is laid there
 	# (PIX-516); the morning's hall is drawn anew, as every room come to is.
 	# Its candles are out too (PIX-535), flames and all.
-	if view._untended():
+	if view.untended():
 		PunyInterior.bare(dressed, view.data.id + view.data.variant, "council")
 		PunyInterior.snuff(dressed)
 	view.buildings = {
