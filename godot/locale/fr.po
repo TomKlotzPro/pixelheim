@@ -7753,6 +7753,10 @@ msgid "The title's menu is calmer: no flames by the chosen plank, only its lift 
 msgstr "Le menu de l'écran titre est plus sobre : plus de flammes autour de la planche choisie, seulement son relief et sa lueur chaude, et les nouveautés non lues sont signalées par un petit sceau doré sur « Quoi de neuf » plutôt que par une case rouge à côté ; le choc du nom ne découvre plus le bord de l'écran en tremblant"
 
 #: assets/data/changelog.json
+msgid "The title's menu, the chapter cards, the dawn's title and the cutscenes' names are in the game's rounder type too; only the PIXELHEIM logo stays in pixel letters"
+msgstr "Le menu de l'écran titre, les cartes de chapitre, le titre de l'aube et les noms des cinématiques passent eux aussi à la police plus ronde du jeu ; seul le logo PIXELHEIM garde ses lettres en pixels"
+
+#: assets/data/changelog.json
 msgid "The title's village is richer and deeper: moonlight shafts, drifting ash, a tree and a lantern banner framing the view, market stalls, bunting, the lit fountain and hens asleep by the barrel; and the menu stands on wooden planks right under the name, with no line between them now, the chosen one lifted between two flames"
 msgstr "Le village de l'écran titre est plus riche et plus profond : des rayons de lune, de la cendre qui tombe, un arbre et une bannière à lanterne qui encadrent la vue, des étals, des fanions, la fontaine éclairée et des poules endormies près du tonneau ; et le menu repose sur des planches de bois juste sous le nom, sans plus aucune phrase entre les deux, celle choisie soulevée entre deux flammes"
 
