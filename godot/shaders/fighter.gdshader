@@ -14,6 +14,8 @@ shader_type canvas_item;
 #define RELIEF_RIM
 #include "res://shaders/relief.gdshaderinc"
 
+// Whether the lights rim it: not a floor tile wearing it (StairRise).
+uniform bool relief_rimmed = true;
 uniform float flash : hint_range(0.0, 1.0) = 0.0;
 // Texels darker than this keep their colour through a flash (PIX-497: the
 // hero's outline, so they read under a bite's spark); 0 flashes all.
@@ -44,5 +46,5 @@ void fragment() {
 	}
 	COLOR = c;
 	NORMAL_MAP = RELIEF_FLAT;
-	rim_open = RIM_OPEN(0);
+	rim_open = relief_rimmed ? RIM_OPEN(0) : vec4(0.0);
 }

@@ -61,6 +61,8 @@ func _ready() -> void:
 	_stair.material = Juice.fighter_material()
 	_stair.material.set_shader_parameter("ember", Lights.WAY_OUT)
 	_stair.material.set_shader_parameter("dissolve", 1.0)
+	# A floor: the lights never rim it (PIX-531), its corner's notch nor its glow.
+	_stair.material.set_shader_parameter("relief_rimmed", false)
 	add_child(_stair)
 	_glow = Lights.make(Vector2(TILE, TILE) / 2.0, DungeonLayer.WAY_OUT_GLOW, Lights.WAY_OUT, 0.0)
 	_glow.set_meta("pulse", true)

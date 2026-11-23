@@ -314,9 +314,12 @@ void light() {
 		float facing = max(max(-way.x * rim_open.x, way.x * rim_open.y), -way.y * rim_open.z);
 		float reach = smoothstep(RIM_FAR, RIM_NEAR, LIGHT_COLOR.a) * (1.0 - smoothstep(RIM_HEART - 0.1, RIM_HEART, LIGHT_COLOR.a));
 		float dark_edge = 1.0 - clamp(dot(to_display(COLOR.rgb), vec3(0.299, 0.587, 0.114)), 0.0, 1.0);
-		// What it adds on the screen, where Godot multiplies it by LIGHT.a.
+		// What it adds on the screen, where Godot multiplies it by LIGHT.a:
+		// a tone of the light's shown colour, turned into the canvas's light
+		// (exact over the dark outline; added raw on the desktop's linear
+		// canvas, RIM_MOST showed about 0.7 of the light, not 0.45).
 		float shown = min(LIGHT_ENERGY * RIM_GLOW * light_rim * smoothstep(RIM_TURN, 1.0, facing) * reach * LIGHT_COLOR.a, RIM_MOST);
-		LIGHT.rgb += LIGHT_COLOR.rgb * shown / max(LIGHT_COLOR.a, 0.001) * dark_edge * COLOR.a;
+		LIGHT.rgb += to_canvas(to_display(LIGHT_COLOR.rgb) * shown * dark_edge * COLOR.a) / max(LIGHT_COLOR.a, 0.001);
 	}
 #endif
 	// A night shadow (PIX-528): Godot blends a shadowed pixel from this light

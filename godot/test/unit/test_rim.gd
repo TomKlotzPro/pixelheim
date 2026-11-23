@@ -65,6 +65,12 @@ func test_a_lamps_post_is_never_rimmed() -> void:
 	assert_string_contains(FileAccess.get_file_as_string("res://scripts/map_layers/props_layer.gd"), "post.material = Relief.lamp_post()")
 
 
+## A way out's stair wears the fighters' shader to rise, but is a floor.
+func test_a_rising_stair_is_never_rimmed() -> void:
+	assert_string_contains(FileAccess.get_file_as_string("res://scripts/stair_rise.gd"), "_stair.material.set_shader_parameter(\"relief_rimmed\", false)")
+	assert_string_contains(FileAccess.get_file_as_string("res://shaders/fighter.gdshader"), "rim_open = relief_rimmed ? RIM_OPEN(0) : vec4(0.0);")
+
+
 ## The villagers share one material of the fighters' shader (never flashed
 ## nor dissolved, so they still draw together); the hero and each foe keep
 ## their own.
