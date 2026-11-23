@@ -282,7 +282,7 @@ func test_a_chapter_card_says_its_number_and_title_and_its_title_rises() -> void
 	var card: Node = await _card(3, false)
 	assert_eq(card._number.text, "Chapter 3")
 	assert_eq(card._title.text, "The Letter to Blackiron")
-	assert_eq(card._title.get_theme_font("font"), UiStyle.logo_font(), "in the title's type, as the dawn's card")
+	assert_eq(card._title.get_theme_font("font"), UiStyle.title_font(), "in a title card's type, as the dawn's card (PIX-534)")
 	assert_gt(card.rise_left(), 0.0, "coming in, the title rises into place")
 	assert_true(get_tree().paused, "the world holds still meanwhile")
 	var press := InputEventKey.new()
@@ -302,10 +302,14 @@ func test_with_reduce_motion_a_chapter_card_only_fades() -> void:
 
 
 func test_every_chapter_title_fits_the_card() -> void:
-	for number in range(1, MainQuest.chapters().size() + 1):
-		var title := MainQuest.title_of(number)
-		var scale: int = ChapterScreen.title_scale(title)
-		assert_lte(float(title.length() * UiStyle.LOGO_PX * scale), ChapterScreen.TITLE_ROOM, title)
+	var locale := TranslationServer.get_locale()
+	for lang: String in ["en", "fr"]:
+		TranslationServer.set_locale(lang)
+		for number in range(1, MainQuest.chapters().size() + 1):
+			var title := MainQuest.title_of(number)
+			var font_size := UiStyle.TITLE_SMALL if ChapterScreen.title_small(title) else UiStyle.TITLE
+			assert_lte(ChapterScreen.title_width(Text.t(title), font_size), ChapterScreen.TITLE_ROOM, "%s (%s)" % [title, lang])
+	TranslationServer.set_locale(locale)
 
 
 # ---- The save -----------------------------------------------------------------------

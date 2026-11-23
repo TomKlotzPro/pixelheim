@@ -11,9 +11,10 @@ class_name UiStyle
 ## whole pixels, 20 on the canvas or 30 for screen titles and what is read
 ## across the room: grey antialiased, light hinting (its x-height and
 ## baseline on the pixel grid), its line box cut to the pixel face's (22,
-## 33), so every row keeps the room it was laid out for. Pixel type stays
-## where a smooth face can't go: the title's logo and menu (Press Start 2P,
-## `logo_font`), and Pixeloid Sans Bold (`pixel_font`) for the numbers over
+## 33), so every row keeps the room it was laid out for; the story's title
+## cards are Nunito Bold too, at TITLE or TITLE_SMALL (`titled`, PIX-534).
+## Pixel type stays where a smooth face can't go: the PIXELHEIM logo (Press
+## Start 2P, `logo_font`), and Pixeloid Sans Bold (`pixel_font`) for the numbers over
 ## the world (drawn at 9 px and enlarged 3x by the camera: a smooth face
 ## goes mushy) and the keycaps' letters (pixel art like their caps; Nunito
 ## has no arrows). All OFL.
@@ -32,6 +33,11 @@ const BIG := 30
 ## The spacing is in pixels whatever the size, so each size has its own.
 const TRIM := Vector2i(-3, -4)
 const TRIM_BIG := Vector2i(-4, -5)
+## A title card's words (PIX-534: a chapter's title, the dawn's, a
+## cutscene's name), read once across the room: Nunito Bold in its own line
+## box, the smaller for a line too long for the larger.
+const TITLE := 60
+const TITLE_SMALL := 44
 
 ## The dark: outlines, shadows, and what the world dims to behind a screen.
 const NIGHT := Color("1c120a")
@@ -290,6 +296,19 @@ static func body_font(big := false) -> Font:
 
 static func bold_font(big := false) -> Font:
 	return _cut(true, big)
+
+
+## Nunito Bold for a title card, at TITLE or TITLE_SMALL only (`titled`):
+## the bare face, its own line box, since a card stands alone on the screen.
+static func title_font() -> Font:
+	return _smooth_font(true)
+
+
+## A title card's type on a label: TITLE, or TITLE_SMALL with `small`.
+static func titled(node: Control, small := false) -> Control:
+	node.add_theme_font_override("font", title_font())
+	node.add_theme_font_size_override("font_size", TITLE_SMALL if small else TITLE)
+	return node
 
 
 static func _cut(bold: bool, big: bool) -> Font:
@@ -684,8 +703,9 @@ static func plank(lit: bool, padding := 6, dim := false) -> StyleBoxTexture:
 	return _style(_frames[key], 2, padding)
 
 
-## The pixel font for headings: crisp, never smoothed.
-## The logo's arcade capitals (the title screen).
+## The logo's arcade capitals, crisp, never smoothed: PIXELHEIM itself and
+## nothing else (the title's name and the opening's; since PIX-534 the menu
+## and the story's title cards are Nunito).
 static func logo_font() -> FontFile:
 	if _logo_font == null:
 		_logo_font = _pixel_font(load("res://assets/fonts/press-start-2p.woff2"), LOGO_PX)

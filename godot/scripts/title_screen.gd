@@ -341,7 +341,7 @@ func _card() -> void:
 
 
 ## The menu on wooden planks hung one under another (PIX-392), the words
-## in the name's pixel type: GegX's planks with the kit (ink on the page,
+## in Nunito Bold (PIX-534): GegX's planks with the kit (ink on the page,
 ## the chosen one red), the game's own without it. Every plank as wide as
 ## the widest, so a long first line ("Continue  name, Lv N") widens them all
 ## about the middle. The mouse chooses by pointing.
@@ -360,8 +360,7 @@ func _draw_menu() -> void:
 	var width := PLANK_WIDTH
 	for index in options.size():
 		var plank := UiStyle.button(options[index]["label"], _take.bind(index))
-		plank.add_theme_font_override("font", UiStyle.logo_font())
-		plank.add_theme_font_size_override("font_size", 16)
+		UiStyle.sized(plank, UiStyle.TEXT, true)
 		plank.mouse_entered.connect(_point.bind(index))
 		menu.add_child(plank)
 		planks.append(plank)
