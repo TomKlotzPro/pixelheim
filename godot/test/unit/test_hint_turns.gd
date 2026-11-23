@@ -653,3 +653,31 @@ func test_a_message_from_before_the_nights_step_gives_way() -> void:
 	messages.message_fade.custom_step(1.0)
 	assert_true(messages.up(), "a tagged one is read to its end")
 	story.prologue = was
+
+
+## PIX-543: the session's first message, its words not laid out when it was
+## flashed, stood a screen high as it faded in (the pale band on the Night of
+## Ash's first frame): the plate was fitted only once it showed. It is fitted
+## while it still waits for the line to leave (GIVE_WAY_S), nothing to see yet.
+func test_a_message_is_laid_out_before_it_shows() -> void:
+	var story := GameState.progression
+	var was := story.prologue
+	story.prologue = Prologue.DONE
+	hud.objective_box = PanelContainer.new()
+	hud.objective_label = Label.new()
+	hud.objective_box.add_child(hud.objective_label)
+	hud.root.add_child(hud.objective_box)
+	var messages := world.messages
+	messages.flash("The hounds fall back to ash. Someone is calling from Upper Street.")
+	# A frame for the words to lay out, the wait held where it is.
+	messages.message_fade.pause()
+	await wait_process_frames(1)
+	hud.update_objective()
+	story.prologue = was
+	var plate := messages.message_box
+	assert_eq(plate.modulate.a, 0.0, "still waiting its turn")
+	var line := messages.message_label.get_line_height()
+	var pad := plate.get_theme_stylebox("panel").get_minimum_size()
+	assert_between(plate.size.y, line, 2 * line + pad.y + 4, "a line or two high")
+	assert_lte(plate.size.x, Messages.MESSAGE_WIDTH + pad.x, "no wider than a message")
+	assert_gte(plate.position.y, 0.0, "its top on the screen")
