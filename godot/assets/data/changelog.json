@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.394.0",
+      "date": "2026-11-23",
+      "codename": "The Hall Stands Dark",
+      "notes": [
+        "On the Night of Ash the town hall stands dark and scorched, its windows unlit, from the square and from the road",
+        "Inside, the council's table is bare that night: no feast laid in an empty hall",
+        "From the next day the hall is whole again, lit at night, its feast laid"
+      ]
+    },
+    {
       "version": "0.393.0",
       "date": "2026-11-20",
       "codename": "A Light of Your Own",

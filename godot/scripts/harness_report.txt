@@ -62,6 +62,7 @@ free | with launch: the slot New Game makes its hero in, 0 when none is free (PI
 fronts | on the town (with the paid pack): its age, how many fronts its houses wear between them (Hamlet.FRONTS) and the cells of ivy on their walls: 4:fronts7,ivy16 (PIX-525)
 frozen | on a map with ice: what draws it frozen (frozen.gdshaderinc) - the ground in the open air, the floor in a cave - its cells and the cold lights over them: ground 145 lights 6 (PIX-255, PIX-398)
 gate | the gate the story keeps shut that said its line on this run (PIX-254)
+hall | with the paid pack, the town hall as the Night of Ash leaves it: on the town its house scorched or whole and its windows' lit glass (scorched panes 0 that night, whole panes 2 any night after), in the hall its council table bare or laid (PIX-516)
 hamlet | on a settlement beyond Pixelheim: its look and its dressing counted by how each piece stands: fishing:line1,moored2,stand4,wall3 (PIX-313)
 hero | with --role or --level: the hero as built, role:level, health/mana, strength, intelligence, dexterity, endurance, skills learned and the weapon in hand: mage:10:91/140:3,28,4,12:skills12:arch_staff (PIX-379)
 hint | the first-time hint on the battle log's line, showing or waiting there, by the id it's seen by, or held:<id> while one is held back (PIX-341: never over a boss's entrance)

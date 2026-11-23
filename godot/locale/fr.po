@@ -4069,6 +4069,10 @@ msgid "From the Town on, the square is laid in flagstones with grass in the join
 msgstr "Dès la Ville, la place est dallée, avec de l'herbe dans les joints, dans une bordure de pavés"
 
 #: assets/data/changelog.json
+msgid "From the next day the hall is whole again, lit at night, its feast laid"
+msgstr "Dès le lendemain, la mairie est de nouveau intacte, éclairée la nuit, son festin dressé"
+
+#: assets/data/changelog.json
 msgid "Fronts of Their Own"
 msgstr "Chacun sa façade"
 
@@ -4451,6 +4455,10 @@ msgstr "Dans les fins, les villageois se tiennent de nouveau chez eux, et non pl
 #: assets/data/changelog.json
 msgid "In-world lettering is TRUE pixel text: door signs on wooden plates, the talk prompt and battle damage numbers use a hand-built bitmap font, crisp at any zoom"
 msgstr "Les inscriptions du monde sont du VRAI texte pixel : les enseignes sur plaques de bois, l'invite de dialogue et les chiffres de dégâts en combat utilisent une police bitmap faite main, nette à tout niveau de zoom"
+
+#: assets/data/changelog.json
+msgid "Inside, the council's table is bare that night: no feast laid in an empty hall"
+msgstr "À l'intérieur, la table du conseil est nue cette nuit-là : pas de festin dressé dans une salle vide"
 
 #: assets/data/changelog.json
 msgid "Inside: your own bed (free rest, forever - the inn can keep its prices) and a storage barrel"
@@ -5267,6 +5275,10 @@ msgstr "Sur téléphone, les astuces de découverte nomment désormais ce que vo
 #: assets/data/changelog.json
 msgid "On the Night of Ash only the survivors are about, the shut gates say why, and nobody talks of rebuilding before the dawn decides it"
 msgstr "Pendant la Nuit des cendres, seuls les survivants sont là, les portes fermées disent pourquoi, et personne ne parle de reconstruire avant que l'aube n'en décide"
+
+#: assets/data/changelog.json
+msgid "On the Night of Ash the town hall stands dark and scorched, its windows unlit, from the square and from the road"
+msgstr "Pendant la Nuit des Cendres, la mairie est sombre et noircie, ses fenêtres éteintes, vue de la place comme de la route"
 
 #: assets/data/changelog.json
 msgid "On the Night of Ash, the well and the burning homes now show E, and answer from any cell beside them"
@@ -6903,6 +6915,10 @@ msgstr "Les caves de Greyhold descendent désormais sur trois étages : les ce
 #: assets/data/changelog.json
 msgid "The HUD's Map button speaks a proper event now instead of faking an M keypress - it keeps working even after you rebind your keys"
 msgstr "Le bouton Carte de l'interface émet désormais un vrai événement au lieu de simuler un appui sur M - il fonctionne même après que vous avez réassigné vos touches"
+
+#: assets/data/changelog.json
+msgid "The Hall Stands Dark"
+msgstr "La mairie dans le noir"
 
 #: assets/data/changelog.json
 msgid "The Hall of Echoes death spike is softened: shades calmed down a little"
