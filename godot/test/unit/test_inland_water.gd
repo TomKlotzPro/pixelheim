@@ -485,3 +485,68 @@ func test_the_bridges_planks_and_the_ground_read_the_water() -> void:
 	assert_eq(planks.get_shader_parameter("planks"), true)
 	assert_eq(planks.get_shader_parameter("strength"), 0.0, "the planks keep their own wood")
 	assert_true(planks in view._toned)
+
+
+## A pile's foam `seconds` into its beat: the shader's foam_up on the sine
+## of a beat turning `rate` a second, quiet under `under`.
+func _foam_up(seconds: float, rate: float, under: float, ease: float) -> float:
+	return smoothstep(under - ease, under + ease, sin(seconds * rate))
+
+
+## A river's foam eases in and out (PIX-544): a pile's quiet spell was a
+## sine cut at a line, so a heap still full or a whole wake went in one
+## frame. The shader's own sums done here on its own numbers: each ease
+## takes half a second to a second, a 30th of a second never moves a heap's
+## rim by half a pixel, and a wake's pixels go one at a time over half a
+## second or more (timed from the first gone to the last: its ease alone
+## said nothing of its two or three rows, which all went in a quarter of a
+## second when its length was cut).
+func test_a_piles_foam_eases_in_and_out() -> void:
+	var shader := _shader()
+	assert_string_contains(shader, "return smoothstep(quiet_under - ease, quiet_under + ease, beat_sine);")
+	assert_string_contains(shader, "float up = foam_up(sin(world_time * 0.7 + pace * TAU + 1.3), -0.2, QUIET_EASE);", "a heap's quiet spell")
+	assert_string_contains(shader, "float heap = up * (PILE_R * (0.6 + 0.6 * pace) * (0.2 + 0.8 * sin(world_time * (1.6 + 1.4 * pace) + beat * TAU)) + 0.25 * churn + 1.0) - 1.0;", "its rim (heap + 1) drawn in to the pile")
+	assert_string_contains(shader, "float up = foam_up(sin(world_time * 0.8 + pace * TAU), 0.2, WAKE_EASE);", "a wake's")
+	assert_string_contains(shader, "float reach = WAKE_LONG * (0.7 + 0.3 * pace);")
+	assert_string_contains(shader, "float gone = (edge - 1.5 + (off < 0.0 ? 0.25 : 0.75)) / ceil(reach - 1.5);", "each of its pixels its own moment to go")
+	assert_string_contains(shader, "if (arm < 0.5 && dash < 0.6 && edge < reach && up > gone) {")
+	assert_false(shader.contains("TAU + 1.3) > -0.2") or shader.contains("TAU) > 0.2"), "and neither cut at a line any more")
+	# The widest a heap's rim gets: the biggest pile at its swell's top, the
+	# churn with it.
+	var rim := _shader_number(shader, "PILE_R") * 1.2 + 0.5 + 1.0
+	var long := _shader_number(shader, "WAKE_LONG")
+	for foam: Array in [["heap", 0.7, -0.2, _shader_number(shader, "QUIET_EASE")], ["wake", 0.8, 0.2, _shader_number(shader, "WAKE_EASE")]]:
+		var rate: float = foam[1]
+		var under: float = foam[2]
+		var ease: float = foam[3]
+		assert_almost_eq(_foam_up(asin(under) / rate, rate, under, ease), 0.5, 0.001, "%s: half up where it was cut" % [foam[0]])
+		assert_between((asin(under + ease) - asin(under - ease)) / rate, 0.5, 1.0, "%s: seconds to come, and to go" % [foam[0]])
+		assert_eq(_foam_up((PI - asin(under - ease)) / rate + 0.01, rate, under, ease), 0.0, "%s: nothing left once it has fallen quiet" % [foam[0]])
+		assert_eq(_foam_up((PI - asin(under + ease)) / rate - 0.01, rate, under, ease), 1.0, "%s: whole until it starts to" % [foam[0]])
+		if foam[0] == "heap":
+			var step := 0.0
+			for tick in int(TAU / rate * 30.0):
+				step = maxf(step, absf(_foam_up((tick + 1) / 30.0, rate, under, ease) - _foam_up(tick / 30.0, rate, under, ease)) * rim)
+			assert_lt(step, 0.5, "pixels a heap's rim moves in a 30th of a second")
+			continue
+		# A wake's rows stand at 1.5, 2.5 and 3.5 from the face, two pixels
+		# each (an arm either side): the shortest wake has two, the longest
+		# three. When each goes, as the beat's sine falls from its top.
+		for reach: float in [long * 0.7, long]:
+			var rows := ceili(reach - 1.5)
+			var went: Array[float] = []
+			for row in range(rows - 1, -1, -1):
+				for side: float in [0.75, 0.25]:
+					var gone := (row + side) / rows
+					assert_between(gone, 0.01, 0.99, "there when the wake is up, gone when it is quiet")
+					var seconds := PI / 2.0 / rate
+					while _foam_up(seconds, rate, under, ease) > gone:
+						seconds += 1.0 / 600.0
+					went.append(seconds)
+			assert_between(went[-1] - went[0], 0.5, 1.0, "seconds from a wake's first pixel gone to its last, %d rows" % rows)
+			for i in range(1, went.size()):
+				assert_gt(went[i] - went[i - 1], 2.0 / 30.0, "and never two in the same 30th of a second, nor in two running")
+	# The rest of the river's foam: its grain turns over a pixel at a time,
+	# and a still post's ring frays out by a hash a pixel, not the Bayer step.
+	assert_string_contains(shader, "float grain = hash(px + vec2(floor(world_time * 1.5 + hash(px + 3.1)) * 7.3, 0.4));")
+	assert_string_contains(shader, "if (abs(ring - r) < 0.5 && hash(px + 5.7) > max(r / (RIPPLE + 1.0), 1.0 - (r - 1.0) * 2.0)) {", "and frays in: none at its start, all its share half a pixel out")
