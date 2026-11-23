@@ -16865,15 +16865,7 @@ msgid "A fountain on the square, Fafnyr's scale set in its basin."
 msgstr ""
 
 #: assets/data/town.json
-msgid "A fountain plaza and new houses"
-msgstr ""
-
-#: assets/data/town.json
 msgid "A fountain sings in the plaza. Builders raise new roofs. Word spreads."
-msgstr ""
-
-#: assets/data/town.json
-msgid "A lamplit avenue to the mountain gate and flowers around the square"
 msgstr ""
 
 #: assets/data/town.json
@@ -16942,10 +16934,6 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "Cozy Hut"
-msgstr ""
-
-#: assets/data/town.json
-msgid "Every door open again: the store, the forge, the brewery and the inn"
 msgstr ""
 
 #: assets/data/town.json
@@ -17029,10 +17017,6 @@ msgid "Market stalls"
 msgstr ""
 
 #: assets/data/town.json
-msgid "Market stalls and street lamps dress the square"
-msgstr ""
-
-#: assets/data/town.json
 msgid "Mason Dorran"
 msgstr ""
 
@@ -17042,10 +17026,6 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "Mend the river bridge"
-msgstr ""
-
-#: assets/data/town.json
-msgid "Merchants pay 20% more for everything you sell"
 msgstr ""
 
 #: assets/data/town.json
@@ -17094,10 +17074,6 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "Rebuilt from the ashes, roof by stubborn roof. Now it can grow."
-msgstr ""
-
-#: assets/data/town.json
-msgid "Rent rises: every till fills a tenth faster"
 msgstr ""
 
 #: assets/data/town.json
@@ -17201,10 +17177,6 @@ msgid "The inn and the homes"
 msgstr ""
 
 #: assets/data/town.json
-msgid "The inn honors its patron: rest costs half"
-msgstr ""
-
-#: assets/data/town.json
 msgid "The mountain is quiet, and the whole Reach has heard of Pixelheim: it can grow into a City."
 msgstr ""
 
@@ -17262,6 +17234,38 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "What Fafnyr left: footings, cinders, and the people too stubborn to leave."
+msgstr ""
+
+#: assets/data/town.json
+msgid "a fountain plaza and new houses"
+msgstr ""
+
+#: assets/data/town.json
+msgid "a lamplit avenue to the mountain gate and flowers around the square"
+msgstr ""
+
+#: assets/data/town.json
+msgid "a night at the inn leaves you rested for a while"
+msgstr ""
+
+#: assets/data/town.json
+msgid "every door open again: the store, the forge, the brewery and the inn"
+msgstr ""
+
+#: assets/data/town.json
+msgid "market stalls and street lamps dress the square"
+msgstr ""
+
+#: assets/data/town.json
+msgid "merchants pay 20% more for everything you sell"
+msgstr ""
+
+#: assets/data/town.json
+msgid "rent rises: every till fills a tenth faster"
+msgstr ""
+
+#: assets/data/town.json
+msgid "the inn honors its patron: rest costs half"
 msgstr ""
 
 #: assets/maps/interactables.json
@@ -19684,10 +19688,6 @@ msgstr ""
 msgid "(embers %d, fires %d)"
 msgstr ""
 
-#: scripts/state/bells.gd
-msgid "Next: %s"
-msgstr ""
-
 #: scripts/state/bestiary.gd
 msgid "%s by night"
 msgstr ""
@@ -19938,6 +19938,10 @@ msgstr ""
 
 #: scripts/state/journal.gd
 msgid "Town and people"
+msgstr ""
+
+#: scripts/state/main_quest.gd
+msgid "Next: %s"
 msgstr ""
 
 #: scripts/state/posting.gd

@@ -16865,16 +16865,8 @@ msgid "A fountain on the square, Fafnyr's scale set in its basin."
 msgstr "Une fontaine sur la place, l'écaille de Fafnyr sertie dans son bassin."
 
 #: assets/data/town.json
-msgid "A fountain plaza and new houses"
-msgstr "Une place à fontaine et de nouvelles maisons"
-
-#: assets/data/town.json
 msgid "A fountain sings in the plaza. Builders raise new roofs. Word spreads."
 msgstr "Une fontaine chante sur la place. Les bâtisseurs montent de nouveaux toits. La nouvelle se répand."
-
-#: assets/data/town.json
-msgid "A lamplit avenue to the mountain gate and flowers around the square"
-msgstr "Une avenue éclairée jusqu'à la porte de la montagne, et des fleurs autour de la place"
 
 #: assets/data/town.json
 msgid "A long slate-roofed barn across the bridge, built to last."
@@ -16943,10 +16935,6 @@ msgstr "Maisonnette"
 #: assets/data/town.json
 msgid "Cozy Hut"
 msgstr "Cabane douillette"
-
-#: assets/data/town.json
-msgid "Every door open again: the store, the forge, the brewery and the inn"
-msgstr "Toutes les portes rouvertes : la boutique, la forge, l'officine et l'auberge"
 
 #: assets/data/town.json
 msgid "Flower beds"
@@ -17029,10 +17017,6 @@ msgid "Market stalls"
 msgstr "Étals du marché"
 
 #: assets/data/town.json
-msgid "Market stalls and street lamps dress the square"
-msgstr "Des étals de marché et des réverbères habillent la place"
-
-#: assets/data/town.json
 msgid "Mason Dorran"
 msgstr "Dorran le maçon"
 
@@ -17043,10 +17027,6 @@ msgstr "Pell le maçon"
 #: assets/data/town.json
 msgid "Mend the river bridge"
 msgstr "Réparer le pont de la rivière"
-
-#: assets/data/town.json
-msgid "Merchants pay 20% more for everything you sell"
-msgstr "Les marchands paient 20 % plus cher tout ce que vous vendez"
 
 #: assets/data/town.json
 msgid "Mossy roofs on the river's bend. Builders whistle now."
@@ -17095,10 +17075,6 @@ msgstr "Bâtir la halte de Saltmere"
 #: assets/data/town.json
 msgid "Rebuilt from the ashes, roof by stubborn roof. Now it can grow."
 msgstr "Rebâti sur les cendres, un toit obstiné après l'autre. Désormais, il peut grandir."
-
-#: assets/data/town.json
-msgid "Rent rises: every till fills a tenth faster"
-msgstr "Les loyers montent : chaque caisse se remplit un dixième plus vite"
 
 #: assets/data/town.json
 msgid "Sela's inn with real beds, and roofs over Upper Street's and Hearth Lane's families."
@@ -17201,10 +17177,6 @@ msgid "The inn and the homes"
 msgstr "L'auberge et les maisons"
 
 #: assets/data/town.json
-msgid "The inn honors its patron: rest costs half"
-msgstr "L'auberge honore son mécène : repos à moitié prix"
-
-#: assets/data/town.json
 msgid "The mountain is quiet, and the whole Reach has heard of Pixelheim: it can grow into a City."
 msgstr "La montagne est calme, et toute la Marche des Cendres a entendu parler de Pixelheim : le voilà prêt à devenir une cité."
 
@@ -17263,6 +17235,38 @@ msgstr "Village"
 #: assets/data/town.json
 msgid "What Fafnyr left: footings, cinders, and the people too stubborn to leave."
 msgstr "Ce que Fafnyr a laissé : des fondations, des cendres, et les gens trop têtus pour partir."
+
+#: assets/data/town.json
+msgid "a fountain plaza and new houses"
+msgstr "une place à fontaine et de nouvelles maisons"
+
+#: assets/data/town.json
+msgid "a lamplit avenue to the mountain gate and flowers around the square"
+msgstr "une avenue éclairée jusqu'à la porte de la montagne, et des fleurs autour de la place"
+
+#: assets/data/town.json
+msgid "a night at the inn leaves you rested for a while"
+msgstr "une nuit à l'auberge vous offre un vrai repos pendant un temps"
+
+#: assets/data/town.json
+msgid "every door open again: the store, the forge, the brewery and the inn"
+msgstr "toutes les portes rouvertes : la boutique, la forge, l'officine et l'auberge"
+
+#: assets/data/town.json
+msgid "market stalls and street lamps dress the square"
+msgstr "des étals de marché et des réverbères habillent la place"
+
+#: assets/data/town.json
+msgid "merchants pay 20% more for everything you sell"
+msgstr "les marchands paient 20 % plus cher tout ce que vous vendez"
+
+#: assets/data/town.json
+msgid "rent rises: every till fills a tenth faster"
+msgstr "les loyers montent : chaque caisse se remplit un dixième plus vite"
+
+#: assets/data/town.json
+msgid "the inn honors its patron: rest costs half"
+msgstr "l'auberge honore son mécène : repos à moitié prix"
 
 #: assets/maps/interactables.json
 msgid "A black-rinded wheel, aged down here in the dark. It hums. Faintly, and slightly off-key."
@@ -19684,10 +19688,6 @@ msgstr "(aube dans %d:%02d)"
 msgid "(embers %d, fires %d)"
 msgstr "(braises %d, feux %d)"
 
-#: scripts/state/bells.gd
-msgid "Next: %s"
-msgstr "Ensuite : %s"
-
 #: scripts/state/bestiary.gd
 msgid "%s by night"
 msgstr "%s la nuit"
@@ -19939,6 +19939,10 @@ msgstr "Son repaire : %s. %s."
 #: scripts/state/journal.gd
 msgid "Town and people"
 msgstr "Le bourg et ses gens"
+
+#: scripts/state/main_quest.gd
+msgid "Next: %s"
+msgstr "Ensuite : %s"
 
 #: scripts/state/posting.gd
 msgid "A reply to carry back: %s."

@@ -924,10 +924,13 @@ func _build_hud() -> void:
 	hud.build()
 	GameState.hp_changed.connect(hud.on_hp_changed)
 	soundscape.listen()
-	GameState.leveled_up.connect(func(_level: int) -> void:
+	GameState.leveled_up.connect(func(_level: int, ranked: bool) -> void:
 		Sound.play("level_up")
 		soundscape.heard_hp = GameState.hero.hp
-		fx.level_up_burst()
+		# The ascension opens in the same tick and holds the world still: a
+		# burst begun now froze half-popped behind it (PIX-536).
+		if not ranked:
+			fx.level_up_burst()
 	)
 	GameState.gold_changed.connect(func(_gold: int) -> void: hud.dock.refresh())
 	GameState.inventory_changed.connect(hud.dock.refresh)

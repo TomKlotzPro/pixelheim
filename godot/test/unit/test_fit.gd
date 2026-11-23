@@ -317,3 +317,16 @@ func test_the_halls_card_starts_on_the_chosen_work() -> void:
 	assert_true(screen.info.text.begins_with(String(screen._chosen_project().get("name", "?"))), screen.info.text)
 	screen.close()
 	await get_tree().process_frame
+
+
+## PIX-540: the age's perks read mid-sentence and keep their people's
+## capitals (lower-cased whole, they said "odo pays", "hilda forges").
+func test_the_halls_perks_name_people_with_capitals() -> void:
+	Text.apply("en")
+	var screen: Screen = TownHallScreen.new()
+	add_child(screen)
+	await wait_process_frames(2)
+	assert_string_contains(screen.info.text, "When it's done: every door open again")
+	assert_string_contains(screen.info.text, "; Odo pays a tenth more, Hilda forges and Vex brews")
+	screen.close()
+	await get_tree().process_frame

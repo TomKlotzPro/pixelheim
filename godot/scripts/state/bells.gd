@@ -252,7 +252,7 @@ static func objective(beat: int, lit: int, embers_left: int, burning: int, dawn_
 		HOLD:
 			var left := ceili(maxf(0.0, dawn_left))
 			text += " " + Text.t("(dawn in %d:%02d)") % [left / 60, left % 60]
-	return Text.t("Next: %s") % text
+	return text
 
 
 ## Whether Iva (or whoever heals) may heal again: `every` seconds after the

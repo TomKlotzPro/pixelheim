@@ -11,9 +11,9 @@
       "name": "Hamlet",
       "blurb": "Rebuilt from the ashes, roof by stubborn roof. Now it can grow.",
       "perks": [
-        "Every door open again: the store, the forge, the brewery and the inn",
+        "every door open again: the store, the forge, the brewery and the inn",
         "Odo pays a tenth more, Hilda forges and Vex brews for a tenth less",
-        "A night at the inn leaves you rested for a while"
+        "a night at the inn leaves you rested for a while"
       ]
     },
     {
@@ -21,8 +21,8 @@
       "name": "Village",
       "blurb": "Lamps on the street, stalls on the square, and a new face who chose to stay.",
       "perks": [
-        "Market stalls and street lamps dress the square",
-        "Rent rises: every till fills a tenth faster"
+        "market stalls and street lamps dress the square",
+        "rent rises: every till fills a tenth faster"
       ]
     },
     {
@@ -30,8 +30,8 @@
       "name": "Town",
       "blurb": "A fountain sings in the plaza. Builders raise new roofs. Word spreads.",
       "perks": [
-        "A fountain plaza and new houses",
-        "The inn honors its patron: rest costs half"
+        "a fountain plaza and new houses",
+        "the inn honors its patron: rest costs half"
       ]
     },
     {
@@ -39,8 +39,8 @@
       "name": "City",
       "blurb": "Lamplit avenues, flowers on the square, full houses. Pixelheim, city of the Ashenreach.",
       "perks": [
-        "A lamplit avenue to the mountain gate and flowers around the square",
-        "Merchants pay 20% more for everything you sell"
+        "a lamplit avenue to the mountain gate and flowers around the square",
+        "merchants pay 20% more for everything you sell"
       ]
     }
   ],

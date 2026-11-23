@@ -223,9 +223,10 @@ func grant_levels() -> int:
 	var rank_before := HeroRules.rank_index(owner.hero.level)
 	var gained := HeroRules.apply_level_ups(owner.hero)
 	if gained > 0:
-		owner.leveled_up.emit(owner.hero.level)
+		var ranked := HeroRules.rank_index(owner.hero.level) > rank_before
+		owner.leveled_up.emit(owner.hero.level, ranked)
 		owner.healed.emit()
-		if HeroRules.rank_index(owner.hero.level) > rank_before:
+		if ranked:
 			owner.ranked_up.emit(Ranks.title(owner.hero.role_id, owner.hero.level))
 	return gained
 

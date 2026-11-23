@@ -327,10 +327,14 @@ func test_the_stats_footer_counts_the_points_and_drops_e_with_none() -> void:
 	var stats := _open(StatsScreen.new()) as StatsScreen
 	assert_has(_says(stats.keys), "spend a point (3 left)")
 	assert_does_not_have(_says(stats.keys), "do it")
+	assert_string_contains(stats.intro.text, "3 stat points to spend")
 	stats._act()
 	assert_has(_says(stats.keys), "spend a point (2 left)", "counted down as they go")
+	# PIX-542: the header under the title counts down with them.
+	assert_string_contains(stats.intro.text, "2 stat points to spend")
 	GameState.hero.stat_points = 0
 	stats._refresh()
+	assert_string_contains(stats.intro.text, "Every level brings")
 	var none := _says(stats.keys)
 	assert_does_not_have(none, Controls.say("{key:interact}"), "no E with nothing to spend")
 	assert_has(none, "close")

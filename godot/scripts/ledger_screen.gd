@@ -34,6 +34,9 @@ var info_scroll: ScrollContainer
 var keys: Control
 var purse: HBoxContainer
 var status: Label
+## The line under the title: it may count what's left (the Stats' points,
+## PIX-542), so _refresh writes it again.
+var intro: Label
 var page: Panel
 
 
@@ -44,7 +47,8 @@ func _open() -> void:
 	page = UiStyle.page(PAGE)
 	add_child(page)
 	add_child(UiStyle.title(_title()))
-	add_child(UiStyle.label(_intro(), 14, UiStyle.DUSK, Vector2(80, 66)))
+	intro = UiStyle.label(_intro(), 14, UiStyle.DUSK, Vector2(80, 66))
+	add_child(intro)
 	purse = UiStyle.purse(0, 18)
 	purse.position = Vector2(1060, 20)
 	add_child(purse)
@@ -171,6 +175,7 @@ func _act() -> void:
 
 func _refresh() -> void:
 	UiStyle.purse_set(purse, GameState.pack.gold)
+	intro.text = _intro()
 	# The rows first: the info may speak of the chosen one.
 	rows = _rows()
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))
