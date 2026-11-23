@@ -4069,6 +4069,10 @@ msgid "From the Town on, the square is laid in flagstones with grass in the join
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "From the next day the hall is whole again, lit at night, its feast laid"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fronts of Their Own"
 msgstr ""
 
@@ -4450,6 +4454,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "In-world lettering is TRUE pixel text: door signs on wooden plates, the talk prompt and battle damage numbers use a hand-built bitmap font, crisp at any zoom"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Inside, the council's table is bare that night: no feast laid in an empty hall"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5266,6 +5274,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On the Night of Ash only the survivors are about, the shut gates say why, and nobody talks of rebuilding before the dawn decides it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "On the Night of Ash the town hall stands dark and scorched, its windows unlit, from the square and from the road"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6902,6 +6914,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The HUD's Map button speaks a proper event now instead of faking an M keypress - it keeps working even after you rebind your keys"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Hall Stands Dark"
 msgstr ""
 
 #: assets/data/changelog.json
