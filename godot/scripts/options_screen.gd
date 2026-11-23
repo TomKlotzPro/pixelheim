@@ -161,6 +161,9 @@ func _refresh() -> void:
 		var rim := UiStyle.box(Color(UiStyle.CARD, 0.9) if chosen else Color(0, 0, 0, 0), UiStyle.LAMP if chosen else Color(0, 0, 0, 0), 4)
 		rim.content_margin_top = ROW_PAD
 		rim.content_margin_bottom = ROW_PAD
+		# The value stood 2 px off the lit rim on the right, the label 3 on
+		# the left (PIX-535); on every row, so no value steps as it's chosen.
+		rim.content_margin_right += 2
 		line.add_theme_stylebox_override("panel", rim)
 		var inner := HBoxContainer.new()
 		line.add_child(inner)

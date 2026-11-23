@@ -310,7 +310,7 @@ static func _decor_routes(view: MapView) -> void:
 				_add_ember_lamp(view, root, cell, String(piece["place"]), cell in own_light, String(piece.get("lamp", "ember")))
 				PropsLayer.lamp_shadow(view, cell, RouteArt.size(art), 0)
 			elif kind == "hut":
-				_add_hut_window(view, root)
+				_add_hut_window(view, root, cell)
 				view.waystations.append(String(piece["place"]))
 		for taken: Vector2i in piece["cells"]:
 			block(view, taken)
@@ -359,8 +359,9 @@ static func _add_ember_lamp(view: MapView, root: Node2D, cell: Vector2i, place: 
 
 
 ## A waystation's window lit at night (PIX-322): its glass alone, the dark
-## not touching it; no light of its own, so the lamp keeps the budget.
-static func _add_hut_window(view: MapView, root: Node2D) -> void:
+## not touching it; no light of its own, so the lamp keeps the budget. Lit
+## at its own minute of the evening, as the town's (PIX-535, hut_glows).
+static func _add_hut_window(view: MapView, root: Node2D, cell: Vector2i) -> void:
 	var pane := Sprite2D.new()
 	pane.texture = RouteArt.lit_window()
 	pane.centered = false
@@ -368,7 +369,8 @@ static func _add_hut_window(view: MapView, root: Node2D) -> void:
 	pane.position = Vector2(0, -RouteArt.size("hut").y)
 	pane.visible = false
 	root.add_child(pane)
-	view.night_glows.append(pane)
+	pane.set_meta("cell", cell)
+	view.hut_glows.append(pane)
 
 
 ## A miner's lantern by a door lit at night (PIX-313): its glass (the dark

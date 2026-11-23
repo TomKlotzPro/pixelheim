@@ -569,3 +569,36 @@ func test_the_journals_hint_stops_once_the_journal_was_opened() -> void:
 	GameState.settings.hints = false
 	hud.hint_learnt("board")
 	assert_does_not_have(GameState.settings.hints_seen, "board", "hints off: nothing kept")
+
+
+## PIX-535: the lantern's hint stood over the Night of Bells' « Light the
+## five lanterns », two lantern lines pointing different ways. Held on a
+## story night, the Bells as the Ash; and held behind a title card, it
+## never shows later in a cave.
+func test_the_lanterns_hint_keeps_off_story_nights_and_out_of_caves() -> void:
+	var story := GameState.progression
+	var was := [story.prologue, story.bells, GameState.pack.items.duplicate()]
+	for id: String in Lights.LANTERNS:
+		GameState.pack.items.erase(id)
+	world.lights = autofree(LightRig.new())
+	world.lights.dark = 1.0
+	world.map.style = "overworld"
+	story.prologue = Prologue.DONE
+	story.bells = Bells.LANTERNS
+	assert_false(hud.hint_there("lantern"), "not on the Night of Bells")
+	story.bells = Bells.NONE
+	story.prologue = 6
+	assert_false(hud.hint_there("lantern"), "nor on the Night of Ash")
+	story.prologue = Prologue.DONE
+	assert_true(hud.hint_there("lantern"), "any other night under the sky")
+	var card := hud.title_card("The Sea Cave", "")
+	hud.hint("lantern")
+	assert_eq([_up(), hud.hint_held()], ["", "lantern"], "held behind the card")
+	world.map.style = "cave"
+	card.free()
+	hud.next_hint()
+	assert_eq([_up(), hud.hint_held()], ["", ""], "under the ground by then: not shown")
+	assert_does_not_have(GameState.settings.hints_seen, "lantern", "unseen, for the next night out")
+	story.prologue = was[0]
+	story.bells = was[1]
+	GameState.pack.items = was[2]

@@ -15,7 +15,8 @@ func before_each() -> void:
 	_items = GameState.pack.items.duplicate()
 	_settlers = GameState.settlement.settlers.duplicate()
 	_steps = GameState.world.steps
-	GameState.pack.items.erase(Lights.HAND_LANTERN)
+	for id: String in Lights.LANTERNS:
+		GameState.pack.items.erase(id)
 	GameState.settlement.settlers.erase("frost_aske")
 
 
@@ -31,6 +32,7 @@ func test_the_lantern_is_carried_only_when_the_pack_holds_one() -> void:
 	assert_false(Lights.carried({}), "no light without one")
 	assert_true(Lights.carried({Lights.HAND_LANTERN: 1}))
 	assert_false(Lights.carried({Lights.HAND_LANTERN: 0}))
+	assert_true(Lights.carried({"lianes_lantern": 1}), "Liane's lights the way too (PIX-535)")
 
 
 func test_the_tin_lantern_is_a_carried_thing_odo_sells() -> void:
@@ -38,7 +40,7 @@ func test_the_tin_lantern_is_a_carried_thing_odo_sells() -> void:
 	assert_eq(item.get("category", ""), "misc", "carried, not worn: no fight with the shield")
 	assert_false(item.get("quest", false), "sold, stored or dropped, its light goes with it")
 	assert_eq(Trade.junk_count(Lights.HAND_LANTERN, 1), 0, "\"Sell all junk\" never sells it")
-	assert_eq(ItemIcons.source(Lights.HAND_LANTERN), "medieval@1902", "the small twin of Liane's lantern")
+	assert_eq(ItemIcons.source(Lights.HAND_LANTERN), "drawn@lantern", "drawn as the lantern in hand, with or without the paid art")
 	assert_has(Economy.shop_stock("odo", 1), Lights.HAND_LANTERN, "on Odo's shelf from the first stage")
 
 
@@ -63,6 +65,10 @@ func test_no_light_follows_a_hero_with_none_and_the_lantern_brings_it() -> void:
 	GameState.pack.remove_item(Lights.HAND_LANTERN)
 	GameState.pack_changed()
 	assert_eq(float(rig.lantern.get_meta("energy")), 0.0, "sold, its light goes")
+	GameState.pack.add_item("lianes_lantern")
+	GameState.pack_changed()
+	assert_eq(float(rig.lantern.get_meta("energy")), Lights.LANTERN_ENERGY, "Liane's Lantern burns as Odo's does (PIX-535)")
+	assert_almost_eq(rig.lantern.texture_scale, LightRig.lantern_reach(0.33) * 2.0 / Lights.TEXTURE_PX, 0.0001, "trimmed by Aske the same")
 
 
 ## A rig lighting a world on `map`, the hero carrying the lantern.
@@ -189,3 +195,20 @@ func test_the_glass_lights_only_where_the_glass_is() -> void:
 	assert_gt(lit, 0)
 	for key: String in "".join(PackedStringArray(LampArt.HAND + LampArt.HAND_LIT)).replace(".", ""):
 		assert_true(LampArt.PALETTE.has(key), "%s is Shade's" % key)
+
+
+## PIX-535: Shade's tile for it read as a small brazier, half the size of
+## its neighbours in Odo's list. Drawn in his palette at an icon's size:
+## iron round blue glass, a flame in it, most of the cell filled.
+func test_the_shop_icon_is_the_lantern_in_hand_at_icon_size() -> void:
+	var icon := ItemIcons.texture(Lights.HAND_LANTERN)
+	assert_not_null(icon, "there without the paid art")
+	assert_eq(icon.get_size(), Vector2(16, 16))
+	var inked := icon.get_image().get_used_rect()
+	assert_gte(inked.size.x, 12, "as wide as its neighbours")
+	assert_gte(inked.size.y, 13, "and as tall")
+	var keys := "".join(PackedStringArray(LampArt.ICON))
+	for key: String in keys.replace(".", ""):
+		assert_true(LampArt.PALETTE.has(key), "%s is Shade's" % key)
+	for key: String in "".join(PackedStringArray(LampArt.HAND + LampArt.HAND_LIT)).replace(".", ""):
+		assert_true(key in keys, "%s of the lantern in hand is in its icon" % key)

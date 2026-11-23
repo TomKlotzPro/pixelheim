@@ -46,7 +46,7 @@ for sheet in $(grep -o 'medieval/characters/[A-Za-z-]*\.png' godot/scripts/puny_
 done
 echo "Installed $(ls godot/assets/puny/medieval/characters/*.png | wc -l | tr -d ' ') sample characters into godot/assets/puny/medieval/characters/"
 
-# The paid icons icons.json maps (not "free/..." or "medieval@..."), one file
+# The paid icons icons.json maps (not "free/...", "medieval@..." or "drawn@..."), one file
 # per line, sheets once however many cells they give.
 count=0
 while IFS= read -r file; do
@@ -59,7 +59,7 @@ doc = json.load(open(sys.argv[1]))
 seen = []
 for group in ("items", "ailments", "effects", "screens", "stats"):
     for src in doc.get(group, {}).values():
-        if src.startswith(("free/", "medieval@")):
+        if src.startswith(("free/", "medieval@", "drawn@")):
             continue
         path = src.split("@")[0]
         if path not in seen:
