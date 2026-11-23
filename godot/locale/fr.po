@@ -2261,6 +2261,10 @@ msgid "A burnt stead's door now shows a steady pale star while something waits i
 msgstr "La porte d'une ferme brûlée montre désormais une petite étoile pâle et fixe tant qu'un objet attend dans sa cendre"
 
 #: assets/data/changelog.json
+msgid "A chosen row in Options keeps its words clear of the frame"
+msgstr "La ligne choisie dans les Options garde ses mots à distance du cadre"
+
+#: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr "La première nuit d'un clerc lui dit de frapper les braises et de se soigner entre deux coups, puisque Soin n'est pas une arme"
 
@@ -4697,6 +4701,10 @@ msgid "Levels come more slowly, and from Greyhold on the bosses want bought gear
 msgstr "Les niveaux viennent plus lentement, et dès Greyhold les boss demandent un équipement acheté : chaque classe trouve une nouvelle arme, une armure et un bijou à acheter à chaque chapitre"
 
 #: assets/data/changelog.json
+msgid "Liane's Lantern lights the way when you carry it, like a Tin Lantern"
+msgstr "La Lanterne de Liane éclaire le chemin quand vous la portez, comme une lanterne en fer-blanc"
+
+#: assets/data/changelog.json
 msgid "Liane's observatory and Greyhold's keep open into rooms now, not straight into a cave: Liane's room with her desk and books, and Captain Hale's hall with his table, banners and armour"
 msgstr "L'observatoire de Liane et le donjon de Greyhold ouvrent désormais sur des pièces, et non plus directement sur une grotte : la chambre de Liane avec son bureau et ses livres, et la salle du capitaine Hale avec sa table, ses bannières et ses armures"
 
@@ -4774,7 +4782,7 @@ msgstr "Des jours plus longs"
 
 #: assets/data/changelog.json
 msgid "Loose Ends"
-msgstr "Petites retouches"
+msgstr "Bouts de ficelle"
 
 #: assets/data/changelog.json
 msgid "Loot That Fits"
@@ -5311,6 +5319,10 @@ msgstr "Sur téléphone, les astuces de découverte nomment désormais ce que vo
 #: assets/data/changelog.json
 msgid "On the Night of Ash only the survivors are about, the shut gates say why, and nobody talks of rebuilding before the dawn decides it"
 msgstr "Pendant la Nuit des cendres, seuls les survivants sont là, les portes fermées disent pourquoi, et personne ne parle de reconstruire avant que l'aube n'en décide"
+
+#: assets/data/changelog.json
+msgid "On the Night of Ash the empty hall's hearth and candles are out"
+msgstr "Pendant la Nuit des Cendres, l'âtre et les bougies de la mairie vide sont éteints"
 
 #: assets/data/changelog.json
 msgid "On the Night of Ash the town hall stands dark and scorched, its windows unlit, from the square and from the road"
@@ -7137,6 +7149,10 @@ msgid "The Tidecaller wears Tam's stewpot as a crown; once he falls, the tide do
 msgstr "L'Appelle-Marée porte la marmite de Tam en guise de couronne ; une fois qu'il est tombé, la porte des marées s'ouvre sur la plage"
 
 #: assets/data/changelog.json
+msgid "The Tin Lantern has an icon of its own at Odo's: the iron and glass lantern you carry"
+msgstr "La lanterne en fer-blanc a sa propre icône chez Odo : la lanterne de fer et de verre que vous portez"
+
+#: assets/data/changelog.json
 msgid "The Trees Came Back"
 msgstr "Le retour des arbres"
 
@@ -7435,6 +7451,10 @@ msgstr "La campagne paraît habitée : un enclos à moutons, des prés fleuris
 #: assets/data/changelog.json
 msgid "The land heals round the lamps: each morning a lit waystation lamp's ring reaches one cell further into the ash, from bare earth at its edge to grass, flowers and saplings by the lamp, up to five cells; no night pack rises inside a ring, and the Ash's heat and embers fade over healed ground"
 msgstr "La terre guérit autour des lanternes : chaque matin, le cercle d'une lanterne de halte allumée gagne une case sur la cendre, de la terre nue au bord jusqu'à l'herbe, aux fleurs et aux jeunes arbres près de la lanterne, jusqu'à cinq cases ; aucune meute de nuit ne surgit dans un cercle, et la chaleur et les braises des Cendres s'effacent sur la terre guérie"
+
+#: assets/data/changelog.json
+msgid "The lantern hint keeps quiet on the story's nights and only speaks under the sky"
+msgstr "Le conseil de la lanterne se tait pendant les nuits de l'histoire et ne parle que sous le ciel"
 
 #: assets/data/changelog.json
 msgid "The ledger keeps its text inside its frame and is named for the age: Village projects, Town works, City commissions"
@@ -7843,6 +7863,10 @@ msgstr "La liste des relais les montre tous sous leur lieu, grise ceux qui ne so
 #: assets/data/changelog.json
 msgid "The ways between maps are natural passes now: the cliffs part and the road runs through, with no signposts, no name boxes and no framed caves or torches"
 msgstr "Les passages entre les cartes sont naturels : les falaises s'écartent et la route passe, sans panneaux, sans encadrés de nom, sans grottes encadrées ni torches"
+
+#: assets/data/changelog.json
+msgid "The waystation huts' and the Mirefen stilt huts' windows light one by one in the evening, like the town's"
+msgstr "Les fenêtres des cabanes des relais et des cabanes sur pilotis des Marais de Fange s'allument une à une le soir, comme celles de la ville"
 
 #: assets/data/changelog.json
 msgid "The web build plays its music and sounds again: its audio buses now come from the project's layout, where making them at start-up had wired the browser's output into a loop and left the game silent"
