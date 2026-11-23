@@ -1889,6 +1889,14 @@ msgid "Tidecutter"
 msgstr "Tranche-marée"
 
 #: assets/data/catalog.json
+msgid "Tin Lantern"
+msgstr "Lanterne en fer-blanc"
+
+#: assets/data/catalog.json
+msgid "Tin, horn and a stub of candle. Carry it and it lights your way at night and under the ground. Odo swears it has never once gone out. Odo has never once gone out after dark."
+msgstr "Du fer-blanc, de la corne et un bout de chandelle. Gardez-la sur vous : elle éclaire votre chemin la nuit et sous terre. Odo jure qu'elle ne s'est jamais éteinte. Odo n'est jamais sorti une fois la nuit tombée."
+
+#: assets/data/catalog.json
 msgid "Tower Shield"
 msgstr "Pavois"
 
@@ -2125,6 +2133,10 @@ msgid "A LUTE AND A VAULT: Loras wants his lute back from a Deepwood troll, and 
 msgstr "UN LUTH ET UN COFFRE : Loras veut reprendre son luth à un troll des Bois-Profonds, et Mirelle veut deux gemmes pour la première étagère de sa chambre forte - plus besoin de les payer pour qu'ils s'installent"
 
 #: assets/data/changelog.json
+msgid "A Light of Your Own"
+msgstr "Une lumière à soi"
+
+#: assets/data/changelog.json
 msgid "A Little Night Music"
 msgstr "Une petite musique de nuit"
 
@@ -2167,6 +2179,10 @@ msgstr "UN VRAI VILLAGE : le chemin de terre venu de la porte nord débouche s
 #: assets/data/changelog.json
 msgid "A Real Fight"
 msgstr "Un vrai combat"
+
+#: assets/data/changelog.json
+msgid "A Rounder Hand"
+msgstr "Une main plus ronde"
 
 #: assets/data/changelog.json
 msgid "A SAFER MIREFEN AND DEEPWOOD: the Mirefen's mimic pack is gone (its trapped chest waits in the far west, by Grandmother Gulp), and the Deepwood's trolls no longer stand at its gate"
@@ -3249,6 +3265,10 @@ msgid "Dangerous ground is visible: wild terrain grows dark tufts on the map"
 msgstr "Les terrains dangereux se voient : les terres sauvages se couvrent de touffes sombres sur la carte"
 
 #: assets/data/changelog.json
+msgid "Dawn comes pale gold, with mist over the river and the grass that lifts as the morning warms; six o'clock no longer looks like noon"
+msgstr "L'aube arrive or pâle, avec une brume sur la rivière et l'herbe qui se lève quand le matin se réchauffe ; six heures ne ressemble plus à midi"
+
+#: assets/data/changelog.json
 msgid "Dead Centre"
 msgstr "En plein centre"
 
@@ -3339,6 +3359,10 @@ msgstr "Dupliquez un héros dans un emplacement vide, par exemple pour voir les 
 #: assets/data/changelog.json
 msgid "During the Night of Ash, the map, the journal, the arrow and the gold \"!\" all point to whoever needs you next, and Elder Maren no longer plays her dawn scene before her turn, so a new player can't get stuck at the shrine"
 msgstr "Pendant la Nuit des Cendres, la carte, le journal, la flèche et le « ! » doré désignent tous la personne qui a besoin de vous, et l'Ancienne Maren ne joue plus sa scène de l'aube avant son tour : un nouveau joueur ne reste plus coincé au sanctuaire"
+
+#: assets/data/changelog.json
+msgid "Dusk lasts two hours: peach, then rose, then violet, with its long shadows"
+msgstr "Le crépuscule dure deux heures : pêche, puis rose, puis violet, avec ses ombres longues"
 
 #: assets/data/changelog.json
 msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
@@ -3695,6 +3719,10 @@ msgstr "Chaque morceau boucle sans coupure, et la musique d'un lieu reprend là 
 #: assets/data/changelog.json
 msgid "Every way out of a map reads as a way on: the road runs right to it, through an opening wide enough to look walkable, and a signpost names where it leads"
 msgstr "Chaque sortie d'une carte se lit comme un passage : la route y mène tout droit, par une ouverture assez large pour sembler praticable, et un panneau indique où elle conduit"
+
+#: assets/data/changelog.json
+msgid "Every word you read is in a new, rounder typeface: the dialogue, the menus, the HUD, the journal, the shops and every screen"
+msgstr "Chaque mot que vous lisez a une nouvelle police, plus ronde : les dialogues, les menus, l'interface, le journal, les boutiques et tous les écrans"
 
 #: assets/data/changelog.json
 msgid "Everyone casts a shadow, and a quiet vignette frames the world"
@@ -4109,6 +4137,10 @@ msgid "Gold at Work"
 msgstr "L'or au travail"
 
 #: assets/data/changelog.json
+msgid "Golden Hours"
+msgstr "Heures dorées"
+
+#: assets/data/changelog.json
 msgid "Gone Fishing"
 msgstr "Partis pêcher"
 
@@ -4259,6 +4291,10 @@ msgstr "La création du héros présente ses trois compétences comme un aperçu
 #: assets/data/changelog.json
 msgid "Hero creation shows the hero as they will really start, without the colour looks nobody kept; the stats have icons, pips against the best of all the roles and their full names, and the starting skills are chips with their icons, a click or PgUp/PgDn reading each"
 msgstr "La création du héros le montre tel qu'il commencera vraiment, sans les couleurs que personne ne gardait ; les stats ont leurs icônes, des crans face au meilleur de tous les rôles et leur nom complet, et les compétences de départ sont des pastilles avec leur icône, un clic ou PgUp/PgDn pour lire chacune"
+
+#: assets/data/changelog.json
+msgid "Heroes made before this version have no lantern: buy yours at Odo's"
+msgstr "Les héros créés avant cette version n'ont pas de lanterne : achetez la vôtre chez Odo"
 
 #: assets/data/changelog.json
 msgid "Heroes saved before this update don't load any more (the game isn't in beta yet); their slot says so and can be cleared"
@@ -5033,6 +5069,10 @@ msgid "No Sale by Accident"
 msgstr "Rien sans le vouloir"
 
 #: assets/data/changelog.json
+msgid "No light follows the hero any more: at night the town's lamps, the lit windows, the fires and the torches light the way"
+msgstr "Plus aucune lumière ne suit le héros : la nuit, les lampes de la ville, les fenêtres allumées, les feux et les torches éclairent le chemin"
+
+#: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
 msgstr "Fini les embuscades. Les monstres sont désormais VISIBLES dans les terres sauvages - regardez-les rôder, choisissez vos combats"
 
@@ -5149,6 +5189,10 @@ msgid "Odo goes general goods: food, sundries, and he still buys anything"
 msgstr "Odo passe au bazar : nourriture, articles divers, et il achète toujours de tout"
 
 #: assets/data/changelog.json
+msgid "Odo sells a Tin Lantern for 40 gold: carried in the hand away from the shield, its glass cold by day and lit at night, it brings your own pool of light back"
+msgstr "Odo vend une Lanterne en fer-blanc pour 40 pièces d'or : portée à la main, du côté opposé au bouclier, sa vitre froide le jour et allumée la nuit, elle vous rend votre propre halo de lumière"
+
+#: assets/data/changelog.json
 msgid "Oilskin"
 msgstr "Ciré"
 
@@ -5255,6 +5299,10 @@ msgstr "Sur le web, la musique s'efface désormais aussi en douceur quand une sc
 #: assets/data/changelog.json
 msgid "On the web, the music now fades out softly as you go through a door or a gate and comes back after, instead of stopping dead mid-note while the new place is built"
 msgstr "Sur le web, la musique s'efface désormais en douceur quand on passe une porte ou une grille, puis revient, au lieu de s'arrêter net au milieu d'une note pendant que le nouveau lieu se construit"
+
+#: assets/data/changelog.json
+msgid "Once Aske settles in Pixelheim, the lantern reaches a third further"
+msgstr "Une fois Aske installé à Pixelheim, la lanterne porte un tiers plus loin"
 
 #: assets/data/changelog.json
 msgid "Once Rimefang falls, an ice slide takes you back down to the foot of Liane's stair"
@@ -5511,6 +5559,10 @@ msgstr "Pip et Nell ont désormais leur propre visage à taille d'enfant, et Mor
 #: assets/data/changelog.json
 msgid "Pitched Tents"
 msgstr "Tentes dressées"
+
+#: assets/data/changelog.json
+msgid "Pixel letters stay where they belong: the title, the damage, gold and XP numbers over the world, and the keys"
+msgstr "Les lettres en pixels restent là où elles vont bien : le titre, les nombres de dégâts, d'or et d'expérience au-dessus du monde, et les touches"
 
 #: assets/data/changelog.json
 msgid "Pixelheim can grow into a City once the dragon is free"
@@ -7177,6 +7229,10 @@ msgid "The first dream's voice is Morvax's now"
 msgstr "La voix du premier rêve est désormais celle de Morvax"
 
 #: assets/data/changelog.json
+msgid "The first night under the sky without one, a hint says where to buy it"
+msgstr "La première nuit à la belle étoile sans lanterne, un conseil vous dit où en acheter une"
+
+#: assets/data/changelog.json
 msgid "The first quest you take shows where the journal is, and every accepted quest says so"
 msgstr "La première quête acceptée montre où se trouve le journal, et chaque quête acceptée le rappelle"
 
@@ -7589,6 +7645,10 @@ msgid "The test suite tightened its bolts: shared walking, chasing and fighting 
 msgstr "La suite de tests a resserré ses boulons : des utilitaires partagés de marche, de poursuite et de combat remplacent une douzaine de copies privées, et le câblage équiper/lâcher/point de compétence a reçu ses premiers tests directs"
 
 #: assets/data/changelog.json
+msgid "The text is a little larger, and every page keeps its room, with Large text too"
+msgstr "Le texte est un peu plus grand, et chaque page garde sa place, en grand texte aussi"
+
+#: assets/data/changelog.json
 msgid "The three renderers now share one camera, one day/night clock and one interaction-prompt rule - the classic renderer's prompt had quietly drifted; it agrees with the others again"
 msgstr "Les trois moteurs de rendu partagent désormais une caméra, une horloge jour/nuit et une règle d'invite d'interaction - l'invite du rendu classique avait discrètement dérivé ; elle s'accorde de nouveau avec les autres"
 
@@ -7707,6 +7767,10 @@ msgstr "Le puits se trouve là où il est dessiné : vous ne marchez plus sur 
 #: assets/data/changelog.json
 msgid "The wind moves the world: trees, wheat and flowers sway, their tops more than their feet, as gusts roll across the land"
 msgstr "Le vent anime le monde : arbres, blé et fleurs se balancent, la cime plus que le pied, au gré des rafales qui traversent les terres"
+
+#: assets/data/changelog.json
+msgid "The windows light one by one before the street lamps, and a lamp's pool of light now waits for its glass to be lit"
+msgstr "Les fenêtres s'allument une à une avant les lampadaires, et la flaque de lumière d'une lampe attend désormais que sa vitre soit allumée"
 
 #: assets/data/changelog.json
 msgid "The woods are worked out once a session: going back into the Deepwood, or seeing it drawn in beside you, now takes half the time, and the towns and the snowy north are quicker too"
@@ -8167,6 +8231,10 @@ msgstr "Avec « Réduire les animations », la caméra reste immobile et vot
 #: assets/data/changelog.json
 msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
 msgstr "Avec « Réduire les animations », le vent tombe, et l'eau et les nuages s'immobilisent"
+
+#: assets/data/changelog.json
+msgid "With Reduce motion the mist doesn't drift"
+msgstr "Avec Réduire les animations, la brume ne dérive pas"
 
 #: assets/data/changelog.json
 msgid "With Reduce motion the scene holds still, and the world behind the title rests, so the title costs no more to draw than before"
@@ -10771,6 +10839,10 @@ msgstr "Six touches prises : placez {skill} dans Compétences ({key:skills})."
 #: assets/data/hints.json
 msgid "Banked gold earns a little daily and is safe when you fall."
 msgstr "L'or en banque rapporte chaque jour et reste à l'abri si vous tombez."
+
+#: assets/data/hints.json
+msgid "Dark out? Odo sells lanterns: carry one and it lights your way."
+msgstr "Il fait noir ? Odo vend des lanternes qui éclairent votre chemin."
 
 #: assets/data/hints.json
 msgid "Face the notice board and press {key:interact} to fund the village's projects."

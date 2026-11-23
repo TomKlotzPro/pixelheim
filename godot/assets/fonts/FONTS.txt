@@ -1,11 +1,17 @@
-Fonts for the Godot build. Both are pixel fonts, rendered at their own pixel
-size and scaled by whole numbers only (scripts/ui_style.gd), so every letter
-sits on the same 2x grid as the frames around it.
+Fonts for the Godot build (scripts/ui_style.gd).
 
+- Nunito-Regular.ttf, Nunito-Bold.ttf  Nunito by Vernon Adams, Jacques Le
+  Bailly and the Nunito Project Authors, SIL Open Font License 1.1 (licence
+  in Nunito-OFL.txt), via fonts.google.com/specimen/Nunito (the static cuts
+  of Google Fonts' download, unchanged). Every word read: the dialogue, the
+  menus, the HUD, the journal, the shops. Drawn smooth at whole pixels, 20 on
+  the canvas and 30 for screen titles, its line box cut to Pixeloid's (22,
+  33) so the pages keep their room (PIX-533). Nunito-Regular.ttf is the
+  project's default font (gui/theme/custom_font).
 - PixeloidSans(-Bold).ttf  Pixeloid by GGBotNet, SIL Open Font License 1.1
-  (licence in Pixeloid-LICENSE.txt), via ggbot.itch.io/pixeloid-font. All the
-  game's text: drawn at 9 px, shown at 18 (2x) for what's read and 27 (3x)
-  for screen titles. PixeloidSans.ttf is the project's default font
-  (gui/theme/custom_font).
+  (licence in Pixeloid-LICENSE.txt), via ggbot.itch.io/pixeloid-font. A pixel
+  font, drawn at its own 9 px and scaled by whole numbers only: the numbers
+  and words floating over the world, the keycaps' letters, and the arrows
+  Nunito lacks (its fallback, ← ↑ → ↓).
 - press-start-2p.woff2     Press Start 2P by CodeMan38, SIL Open Font License
   1.1. The title's logo and menu (UiStyle.logo_font).

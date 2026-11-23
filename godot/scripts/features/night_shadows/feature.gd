@@ -1,6 +1,6 @@
 extends Feature
 ## areas: town field dungeon night
-## The lantern's and the lamps' shadows in the harness (PIX-490): the layer
+## The lamps' shadows in the harness (PIX-490): the layer
 ## that lays the occluders (NightShadowsLayer) and the report's
 ## nightshadows=, its row beside this script and its flows in
 ## tools/flows.d/night_shadows.txt. The rules are NightShadows'

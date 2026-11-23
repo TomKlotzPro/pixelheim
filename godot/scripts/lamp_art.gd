@@ -11,6 +11,8 @@ class_name LampArt
 ## torch stands on a stake (`stake`). Pixelheim's lamps come in two more
 ## looks (PIX-524: every lamp was the one post): a lamp on a bracket for a
 ## house's corner and the square's post with a lantern either side (`look`).
+## The hero's own Tin Lantern hangs in their hand (PIX-530, `hand`), its
+## glass lit over it in the dark (`hand_glass`).
 ## Pictures are rows of characters, one a pixel, keyed in PALETTE: art made
 ## in code, not cut from a sheet.
 
@@ -198,11 +200,22 @@ static var _stake: ImageTexture
 static var _panes: ImageTexture
 static var _day_panes: ImageTexture
 static var _recess_panes: ImageTexture
+static var _hand: ImageTexture
+static var _hand_glass: ImageTexture
 
 
 ## The street lamp, cold (its post and lantern, by day and night alike).
 static func post() -> ImageTexture:
 	return look("post")["cold"]
+
+
+## The Tin Lantern in the hero's hand (PIX-530), 3x5, gripped by its ring
+## on the top row: an iron cap, its glass cold (the street lamp's by day) and
+## its foot. Small as a hand is on Shade's figures: the hands hang two rows
+## over the feet, so it reaches no lower than they do (PunyArt.held_at).
+const HAND := [".o.", "oio", "oGo", "ogo", "ooo"]
+## Its glass lit, in LIT's colours: drawn over HAND, unshaded, in the dark.
+const HAND_LIT := ["...", "...", ".Y.", ".a.", "..."]
 
 
 ## How big the lamp is, in pixels: its foot on the bottom row.
@@ -242,6 +255,20 @@ static func stake() -> ImageTexture:
 	if _stake == null:
 		_stake = ImageTexture.create_from_image(picture(STAKE))
 	return _stake
+
+
+## The Tin Lantern in the hero's hand (HAND), cold.
+static func hand() -> ImageTexture:
+	if _hand == null:
+		_hand = ImageTexture.create_from_image(picture(HAND))
+	return _hand
+
+
+## Its glass lit (HAND_LIT), clear but for the glass: over hand() at night.
+static func hand_glass() -> ImageTexture:
+	if _hand_glass == null:
+		_hand_glass = ImageTexture.create_from_image(picture(HAND_LIT))
+	return _hand_glass
 
 
 ## The window tile's glass lit (the frame stays in the night): drawn over a

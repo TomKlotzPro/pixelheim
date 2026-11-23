@@ -12,14 +12,31 @@ func _at(share: float) -> float:
 	return share * DayNight.DAY_CYCLE_STEPS
 
 
-func test_the_day_turns_gold_orange_and_blue() -> void:
+func test_the_day_turns_gold_then_peach_rose_violet_and_blue() -> void:
+	# The golden hours (PIX-526): a pale gold morning, two hours of evening.
+	assert_eq(Lights.outdoor(0.0), Lights.MORNING, "six is pale gold")
+	assert_ne(Lights.outdoor(0.0), Lights.DAY, "six is no longer noon")
+	assert_eq(Lights.outdoor(_at(2.0 / 24.0)), Lights.DAY, "plain daylight from eight")
 	assert_eq(Lights.outdoor(_at(0.2)), Lights.DAY, "plain daylight")
-	assert_eq(Lights.outdoor(_at(0.53)), Lights.DUSK, "an orange dusk")
+	assert_eq(Lights.outdoor(_at(12.0 / 24.0)), Lights.PEACH, "peach at six in the evening")
+	assert_eq(Lights.outdoor(_at(13.0 / 24.0)), Lights.ROSE, "rose at seven")
+	assert_eq(Lights.outdoor(_at(14.0 / 24.0)), Lights.VIOLET, "violet at eight")
 	assert_eq(Lights.outdoor(_at(0.75)), Lights.NIGHT, "a blue night")
-	assert_eq(Lights.outdoor(_at(0.93)), Lights.DAWN, "a gold dawn")
+	assert_eq(Lights.outdoor(_at(0.86)), Lights.NIGHT, "the night's end kept")
+	assert_eq(Lights.outdoor(_at(0.93)), Lights.DAWN, "a gold dawn, where the Bells' dawn reads it")
+	var wrap := Lights.outdoor(_at(1.0) - 0.01)
+	assert_almost_eq(wrap.g, Lights.MORNING.g, 0.001, "the wheel comes round to the morning")
+	assert_almost_eq(wrap.b, Lights.MORNING.b, 0.001)
 	assert_eq(Lights.darkness(Lights.DAY), 0.0, "no lamp shows by day")
 	assert_eq(Lights.darkness(Lights.NIGHT), 1.0, "every lamp shows at night")
-	assert_between(Lights.darkness(Lights.DUSK), 0.0, 0.5, "they start to at dusk")
+	assert_lt(Lights.darkness(Lights.MORNING), 0.1, "the morning is bright")
+	assert_lt(Lights.darkness(Lights.PEACH), Lights.darkness(Lights.ROSE), "the evening deepens")
+	assert_lt(Lights.darkness(Lights.ROSE), Lights.darkness(Lights.VIOLET))
+	assert_lt(Lights.darkness(Lights.VIOLET), 1.0, "and is not yet night")
+	assert_true(Lights.PEACH.r > Lights.PEACH.g and Lights.PEACH.g > Lights.PEACH.b, "peach leans warm")
+	assert_gte(Lights.ROSE.b, Lights.ROSE.g, "rose leans pink, not orange")
+	assert_true(Lights.VIOLET.b > Lights.VIOLET.r and Lights.VIOLET.b > Lights.VIOLET.g, "violet leans blue")
+	assert_eq(Lights.MORNING.r, 1.0, "the morning gold, never grey")
 
 
 func test_each_place_has_its_own_dark() -> void:

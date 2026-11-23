@@ -5,7 +5,7 @@ extends MapLayer
 ## the ground and everything lying flat on it, under what stands, drawn by
 ## shaders/puddles.gdshader - the ground darker while it is wet, and
 ## puddles gathering in the hollows of the paths and, fewer, of the grass,
-## mirroring the sky by day and the lamps, the lantern and the lightning
+## mirroring the sky by day and the lamps, a carried lantern and the lightning
 ## at night. Where puddles may lie is a mask of the map's own cells (a
 ## cell a texel: paths whole, grass less, nothing on water, rock, sand,
 ## snow, ash or under a roof), read softly so no puddle ends on a cell's

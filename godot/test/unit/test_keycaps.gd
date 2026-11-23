@@ -72,3 +72,14 @@ func test_a_rebound_key_relabels_its_cap() -> void:
 	UiStyle.keycap_text(cap, "F")
 	assert_eq(cap.label.text, "F")
 	assert_true("F" in cap.keys)
+
+
+## A cap's letter is pixel art like the cap round it, on the UI's 2x and the
+## world's 1x alike (PIX-533): Nunito is the words', and has no arrows.
+func test_a_caps_letter_is_in_the_pixel_face() -> void:
+	var cap: Keycap = autofree(UiStyle.keycap("↑"))
+	assert_eq(cap.label.get_theme_font("font"), UiStyle.pixel_font())
+	assert_eq(cap.label.get_theme_font_size("font_size"), UiStyle.BODY_PX * UiStyle.UI_SCALE, "at 2x")
+	var world: Keycap = autofree(UiStyle.world_keycap("E"))
+	assert_eq(world.label.get_theme_font("font"), UiStyle.pixel_font())
+	assert_eq(world.label.get_theme_font_size("font_size"), UiStyle.BODY_PX, "at 1x, the camera's to enlarge")
