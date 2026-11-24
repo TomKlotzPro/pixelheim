@@ -18777,7 +18777,19 @@ msgid "%s is now %s."
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "A dark line every third row and darker corners, like an old television. For the look alone."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "A tip the first time something new comes up, each said once. Turn them off once you know your way."
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "Access"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "All the sound at once, then the music, the effects and the ambience, each on its own slider."
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18785,7 +18797,15 @@ msgid "Ambience volume"
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "Attack marks wear hazard stripes and a dark outline, and bites and shots show their path: read by pattern, not by red."
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "CRT scanlines"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Choose a key and press {key:interact}, then its new key; Esc keeps the old. A key another action holds swaps with it."
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18797,11 +18817,35 @@ msgid "Controls"
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "Dialogue, story, hints and the log in bigger type, and passing lines stay half as long again."
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "Display"
 msgstr ""
 
 #: scripts/options_screen.gd
 msgid "Effects volume"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Every key back to the one the game came with."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Every key you can change. The arrows, Enter, Space and Tab always work beside them."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Everything the game plays, at once. Muted silences it and keeps your three volumes."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Fights, spells, the menus and the short jingles. The slider ticks at the level it sets."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Flames, lamps and other bright things bloom softly. Off, the picture is crisper."
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18817,7 +18861,19 @@ msgid "Hints"
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "How the picture is drawn: the window, the glow, and how the lights of the night fall."
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "Keys are back to the defaults."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Lamps and your lantern shape what they light: the side facing the flame catches it. Off, light falls flat."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Lamps, fires, the moon and lightning outline what stands near them at night. Off, nothing is outlined."
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18833,11 +18889,23 @@ msgid "Light relief"
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "Lightning flashes across the whole sky. Off, a strike is one slow, soft brightening."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Marks over people with something to ask or tell, and the arrow to your next step, on the map too. Off, you find your own way."
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "Music volume"
 msgstr ""
 
 #: scripts/options_screen.gd
 msgid "Muted"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "No screen shake, pops or rushing camera; the wind drops and the water lies still."
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18850,6 +18918,10 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "Options"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Outdoors at night, lamps, fires and lightning cast long shadows. Off, the ground stays plain to read."
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18886,6 +18958,26 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "System (%s)"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "The game takes the whole screen. Off, it stays in a window."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "The language the game speaks. The world reloads in it at once, right where you stand."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "The language, larger text, calmer motion and light, and the help the game gives along the way."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "The music alone. At its lowest the world is left to its own sounds."
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "The weather, the birds and the fires. Lower it when a long rain wears on you."
 msgstr ""
 
 #: scripts/options_screen.gd

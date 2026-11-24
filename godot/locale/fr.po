@@ -18777,16 +18777,36 @@ msgid "%s is now %s."
 msgstr "%s : désormais %s."
 
 #: scripts/options_screen.gd
+msgid "A dark line every third row and darker corners, like an old television. For the look alone."
+msgstr "Une ligne sombre tous les trois rangs et des coins assombris, comme sur un vieux téléviseur. Pour le plaisir des yeux."
+
+#: scripts/options_screen.gd
+msgid "A tip the first time something new comes up, each said once. Turn them off once you know your way."
+msgstr "Une astuce la première fois qu'une nouveauté se présente, dite une seule fois. À couper quand vous connaissez le chemin."
+
+#: scripts/options_screen.gd
 msgid "Access"
 msgstr "Accessibilité"
+
+#: scripts/options_screen.gd
+msgid "All the sound at once, then the music, the effects and the ambience, each on its own slider."
+msgstr "Tout le son d'un coup, puis la musique, les effets et l'ambiance, chacun sur son curseur."
 
 #: scripts/options_screen.gd
 msgid "Ambience volume"
 msgstr "Volume de l'ambiance"
 
 #: scripts/options_screen.gd
+msgid "Attack marks wear hazard stripes and a dark outline, and bites and shots show their path: read by pattern, not by red."
+msgstr "Les marques d'attaque portent des rayures et un contour sombre, et morsures et tirs montrent leur trajet : tout se lit au motif, pas au rouge."
+
+#: scripts/options_screen.gd
 msgid "CRT scanlines"
 msgstr "Lignes CRT"
+
+#: scripts/options_screen.gd
+msgid "Choose a key and press {key:interact}, then its new key; Esc keeps the old. A key another action holds swaps with it."
+msgstr "Choisissez une touche et appuyez sur {key:interact}, puis sur la nouvelle ; Esc garde l'ancienne. Une touche déjà prise par une autre action s'échange avec elle."
 
 #: scripts/options_screen.gd
 msgid "Clear warnings"
@@ -18797,12 +18817,36 @@ msgid "Controls"
 msgstr "Commandes"
 
 #: scripts/options_screen.gd
+msgid "Dialogue, story, hints and the log in bigger type, and passing lines stay half as long again."
+msgstr "Dialogues, histoire, astuces et journal de combat en plus gros, et les lignes de passage restent moitié plus longtemps."
+
+#: scripts/options_screen.gd
 msgid "Display"
 msgstr "Affichage"
 
 #: scripts/options_screen.gd
 msgid "Effects volume"
 msgstr "Volume des effets"
+
+#: scripts/options_screen.gd
+msgid "Every key back to the one the game came with."
+msgstr "Chaque touche revient à celle d'origine."
+
+#: scripts/options_screen.gd
+msgid "Every key you can change. The arrows, Enter, Space and Tab always work beside them."
+msgstr "Toutes les touches que vous pouvez changer. Les flèches, Entrée, Espace et Tab marchent toujours en plus."
+
+#: scripts/options_screen.gd
+msgid "Everything the game plays, at once. Muted silences it and keeps your three volumes."
+msgstr "Tout ce que le jeu fait entendre, d'un coup. Coupé, il se tait et garde vos trois volumes."
+
+#: scripts/options_screen.gd
+msgid "Fights, spells, the menus and the short jingles. The slider ticks at the level it sets."
+msgstr "Combats, sorts, menus et petits jingles. Le curseur tinte au niveau qu'il règle."
+
+#: scripts/options_screen.gd
+msgid "Flames, lamps and other bright things bloom softly. Off, the picture is crisper."
+msgstr "Flammes, lampes et tout ce qui brille s'entourent d'un doux halo. Désactivé, l'image est plus nette."
 
 #: scripts/options_screen.gd
 msgid "Flashes"
@@ -18817,8 +18861,20 @@ msgid "Hints"
 msgstr "Astuces"
 
 #: scripts/options_screen.gd
+msgid "How the picture is drawn: the window, the glow, and how the lights of the night fall."
+msgstr "La façon dont l'image est dessinée : la fenêtre, les lueurs, et la manière dont tombent les lumières de la nuit."
+
+#: scripts/options_screen.gd
 msgid "Keys are back to the defaults."
 msgstr "Touches par défaut rétablies."
+
+#: scripts/options_screen.gd
+msgid "Lamps and your lantern shape what they light: the side facing the flame catches it. Off, light falls flat."
+msgstr "Les lampes et votre lanterne sculptent ce qu'elles éclairent : le côté tourné vers la flamme s'allume. Désactivé, la lumière tombe à plat."
+
+#: scripts/options_screen.gd
+msgid "Lamps, fires, the moon and lightning outline what stands near them at night. Off, nothing is outlined."
+msgstr "La nuit, lampes, feux, lune et éclairs bordent d'un liseré ce qui se tient près d'eux. Désactivé, plus aucun liseré."
 
 #: scripts/options_screen.gd
 msgid "Language"
@@ -18833,12 +18889,24 @@ msgid "Light relief"
 msgstr "Relief des lumières"
 
 #: scripts/options_screen.gd
+msgid "Lightning flashes across the whole sky. Off, a strike is one slow, soft brightening."
+msgstr "L'éclair illumine tout le ciel d'un coup. Désactivé, la foudre n'est qu'une lente et douce lueur."
+
+#: scripts/options_screen.gd
+msgid "Marks over people with something to ask or tell, and the arrow to your next step, on the map too. Off, you find your own way."
+msgstr "Des marques au-dessus de ceux qui ont une demande ou une nouvelle, et la flèche vers votre prochaine étape, sur la carte aussi. Désactivé, à vous de trouver le chemin."
+
+#: scripts/options_screen.gd
 msgid "Music volume"
 msgstr "Volume de la musique"
 
 #: scripts/options_screen.gd
 msgid "Muted"
 msgstr "Coupé"
+
+#: scripts/options_screen.gd
+msgid "No screen shake, pops or rushing camera; the wind drops and the water lies still."
+msgstr "Ni tremblement d'écran, ni mots qui bondissent, ni caméra qui file ; le vent tombe et l'eau s'immobilise."
 
 #: scripts/options_screen.gd
 msgid "Off"
@@ -18851,6 +18919,10 @@ msgstr "Activé"
 #: scripts/options_screen.gd
 msgid "Options"
 msgstr "Options"
+
+#: scripts/options_screen.gd
+msgid "Outdoors at night, lamps, fires and lightning cast long shadows. Off, the ground stays plain to read."
+msgstr "Dehors, la nuit, lampes, feux et éclairs projettent de longues ombres. Désactivé, le sol reste simple à lire."
 
 #: scripts/options_screen.gd
 msgid "Press a key..."
@@ -18887,6 +18959,26 @@ msgstr "Son"
 #: scripts/options_screen.gd
 msgid "System (%s)"
 msgstr "Système (%s)"
+
+#: scripts/options_screen.gd
+msgid "The game takes the whole screen. Off, it stays in a window."
+msgstr "Le jeu prend tout l'écran. Désactivé, il reste dans une fenêtre."
+
+#: scripts/options_screen.gd
+msgid "The language the game speaks. The world reloads in it at once, right where you stand."
+msgstr "La langue que parle le jeu. Le monde se recharge aussitôt dans cette langue, là où vous êtes."
+
+#: scripts/options_screen.gd
+msgid "The language, larger text, calmer motion and light, and the help the game gives along the way."
+msgstr "La langue, un texte plus grand, des mouvements et des lumières plus calmes, et l'aide que le jeu vous donne en chemin."
+
+#: scripts/options_screen.gd
+msgid "The music alone. At its lowest the world is left to its own sounds."
+msgstr "La musique seule. Au plus bas, le monde reste à ses propres bruits."
+
+#: scripts/options_screen.gd
+msgid "The weather, the birds and the fires. Lower it when a long rain wears on you."
+msgstr "Le temps qu'il fait, les oiseaux et les feux. À baisser quand une longue pluie vous lasse."
 
 #: scripts/options_screen.gd
 msgid "adjust"

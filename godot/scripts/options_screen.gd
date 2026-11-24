@@ -8,7 +8,8 @@ extends Screen
 ## move a slider or flip a switch, E flips a switch too and rebinds a key
 ## (the next key pressed takes it; Esc cancels); on a key's row A/D cross
 ## to the other column (PIX-484). Everything is saved at once in
-## GameSettings. Esc closes.
+## GameSettings. Esc closes. Under the rows a line says what the chosen one
+## does, or what the tab holds while the keys are on the tabs (PIX-550).
 
 ## The tabs, by the names they show.
 const TABS := ["Sound", "Display", "Access", "Controls"]
@@ -20,6 +21,16 @@ const KEYS_LEFT := 7
 ## a tab holds seven rows a column at most (PIX-484 had cut it to 3 for
 ## seventeen rows and four headings down one).
 const ROW_PAD := 6
+## What each tab holds, said under its rows while the keys are on the tabs
+## (PIX-550), in TABS' order.
+const TAB_HELP := [
+	"All the sound at once, then the music, the effects and the ambience, each on its own slider.",
+	"How the picture is drawn: the window, the glow, and how the lights of the night fall.",
+	"The language, larger text, calmer motion and light, and the help the game gives along the way.",
+	"Every key you can change. The arrows, Enter, Space and Tab always work beside them.",
+]
+## Every key's line: how one is rebound, said once for them all.
+const KEYS_HELP := "Choose a key and press {key:interact}, then its new key; Esc keeps the old. A key another action holds swaps with it."
 
 ## The row the next Options open on and its tab, set as a language rebuilds
 ## the world in it (PIX-428: the reload closed Options and every screen
@@ -41,6 +52,9 @@ var listening := ""
 ## A tab's rows mid-page in the left one; the keys fill both.
 var columns: Array[VBoxContainer] = []
 var status: Label
+## The line under the rows (PIX-550): what the chosen row does, or what the
+## tab holds; made again with the rows.
+var help: Label
 ## The keys' footer, and the one shown while a key is awaited (PIX-434).
 var footer: Control
 var waiting_footer: Control
@@ -122,45 +136,47 @@ func _slides(row: Dictionary) -> bool:
 
 
 ## A switch's row on tab `at`, for the setting named `setting`.
-func _switch_row(at: int, label: String, setting: String) -> Dictionary:
-	return {"tab": at, "label": label, "value": "On" if GameState.settings.get(setting) else "Off", "adjust": _flip.bind(setting)}
+func _switch_row(at: int, label: String, setting: String, says: String) -> Dictionary:
+	return {"tab": at, "label": label, "value": "On" if GameState.settings.get(setting) else "Off", "adjust": _flip.bind(setting), "help": says}
 
 
-## Every tab's rows, each with its `tab` (TABS' index) and a control.
+## Every tab's rows, each with its `tab` (TABS' index), a control and its
+## `help`: what it does and when to turn it off, written from what the
+## setting's readers do (PIX-550).
 func _build() -> Array[Dictionary]:
 	var settings := GameState.settings
 	var out: Array[Dictionary] = []
-	out.append({"tab": 0, "label": "Sound", "value": "Muted" if settings.muted else "On", "adjust": _flip.bind("muted")})
-	out.append({"tab": 0, "label": "Music volume", "value": Text.percent(roundi(settings.music_volume * 100)), "adjust": _volume.bind("music")})
-	out.append({"tab": 0, "label": "Effects volume", "value": Text.percent(roundi(settings.sfx_volume * 100)), "adjust": _volume.bind("sfx")})
-	out.append({"tab": 0, "label": "Ambience volume", "value": Text.percent(roundi(settings.ambience_volume * 100)), "adjust": _volume.bind("ambience")})
-	out.append(_switch_row(1, "Fullscreen", "fullscreen"))
-	out.append(_switch_row(1, "CRT scanlines", "scanlines"))
-	out.append(_switch_row(1, "Glow", "glow"))
-	out.append(_switch_row(1, "Shadows", "shadows"))
+	out.append({"tab": 0, "label": "Sound", "value": "Muted" if settings.muted else "On", "adjust": _flip.bind("muted"), "help": "Everything the game plays, at once. Muted silences it and keeps your three volumes."})
+	out.append({"tab": 0, "label": "Music volume", "value": Text.percent(roundi(settings.music_volume * 100)), "adjust": _volume.bind("music"), "help": "The music alone. At its lowest the world is left to its own sounds."})
+	out.append({"tab": 0, "label": "Effects volume", "value": Text.percent(roundi(settings.sfx_volume * 100)), "adjust": _volume.bind("sfx"), "help": "Fights, spells, the menus and the short jingles. The slider ticks at the level it sets."})
+	out.append({"tab": 0, "label": "Ambience volume", "value": Text.percent(roundi(settings.ambience_volume * 100)), "adjust": _volume.bind("ambience"), "help": "The weather, the birds and the fires. Lower it when a long rain wears on you."})
+	out.append(_switch_row(1, "Fullscreen", "fullscreen", "The game takes the whole screen. Off, it stays in a window."))
+	out.append(_switch_row(1, "CRT scanlines", "scanlines", "A dark line every third row and darker corners, like an old television. For the look alone."))
+	out.append(_switch_row(1, "Glow", "glow", "Flames, lamps and other bright things bloom softly. Off, the picture is crisper."))
+	out.append(_switch_row(1, "Shadows", "shadows", "Outdoors at night, lamps, fires and lightning cast long shadows. Off, the ground stays plain to read."))
 	# The lamps and the lantern shaping the art (PIX-528).
-	out.append(_switch_row(1, "Light relief", "relief"))
+	out.append(_switch_row(1, "Light relief", "relief", "Lamps and your lantern shape what they light: the side facing the flame catches it. Off, light falls flat."))
 	# Every light's rim on what stands (PIX-531, PIX-546).
-	out.append(_switch_row(1, "Rim light", "rim"))
+	out.append(_switch_row(1, "Rim light", "rim", "Lamps, fires, the moon and lightning outline what stands near them at night. Off, nothing is outlined."))
 	# Accessibility (PIX-160).
-	out.append({"tab": 2, "label": "Language", "value": _language_name(settings.language), "adjust": _language})
-	out.append(_switch_row(2, "Large reading text", "large_text"))
-	out.append(_switch_row(2, "Reduce motion", "reduce_motion"))
+	out.append({"tab": 2, "label": "Language", "value": _language_name(settings.language), "adjust": _language, "help": "The language the game speaks. The world reloads in it at once, right where you stand."})
+	out.append(_switch_row(2, "Large reading text", "large_text", "Dialogue, story, hints and the log in bigger type, and passing lines stay half as long again."))
+	out.append(_switch_row(2, "Reduce motion", "reduce_motion", "No screen shake, pops or rushing camera; the wind drops and the water lies still."))
 	# Lightning as a soft brightening instead (PIX-491).
-	out.append(_switch_row(2, "Flashes", "flashes"))
-	out.append(_switch_row(2, "Clear warnings", "clear_warnings"))
-	out.append(_switch_row(2, "Hints", "hints"))
-	out.append(_switch_row(2, "Quest markers", "quest_marks"))
+	out.append(_switch_row(2, "Flashes", "flashes", "Lightning flashes across the whole sky. Off, a strike is one slow, soft brightening."))
+	out.append(_switch_row(2, "Clear warnings", "clear_warnings", "Attack marks wear hazard stripes and a dark outline, and bites and shots show their path: read by pattern, not by red."))
+	out.append(_switch_row(2, "Hints", "hints", "A tip the first time something new comes up, each said once. Turn them off once you know your way."))
+	out.append(_switch_row(2, "Quest markers", "quest_marks", "Marks over people with something to ask or tell, and the arrow to your next step, on the map too. Off, you find your own way."))
 	var keys := 0
 	for action: String in Controls.BINDABLE:
 		var waiting := listening == action
 		out.append({
 			"tab": 3, "label": Controls.BINDABLE[action][0],
 			"value": "Press a key..." if waiting else Controls.key_label(Controls.key_for(action, settings.bindings)),
-			"rebind": action, "column": 0 if keys < KEYS_LEFT else 1,
+			"rebind": action, "column": 0 if keys < KEYS_LEFT else 1, "help": KEYS_HELP,
 		})
 		keys += 1
-	out.append({"tab": 3, "label": "Reset keys to defaults", "value": "", "act": _reset_keys, "column": 1})
+	out.append({"tab": 3, "label": "Reset keys to defaults", "value": "", "act": _reset_keys, "column": 1, "help": "Every key back to the one the game came with."})
 	return out
 
 
@@ -217,6 +233,13 @@ func _refresh() -> void:
 		inner.add_child(UiStyle.label(row["value"], 15, UiStyle.LAMP if chosen else UiStyle.FADED))
 		line.gui_input.connect(_on_row_click.bind(index))
 		list.add_child(line)
+	# Under the rows, in the reading type (Large reading text grows it as it
+	# is switched on); the keys' line names them as they are bound now.
+	var gap := Control.new()
+	gap.custom_minimum_size.y = UiStyle.GAP
+	columns[0].add_child(gap)
+	help = Layout.wrapped(UiStyle.label(Controls.say(Text.t(TAB_HELP[tab] if on_tabs else String(rows[selected]["help"]))), UiStyle.reading(UiStyle.TEXT), UiStyle.INK), columns[0].custom_minimum_size.x)
+	columns[0].add_child(help)
 
 
 ## "" follows the system's language: shown as what that is.
