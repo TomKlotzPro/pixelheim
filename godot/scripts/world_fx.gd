@@ -42,7 +42,7 @@ const GAIN_TONES := {
 const OVER_FOE := Vector2(0, -26)
 const OVER_HERO := Vector2(0, -18)
 const OVER_THING := Vector2(0, -10)
-## A win's rows stack this far apart, upward (the words are 11 px tall); the
+## A win's rows stack this far apart, upward (the words' line is 9 px tall); the
 ## first comes in once the blow's number has shown, each next this long after
 ## the one below it; the whole stays up this long from the last win that
 ## joined it, rising this far.
@@ -103,18 +103,22 @@ const NUMBER_RISE := 12.0
 const REACH := 16.0 + MOST_LIFT
 
 
-## The eight ways a floating word's dark ring is drawn off it, a pixel each.
-const RING: Array[Vector2] = [
-	Vector2(-1, -1), Vector2(0, -1), Vector2(1, -1), Vector2(-1, 0),
-	Vector2(1, 0), Vector2(-1, 1), Vector2(0, 1), Vector2(1, 1),
-]
+## The words over the world are Nunito Bold (PIX-549: Tom chose it over
+## Pixeloid), this size on the canvas, drawn at CameraRig.LABEL_SCALE as
+## the foes' level tags are: a font pixel a screen pixel at play zoom, crisp
+## at any window size. Its dark outline is two pixels wide each side, which
+## the engine asks 8 for (4 drew one pixel, lost on the sand path). The
+## face is UiStyle.bold_font(), TEXT's cut: its trimmed line box is only
+## what the rows are laid out by, the same whatever the words.
+const FLOAT_PX := 24
+const FLOAT_OUTLINE := 8
 
 
 ## A word that rises and fades over where it happened (PIX-155: "dodged",
 ## "blocked"). A `big` one (PIX-211: LEVEL UP, a bell's "Dong!"; a fine or
 ## epic drop's name now rises with the rest of a win, show_gains) bursts in
-## at twice its size unless motion is reduced, then settles at the pixel
-## face's own (anything larger dwarfs the fighters), and stays longer.
+## at twice its size unless motion is reduced, then settles at the face's
+## own (anything larger dwarfs the fighters), and stays longer.
 func float_text(text: String, at: Vector2, color: Color, big := false) -> void:
 	var label := _floating(text, color)
 	label.position = Vector2(Ink.centred(_ink(label), at.x), roundf(at.y))
@@ -131,24 +135,22 @@ func float_text(text: String, at: Vector2, color: Color, big := false) -> void:
 	tween.chain().tween_callback(label.queue_free)
 
 
-## The UI's bold pixel face at its own size, ringed in the night (PIX-194):
-## the words drawn again a pixel off every way under themselves. The face's
-## own outline drew only in the letters' hollows (PIX-484: on the sand path
-## a gold "+10" read "+11", a "30" "31").
+## The UI's bold face at FLOAT_PX and the label scale (PIX-549), outlined in
+## the night (PIX-194): a smooth face takes a real outline, where the pixel
+## face's drew only in the letters' hollows and wanted stacked shadows
+## (PIX-484: on the sand path a gold "+10" read "+11", a "30" "31").
 func _floating(text: String, color: Color) -> Label:
 	var label := Label.new()
 	label.text = text
 	var look := LabelSettings.new()
-	look.font = UiStyle.pixel_font()
-	look.font_size = UiStyle.BODY_PX
+	look.font = UiStyle.bold_font()
+	look.font_size = FLOAT_PX
 	look.font_color = color
-	look.stacked_shadow_count = RING.size()
-	for i in RING.size():
-		look.set_stacked_shadow_offset(i, RING[i])
-		look.set_stacked_shadow_color(i, UiStyle.NIGHT)
-		look.set_stacked_shadow_outline_size(i, 0)
+	look.outline_size = FLOAT_OUTLINE
+	look.outline_color = UiStyle.NIGHT
 	label.label_settings = look
 	label.size = label.get_minimum_size()
+	label.scale = Vector2.ONE * CameraRig.LABEL_SCALE
 	# Bright at night too (PIX-221).
 	label.material = Lights.unshaded()
 	return label
@@ -279,7 +281,7 @@ func reach() -> Array[Rect2]:
 		var rows := Gains.rows(due["gains"])
 		var wide := 0.0
 		for row in rows:
-			wide = maxf(wide, Ink.of_text(Gains.line(row), UiStyle.pixel_font(), UiStyle.BODY_PX).size.x + GAIN_ROW)
+			wide = maxf(wide, ink_of(Gains.line(row)).size.x + GAIN_ROW)
 		var at: Vector2 = due["at"]
 		out.append(Rect2(at.x - wide / 2.0, at.y - GAIN_ROW * rows.size(), wide, GAIN_ROW * rows.size()).grow_individual(0.0, REACH, 0.0, 0.0))
 	return out
@@ -330,9 +332,21 @@ static func _drawn(label: Label) -> Rect2:
 static func _ink(label: Label) -> Rect2:
 	# Measured once a text: the pass that keeps words clear asks every frame.
 	if label.get_meta("inked", "") != label.text:
-		label.set_meta("ink", Ink.of_text(label.text, UiStyle.pixel_font(), UiStyle.BODY_PX))
+		label.set_meta("ink", ink_of(label.text))
 		label.set_meta("inked", label.text)
 	return label.get_meta("ink")
+
+
+## The pixels a floating word draws (its outline apart), in the world's
+## pixels from its label's top left: the face's ink at the label scale.
+static func ink_of(text: String) -> Rect2:
+	var ink := Ink.of_text(text, UiStyle.bold_font(), FLOAT_PX)
+	return Rect2(ink.position * CameraRig.LABEL_SCALE, ink.size * CameraRig.LABEL_SCALE)
+
+
+## The face's own measure of `text`, in the world's pixels.
+static func _measure(text: String) -> Vector2:
+	return UiStyle.bold_font().get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, FLOAT_PX) * CameraRig.LABEL_SCALE
 
 
 ## A label bursting in at twice its size (PIX-209, PIX-211), not when motion
@@ -340,9 +354,14 @@ static func _ink(label: Label) -> Rect2:
 func _pop(label: Label, tween: Tween) -> void:
 	if GameState.settings.reduce_motion:
 		return
-	label.pivot_offset = _ink(label).get_center()
-	label.scale = Vector2.ONE * 2.0
-	tween.tween_property(label, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	# The pivot is in the label's own pixels, the ink in the world's; and a
+	# pivot moves a label whose scale at rest isn't 1 (by pivot * (1 - scale)),
+	# so its place gives that back: it settles where it was put.
+	var pivot := _ink(label).get_center() / CameraRig.LABEL_SCALE
+	label.pivot_offset = pivot
+	label.position -= pivot * (1.0 - CameraRig.LABEL_SCALE)
+	label.scale = Vector2.ONE * 2.0 * CameraRig.LABEL_SCALE
+	tween.tween_property(label, "scale", Vector2.ONE * CameraRig.LABEL_SCALE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 ## A number over a head. Each lands a few pixels off the last (PIX-209), so
@@ -584,11 +603,11 @@ func _gain_row(row: Dictionary) -> Node2D:
 func _fit_row(line: Node2D) -> void:
 	var label: Label = line.get_node("text")
 	label.size = label.get_minimum_size()
-	var words := UiStyle.pixel_font().get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BODY_PX)
+	var words := _measure(label.text)
 	var ink := _ink(label)
 	var then: Label = line.get_node_or_null("then")
 	# The XP after the gold, a space's width on (the face's own).
-	var gap := UiStyle.pixel_font().get_string_size(" ", HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BODY_PX).x
+	var gap := _measure(" ").x
 	var after := gap + _ink(then).size.x if then != null else 0.0
 	var icon: Sprite2D = line.get_node_or_null("icon")
 	var side := icon.texture.get_size().x * icon.scale.x if icon != null else 0.0
