@@ -13,8 +13,9 @@ extends RefCounted
 ## (Enemy) wade; the villagers share one material and keep to their roads.
 
 ## How far a wader's feet sink, in pixels of its art: the hero stands 14
-## tall on legs of 3, so one row of leg still shows over the waterline.
-const SINK := 2
+## tall on legs of 3, so two rows of leg still show over the waterline,
+## ankle-deep (at 2 the hero read hip-deep).
+const SINK := 1
 ## A ring every so many pixels waded, spreading over RIPPLE_SECONDS through
 ## RINGS' frames.
 const STRIDE := 10.0
@@ -83,7 +84,11 @@ static func ripple(figure: Node2D, sprite: AnimatedSprite2D) -> void:
 	ring.texture = rings()
 	ring.hframes = RINGS.size()
 	ring.z_as_relative = false
-	ring.position = (figure.position + Vector2(0, sprite.position.y + foot(sprite) * sprite.scale.y)).round()
+	# Its node a pixel above the figure's, so the y-sort draws it first (PIX-548
+	# review: added after, its back arc crossed the legs), its rings drawn
+	# down at the waterline.
+	ring.position = (figure.position - Vector2(0, 1)).round()
+	ring.offset = Vector2(0, roundf(sprite.position.y + foot(sprite) * sprite.scale.y) + 1.0)
 	parent.add_child(ring)
 	var spread := ring.create_tween()
 	spread.tween_property(ring, "frame", RINGS.size() - 1, RIPPLE_SECONDS)
