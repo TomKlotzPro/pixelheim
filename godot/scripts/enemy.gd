@@ -340,6 +340,10 @@ func show_level(level: int) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# A foe crossing a map's shallows wades as the hero does (PIX-548).
+	var waded: Dictionary = world.map.shallows
+	if not waded.is_empty() or has_meta(&"waded"):
+		Wading.tread(self, sprite, waded.has(Packs.cell_of(global_position)))
 	# Resting (rest), it stands still but throws its wander's dice (the
 	# global ones), so the drops and blows they decide come out as before;
 	# called to a fight since Foes last looked, it is up this tick.

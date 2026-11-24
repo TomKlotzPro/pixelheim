@@ -174,7 +174,7 @@ func test_words_over_the_world_are_centred_by_their_ink() -> void:
 	fx.float_text("dodged", Vector2(100, 50.4), UiStyle.CREAM)
 	var word: Label = fx.get_child(0).get_child(0)
 	assert_eq(word.position, word.position.round(), "on whole pixels")
-	assert_almost_eq(word.position.x + Ink.of_text("dodged", _face(), UiStyle.BODY_PX).get_center().x, 100.0, 0.5)
+	assert_almost_eq(word.position.x + WorldFx.ink_of("dodged").get_center().x, 100.0, 0.5)
 
 
 func test_damage_numbers_land_about_the_foe_not_left_of_it() -> void:
@@ -183,7 +183,7 @@ func test_damage_numbers_land_about_the_foe_not_left_of_it() -> void:
 	for i in 40:
 		fx.float_number(12, Vector2(100, 50), Color.WHITE)
 		var number: Label = fx.get_child(-1).get_child(0)
-		var middle := number.position.x + Ink.of_text("12", _face(), UiStyle.BODY_PX).get_center().x
+		var middle := number.position.x + WorldFx.ink_of("12").get_center().x
 		assert_eq(number.position, number.position.round(), "on whole pixels")
 		assert_almost_eq(middle, 100.0, 4.5, "a few pixels either way")
 		off += middle - 100.0
@@ -212,7 +212,7 @@ func test_a_number_rises_clear_of_a_tag() -> void:
 	fx.float_number(12, Vector2(100, 50), Color.WHITE)
 	var stand: Node2D = fx.get_child(0)
 	var number: Label = stand.get_child(0)
-	var ink := Ink.of_text("12", _face(), UiStyle.BODY_PX)
+	var ink := WorldFx.ink_of("12")
 	var tag := Rect2(number.global_position + ink.position, ink.size).grow(2.0)
 	fx.keep_clear([tag] as Array[Rect2])
 	assert_lt(stand.position.y, 0.0, "lifted")
@@ -237,14 +237,14 @@ func test_a_win_rises_clear_of_a_tag() -> void:
 		var out: Array[Rect2] = []
 		for row: Node in rows:
 			var label: Label = row.get_node("text")
-			out.append(Rect2(label.global_position + Ink.of_text(label.text, _face(), UiStyle.BODY_PX).position, Ink.of_text(label.text, _face(), UiStyle.BODY_PX).size))
+			out.append(Rect2(label.global_position + WorldFx.ink_of(label.text).position, WorldFx.ink_of(label.text).size))
 		return out
 	var gap: float = words.call()[0].position.y - words.call()[1].position.y
 	var tag: Rect2 = words.call()[0].grow(2.0)
 	fx.keep_clear([tag] as Array[Rect2])
 	for rect: Rect2 in words.call():
 		assert_false(rect.intersects(tag), "clear of the tag")
-	assert_eq(words.call()[0].position.y - words.call()[1].position.y, gap, "its rows together")
+	assert_almost_eq(words.call()[0].position.y - words.call()[1].position.y, gap, 0.001, "its rows together")
 	var lifted: float = words.call()[0].position.y
 	fx.keep_clear([] as Array[Rect2])
 	assert_eq(words.call()[0].position.y, lifted, "and never back down")
@@ -257,7 +257,7 @@ func test_what_rises_stays_under_a_plate_over_it() -> void:
 	var fx: WorldFx = add_child_autofree(WorldFx.new())
 	fx.float_text("LEVEL UP", Vector2(100, 50), Color.WHITE, true)
 	var word: Label = fx.get_child(0).get_child(0)
-	var ink := Ink.of_text("LEVEL UP", _face(), UiStyle.BODY_PX)
+	var ink := WorldFx.ink_of("LEVEL UP")
 	var drawn := func() -> Rect2: return Rect2(word.global_position + ink.position, ink.size)
 	var bar := Rect2(0, drawn.call().position.y - 20, 300, 24)
 	fx.keep_clear([] as Array[Rect2], [bar] as Array[Rect2])
@@ -274,14 +274,14 @@ func test_what_rises_stays_under_a_plate_over_it() -> void:
 		var out: Array[Rect2] = []
 		for row: Node in rows:
 			var label: Label = row.get_node("text")
-			out.append(Rect2(label.global_position + Ink.of_text(label.text, _face(), UiStyle.BODY_PX).position, Ink.of_text(label.text, _face(), UiStyle.BODY_PX).size))
+			out.append(Rect2(label.global_position + WorldFx.ink_of(label.text).position, WorldFx.ink_of(label.text).size))
 		return out
 	var gap: float = words.call()[0].position.y - words.call()[1].position.y
 	var card := Rect2(300, words.call()[1].position.y - 10, 300, 20)
 	fx.keep_clear([] as Array[Rect2], [card] as Array[Rect2])
 	for rect: Rect2 in words.call():
 		assert_false(rect.intersects(card), "the win under the card")
-	assert_eq(words.call()[0].position.y - words.call()[1].position.y, gap, "its rows together")
+	assert_almost_eq(words.call()[0].position.y - words.call()[1].position.y, gap, 0.001, "its rows together")
 
 
 func test_a_wins_row_is_centred_by_its_ink() -> void:
@@ -291,7 +291,7 @@ func test_a_wins_row_is_centred_by_its_ink() -> void:
 	fx.show_gains(win, Vector2(100, 50))
 	var row: Node2D = fx.get_child(0).get_child(0)
 	var words: Label = row.get_node("text")
-	assert_almost_eq(words.position.x + Ink.of_text(words.text, _face(), UiStyle.BODY_PX).get_center().x, 0.0, 0.5)
+	assert_almost_eq(words.position.x + WorldFx.ink_of(words.text).get_center().x, 0.0, 0.5)
 
 
 ## PIX-348: talking from the cell below, the hero's head hid the villager's

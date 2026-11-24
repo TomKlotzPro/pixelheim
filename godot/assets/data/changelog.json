@@ -1,6 +1,19 @@
 {
   "releases": [
     {
+      "version": "0.401.0",
+      "date": "2026-11-24",
+      "codename": "Wading In",
+      "notes": [
+        "Options in four tabs, Sound, Display, Access and Controls: left and right turn them, down or E goes into the rows",
+        "A Rim light switch on Display: turned off, no lamp, fire, moon or lightning outlines what stands",
+        "Light relief is on for new players",
+        "Underground, the Tin Lantern and Liane's Lantern light about twice as wide and brighter, still under a torch",
+        "The Mirefen's shallows beside the boardwalks look ankle-deep, light mud and reeds beside the dark pools, and the hero and the foes wade in them, a ring at each stride",
+        "Every word floating over the world is in Nunito, as in the rest of the game: damage, gold, XP, loot, blocked, LEVEL UP"
+      ]
+    },
+    {
       "version": "0.400.0",
       "date": "2026-11-24",
       "codename": "Moon and Foam",

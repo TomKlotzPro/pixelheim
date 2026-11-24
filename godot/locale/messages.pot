@@ -2185,6 +2185,10 @@ msgid "A Real Fight"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A Rim light switch on Display: turned off, no lamp, fire, moon or lightning outlines what stands"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A Rounder Hand"
 msgstr ""
 
@@ -3769,6 +3773,10 @@ msgid "Every way out of a map reads as a way on: the road runs right to it, thro
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every word floating over the world is in Nunito, as in the rest of the game: damage, gold, XP, loot, blocked, LEVEL UP"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every word you read is in a new, rounder typeface: the dialogue, the menus, the HUD, the journal, the shops and every screen"
 msgstr ""
 
@@ -4769,6 +4777,10 @@ msgid "Light on Your Feet"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Light relief is on for new players"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Light the five lanterns on the square, drive off the embers and douse the burning roofs from the well"
 msgstr ""
 
@@ -5538,6 +5550,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Open the Stats sheet from the HUD; unspent points show as a badge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Options in four tabs, Sound, Display, Access and Controls: left and right turn them, down or E goes into the rows"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7113,6 +7129,10 @@ msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and re
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Mirefen's shallows beside the boardwalks look ankle-deep, light mud and reeds beside the dark pools, and the hero and the foes wade in them, a ring at each stride"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Night Burns"
 msgstr ""
 
@@ -8217,6 +8237,10 @@ msgid "Under the hood, the pacing model follows each villager's quests in the or
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Underground, the Tin Lantern and Liane's Lantern light about twice as wide and brighter, still under a torch"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Unfrozen"
 msgstr ""
 
@@ -8294,6 +8318,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "WOLVES IN THE WOODS: a wolf pack now lives in the Whispering Forest and another in the Sunken Marsh"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Wading In"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -18749,6 +18777,10 @@ msgid "%s is now %s."
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "Access"
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "Ambience volume"
 msgstr ""
 
@@ -18762,6 +18794,10 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "Controls"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Display"
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18829,15 +18865,15 @@ msgid "Quest markers"
 msgstr ""
 
 #: scripts/options_screen.gd
-msgid "Reading and help"
-msgstr ""
-
-#: scripts/options_screen.gd
 msgid "Reduce motion"
 msgstr ""
 
 #: scripts/options_screen.gd
 msgid "Reset keys to defaults"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Rim light"
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18850,10 +18886,6 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "System (%s)"
-msgstr ""
-
-#: scripts/options_screen.gd
-msgid "Video"
 msgstr ""
 
 #: scripts/options_screen.gd

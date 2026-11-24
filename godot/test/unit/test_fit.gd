@@ -271,6 +271,7 @@ func test_tabs_stand_apart_on_their_pages_edge() -> void:
 			return counter],
 		["journal", Rect2(JournalScreen.AT, JournalScreen.SIZE), func() -> Screen: return JournalScreen.new()],
 		["codex", CodexScreen.CARD, func() -> Screen: return CodexScreen.new()],
+		["options", OptionsScreen.PAGE, func() -> Screen: return OptionsScreen.new()],
 	]
 	var withheld := UiStyle.withheld
 	for drawn in [false, true]:

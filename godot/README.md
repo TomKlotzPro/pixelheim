@@ -488,7 +488,7 @@ fr.po, and no msgstr has a plain or no-break space where U+202F belongs.
 ## Layout
 
 - `scenes/main.tscn` — entry scene; all other nodes are built in code
-- `assets/fonts/` — Nunito (OFL) for every word read, Pixeloid (OFL) for the floating numbers and the keycaps, Press Start 2P (OFL) for the logo (`FONTS.txt`)
+- `assets/fonts/` — Nunito (OFL) for every word read, the words floating over the world too, Pixeloid (OFL) for the keycaps, Press Start 2P (OFL) for the logo (`FONTS.txt`)
 - `assets/puny/` — art by Shade, CC0 (`LICENSE.txt`): characters (hero, villagers, bestiary) from [Puny Characters + PunyMonsters](https://merchant-shade.itch.io/16x16-puny-characters) and [Mini World Sprites](https://merchant-shade.itch.io/16x16-mini-world-sprites), the overworld from [Puny World](https://merchant-shade.itch.io/16x16-puny-world) and stone from [Puny Dungeon](https://merchant-shade.itch.io/16x16-puny-dungeon). `scripts/puny_art.gd` assigns who wears which sheet; `scripts/puny_terrain.gd` lays Puny World over the maps (wang corners on the dual grid, read from Shade's Tiled `.tsx`), raises ramparts and bridges, `scripts/skyline.gd` draws the village small in its block on the overworld, as the town stands (PIX-248), `scripts/rampart.gd` raises Pixelheim's own rampart, one wall in the Medieval Age's stone with its gatehouse where the road runs through (three wide between two towers, scorched until the Hamlet is built; Shade's CC0 castle pieces without the paid pack), in town and on the village far off alike, and `shaders/region_tint.gdshader` tones ash and mire
 - `assets/maps/*.json` — all world maps (grid one row per line, spawn, portals), and `interactables.json` (chests, signs, waypoints); edit them directly
 - `assets/data/catalog.json` — items, roles and skill data
@@ -619,7 +619,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/npc.gd` — A villager: their Puny sheet (PunyArt, PIX-130), a body the hero bumps into, and — for wanderers — an amble around the pacing loop, walking the way they step.
 - `scripts/npcs.gd` — Villagers (assets/data/npcs.json): the fixed townsfolk, tier-gated settlers included, and the recruits who wait in the wilds until they move to town.
 - `scripts/open_ground.gd` — The Medieval Age's greens and snow laid as patches over Shade's grass (PIX-305), so a meadow's hollows and the snow's drifts have edges of their own, tufted the way the pack's sample maps lay them
-- `scripts/options_screen.gd` — Options (Options.tsx): sound (music, effects and ambience, PIX-411), the CRT scanlines, fullscreen, reduced motion, and the keys.
+- `scripts/options_screen.gd` — Options (Options.tsx), in tabs (PIX-546): Sound (music, effects and ambience, PIX-411), Display, Access and Controls, the journal's tabs on the page's top edge.
 - `scripts/passage.gd` — How the hero comes to a place (PIX-500): the five ways `world.go` takes and what each one does where it arrives.
 - `scripts/pause_screen.gd` — The Escape menu (PauseMenu.tsx): resume, the saves (slots and codes), options, or back to the title.
 - `scripts/perf_probe.gd` — The perf guard (PIX-220): how long each stage of a frame takes, from the engine's own signals
@@ -729,6 +729,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/town_hall_screen.gd` — The village's projects (PIX-145), across the mayor's counter or at the board on the square
 - `scripts/trick_brain.gd` — A common foe's own trick as it plays (PIX-489), riding on the enemy (its parent) as an elite's brain does
 - `scripts/ui_style.gd` — The game's one look (PIX-138): pages of a village ledger.
+- `scripts/wading.gd` — Wading through shallow water (PIX-548: the Mirefen's strips beside its boardwalks looked like water that should stop the hero, who walked through them dry)
 - `scripts/waypoints.gd` — Fast travel's choice on the map screen (PIX-241: "on a waypoint, show where it takes you")
 - `scripts/ways.gd` — The ways between maps (PIX-269: "it isn't clear where to walk to go on").
 - `scripts/weather.gd` — Each region's air and the sky's weather (PIX-224).

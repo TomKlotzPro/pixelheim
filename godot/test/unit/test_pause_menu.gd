@@ -139,12 +139,14 @@ func test_playing_the_hero_in_hand_from_its_saves_resumes() -> void:
 
 
 func test_a_language_chosen_in_options_opens_them_again_on_its_row() -> void:
-	OptionsScreen.back_at = 7
+	OptionsScreen.back_tab = OptionsScreen.TABS.find("Access")
+	OptionsScreen.back_at = 0
 	var menu := _pause()
 	var options := _over(menu)
 	assert_not_null(options, "Options open again over the rebuilt menu")
 	assert_eq(options.get_script(), OptionsScreen)
-	assert_eq(options.rows[options._choosable()[options.selected]]["label"], "Language", "on the row left")
+	assert_false(options.on_tabs, "among the rows")
+	assert_eq(options.rows[options.selected]["label"], "Language", "on the row left")
 	assert_eq(menu.selected, 2, "the menu's choice is Options")
 	assert_true(options.on_top())
 	assert_eq(OptionsScreen.back_at, -1, "once: the next Options open on their first row")
@@ -153,13 +155,15 @@ func test_a_language_chosen_in_options_opens_them_again_on_its_row() -> void:
 ## The same from the title: the world rebuilt in the language opens on the
 ## title, and its _open puts Options over it again on that row.
 func test_a_language_chosen_over_the_title_opens_options_again_there() -> void:
-	OptionsScreen.back_at = 7
+	OptionsScreen.back_tab = OptionsScreen.TABS.find("Access")
+	OptionsScreen.back_at = 0
 	_menu = TitleScreen.new()
 	add_child(_menu)
 	var options := _over(_menu)
 	assert_not_null(options, "Options open again over the rebuilt title")
 	assert_eq(options.get_script(), OptionsScreen)
-	assert_eq(options.rows[options._choosable()[options.selected]]["label"], "Language", "on the row left")
+	assert_false(options.on_tabs, "among the rows")
+	assert_eq(options.rows[options.selected]["label"], "Language", "on the row left")
 	assert_eq(_menu.options[_menu.selected]["label"], "Options", "the title's choice is Options")
 	assert_true(options.on_top())
 	assert_eq(OptionsScreen.back_at, -1, "once")
@@ -169,6 +173,7 @@ func test_a_language_chosen_over_the_title_opens_options_again_there() -> void:
 ## its label 3 px on the left. 2 px more on the right, on every row.
 func test_options_rows_keep_the_value_off_the_rim() -> void:
 	var options: OptionsScreen = add_child_autofree(OptionsScreen.new())
+	options._move(1)
 	var lit := 0
 	for line: PanelContainer in options.find_children("*", "PanelContainer", true, false):
 		var rim := line.get_theme_stylebox("panel")

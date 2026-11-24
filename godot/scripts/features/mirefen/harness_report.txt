@@ -2,3 +2,4 @@
 # (scripts/harness_report.txt), which it joins after its head, by name; its
 # function is `field_mire(report)` in feature.gd.
 mire | on the Mirefen: how many dead trees, reed beds, boardwalks and stilt huts stand, how many wisps, and lit while they're out at night: trees 70 reeds 120 walks 6 huts 2 wisps 9 lit (PIX-401)
+wade | how many pixels of their art the hero's feet are sunk, wading a map's shallows (the strips beside the Mirefen's boardwalks); none on dry ground or a walk: 2 (PIX-548)

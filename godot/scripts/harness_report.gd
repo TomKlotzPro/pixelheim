@@ -1085,6 +1085,12 @@ func field_street() -> String:
 
 
 func field_tab() -> String:
+	var shown: Array[CanvasLayer] = []
+	_screens_in(world, shown)
+	for layer in shown:
+		var options := layer as OptionsScreen
+		if options != null:
+			return str(OptionsScreen.TABS[options.tab]).to_lower() + ("" if options.on_tabs else " row %s" % options.rows[options.selected]["label"])
 	return noted("tab")
 
 

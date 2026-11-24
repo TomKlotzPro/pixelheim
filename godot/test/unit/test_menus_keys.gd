@@ -417,16 +417,62 @@ func test_from_the_title_the_last_hero_is_last_played_and_e_on_another_plays_at_
 ## Options open with the row labelled `label` chosen.
 func _options(label: String) -> OptionsScreen:
 	var options := _open(OptionsScreen.new()) as OptionsScreen
-	var choosable: Array[int] = options._choosable()
-	for at in choosable.size():
-		if options.rows[choosable[at]]["label"] == label:
-			options.selected = at
+	for tab in OptionsScreen.TABS.size():
+		var rows := options.rows_of(tab)
+		for at in rows.size():
+			if rows[at]["label"] == label:
+				options.tab = tab
+				options.selected = at
+				options.on_tabs = false
 	options._refresh()
 	return options
 
 
 func _chosen(options: OptionsScreen) -> Dictionary:
-	return options.rows[options._choosable()[options.selected]]
+	return options.rows[options.selected]
+
+
+## PIX-546: Options open on their tabs, where left and right turn them (round
+## past either end) and change nothing; down or E goes into the rows, and
+## past the last (or up past the first) is the tabs again.
+func test_options_open_on_their_tabs_and_the_rows_lead_back_to_them() -> void:
+	var settings := GameState.settings
+	var muted := settings.muted
+	var options := _open(OptionsScreen.new()) as OptionsScreen
+	assert_true(options.on_tabs, "the tabs chosen first")
+	var lit := func() -> int: return options.tabs_row.get_children().filter(func(chip: Node) -> bool: return chip.get_meta("lit", false)).size()
+	assert_eq(lit.call(), 1, "the chosen tab framed while the keys stand on the tabs")
+	assert_has(_says(options.footer), "tabs")
+	assert_does_not_have(_says(options.footer), "change", "nothing to change on the tabs")
+	var seen: Array[String] = []
+	for turn in OptionsScreen.TABS.size():
+		seen.append(OptionsScreen.TABS[options.tab])
+		assert_eq(options.columns[1].visible, seen[-1] == "Controls", "%s: the keys alone fill both columns" % seen[-1])
+		options._command(_action(&"move_right")).call()
+	assert_eq(seen, ["Sound", "Display", "Access", "Controls"])
+	assert_eq(options.tab, 0, "round to the first")
+	options._command(_action(&"move_left")).call()
+	assert_eq(OptionsScreen.TABS[options.tab], "Controls", "and back past it to the last")
+	options._command(_action(&"move_right")).call()
+	assert_eq(settings.muted, muted, "left and right on the tabs changed nothing")
+	options._command(_action(&"interact")).call()
+	assert_false(options.on_tabs, "E goes into the rows")
+	assert_eq(lit.call(), 0, "and no tab framed once they are in the rows")
+	assert_eq(String(_chosen(options)["label"]), "Sound")
+	assert_has(_says(options.footer), "change")
+	options._command(_action(&"move_up")).call()
+	assert_true(options.on_tabs, "up past the first row: the tabs")
+	options._command(_action(&"move_up")).call()
+	assert_eq(String(_chosen(options)["label"]), "Ambience volume", "up from the tabs: the last row")
+	options._command(_action(&"move_down")).call()
+	assert_true(options.on_tabs, "down past the last: the tabs")
+	var all: Array[String] = []
+	for tab in OptionsScreen.TABS.size():
+		assert_lte(options.rows_of(tab).filter(func(row: Dictionary) -> bool: return row.get("column", 0) == 0).size(), 7, "%s: a column of seven rows at most" % OptionsScreen.TABS[tab])
+		for row: Dictionary in options.rows_of(tab):
+			all.append(row["label"])
+	assert_eq(all.size(), options._build().size(), "every row on a tab")
+	assert_has(all, "Rim light")
 
 
 func test_on_a_key_row_left_and_right_cross_columns_and_only_e_rebinds() -> void:
@@ -436,11 +482,13 @@ func test_on_a_key_row_left_and_right_cross_columns_and_only_e_rebinds() -> void
 	assert_has(says, "rebind")
 	assert_does_not_have(says, "adjust")
 	for action: StringName in [&"move_left", &"move_right"]:
-		options.selected = options._choosable().find(options.rows.find_custom(func(row: Dictionary) -> bool: return row.get("rebind", "") == "move_up"))
+		options.selected = options.rows.find_custom(func(row: Dictionary) -> bool: return row.get("rebind", "") == "move_up")
 		options._command(_action(action)).call()
 		assert_eq(options.listening, "", "%s arms no rebind" % action)
-		assert_eq(int(_chosen(options).get("column", 0)), 0, "it crosses to the other column")
-		assert_eq(String(_chosen(options)["label"]), "Sound", "to the row level with it")
+		assert_eq(int(_chosen(options).get("column", 0)), 1, "it crosses to the other column")
+		assert_eq(String(_chosen(options)["label"]), "Inventory", "to the row level with it")
+		options._command(_action(action)).call()
+		assert_eq(String(_chosen(options)["label"]), "Move up", "and back")
 	options = _options("Move up")
 	options._command(_action(&"interact")).call()
 	assert_eq(options.listening, "move_up", "E arms it")

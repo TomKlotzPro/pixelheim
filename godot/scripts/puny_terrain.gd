@@ -314,6 +314,9 @@ const WATER_CLEAR := 1
 const WATER_MIRE := 2
 const WATER_DEEP := 3
 const WATER_ICE := 4
+## The mire's shallows (PIX-548, MapData.shallows): ankle-deep over mud,
+## waded, where a map's own water stops the hero.
+const WATER_SHALLOWS := 5
 const WATER_TONES := {"mirefen": WATER_MIRE, "deepwood": WATER_DEEP, "frostgate": WATER_ICE}
 ## A river running west that meanders (PIX-397, the Reach's: seen whole a
 ## ruler-straight band; not the village far off's stream, which runs south
@@ -324,10 +327,10 @@ const WATER_TONES := {"mirefen": WATER_MIRE, "deepwood": WATER_DEEP, "frostgate"
 ## (as far as any bank wanders in: PIX-467).
 const RIVER_SWING := {"overworld": 11.0}
 ## The tones and the ways water runs by name (FLOWS' order), for the harness.
-const TONE_NAMES := ["sea", "clear", "mire", "deep", "ice"]
+const TONE_NAMES := ["sea", "clear", "mire", "deep", "ice", "shallows"]
 const FLOW_NAMES := ["still", "west", "south"]
 ## Pools, a lake, a hole in the ice lie still; rivers run.
-const STILL_WATERS := [WATER_MIRE, WATER_DEEP, WATER_ICE]
+const STILL_WATERS := [WATER_MIRE, WATER_DEEP, WATER_ICE, WATER_SHALLOWS]
 ## Which way water runs, by its code: still; west along a river that runs
 ## across the map, south down one that runs down it (on toward the sea,
 ## south-west of the Reach). The village's river comes down from the north
@@ -361,12 +364,13 @@ static var _wet := {}
 ## (PIX-306), blue is how far the bank lies (water_depth / DEPTH_CELLS) and
 ## alpha the water's code (water_code / 255); on the sea (PIX-532) blue is
 ## how hard it breaks (`surf_at`) and alpha SPAN_BIT on a pier's cell; both
-## 0 on the land.
-static func water_map(grid: Dictionary, size: Vector2i, map_id := "") -> ImageTexture:
+## 0 on the land. `shallows`: the cells of its water that are waded
+## (MapData.shallows), their tone WATER_SHALLOWS.
+static func water_map(grid: Dictionary, size: Vector2i, map_id := "", shallows := {}) -> ImageTexture:
 	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	var above := PackedInt32Array()
 	above.resize(size.x)
-	water_rows(image, grid, 0, size.y, above, map_id)
+	water_rows(image, grid, 0, size.y, above, map_id, shallows)
 	return ImageTexture.create_from_image(image)
 
 
@@ -375,7 +379,7 @@ static func water_map(grid: Dictionary, size: Vector2i, map_id := "") -> ImageTe
 ## carrying each column's count of water cells down from the rows before.
 ## A row's runs west and east are counted in two passes along it; only
 ## inland water looks down its column and along its diagonals, a few cells.
-static func water_rows(image: Image, grid: Dictionary, from: int, to: int, above: PackedInt32Array, map_id := "") -> void:
+static func water_rows(image: Image, grid: Dictionary, from: int, to: int, above: PackedInt32Array, map_id := "", shallows := {}) -> void:
 	var size := Vector2i(image.get_width(), image.get_height())
 	var tone: int = WATER_TONES.get(map_id, WATER_CLEAR)
 	is_wet("")
@@ -412,7 +416,7 @@ static func water_rows(image: Image, grid: Dictionary, from: int, to: int, above
 				var south := _run_down(grid, cell, size)
 				var cells := water_depth(grid, cell, size, west[x], east, north, south)
 				depth = cells / float(DEPTH_CELLS)
-				code = water_code(tile, tone, west[x] + east, north + south)
+				code = water_code(tile, WATER_SHALLOWS if tile == "water" and shallows.has(cell) else tone, west[x] + east, north + south)
 				if cells == 1:
 					_mark_bank(image, grid, cell, tone, tiles, wet_above)
 			else:

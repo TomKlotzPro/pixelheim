@@ -35,7 +35,9 @@ EXPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "export"
 # reads off one run. Saltmere's coast at night, its lighthouse and the
 # jetty's lamps lit (PIX-532: the sea's foam). The City at night with the
 # relief off and the lights' rim held back too (`town-norim`, PIX-531), so
-# the rim's cost reads off `town-flat`. test_harness_flags reads these lines.
+# the rim's cost reads off `town-flat`. The sea cave with the Tin Lantern
+# (`cave`, PIX-547: its larger pool underground). test_harness_flags reads
+# these lines.
 RUNS = {
     "storm": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night storm cpu perf --wait 2 --shot user://web_perf.png",
     "strike": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night storm --strike held cpu perf --wait 2 --shot user://web_perf.png",
@@ -45,6 +47,7 @@ RUNS = {
     "town-flat": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night --relief off cpu perf --wait 2 --shot user://web_perf.png",
     "town-norim": "--fixed-fps 60 -- --screenshot --map town --town-tier 4 night --relief off --rim off cpu perf --wait 2 --shot user://web_perf.png",
     "line": "--fixed-fps 60 -- --screenshot --map overworld --at 93,33 seamless --walk r,r,r cpu crossing --wait 1 --shot user://web_perf.png",
+    "cave": "--fixed-fps 60 -- --screenshot --map seacave handlantern --relief on cpu perf --wait 2 --shot user://web_perf.png",
     "coast": "--fixed-fps 60 -- --screenshot --map saltmere --routes saltmere:7 --at 33,27 night cpu perf --wait 2 --shot user://web_perf.png",
 }
 
