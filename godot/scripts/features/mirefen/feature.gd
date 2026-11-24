@@ -14,3 +14,8 @@ func layers() -> Dictionary[String, MapLayer]:
 
 func field_mire(report: HarnessReport) -> String:
 	return MireDressing.describe(report.world.view)
+
+
+func field_wade(report: HarnessReport) -> String:
+	var sunk := Wading.sunk(report.world.player.sprite)
+	return str(sunk) if sunk > 0 else ""

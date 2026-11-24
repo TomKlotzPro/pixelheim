@@ -106,6 +106,14 @@ const vec3 CLEAR_WATER[4] = vec3[4](
 	vec3(0.17, 0.75, 0.73), vec3(0.08, 0.67, 0.72), vec3(0.016, 0.61, 0.70), vec3(0.012, 0.51, 0.65));
 const vec3 MIRE_WATER[4] = vec3[4](
 	vec3(0.37, 0.39, 0.24), vec3(0.29, 0.32, 0.2), vec3(0.22, 0.26, 0.17), vec3(0.16, 0.2, 0.14));
+// The mire's shallows (PIX-548, TONE_SHALLOWS): ankle-deep, so lighter and
+// muddier than any band of its pools, the mud under it showing through in
+// patches and a darker silt in others; reed tufts stand all over it, where
+// a pool's keep to its banks, and no lily pad floats on it.
+const vec3 SHALLOWS_WATER = vec3(0.42, 0.47, 0.33);
+const vec3 SHALLOWS_MUD = vec3(0.52, 0.46, 0.3);
+const vec3 SHALLOWS_SILT = vec3(0.34, 0.39, 0.26);
+const vec3 SHALLOWS_GLINT = vec3(0.62, 0.68, 0.5);
 const vec3 DEEP_WATER[4] = vec3[4](
 	vec3(0.15, 0.58, 0.55), vec3(0.09, 0.47, 0.48), vec3(0.055, 0.37, 0.42), vec3(0.035, 0.28, 0.35));
 const vec3 ICE_WATER[4] = vec3[4](
@@ -219,9 +227,10 @@ vec2 bank_land(vec2 local_px, vec2 map_px, vec2 sheet_pixel, int fallback, vec2 
 
 // How many pixels the mire's bank lies from `at` (mask pixels) into the
 // water, read where the bank's bend moves it: below 0 on the land side.
-// Only the mire's lily pads and reeds ask, so it reads the mire's soft bank.
-float bank_depth(vec2 at, vec2 bend) {
-	return (water_red(at + bend, MIRE_SOFT) - 0.5) * CELL - bank_lie(TONE_MIRE);
+// Only the mire's lily pads and reeds ask, so it reads the mire's soft bank
+// (`tone`: the mire's or its shallows', whose bank lies nearer their edge).
+float bank_depth(vec2 at, vec2 bend, int tone) {
+	return (water_red(at + bend, MIRE_SOFT) - 0.5) * CELL - bank_lie(tone);
 }
 
 // A lily pad on still water, if one floats over `px` (plane pixels): its
@@ -245,7 +254,7 @@ vec4 lily_pad(vec2 px, vec2 local_px, vec2 bend) {
 		return vec4(0.0);
 	}
 	// Only where the water is deep enough to float in.
-	if (bank_depth(local_px + (centre - px), bend) < radius + 3.0) {
+	if (bank_depth(local_px + (centre - px), bend, TONE_MIRE) < radius + 3.0) {
 		return vec4(0.0);
 	}
 	if (hash(patch + 5.5) > 0.82 && abs(d.x + turn) < 1.0 && abs(d.y + 1.0) < 1.0) {
@@ -263,17 +272,18 @@ vec4 lily_pad(vec2 px, vec2 local_px, vec2 bend) {
 // Reeds along a bank in the mire, if a stem stands over `px`: its colour,
 // alpha 1; else alpha 0. A clump may root in each patch of 9 by 8 pixels
 // where its root lies in the water by the bank: three stems rising up to 7
-// pixels, the tallest with a brown head, leaning with the wind.
-vec4 reeds(vec2 px, vec2 local_px, vec2 bend) {
+// pixels, the tallest with a brown head, leaning with the wind. In the
+// shallows (`tone` TONE_SHALLOWS) a tuft roots anywhere, in fewer patches.
+vec4 reeds(vec2 px, vec2 local_px, vec2 bend, int tone) {
 	vec2 patch_size = vec2(9.0, 8.0);
 	for (int below = 0; below < 2; below++) {
 		vec2 patch = floor(px / patch_size) + vec2(0.0, float(below));
-		if (hash(patch + 3.7) < 0.3) {
+		if (hash(patch + 3.7) < (tone == TONE_SHALLOWS ? 0.5 : 0.3)) {
 			continue;
 		}
 		vec2 root = patch * patch_size + floor(vec2(hash(patch + 6.1) * 5.0 + 2.0, hash(patch + 0.7) * 3.0 + 4.0)) + 0.5;
-		float in_water = bank_depth(local_px + (root - px), bend);
-		if (in_water < 0.5 || in_water > 6.0) {
+		float in_water = bank_depth(local_px + (root - px), bend, tone);
+		if (in_water < 0.5 || (in_water > 6.0 && tone != TONE_SHALLOWS)) {
 			continue;
 		}
 		float lean = floor(world_wind * 0.8 * (0.5 + 0.5 * sin(world_time * 1.4 + root.x * 0.3)) + 0.5);
@@ -317,6 +327,12 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	if (tone == 0) {
 		return INLAND_NONE;
 	}
+	// The mire's shallows are the mire's water, but for their own look.
+	int lies = tone;
+	bool shallows = tone == TONE_SHALLOWS;
+	if (shallows) {
+		tone = TONE_MIRE;
+	}
 	ivec2 cell = ivec2(floor(local_px / CELL));
 	float threshold = bayer_at(px);
 	// Foam's own dither (PIX-532): a hash a pixel, new every so often; a
@@ -325,7 +341,7 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	// and froth jumped every two thirds of a second.
 	float grain = hash(px + vec2(floor(world_time * 1.5 + hash(px + 3.1)) * 7.3, 0.4));
 	if (in_water < 0.0) {
-		vec4 reed = tone == TONE_MIRE && in_water > -9.0 ? reeds(px, local_px, bend) : vec4(0.0);
+		vec4 reed = tone == TONE_MIRE && in_water > -9.0 ? reeds(px, local_px, bend, lies) : vec4(0.0);
 		if (reed.a > 0.0) {
 			base = reed.rgb;
 			return INLAND_WATER;
@@ -362,8 +378,20 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	vec3 water = water_colour(tone, band);
 	bool still = code % 8 == 0;
 	vec2 flow = flow_of(code);
-	// The mire's murk: darker patches drifting over it, slowly.
-	if (tone == TONE_MIRE) {
+	if (shallows) {
+		// Ankle-deep: one light, muddy colour, the mud showing through in
+		// patches and silt lying in others, whole pixels that keep still.
+		float bed = value_noise(floor(px) / 6.0 + 23.7) + (threshold - 0.5) * 0.16;
+		water = bed > 0.7 ? SHALLOWS_MUD : (bed < 0.34 ? SHALLOWS_SILT : SHALLOWS_WATER);
+		// Short level dashes of light on it, each showing a while by turns:
+		// what says water where the colour says mud.
+		vec2 dash = vec2(floor(px.x / 4.0), floor(px.y));
+		float turn = floor(world_time * 0.6 + hash(dash + 2.3) * 5.0);
+		if (in_water > 2.0 && mod(dash.y, 3.0) == 0.0 && hash(dash + turn * 3.1) > 0.9) {
+			water = SHALLOWS_GLINT;
+		}
+	} else if (tone == TONE_MIRE) {
+		// The mire's murk: darker patches drifting over it, slowly.
 		float murk = value_noise(floor(px) / 17.0 + vec2(world_time * 0.05, 0.0));
 		if (murk > 0.66 + threshold * 0.2) {
 			water *= 0.9;
@@ -506,14 +534,14 @@ int inland_water(vec2 at, inout vec3 base, vec2 sheet_pixel) {
 	// The mire's lily pads, duckweed in its shallows and reeds by its banks;
 	// a leaf or two drifting on the Deepwood's lake.
 	if (tone == TONE_MIRE) {
-		vec4 pad = lily_pad(px, local_px, bend);
+		vec4 pad = shallows ? vec4(0.0) : lily_pad(px, local_px, bend);
 		if (pad.a > 0.0) {
 			water = pad.rgb;
 		} else if (in_water < 9.0 && hash(floor(px) + 0.31) > 0.975 - (9.0 - in_water) * 0.004) {
 			water = mix(water, vec3(0.5, 0.62, 0.26), 0.8);
 		}
-		if (in_water < 7.0) {
-			vec4 reed = reeds(px, local_px, bend);
+		if (in_water < 7.0 || shallows) {
+			vec4 reed = reeds(px, local_px, bend, lies);
 			if (reed.a > 0.0) {
 				water = reed.rgb;
 			}

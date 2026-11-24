@@ -17,7 +17,9 @@ extends MapLayer
 ## arrival; reeds are walked through, as the woods are. The map
 ## itself is untouched. A walk is drawn as a bridge and its sides as water
 ## (MapView.drawn_as, PIX-519: in code it read as a ladder lying in the
-## grass): Shade's pier planks the way it runs (PunyTerrain.object_at) over
+## grass), that water shallow and waded (MapData.shallows, PIX-548: as the
+## pools' it read as water that should stop the hero, who walked through
+## it, so the planks looked pointless): Shade's pier planks the way it runs (PunyTerrain.object_at) over
 ## the fen's own water, his CC0 sheet; the rest is drawn in code (MireArt),
 ## so all the same without the paid pack.
 
@@ -176,8 +178,11 @@ func plan(view: MapView, slices: Slicer) -> void:
 		for walk: Rect2i in laid["walks"]:
 			for cell in _cells(walk):
 				view.drawn_as[cell] = "bridge"
+		# Its shallows: drawn ankle-deep, and waded (PIX-548).
+		view.data.shallows = {}
 		for cell: Vector2i in laid["wet"]:
 			view.drawn_as[cell] = "water"
+			view.data.shallows[cell] = true
 		for cell: Vector2i in view.drawn_as:
 			view.bare[cell] = true
 			view.patches.erase(cell)

@@ -184,7 +184,7 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 		PunyTerrain.tint_fringe_rows(kept.tint_image, look, i * ROWS_A_SLICE, mini((i + 1) * ROWS_A_SLICE, data.size.y)))
 	slices.add_each("kept_tint_spill", 2, func(_ring: int) -> void: PunyTerrain.tint_spill(kept.tint_image, look))
 	slices.add_each("kept_water", ceili(data.size.y / float(WATER_ROWS_A_SLICE)), func(i: int) -> void:
-		PunyTerrain.water_rows(kept.water_image, look, i * WATER_ROWS_A_SLICE, mini((i + 1) * WATER_ROWS_A_SLICE, data.size.y), kept._above, data.id))
+		PunyTerrain.water_rows(kept.water_image, look, i * WATER_ROWS_A_SLICE, mini((i + 1) * WATER_ROWS_A_SLICE, data.size.y), kept._above, data.id, data.shallows))
 	slices.add_each("kept_detail", cell_slices, func(i: int) -> void: kept._detail_rows(i * ROWS_A_SLICE))
 	# The country roads' ends and turns (PIX-404): the village's streets, and
 	# a road the pack's stone paves (GroundLayer._plan_streets), keep their
@@ -232,7 +232,7 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 
 
 static func _fingerprint_of(data: MapData, look: Dictionary, pad: int) -> int:
-	return hash([look.hash() if not is_same(look, data.grid) else 0, data.grid.hash(), data.regions.hash(), data.size, pad])
+	return hash([look.hash() if not is_same(look, data.grid) else 0, data.grid.hash(), data.regions.hash(), data.size, pad, data.shallows.hash()])
 
 
 ## The small things in the open ground (Scatter.detail, PIX-305), rows

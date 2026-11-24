@@ -15,6 +15,11 @@ var regions := {}  # Vector2i -> encounter region id (forest, marsh, ash, ...)
 ## Cells something drawn stands on although the map's tile is open ground
 ## (a fountain's basin, a well's second half, a statue): they block too.
 var covered := {}
+## Cells a feature draws as shallow water over open ground (PIX-548: the
+## strips beside the Mirefen's boardwalks): walked as before, their water
+## drawn ankle-deep (PunyTerrain.WATER_SHALLOWS), and whoever crosses them
+## wades (Wading).
+var shallows := {}
 ## Which drawing of the map this is: "@2", "@3" for the bigger houses.
 var variant := ""
 ## How a map is drawn when it isn't the open air: "cave" draws it in dungeon

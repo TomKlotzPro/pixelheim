@@ -34,6 +34,9 @@ const int TONE_CLEAR = 1;
 const int TONE_MIRE = 2;
 const int TONE_DEEP = 3;
 const int TONE_ICE = 4;
+// The mire's shallows (PIX-548, PunyTerrain.WATER_SHALLOWS): the strips
+// beside its boardwalks, walked through. The mire's water in all else.
+const int TONE_SHALLOWS = 5;
 
 // How far the bank bends off its cells, in pixels either way, and how many
 // cells lie between its bends; how far inside its water's cells it lies at
@@ -54,6 +57,10 @@ const float MIRE_BENDS = 2.2;
 // The hole in the Frostgate's ice is a cell thin: its banks bend this
 // little, so they never meet and the hole still isn't a ruled slot.
 const float ICE_WANDER = 2.0;
+// The mire's shallows are waded: their bank keeps near their cells' edge,
+// so whoever stands on a cell of them stands in its water, not on a bank
+// drawn half a cell inside it.
+const float SHALLOWS_WANDER = 1.5;
 const float BANK_IN = 1.0;
 // How far out from its bank the water is still drawn by how near the bank
 // is (its shallows, the foam's lap, the mire's reeds).
@@ -202,7 +209,7 @@ vec2 flow_of(int code) {
 // 5 more put up to 8 pixels of water under their feet (and twice that in
 // the mire).
 float bank_wander(int tone) {
-	return tone == TONE_MIRE ? MIRE_WANDER : (tone == TONE_ICE ? ICE_WANDER : BANK_WANDER);
+	return tone == TONE_MIRE ? MIRE_WANDER : (tone == TONE_ICE ? ICE_WANDER : (tone == TONE_SHALLOWS ? SHALLOWS_WANDER : BANK_WANDER));
 }
 
 float bank_lie(int tone) {
@@ -257,7 +264,7 @@ float bank_in_water(vec2 px, vec2 local_px, out int code, out vec2 bend, out int
 	// The bank, bent off the grid; but where a bridge lands, straight and
 	// in under its planks' ends.
 	bool landing = (code / 8) % 2 == 1 && mask_texel(cell).r < 0.5;
-	bool mire = tone == TONE_MIRE;
+	bool mire = tone == TONE_MIRE || tone == TONE_SHALLOWS;
 	// Only a river running west meanders (the Reach's, across the map): the
 	// village far off's stream, in the same mask, runs south, and swing_ease
 	// looks for its bridge to the side.
