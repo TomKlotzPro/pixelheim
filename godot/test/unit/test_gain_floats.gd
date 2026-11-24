@@ -234,10 +234,11 @@ func test_with_motion_reduced_a_win_fades_in_where_it_stands() -> void:
 
 
 ## PIX-484: on the sand path a gold "+10" read "+11" and a "30" "31": the
-## face's own outline drew only inside the letters. Every word over the
-## world (a number, a word, a win's rows) is ringed in the dark, a pixel off
-## every way.
-func test_every_floating_word_is_ringed_in_the_dark() -> void:
+## pixel face's own outline drew only inside the letters. Every word over
+## the world (a number, a word, a win's rows) is the UI's bold face at the
+## label scale (PIX-549), a font pixel a screen pixel at play zoom, with a
+## real outline in the dark.
+func test_every_floating_word_is_the_bold_face_outlined_in_the_dark() -> void:
 	var fx: WorldFx = add_child_autofree(WorldFx.new())
 	var win := Gains.none()
 	win["gold"] = 10
@@ -249,14 +250,39 @@ func test_every_floating_word_is_ringed_in_the_dark() -> void:
 	assert_eq(labels.size(), 4, "the gold, its XP, a number and a word")
 	for label: Label in labels:
 		var look := label.label_settings
-		var ways: Array[Vector2] = []
-		for i in look.stacked_shadow_count:
-			ways.append(look.get_stacked_shadow_offset(i))
-			assert_eq(look.get_stacked_shadow_color(i), UiStyle.NIGHT, "%s: dark" % label.text)
-		for x in [-1, 0, 1]:
-			for y in [-1, 0, 1]:
-				if x != 0 or y != 0:
-					assert_has(ways, Vector2(x, y), "%s: ringed at (%d, %d)" % [label.text, x, y])
-		assert_eq(look.font, UiStyle.pixel_font(), "%s: the pixel face" % label.text)
-		assert_eq(look.font_size, UiStyle.BODY_PX, "%s: at its own size" % label.text)
+		assert_eq(look.font, UiStyle.bold_font(), "%s: Nunito Bold" % label.text)
+		assert_eq(look.font_size, 24, "%s: 24 px on the canvas" % label.text)
+		assert_eq(label.scale, Vector2.ONE * CameraRig.LABEL_SCALE, "%s: at the label scale" % label.text)
+		assert_eq(look.outline_size, 8, "%s: outlined, two pixels each side" % label.text)
+		assert_eq(look.outline_color, UiStyle.NIGHT, "%s: in the dark" % label.text)
+		assert_eq(look.stacked_shadow_count, 0, "%s: no stacked ring" % label.text)
+		assert_ne(look.font, UiStyle.pixel_font(), "%s: not the pixel face" % label.text)
 	assert_eq((labels[0] as Label).label_settings.font_color, WorldFx.GAIN_TONES["gold"], "in its own colour still")
+
+
+## PIX-549: a label a third of its box is moved by its pivot, so a word
+## bursting in (LEVEL UP, a crit) stood off its spot until _pop gave that
+## back: its ink's middle stays on the spot at twice the size and at rest.
+func test_a_word_bursting_in_stays_on_its_spot() -> void:
+	var was: bool = GameState.settings.reduce_motion
+	GameState.settings.reduce_motion = false
+	var fx: WorldFx = add_child_autofree(WorldFx.new())
+	fx.float_text("LEVEL UP", Vector2(100, 50), UiStyle.GOLD, true)
+	var word: Label = fx.get_child(0).get_child(0)
+	var middle := WorldFx.ink_of("LEVEL UP").get_center()
+	assert_eq(word.scale, Vector2.ONE * 2.0 * CameraRig.LABEL_SCALE, "twice the size at first")
+	for size: float in [2.0, 1.0]:
+		word.scale = Vector2.ONE * size * CameraRig.LABEL_SCALE
+		var drawn: Vector2 = word.get_global_transform() * (middle / CameraRig.LABEL_SCALE)
+		assert_almost_eq(drawn.x, 100.0, 0.51, "its middle on the spot at %sx" % size)
+		assert_almost_eq(drawn.y, 50.0 + middle.y, 0.01, "and no higher at %sx" % size)
+	GameState.settings.reduce_motion = was
+
+
+## PIX-549: the French words that ran widest over the world take no more
+## room in Nunito than the pixel face gave them.
+func test_the_long_french_words_are_no_wider_than_they_were() -> void:
+	for words: String in ["NIVEAU SUPÉRIEUR", "Superbe casque de cuir", "Interrompu !"]:
+		var before := Ink.of_text(words, UiStyle.pixel_font(), UiStyle.BODY_PX).size.x
+		assert_gt(WorldFx.ink_of(words).size.x, 0.0, "%s: measured" % words)
+		assert_lt(WorldFx.ink_of(words).size.x, before, "%s: narrower than in the pixel face" % words)

@@ -14,10 +14,10 @@ class_name UiStyle
 ## 33), so every row keeps the room it was laid out for; the story's title
 ## cards are Nunito Bold too, at TITLE or TITLE_SMALL (`titled`, PIX-534).
 ## Pixel type stays where a smooth face can't go: the PIXELHEIM logo (Press
-## Start 2P, `logo_font`), and Pixeloid Sans Bold (`pixel_font`) for the numbers over
-## the world (drawn at 9 px and enlarged 3x by the camera: a smooth face
-## goes mushy) and the keycaps' letters (pixel art like their caps; Nunito
-## has no arrows). All OFL.
+## Start 2P, `logo_font`), and Pixeloid Sans Bold (`pixel_font`) for the
+## keycaps' letters (pixel art like their caps; Nunito has no arrows). The
+## words floating over the world are Nunito Bold too (PIX-549, WorldFx), at
+## the label scale. All OFL.
 
 ## Canvas pixels per pixel of UI art.
 const UI_SCALE := 2
@@ -335,10 +335,9 @@ static func _smooth_font(bold: bool) -> FontFile:
 	return font
 
 
-## Pixeloid Sans Bold at its own 9 px, scaled whole (PIX-533): the numbers
-## over the world, drawn at 9 and enlarged 3x by the camera (a smooth face
-## goes mushy so), and the keycaps' letters, pixel art like their caps
-## (Nunito has no arrows).
+## Pixeloid Sans Bold at its own 9 px, scaled whole (PIX-533): the
+## keycaps' letters and the interaction marks, pixel art like their caps
+## (Nunito has no arrows), and the bold face's fallback.
 static func pixel_font() -> FontFile:
 	if _pixel == null:
 		_pixel = _pixel_font(load("res://assets/fonts/PixeloidSans-Bold.ttf"), BODY_PX)
