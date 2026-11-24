@@ -449,6 +449,8 @@ func test_options_say_what_each_tab_and_row_does() -> void:
 		var options := _open(OptionsScreen.new()) as OptionsScreen
 		for tab in OptionsScreen.TABS.size():
 			assert_eq(options.help.text, Text.t(OptionsScreen.TAB_HELP[tab]), "%s: on the tabs, what the tab holds" % OptionsScreen.TABS[tab])
+			await wait_process_frames(2)
+			assert_true(Rect2(OptionsScreen.PAGE.position, OptionsScreen.PAGE.size).grow(-UiStyle.INSET).encloses(options.help.get_global_rect()), "%s%s: the tab's line inside the page" % [OptionsScreen.TABS[tab], " large, in French" if wide else ""])
 			for at in options.rows_of(tab).size():
 				options._command(_action(&"move_down")).call()
 				var row := _chosen(options)
@@ -463,6 +465,8 @@ func test_options_say_what_each_tab_and_row_does() -> void:
 				await wait_process_frames(2)
 				var page := Rect2(OptionsScreen.PAGE.position, OptionsScreen.PAGE.size).grow(-UiStyle.INSET)
 				assert_true(page.encloses(options.help.get_global_rect()), "%s%s: the line inside the page, %s" % [row["label"], " large, in French" if wide else "", options.help.get_global_rect()])
+				var word := options.columns[0].get_child(0).get_child(0).get_child(0) as Label
+				assert_eq(options.help.get_global_rect().position.x, word.get_global_rect().position.x, "%s: the line flush with the rows' words" % row["label"])
 			options.turn(1)
 	GameState.settings.large_text = large
 	Text.apply(language)

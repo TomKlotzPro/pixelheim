@@ -18817,7 +18817,7 @@ msgid "Controls"
 msgstr ""
 
 #: scripts/options_screen.gd
-msgid "Dialogue, story, hints and the log in bigger type, and passing lines stay half as long again."
+msgid "Dialogue, story, hints and the log in bigger type, and messages stay on screen half as long again."
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18865,6 +18865,10 @@ msgid "How the picture is drawn: the window, the glow, and how the lights of the
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "In the dark, lamps, torches and fires cast long shadows, and lightning under the open sky. Off, the ground stays plain to read."
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "Keys are back to the defaults."
 msgstr ""
 
@@ -18905,7 +18909,7 @@ msgid "Muted"
 msgstr ""
 
 #: scripts/options_screen.gd
-msgid "No screen shake, pops or rushing camera; the wind drops and the water lies still."
+msgid "No screen shake, pops or rushing camera; the wind drops, the water lies still and lightning turns soft."
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18918,10 +18922,6 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "Options"
-msgstr ""
-
-#: scripts/options_screen.gd
-msgid "Outdoors at night, lamps, fires and lightning cast long shadows. Off, the ground stays plain to read."
 msgstr ""
 
 #: scripts/options_screen.gd

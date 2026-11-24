@@ -126,8 +126,9 @@ func _name_keys() -> void:
 	footer.visible = listening == ""
 
 
+## The keys' line under the rows names them too, so all of it again.
 func _hands_changed() -> void:
-	_name_keys()
+	_refresh()
 
 
 ## Whether `row` is a slider (a volume), which only left and right move.
@@ -153,15 +154,15 @@ func _build() -> Array[Dictionary]:
 	out.append(_switch_row(1, "Fullscreen", "fullscreen", "The game takes the whole screen. Off, it stays in a window."))
 	out.append(_switch_row(1, "CRT scanlines", "scanlines", "A dark line every third row and darker corners, like an old television. For the look alone."))
 	out.append(_switch_row(1, "Glow", "glow", "Flames, lamps and other bright things bloom softly. Off, the picture is crisper."))
-	out.append(_switch_row(1, "Shadows", "shadows", "Outdoors at night, lamps, fires and lightning cast long shadows. Off, the ground stays plain to read."))
+	out.append(_switch_row(1, "Shadows", "shadows", "In the dark, lamps, torches and fires cast long shadows, and lightning under the open sky. Off, the ground stays plain to read."))
 	# The lamps and the lantern shaping the art (PIX-528).
 	out.append(_switch_row(1, "Light relief", "relief", "Lamps and your lantern shape what they light: the side facing the flame catches it. Off, light falls flat."))
 	# Every light's rim on what stands (PIX-531, PIX-546).
 	out.append(_switch_row(1, "Rim light", "rim", "Lamps, fires, the moon and lightning outline what stands near them at night. Off, nothing is outlined."))
 	# Accessibility (PIX-160).
 	out.append({"tab": 2, "label": "Language", "value": _language_name(settings.language), "adjust": _language, "help": "The language the game speaks. The world reloads in it at once, right where you stand."})
-	out.append(_switch_row(2, "Large reading text", "large_text", "Dialogue, story, hints and the log in bigger type, and passing lines stay half as long again."))
-	out.append(_switch_row(2, "Reduce motion", "reduce_motion", "No screen shake, pops or rushing camera; the wind drops and the water lies still."))
+	out.append(_switch_row(2, "Large reading text", "large_text", "Dialogue, story, hints and the log in bigger type, and messages stay on screen half as long again."))
+	out.append(_switch_row(2, "Reduce motion", "reduce_motion", "No screen shake, pops or rushing camera; the wind drops, the water lies still and lightning turns soft."))
 	# Lightning as a soft brightening instead (PIX-491).
 	out.append(_switch_row(2, "Flashes", "flashes", "Lightning flashes across the whole sky. Off, a strike is one slow, soft brightening."))
 	out.append(_switch_row(2, "Clear warnings", "clear_warnings", "Attack marks wear hazard stripes and a dark outline, and bites and shots show their path: read by pattern, not by red."))
@@ -213,6 +214,7 @@ func _refresh() -> void:
 		for child in column.get_children():
 			column.remove_child(child)
 			child.queue_free()
+	var edge := MarginContainer.new()
 	for index in rows.size():
 		var row: Dictionary = rows[index]
 		var list: VBoxContainer = columns[row.get("column", 0)]
@@ -225,6 +227,8 @@ func _refresh() -> void:
 		# the left (PIX-535); on every row, so no value steps as it's chosen.
 		rim.content_margin_right += 2
 		line.add_theme_stylebox_override("panel", rim)
+		edge.add_theme_constant_override("margin_left", roundi(rim.content_margin_left))
+		edge.add_theme_constant_override("margin_right", roundi(rim.content_margin_right))
 		var inner := HBoxContainer.new()
 		line.add_child(inner)
 		var label := UiStyle.label(row["label"], 15, UiStyle.INK)
@@ -234,12 +238,14 @@ func _refresh() -> void:
 		line.gui_input.connect(_on_row_click.bind(index))
 		list.add_child(line)
 	# Under the rows, in the reading type (Large reading text grows it as it
-	# is switched on); the keys' line names them as they are bound now.
+	# is switched on), flush with the rows' words inside their rims; the keys'
+	# line names them as they are bound now.
 	var gap := Control.new()
 	gap.custom_minimum_size.y = UiStyle.GAP
 	columns[0].add_child(gap)
-	help = Layout.wrapped(UiStyle.label(Controls.say(Text.t(TAB_HELP[tab] if on_tabs else String(rows[selected]["help"]))), UiStyle.reading(UiStyle.TEXT), UiStyle.INK), columns[0].custom_minimum_size.x)
-	columns[0].add_child(help)
+	help = Layout.wrapped(UiStyle.label(Controls.say(Text.t(TAB_HELP[tab] if on_tabs else String(rows[selected]["help"]))), UiStyle.reading(UiStyle.TEXT), UiStyle.INK), columns[0].custom_minimum_size.x - edge.get_theme_constant("margin_left") - edge.get_theme_constant("margin_right"))
+	edge.add_child(help)
+	columns[0].add_child(edge)
 
 
 ## "" follows the system's language: shown as what that is.

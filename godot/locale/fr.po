@@ -18817,8 +18817,8 @@ msgid "Controls"
 msgstr "Commandes"
 
 #: scripts/options_screen.gd
-msgid "Dialogue, story, hints and the log in bigger type, and passing lines stay half as long again."
-msgstr "Dialogues, histoire, astuces et journal de combat en plus gros, et les lignes de passage restent moitié plus longtemps."
+msgid "Dialogue, story, hints and the log in bigger type, and messages stay on screen half as long again."
+msgstr "Dialogues, histoire, astuces et journal de combat en plus gros, et les messages restent affichés moitié plus longtemps."
 
 #: scripts/options_screen.gd
 msgid "Display"
@@ -18865,6 +18865,10 @@ msgid "How the picture is drawn: the window, the glow, and how the lights of the
 msgstr "La façon dont l'image est dessinée : la fenêtre, les lueurs, et la manière dont tombent les lumières de la nuit."
 
 #: scripts/options_screen.gd
+msgid "In the dark, lamps, torches and fires cast long shadows, and lightning under the open sky. Off, the ground stays plain to read."
+msgstr "Dans le noir, lampes, torches et feux projettent de longues ombres, et les éclairs à ciel ouvert. Désactivé, le sol reste simple à lire."
+
+#: scripts/options_screen.gd
 msgid "Keys are back to the defaults."
 msgstr "Touches par défaut rétablies."
 
@@ -18905,8 +18909,8 @@ msgid "Muted"
 msgstr "Coupé"
 
 #: scripts/options_screen.gd
-msgid "No screen shake, pops or rushing camera; the wind drops and the water lies still."
-msgstr "Ni tremblement d'écran, ni mots qui bondissent, ni caméra qui file ; le vent tombe et l'eau s'immobilise."
+msgid "No screen shake, pops or rushing camera; the wind drops, the water lies still and lightning turns soft."
+msgstr "Ni tremblement d'écran, ni mots qui bondissent, ni caméra qui file ; le vent tombe, l'eau s'immobilise et les éclairs s'adoucissent."
 
 #: scripts/options_screen.gd
 msgid "Off"
@@ -18919,10 +18923,6 @@ msgstr "Activé"
 #: scripts/options_screen.gd
 msgid "Options"
 msgstr "Options"
-
-#: scripts/options_screen.gd
-msgid "Outdoors at night, lamps, fires and lightning cast long shadows. Off, the ground stays plain to read."
-msgstr "Dehors, la nuit, lampes, feux et éclairs projettent de longues ombres. Désactivé, le sol reste simple à lire."
 
 #: scripts/options_screen.gd
 msgid "Press a key..."
@@ -18974,7 +18974,7 @@ msgstr "La langue, un texte plus grand, des mouvements et des lumières plus cal
 
 #: scripts/options_screen.gd
 msgid "The music alone. At its lowest the world is left to its own sounds."
-msgstr "La musique seule. Au plus bas, le monde reste à ses propres bruits."
+msgstr "La musique seule. Au plus bas, le monde n'a plus que ses propres bruits."
 
 #: scripts/options_screen.gd
 msgid "The weather, the birds and the fires. Lower it when a long rain wears on you."
