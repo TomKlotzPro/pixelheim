@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.402.0",
+      "date": "2026-11-24",
+      "codename": "Fine Print",
+      "notes": [
+        "Options say under the rows what the chosen option does and what turning it off gives, and what each tab holds",
+        "The Controls tab names the keys that always work beside yours: the arrows, Enter, Space, Tab and L"
+      ]
+    },
+    {
       "version": "0.401.0",
       "date": "2026-11-24",
       "codename": "Wading In",

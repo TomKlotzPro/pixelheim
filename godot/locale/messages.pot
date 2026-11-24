@@ -3929,6 +3929,10 @@ msgid "Figures shed their 2D outline in 3D: brighter, chunkier heroes, villagers
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fine Print"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fire and Water"
 msgstr ""
 
@@ -5565,6 +5569,10 @@ msgid "Options on the title screen opens again: it was opening behind the title"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Options say under the rows what the chosen option does and what turning it off gives, and what each tab holds"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Out of Sight"
 msgstr ""
 
@@ -6942,6 +6950,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Codex's masteries now say what the next tier gives: more damage against that family"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Controls tab names the keys that always work beside yours: the arrows, Enter, Space, Tab and L"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -18833,7 +18845,7 @@ msgid "Every key back to the one the game came with."
 msgstr ""
 
 #: scripts/options_screen.gd
-msgid "Every key you can change. The arrows, Enter, Space and Tab always work beside them."
+msgid "Every key you can change. The arrows, Enter, Space, Tab and L always work beside them."
 msgstr ""
 
 #: scripts/options_screen.gd

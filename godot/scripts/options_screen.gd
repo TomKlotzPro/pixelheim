@@ -27,7 +27,7 @@ const TAB_HELP := [
 	"All the sound at once, then the music, the effects and the ambience, each on its own slider.",
 	"How the picture is drawn: the window, the glow, and how the lights of the night fall.",
 	"The language, larger text, calmer motion and light, and the help the game gives along the way.",
-	"Every key you can change. The arrows, Enter, Space and Tab always work beside them.",
+	"Every key you can change. The arrows, Enter, Space, Tab and L always work beside them.",
 ]
 ## Every key's line: how one is rebound, said once for them all.
 const KEYS_HELP := "Choose a key and press {key:interact}, then its new key; Esc keeps the old. A key another action holds swaps with it."

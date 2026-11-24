@@ -3929,6 +3929,10 @@ msgid "Figures shed their 2D outline in 3D: brighter, chunkier heroes, villagers
 msgstr "Les personnages perdent leur contour 2D en 3D : héros, villageois et monstres plus lumineux et plus trapus, ancrés au sol par une douce ombre de contact"
 
 #: assets/data/changelog.json
+msgid "Fine Print"
+msgstr "En toutes lettres"
+
+#: assets/data/changelog.json
 msgid "Fire and Water"
 msgstr "Le feu et l'eau"
 
@@ -5565,6 +5569,10 @@ msgid "Options on the title screen opens again: it was opening behind the title"
 msgstr "Les options de l'écran titre s'ouvrent de nouveau : elles s'ouvraient derrière le titre"
 
 #: assets/data/changelog.json
+msgid "Options say under the rows what the chosen option does and what turning it off gives, and what each tab holds"
+msgstr "Les Options disent sous les lignes ce que fait le réglage choisi et ce que change sa désactivation, et ce que contient chaque onglet"
+
+#: assets/data/changelog.json
 msgid "Out of Sight"
 msgstr "Hors de vue"
 
@@ -6943,6 +6951,10 @@ msgstr "Les trésors de la cité valent leur prix : l'Égide des Cendres pare 
 #: assets/data/changelog.json
 msgid "The Codex's masteries now say what the next tier gives: more damage against that family"
 msgstr "Les maîtrises du Codex disent désormais ce que donne le palier suivant : plus de dégâts contre cette famille"
+
+#: assets/data/changelog.json
+msgid "The Controls tab names the keys that always work beside yours: the arrows, Enter, Space, Tab and L"
+msgstr "L'onglet Commandes nomme les touches qui marchent toujours en plus des vôtres : les flèches, Entrée, Espace, Tab et L"
 
 #: assets/data/changelog.json
 msgid "The Deep Hunt"
@@ -18833,8 +18845,8 @@ msgid "Every key back to the one the game came with."
 msgstr "Chaque touche revient à celle d'origine."
 
 #: scripts/options_screen.gd
-msgid "Every key you can change. The arrows, Enter, Space and Tab always work beside them."
-msgstr "Toutes les touches que vous pouvez changer. Les flèches, Entrée, Espace et Tab marchent toujours en plus."
+msgid "Every key you can change. The arrows, Enter, Space, Tab and L always work beside them."
+msgstr "Toutes les touches que vous pouvez changer. Les flèches, Entrée, Espace, Tab et L marchent toujours en plus."
 
 #: scripts/options_screen.gd
 msgid "Everything the game plays, at once. Muted silences it and keeps your three volumes."
@@ -18866,7 +18878,7 @@ msgstr "La façon dont l'image est dessinée : la fenêtre, les lueurs, et la 
 
 #: scripts/options_screen.gd
 msgid "In the dark, lamps, torches and fires cast long shadows, and lightning under the open sky. Off, the ground stays plain to read."
-msgstr "Dans le noir, lampes, torches et feux projettent de longues ombres, et les éclairs à ciel ouvert. Désactivé, le sol reste simple à lire."
+msgstr "Dans le noir, lampes, torches et feux projettent de longues ombres, et les éclairs à ciel ouvert. Désactivé, le sol reste plus lisible."
 
 #: scripts/options_screen.gd
 msgid "Keys are back to the defaults."
@@ -18910,7 +18922,7 @@ msgstr "Coupé"
 
 #: scripts/options_screen.gd
 msgid "No screen shake, pops or rushing camera; the wind drops, the water lies still and lightning turns soft."
-msgstr "Ni tremblement d'écran, ni mots qui bondissent, ni caméra qui file ; le vent tombe, l'eau s'immobilise et les éclairs s'adoucissent."
+msgstr "Ni tremblement d'écran, ni objets ou mots qui bondissent, ni caméra qui file ; le vent tombe, l'eau s'immobilise et les éclairs s'adoucissent."
 
 #: scripts/options_screen.gd
 msgid "Off"
