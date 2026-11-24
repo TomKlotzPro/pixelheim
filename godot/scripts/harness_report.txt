@@ -121,7 +121,7 @@ standoff | after --walk with a villager within two cells: how far the hero's fee
 stood | named foes that stood down rather than fell, when one did (PIX-255)
 story | the main story's hollow diamond on the map's page, while something else is followed (PIX-253)
 street | the street under the hero: the paving its age lays (gravel, cobbles, sandstone, flags, mossy, setts, basket; drawn with the paid art, bare dirt without), or worn on a rutted road (PIX-307)
-tab | with station: the tab the counter opened on (PIX-234)
+tab | with station: the tab the counter opened on (PIX-234); while Options are open: the tab they show, then the row chosen once the keys are down among its rows: display row Rim light (PIX-546)
 tags | after a fight on this visit: the most foes' level tags shown at once while it was on (PIX-340: one a pack)
 tally | on Morvax's forge: the red strokes after his wall's newest row, one for each of the courier's ember lamps: fresh:4 (PIX-325)
 titlebeat | with --title-at: the beat the title's entrance is held at (descent, dragon, eruption, forge, menu), or settled once it is over or skipped (PIX-392)

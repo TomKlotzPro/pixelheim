@@ -18749,6 +18749,10 @@ msgid "%s is now %s."
 msgstr "%s : désormais %s."
 
 #: scripts/options_screen.gd
+msgid "Access"
+msgstr "Accessibilité"
+
+#: scripts/options_screen.gd
 msgid "Ambience volume"
 msgstr "Volume de l'ambiance"
 
@@ -18763,6 +18767,10 @@ msgstr "Avertissements clairs"
 #: scripts/options_screen.gd
 msgid "Controls"
 msgstr "Commandes"
+
+#: scripts/options_screen.gd
+msgid "Display"
+msgstr "Affichage"
 
 #: scripts/options_screen.gd
 msgid "Effects volume"
@@ -18829,16 +18837,16 @@ msgid "Quest markers"
 msgstr "Marqueurs de quête"
 
 #: scripts/options_screen.gd
-msgid "Reading and help"
-msgstr "Lecture et aide"
-
-#: scripts/options_screen.gd
 msgid "Reduce motion"
 msgstr "Réduire les animations"
 
 #: scripts/options_screen.gd
 msgid "Reset keys to defaults"
 msgstr "Rétablir les touches par défaut"
+
+#: scripts/options_screen.gd
+msgid "Rim light"
+msgstr "Liseré des lumières"
 
 #: scripts/options_screen.gd
 msgid "Shadows"
@@ -18851,10 +18859,6 @@ msgstr "Son"
 #: scripts/options_screen.gd
 msgid "System (%s)"
 msgstr "Système (%s)"
-
-#: scripts/options_screen.gd
-msgid "Video"
-msgstr "Vidéo"
 
 #: scripts/options_screen.gd
 msgid "adjust"

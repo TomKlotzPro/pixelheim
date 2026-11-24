@@ -1,29 +1,44 @@
 class_name OptionsScreen
 extends Screen
 ## areas: screen
-## Options (Options.tsx): sound (music, effects and ambience, PIX-411), the
-## CRT scanlines, fullscreen, reduced motion, and the keys. W/S choose a
-## row, A/D move a slider or flip a switch, E flips a switch too and
-## rebinds a key (the next key pressed takes it; Esc cancels); on a key's
-## row A/D cross to the other column (PIX-484). Everything is saved at once
-## in GameSettings. Esc closes.
+## Options (Options.tsx), in tabs (PIX-546): Sound (music, effects and
+## ambience, PIX-411), Display, Access and Controls, the journal's tabs on
+## the page's top edge. They open on the tabs: A/D turn them, W/S go down
+## into a tab's rows and back up to the tabs past either end. On a row A/D
+## move a slider or flip a switch, E flips a switch too and rebinds a key
+## (the next key pressed takes it; Esc cancels); on a key's row A/D cross
+## to the other column (PIX-484). Everything is saved at once in
+## GameSettings. Esc closes.
 
-## The row the next Options open on, set as a language rebuilds the world
-## in it (PIX-428: the reload closed Options and every screen under them);
-## the title or the pause menu opens them again there. -1: none.
+## The tabs, by the names they show.
+const TABS := ["Sound", "Display", "Access", "Controls"]
+## The page, as every screen's (PIX-388).
+const PAGE := Rect2(80, 72, 1120, 556)
+## How many of the keys stand in the Controls' left column.
+const KEYS_LEFT := 7
+## The room over and under a row's words inside its rim: the box's own, now
+## a tab holds seven rows a column at most (PIX-484 had cut it to 3 for
+## seventeen rows and four headings down one).
+const ROW_PAD := 6
+
+## The row the next Options open on and its tab, set as a language rebuilds
+## the world in it (PIX-428: the reload closed Options and every screen
+## under them); the title or the pause menu opens them again there. -1: none.
 static var back_at := -1
-
-## The room over and under a row's words inside its rim: seventeen rows and
-## four headings down the left column then end above the keys (PIX-484: at
-## the box's own 6 the page ran under them, "Quest markers" behind the footer).
-const ROW_PAD := 3
+static var back_tab := 0
 
 var world: World
+## The tab shown (TABS' index), and whether the tabs themselves are chosen:
+## left and right then turn them, and no row is lit.
+var tab := 0
+var on_tabs := true
+var tabs_row: HBoxContainer
+## The shown tab's rows.
 var rows: Array[Dictionary] = []
 var selected := 0
 ## The action waiting for its new key, "" when none.
 var listening := ""
-## Sound and video on the left, the keys on the right.
+## A tab's rows mid-page in the left one; the keys fill both.
 var columns: Array[VBoxContainer] = []
 var status: Label
 ## The keys' footer, and the one shown while a key is awaited (PIX-434).
@@ -34,26 +49,33 @@ var waiting_footer: Control
 func _open() -> void:
 	layer = 7
 	dim()
-	add_child(UiStyle.title("Options"))
+	var title := UiStyle.title("Options")
+	add_child(title)
+	# On the page's top edge, a gap past the title, as the journal's (PIX-543).
+	tabs_row = HBoxContainer.new()
+	tabs_row.position = Vector2(maxf(PAGE.position.x + UiStyle.INSET, title.position.x + Layout.words_width(title) + UiStyle.GAP), PAGE.position.y - 36)
+	tabs_row.custom_minimum_size.y = 36
+	tabs_row.add_theme_constant_override("separation", 4)
+	add_child(tabs_row)
 	var card := PanelContainer.new()
-	# The screens' page, inset and room above the keys (PIX-388): its rows
-	# touch, each its own padding apart, so both columns fit its height.
-	card.position = Vector2(80, 72)
-	card.custom_minimum_size = Vector2(1120, 556)
+	# The screens' page, inset and room above the keys (PIX-388).
+	card.position = PAGE.position
+	card.custom_minimum_size = PAGE.size
 	card.add_theme_stylebox_override("panel", UiStyle.window(UiStyle.INSET))
 	add_child(card)
 	var halves := HBoxContainer.new()
 	halves.add_theme_constant_override("separation", 40)
+	# A tab with one column of rows holds it mid-page.
+	halves.alignment = BoxContainer.ALIGNMENT_CENTER
 	card.add_child(halves)
 	for i in 2:
 		var column := VBoxContainer.new()
-		column.custom_minimum_size = Vector2((1120 - 2 * UiStyle.INSET - 40) / 2.0, 0)
+		column.custom_minimum_size = Vector2((PAGE.size.x - 2 * UiStyle.INSET - 40) / 2.0, 0)
 		column.add_theme_constant_override("separation", 0)
 		halves.add_child(column)
 		columns.append(column)
-	# In the Controls column's free foot (PIX-434: under the card it ran over
-	# the frame), two lines tall and read from the bottom: one line stays
-	# clear of the lit Reset row's rim, and two still end above the frame.
+	# In the Controls' right column's free foot (PIX-434: under the card it
+	# ran over the frame), two lines tall and read from the bottom.
 	status = Layout.wrapped(UiStyle.label("", 14, UiStyle.LAMP, Vector2(660, 556)), 516)
 	status.custom_minimum_size.y = 47
 	status.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
@@ -61,20 +83,25 @@ func _open() -> void:
 	waiting_footer = UiStyle.screen_footer(Text.t("Press the new key") + "      Esc  " + Text.t("keep the old one"))
 	add_child(waiting_footer)
 	if back_at >= 0:
+		tab = back_tab
 		selected = back_at
+		on_tabs = false
 		back_at = -1
 	_refresh()
 
 
 ## The keys' footer, written again with the keys as they are now (PIX-480:
 ## it kept "W S choose" after Move up went to Q, till Options were
-## reopened), and only the keys that act on the chosen row (PIX-484): a
-## slider moves by left and right alone, a switch by those or E, and on a
-## key's row left and right cross to the other column and E rebinds.
+## reopened), and only the keys that act on what is chosen (PIX-484): on
+## the tabs left and right turn them; a slider moves by left and right
+## alone, a switch by those or E, and on a key's row left and right cross
+## to the other column and E rebinds.
 func _name_keys() -> void:
-	var row: Dictionary = rows[_choosable()[selected]]
+	var row: Dictionary = rows[selected]
 	var acts := "{key:move_left}/{key:move_right} / {key:interact}  change      "
-	if _slides(row):
+	if on_tabs:
+		acts = "{key:move_left}/{key:move_right}  tabs      "
+	elif _slides(row):
 		acts = "{key:move_left}/{key:move_right}  adjust      "
 	elif row.has("rebind") or row.has("act"):
 		acts = "{key:move_left}/{key:move_right}  other column      " + ("{key:interact}  rebind      " if row.has("rebind") else "{key:interact}  reset      ")
@@ -94,52 +121,73 @@ func _slides(row: Dictionary) -> bool:
 	return row.has("adjust") and (row["adjust"] as Callable).get_method() == &"_volume"
 
 
-## The rows: section headings, then a control each.
+## A switch's row on tab `at`, for the setting named `setting`.
+func _switch_row(at: int, label: String, setting: String) -> Dictionary:
+	return {"tab": at, "label": label, "value": "On" if GameState.settings.get(setting) else "Off", "adjust": _flip.bind(setting)}
+
+
+## Every tab's rows, each with its `tab` (TABS' index) and a control.
 func _build() -> Array[Dictionary]:
 	var settings := GameState.settings
 	var out: Array[Dictionary] = []
-	out.append({"heading": "Sound"})
-	out.append({"label": "Sound", "value": "Muted" if settings.muted else "On", "adjust": _flip.bind("muted")})
-	out.append({"label": "Music volume", "value": Text.percent(roundi(settings.music_volume * 100)), "adjust": _volume.bind("music")})
-	out.append({"label": "Effects volume", "value": Text.percent(roundi(settings.sfx_volume * 100)), "adjust": _volume.bind("sfx")})
-	out.append({"label": "Ambience volume", "value": Text.percent(roundi(settings.ambience_volume * 100)), "adjust": _volume.bind("ambience")})
-	out.append({"heading": "Video"})
-	out.append({"label": "CRT scanlines", "value": "On" if settings.scanlines else "Off", "adjust": _flip.bind("scanlines")})
-	out.append({"label": "Fullscreen", "value": "On" if settings.fullscreen else "Off", "adjust": _flip.bind("fullscreen")})
-	out.append({"label": "Reduce motion", "value": "On" if settings.reduce_motion else "Off", "adjust": _flip.bind("reduce_motion")})
-	# Accessibility (PIX-160).
-	out.append({"heading": "Language"})
-	out.append({"label": "Language", "value": _language_name(settings.language), "adjust": _language})
-	out.append({"heading": "Reading and help"})
-	out.append({"label": "Large reading text", "value": "On" if settings.large_text else "Off", "adjust": _flip.bind("large_text")})
-	out.append({"label": "Clear warnings", "value": "On" if settings.clear_warnings else "Off", "adjust": _flip.bind("clear_warnings")})
-	out.append({"label": "Glow", "value": "On" if settings.glow else "Off", "adjust": _flip.bind("glow")})
-	out.append({"label": "Shadows", "value": "On" if settings.shadows else "Off", "adjust": _flip.bind("shadows")})
+	out.append({"tab": 0, "label": "Sound", "value": "Muted" if settings.muted else "On", "adjust": _flip.bind("muted")})
+	out.append({"tab": 0, "label": "Music volume", "value": Text.percent(roundi(settings.music_volume * 100)), "adjust": _volume.bind("music")})
+	out.append({"tab": 0, "label": "Effects volume", "value": Text.percent(roundi(settings.sfx_volume * 100)), "adjust": _volume.bind("sfx")})
+	out.append({"tab": 0, "label": "Ambience volume", "value": Text.percent(roundi(settings.ambience_volume * 100)), "adjust": _volume.bind("ambience")})
+	out.append(_switch_row(1, "Fullscreen", "fullscreen"))
+	out.append(_switch_row(1, "CRT scanlines", "scanlines"))
+	out.append(_switch_row(1, "Glow", "glow"))
+	out.append(_switch_row(1, "Shadows", "shadows"))
 	# The lamps and the lantern shaping the art (PIX-528).
-	out.append({"label": "Light relief", "value": "On" if settings.relief else "Off", "adjust": _flip.bind("relief")})
+	out.append(_switch_row(1, "Light relief", "relief"))
+	# Every light's rim on what stands (PIX-531, PIX-546).
+	out.append(_switch_row(1, "Rim light", "rim"))
+	# Accessibility (PIX-160).
+	out.append({"tab": 2, "label": "Language", "value": _language_name(settings.language), "adjust": _language})
+	out.append(_switch_row(2, "Large reading text", "large_text"))
+	out.append(_switch_row(2, "Reduce motion", "reduce_motion"))
 	# Lightning as a soft brightening instead (PIX-491).
-	out.append({"label": "Flashes", "value": "On" if settings.flashes else "Off", "adjust": _flip.bind("flashes")})
-	out.append({"label": "Hints", "value": "On" if settings.hints else "Off", "adjust": _flip.bind("hints")})
-	out.append({"label": "Quest markers", "value": "On" if settings.quest_marks else "Off", "adjust": _flip.bind("quest_marks")})
-	out.append({"heading": "Controls", "column": 1})
+	out.append(_switch_row(2, "Flashes", "flashes"))
+	out.append(_switch_row(2, "Clear warnings", "clear_warnings"))
+	out.append(_switch_row(2, "Hints", "hints"))
+	out.append(_switch_row(2, "Quest markers", "quest_marks"))
+	var keys := 0
 	for action: String in Controls.BINDABLE:
 		var waiting := listening == action
 		out.append({
-			"label": Controls.BINDABLE[action][0],
+			"tab": 3, "label": Controls.BINDABLE[action][0],
 			"value": "Press a key..." if waiting else Controls.key_label(Controls.key_for(action, settings.bindings)),
-			"rebind": action, "column": 1,
+			"rebind": action, "column": 0 if keys < KEYS_LEFT else 1,
 		})
-	out.append({"label": "Reset keys to defaults", "value": "", "act": _reset_keys, "column": 1})
+		keys += 1
+	out.append({"tab": 3, "label": "Reset keys to defaults", "value": "", "act": _reset_keys, "column": 1})
+	return out
+
+
+## The rows of tab `at`.
+func rows_of(at: int) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	out.assign(_build().filter(func(row: Dictionary) -> bool: return row["tab"] == at))
 	return out
 
 
 func _refresh() -> void:
-	rows = _build()
-	var choosable := _choosable()
-	selected = clampi(selected, 0, choosable.size() - 1)
+	rows = rows_of(tab)
+	selected = clampi(selected, 0, rows.size() - 1)
 	_name_keys()
 	footer.visible = listening == ""
 	waiting_footer.visible = listening != ""
+	Layout.clear(tabs_row)
+	for at in TABS.size():
+		var chip := PanelContainer.new()
+		chip.add_theme_stylebox_override("panel", UiStyle.tab(at == tab))
+		chip.set_meta("chosen", at == tab)  # what play.py's `focus` reads (PlayBridge.chosen)
+		chip.add_child(UiStyle.label(TABS[at], 16, UiStyle.plank_ink(at == tab)))
+		chip.gui_input.connect(_on_tab_click.bind(at))
+		tabs_row.add_child(chip)
+	# The keys alone fill both columns, and only they have a line to say.
+	columns[1].visible = tab == TABS.find("Controls")
+	status.visible = columns[1].visible
 	for column in columns:
 		for child in column.get_children():
 			column.remove_child(child)
@@ -147,16 +195,7 @@ func _refresh() -> void:
 	for index in rows.size():
 		var row: Dictionary = rows[index]
 		var list: VBoxContainer = columns[row.get("column", 0)]
-		if row.has("heading"):
-			list.add_child(UiStyle.label(row["heading"], 15, UiStyle.LAMP))
-			continue
-		if row.has("note"):
-			var note := UiStyle.label(row["note"], 12, UiStyle.FADED)
-			note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			note.custom_minimum_size = Vector2(500, 0)
-			list.add_child(note)
-			continue
-		var chosen := index == choosable[selected]
+		var chosen := index == selected and not on_tabs
 		var line := PanelContainer.new()
 		var rim := UiStyle.box(Color(UiStyle.CARD, 0.9) if chosen else Color(0, 0, 0, 0), UiStyle.LAMP if chosen else Color(0, 0, 0, 0), 4)
 		rim.content_margin_top = ROW_PAD
@@ -192,23 +231,24 @@ func _language(step: int) -> void:
 	Text.apply(settings.language)
 	GameState.save_now()
 	back_at = selected
+	back_tab = tab
 	reload_world()
-
-
-## Row indices that can be chosen (not the headings).
-func _choosable() -> Array[int]:
-	var out: Array[int] = []
-	for index in rows.size():
-		if not rows[index].has("heading") and not rows[index].has("note"):
-			out.append(index)
-	return out
 
 
 func _on_row_click(event: InputEvent, index: int) -> void:
 	var click := event as InputEventMouseButton
 	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
-		selected = _choosable().find(index)
+		selected = index
+		on_tabs = false
 		_act(1)
+
+
+## A click on a tab opens it.
+func _on_tab_click(event: InputEvent, at: int) -> void:
+	var click := event as InputEventMouseButton
+	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
+		turn(at - tab)
 
 
 func _input(event: InputEvent) -> void:
@@ -245,53 +285,54 @@ func _command(event: InputEvent) -> Callable:
 	elif event.is_action_pressed("move_down") or event.is_action_pressed("ui_down"):
 		command = _move.bind(1)
 	elif event.is_action_pressed("move_left") or event.is_action_pressed("move_right"):
+		var by := -1 if event.is_action_pressed("move_left") else 1
 		# A key's row has nothing to adjust (PIX-484: left and right armed a
 		# rebind, as E does): they cross to the other column.
-		command = _cross if rows[_choosable()[selected]].get("column", 0) == 1 else _act.bind(-1 if event.is_action_pressed("move_left") else 1)
+		command = turn.bind(by) if on_tabs else (_cross if rows[selected].has("column") else _act.bind(by))
 	elif event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
-		command = _press
+		# On the tabs E goes down into the rows, as down does.
+		command = _move.bind(1) if on_tabs else _press
 	return command
+
+
+## The tab `by` on from the one shown, the tabs chosen.
+func turn(by: int) -> void:
+	tab = wrapi(tab + by, 0, TABS.size())
+	on_tabs = true
+	selected = 0
+	status.text = ""
+	_refresh()
 
 
 ## E on the chosen row: a switch flips, a key waits for its new one. On a
 ## slider it does nothing (PIX-484: it raised the volume a tenth, which
 ## left and right are for).
 func _press() -> void:
-	if not _slides(rows[_choosable()[selected]]):
+	if not _slides(rows[selected]):
 		_act(1)
 
 
-## From a row of one column to the row level with it in the other.
+## From a key's row to the row level with it in the other column.
 func _cross() -> void:
-	var choosable := _choosable()
-	var from: Dictionary = rows[choosable[selected]]
-	var level := _level(choosable[selected])
-	var best := selected
-	var off := 1000
-	for at in choosable.size():
-		if rows[choosable[at]].get("column", 0) != from.get("column", 0) and absi(_level(choosable[at]) - level) < off:
-			off = absi(_level(choosable[at]) - level)
-			best = at
-	selected = best
+	selected = mini(selected + KEYS_LEFT, rows.size() - 1) if selected < KEYS_LEFT else selected - KEYS_LEFT
 	_refresh()
 
 
-## How far down its column the row at `index` stands, in lines.
-func _level(index: int) -> int:
-	var line := 0
-	for at in index:
-		if rows[at].get("column", 0) == rows[index].get("column", 0):
-			line += 1
-	return line
-
-
+## Down from the tabs to the first row (up, to the last), along the rows,
+## and past either end back up to the tabs.
 func _move(step: int) -> void:
-	selected = wrapi(selected + step, 0, _choosable().size())
+	if on_tabs:
+		on_tabs = false
+		selected = 0 if step > 0 else rows.size() - 1
+	elif selected + step < 0 or selected + step >= rows.size():
+		on_tabs = true
+	else:
+		selected += step
 	_refresh()
 
 
 func _act(direction: int) -> void:
-	var row: Dictionary = rows[_choosable()[selected]]
+	var row: Dictionary = rows[selected]
 	if row.has("adjust"):
 		row["adjust"].call(direction)
 	elif row.has("rebind"):

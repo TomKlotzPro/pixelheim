@@ -37,10 +37,12 @@ var glow := true
 ## 2026-11-18: the long wedges read as a field of view (Tom). Kept under
 ## `night_shadows`, so an older file's `shadows` takes the new default.
 var shadows := false
-## The lamps and the lantern shape the art they light (PIX-528): off by
-## default until the depth is shaped from the art's forms (PIX-529), as the
-## depth from its tones turns patterns (snow, paving, stripes) to grain.
-var relief := false
+## The lamps and the lantern shape the art they light (PIX-528): on by
+## default since PIX-546, the depth shaped from the art's forms (PIX-529).
+var relief := true
+## The lights' rim on what stands (PIX-531, PIX-545): the lamps', the moon's,
+## the lightning's and the lit inner edge, all through LightRig.rim_on.
+var rim := true
 ## Lightning flashes (PIX-491): off, a strike is one slow soft brightening,
 ## as it is with Reduce motion.
 var flashes := true
@@ -81,6 +83,7 @@ func load_file() -> void:
 	glow = config.get_value(SECTION, "glow", glow)
 	shadows = config.get_value(SECTION, "night_shadows", shadows)
 	relief = config.get_value(SECTION, "relief", relief)
+	rim = config.get_value(SECTION, "rim", rim)
 	flashes = config.get_value(SECTION, "flashes", flashes)
 	hints = config.get_value(SECTION, "hints", hints)
 	quest_marks = config.get_value(SECTION, "quest_marks", quest_marks)
@@ -94,9 +97,10 @@ func load_file() -> void:
 				bindings[action] = int(saved[action])
 
 
-## Light relief's default: off everywhere until PIX-529 shapes the depth.
+## Light relief's default, for a player with no settings file or one from
+## before the option: on (PIX-546). A file that says keeps what it says.
 static func default_relief() -> bool:
-	return false
+	return true
 
 
 func save_file() -> void:
@@ -118,6 +122,7 @@ func save_file() -> void:
 	config.set_value(SECTION, "glow", glow)
 	config.set_value(SECTION, "night_shadows", shadows)
 	config.set_value(SECTION, "relief", relief)
+	config.set_value(SECTION, "rim", rim)
 	config.set_value(SECTION, "flashes", flashes)
 	config.set_value(SECTION, "language", language)
 	config.set_value(SECTION, "hints", hints)

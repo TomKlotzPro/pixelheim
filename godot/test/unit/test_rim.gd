@@ -16,6 +16,40 @@ func after_each() -> void:
 	LightRig.rim_on = _rim_on
 
 
+## PIX-546: Rim light in Options, on by default and remembered; off, the
+## shaders' `light_rim` and `rim_flash` are 0 whatever the hour and the sky,
+## so no lamp, moon, lightning or inner edge rims anything.
+func test_the_setting_is_remembered_and_takes_every_rim_off() -> void:
+	var path := "user://test_rim_settings.cfg"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	var settings := GameSettings.new(path)
+	settings.load_file()
+	assert_true(settings.rim, "on, with no file yet")
+	settings.rim = false
+	settings.save_file()
+	var again := GameSettings.new(path)
+	again.load_file()
+	assert_false(again.rim, "remembered off")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	var read_only := GameState.settings.read_only
+	GameState.settings.read_only = true
+	GameState.settings.rim = true
+	var options := OptionsScreen.new()
+	var rows := options.rows_of(OptionsScreen.TABS.find("Display")).filter(func(row: Dictionary) -> bool: return row["label"] == "Rim light")
+	assert_eq(rows.size(), 1, "a Rim light row on Display")
+	assert_eq(rows[0]["value"], "On")
+	(rows[0]["adjust"] as Callable).call(1)
+	options.free()
+	GameState.settings.read_only = read_only
+	assert_false(GameState.settings.rim, "flipped off")
+	assert_false(LightRig.rim_on, "the rig's one switch")
+	assert_eq(LightRig.rim_strength(1.0), 0.0, "light_rim: none at night")
+	assert_eq(LightRig.flash_rim(1.0, 1.0, false), 0.0, "rim_flash: none at a strike's height")
+	var rig := LightRig.new()
+	assert_eq(rig.moon_rim(MapData.load_by_id("town"), 1.0, 0.0), 0.0, "nor the moon's")
+	rig.free()
+
+
 func test_none_by_day_whole_in_the_dark() -> void:
 	LightRig.rim_on = true
 	assert_eq(LightRig.rim_strength(0.0), 0.0, "none by day")

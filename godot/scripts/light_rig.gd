@@ -188,8 +188,14 @@ static func relief_strength() -> float:
 	return Lights.RELIEF if GameState.settings.relief else 0.0
 
 
-## The rim on what stands, false only for the harness's `--rim off` (PIX-531).
-static var rim_on := true
+## The rim on what stands (PIX-531), every one of them: the player's Rim
+## light in Options (PIX-546, GameSettings.rim), which the harness's
+## `--rim off` sets for a run too.
+static var rim_on: bool:
+	get:
+		return GameState.settings.rim
+	set(value):
+		GameState.settings.rim = value
 
 
 ## The shaders' `light_rim` global (PIX-531) when it is `dark_now` dark: none by

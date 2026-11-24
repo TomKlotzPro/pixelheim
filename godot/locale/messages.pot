@@ -18749,6 +18749,10 @@ msgid "%s is now %s."
 msgstr ""
 
 #: scripts/options_screen.gd
+msgid "Access"
+msgstr ""
+
+#: scripts/options_screen.gd
 msgid "Ambience volume"
 msgstr ""
 
@@ -18762,6 +18766,10 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "Controls"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Display"
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18829,15 +18837,15 @@ msgid "Quest markers"
 msgstr ""
 
 #: scripts/options_screen.gd
-msgid "Reading and help"
-msgstr ""
-
-#: scripts/options_screen.gd
 msgid "Reduce motion"
 msgstr ""
 
 #: scripts/options_screen.gd
 msgid "Reset keys to defaults"
+msgstr ""
+
+#: scripts/options_screen.gd
+msgid "Rim light"
 msgstr ""
 
 #: scripts/options_screen.gd
@@ -18850,10 +18858,6 @@ msgstr ""
 
 #: scripts/options_screen.gd
 msgid "System (%s)"
-msgstr ""
-
-#: scripts/options_screen.gd
-msgid "Video"
 msgstr ""
 
 #: scripts/options_screen.gd

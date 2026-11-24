@@ -19,8 +19,10 @@ func before_first_map(flags: HarnessFlags) -> void:
 	if flags.has("--relief"):
 		GameState.settings.relief = flags.value("--relief") == "on"
 	# `--rim off` (PIX-531): the lights' rim held back, for a picture to set
-	# beside one with it; a static, so put back for the next flow in a batch.
-	LightRig.rim_on = flags.value("--rim") != "off"
+	# beside one with it; on otherwise, whatever the player's Rim light says
+	# (PIX-546), but never over a real slot's settings, which a run writes.
+	if flags.has("--rim") or GameState.settings.read_only:
+		LightRig.rim_on = flags.value("--rim") != "off"
 
 
 func field_relief(report: HarnessReport) -> String:

@@ -619,7 +619,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/npc.gd` — A villager: their Puny sheet (PunyArt, PIX-130), a body the hero bumps into, and — for wanderers — an amble around the pacing loop, walking the way they step.
 - `scripts/npcs.gd` — Villagers (assets/data/npcs.json): the fixed townsfolk, tier-gated settlers included, and the recruits who wait in the wilds until they move to town.
 - `scripts/open_ground.gd` — The Medieval Age's greens and snow laid as patches over Shade's grass (PIX-305), so a meadow's hollows and the snow's drifts have edges of their own, tufted the way the pack's sample maps lay them
-- `scripts/options_screen.gd` — Options (Options.tsx): sound (music, effects and ambience, PIX-411), the CRT scanlines, fullscreen, reduced motion, and the keys.
+- `scripts/options_screen.gd` — Options (Options.tsx), in tabs (PIX-546): Sound (music, effects and ambience, PIX-411), Display, Access and Controls, the journal's tabs on the page's top edge.
 - `scripts/passage.gd` — How the hero comes to a place (PIX-500): the five ways `world.go` takes and what each one does where it arrives.
 - `scripts/pause_screen.gd` — The Escape menu (PauseMenu.tsx): resume, the saves (slots and codes), options, or back to the title.
 - `scripts/perf_probe.gd` — The perf guard (PIX-220): how long each stage of a frame takes, from the engine's own signals
