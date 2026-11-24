@@ -601,6 +601,16 @@ static func _counted(pieces: Array) -> String:
 	return ",".join(names.map(func(kind: String) -> String: return "%s%d" % [kind, kinds[kind]]))
 
 
+func field_help() -> String:
+	var shown: Array[CanvasLayer] = []
+	_screens_in(world, shown)
+	for layer in shown:
+		var options := layer as OptionsScreen
+		if options != null:
+			return options.help.text
+	return ""
+
+
 func field_hero() -> String:
 	if not flags.has("--role") and not flags.has("--level"):
 		return ""

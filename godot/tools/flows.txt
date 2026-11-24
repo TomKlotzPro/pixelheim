@@ -1266,6 +1266,17 @@ fit-options-keys-large | --map town large --keys esc,s,s,e,a,s,d overflow --lang
 options-rows-end | --map town --keys esc,s,s,e,s,s,s,s,s | top=options_screen tab=sound | screen
 options-title-tabs | title --keys s,s,e,d,d | top=options_screen tab=access | screen title
 options-rim-off | --map town --town-tier 4 --at 40,24 night --keys esc,s,s,e,d,w,e | top=options_screen tab=display row Rim light rim=off 0\.00 moon 0\.00 flash 0\.00 | screen town night
+# PIX-550: under the rows a line says what the chosen row does (Rim light's,
+# then the keys' with E as it is bound), or what the tab holds while the
+# keys are on the tabs. The longest line of each tab fits in French with
+# Large reading text on.
+options-help-row | --map town --keys esc,s,s,e,d,w overflow --lang en | top=options_screen tab=display row Rim light help=Lamps, fires, the moon and lightning outline what stands near them at night\. Off, nothing is outlined\. overflow=0 | screen lang
+options-help-tab | --map town --keys esc,s,s,e,d,d overflow --lang en | top=options_screen tab=access help=The language, larger text, calmer motion and light, and the help the game gives along the way\. overflow=0 | screen lang
+options-help-keys | --map town --keys esc,s,s,e,a,s overflow --lang en | top=options_screen tab=controls row Move up help=Choose a key and press E, then its new key.* overflow=0 | screen lang
+fit-options-help-sound | --map town large --keys esc,s,s,e,s overflow --lang fr | top=options_screen tab=sound row Sound help=Tout ce que le jeu fait entendre.* overflow=0 | screen lang
+fit-options-help-display | --map town large --keys esc,s,s,e,d,s,s,s,s,s overflow --lang fr | top=options_screen tab=display row Light relief help=Les lampes et votre lanterne sculptent.* overflow=0 | screen lang
+fit-options-help-access | --map town large --keys esc,s,s,e,d,d,w overflow --lang fr | top=options_screen tab=access row Quest markers help=Des marques au-dessus de ceux.* overflow=0 | screen lang
+fit-options-help-keys | --map town large --keys esc,s,s,e,a,s overflow --lang fr | top=options_screen tab=controls row Move up help=Choisissez une touche et appuyez sur E.* overflow=0 | screen lang
 fit-map | --map town waypoints worldmap overflow --lang fr | open=map_screen overflow=0 | screen lang travel
 # The map's list with every waystation built, in French (PIX-322).
 fit-map-roads | --map town --routes all --built waystation_saltmere,waystation_blackiron,waystation_greyhold,waystation_frostgate waypoints worldmap overflow --lang fr | open=map_screen overflow=0 | screen lang travel
