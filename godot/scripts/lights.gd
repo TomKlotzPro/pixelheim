@@ -68,6 +68,10 @@ const BLAZE_ENERGY := 0.8
 const TORCH_ENERGY := 0.7
 const WINDOW_ENERGY := 0.36
 const LANTERN_ENERGY := 0.3
+## Under the ground it burns up (PIX-547: a playtest found its pool three
+## cells wide in a cave, hardly there where it matters most), still under a
+## torch's blaze.
+const LANTERN_ENERGY_UNDER := 0.5
 ## The light the hero carries (PIX-530): no light follows a hero without
 ## one; the Tin Lantern in their pack burns round them in the dark.
 const HAND_LANTERN := "tin_lantern"
@@ -127,6 +131,11 @@ static func indoor(steps: float) -> Color:
 ## Whether the sky is over the map: not indoors, not under the ground.
 static func under_sky(map: MapData) -> bool:
 	return map != null and map.style != "cave" and not PunyInterior.is_room(map.id)
+
+
+## Whether the map is under the ground: a cave, a mine, the deep, a dungeon.
+static func underground(map: MapData) -> bool:
+	return map != null and map.style == "cave"
 
 
 ## Whether a pack's `items` hold a lantern (PIX-530; Liane's too, PIX-535).
