@@ -184,6 +184,11 @@ func _refresh() -> void:
 		chip.set_meta("chosen", at == tab)  # what play.py's `focus` reads (PlayBridge.chosen)
 		chip.add_child(UiStyle.label(TABS[at], 16, UiStyle.plank_ink(at == tab)))
 		chip.gui_input.connect(_on_tab_click.bind(at))
+		if at == tab and on_tabs:
+			# The keys stand on the tabs: the chosen one framed as a chosen row
+			# is (PIX-546 review: nothing on screen said where they stood).
+			chip.set_meta("lit", true)
+			chip.draw.connect(func() -> void: chip.draw_style_box(UiStyle.box(Color(0, 0, 0, 0), UiStyle.LAMP, 0), Rect2(Vector2.ZERO, chip.size)))
 		tabs_row.add_child(chip)
 	# The keys alone fill both columns, and only they have a line to say.
 	columns[1].visible = tab == TABS.find("Controls")

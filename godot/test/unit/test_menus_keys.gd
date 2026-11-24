@@ -440,6 +440,8 @@ func test_options_open_on_their_tabs_and_the_rows_lead_back_to_them() -> void:
 	var muted := settings.muted
 	var options := _open(OptionsScreen.new()) as OptionsScreen
 	assert_true(options.on_tabs, "the tabs chosen first")
+	var lit := func() -> int: return options.tabs_row.get_children().filter(func(chip: Node) -> bool: return chip.get_meta("lit", false)).size()
+	assert_eq(lit.call(), 1, "the chosen tab framed while the keys stand on the tabs")
 	assert_has(_says(options.footer), "tabs")
 	assert_does_not_have(_says(options.footer), "change", "nothing to change on the tabs")
 	var seen: Array[String] = []
@@ -455,6 +457,7 @@ func test_options_open_on_their_tabs_and_the_rows_lead_back_to_them() -> void:
 	assert_eq(settings.muted, muted, "left and right on the tabs changed nothing")
 	options._command(_action(&"interact")).call()
 	assert_false(options.on_tabs, "E goes into the rows")
+	assert_eq(lit.call(), 0, "and no tab framed once they are in the rows")
 	assert_eq(String(_chosen(options)["label"]), "Sound")
 	assert_has(_says(options.footer), "change")
 	options._command(_action(&"move_up")).call()
