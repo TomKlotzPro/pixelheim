@@ -914,7 +914,8 @@ func _hold_lantern() -> void:
 	held.visible = not hand.is_empty()
 	if held.visible:
 		# The sprite is centred on its 32 px cell.
-		held.position = Vector2(hand["at"] as Vector2i) - Vector2(16, 16)
+		held.position = Vector2(hand["at"] as Vector2i) - Vector2(16, 16) + Vector2(0, Wading.sunk(sprite))
+		# Down with the hand when the shader sinks the hero (Wading, PIX-548).
 		held.show_behind_parent = not hand["front"]
 		held_glass.visible = world != null and world.lights != null and is_instance_valid(world.lights.lantern) and world.lights.lantern.visible
 

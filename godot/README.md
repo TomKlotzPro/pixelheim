@@ -729,6 +729,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/town_hall_screen.gd` — The village's projects (PIX-145), across the mayor's counter or at the board on the square
 - `scripts/trick_brain.gd` — A common foe's own trick as it plays (PIX-489), riding on the enemy (its parent) as an elite's brain does
 - `scripts/ui_style.gd` — The game's one look (PIX-138): pages of a village ledger.
+- `scripts/wading.gd` — Wading through shallow water (PIX-548: the Mirefen's strips beside its boardwalks looked like water that should stop the hero, who walked through them dry)
 - `scripts/waypoints.gd` — Fast travel's choice on the map screen (PIX-241: "on a waypoint, show where it takes you")
 - `scripts/ways.gd` — The ways between maps (PIX-269: "it isn't clear where to walk to go on").
 - `scripts/weather.gd` — Each region's air and the sky's weather (PIX-224).

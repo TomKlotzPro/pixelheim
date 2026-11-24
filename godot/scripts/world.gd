@@ -269,6 +269,9 @@ func _process(delta: float) -> void:
 	hud.update_clock()
 	stage.watch_chapters(delta)
 	var cell := Vector2i((player.position / TILE).floor())
+	# In a feature's shallows the hero wades (PIX-548): by where they stand
+	# now, an arrival in them too.
+	Wading.tread(player, player.sprite, view.data.shallows.has(cell))
 	if cell == player_cell:
 		return
 	# A gatehouse's door opens once the hero is in under its arch (PIX-425).

@@ -168,8 +168,8 @@ func test_wisps_float_over_the_fen_apart() -> void:
 
 
 ## Drawn: what stands blocks its cells, the walks are Shade's planks over
-## the fen's water, waded beside them, the wisps are out only at night, each
-## with its soft light.
+## the fen's water, shallow and waded beside them (PIX-548) and nowhere
+## else, the wisps are out only at night, each with its soft light.
 func test_the_fen_drawn() -> void:
 	var map := _map()
 	var root := Node2D.new()
@@ -197,6 +197,17 @@ func test_the_fen_drawn() -> void:
 		assert_eq(String(look[cell]), "water", "the fen's shallows beside a walk at %s" % cell)
 		assert_true(map.is_walkable(cell), "waded through at %s" % cell)
 		assert_ne(view.tile_layer.get_cell_source_id(cell), MapView.BLOCKER_SOURCE, "nothing stops the hero at %s" % cell)
+		# Drawn shallow, not as the fen's pools, and waded (PIX-548).
+		assert_true(map.shallows.has(cell), "waded at %s" % cell)
+		assert_eq(roundi(view.kept.water_image.get_pixelv(cell).a * 255.0), PunyTerrain.WATER_SHALLOWS * PunyTerrain.TONE_BIT, "drawn shallow at %s" % cell)
+	assert_eq(map.shallows.size(), laid["wet"].size(), "the shallows are the walks' sides alone")
+	# Never waded on a way, a walk's planks nor the fen's own pools, which
+	# keep the mire's water.
+	for cell: Vector2i in map.grid:
+		if Hamlet.is_way(map.id, map.tile_at(cell)) or MireDressing._on_walk(laid["walks"], cell) or map.tile_at(cell) == "water":
+			assert_false(map.shallows.has(cell), "no wading at %s" % cell)
+			if PunyTerrain.is_wet(String(look[cell])):
+				assert_eq(roundi(view.kept.water_image.get_pixelv(cell).a * 255.0) / PunyTerrain.TONE_BIT, PunyTerrain.WATER_MIRE, "the mire's own water at %s" % cell)
 	for cell: Vector2i in view.drawn_as:
 		assert_false(view.patches.has(cell), "no patch grows on the planks or the shallows at %s" % cell)
 	assert_eq(PunyTerrain.span_axis(look, Vector2i(44, 20)), Vector2i.DOWN, "the ruin's runs down to the road")

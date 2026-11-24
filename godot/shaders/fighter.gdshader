@@ -24,9 +24,22 @@ uniform float dissolve : hint_range(0.0, 1.0) = 0.0;
 uniform vec3 ember : source_color = vec3(1.0, 0.55, 0.2);
 // How wide the glowing rim of the dissolve is.
 const float RIM = 0.14;
+// Wading (PIX-548, Wading): drawn `wade` pixels of its art lower, its rows
+// under the waterline gone and the row at it the water's lip, drawn on the
+// row under where its soles stood: `wade_foot`, that row in the sprite's
+// own pixels from its middle.
+uniform float wade = 0.0;
+uniform float wade_foot = 0.0;
+uniform vec3 wade_lip : source_color = vec3(0.66, 0.7, 0.5);
+varying float sprite_y;
 
 float hash(vec2 p) {
 	return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+void vertex() {
+	sprite_y = VERTEX.y;
+	VERTEX.y += wade;
 }
 
 void fragment() {
@@ -42,6 +55,14 @@ void fragment() {
 			c.a = 0.0;
 		} else if (h < dissolve + RIM) {
 			c.rgb = ember;
+		}
+	}
+	if (wade > 0.0) {
+		float under = floor(sprite_y) - (wade_foot - wade);
+		if (under >= 1.0) {
+			c.a = 0.0;
+		} else if (under >= 0.0 && c.a > 0.5) {
+			c.rgb = wade_lip;
 		}
 	}
 	COLOR = c;
