@@ -130,7 +130,7 @@ static func indoor(steps: float) -> Color:
 
 ## Whether the sky is over the map: not indoors, not under the ground.
 static func under_sky(map: MapData) -> bool:
-	return map != null and map.style != "cave" and not PunyInterior.is_room(map.id)
+	return map != null and not underground(map) and not PunyInterior.is_room(map.id)
 
 
 ## Whether the map is under the ground: a cave, a mine, the deep, a dungeon.

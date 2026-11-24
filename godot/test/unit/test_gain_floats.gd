@@ -282,7 +282,7 @@ func test_a_word_bursting_in_stays_on_its_spot() -> void:
 ## PIX-549: the French words that ran widest over the world take no more
 ## room in Nunito than the pixel face gave them.
 func test_the_long_french_words_are_no_wider_than_they_were() -> void:
-	for words: String in ["NIVEAU SUPÉRIEUR", "Superbe casque de cuir", "Interrompu !"]:
+	for words: String in ["NIVEAU SUPÉRIEUR", "Superbe casque de cuir", "Interrompu\u202f!"]:
 		var before := Ink.of_text(words, UiStyle.pixel_font(), UiStyle.BODY_PX).size.x
 		assert_gt(WorldFx.ink_of(words).size.x, 0.0, "%s: measured" % words)
 		assert_lt(WorldFx.ink_of(words).size.x, before, "%s: narrower than in the pixel face" % words)

@@ -2185,6 +2185,10 @@ msgid "A Real Fight"
 msgstr "Un vrai combat"
 
 #: assets/data/changelog.json
+msgid "A Rim light switch on Display: turned off, no lamp, fire, moon or lightning outlines what stands"
+msgstr "Un réglage Liseré des lumières dans Affichage : coupé, ni lanterne, ni feu, ni lune, ni éclair ne borde plus ce qui se dresse"
+
+#: assets/data/changelog.json
 msgid "A Rounder Hand"
 msgstr "Une main plus ronde"
 
@@ -3769,6 +3773,10 @@ msgid "Every way out of a map reads as a way on: the road runs right to it, thro
 msgstr "Chaque sortie d'une carte se lit comme un passage : la route y mène tout droit, par une ouverture assez large pour sembler praticable, et un panneau indique où elle conduit"
 
 #: assets/data/changelog.json
+msgid "Every word floating over the world is in Nunito, as in the rest of the game: damage, gold, XP, loot, blocked, LEVEL UP"
+msgstr "Tous les mots qui flottent au-dessus du monde sont en Nunito, comme dans le reste du jeu : dégâts, or, XP, butin, paré, NIVEAU SUPÉRIEUR"
+
+#: assets/data/changelog.json
 msgid "Every word you read is in a new, rounder typeface: the dialogue, the menus, the HUD, the journal, the shops and every screen"
 msgstr "Chaque mot que vous lisez a une nouvelle police, plus ronde : les dialogues, les menus, l'interface, le journal, les boutiques et tous les écrans"
 
@@ -4769,6 +4777,10 @@ msgid "Light on Your Feet"
 msgstr "Le pied léger"
 
 #: assets/data/changelog.json
+msgid "Light relief is on for new players"
+msgstr "Le Relief des lumières est activé pour les nouveaux joueurs"
+
+#: assets/data/changelog.json
 msgid "Light the five lanterns on the square, drive off the embers and douse the burning roofs from the well"
 msgstr "Allumez les cinq lanternes de la place, chassez les braises et éteignez les toits en feu avec l'eau du puits"
 
@@ -5539,6 +5551,10 @@ msgstr "Place au commerce"
 #: assets/data/changelog.json
 msgid "Open the Stats sheet from the HUD; unspent points show as a badge"
 msgstr "Ouvrez la fiche des Caractéristiques depuis l'interface ; les points non dépensés s'affichent sur un badge"
+
+#: assets/data/changelog.json
+msgid "Options in four tabs, Sound, Display, Access and Controls: left and right turn them, down or E goes into the rows"
+msgstr "Les Options en quatre onglets, Son, Affichage, Accessibilité et Commandes : gauche et droite passent de l'un à l'autre, bas ou E entre dans les lignes"
 
 #: assets/data/changelog.json
 msgid "Options menu: music and effects volume, CRT scanlines, reduced motion"
@@ -7113,6 +7129,10 @@ msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and re
 msgstr "Les mares des Marais de Fange sont d'une eau olive trouble avec nénuphars, lentilles d'eau et roseaux, le lac des Bois-Profonds sarcelle sombre et l'eau de la Porte-Givre glacée"
 
 #: assets/data/changelog.json
+msgid "The Mirefen's shallows beside the boardwalks look ankle-deep, light mud and reeds beside the dark pools, and the hero and the foes wade in them, a ring at each stride"
+msgstr "Les hauts-fonds le long des passerelles des Marais de Fange ont l'air peu profonds, boue claire et roseaux à côté des mares sombres, et le héros comme les ennemis y pataugent, un rond à chaque pas"
+
+#: assets/data/changelog.json
 msgid "The Night Burns"
 msgstr "La nuit brûle"
 
@@ -8217,6 +8237,10 @@ msgid "Under the hood, the pacing model follows each villager's quests in the or
 msgstr "Sous le capot, le modèle de rythme suit les quêtes de chaque villageois dans l'ordre où elles sont proposées, et chaque quête de chasse se rend là où vit sa proie"
 
 #: assets/data/changelog.json
+msgid "Underground, the Tin Lantern and Liane's Lantern light about twice as wide and brighter, still under a torch"
+msgstr "Sous terre, la lanterne en fer-blanc et la Lanterne de Liane éclairent environ deux fois plus large et plus fort, toujours moins qu'une torche"
+
+#: assets/data/changelog.json
 msgid "Unfrozen"
 msgstr "Dégelé"
 
@@ -8295,6 +8319,10 @@ msgstr "QUI VIT OÙ : les meutes de chaque région suivent désormais leur pro
 #: assets/data/changelog.json
 msgid "WOLVES IN THE WOODS: a wolf pack now lives in the Whispering Forest and another in the Sunken Marsh"
 msgstr "DES LOUPS DANS LES BOIS : une meute de loups vit désormais dans la Forêt murmurante, et une autre dans le Marais englouti"
+
+#: assets/data/changelog.json
+msgid "Wading In"
+msgstr "Les pieds dans l'eau"
 
 #: assets/data/changelog.json
 msgid "Walk in armor: the overlays ride the walk-cycle bob, so your gear moves with you instead of floating over you"
