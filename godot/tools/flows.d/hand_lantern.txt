@@ -4,7 +4,8 @@
 # The light comes from its sources (PIX-530): at night a hero with no
 # lantern has no light of their own (handlight= empty); carrying the Tin
 # Lantern it burns round them at night and underground, out by day, in a
-# room by day too; Aske home, it reaches a third further; Odo sells it for
+# room by day too, and underground from a larger reach (PIX-547: 144,
+# with Aske's third 192); Aske home, it reaches a third further; Odo sells it for
 # 40 gold (the fifth row: bread, cheese, apple, dried meat, the lantern;
 # the first key chooses the first row); the first nightfall under the sky
 # without one, a hint says where to buy one, never with one carried, never
@@ -12,7 +13,8 @@
 hand-lantern-none | --map town --at 40,13 night | map=town handlight= | town night
 hand-lantern-night | --map town --at 40,13 night handlantern | map=town handlight=lantern 96 lit | town night
 hand-lantern-day | --map town --at 40,13 handlantern | map=town handlight=lantern 96 dark | town
-hand-lantern-cave | --map seacave handlantern | map=seacave handlight=lantern 96 lit | dungeon
+hand-lantern-cave | --map seacave handlantern | map=seacave handlight=lantern 144 lit | dungeon
+hand-lantern-cave-aske | --map seacave handlantern --hunted rimefang | map=seacave handlight=lantern 192 lit home=aske | dungeon story
 hand-lantern-aske | --map town --at 40,13 night handlantern --hunted rimefang | map=town handlight=lantern 128 lit home=aske | town night story
 hand-lantern-buy | --map town_shop shop --keys s,s,s,s,s,e | map=town_shop open=shop_screen gold=460 handlight=lantern 96 dark | rooms trade screen
 hand-lantern-hint | --map saltmere --at 24,19 night hints --wait 1.2 | map=saltmere hint=lantern | field night

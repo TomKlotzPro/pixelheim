@@ -82,6 +82,11 @@ const CLOUD_SHADE := 0.17
 const LANTERN_AT := Vector2.ZERO
 ## How far the hero's lantern reaches untrimmed, in pixels.
 const LANTERN_REACH := 96.0
+## And under the ground (PIX-547), where it is the hero's light: a pool
+## five or six cells across where the surface's is three.
+const LANTERN_REACH_UNDER := 144.0
+## Whether the lantern is tended for a map under the ground now.
+var _under := false
 ## The lights casting shadows now (PIX-490, NightShadows): the lamps
 ## nearest the hero, up to the cap, never the lantern; and how many of the
 ## flames burning could (the report's nightshadows=).
@@ -237,17 +242,23 @@ func give_lantern(player: Player) -> void:
 	GameState.inventory_changed.connect(_tend_lantern)
 
 
-## How far the hero's lantern reaches, in pixels, with `share` more.
-static func lantern_reach(share: float) -> float:
-	return LANTERN_REACH * (1.0 + share)
+## How far the hero's lantern reaches, in pixels, with `share` more: from
+## the larger reach `under` the ground (PIX-547).
+static func lantern_reach(share: float, under := false) -> float:
+	return (LANTERN_REACH_UNDER if under else LANTERN_REACH) * (1.0 + share)
+
+
+## How strongly it burns at full dark, more `under` the ground (PIX-547).
+static func lantern_energy(under: bool) -> float:
+	return Lights.LANTERN_ENERGY_UNDER if under else Lights.LANTERN_ENERGY
 
 
 ## The lantern trimmed as far as Aske keeps it, and lit only while the
 ## hero carries one: at energy 0 the frame keeps it hidden.
 func _tend_lantern() -> void:
 	if is_instance_valid(lantern):
-		lantern.texture_scale = lantern_reach(GameState.holdings.settler_share("lantern")) * 2.0 / Lights.TEXTURE_PX
-		lantern.set_meta("energy", Lights.LANTERN_ENERGY if Lights.carried(GameState.pack.items) else 0.0)
+		lantern.texture_scale = lantern_reach(GameState.holdings.settler_share("lantern"), _under) * 2.0 / Lights.TEXTURE_PX
+		lantern.set_meta("energy", lantern_energy(_under) if Lights.carried(GameState.pack.items) else 0.0)
 
 
 ## Seamless soft noise for the clouds: big puffs with ragged rims.
@@ -284,7 +295,7 @@ func moon(map: MapData, darkness_now: float, overcast: float) -> float:
 func light_for(map: MapData) -> Color:
 	if map == null:
 		return Lights.DAY
-	if map.style == "cave":
+	if Lights.underground(map):
 		# A region dungeon's floor may keep its own dark (PIX-255).
 		return Color(map.light, 1.0) if map.light.a > 0.0 else Lights.UNDERGROUND
 	if ash_night(map):
@@ -296,6 +307,10 @@ func light_for(map: MapData) -> Color:
 
 func _process(delta: float) -> void:
 	light = light_for(world.map)
+	# The lantern burns up as the hero goes under the ground (PIX-547).
+	if Lights.underground(world.map) != _under:
+		_under = not _under
+		_tend_lantern()
 	# The motion check walks in plain daylight (PIX-526): it finds the hero by
 	# the shirt's exact reds, which the golden hours' tint and grey change, as
 	# a cloud's shadow does (clear_sky).

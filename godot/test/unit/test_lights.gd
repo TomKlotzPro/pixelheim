@@ -101,6 +101,39 @@ func test_the_moon_and_the_lightning_rim_what_stands() -> void:
 	LightRig.rim_on = rim_on
 
 
+## The Tin Lantern lights more underground (PIX-547: its pool was three
+## cells wide in a cave): a larger reach and a stronger flame there, under a
+## torch's blaze, Aske's trimming on top; the surface's night as it was.
+func test_the_lantern_reaches_further_and_burns_brighter_underground() -> void:
+	assert_eq(LightRig.lantern_reach(0.0), 96.0, "the surface's reach as it was")
+	assert_eq(Lights.LANTERN_ENERGY, 0.3, "and its flame")
+	assert_gt(LightRig.lantern_reach(0.0, true), LightRig.lantern_reach(0.0) * 1.4, "clearly further under the ground")
+	assert_almost_eq(LightRig.lantern_reach(0.33, true), LightRig.LANTERN_REACH_UNDER * 1.33, 0.001, "Aske trims from the larger reach")
+	assert_gt(LightRig.lantern_energy(true), LightRig.lantern_energy(false), "brighter there")
+	assert_lt(LightRig.lantern_energy(true), Lights.TORCH_ENERGY, "under a torch's blaze")
+	# The rig tends it as the hero goes down and comes back up.
+	var items := GameState.pack.items.duplicate()
+	var world: World = preload("res://test/bare_world.gd").new()
+	add_child_autofree(world)
+	world.map = MapData.load_by_id("town")
+	var hero: Player = preload("res://test/bare_hero.gd").new()
+	world.add_child(hero)
+	var rig: LightRig = LightRig.new()
+	rig.world = world
+	world.add_child(rig)
+	rig.give_lantern(hero)
+	GameState.pack.add_item(Lights.HAND_LANTERN)
+	GameState.pack_changed()
+	var share: float = GameState.holdings.settler_share("lantern")
+	for under: bool in [false, true, false]:
+		world.map = MapData.load_by_id("seacave" if under else "town")
+		rig._process(1.0 / 60.0)
+		var where := "in the sea cave" if under else "in the town"
+		assert_almost_eq(rig.lantern.texture_scale * Lights.TEXTURE_PX / 2.0, LightRig.lantern_reach(share, under), 0.001, "its reach " + where)
+		assert_eq(float(rig.lantern.get_meta("energy")), LightRig.lantern_energy(under), "its flame " + where)
+	GameState.pack.items = items
+
+
 func test_a_light_comes_up_with_the_dark_and_fire_flickers() -> void:
 	var lamp := Lights.make(Vector2(10, 20), 64.0, Lights.LAMP, 0.5, true)
 	autofree(lamp)
