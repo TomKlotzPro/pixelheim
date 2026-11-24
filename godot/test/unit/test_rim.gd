@@ -45,13 +45,18 @@ func test_only_what_stands_is_rimmed() -> void:
 			assert_gt(define, -1, "%s rims" % file)
 			assert_lt(define, code.find("#include \"res://shaders/relief.gdshaderinc\""), "%s defines it before the include" % file)
 			assert_string_contains(code, "rim_open = ", "%s finds its open sides" % file)
+			assert_lt(code.find("rim_open = "), code.find("\tRIM_SKY;\n"), "%s takes the moon's tone once its sides are found (PIX-545)" % file)
 		else:
 			assert_false(code.contains("RELIEF_RIM"), "%s never rims (the ground, houses, dungeon floors)" % file)
 	var include := FileAccess.get_file_as_string("res://shaders/relief.gdshaderinc")
-	var block := include.substr(include.find("#ifdef RELIEF_RIM\n\t"))
+	var block := include.substr(include.find("#ifdef RELIEF_RIM\n\tvec4 edge"))
 	block = block.substr(0, block.find("#endif"))
-	assert_string_contains(block, "!LIGHT_IS_DIRECTIONAL", "never from the lightning")
-	assert_string_contains(block, "light_rim > 0.0", "nothing by day")
+	assert_string_contains(block, "light_rim > 0.0 && !LIGHT_IS_DIRECTIONAL", "a lamp's rim: nothing by day, never the lightning's sky")
+	assert_string_contains(block, "LIGHT_IS_DIRECTIONAL && rim_flash > 0.0", "the lightning's own, by its flash (PIX-545)")
+	assert_string_contains(include, "* light_rim * clamp(sun.w, 0.0, 1.0)", "the moon's: nothing by day, by the moon's share")
+	assert_true(ProjectSettings.has_setting("shader_globals/rim_flash"), "a global the shaders read")
+	assert_string_contains(FileAccess.get_file_as_string("res://scripts/storm.gd"), "global_shader_parameter_set(\"rim_flash\", LightRig.flash_rim(world.lights.hour_dark, ", "set with every flash, by the hour's own dark: none at a storm's noon")
+	assert_gt(Lights.darkness(Lights.DAY * Weather.RAIN_LIGHT * Weather.STORM_LIGHT), Lights.RIM_DUSK, "for a storm's day is dark enough to rim")
 
 
 ## A carved or plain piece never rims, nor a lamp's own post (its light pools
@@ -69,6 +74,12 @@ func test_a_lamps_post_is_never_rimmed() -> void:
 func test_a_rising_stair_is_never_rimmed() -> void:
 	assert_string_contains(FileAccess.get_file_as_string("res://scripts/stair_rise.gd"), "_stair.material.set_shader_parameter(\"relief_rimmed\", false)")
 	assert_string_contains(FileAccess.get_file_as_string("res://shaders/fighter.gdshader"), "rim_open = relief_rimmed ? RIM_OPEN(0) : vec4(0.0);")
+
+
+## The rank-up's hero stands on a layer no night dims, in its class's light:
+## the moon's rim needs no lamp and would edge them there (PIX-545).
+func test_the_rank_ups_hero_is_never_rimmed() -> void:
+	assert_string_contains(FileAccess.get_file_as_string("res://scripts/rankup_screen.gd"), "sprite.material.set_shader_parameter(\"relief_rimmed\", false)")
 
 
 ## The villagers share one material of the fighters' shader (never flashed

@@ -33,4 +33,7 @@ func field_relief(report: HarnessReport) -> String:
 func field_rim(report: HarnessReport) -> String:
 	if report.world.lights == null:
 		return ""
-	return "%s %.2f" % ["on" if LightRig.rim_on else "off", LightRig.rim_strength(report.world.lights.dark)]
+	var rig: LightRig = report.world.lights
+	var storm: Storm = report.world.storm
+	var flash := LightRig.flash_rim(rig.hour_dark, storm.flash if storm != null and storm.sky.visible else 0.0, storm != null and storm.soft)
+	return "%s %.2f moon %.2f flash %.2f" % ["on" if LightRig.rim_on else "off", LightRig.rim_strength(rig.dark), rig.moon_rim(report.world.map, rig.dark, rig.overcast), flash]

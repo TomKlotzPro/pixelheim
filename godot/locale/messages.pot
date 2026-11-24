@@ -2257,6 +2257,10 @@ msgid "A brass spyglass stands by the bend on the mountain road: at night it sho
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A bridge's foam swells and fades instead of popping: a pile's froth draws back into it and a wake shrinks a pixel at a time"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A burnt stead's door now shows a steady pale star while something waits in its ash"
 msgstr ""
 
@@ -2410,6 +2414,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A level gained bursts in gold on the hero with LEVEL UP over their head, the experience line flashes, and the news goes on the message plate instead of slipping into the battle log"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A lightning flash rims everything from above in white-blue and fades with it; not under a roof, nor with Reduce motion or Flashes off"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3206,6 +3214,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Close Quarters"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Close to a lamp or a fire, the lit edge of what stands is two pixels deep on the side facing it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4669,6 +4681,10 @@ msgid "Large reading text now grows every text you read: the pack, the journal, 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Large reading text: a long card's last page starts on a whole line"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Large reading text: cards end on a whole line, the price and your gold stay beside Buy, words keep clear of the scrollbar, plates, captions, the pause card and the journal keep their margins, and the pack shows five whole rows"
 msgstr ""
 
@@ -4974,6 +4990,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Monsters keep hours: after dark, night packs come out in every region under the sky, wolves and skeletons in the forest, ghosts over the marsh, shades in the Deepwood, wendigos on the Frostgate Pass, a little stronger and richer than by day"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Moon and Foam"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7709,6 +7729,10 @@ msgid "The ridge between regions shows where you've seen it, waypoints and goals
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The river's foam turns over a pixel at a time, and a post's ring on still water frays in as it frays out"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The rivers heap foam at each bridge pile with a wake downstream, froth in their bends, and the Mirefen's boardwalks ring their posts"
 msgstr ""
 
@@ -8162,6 +8186,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Ulla and the old guard come home to keep Pixelheim's gate, and Brother Teo hangs Greyhold's mended bell in the town hall"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Under a clear night's moon, what stands takes a faint cool edge on its top and its moon side; none through cloud, indoors or underground"
 msgstr ""
 
 #: assets/data/changelog.json

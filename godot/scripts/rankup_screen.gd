@@ -316,6 +316,9 @@ func _hero() -> AnimatedSprite2D:
 	sprite.position = Vector2(0, PunyArt.lift(art) - 3)
 	# For the flare's white (Juice.flash).
 	sprite.material = Juice.fighter_material()
+	# No night reaches this layer: the moon's rim, which needs no light, would
+	# edge the hero in slate under the class's warm shaft (PIX-545).
+	sprite.material.set_shader_parameter("relief_rimmed", false)
 	figure.add_child(sprite)
 	sprite.animation = PunyArt.pick(sprite.sprite_frames, "idle", "down")
 	if not still:

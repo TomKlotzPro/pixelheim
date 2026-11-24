@@ -39,8 +39,16 @@
 // four taps on its piece, set in fragment() as `rim_open = RIM_OPEN(keep);`),
 // so the rim is one whole art pixel thick and never outside the silhouette;
 // it needs none of the relief's normals and shows with Light relief on or
-// off. Nothing by day (the `light_rim` global, LightRig), from the
-// lightning, or at a light's heart.
+// off. Nothing by day (the `light_rim` global, LightRig) or at a light's heart.
+// Close to a light (PIX-545) the texel just inside the edge lights too,
+// dimmer, so a figure by a fire looks lit by it: two art pixels there, one
+// far off. Under a clear night's moon (the `sun` global's w) the top edge
+// and the moon's side take a faint cool tone, written into COLOR in
+// fragment() (`RIM_SKY;` after rim_open is set) and kept out of every
+// light's share in light(), so a lamp never brightens it: the moon is the
+// base, a lamp's warm rim takes over near the lamp. And a storm's lightning
+// rims the top edge white-blue, the sides a quarter as much, for as long as its flash
+// (the `rim_flash` global, Storm: none for the soft flash of Reduce motion).
 
 // 0 with Light relief off, Lights.RELIEF on (LightRig).
 global uniform float relief;
@@ -241,7 +249,13 @@ global uniform float light_rim;
 // Which sides of this texel lie open (1 where the neighbour left, right, up
 // or down on the screen is under half alpha), from fragment() to light();
 // light() lights no foot (below), but a piece flipped upside down needs it.
+// 1 for the edge texel itself, 0.5 for the one just inside it (PIX-545).
 varying vec4 rim_open;
+// The moon (w) and the lightning's flash now (LightRig.flash_rim), and the
+// moon's tone as fragment() added it to COLOR, for light() to leave out.
+global uniform vec4 sun;
+global uniform float rim_flash;
+varying vec3 rim_sky;
 // How bright the rim is, a share of the light's own colour and energy, and
 // the most of the light's colour it adds on the screen: a dim tone of the
 // light, never its glass (a forge's fires, stronger than a lamp, edged its
@@ -260,11 +274,28 @@ const float RIM_NEAR = 0.5;
 // No rim where the light's falloff is over this: at its heart, light from
 // all round (a lamp's own glass, the hero's own lantern at their feet).
 const float RIM_HEART = 0.85;
+// The texel just inside the edge lights at RIM_INNER of the edge's, whole
+// where the light's falloff is over RIM_INNER_NEAR and none under
+// RIM_INNER_FAR: close to a lamp or a fire only.
+const float RIM_INNER = 0.6;
+const float RIM_INNER_FAR = 0.35;
+const float RIM_INNER_NEAR = 0.55;
+// The moon's tone (the roofs', roof_light) and how much of it the edge
+// takes before the night's own light dims it; it falls from the upper left,
+// as the roofs' moon does.
+const vec3 RIM_MOON = vec3(0.7, 0.82, 1.0);
+const float RIM_MOON_GLOW = 0.35;
+// The lightning's share of its own colour on a top edge at the flash's height.
+const float RIM_FLASH = 0.8;
+// And a side edge's share of that: it falls from above (at a half the
+// stalls' legs, the barrels and the benches were outlined all round).
+const float RIM_FLASH_SIDE = 0.25;
 
 // The open sides as the screen shows them: a flipped piece is mirrored on
 // the screen, never in its UV (its region's size is negative).
-vec4 rim_sides(vec4 a, vec4 region) {
+vec4 rim_sides(vec4 a, vec4 a2, vec4 region) {
 	vec4 open = step(a, vec4(0.5));
+	open += 0.5 * (1.0 - open) * step(a2, vec4(0.5));
 	if (region.z < 0.0) {
 		open.xy = open.yx;
 	}
@@ -279,7 +310,22 @@ vec4 rim_sides(vec4 a, vec4 region) {
 // piece's cut is no edge). So a side drawn flush with its piece's cut is
 // never rimmed: read past the region as air, a boarded ruin's long straight
 // side took a ruled line. TEXTURE is read inline, in fragment().
-#define RIM_OPEN(keep) (light_rim > 0.0 && RELIEF_TAP(0.0, 0.0, keep).a >= 0.5 ? rim_sides(vec4(RELIEF_TAP(-1.0, 0.0, keep).a, RELIEF_TAP(1.0, 0.0, keep).a, RELIEF_TAP(0.0, -1.0, keep).a, RELIEF_TAP(0.0, 1.0, keep).a), REGION_RECT) : vec4(0.0))
+#define RIM_OPEN(keep) (light_rim > 0.0 && RELIEF_TAP(0.0, 0.0, keep).a >= 0.5 ? rim_sides(vec4(RELIEF_TAP(-1.0, 0.0, keep).a, RELIEF_TAP(1.0, 0.0, keep).a, RELIEF_TAP(0.0, -1.0, keep).a, RELIEF_TAP(0.0, 1.0, keep).a), vec4(RELIEF_TAP(-2.0, 0.0, keep).a, RELIEF_TAP(2.0, 0.0, keep).a, RELIEF_TAP(0.0, -2.0, keep).a, 1.0), REGION_RECT) : vec4(0.0))
+
+// How dark a texel is shown: a dark edge (Shade's outline) takes a rim
+// whole, a light one less.
+float rim_dark(vec3 c) {
+	return 1.0 - clamp(dot(to_display(c), vec3(0.299, 0.587, 0.114)), 0.0, 1.0);
+}
+
+// What the moon adds to the edge texel `c`: on its top and its left.
+vec3 rim_moon(vec4 open, vec3 c) {
+	float lit = max(step(0.75, open.x), step(0.75, open.z)) * light_rim * clamp(sun.w, 0.0, 1.0);
+	return lit > 0.0 ? to_canvas(to_display(c) + RIM_MOON * RIM_MOON_GLOW * lit * rim_dark(c)) - c : vec3(0.0);
+}
+
+// In fragment(), once rim_open is set and COLOR is final.
+#define RIM_SKY rim_sky = rim_moon(rim_open, COLOR.rgb); COLOR.rgb += rim_sky
 #endif
 
 // Off, or the lightning's flat sky: the light as Godot gives it with no
@@ -298,8 +344,15 @@ void light() {
 		float near = smoothstep(0.0, RELIEF_FADE, LIGHT_COLOR.a);
 		shade = clamp(mix(1.0, lit, near * min(relief, 1.0)), RELIEF_SHADE_MIN, 2.0);
 	}
-	LIGHT = vec4(LIGHT_COLOR.rgb * COLOR.rgb * LIGHT_ENERGY * shade, LIGHT_IS_DIRECTIONAL ? 1.0 : LIGHT_COLOR.a);
 #ifdef RELIEF_RIM
+	// The art without the moon's tone: no light brightens that.
+	vec3 art = COLOR.rgb - rim_sky;
+#else
+	vec3 art = COLOR.rgb;
+#endif
+	LIGHT = vec4(LIGHT_COLOR.rgb * art * LIGHT_ENERGY * shade, LIGHT_IS_DIRECTIONAL ? 1.0 : LIGHT_COLOR.a);
+#ifdef RELIEF_RIM
+	vec4 edge = step(vec4(0.75), rim_open);
 	// The rim (PIX-531): an open side facing this light takes its colour,
 	// by how squarely it faces it and the light's own falloff (LIGHT.a
 	// again, as Godot blends it), none at the light's heart. Only the sides
@@ -311,15 +364,24 @@ void light() {
 	// where they faced each other's fire, and the glow bloomed it.
 	if (light_rim > 0.0 && !LIGHT_IS_DIRECTIONAL) {
 		vec2 way = to_light.xy / max(length(to_light.xy), 0.0001);
-		float facing = max(max(-way.x * rim_open.x, way.x * rim_open.y), -way.y * rim_open.z);
+		float facing = max(max(-way.x * edge.x, way.x * edge.y), -way.y * edge.z);
+		vec4 inner = step(vec4(0.25), rim_open) - edge;
+		float within = max(max(-way.x * inner.x, way.x * inner.y), -way.y * inner.z);
+		float turned = smoothstep(RIM_TURN, 1.0, facing) + RIM_INNER * smoothstep(RIM_INNER_FAR, RIM_INNER_NEAR, LIGHT_COLOR.a) * smoothstep(RIM_TURN, 1.0, within);
 		float reach = smoothstep(RIM_FAR, RIM_NEAR, LIGHT_COLOR.a) * (1.0 - smoothstep(RIM_HEART - 0.1, RIM_HEART, LIGHT_COLOR.a));
-		float dark_edge = 1.0 - clamp(dot(to_display(COLOR.rgb), vec3(0.299, 0.587, 0.114)), 0.0, 1.0);
+		float dark_edge = rim_dark(art);
 		// What it adds on the screen, where Godot multiplies it by LIGHT.a:
 		// a tone of the light's shown colour, turned into the canvas's light
 		// (exact over the dark outline; added raw on the desktop's linear
 		// canvas, RIM_MOST showed about 0.7 of the light, not 0.45).
-		float shown = min(LIGHT_ENERGY * RIM_GLOW * light_rim * smoothstep(RIM_TURN, 1.0, facing) * reach * LIGHT_COLOR.a, RIM_MOST);
+		float shown = min(LIGHT_ENERGY * RIM_GLOW * light_rim * turned * reach * LIGHT_COLOR.a, RIM_MOST);
 		LIGHT.rgb += to_canvas(to_display(LIGHT_COLOR.rgb) * shown * dark_edge * COLOR.a) / max(LIGHT_COLOR.a, 0.001);
+	}
+	// The lightning (PIX-545): its sky lights every top edge, the sides far
+	// less, as bright as the flash is now.
+	if (LIGHT_IS_DIRECTIONAL && rim_flash > 0.0) {
+		float top = max(edge.z, RIM_FLASH_SIDE * max(edge.x, edge.y));
+		LIGHT.rgb += to_canvas(to_display(LIGHT_COLOR.rgb) * RIM_FLASH * rim_flash * top * rim_dark(art) * COLOR.a);
 	}
 #endif
 	// A night shadow (PIX-528): Godot blends a shadowed pixel from this light
@@ -328,5 +390,5 @@ void light() {
 	// brighter than both the lit ground and the shadow, a light outline.
 	// The art's colour carried into it, only the alpha falls across the edge:
 	// a shadow is a share of the light on any ground (NightShadows.DEPTH).
-	SHADOW_MODULATE.rgb = COLOR.rgb * shade * max(LIGHT_ENERGY, 1.0);
+	SHADOW_MODULATE.rgb = art * shade * max(LIGHT_ENERGY, 1.0);
 }

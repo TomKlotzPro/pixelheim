@@ -1,6 +1,19 @@
 {
   "releases": [
     {
+      "version": "0.400.0",
+      "date": "2026-11-24",
+      "codename": "Moon and Foam",
+      "notes": [
+        "A bridge's foam swells and fades instead of popping: a pile's froth draws back into it and a wake shrinks a pixel at a time",
+        "The river's foam turns over a pixel at a time, and a post's ring on still water frays in as it frays out",
+        "Under a clear night's moon, what stands takes a faint cool edge on its top and its moon side; none through cloud, indoors or underground",
+        "A lightning flash rims everything from above in white-blue and fades with it; not under a roof, nor with Reduce motion or Flashes off",
+        "Close to a lamp or a fire, the lit edge of what stands is two pixels deep on the side facing it",
+        "Large reading text: a long card's last page starts on a whole line"
+      ]
+    },
+    {
       "version": "0.399.0",
       "date": "2026-11-23",
       "codename": "Clear Sight",

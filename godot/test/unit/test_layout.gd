@@ -215,16 +215,22 @@ func test_a_lined_cards_window_ends_on_a_whole_line() -> void:
 	add_child_autofree(holder)
 	var line := words.get_line_height() + words.get_theme_constant("line_spacing")
 	assert_ne(200 % line, 0, "a window that would cut a line")
-	for step: Array in [["one two three four five six seven eight nine ten ".repeat(8), 0], ["eleven twelve thirteen ".repeat(30), 0], ["", 50], ["", 500]]:
+	for step: Array in [["one two three four five six seven eight nine ten ".repeat(8), 0], ["eleven twelve thirteen ".repeat(30), 0], ["", 50], ["", 500], ["", 5000]]:
 		if step[0] != "":
 			words.text = step[0]
 		scroll.scroll_vertical += int(step[1])
 		await wait_process_frames(3)
+		if step[1] == 5000:
+			# The last page, the scroll held at its end, starts on a line too,
+			# and its last line still shows.
+			assert_eq(scroll.scroll_vertical % line, 0, "the last page starts on a line: %s of %s" % [scroll.scroll_vertical, line])
+			assert_gte(scroll.scroll_vertical + scroll.size.y, words.get_minimum_size().y - Layout.SLACK, "its last line in sight")
 		var foot := scroll.scroll_vertical + scroll.size.y
 		assert_lte(scroll.size.y, 200.0, "inside its holder")
-		# On a line's edge, or under its letters in the space between two.
+		# On a line's edge, under its letters in the space between two, or
+		# past the last line, in the room the last page runs on into.
 		var into := fmod(foot, line)
-		assert_true(into < 0.5 or into >= words.get_line_height() - Layout.SLACK, "the foot clear of a line's letters: %s of %s at %s" % [scroll.size.y, line, scroll.scroll_vertical])
+		assert_true(into < 0.5 or into >= words.get_line_height() - Layout.SLACK or foot >= words.size.y, "the foot clear of a line's letters: %s of %s at %s" % [scroll.size.y, line, scroll.scroll_vertical])
 		assert_lte(words.get_global_rect().end.x, scroll.get_v_scroll_bar().get_global_rect().position.x - Layout.BAR_GAP + 0.5, "clear of the scrollbar")
 	words.text = "short"
 	await wait_process_frames(3)
