@@ -57,6 +57,10 @@ static func _reaches(root: Node) -> Array[Rect2]:
 	var out: Array[Rect2] = []
 	for node in root.find_children("*", "PointLight2D", true, false):
 		var light := node as PointLight2D
+		# A door lantern's light on its sign reaches the signs alone
+		# (PIX-553, Lights.SIGN): no tile layer answers to it.
+		if light.range_item_cull_mask == Lights.SIGN:
+			continue
 		var reach := light.texture_scale * Lights.TEXTURE_PX / 2.0 * maxf(absf(light.global_scale.x), absf(light.global_scale.y))
 		out.append(Rect2(light.global_position - Vector2.ONE * reach, Vector2.ONE * reach * 2.0))
 	return out

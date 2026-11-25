@@ -682,7 +682,7 @@ func update_nameplate() -> void:
 		return
 	if near["door"] != nameplate_door:
 		nameplate_door = near["door"]
-		nameplate_over = float(near.get("over", ShopSign.BOARD.y + 10))
+		nameplate_over = float(near.get("over", ShopSign.HIGH + 2))
 		(nameplate.get_child(0).get_child(0) as Label).text = near["name"]
 		(nameplate.get_child(0).get_child(1) as Label).text = near["about"]
 		(nameplate.get_child(0).get_child(1) as Label).visible = near["about"] != ""
