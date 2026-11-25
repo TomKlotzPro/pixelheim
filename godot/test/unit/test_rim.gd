@@ -69,7 +69,7 @@ func test_the_rig_hands_the_shaders_the_rim() -> void:
 
 ## Only what stands takes the rim, through the relief's one light().
 func test_only_what_stands_is_rimmed() -> void:
-	var rimmed := ["fighter.gdshader", "relief.gdshader", "see_through.gdshader"]
+	var rimmed := ["fighter.gdshader", "relief.gdshader", "see_through.gdshader", "sign.gdshader"]
 	for file in DirAccess.get_files_at("res://shaders"):
 		if not file.ends_with(".gdshader"):
 			continue

@@ -12,7 +12,8 @@ shader_type canvas_item;
 // ground has its patches, drifts, murk and puddles, and the Ash its char,
 // pale ash, cracks and cinders (open_ground.gdshaderinc); and a country
 // road's ends and turns their own shape, not its cells' (PIX-404,
-// road_shape.gdshaderinc).
+// road_shape.gdshaderinc), as Saltmere's sand has where it meets the grass
+// (PIX-551, sand_shape.gdshaderinc).
 //
 // And what moves in the open air (PIX-223): `sway` leans the top of each quad
 // it draws (a tree, a wheat sheaf, a flower) while its foot stays put - one
@@ -199,6 +200,7 @@ void vertex() {
 #include "res://shaders/open_ground.gdshaderinc"
 #include "res://shaders/frozen.gdshaderinc"
 #include "res://shaders/road_shape.gdshaderinc"
+#include "res://shaders/sand_shape.gdshaderinc"
 
 // Where in the masks (their pixels) the tone over the art pixel at `at` is
 // read: where a slow noise bends the grid and the pixel's Bayer step jitters
@@ -337,6 +339,11 @@ void fragment() {
 	// the grass's patches read the ground.
 	if (road_ground && !water) {
 		base.rgb = road_ground_at(base.rgb, floor(world_pos) + 0.5 - map_origin);
+	}
+	// Saltmere's sand drawn to its own wandering edge (PIX-551), after the
+	// road's, whose dirt it leaves.
+	if (sand_ground && !water) {
+		base.rgb = sand_ground_at(base.rgb, floor(world_pos) + 0.5 - map_origin);
 	}
 	int kind = tone_kind(tint.a);
 	// The Ash's ground and burnt rock's grassy top, scorched once toned

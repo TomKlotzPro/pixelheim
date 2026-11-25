@@ -648,12 +648,13 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/route_art.gd` — What the Post's routes put up beside the road (PIX-322)
 - `scripts/ruin_art.gd` — The ruins' pieces (Ruins, PIX-381), drawn once a session into one atlas
 - `scripts/ruins.gd` — The old stone ruins standing in the open (PIX-381, Tom: « can you revamp this, there are many across the full map, it's super ugly »)
+- `scripts/sand_shape.gd` — Where Saltmere's sand meets its grass and its road (PIX-551), as a mask the ground's shader reads (shaders/sand_shape.gdshaderinc).
 - `scripts/saves_screen.gd` — The saves screen (Esc, and Saves on the title): the heroes you have, in three slots, one column that gets the whole window (PIX-302).
 - `scripts/scatter.gd` — Puny World objects scattered on terrain (PIX-130), and which of them stand in the way (PIX-137).
 - `scripts/screen.gd` — What every screen shares (PIX-136): the menus, pages and conversations that open over the world.
 - `scripts/seam.gd` — The lines between the Reach's maps (One Reach, PIX-269, steps 5 and 6).
 - `scripts/shop_screen.gd` — A keeper's counter (talk to anyone in a shop): Buy, Sell, the Forge at the smithy, and Craft at the forge and the cauldron.
-- `scripts/shop_sign.gd` — The town's shop signs (PIX-134): a wooden board with a carved rim hanging by two chains from an iron bar over each door, painted with its trade in Shade's own icons (cheese for the general store, a tankard for the inn, the anvil, the brewing pot, the hall's ledger, a key for the house).
+- `scripts/shop_sign.gd` — The town's shop signs (PIX-134, PIX-553): a wooden board for each trade, painted with its icon, hanging from an iron bracket at the eave over the door.
 - `scripts/skill_fx.gd` — Each skill's own look and the weapons' (PIX-396), from Shade's Puny Skills strips as icons.json's skill_fx maps them
 - `scripts/skills_screen.gd` — The skill tree (SkillTree.tsx): once the hero has ranked, the Path Graph on top (six identities, walked edges lit, a pending step to claim), then the role's three branches of six tiers (PIX-190 added the last two, open at 11 and 14 since PIX-233), one line a node, the selected one in full below.
 - `scripts/skyline.gd` — The village seen from outside (PIX-248).

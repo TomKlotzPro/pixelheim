@@ -6153,6 +6153,10 @@ msgid "Saltmere's doors are shut for now: its people, their quests and the sea c
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Saltmere's sand, grass and road meet on wandering edges by the fish racks, not on a staircase of tiles"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Saltmere's sea cave now goes three floors down: the smugglers' caves, the drowned galleries where the wreck of Tam's boat lies, and the Tidecaller's grotto"
 msgstr ""
 
@@ -6266,6 +6270,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Signposted"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Signs of Life"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7802,6 +7810,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The sea rolls in to the beach a swell at a time and draws back as a lace of foam, each stretch of shore a little sooner or later than the next"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The shops hang boards of their own from wrought-iron brackets over their doors: each its own shape and wood, its trade painted on, swaying in the wind and lit by the door's lantern at night"
 msgstr ""
 
 #: assets/data/changelog.json
