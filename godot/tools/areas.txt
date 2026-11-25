@@ -48,3 +48,4 @@ title: assets/data/changelog.json assets/*.png
 title: web/*
 screen lang: assets/fonts/*
 lang: locale/*
+travel field +saltmere*: shaders/sand_shape.*

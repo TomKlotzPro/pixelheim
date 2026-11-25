@@ -647,6 +647,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/route_art.gd` — What the Post's routes put up beside the road (PIX-322)
 - `scripts/ruin_art.gd` — The ruins' pieces (Ruins, PIX-381), drawn once a session into one atlas
 - `scripts/ruins.gd` — The old stone ruins standing in the open (PIX-381, Tom: « can you revamp this, there are many across the full map, it's super ugly »)
+- `scripts/sand_shape.gd` — Where Saltmere's sand meets its grass and its road (PIX-551), as a mask the ground's shader reads (shaders/sand_shape.gdshaderinc).
 - `scripts/saves_screen.gd` — The saves screen (Esc, and Saves on the title): the heroes you have, in three slots, one column that gets the whole window (PIX-302).
 - `scripts/scatter.gd` — Puny World objects scattered on terrain (PIX-130), and which of them stand in the way (PIX-137).
 - `scripts/screen.gd` — What every screen shares (PIX-136): the menus, pages and conversations that open over the world.

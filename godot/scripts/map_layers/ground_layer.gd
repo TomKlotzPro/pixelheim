@@ -163,6 +163,12 @@ static func _ground_layers(view: MapView) -> Node2D:
 	# The water swells, glints and foams at the shore (PIX-223).
 	var water := _toning(view)
 	water.set_shader_parameter("road_ground", view.kept.road_map != null)
+	# Saltmere's sand meets its grass on a wandering edge (PIX-551).
+	if view.kept.sand_map != null:
+		water.set_shader_parameter("sand_ground", true)
+		water.set_shader_parameter("sand_map", view.kept.sand_map)
+		water.set_shader_parameter("sand_origin", Vector2.ONE * -SandShape.RING * TILE)
+		water.set_shader_parameter("sand_texels", Vector2(view.kept.sand_map.get_size()))
 	water.set_shader_parameter("water_life", true)
 	# And the open ground has its patches, drifts, murk and puddles (PIX-305).
 	water.set_shader_parameter("ground_life", true)

@@ -42,6 +42,9 @@ var water_image: Image
 ## village's map, whose streets keep their cells' shape.
 var road_image: Image
 var road_map: ImageTexture
+## Where the sand meets the grass (SandShape, PIX-551), laid out as the
+## road's; null but on SandShape.MAPS.
+var sand_map: ImageTexture
 ## Whether the region tones the pines on its ridges too (PIX-169: under
 ## snow), so a map beside it tones its own along the line alike.
 var crowns_toned := false
@@ -221,6 +224,7 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 		kept.crown_map = null if kept.crown_image == null else (kept.tint_map if kept.crowns_toned else ImageTexture.create_from_image(kept.crown_image))
 		kept.shade_map = ImageTexture.create_from_image(kept.shade_image) if kept._shaded > 0 else null
 		kept.road_map = ImageTexture.create_from_image(kept.road_image) if kept.road_image != null else null
+		kept.sand_map = ImageTexture.create_from_image(SandShape.image_of(look, kept._beyond, data.size)) if data.id in SandShape.MAPS else null
 		# Done: kept, and what it was worked out from let go.
 		kept._data = null
 		kept._look = {}
