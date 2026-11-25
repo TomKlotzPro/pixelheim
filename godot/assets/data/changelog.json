@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.405.0",
+      "date": "2026-11-25",
+      "codename": "Softer Ground",
+      "notes": [
+        "The Reach's two marsh patches, by the road to the Mirefen and by the south road to Saltmere, are rounded blobs, no longer dark rectangles"
+      ]
+    },
+    {
       "version": "0.404.0",
       "date": "2026-11-25",
       "codename": "Signs of Life",

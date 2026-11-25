@@ -6381,6 +6381,10 @@ msgid "Soft Light"
 msgstr "Lumière douce"
 
 #: assets/data/changelog.json
+msgid "Softer Ground"
+msgstr "Terrain adouci"
+
+#: assets/data/changelog.json
 msgid "Some day camps sleep by their lit torch at night, a Z drifting up: walk right up to one or strike it and the whole pack wakes"
 msgstr "Certains camps de jour dorment la nuit près de leur torche allumée, un Z flottant au-dessus : approchez tout près ou frappez, et toute la meute se réveille"
 
@@ -7231,6 +7235,10 @@ msgstr "La Poste porte maintenant douze histoires dans toute la Marche : Maren
 #: assets/data/changelog.json
 msgid "The Quill"
 msgstr "La plume"
+
+#: assets/data/changelog.json
+msgid "The Reach's two marsh patches, by the road to the Mirefen and by the south road to Saltmere, are rounded blobs, no longer dark rectangles"
+msgstr "Les deux marécages de la Marche, près de la route des Marais de Fange et de la route du sud vers Saltmere, sont des taches arrondies et non plus des rectangles sombres"
 
 #: assets/data/changelog.json
 msgid "The Satchel"
