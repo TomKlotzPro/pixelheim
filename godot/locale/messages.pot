@@ -6381,6 +6381,10 @@ msgid "Soft Light"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Softer Ground"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Some day camps sleep by their lit torch at night, a Z drifting up: walk right up to one or strike it and the whole pack wakes"
 msgstr ""
 
@@ -7230,6 +7234,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Quill"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Reach's two marsh patches, by the road to the Mirefen and by the south road to Saltmere, are rounded blobs, no longer dark rectangles"
 msgstr ""
 
 #: assets/data/changelog.json
