@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.406.0",
+      "date": "2026-11-25",
+      "codename": "Campfires",
+      "notes": [
+        "Every camp in the wild is a tent the folk's size in its region's colours, a campfire that lights the ground at night, a bedroll and a log to sit on"
+      ]
+    },
+    {
       "version": "0.405.0",
       "date": "2026-11-25",
       "codename": "Softer Ground",
