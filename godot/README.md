@@ -33,9 +33,10 @@ made with a read-only deploy key (secret `PIXELHEIM_ASSETS_KEY`). Without it
 the game runs on Shade's free art alone: the town's houses, props and paid
 icons are missing, collision is the same, and every sound is the game's own.
 The web build starts without that audio (PIX-518): its preset leaves it out
-of `index.pck`, `tools/audio_packs.gd` writes it into `export/web/sfx.pck`
-and `music.pck` after the export, and the game fetches the two once it runs,
-playing its own sounds until they land.
+of `index.pck`, `tools/audio_packs.gd` writes it into `export/web/title.pck`,
+`sfx.pck` and `music.pck` after the export, and the game fetches them in that
+order once it runs, playing its own sounds until they land; a track landing
+for the music playing crossfades in over the game's own (PIX-552).
 
 Every sound is a moment's event in `assets/data/audio.json` ("events": its
 family and its own takes, a rendered stinger or a blip `sound.gd` makes).

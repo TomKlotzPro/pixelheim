@@ -69,9 +69,11 @@ class ExportTest(unittest.TestCase):
                 self.assertFalse(matched(path, exclude_filter), f"{name} would leave out {path}")
         tool = open(os.path.join(GODOT, "tools", "audio_packs.gd")).read()
         packs = dict(re.findall(r'"(\w+\.pck)": "(\w+)"', tool))
-        self.assertEqual(sorted(packs.values()), ["ogg", "wav"], "a pack for each kind the Web preset leaves out")
+        self.assertEqual(sorted(set(packs.values())), ["ogg", "wav"], "a pack for each kind the Web preset leaves out")
         fetched = re.search(r"const PACKS: Array\[String\] = \[(.*)\]", open(os.path.join(GODOT, "scripts", "sound.gd")).read()).group(1)
         self.assertEqual(sorted(re.findall(r'"([^"]+)"', fetched)), sorted(packs), "Sound fetches the packs the tool writes")
+        self.assertEqual(re.findall(r'"([^"]+)"', fetched)[0], "title.pck", "the title's track is fetched first (PIX-552)")
+        self.assertIn('const TITLE := "music_title.ogg"', tool, "and its pack holds the title slot's track alone")
         deploy = open(os.path.join(GODOT, "..", ".github", "workflows", "deploy.yml")).read()
         self.assertIn("tools/audio_packs.gd", deploy, "the deploy builds the packs")
         for pack in packs:
