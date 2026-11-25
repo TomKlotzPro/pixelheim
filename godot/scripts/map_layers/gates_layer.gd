@@ -44,8 +44,15 @@ static func _plan_gates(view: MapView) -> void:
 	view.deal_patches(Gathering.day_of(GameState.world.steps))
 
 
-## The gates, the ways in and the workings, drawn.
+## The gates, the ways in and the workings, drawn: our pictures first, a
+## unit each (PIX-556: drawn once a session, the heap some 5 ms headless and
+## the bank 2.5, together past Neighbours' budget in one frame).
 func build(view: MapView, slices: Slicer) -> void:
+	for gate: Dictionary in view.gates:
+		for piece: Dictionary in GateArt.plan(gate, PunyProps.available())["pieces"]:
+			if piece["sheet"] == "gate":
+				var name := String(piece["sprite"])
+				slices.add("decor_gate_art", func() -> void: GateArt.texture(name))
 	slices.add("decor_gates", func() -> void:
 		for gate: Dictionary in view.gates:
 			_add_gate(view, gate)
@@ -175,7 +182,8 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 	root.add_child(sprite)
 	view.actors.add_child(root)
 	if piece.get("cast", false):
-		# Ours cast the sun's shadow as the trees do (PIX-556).
+		# Ours cast the sun's shadow as the trees do (PIX-556); the rockfall's
+		# never shows, the marsh round it under the mire's sky all cloud.
 		cast(view, root.position + Vector2(at.x + size.x / 2.0, 0), size.x, size.y)
 
 

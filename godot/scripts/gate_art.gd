@@ -62,16 +62,19 @@ const HEAP_PEAK := 24
 const HEAP_POINT := 1.0
 const HEAP_WOBBLE := 0.12
 ## Its stones in three sizes, small, middle and big (from the least to the
-## most of each): this many, smaller the higher they lie, sunk a third into
-## the heap; each the ruins' plain or sooty stone (RuinArt.STONE) in one of
-## three lights, sunlit up top, plain, darker on its east side, so the heap
-## keeps a few fixed inks as the ruins do.
+## most of each): this many, smaller the higher they lie and toward its
+## ends, none taller than its crest stands over its outer side, so its
+## flanks slope to the road, sunk a third into the heap; each the ruins'
+## plain or sooty stone (RuinArt.STONE) in one of three lights, sunlit up
+## top, plain, darker on its east side, so the heap keeps a few fixed inks
+## as the ruins do.
 const STONE_LEAST: Array[Vector2i] = [Vector2i(4, 3), Vector2i(6, 5), Vector2i(9, 7)]
 const STONE_MOST: Array[Vector2i] = [Vector2i(5, 5), Vector2i(8, 7), Vector2i(12, 10)]
 const STONE_COUNT := 160
 const STONE_LIGHTS := [1.0, 0.88, 0.76]
-## Two big ones rolled to its foot, in front, on the picture.
-const ROLLED: Array[Rect2i] = [Rect2i(1, 36, 11, 8), Rect2i(40, 37, 10, 7)]
+## Two big ones rolled to its foot, in front, on the picture, short of its
+## ends.
+const ROLLED: Array[Rect2i] = [Rect2i(11, 37, 10, 7), Rect2i(35, 38, 9, 6)]
 ## The broken trunk lying across its front: its splintered end (sticking out
 ## past the heap's west shoulder) and its root end, buried, on the picture,
 ## laid among the stones on this row of the ground.
@@ -261,6 +264,10 @@ static func _heap(dice: RandomNumberGenerator) -> Image:
 		var high := h / HEAP_PEAK
 		var kind := dice.rand_weighted(PackedFloat32Array([6, 4, 0] if high > 0.6 else ([3, 5, 2] if high > 0.3 else [1, 4, 5])))
 		var size := Vector2i(dice.randi_range(STONE_LEAST[kind].x, STONE_MOST[kind].x), dice.randi_range(STONE_LEAST[kind].y, STONE_MOST[kind].y))
+		# Toward its ends no taller than the crest over its outer side.
+		var outer := at.x + (size.x / 2 if at.x > middle.x else -size.x / 2)
+		var crest: float = height.call(outer, roundi(middle.y))
+		size = size.min(Vector2i(maxi(STONE_LEAST[0].x, roundi(crest * 1.3)), maxi(STONE_LEAST[0].y, roundi(crest))))
 		# On the heap, so its ends slope down to the road.
 		var west: float = height.call(at.x - size.x / 3, at.y)
 		var east: float = height.call(at.x + size.x / 3, at.y)

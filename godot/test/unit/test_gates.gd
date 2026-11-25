@@ -362,6 +362,18 @@ func test_the_rockfall_and_the_avalanche_look_like_they_fell() -> void:
 	assert_between(peak.reduce(func(sum: int, x: int) -> int: return sum + x, 0) / float(peak.size()), heap.get_width() / 3.0, heap.get_width() * 2 / 3.0, "the heap is tallest in its middle")
 	for i in GateArt.STONE_MOST.size() - 1:
 		assert_lt(GateArt.STONE_MOST[i].x, GateArt.STONE_LEAST[i + 1].x, "its stones come in three sizes")
+	# Its foot rounds in at both ends, not a dry-stone wall on the road (the
+	# review: its sides stood straight down to the foot).
+	var ends := Vector2i(heap.get_width(), -1)
+	var foot := ends
+	for y in heap.get_height():
+		for x in heap.get_width():
+			if heap.get_pixel(x, y).a > 0.0:
+				ends = Vector2i(mini(ends.x, x), maxi(ends.y, x))
+				if y == heap.get_height() - 1:
+					foot = Vector2i(mini(foot.x, x), maxi(foot.y, x))
+	assert_gte(foot.x - ends.x, 4, "the heap's foot rounds in at its west end")
+	assert_gte(ends.y - foot.y, 4, "and at its east end")
 	var bank := GateArt.texture("avalanche").get_image()
 	var tones := {}
 	var light := [0.0, 0.0]
@@ -383,3 +395,18 @@ func test_the_rockfall_and_the_avalanche_look_like_they_fell() -> void:
 			return cell.y < standing.y)
 		assert_eq(pine.map(func(piece: Dictionary) -> Array: return [piece["sheet"], piece["sprite"], piece.get("turn", false)]), [["gate", "snag", false], ["props", "", true], ["props", "", true]] if paid else [["gate", "pine", false]], "the pine lies behind the bank's foot, half buried in it: the Medieval Age's on its side over our snapped trunk, or ours")
 		assert_eq(pieces.filter(func(piece: Dictionary) -> bool: return piece["sheet"] == "glint" and piece["day"]).size(), GateArt.GLINTS.size(), "sparkles on it by day")
+
+
+## PIX-556's review: our pictures are drawn once a session, a unit each
+## before the gates are laid, so the Reach streamed in beside the hero never
+## draws them all in one frame.
+func test_our_pictures_are_drawn_a_unit_each() -> void:
+	var view := MapView.new(MapData.load_by_id("overworld"), null)
+	view.gates = [Gates.by_id("cliff"), Gates.by_id("avalanche")]
+	var slices := Slicer.new()
+	slices.counted = true
+	GatesLayer.new().build(view, slices)
+	assert_eq(slices.left(), 5, "the heap, its scree, the bank and its pine, then the gates")
+	slices.run(4)
+	assert_eq(slices.totals.keys(), ["decor_gate_art"], "a unit each")
+	assert_eq(slices.left(), 1, "the gates laid after")
