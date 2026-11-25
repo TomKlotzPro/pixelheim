@@ -1283,11 +1283,8 @@ func _build_props(data: MapData) -> Node2D:
 	var ruins: Array[Dictionary] = []
 	if data.id == "town":
 		ruins = Town.ruins(Town.done_projects(GameState.settlement))
-	for sign_def: Dictionary in Interactables.signs_on(data.id, GameState.household.owns_house()):
+	for sign_def: Dictionary in ShopSign.standing(Interactables.signs_on(data.id, GameState.household.owns_house()), ruins):
 		var door := Vector2i(int(sign_def["x"]), int(sign_def["y"]))
-		# A burnt house has lost its sign with its roof (PIX-146).
-		if ruins.any(func(ruin: Dictionary) -> bool: return (ruin["rect"] as Rect2i).has_point(door)):
-			continue
 		var target: Dictionary = data.portals.get(door, {})
 		var board := ShopSign.build(sign_def["label"], door)
 		root.add_child(board)
