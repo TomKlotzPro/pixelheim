@@ -118,7 +118,10 @@ static func plan_in(view: MapView) -> void:
 ## two of it; its bedroll by the tent and its log by the fire. The tent's
 ## left cell holds the spawn and where its fire, bedroll and log lie
 ## ("fire", "bed", "log"), its right cell is "beside" it. Nothing on the
-## pack's own square or a door, nor further than CAMP_REACH from its home.
+## pack's own square or a door, nor further than CAMP_REACH from its home,
+## nor where it would close a way on (Ways.kept_open: PIX-554), nor leave
+## its stash (CampStashes, PIX-453) no cell by the tent closing none either:
+## the first such cell is kept from the camps after.
 ## A night pack keeps none (PIX-252): it comes out of the dark, and a camp,
 ## drawn once for the visit, would stand empty all day.
 static func plan_camps(map: MapData) -> Dictionary:
@@ -131,6 +134,8 @@ static func plan_camps(map: MapData) -> Dictionary:
 	for working: Dictionary in AshLand.WORKINGS.get(map.id, []):
 		for cell: Vector2i in AshLand.rail_cells(working["rails"] as Array):
 			rails[cell] = true
+	# What the camps cover, their stashes' cells with them.
+	var shut := {}
 	for spawn: Dictionary in Bestiary.spawns_on(map.id):
 		if Packs.of_the_night(spawn):
 			continue
@@ -139,29 +144,47 @@ static func plan_camps(map: MapData) -> Dictionary:
 		var fits := func(cell: Vector2i) -> bool:
 			var off := cell - home
 			return off not in PACK_SQUARE and maxi(absi(off.x), absi(off.y)) <= CAMP_REACH and map.is_walkable(cell) \
-					and map.region_at(cell) == region and not map.portals.has(cell) and not rails.has(cell) and not out.has(cell)
+					and map.region_at(cell) == region and not map.portals.has(cell) and not rails.has(cell) and not shut.has(cell)
+		# The first of the stash's cells (`by`, stash_ring) open and closing
+		# no way on, with `also` covered too.
+		var stash_at := func(by: Array[Vector2i], also: Dictionary) -> Vector2i:
+			var after := shut.merged(also)
+			return _first(by, func(cell: Vector2i) -> bool: return fits.call(cell) and not also.has(cell) and Ways.kept_open(map, [cell], after))
+		# `cells` taken for the camp, if they fit, close no way on and leave
+		# its stash one of `by`.
+		var takes := func(cells: Array[Vector2i], by: Array[Vector2i]) -> bool:
+			if not cells.all(fits) or not Ways.kept_open(map, cells, shut):
+				return false
+			var also := {}
+			for cell: Vector2i in cells:
+				also[cell] = true
+			return (stash_at.call(by, also) as Vector2i).x >= 0
 		var ring: Array[Vector2i] = []
 		var lefts: Array[Vector2i] = []
 		for offset: Vector2i in CAMP_RING:
 			ring.append(home + offset)
 			lefts.append_array([home + offset, home + offset + Vector2i.LEFT])
-		var tent := _first(lefts, func(cell: Vector2i) -> bool: return fits.call(cell) and fits.call(cell + Vector2i.RIGHT))
+		var tent := _first(lefts, func(left: Vector2i) -> bool:
+			var both: Array[Vector2i] = [left, left + Vector2i.RIGHT]
+			return fits.call(left) and fits.call(left + Vector2i.RIGHT) and takes.call(both, stash_ring(home, left)))
 		if tent.x < 0:
 			continue
 		var camp := {"kind": "camp", "art": TENTS.get(region, TENT), "spawn": spawn["id"]}
 		out[tent] = camp
 		out[tent + Vector2i.RIGHT] = {"kind": "beside"}
-		var fire := _first(ring, func(cell: Vector2i) -> bool: return fits.call(cell) and _apart(cell, tent) == 2)
+		shut[tent] = true
+		shut[tent + Vector2i.RIGHT] = true
+		var stash_cells := stash_ring(home, tent)
+		var clear := func(cell: Vector2i) -> bool:
+			var one: Array[Vector2i] = [cell]
+			return takes.call(one, stash_cells)
+		var fire := _first(ring, func(cell: Vector2i) -> bool: return _apart(cell, tent) == 2 and clear.call(cell))
 		if fire.x < 0:
-			fire = _first(ring, func(cell: Vector2i) -> bool: return fits.call(cell) and _apart(cell, tent) <= 2)
+			fire = _first(ring, func(cell: Vector2i) -> bool: return _apart(cell, tent) <= 2 and clear.call(cell))
 		if fire.x >= 0:
 			out[fire] = {"kind": "fire"}
 			camp["fire"] = fire
-		# The bedroll and the log leave the ring's outer cells, where the
-		# camp's stash stands (CampStashes, PIX-453), to the last.
-		var spare := func(cell: Vector2i) -> bool:
-			var off := cell - home
-			return fits.call(cell) and not (off in CAMP_RING and maxi(absi(off.x), absi(off.y)) == 2)
+			shut[fire] = true
 		for part: Array in [["bed", "bedroll", tent, BEDROLL_AT], ["log", "log", fire, LOG_AT]]:
 			var by: Vector2i = part[2]
 			if by.x < 0:
@@ -169,12 +192,26 @@ static func plan_camps(map: MapData) -> Dictionary:
 			var near: Array[Vector2i] = []
 			for offset: Vector2i in part[3]:
 				near.append(by + offset)
-			var cell := _first(near, spare)
-			if cell.x < 0:
-				cell = _first(near, fits)
+			var cell := _first(near, clear)
 			if cell.x >= 0:
 				out[cell] = {"kind": part[1]}
 				camp[part[0]] = cell
+				shut[cell] = true
+		# Its stash's cell kept from the camps after.
+		shut[stash_at.call(stash_cells, {})] = true
+	return out
+
+
+## The cells a camp's stash may take (CampStashes, PIX-453), best first: of
+## CAMP_RING's two off the pack's home, those beside its tent's left cell,
+## then those within two of it.
+static func stash_ring(home: Vector2i, tent: Vector2i) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	for reach: int in [1, 2]:
+		for offset: Vector2i in CAMP_RING:
+			var cell: Vector2i = home + offset
+			if maxi(absi(offset.x), absi(offset.y)) == 2 and maxi(absi(cell.x - tent.x), absi(cell.y - tent.y)) <= reach and cell not in out:
+				out.append(cell)
 	return out
 
 

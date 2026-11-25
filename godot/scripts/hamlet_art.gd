@@ -912,7 +912,7 @@ const PIECES := {
 		"..oo2222222222o.",
 	],
 	## A log to sit on by the fire (PIX-554): its bark in Shade's woods, its
-	## end sawn, rings showing. 16x8, foot on the bottom row.
+	## end sawn, rings showing. 16x6, foot on the bottom row.
 	"camp_log": [
 		"..ooooooooooooo.",
 		".o443444344o656o",

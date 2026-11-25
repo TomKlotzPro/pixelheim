@@ -70,8 +70,8 @@ func test_a_pickup_lies_half_a_cell() -> void:
 
 
 ## Camps (PIX-142, PIX-554): every day pack's camp, on every map, is a tent
-## two cells wide in its region's cloth, a fire within two of it (most a
-## cell clear of it, so its light casts the tent's shadow), a bedroll by the
+## two cells wide in its region's cloth, a fire a cell clear of it (so its
+## light casts the tent's shadow), a bedroll by the
 ## tent and a log by the fire: each on open ground of the pack's region,
 ## off its own square, the doors and a mine's rails, near its home,
 ## blocking like the art it is.
@@ -135,7 +135,7 @@ func test_packs_camp_beside_their_homes() -> void:
 			assert_true(map.covered.has(cell), "a camp at %s blocks" % cell)
 			assert_false(map.portals.has(cell))
 	assert_eq(camps, 38, "38 camps under the sky")
-	assert_gt(casting, camps * 3 / 4, "most fires a cell clear of their tents: %d of %d" % [casting, camps])
+	assert_eq(casting, camps, "every fire a cell clear of its tent")
 
 
 static func _apart(a: Vector2i, b: Vector2i) -> int:

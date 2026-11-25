@@ -125,6 +125,33 @@ func test_nothing_the_world_places_stands_at_a_way_on() -> void:
 					assert_false(data.covered.has(inside), "%s: the opening at %s is clear" % [id, inside])
 
 
+## As the world plans a visit, the packs' camps and their stashes, all out
+## (the plan covers their cells), leave every way on walkable from the
+## spawn with the story's gates open (PIX-554: the mountain road's camp and
+## its stash filled its one passage, and once the stash stood open, for
+## good, the forge and the Vault were cut off).
+func test_no_camp_closes_a_way_on() -> void:
+	var maps := {}
+	for spawn: Dictionary in Bestiary._data()["spawns"]:
+		maps[spawn["mapId"]] = true
+	var ways := 0
+	for id: String in maps:
+		var data := MapData.load_by_id(id)
+		var view := MapView.new(data, null)
+		view.plan(data.spawn)
+		if view.camps.is_empty():
+			continue
+		assert_false(view.get_meta(CampStashes.META, {}).is_empty(), "%s: its stashes planned" % id)
+		for gate: Dictionary in view.gates:
+			for cell: Vector2i in Gates.cells_of(gate):
+				data.covered.erase(cell)
+		var reached := _reachable(data, data.spawn)
+		for cell: Vector2i in data.portals:
+			ways += 1
+			assert_true(STEPS.any(func(step: Vector2i) -> bool: return reached.has(cell + step)), "%s: the way on at %s past the camps" % [id, cell])
+	assert_gt(ways, 20, "every camp map's ways on were looked at")
+
+
 ## Ground at the edge a hero can walk to leads on. The fields beyond
 ## Pixelheim's rampart (PIX-248) reach the map's edge, but no walk does: the
 ## gate takes the hero straight out onto the Reach.

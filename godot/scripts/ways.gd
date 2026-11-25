@@ -23,6 +23,8 @@ class_name Ways
 
 const NOWHERE := Vector2i(-1, -1)
 const STEPS: Array[Vector2i] = [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
+## How far round what is to be covered kept_open looks for a way round it.
+const KEPT_BOX := 3
 ## A gate set in the rock (the Ashen Mountain's): Shade's castle gate, its
 ## portcullis down while the gate is barred - a story gate the player must
 ## read as shut, so it stays built where every other way is bare ground.
@@ -245,18 +247,91 @@ static func standing(map: MapData, cell: Vector2i) -> Vector2i:
 	return map.spawn
 
 
-## Every cell a walk from `from` reaches without being taken anywhere.
-static func _walked_from(map: MapData, from: Vector2i) -> Dictionary:
+## Every cell a walk from `from` reaches without being taken anywhere: in
+## `within` when it is given, `shut` standing in the way too.
+static func _walked_from(map: MapData, from: Vector2i, within := Rect2i(), shut := {}) -> Dictionary:
 	var seen := {from: true}
 	var queue: Array[Vector2i] = [from]
 	while not queue.is_empty():
 		var here: Vector2i = queue.pop_back()
 		for step: Vector2i in STEPS:
 			var next := here + step
-			if not seen.has(next) and open_ground(map, next):
+			if not seen.has(next) and open_ground(map, next) and not shut.has(next) and (not within.has_area() or within.has_point(next)):
 				seen[next] = true
 				queue.append(next)
 	return seen
+
+
+## Whether `cells` can be covered, `shut` covered too, and every way on be
+## walked to as before (PIX-554: a camp and its stash filled the mountain
+## road's one passage, and the forge and the Vault were cut off for good).
+## A walk through them comes in and goes out at the open cells beside them,
+## so they may be covered while those still join without them, near by
+## (in the box KEPT_BOX cells round them): a way round further off isn't
+## seen, so it errs on the side of shut. Nor right beside a way on. Most are
+## settled by the cells right round them alone (_goes_round). `cells`: one,
+## or a row of them side by side (a tent).
+static func kept_open(map: MapData, cells: Array[Vector2i], shut := {}) -> bool:
+	if map.spawn in cells:
+		return false
+	var box := Rect2i(cells[0], Vector2i.ONE)
+	for cell: Vector2i in cells:
+		box = box.merge(Rect2i(cell, Vector2i.ONE))
+	var round := _round(box)
+	var open: Array[bool] = []
+	var beside: Array[Vector2i] = []
+	for cell: Vector2i in round:
+		open.append(open_ground(map, cell) and not shut.has(cell))
+		if _by(box, cell):
+			if map.portals.has(cell):
+				return false
+			if open[-1]:
+				beside.append(cell)
+	if beside.is_empty() or _goes_round(box, round, open):
+		return true
+	var covered := shut.duplicate()
+	for cell: Vector2i in cells:
+		covered[cell] = true
+	var walk := _walked_from(map, beside[0], box.grow(KEPT_BOX), covered)
+	return beside.all(func(cell: Vector2i) -> bool: return walk.has(cell))
+
+
+## The cells round `box`, one after the other all the way round.
+static func _round(box: Rect2i) -> Array[Vector2i]:
+	var a := box.position - Vector2i.ONE
+	var b := box.end
+	var out: Array[Vector2i] = []
+	for x in range(a.x, b.x):
+		out.append(Vector2i(x, a.y))
+	for y in range(a.y, b.y):
+		out.append(Vector2i(b.x, y))
+	for x in range(b.x, a.x, -1):
+		out.append(Vector2i(x, b.y))
+	for y in range(b.y, a.y, -1):
+		out.append(Vector2i(a.x, y))
+	return out
+
+
+## Whether a cell round `box` is a step off it (not at a corner).
+static func _by(box: Rect2i, cell: Vector2i) -> bool:
+	return box.has_point(Vector2i(cell.x, box.position.y)) or box.has_point(Vector2i(box.position.x, cell.y))
+
+
+## Whether the open cells beside `box` all join by the open cells right
+## round it (`round`, which are `open`; one run of them holds every one):
+## then a walk goes round, and nothing further need be looked at.
+static func _goes_round(box: Rect2i, round: Array[Vector2i], open: Array[bool]) -> bool:
+	var start := open.rfind(false)
+	var runs := 0
+	var counted := false
+	for i in range(start + 1, start + 1 + round.size()):
+		var cell := round[i % round.size()]
+		if not open[i % round.size()]:
+			counted = false
+		elif not counted and _by(box, cell):
+			counted = true
+			runs += 1
+	return runs <= 1
 
 
 ## Ground the hero can stand on that doesn't take them anywhere.
