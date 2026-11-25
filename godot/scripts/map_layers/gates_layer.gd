@@ -115,7 +115,9 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 		var glint := AnimatedSprite2D.new()
 		glint.sprite_frames = HamletArt.glint()
 		glint.centered = false
-		glint.material = Lights.unshaded()
+		# The snow's by day (PIX-556) dim with the hour as the snow does.
+		if not piece.get("day", false):
+			glint.material = Lights.unshaded()
 		glint.position = at - Vector2(0, TILE)
 		# Sparkles side by side don't catch the light together.
 		glint.frame = absi(hash(cell)) % glint.sprite_frames.get_frame_count("default")
@@ -151,8 +153,6 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 			sprite.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
 	sprite.centered = false
 	match String(piece["tone"]):
-		"snow":
-			sprite.material = _snow()
 		"charred":
 			sprite.modulate = GateArt.CHARRED
 		"iron":
@@ -174,7 +174,7 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 		sprite.position.y = 0.0
 	root.add_child(sprite)
 	view.actors.add_child(root)
-	if piece["sheet"] == "gate":
+	if piece.get("cast", false):
 		# Ours cast the sun's shadow as the trees do (PIX-556).
 		cast(view, root.position + Vector2(at.x + size.x / 2.0, 0), size.x, size.y)
 
@@ -212,19 +212,3 @@ static func _torch_frames() -> SpriteFrames:
 		for tile: int in GATE_TORCH:
 			_torch.add_frame("default", PunyDungeon.sheet().tile_texture(tile))
 	return _torch
-
-
-static var _snow_tone: ShaderMaterial
-
-
-## The Frostgate's snow on whatever wears it (PIX-254: the avalanche): the
-## region tint's whitening, everywhere.
-static func _snow() -> ShaderMaterial:
-	if _snow_tone == null:
-		var tint := Image.create(1, 1, false, Image.FORMAT_RGBA8)
-		tint.fill(PunyTerrain.TINTS["snow"])
-		_snow_tone = ShaderMaterial.new()
-		_snow_tone.shader = preload("res://shaders/region_tint.gdshader")
-		_snow_tone.set_shader_parameter("tint_map", ImageTexture.create_from_image(tint))
-		_snow_tone.set_shader_parameter("map_pixels", Vector2(TILE, TILE))
-	return _snow_tone

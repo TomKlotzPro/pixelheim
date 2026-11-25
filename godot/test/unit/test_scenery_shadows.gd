@@ -139,17 +139,22 @@ func test_the_roads_and_the_fen_cast() -> void:
 		var cells: Array = piece["cells"]
 		assert_true(cells.any(func(cell: Vector2i) -> bool: return feet.has(cell)), "the road's %s at %s casts" % [piece["kind"], piece["cell"]])
 	# PIX-556: the shut gates' heap and bank cast from their feet (the
-	# heap's in the cell below its own), and the snow's sparkles go at night.
+	# heap's in the cell below its own), the pine lying on the bank casts
+	# nothing, and the snow's sparkles go at night.
 	var shut: Array = reach.gates.map(func(gate: Dictionary) -> String: return gate["id"])
 	assert_has(shut, "cliff", "the rockfall is shut")
 	assert_has(shut, "avalanche", "the avalanche is shut")
 	var sparkles := 0
+	var casting: Array[String] = []
 	for gate: Dictionary in reach.gates:
 		for piece: Dictionary in GateArt.plan(gate, PunyProps.available())["pieces"]:
 			var cell: Vector2i = piece["cell"]
-			if piece["sheet"] == "gate" and not piece["flat"]:
+			if piece.get("cast", false):
+				casting.append(piece["sprite"])
 				assert_true(feet.has(cell) or feet.has(cell + Vector2i.DOWN), "%s's %s casts" % [gate["id"], piece["sprite"]])
 			sparkles += int(piece.get("day", false))
+	casting.sort()
+	assert_eq(casting, ["avalanche", "rockfall"] as Array[String], "the heap and the bank cast, the pine on the bank doesn't")
 	assert_eq(reach.day_glows.size(), sparkles, "the avalanche's sparkles are the day's")
 	var fen := _feet(_draw("mirefen"))
 	for hut: Vector2i in MireDressing.HUTS:

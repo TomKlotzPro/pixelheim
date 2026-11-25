@@ -324,19 +324,20 @@ func test_each_gate_is_drawn_across_its_cells_in_art_the_game_has() -> void:
 ## PIX-556: the rockfall is a heap that fell (six round stones of a size
 ## before) and the avalanche a bank of snow (a flat white plate), drawn by
 ## us the same with the pack or without, but for the pine in it: in whole
-## pixels; the heap tallest in its middle, its stones in three sizes, its
-## scree flat before it; the bank in four of snow's tones, darker on its
-## east side, a pine lying half buried on its crest, sparkles by day.
+## pixels, never cut by their pictures' sides; the heap tallest in its
+## middle, its stones in three sizes and a few fixed inks, its scree flat
+## before it; the bank in four of snow's tones, darker on its east side, a
+## pine lying half buried on its crest, sparkles by day.
 func test_the_rockfall_and_the_avalanche_look_like_they_fell() -> void:
 	var cliff := Gates.by_id("cliff")
 	var avalanche := Gates.by_id("avalanche")
 	for gate: Dictionary in [cliff, avalanche]:
 		var ours := func(paid: bool) -> Array:
-			return GateArt.plan(gate, paid)["pieces"].filter(func(piece: Dictionary) -> bool: return piece["sheet"] in ["gate", "glint"])
+			return GateArt.plan(gate, paid)["pieces"].filter(func(piece: Dictionary) -> bool: return piece["sheet"] in ["gate", "glint"] and piece["sprite"] not in ["pine", "snag"])
 		assert_eq(ours.call(true), ours.call(false), "%s is drawn the same without the pack" % gate["id"])
 	var rockfall: Array = GateArt.plan(cliff, false)["pieces"]
 	assert_eq(rockfall.map(func(piece: Dictionary) -> Array: return [piece["sprite"], piece["flat"]]), [["scree", true], ["rockfall", false]], "the scree lies flat before the heap")
-	for name: String in ["rockfall", "scree", "avalanche"]:
+	for name: String in ["rockfall", "scree", "avalanche", "pine", "snag"]:
 		var image := GateArt.texture(name).get_image()
 		var alphas := {}
 		for y in image.get_height():
@@ -345,7 +346,17 @@ func test_the_rockfall_and_the_avalanche_look_like_they_fell() -> void:
 		var kinds := alphas.keys()
 		kinds.sort()
 		assert_eq(kinds, [0.0, 1.0], "%s is drawn in whole pixels" % name)
+		# A side drawn to the picture's edge reads as a straight cut.
+		for x: int in [0, image.get_width() - 1]:
+			var drawn := range(image.get_height()).filter(func(y: int) -> bool: return image.get_pixel(x, y).a > 0.0)
+			assert_eq(drawn, [], "%s keeps off its picture's column %d" % [name, x])
 	var heap := GateArt.texture("rockfall").get_image()
+	var inks := {}
+	for y in heap.get_height():
+		for x in heap.get_width():
+			if heap.get_pixel(x, y).a > 0.0:
+				inks[heap.get_pixel(x, y)] = true
+	assert_lte(inks.size(), 40, "the heap keeps a few fixed inks, as the ruins do")
 	var top := heap.get_used_rect().position.y
 	var peak := range(heap.get_width()).filter(func(x: int) -> bool: return heap.get_pixel(x, top).a > 0.0)
 	assert_between(peak.reduce(func(sum: int, x: int) -> int: return sum + x, 0) / float(peak.size()), heap.get_width() / 3.0, heap.get_width() * 2 / 3.0, "the heap is tallest in its middle")
@@ -365,10 +376,10 @@ func test_the_rockfall_and_the_avalanche_look_like_they_fell() -> void:
 	assert_lt(light[1], light[0], "its east side lies in shade")
 	for paid: bool in [true, false]:
 		var pieces: Array = GateArt.plan(avalanche, paid)["pieces"]
-		var pine: Array = pieces.filter(func(piece: Dictionary) -> bool: return piece.get("turn", false))
-		assert_eq(pine.map(func(piece: Dictionary) -> String: return piece["sheet"]), ["props", "props"] if paid else ["world"], "the pine lies on its side, the Medieval Age's or Shade's free one")
 		var drawn: Dictionary = pieces.filter(func(piece: Dictionary) -> bool: return piece["sprite"] == "avalanche")[0]
-		var lying: Vector2i = pine[0]["cell"]
 		var standing: Vector2i = drawn["cell"]
-		assert_lt(lying.y, standing.y, "the pine lies behind the bank's foot, half buried in it")
+		var pine: Array = pieces.filter(func(piece: Dictionary) -> bool:
+			var cell: Vector2i = piece["cell"]
+			return cell.y < standing.y)
+		assert_eq(pine.map(func(piece: Dictionary) -> Array: return [piece["sheet"], piece["sprite"], piece.get("turn", false)]), [["gate", "snag", false], ["props", "", true], ["props", "", true]] if paid else [["gate", "pine", false]], "the pine lies behind the bank's foot, half buried in it: the Medieval Age's on its side over our snapped trunk, or ours")
 		assert_eq(pieces.filter(func(piece: Dictionary) -> bool: return piece["sheet"] == "glint" and piece["day"]).size(), GateArt.GLINTS.size(), "sparkles on it by day")
