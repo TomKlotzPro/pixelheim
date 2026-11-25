@@ -128,12 +128,14 @@ vec3 sand_ground_at(vec3 ground, vec2 p) {
 		}
 	} else if (by_road && (grass || edging || sand || distance(ground, ROAD_INKS[4]) < SAND_DIRT_MATCH
 			|| distance(ground, ROAD_INKS[5]) < SAND_DIRT_MATCH)) {
+		// Two inks between the dirt and the sand, as road_ground_at's over grass
+		// (PIX-551 review: one, dithered, drew a comb of dots under the road).
 		float road = sand_road_out(p) + (art_dither(p) - 0.5) * 1.5;
-		if (road < -1.0) {
+		if (road < -2.0) {
 			return distance(ground, ROAD_INKS[5]) < SAND_DIRT_MATCH ? ground : ROAD_INKS[5];
 		}
 		if (road < 0.0) {
-			return ROAD_INKS[4];
+			return ROAD_INKS[road < -1.0 ? 4 : 3];
 		}
 	} else if (!(grass || edging || sand)) {
 		return ground;

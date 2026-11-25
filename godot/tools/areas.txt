@@ -42,10 +42,10 @@ town field title combat story night: shaders/fighter.*
 dungeon +seacave* +shafts* +cellars* +icecave* +vault*: shaders/dungeon.* shaders/torch_motes.*
 rooms +observatory*: shaders/stair_frost.*
 travel field +deepwood* +blackiron* +mirefen* +saltmere* +mountain_road* +overworld*: shaders/road_shape.*
+travel field +saltmere*: shaders/sand_shape.*
 town field title: shaders/*
 save: test/fixtures/*
 title: assets/data/changelog.json assets/*.png
 title: web/*
 screen lang: assets/fonts/*
 lang: locale/*
-travel field +saltmere*: shaders/sand_shape.*
