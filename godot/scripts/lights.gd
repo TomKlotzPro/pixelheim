@@ -109,6 +109,12 @@ const PER_ITEM := 15
 ## shadows lie on the floor and never black out the tree that casts them,
 ## nor anyone standing there.
 const FLOOR := 1 << 10
+## The shop signs' own light bit (PIX-553): a door's lantern lights the sign
+## hanging by it with a light that reaches this bit alone, so the ground's
+## and the houses' blocks never count it among theirs (PER_ITEM). Clear of
+## the shadows' bits (NightShadows.FOLK, WALLS), or a lamp's shadows would
+## fall on the signs.
+const SIGN := 1 << 13
 
 
 ## The open air's light at `steps` on the day's wheel.

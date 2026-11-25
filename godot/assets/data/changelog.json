@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.404.0",
+      "date": "2026-11-25",
+      "codename": "Signs of Life",
+      "notes": [
+        "The shops hang boards of their own from wrought-iron brackets over their doors: each its own shape and wood, its trade painted on, swaying in the wind and lit by the door's lantern at night",
+        "Saltmere's sand, grass and road meet on wandering edges by the fish racks, not on a staircase of tiles"
+      ]
+    },
+    {
       "version": "0.403.0",
       "date": "2026-11-25",
       "codename": "Overture",
