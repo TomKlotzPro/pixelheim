@@ -1,7 +1,8 @@
 extends SceneTree
-## The web build's audio packs (PIX-518): the packs' takes (sfx.pck) and the
-## bundle's tracks (music.pck) as Godot imported them, each in a pack of its
-## own beside the page. The Web preset leaves them out of index.pck (its
+## The web build's audio packs (PIX-518): the packs' takes (sfx.pck), the
+## title's track (title.pck, PIX-552: small and fetched first, the title
+## being the first thing heard) and the bundle's other tracks (music.pck) as
+## Godot imported them, each in a pack of its own beside the page. The Web preset leaves them out of index.pck (its
 ## exclude_filter), so the game starts without waiting on 50 MB of audio;
 ## Sound fetches these once it runs and mounts them (`Sound.PACKS`, `mount`).
 ## Run after the import, before or after the export; without the paid audio
@@ -14,7 +15,10 @@ extends SceneTree
 
 const PAID := "res://assets/audio/paid"
 ## Each pack's files by their extension, as `Sound.PACKS` names them.
-const PACKS := {"sfx.pck": "wav", "music.pck": "ogg"}
+const PACKS := {"title.pck": "ogg", "sfx.pck": "wav", "music.pck": "ogg"}
+## The title's pack holds this track alone (tools/music_prep.py's name for
+## the "title" slot's), and music.pck every other.
+const TITLE := "music_title.ogg"
 
 
 func _init() -> void:
@@ -28,7 +32,7 @@ func _init() -> void:
 	for pack: String in PACKS:
 		var files: Array[String] = []
 		for file in DirAccess.get_files_at(PAID):
-			if file.get_extension() == PACKS[pack]:
+			if file.get_extension() == PACKS[pack] and (PACKS[pack] != "ogg" or (file == TITLE) == (pack == "title.pck")):
 				files.append(PAID.path_join(file))
 		if files.is_empty():
 			continue
