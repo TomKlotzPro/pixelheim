@@ -393,7 +393,7 @@ static func is_out(spawn: Dictionary, night: bool) -> bool:
 
 
 ## Whether a spawn's pack is asleep at home at `minute`: one that sleeps at
-## night (its camp's torch lit, no roaming), after dark.
+## night (its camp's fire lit, no roaming), after dark.
 static func asleep(spawn: Dictionary, minute: int) -> bool:
 	return spawn.get("sleeps", "") == "night" and DayNight.night_at(minute)
 

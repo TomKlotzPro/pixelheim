@@ -237,7 +237,12 @@ func test_a_flame_against_what_stands_lights_softly() -> void:
 	assert_true(NightShadows.holds_light(Rect2(0, 0, 18, 11), PackedVector2Array([Vector2(-7, 15)]), NightShadows.AGAINST), "a torch against a tent")
 	assert_false(NightShadows.holds_light(Rect2(0, 0, 18, 11), PackedVector2Array([Vector2(-23, 5)]), NightShadows.AGAINST), "one a cell and a half off")
 	var view := _draw("overworld")
-	var torch: PointLight2D = null
+	# PIX-554: that camp's fire now burns a cell clear of its tent (CampsLayer.plan_camps).
+	var fire_cell := Vector2i(-1, -1)
+	for cell: Vector2i in view.camps:
+		if (view.camps[cell] as Dictionary).get("spawn", "") == "forest_1":
+			fire_cell = view.camps[cell]["fire"]
+	var fire: PointLight2D = null
 	var casting := 0
 	var feet: Array[Rect2] = []
 	for occluder: LightOccluder2D in view.actors.find_children("*", "LightOccluder2D", true, false):
@@ -246,15 +251,15 @@ func test_a_flame_against_what_stands_lights_softly() -> void:
 	for root: Node in [view.under, view.actors]:
 		for light: PointLight2D in root.find_children("*", "PointLight2D", true, false):
 			var at := NightShadowsLayer._place(light, root)
-			if Vector2i((at / MapView.TILE).floor()) == Vector2i(63, 35):
-				torch = light
+			if Vector2i((at / MapView.TILE).floor()) == fire_cell:
+				fire = light
 			if not light.get_meta("casts", false):
 				continue
 			casting += 1
 			for foot in feet:
 				assert_false(NightShadows.holds_light(foot, PackedVector2Array([at]), NightShadows.AGAINST), "no flame at %s casts from against a foot" % at)
-	assert_not_null(torch, "the camp's torch by its tent")
-	assert_false(torch.get_meta("casts", false), "casts nothing: a round, soft pool")
+	assert_not_null(fire, "the camp's fire by its tent")
+	assert_true(fire != null and fire.get_meta("casts", false), "a cell clear of its tent, it casts the tent's shadow")
 	assert_gt(casting, 0, "the Reach's other flames still cast")
 	assert_gt(feet.size(), 0, "and the tent still blocks the lantern")
 

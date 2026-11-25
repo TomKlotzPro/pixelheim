@@ -103,12 +103,16 @@ static func _place(node: Node2D, root: Node) -> Vector2:
 ## its body's box when it has one, else the bottom of its picture; whether
 ## it got one (no: too low, or a light burns there). A flame burning
 ## against it (one of `flames`, at `lights`: NightShadows.AGAINST) casts no
-## more: its light is soft all round, as before it could cast.
+## more: its light is soft all round, as before it could cast. What lies
+## low and blocks (a camp's bedroll, log and fire ring: its body "low",
+## PIX-554) casts nothing, nor keeps a flame by it from casting.
 static func _foot(node: Node, lights: PackedVector2Array, flames: Array) -> bool:
 	if not node is Node2D:
 		return false
 	var body: Node = node if node is StaticBody2D else _first(node, func(child: Node) -> bool: return child is StaticBody2D)
 	var box := Rect2()
+	if body != null and body.get_meta("low", false):
+		return false
 	if body != null:
 		var shape: CollisionShape2D = _first(body, func(child: Node) -> bool: return child is CollisionShape2D)
 		if shape == null or not shape.shape is RectangleShape2D:

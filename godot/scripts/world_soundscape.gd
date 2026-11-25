@@ -141,9 +141,9 @@ func rain_on_roof() -> bool:
 	return Weather.under_roof(world.map) and Weather.rain_at(GameState.world.steps) > RAIN_HEARD
 
 
-## A camp's torch within a few tiles of the hero.
+## A camp's fire within a few tiles of the hero.
 func _near_camp_fire() -> bool:
 	for cell: Vector2i in world.view.camps:
-		if world.view.camps[cell]["kind"] == "torch" and Vector2(cell).distance_to(Vector2(world.player_cell)) <= 4.0:
+		if world.view.camps[cell]["kind"] == "fire" and Vector2(cell).distance_to(Vector2(world.player_cell)) <= 4.0:
 			return true
 	return false

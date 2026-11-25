@@ -212,8 +212,9 @@ var patch_sprites := {}
 ## the day they were dealt for: a new day deals new ones (PIX-250).
 var patch_decks := {}
 var patch_day := -1
-## Each wild pack's camp (PIX-142): cell -> {"kind": "tent"|"torch", "tile"},
-## a tent in its region's colour behind its home and a torch beside it.
+## Each wild pack's camp (PIX-142, PIX-554), and the town's boards and
+## tents: cell -> {"kind", ...} (CampsLayer.plan_camps): a tent two cells
+## wide in its region's cloth by its home, its fire, bedroll and log.
 var camps := {}
 ## The village seen from outside (PIX-248, Skyline.plan), on the maps that
 ## hold it as one block (PunyTerrain.SKYLINE_MAPS); empty elsewhere.
@@ -470,6 +471,8 @@ func _plan_hamlet() -> void:
 	if data.id == "town" and not yards.is_empty():
 		kept.merge(Yards.kept(data))
 	kept[arrival] = true
+	# Clear of the camps' stashes (PIX-554).
+	kept.merge(CampsLayer.stash_cells(camps))
 	# What its hub has grown as its post road filled (PIX-324).
 	var grown := Hubs.dressing(data.id, GameState.post)
 	grown.append_array(yards)
@@ -491,6 +494,7 @@ func _plan_routes() -> void:
 		return
 	var kept := Hamlet.kept_on(data, {})
 	kept[arrival] = true
+	kept.merge(CampsLayer.stash_cells(camps))
 	routes = Routes.plan(data, GameState.post, GameState.settlement, kept)
 	for cell: Vector2i in routes["blocks"]:
 		data.covered[cell] = true
@@ -1044,13 +1048,13 @@ static func _still(motes: CPUParticles2D) -> CPUParticles2D:
 
 
 ## The cells that grow no field decor (`bare`): what the props stand on,
-## the camps, each shut gate's cells and pieces, each entrance's pieces and
-## the cells it blocks or hides, the chests and pickups, the villagers' homes
-## and the ways on; and what the Post's roads put up, and where a waystation
-## sets the hero down (PIX-322).
+## the camps and their stashes' cells, each shut gate's cells and pieces,
+## each entrance's pieces and the cells it blocks or hides, the chests and
+## pickups, the villagers' homes and the ways on; and what the Post's roads
+## put up, and where a waystation sets the hero down (PIX-322).
 func _bare_cells() -> Dictionary:
 	var out: Dictionary = (outdoor_props["drawn"] as Dictionary).duplicate()
-	var cells: Array = camps.keys() + data.portals.keys() + gate_hides.keys()
+	var cells: Array = camps.keys() + CampsLayer.stash_cells(camps).keys() + data.portals.keys() + gate_hides.keys()
 	for gate: Dictionary in gates:
 		cells.append_array(Gates.cells_of(gate))
 		for piece: Dictionary in GateArt.plan(gate, PunyProps.available())["pieces"]:

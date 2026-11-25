@@ -9,9 +9,10 @@ extends MapLayer
 ## Chimney smoke (PIX-313, PIX-523): out of the mouth of Shade's chimney,
 ## from its cell's top left; how far it may lean either side of the mouth
 ## (a gale leans it furthest), in pixels. A cottage's, a forge's and the
-## village's seen far off (small, as the village is there), beside a
-## burning house's (shaders/fire_smoke.gdshader): how big its puffs and
-## its lean, how dark, how dense, and how high it climbs (pixels).
+## village's seen far off (small, as the village is there) and a camp's
+## fire's (thin, PIX-554), beside a burning house's
+## (shaders/fire_smoke.gdshader): how big its puffs and its lean, how dark,
+## how dense, and how high it climbs (pixels).
 const CHIMNEY_MOUTH := Vector2(8, 2)
 const SMOKE_LEFT := 12
 const SMOKE_RIGHT := 72
@@ -21,6 +22,7 @@ const SMOKE := {
 	"cottage": {"swell": 0.75, "soot": 0.0, "density": 1.35, "climb": 56},
 	"forge": {"swell": 0.95, "soot": 1.0, "density": 1.35, "climb": 56},
 	"far": {"swell": 0.4, "soot": 0.0, "density": 1.0, "climb": 30},
+	"camp": {"swell": 0.5, "soot": 0.0, "density": 1.0, "climb": 40},
 }
 ## A waystation's ember lamp at night (PIX-322): the halo round its shard
 ## and its warmth pooled on the ground about its foot (from its cell's top

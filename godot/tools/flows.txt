@@ -540,11 +540,11 @@ frozen-cave | --map icecave_lake --at 30,14 | map=icecave_lake frozen=floor 265 
 # Burnt land (PIX-308, scorch=): the Ash's outcrops and the ridge along it
 # burnt rock with dead trees on it and cinders in the ash, the mountain
 # road's grey ridges left their own and its flats scorched, and Blackiron
-# worked - every rail of its lines laid, spoil, and shoring, carts, winches
-# and ore standing at its faces.
+# worked - every rail of its lines laid (no camp across them since
+# PIX-554), spoil, and shoring, carts, winches and ore standing at its faces.
 ground-scorched | --map overworld --at 18,22 | map=overworld scorch=burnt8[0-9]{2},snags[2-4][0-9]{2},cinders[1-9][0-9]+,rails0,spoil0,standing0 | field
 ground-road-ash | --map mountain_road --at 17,8 | map=mountain_road scorch=burnt0,snags0,cinders[1-9][0-9]*,rails0,spoil0,standing0 tone=tone | field
-mines-worked | --map blackiron --at 20,16 | map=blackiron scorch=burnt563,snags1[0-9]{2},cinders[1-9][0-9]+,rails53,spoil[1-9][0-9]*,standing21 | field
+mines-worked | --map blackiron --at 20,16 | map=blackiron scorch=burnt563,snags1[0-9]{2},cinders[1-9][0-9]+,rails55,spoil[1-9][0-9]*,standing21 | field
 # Night falling while the hero watches the goblins' camp: nothing changes
 # on the screen - the goblins stay up, the wolves whose home is in view
 # wait - and the dead come out off it. From a few steps west of the camp
@@ -694,7 +694,9 @@ mouth-road | --map mountain_road --at 13,5 | map=mountain_road entrance=mountain
 # Greyhold's beds, Blackiron's ore, coal, cart and lanterns, the forge's
 # stack and the fire under its door.
 hamlet-coast | --map saltmere --at 31,15 | map=saltmere hamlet=fishing:line1,moored3,on1,stand8,wall6 | travel field
-hamlet-fort | --map greyhold --at 14,25 | map=greyhold hamlet=fort:flat3,(on1,stand15,wall7)?(stand4,wall3)? | travel field
+# The fort keeps clear of its camps' stashes (PIX-554): with the paid pack one
+# of its standing pieces (two once the garrison holds it) finds no room.
+hamlet-fort | --map greyhold --at 14,25 | map=greyhold hamlet=fort:flat3,(on1,stand14,wall7)?(stand4,wall3)? | travel field
 hamlet-mines | --map blackiron --at 25,18 | map=blackiron hamlet=mine:glow1,roof1,stand7,wall2 | travel field
 hamlet-frost | --map frostgate --at 14,39 | map=frostgate hamlet=frost:stand5,wall3 | travel field
 hamlet-smithy | --map mountain_road --at 17,7 | map=mountain_road hamlet=smithy:glow1,roof1 | travel field story
@@ -737,8 +739,8 @@ fort-gate | --map greyhold --at 37,28 --walk u,u,u,u,u | map=greyhold cell=\(37,
 # the fort's teal after, the racks and dummies whole (tops), its paths worn
 # into the flags, lamps at its gates and every window lit at night. Without
 # the pack its own pieces and the houses' glass aren't drawn (cc0).
-fort-turncoats | --map greyhold --at 37,19 | map=greyhold fort=turncoats:houses5,(red2,tops4,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand15,wall7)?(stand4,wall3)? street=flags | travel field
-fort-garrison | --map greyhold --delivered ulla_turncoats --at 37,19 | map=greyhold fort=garrison:houses5,(teal3,tops6,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand19,wall9)?(stand4,wall3)? | travel field story
+fort-turncoats | --map greyhold --at 37,19 | map=greyhold fort=turncoats:houses5,(red2,tops4,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand14,wall7)?(stand4,wall3)? street=flags | travel field
+fort-garrison | --map greyhold --delivered ulla_turncoats --at 37,19 | map=greyhold fort=garrison:houses5,(teal3,tops6,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand17,wall9)?(stand4,wall3)? | travel field story
 fort-night | --map greyhold --at 37,14 night | map=greyhold lamplight=posts 10/10 panes [06] flames 0 beams 0 | travel field night
 fort-cc0 | --map greyhold --at 37,19 cc0 | map=greyhold fort=turncoats:houses5,tops0,worn0 hamlet=fort:flat3,stand4,wall3 | travel field
 # The Blackiron shafts in three floors (PIX-255, PIX-253 step 5): down the

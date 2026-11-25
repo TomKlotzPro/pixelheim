@@ -120,7 +120,10 @@ func test_a_map_in_the_open_air_grows_its_decor_at_once_or_in_slices() -> void:
 	for map_id: String in ReachPlane.maps() + ["town"]:
 		var whole := _draw(MapData.load_by_id(map_id), false)
 		var picked := _picked(whole.data, whole.kept.burnt)
-		assert_gt(float(whole.field.size()), picked.size() * 0.95, "%s grows its field's decor (%d of %d)" % [map_id, whole.field.size(), picked.size()])
+		# Off what stands there (a camp is five cells since PIX-554).
+		var taken := _taken(whole)
+		var open := picked.keys().filter(func(cell: Vector2i) -> bool: return not taken.has(cell)).size()
+		assert_gt(float(whole.field.size()), open * 0.95, "%s grows its field's decor (%d of %d)" % [map_id, whole.field.size(), open])
 		for cell: Vector2i in whole.field:
 			assert_eq(whole.field[cell], picked.get(cell, -1), "%s: %s grows what Scatter picks" % [map_id, cell])
 		var sliced := _draw(MapData.load_by_id(map_id), true)

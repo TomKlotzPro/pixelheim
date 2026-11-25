@@ -3113,6 +3113,10 @@ msgid "CURRENT WORDS: Loras wants his lute back from the troll and Mirelle two g
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Campfires"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Camps and Hamlets"
 msgstr ""
 
@@ -3662,6 +3666,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Every Word in Place"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Every camp in the wild is a tent the folk's size in its region's colours, a campfire that lights the ground at night, a bedroll and a log to sit on"
 msgstr ""
 
 #: assets/data/changelog.json

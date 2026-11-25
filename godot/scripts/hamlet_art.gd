@@ -14,7 +14,9 @@ class_name HamletArt
 ## crate of fish (PIX-382 step 4); the Frostgate's sledges, bare and loaded
 ## with firewood, and a street's lamp post (PIX-400); the stores a door keeps
 ## (a crate shut or ajar, a pair of kegs, a sack and a basket) and a stump
-## with its axe, the woodpile's second shape (PIX-524). Drawn here in code in Shade's palette (his
+## with its axe, the woodpile's second shape (PIX-524); and the wild packs'
+## camps, a tent in its region's cloth, a fire's ring, a bedroll and a log
+## (PIX-554). Drawn here in code in Shade's palette (his
 ## outline, his woods, irons and greys), at 1x on his 16 px grid, so they
 ## sit beside his art as his. Our own, so CC0 like the rest of the
 ## repository: they draw the same with or without the paid pack. Pictures
@@ -514,7 +516,7 @@ const PIECES := {
 	],
 	## A window box (PIX-382, Pixelheim's yards): a planter of planks hung
 	## under a window's sill, its flowers over the glass's foot and spilling
-	## over its edges; red here, the others by WINDOW_TINTS. On the wall, so
+	## over its edges; red here, the others by TINTS. On the wall, so
 	## it blocks nothing.
 	"window_box": [
 		"................",
@@ -852,6 +854,73 @@ const PIECES := {
 		".oiiiiiiiiiiiiiio3443oiiiiiiiio.",
 		".oooooooooooooooooooooooooooooo.",
 	],
+	## A wild pack's tent (PIX-554: Shade's one-tile tent stood shorter than
+	## the goblin beside it): the sutler's (HubArt) at the folk's scale, its
+	## doorway open and dark, a rag on its pole. In canvas here, in its
+	## region's cloth by TINTS. 32x26, foot on the bottom row.
+	"camp_tent": [
+		"...............o3RRRo...........",
+		"...............o3RRo............",
+		"...............o3oo.............",
+		".............ooo3oo.............",
+		"............oRBB3bRo............",
+		"...........oRBBBbbbRo...........",
+		"...........oRBBBbbbRo...........",
+		"..........oRBBBBbbbbRo..........",
+		"..........oRBBBBbbbbRo..........",
+		".........oRBBBBBbbbbbRo.........",
+		"........oRBBBBBBbbbbbbRo........",
+		"........oRBBBBBBbbbbbbRo........",
+		".......oRBBBBBBNNbbbbbbRo.......",
+		".......oRBBBBBBNNbbbbbbRo.......",
+		"......oRBBBBBBNNNNbbbbbbRo......",
+		".....oRBBBBBBBNNNNbbbbbbbRo.....",
+		".....oRBBBBRBBNNNNbbRbbbbRo.....",
+		"....oRBBBBBBBNNnnNNbbbbbbbRo....",
+		"....oRBBBBBBBNNnnNNbbbbbbbRo....",
+		"...oRBBBBBBBBNnnnnNbbbbbbbbRo...",
+		"..oRBBBBBBBBNNnnnnNNbbbbbbbbRo..",
+		"..oRBBBBBBBBNnnnnnnNbbbbbbbbRo..",
+		".oRBBBBBBBBBNnnnnnnNbbbbbbbbbRo.",
+		"ooRBBBBBBBBNNnnnnnnNNbbbbbbbbRoo",
+		"2RBBBBBBBBBNNnnnnnnNNbbbbbbbbbR2",
+		"oooooooooooooooooooooooooooooooo",
+	],
+	## Its fire's ring (PIX-554): stones round a bed of ash and coals, two
+	## charred logs across it, the flame (FireArt's) standing over its middle
+	## (CAMP_FLAME). 16x9, foot on the bottom row.
+	"camp_fire": [
+		"....oooooooo....",
+		"..oohhloohhloo..",
+		".ohllozZZzZolho.",
+		"ohlio1zrCz21oilo",
+		"olio21CaaC12oilo",
+		"ohlioZzrrzZoilho",
+		".olhhlohhlohhlo.",
+		"..oiiioiiiioio..",
+		"...oooooooooo...",
+	],
+	## A bedroll laid out by the tent (PIX-554): a checked blue wool
+	## blanket, its top turned back, on a mat, a canvas roll for a pillow.
+	## 16x6, foot on the bottom row.
+	"bedroll": [
+		"..ooooooooooooo.",
+		".oBBossUUUuUUUuo",
+		"oBBbosSuuuuuuuuo",
+		"obbbosSUUUuUUUuo",
+		".ooooSSggggggggo",
+		"..oo2222222222o.",
+	],
+	## A log to sit on by the fire (PIX-554): its bark in Shade's woods, its
+	## end sawn, rings showing. 16x6, foot on the bottom row.
+	"camp_log": [
+		"..ooooooooooooo.",
+		".o443444344o656o",
+		"o3333433343o545o",
+		"o2332333233o656o",
+		".o222232222oooo.",
+		"..ooooooooooo...",
+	],
 }
 
 
@@ -863,12 +932,17 @@ static var _glint: SpriteFrames
 static var _door_glow: SpriteFrames
 
 
-## The window box's flowers in the town's other colours (PIX-382): its
-## reds swapped, blossom, shade and highlight.
-const WINDOW_TINTS := {
-	"window_box_gold": {"R": "Y", "e": "a", "r": "q"},
-	"window_box_white": {"R": "B", "e": "b", "r": "y"},
-	"window_box_blue": {"R": "U", "e": "u", "r": "s"},
+## A piece in other colours: [whose, inks swapped]. The window box's
+## flowers in the town's other colours (PIX-382): its reds swapped,
+## blossom, shade and highlight; a camp's tent in its region's cloth
+## (PIX-554, CampsLayer.TENTS), cloth, shade and seam: green, straw, red.
+const TINTS := {
+	"window_box_gold": ["window_box", {"R": "Y", "e": "a", "r": "q"}],
+	"window_box_white": ["window_box", {"R": "B", "e": "b", "r": "y"}],
+	"window_box_blue": ["window_box", {"R": "U", "e": "u", "r": "s"}],
+	"camp_tent_green": ["camp_tent", {"B": "v", "b": "F", "R": "f"}],
+	"camp_tent_straw": ["camp_tent", {"B": "6", "b": "5", "R": "3"}],
+	"camp_tent_red": ["camp_tent", {"B": "R", "b": "e", "R": "p"}],
 }
 ## The bunting strung across the City's square (PIX-382): its pennants'
 ## [ink, shade] in turn, a lantern in place of every LANTERN_EVERY-th, and
@@ -911,9 +985,10 @@ static func rows_of(name: String) -> Array:
 				row += "." if STALL_HEAPS.has_point(Vector2i(x, y)) else String(swap.get(ink, ink))
 			out.append(row)
 		return out
-	if WINDOW_TINTS.has(name):
-		var swap: Dictionary = WINDOW_TINTS[name]
-		return PIECES["window_box"].map(func(row: String) -> String:
+	if TINTS.has(name):
+		var swap: Dictionary = TINTS[name][1]
+		var base: Array = PIECES[TINTS[name][0]]
+		return base.map(func(row: String) -> String:
 			var out := ""
 			for ink in row:
 				out += String(swap.get(ink, ink))

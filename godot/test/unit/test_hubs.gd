@@ -183,6 +183,25 @@ func test_every_step_stands_where_it_says_and_closes_no_way() -> void:
 		assert_true(after.has(hub), "%s: its hub still reached" % place)
 
 
+## However far its road has grown it, a hub keeps every day camp's stash
+## (PIX-453) where its camp kept it (PIX-554: from five pieces carried
+## Saltmere's dressing took coast_3's cell, and it had none).
+func test_a_grown_hub_keeps_every_camp_s_stash() -> void:
+	var looked := 0
+	for place: String in Hubs.places():
+		for n: int in [0] + Hubs.marks():
+			_carried(place, n)
+			var view := _planned(place)
+			var stashes: Dictionary = view.get_meta(CampStashes.META, {})
+			for piece: Dictionary in view.camps.values():
+				if not CampStashes.stashes().has(piece.get("spawn", "")):
+					continue
+				looked += 1
+				assert_true(stashes.has(piece["spawn"]), "%s at %d: %s's camp has its stash" % [place, n, piece["spawn"]])
+				assert_eq(stashes.get(piece["spawn"]), piece.get("stash"), "%s at %d: %s's stash where its camp kept it" % [place, n, piece["spawn"]])
+	assert_gt(looked, 4, "the hubs' camps were looked at")
+
+
 ## PIX-400: with every road carried Saltmere's street looked as it did, its
 ## lighthouse on the point out of sight. Every step now puts something up
 ## within a few cells of a road, where the hero walks in.

@@ -93,12 +93,13 @@ func test_the_dressing_casts() -> void:
 		var view := _draw(id)
 		var feet := _feet(view)
 		# The camps' tents, the town's boards and its post box (CampsLayer);
-		# a torch's flame casts none.
+		# what lies low in a camp casts none (PIX-554).
 		if id == "town":
 			assert_true(view.camps.has(Post.box_cell()), "the post box stands")
 		for cell: Vector2i in view.camps:
-			if view.camps[cell]["kind"] != "torch":
-				assert_true(feet.has(cell), "%s's %s at %s casts" % [id, view.camps[cell]["kind"], cell])
+			if view.camps[cell]["kind"] not in CampsLayer.LOW + ["beside"]:
+				# A tent two cells wide casts from the middle of its foot.
+				assert_true(feet.has(cell) or feet.has(cell + Vector2i.RIGHT), "%s's %s at %s casts" % [id, view.camps[cell]["kind"], cell])
 		var standing: Array = view.hamlet["pieces"].filter(func(piece: Dictionary) -> bool:
 			return piece["kind"] == "stand" and piece.has("art") and piece["art"] != "lamp_post")
 		if id == "saltmere":

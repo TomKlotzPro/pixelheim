@@ -13,11 +13,38 @@ const BOARD_FOOT := Rect2(1, 8, 14, 8)
 ## of it, and where its candle burns (RoomArt's bank_desk).
 const DESK_FOOT := Rect2(1, 2, 14, 30)
 const DESK_FLAME := Vector2(7.5, 14)
-## Puny World tents by region: green in the woods, straw in the wetlands,
-## red on the ash.
-const TENTS := {"forest": 895, "deepwood": 895, "marsh": 706, "mire": 706, "ash": 905}
-## The CC0 dungeon sheet's torch flame, planted in the ground by a camp.
-const CAMP_TORCH := [16, 17, 18, 19, 20, 21, 22, 23]
+## A pack's tent by region (PIX-554: HamletArt's, in its cloth): green in
+## the woods, straw in the wetlands and anywhere else, red on the ash. It
+## blocks its two cells as the post house does (POST_HOUSE_FOOT).
+const TENTS := {"forest": "camp_tent_green", "deepwood": "camp_tent_green", "marsh": "camp_tent_straw", "mire": "camp_tent_straw", "ash": "camp_tent_red"}
+const TENT := "camp_tent_straw"
+## Shade's straw tent, Iva's on the square on the Night of Bells (pitch_tent).
+const PITCHED := 706
+## Where a camp's fire's flame stands in its ring, from its cell's top
+## left, and FireArt's flame it burns with. Its light reaches as far as the
+## torch's it took the place of (PIX-221), so no light was added to a map.
+const CAMP_FLAME := Vector2(8, 12)
+const CAMP_FIRE := "lick"
+const CAMP_LIGHT := 72.0
+## How many of a camp's fire's coals breathe (shaders/fire_coals.gdshader):
+## its bed is a few pixels, a burning house's floor a few cells.
+const CAMP_COALS := 0.6
+## The pack's own square (its home and the cells beside it), and how far
+## from its home a camp's pieces lie (Gathering.CAMP_REACH keeps the wild
+## patches further off).
+const PACK_SQUARE := [Vector2i.ZERO, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
+const CAMP_REACH := 3
+## Where a camp's bedroll lies by its tent (from the tent's left cell): in
+## front, then at its sides; and its log by its fire: at its sides, in
+## front and behind, then at its corners.
+const BEDROLL_AT := [Vector2i(0, 1), Vector2i(1, 1), Vector2i(-1, 0), Vector2i(2, 0), Vector2i(-1, 1), Vector2i(2, 1)]
+const LOG_AT := [
+	Vector2i.LEFT, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.UP,
+	Vector2i(-1, 1), Vector2i(1, 1), Vector2i(-1, -1), Vector2i(1, -1),
+]
+## What lies low in a camp: it blocks, but casts nothing at night, nor
+## keeps the fire beside it from casting (NightShadowsLayer).
+const LOW := ["fire", "bedroll", "log"]
 ## The post house's foot (PIX-325): across its two cells, each blocked over
 ## x 4..12, y 7..15 as every blocker must be.
 const POST_HOUSE_FOOT := Rect2(2, 5, 28, 11)
@@ -34,7 +61,9 @@ const TENT_FOOT := Rect2(1, 5, 14, 11)
 ## sutler's tent the hubs pitch (HubArt, drawn in code, so it stands without
 ## the pack), two cells wide on the post house's foot.
 const PAVILION := "sutler_tent"
-const TORCH_FOOT := Rect2(5, 9, 6, 7)
+## The pieces HamletArt draws, by kind (a camp's tent in its region's
+## cloth: TENTS).
+const DRAWN := {"post": "post_box", "post_house": "post_house", "pavilion": PAVILION, "fire": "camp_fire", "bedroll": "bedroll", "log": "camp_log"}
 ## A burning house lights the ground as a few soft pools (PIX-285): one for
 ## each part of it at most FIRE_POOL cells a side, from the part's middle
 ## to FIRE_REACH pixels past its corners. A light on every flame put three
@@ -82,35 +111,139 @@ static func plan_in(view: MapView) -> void:
 		view.data.covered[cell] = true
 
 
-## Where each wild pack's camp stands: a tent on the first open cell of its
-## region in CAMP_RING, and a torch on the next one within two of the tent.
+## Where each wild pack's camp stands (PIX-554): its tent across two cells
+## of its region, its left on the first of CAMP_RING with room for both;
+## its fire on the next with a cell clear between it and the tent, so the
+## fire's light casts the tent's shadow (NightShadows.AGAINST), else within
+## two of it; its bedroll by the tent and its log by the fire. The tent's
+## left cell holds the spawn and where its fire, bedroll and log lie
+## ("fire", "bed", "log"), its right cell is "beside" it. Nothing on the
+## pack's own square or a door, nor further than CAMP_REACH from its home,
+## nor where it would close a way on (Ways.kept_open: PIX-554), nor leave
+## its stash (CampStashes, PIX-453) no cell by the tent closing none either:
+## the first such cell is the tent's "stash", kept from the camps after.
 ## A night pack keeps none (PIX-252): it comes out of the dark, and a camp,
 ## drawn once for the visit, would stand empty all day.
 static func plan_camps(map: MapData) -> Dictionary:
 	var out := {}
 	if map.style == "cave":
 		return out
+	# Off a mining country's rails, laid after (AshLand.workings, PIX-308):
+	# a camp across them broke the line.
+	var rails := {}
+	for working: Dictionary in AshLand.WORKINGS.get(map.id, []):
+		for cell: Vector2i in AshLand.rail_cells(working["rails"] as Array):
+			rails[cell] = true
+	# What the camps cover, their stashes' cells with them.
+	var shut := {}
 	for spawn: Dictionary in Bestiary.spawns_on(map.id):
 		if Packs.of_the_night(spawn):
 			continue
 		var home := Vector2i(spawn["x"], spawn["y"])
 		var region := map.region_at(home)
 		var fits := func(cell: Vector2i) -> bool:
-			return map.is_walkable(cell) and map.region_at(cell) == region and not map.portals.has(cell) and not out.has(cell)
-		var tent := Vector2i(-1, -1)
+			var off := cell - home
+			return off not in PACK_SQUARE and maxi(absi(off.x), absi(off.y)) <= CAMP_REACH and map.is_walkable(cell) \
+					and map.region_at(cell) == region and not map.portals.has(cell) and not rails.has(cell) and not shut.has(cell)
+		# The first of the stash's cells (`by`, stash_ring) open and closing
+		# no way on, with `also` covered too.
+		var stash_at := func(by: Array[Vector2i], also: Dictionary) -> Vector2i:
+			var after := shut.merged(also)
+			return _first(by, func(cell: Vector2i) -> bool: return fits.call(cell) and not also.has(cell) and Ways.kept_open(map, [cell], after))
+		# `cells` taken for the camp, if they fit, close no way on and leave
+		# its stash one of `by`.
+		var takes := func(cells: Array[Vector2i], by: Array[Vector2i]) -> bool:
+			if not cells.all(fits) or not Ways.kept_open(map, cells, shut):
+				return false
+			var also := {}
+			for cell: Vector2i in cells:
+				also[cell] = true
+			return (stash_at.call(by, also) as Vector2i).x >= 0
+		var ring: Array[Vector2i] = []
+		var lefts: Array[Vector2i] = []
 		for offset: Vector2i in CAMP_RING:
-			if fits.call(home + offset):
-				tent = home + offset
-				out[tent] = {"kind": "tent", "tile": TENTS.get(region, 706), "spawn": spawn["id"]}
-				break
+			ring.append(home + offset)
+			lefts.append_array([home + offset, home + offset + Vector2i.LEFT])
+		var tent := _first(lefts, func(left: Vector2i) -> bool:
+			var both: Array[Vector2i] = [left, left + Vector2i.RIGHT]
+			return fits.call(left) and fits.call(left + Vector2i.RIGHT) and takes.call(both, stash_ring(home, left)))
 		if tent.x < 0:
 			continue
+		var camp := {"kind": "camp", "art": TENTS.get(region, TENT), "spawn": spawn["id"]}
+		out[tent] = camp
+		out[tent + Vector2i.RIGHT] = {"kind": "beside"}
+		shut[tent] = true
+		shut[tent + Vector2i.RIGHT] = true
+		var stash_cells := stash_ring(home, tent)
+		var clear := func(cell: Vector2i) -> bool:
+			var one: Array[Vector2i] = [cell]
+			return takes.call(one, stash_cells)
+		var fire := _first(ring, func(cell: Vector2i) -> bool: return _apart(cell, tent) == 2 and clear.call(cell))
+		if fire.x < 0:
+			fire = _first(ring, func(cell: Vector2i) -> bool: return _apart(cell, tent) <= 2 and clear.call(cell))
+		if fire.x >= 0:
+			out[fire] = {"kind": "fire"}
+			camp["fire"] = fire
+			shut[fire] = true
+		for part: Array in [["bed", "bedroll", tent, BEDROLL_AT], ["log", "log", fire, LOG_AT]]:
+			var by: Vector2i = part[2]
+			if by.x < 0:
+				continue
+			var near: Array[Vector2i] = []
+			for offset: Vector2i in part[3]:
+				near.append(by + offset)
+			var cell := _first(near, clear)
+			if cell.x >= 0:
+				out[cell] = {"kind": part[1]}
+				camp[part[0]] = cell
+				shut[cell] = true
+		# Its stash's cell kept from the camps after, and from what the plan
+		# lays after them (stash_cells).
+		var stash: Vector2i = stash_at.call(stash_cells, {})
+		if stash.x >= 0:
+			camp["stash"] = stash
+			shut[stash] = true
+	return out
+
+
+## The cells `camps` (plan_camps) keep for their stashes, {cell: true}: what
+## the plan lays after the camps (a hub's dressing, the Post's pieces, the
+## blocking scatter, the workings) keeps off them, so a camp's stash stands
+## where plan_camps found it a place that closes no way (PIX-554: a grown
+## hub's dressing took Saltmere's coast_3's, and it had none).
+static func stash_cells(camps: Dictionary) -> Dictionary:
+	var out := {}
+	for piece: Dictionary in camps.values():
+		if piece.has("stash"):
+			out[piece["stash"]] = true
+	return out
+
+
+## The cells a camp's stash may take (CampStashes, PIX-453), best first: of
+## CAMP_RING's two off the pack's home, those beside its tent's left cell,
+## then those within two of it.
+static func stash_ring(home: Vector2i, tent: Vector2i) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	for reach: int in [1, 2]:
 		for offset: Vector2i in CAMP_RING:
 			var cell: Vector2i = home + offset
-			if fits.call(cell) and maxi(absi(cell.x - tent.x), absi(cell.y - tent.y)) <= 2:
-				out[cell] = {"kind": "torch", "tile": CAMP_TORCH[0]}
-				break
+			if maxi(absi(offset.x), absi(offset.y)) == 2 and maxi(absi(cell.x - tent.x), absi(cell.y - tent.y)) <= reach and cell not in out:
+				out.append(cell)
 	return out
+
+
+## The first of `cells` that `ok`, or (-1, -1).
+static func _first(cells: Array[Vector2i], ok: Callable) -> Vector2i:
+	for cell: Vector2i in cells:
+		if ok.call(cell):
+			return cell
+	return Vector2i(-1, -1)
+
+
+## How many cells `cell` stands off the tent whose left cell is `tent`,
+## every way.
+static func _apart(cell: Vector2i, tent: Vector2i) -> int:
+	return mini(maxi(absi(cell.x - tent.x), absi(cell.y - tent.y)), maxi(absi(cell.x - tent.x - 1), absi(cell.y - tent.y)))
 
 
 ## The camps standing, then the town's ruins.
@@ -413,69 +546,55 @@ static func _add_smoke(view: MapView, rect: Rect2i, share := 1.0) -> void:
 static func pitch_tent(view: MapView, cell: Vector2i) -> void:
 	if view.camps.has(cell):
 		return
-	view.camps[cell] = {"kind": "tent", "tile": TENTS["marsh"]}
+	view.camps[cell] = {"kind": "tent", "tile": PITCHED}
 	view.data.covered[cell] = true
 	_add_camp_piece(view, cell, view.camps[cell])
 
 
-## A camp's tent or torch: sorted among the actors at its foot, which blocks.
+## A piece of a camp, or of the town (its boards, stalls and tent, the post
+## box and its house): sorted among the actors at its foot, which blocks.
+## Ours stand on the bottom of their cells (HamletArt); a camp's bedroll
+## lies flat on the ground over its block, and its tent's other cell
+## (`beside`) is the tent's.
 static func _add_camp_piece(view: MapView, cell: Vector2i, piece: Dictionary) -> void:
-	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post": MapView.HAMLET_FOOT, "post_house": POST_HOUSE_FOOT, "pavilion": POST_HOUSE_FOOT, "desk": DESK_FOOT}.get(piece["kind"], TORCH_FOOT)
+	if piece["kind"] == "beside":
+		return
+	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post_house": POST_HOUSE_FOOT, "pavilion": POST_HOUSE_FOOT, "camp": POST_HOUSE_FOOT, "desk": DESK_FOOT}.get(piece["kind"], MapView.HAMLET_FOOT)
+	var art: String = piece["art"] if piece["kind"] == "camp" else DRAWN.get(piece["kind"], "")
 	var root := Node2D.new()
 	root.position = Vector2(cell * TILE) + Vector2(0, foot.end.y)
 	root.add_to_group("decor")
-	var sprite: Node2D
-	if piece["kind"] == "torch":
-		var flame := AnimatedSprite2D.new()
-		flame.sprite_frames = _camp_torch_frames()
-		flame.play()
-		flame.material = Lights.unshaded()
-		# A camp's fire lights the camp (PIX-221), and sparks rise off it
-		# (PIX-225).
-		root.add_child(Lights.make(Vector2(TILE / 2.0, -foot.end.y + 4), 72.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
-		var embers := MapView._still(Motes.make_embers(3))
-		embers.position = Vector2(TILE / 2.0, -foot.end.y - 2 - LampArt.STAKE_LIFT)
-		embers.z_index = 6
-		root.add_child(embers)
-		# Each camp's fire flickers on its own beat.
-		flame.frame = absi(hash(cell)) % CAMP_TORCH.size()
-		sprite = flame
-		# On a stake driven into the ground, not a flame afloat (PIX-311).
-		var stake := Sprite2D.new()
-		stake.texture = LampArt.stake()
-		stake.centered = false
-		stake.position = Vector2(0, -foot.end.y)
-		root.add_child(stake)
-	elif piece["kind"] == "post":
+	var sprite := Sprite2D.new()
+	sprite.centered = false
+	sprite.position = Vector2(0, -foot.end.y)
+	if piece["kind"] == "post":
 		# The post box (PIX-320), its pennant up while it holds the day's
-		# post (show_post_box), standing on the bottom of its cell.
-		view.post_box = Sprite2D.new()
-		sprite = view.post_box
+		# post (show_post_box).
+		view.post_box = sprite
 		view.show_post_box()
-	elif piece["kind"] == "post_house":
-		view.post_house = Sprite2D.new()
-		view.post_house.texture = HamletArt.texture("post_house")
-		sprite = view.post_house
-	elif piece["kind"] == "pavilion":
-		var pavilion := Sprite2D.new()
-		pavilion.texture = HamletArt.texture(PAVILION)
-		sprite = pavilion
+	elif art != "":
+		sprite.texture = HamletArt.texture(art)
+		if piece["kind"] == "post_house":
+			view.post_house = sprite
 	else:
-		var tent := Sprite2D.new()
-		tent.texture = RoomArt.texture(piece["art"]) if piece.has("art") else PunyTerrain.sheet().tile_texture(piece["tile"])
-		sprite = tent
+		sprite.texture = RoomArt.texture(piece["art"]) if piece.has("art") else PunyTerrain.sheet().tile_texture(piece["tile"])
 		# Her ledger read by its candle at night.
 		if piece["kind"] == "desk":
 			view._add_candle(Vector2(cell * TILE) + DESK_FLAME)
-	sprite.set("centered", false)
-	sprite.position = Vector2(0, -foot.end.y - (LampArt.STAKE_LIFT if piece["kind"] == "torch" else 0))
-	if piece["kind"] in ["post", "post_house", "pavilion"]:
-		sprite.position.y = TILE - HamletArt.size({"post": "post_box", "pavilion": PAVILION}.get(piece["kind"], "post_house")).y - foot.end.y
-	root.add_child(sprite)
+	if art != "":
+		sprite.position.y = TILE - HamletArt.size(art).y - foot.end.y
+	if piece["kind"] == "bedroll":
+		sprite.position += root.position
+		sprite.add_to_group("decor")
+		view.ground.add_child(sprite)
+	else:
+		root.add_child(sprite)
+	if piece["kind"] == "fire":
+		_add_camp_fire(view, root, cell)
 	# A tent, a board, the post box and its house cast as the trees do
-	# (PIX-524); a torch's flame doesn't.
-	if sprite is Sprite2D and (sprite as Sprite2D).texture != null:
-		var drawn := (sprite as Sprite2D).texture.get_size()
+	# (PIX-524); what lies low in a camp doesn't.
+	if sprite.texture != null and piece["kind"] not in LOW:
+		var drawn := sprite.texture.get_size()
 		cast(view, root.position + sprite.position + Vector2(drawn.x / 2.0, drawn.y), drawn.x - 2.0, drawn.y)
 	if piece.get("wanted", false):
 		var poster := Sprite2D.new()
@@ -490,11 +609,44 @@ static func _add_camp_piece(view: MapView, cell: Vector2i, piece: Dictionary) ->
 	shape.shape = rect
 	shape.position = foot.get_center() - Vector2(0, foot.end.y)
 	body.add_child(shape)
+	if piece["kind"] in LOW:
+		body.set_meta("low", true)
 	root.add_child(body)
 	view.actors.add_child(root)
 
 
-static var _torch_frames: SpriteFrames
+## A camp's fire in its ring (PIX-554: it was a street torch on a stake):
+## FireArt's flame standing in it, unshaded, at its own pace (calmer with
+## Reduce motion); the torch's light, so no light was added to a map
+## (PIX-221); sparks rising (PIX-225); a few coals breathing in its bed and
+## a thread of smoke going up (shaders/fire_*.gdshader), as off a house.
+static func _add_camp_fire(view: MapView, root: Node2D, cell: Vector2i) -> void:
+	var at := Vector2(cell * TILE) + CAMP_FLAME - root.position
+	var coals := _fire_air(view, "", Rect2(at + Vector2(-4, -2), Vector2(9, 3)), preload("res://shaders/fire_coals.gdshader"), 0, {
+		"seed": float(absi(hash(cell)) % 97) / 9.7, "share": CAMP_COALS,
+	})
+	# Laid in the ring, under the flame (`at` is the ring's own).
+	coals.reparent(root, false)
+	var size: Vector2i = FireArt.KINDS[CAMP_FIRE]
+	var flame := AnimatedSprite2D.new()
+	flame.sprite_frames = FireArt.frames(CAMP_FIRE, absi(hash(cell)) % FireArt.VARIANTS)
+	flame.centered = false
+	flame.position = at
+	flame.offset = Vector2(-(size.x / 2), -size.y)
+	# Each camp's fire flickers on its own beat.
+	flame.frame = absi(hash(cell)) % FireArt.FRAMES
+	flame.speed_scale = FireArt.pace({"cell": cell, "frame": flame.frame}, GameState.settings.reduce_motion)
+	flame.material = Lights.unshaded()
+	root.add_child(flame)
+	flame.play()
+	root.add_child(Lights.make(at - Vector2(0, 4), CAMP_LIGHT, Lights.FIRE, Lights.FIRE_ENERGY, true))
+	var embers := MapView._still(Motes.make_embers(3))
+	embers.position = at - Vector2(0, size.y)
+	embers.z_index = 6
+	root.add_child(embers)
+	SettlementsLayer._add_smoke_thread(view, Vector2(cell * TILE) + CAMP_FLAME - Vector2(0, size.y - 4), "camp")
+
+
 static var _poster: ImageTexture
 
 
@@ -523,12 +675,3 @@ static func _wanted_poster() -> ImageTexture:
 					art.set_pixel(x, y, Color(POSTER_INKS[POSTER[y][x]]))
 		_poster = ImageTexture.create_from_image(art)
 	return _poster
-
-
-static func _camp_torch_frames() -> SpriteFrames:
-	if _torch_frames == null:
-		_torch_frames = SpriteFrames.new()
-		_torch_frames.set_animation_speed("default", 8.0)
-		for tile: int in CAMP_TORCH:
-			_torch_frames.add_frame("default", PunyDungeon.sheet().tile_texture(tile))
-	return _torch_frames

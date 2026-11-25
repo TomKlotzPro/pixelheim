@@ -128,7 +128,7 @@
 {"shot": "frostgate", "area": "regions", "map": "frostgate", "time": "day"}
 {"shot": "frost_fields", "area": "regions", "map": "frostgate", "cell": [14, 40], "time": "day"}
 {"shot": "frost_fields_night", "area": "regions", "map": "frostgate", "cell": [14, 40], "time": "night"}
-# Lamps by a door and a camp's torches on their stakes (PIX-311): Greyhold's
+# Lamps by a door and a camp's fire (PIX-311, PIX-554): Greyhold's
 # keep by day and at night, its windows lit; the Frostgate's observatory
 # at night.
 {"shot": "greyhold_keep", "area": "regions", "map": "greyhold", "cell": [36, 15], "time": "day"}

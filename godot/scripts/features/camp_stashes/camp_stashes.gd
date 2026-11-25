@@ -42,30 +42,37 @@ static func shown(world: WorldState, spawn_id: String) -> bool:
 ## stands clear of it), beside the tent, else within two of it; open
 ## ground of the home's region that nothing covers yet, nor another camp's
 ## stash, nor a mining country's workings (`worked`, MapView.worked, laid
-## before this plan). A camp left without one says so (a prop over its whole ring).
+## before this plan), nor where it would close a way on (Ways.kept_open:
+## an opened stash stands for good). plan_camps keeps the first such cell
+## for it (the camp's "stash", kept clear by what the plan lays after), so
+## it takes that one while it is open. A camp left without one says so (a
+## prop over its whole ring).
 static func plan_on(map: MapData, camps: Dictionary, worked := {}) -> Dictionary:
 	var out := {}
+	var taken := {}
 	for tent: Vector2i in camps:
 		var spawn_id := String(camps[tent].get("spawn", ""))
 		if not stashes().has(spawn_id):
 			continue
 		var spawn: Dictionary = Bestiary.spawns_on(map.id).filter(func(row: Dictionary) -> bool: return row["id"] == spawn_id)[0]
-		var cell := _beside(map, camps, Vector2i(spawn["x"], spawn["y"]), tent, out.values(), worked)
+		var cell := _beside(map, camps, Vector2i(spawn["x"], spawn["y"]), tent, taken, worked)
 		if cell.x >= 0:
 			out[spawn_id] = cell
+			taken[cell] = true
 		else:
 			push_warning("%s: no cell by %s's tent for its stash" % [map.id, spawn_id])
 	return out
 
 
-static func _beside(map: MapData, camps: Dictionary, home: Vector2i, tent: Vector2i, taken: Array, worked: Dictionary) -> Vector2i:
-	for reach: int in [1, 2]:
-		for offset: Vector2i in CampsLayer.CAMP_RING:
-			var cell: Vector2i = home + offset
-			if maxi(absi(offset.x), absi(offset.y)) == 2 and maxi(absi(cell.x - tent.x), absi(cell.y - tent.y)) <= reach \
-					and map.is_walkable(cell) and map.region_at(cell) == map.region_at(home) and not map.portals.has(cell) \
-					and not camps.has(cell) and not map.covered.has(cell) and not worked.has(cell) and cell not in taken:
-				return cell
+static func _beside(map: MapData, camps: Dictionary, home: Vector2i, tent: Vector2i, taken: Dictionary, worked: Dictionary) -> Vector2i:
+	var shut := taken.merged(camps)
+	var kept: Vector2i = camps[tent].get("stash", Vector2i(-1, -1))
+	if kept.x >= 0 and map.is_walkable(kept) and not shut.has(kept) and not worked.has(kept):
+		return kept
+	for cell: Vector2i in CampsLayer.stash_ring(home, tent):
+		if map.is_walkable(cell) and map.region_at(cell) == map.region_at(home) and not map.portals.has(cell) \
+				and not shut.has(cell) and not worked.has(cell) and Ways.kept_open(map, [cell], shut):
+			return cell
 	return Vector2i(-1, -1)
 
 
