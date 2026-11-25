@@ -2,8 +2,9 @@ extends SceneTree
 ## The web build's audio packs (PIX-518): the packs' takes (sfx.pck), the
 ## title's track (title.pck, PIX-552: small and fetched first, the title
 ## being the first thing heard) and the bundle's other tracks (music.pck) as
-## Godot imported them, each in a pack of its own beside the page. The Web preset leaves them out of index.pck (its
-## exclude_filter), so the game starts without waiting on 50 MB of audio;
+## Godot imported them, each in a pack of its own beside the page. The Web
+## preset leaves them out of index.pck (its exclude_filter), so the game
+## starts without waiting on 50 MB of audio;
 ## Sound fetches these once it runs and mounts them (`Sound.PACKS`, `mount`).
 ## Run after the import, before or after the export; without the paid audio
 ## installed it writes nothing. The packs hold paid audio: they ship in the

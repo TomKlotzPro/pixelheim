@@ -5429,6 +5429,10 @@ msgid "On the web the game starts about three times sooner: it loads 20 MB inste
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On the web the title plays its orchestral theme within a second or two: its track arrives first, ahead of the rest of the music"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "On the web, the music now also fades out softly when a scene takes you somewhere new (the dawn after the Night of Ash, the morning after the Night of Bells, the ending) and when Lantern Night or a new building redraws the village, instead of stopping dead"
 msgstr ""
 
@@ -5586,6 +5590,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Over the Bog"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Overture"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8418,6 +8426,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "When poison, a burn or a stun takes hold of you, a line says so, and your figure and health bar wear its colour while it lasts"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "When the music arrives while another tune plays, it takes over in a soft crossfade instead of waiting for the next change of place"
 msgstr ""
 
 #: assets/data/changelog.json
