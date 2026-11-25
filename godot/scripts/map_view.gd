@@ -212,8 +212,9 @@ var patch_sprites := {}
 ## the day they were dealt for: a new day deals new ones (PIX-250).
 var patch_decks := {}
 var patch_day := -1
-## Each wild pack's camp (PIX-142): cell -> {"kind": "tent"|"torch", "tile"},
-## a tent in its region's colour behind its home and a torch beside it.
+## Each wild pack's camp (PIX-142, PIX-554), and the town's boards and
+## tents: cell -> {"kind", ...} (CampsLayer.plan_camps): a tent two cells
+## wide in its region's cloth by its home, its fire, bedroll and log.
 var camps := {}
 ## The village seen from outside (PIX-248, Skyline.plan), on the maps that
 ## hold it as one block (PunyTerrain.SKYLINE_MAPS); empty elsewhere.

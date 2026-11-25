@@ -5,8 +5,10 @@ extends MapLayer
 ## setting, and a mining country's workings (PIX-254, PIX-290, PIX-308):
 ## MapView's `plan_gates` and `decor_gates` units (PIX-359).
 
-## How far a torch on the mountain's gatehouse lights the road (PIX-312).
+## How far a torch on the mountain's gatehouse lights the road (PIX-312),
+## and its flame: the CC0 dungeon sheet's torch (a camp's until PIX-554).
 const GATE_TORCH_REACH := 64.0
+const GATE_TORCH := [16, 17, 18, 19, 20, 21, 22, 23]
 
 
 ## The gates the story still keeps shut (PIX-254): what's drawn across each
@@ -166,7 +168,7 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 ## tower; at night a halo round it and its light on the road below.
 static func _add_gate_torch(view: MapView, cell: Vector2i, at: Vector2) -> void:
 	var flame := AnimatedSprite2D.new()
-	flame.sprite_frames = CampsLayer._camp_torch_frames()
+	flame.sprite_frames = _torch_frames()
 	flame.centered = false
 	flame.frame = absi(hash(cell)) % flame.sprite_frames.get_frame_count("default")
 	flame.play()
@@ -182,6 +184,18 @@ static func _add_gate_torch(view: MapView, cell: Vector2i, at: Vector2) -> void:
 	var light := Lights.make(middle + Vector2(0, TILE), GATE_TORCH_REACH, Lights.FIRE, Lights.TORCH_ENERGY, true)
 	view.props.add_child(light)
 	halo.set_meta("light", light)
+
+
+static var _torch: SpriteFrames
+
+
+static func _torch_frames() -> SpriteFrames:
+	if _torch == null:
+		_torch = SpriteFrames.new()
+		_torch.set_animation_speed("default", 8.0)
+		for tile: int in GATE_TORCH:
+			_torch.add_frame("default", PunyDungeon.sheet().tile_texture(tile))
+	return _torch
 
 
 static var _snow_tone: ShaderMaterial

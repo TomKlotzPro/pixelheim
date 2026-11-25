@@ -168,7 +168,7 @@ func test_a_night_pack_is_all_of_its_kind_and_keeps_no_camp() -> void:
 		var map := MapData.load_by_id(map_id)
 		var view := MapView.new(map, null)
 		view.plan(map.spawn)
-		var tents: int = view.camps.values().filter(func(piece: Dictionary) -> bool: return piece["kind"] == "tent").size()
+		var tents: int = view.camps.values().filter(func(piece: Dictionary) -> bool: return piece["kind"] == "camp").size()
 		var camping: int = Bestiary.spawns_on(map_id).filter(func(spawn: Dictionary) -> bool: return not Packs.of_the_night(spawn)).size()
 		assert_eq(tents, camping, "%s: a tent for each pack but the night's" % map_id)
 

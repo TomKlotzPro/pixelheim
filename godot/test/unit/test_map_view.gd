@@ -69,36 +69,111 @@ func test_a_pickup_lies_half_a_cell() -> void:
 	assert_eq(bare.get_child_count(), 1, "without the paid icon, only the glint: no shadow of nothing")
 
 
-## Camps (PIX-142): each wild pack's tent and torch stand on open ground of
-## its region, never on its home or a door, and block like the art they are.
+## Camps (PIX-142, PIX-554): every day pack's camp, on every map, is a tent
+## two cells wide in its region's cloth, a fire within two of it (most a
+## cell clear of it, so its light casts the tent's shadow), a bedroll by the
+## tent and a log by the fire: each on open ground of the pack's region,
+## off its own square, the doors and a mine's rails, near its home,
+## blocking like the art it is.
 func test_packs_camp_beside_their_homes() -> void:
-	for map_id: String in ["overworld", "deepwood", "mirefen"]:
-		_check_camps(map_id)
+	var camps := 0
+	var casting := 0
+	var maps := {}
+	for spawn: Dictionary in Bestiary._data()["spawns"]:
+		maps[spawn["mapId"]] = true
+	for map_id: String in maps:
+		var map := MapData.load_by_id(map_id)
+		var view := MapView.new(map, null)
+		view.plan(map.spawn)
+		for spawn: Dictionary in Bestiary.spawns_on(map_id):
+			var home := Vector2i(spawn["x"], spawn["y"])
+			assert_false(view.camps.has(home), "%s's home stays open" % spawn["id"])
+			assert_true(map.is_walkable(home))
+		var fires := 0
+		var rails: Array[Vector2i] = []
+		for working: Dictionary in AshLand.WORKINGS.get(map_id, []):
+			rails.append_array(AshLand.rail_cells(working["rails"] as Array))
+		for tent: Vector2i in view.camps:
+			var camp: Dictionary = view.camps[tent]
+			if camp["kind"] != "camp":
+				continue
+			camps += 1
+			var spawn: Dictionary = Bestiary.spawns_on(map_id).filter(func(row: Dictionary) -> bool: return row["id"] == camp["spawn"])[0]
+			var home := Vector2i(spawn["x"], spawn["y"])
+			var region := map.region_at(home)
+			var who := "%s's camp" % spawn["id"]
+			assert_false(Packs.of_the_night(spawn), "%s: a night pack keeps none (PIX-252)" % who)
+			var art: String = camp["art"]
+			assert_eq(art, CampsLayer.TENTS.get(region, CampsLayer.TENT), "%s: its tent in its region's cloth" % who)
+			assert_eq(HamletArt.cells_wide(art), 2, "%s: a tent two cells wide" % who)
+			assert_gt(HamletArt.inked(art).size.y, 20, "%s: a tent the folk's size" % who)
+			var beside: Dictionary = view.camps.get(tent + Vector2i.RIGHT, {})
+			assert_eq(beside.get("kind", ""), "beside", "%s: its tent's other cell" % who)
+			for part: String in ["fire", "bed", "log"]:
+				assert_true(camp.has(part), "%s has its %s" % [who, part])
+			if not (camp.has("fire") and camp.has("bed") and camp.has("log")):
+				continue
+			fires += 1
+			var fire: Vector2i = camp["fire"]
+			var bed: Vector2i = camp["bed"]
+			var seat: Vector2i = camp["log"]
+			assert_eq(view.camps[fire]["kind"], "fire", who)
+			assert_eq(view.camps[bed]["kind"], "bedroll", who)
+			assert_eq(view.camps[seat]["kind"], "log", who)
+			var apart := mini(_apart(fire, tent), _apart(fire, tent + Vector2i.RIGHT))
+			assert_lte(apart, 2, "%s: its fire by its tent" % who)
+			casting += int(apart == 2)
+			assert_true(_apart(bed, tent) <= 1 or _apart(bed, tent + Vector2i.RIGHT) <= 1, "%s: its bedroll by its tent" % who)
+			assert_eq(_apart(seat, fire), 1, "%s: its log by its fire" % who)
+			for cell: Vector2i in [tent, tent + Vector2i.RIGHT, fire, bed, seat]:
+				assert_eq(map.region_at(cell), region, "%s at %s on its region" % [who, cell])
+				assert_lte(_apart(cell, home), CampsLayer.CAMP_REACH, "%s at %s near its home" % [who, cell])
+				assert_false(cell - home in CampsLayer.PACK_SQUARE, "%s at %s off the pack's square" % [who, cell])
+				assert_false(cell in rails, "%s at %s off the mine's rails" % [who, cell])
+		assert_eq(fires, Bestiary.spawns_on(map_id).filter(func(spawn: Dictionary) -> bool: return not Packs.of_the_night(spawn)).size() if map.style != "cave" else 0, "%s: a fire to each day camp" % map_id)
+		for cell: Vector2i in view.camps:
+			assert_true(map.covered.has(cell), "a camp at %s blocks" % cell)
+			assert_false(map.portals.has(cell))
+	assert_eq(camps, 38, "38 camps under the sky")
+	assert_gt(casting, camps * 3 / 4, "most fires a cell clear of their tents: %d of %d" % [casting, camps])
 
 
-func _check_camps(map_id: String) -> void:
-	var map := MapData.load_by_id(map_id)
-	var view := MapView.new(map, null)
+static func _apart(a: Vector2i, b: Vector2i) -> int:
+	return maxi(absi(a.x - b.x), absi(a.y - b.y))
+
+
+## Drawn (PIX-554): each camp's fire burns with one light, as far as the
+## torch it took the place of (PIX-221), so no light was added; its tent
+## casts by day, and of the camp only the tent and the folk stand in its
+## fire's light at night (what lies low casts nothing).
+func test_a_camp_drawn_burns_one_light_and_its_tent_casts() -> void:
+	var map := MapData.load_by_id("deepwood")
+	var root := Node2D.new()
+	add_child_autofree(root)
+	var actors := Node2D.new()
+	root.add_child(actors)
+	var view := MapView.new(map, actors)
 	view.plan(map.spawn)
-	for spawn: Dictionary in Bestiary.spawns_on(map_id):
-		var home := Vector2i(spawn["x"], spawn["y"])
-		assert_false(view.camps.has(home), "%s's home stays open" % spawn["id"])
-		assert_true(map.is_walkable(home))
-		# A night pack keeps no camp (PIX-252; test_night_packs).
-		if Packs.of_the_night(spawn):
+	view.build(root)
+	var lights := actors.find_children("*", "PointLight2D", true, false)
+	for tent: Vector2i in view.camps:
+		var camp: Dictionary = view.camps[tent]
+		if camp["kind"] != "camp":
 			continue
-		var kinds := []
-		for dy in range(-2, 3):
-			for dx in range(-2, 3):
-				var piece: Dictionary = view.camps.get(home + Vector2i(dx, dy), {})
-				if not piece.is_empty():
-					kinds.append(piece["kind"])
-		assert_true("tent" in kinds and "torch" in kinds, "%s has its camp" % spawn["id"])
-	for cell: Vector2i in view.camps:
-		assert_true(map.covered.has(cell), "a camp at %s blocks" % cell)
-		assert_false(map.portals.has(cell))
-		if view.camps[cell]["kind"] == "tent":
-			assert_eq(view.camps[cell]["tile"], CampsLayer.TENTS[map.region_at(cell)])
+		var fire: Vector2i = camp["fire"]
+		var cell := Rect2(Vector2(fire * MapView.TILE), Vector2.ONE * MapView.TILE)
+		var burning := lights.filter(func(light: PointLight2D) -> bool: return cell.has_point(light.global_position - actors.global_position))
+		assert_eq(burning.size(), 1, "%s's fire burns with one light" % camp["spawn"])
+		if burning.size() == 1:
+			assert_almost_eq((burning[0] as PointLight2D).texture_scale, CampsLayer.CAMP_LIGHT * 2.0 / Lights.TEXTURE_PX, 0.001, "as far as the torch's")
+		var foot := Vector2(tent * MapView.TILE) + Vector2(MapView.TILE, MapView.TILE)
+		assert_true(view.casters.any(func(caster: Vector4) -> bool: return Vector2(caster.x, caster.y) == foot), "%s's tent casts by day" % camp["spawn"])
+	var low := 0
+	for body: Node in actors.find_children("*", "StaticBody2D", true, false):
+		if body.get_meta("low", false):
+			low += 1
+			assert_eq(body.get_parent().find_children("*", "LightOccluder2D", true, false).size(), 0, "what lies low in a camp casts nothing at night")
+	assert_eq(low, view.camps.values().filter(func(piece: Dictionary) -> bool: return piece["kind"] in CampsLayer.LOW).size(), "a camp's fire, bedroll and log lie low")
 
 
 ## PIX-538: every plain start logged « The object does not have any 'meta'
