@@ -5,13 +5,16 @@ extends GutTest
 ## wrote them): every file is a rectangle of known tiles with its spawn on
 ## open ground and its regions known; every way between maps leads to a map
 ## that exists and lands on open ground; every pack stands on open ground in
-## an encounter region. Every map file is checked, not a list: a new map is
+## an encounter region; the Reach's marsh patches have no ruler-straight edge.
+## Every map file is checked, not a list: a new map is
 ## covered the day it is added. The village through its ages, and the ways
 ## and roads round them, are test_ways'; chests are test_interactables'.
 
 const MAPS_DIR := "res://assets/maps"
 ## The file in the maps' folder that isn't a map.
 const NOT_MAPS := ["interactables.json"]
+## How many cells at most a marsh patch's edge on the Reach runs straight.
+const MARSH_EDGE := 3
 
 
 ## Every map file's name less ".json": "overworld", "town_house@2".
@@ -131,3 +134,32 @@ func test_every_pack_stands_on_open_ground_in_an_encounter_region() -> void:
 		if spawn.has("species"):
 			assert_false(Bestiary.monster(String(spawn["species"])).is_empty(), "%s: a known species" % spawn_id)
 	assert_gt(seen.size(), 80, "every pack was looked at")
+
+
+## Whether the line between `cell` and the cell a `step` past it is a marsh's
+## edge: marsh on exactly one side.
+static func _marsh_edge(map: MapData, cell: Vector2i, step: Vector2i) -> bool:
+	return (map.tile_at(cell) == "marsh") != (map.tile_at(cell + step) == "marsh")
+
+
+## The marsh is toned cell by cell, so a patch drawn as a rectangle showed as
+## one, dark with a dithered rim, among wandering roads and banks (PIX-555: 10
+## by 4 cells by the Mirefen's road, 6 by 2 by Saltmere's), as test_ash_land's
+## LONGEST_EDGE keeps the Ash's edge from running straight.
+func test_no_marsh_patch_on_the_reach_has_an_edge_ruled_straight() -> void:
+	var reach := MapData.load_by_id("overworld")
+	var longest := 0
+	var at := Vector2i.ZERO
+	for step: Vector2i in [Vector2i.RIGHT, Vector2i.DOWN]:
+		var along := Vector2i(step.y, step.x)
+		for cell: Vector2i in reach.grid:
+			if not _marsh_edge(reach, cell, step) or _marsh_edge(reach, cell - along, step):
+				continue
+			var run := 1
+			while _marsh_edge(reach, cell + along * run, step):
+				run += 1
+			if run > longest:
+				longest = run
+				at = cell
+	assert_gt(longest, 0, "the Reach has marsh")
+	assert_lte(longest, MARSH_EDGE, "a marsh's edge runs straight from %s" % at)

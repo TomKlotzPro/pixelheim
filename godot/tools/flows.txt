@@ -1006,10 +1006,11 @@ look-vault | --map vault_3 | map=vault_3 dressed=vault:banners\d+,rugs\d+ | dung
 # (The roads to the ways on, PIX-269, took some of the ash's and the
 # marsh's ground: patches never grow on a road; the Undermountain's cave
 # filled with rock, PIX-257, dealt the ash's ground again; so did the
-# Ash's wandering east edge, PIX-431.)
-patches | --map overworld --day 2 | day=2 patches=14,36;30,57;31,43;63,39;66,52;70,26;75,45 | gathering field
-regrown | --map overworld --day 3 | day=3 patches=17,41;18,34;24,51;29,25;45,14;77,44;79,53;86,36 | gathering field
-forage | --map overworld --day 2 --at 75,46 --walk u | cell=\(75, 45\) day=2 patches=14,36;30,57;31,43;63,39;66,52;70,26 | gathering field
+# Ash's wandering east edge, PIX-431; and the marsh's by its patches
+# redrawn as blobs, PIX-555.)
+patches | --map overworld --day 2 | day=2 patches=3,50;8,60;32,56;63,39;66,52;70,26;75,45 | gathering field
+regrown | --map overworld --day 3 | day=3 patches=14,40;26,57;29,25;32,36;45,14;77,44;79,53;86,36 | gathering field
+forage | --map overworld --day 2 --at 75,46 --walk u | cell=\(75, 45\) day=2 patches=3,50;8,60;32,56;63,39;66,52;70,26 | gathering field
 # The treasure on the ground is picked as the hero steps on it, though
 # the CC0 art draws no herb and no pouch (PIX-380: a script error).
 herb-patch | --map overworld --at 56,59 --walk u --wait 0.5 | cell=\(56, 58\) floats=.+ x3 logged=0 | gathering field
