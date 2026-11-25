@@ -694,7 +694,9 @@ mouth-road | --map mountain_road --at 13,5 | map=mountain_road entrance=mountain
 # Greyhold's beds, Blackiron's ore, coal, cart and lanterns, the forge's
 # stack and the fire under its door.
 hamlet-coast | --map saltmere --at 31,15 | map=saltmere hamlet=fishing:line1,moored3,on1,stand8,wall6 | travel field
-hamlet-fort | --map greyhold --at 14,25 | map=greyhold hamlet=fort:flat3,(on1,stand15,wall7)?(stand4,wall3)? | travel field
+# The fort keeps clear of its camps' stashes (PIX-554): with the paid pack one
+# of its standing pieces (two once the garrison holds it) finds no room.
+hamlet-fort | --map greyhold --at 14,25 | map=greyhold hamlet=fort:flat3,(on1,stand14,wall7)?(stand4,wall3)? | travel field
 hamlet-mines | --map blackiron --at 25,18 | map=blackiron hamlet=mine:glow1,roof1,stand7,wall2 | travel field
 hamlet-frost | --map frostgate --at 14,39 | map=frostgate hamlet=frost:stand5,wall3 | travel field
 hamlet-smithy | --map mountain_road --at 17,7 | map=mountain_road hamlet=smithy:glow1,roof1 | travel field story
@@ -737,8 +739,8 @@ fort-gate | --map greyhold --at 37,28 --walk u,u,u,u,u | map=greyhold cell=\(37,
 # the fort's teal after, the racks and dummies whole (tops), its paths worn
 # into the flags, lamps at its gates and every window lit at night. Without
 # the pack its own pieces and the houses' glass aren't drawn (cc0).
-fort-turncoats | --map greyhold --at 37,19 | map=greyhold fort=turncoats:houses5,(red2,tops4,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand15,wall7)?(stand4,wall3)? street=flags | travel field
-fort-garrison | --map greyhold --delivered ulla_turncoats --at 37,19 | map=greyhold fort=garrison:houses5,(teal3,tops6,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand19,wall9)?(stand4,wall3)? | travel field story
+fort-turncoats | --map greyhold --at 37,19 | map=greyhold fort=turncoats:houses5,(red2,tops4,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand14,wall7)?(stand4,wall3)? street=flags | travel field
+fort-garrison | --map greyhold --delivered ulla_turncoats --at 37,19 | map=greyhold fort=garrison:houses5,(teal3,tops6,worn35)?(tops0,worn0)? hamlet=fort:flat3,(on1,stand17,wall9)?(stand4,wall3)? | travel field story
 fort-night | --map greyhold --at 37,14 night | map=greyhold lamplight=posts 10/10 panes [06] flames 0 beams 0 | travel field night
 fort-cc0 | --map greyhold --at 37,19 cc0 | map=greyhold fort=turncoats:houses5,tops0,worn0 hamlet=fort:flat3,stand4,wall3 | travel field
 # The Blackiron shafts in three floors (PIX-255, PIX-253 step 5): down the
