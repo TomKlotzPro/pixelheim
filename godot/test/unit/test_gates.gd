@@ -314,8 +314,61 @@ func test_each_gate_is_drawn_across_its_cells_in_art_the_game_has() -> void:
 			for piece: Dictionary in art["pieces"]:
 				var near := cells.any(func(cell: Vector2i) -> bool: return maxi(absi(cell.x - piece["cell"].x), absi(cell.y - piece["cell"].y)) <= 1)
 				assert_true(near, "%s's pieces stand on it" % gate["id"])
-				assert_true(String(piece["sheet"]) in ["world", "dungeon", "villager"] + (["props"] if paid else []), "%s: art the game has%s" % [gate["id"], "" if paid else ", without the paid pack"])
+				assert_true(String(piece["sheet"]) in ["world", "dungeon", "villager", "gate", "glint"] + (["props"] if paid else []), "%s: art the game has%s" % [gate["id"], "" if paid else ", without the paid pack"])
 	assert_eq(GateArt.plan(Gates.by_id("bridge"), true)["hides"], Gates.cells_of(Gates.by_id("bridge")), "the burnt bridge's planks are gone where it's shut")
 	var guards: Array = GateArt.plan(Gates.by_id("barricade"), false)["pieces"].filter(func(piece: Dictionary) -> bool: return piece["sheet"] == "villager")
 	assert_eq(guards.size(), 1, "one of Ulla's guard keeps the barricade")
 	assert_eq(guards[0]["sprite"], "guard")
+
+
+## PIX-556: the rockfall is a heap that fell (six round stones of a size
+## before) and the avalanche a bank of snow (a flat white plate), drawn by
+## us the same with the pack or without, but for the pine in it: in whole
+## pixels; the heap tallest in its middle, its stones in three sizes, its
+## scree flat before it; the bank in four of snow's tones, darker on its
+## east side, a pine lying half buried on its crest, sparkles by day.
+func test_the_rockfall_and_the_avalanche_look_like_they_fell() -> void:
+	var cliff := Gates.by_id("cliff")
+	var avalanche := Gates.by_id("avalanche")
+	for gate: Dictionary in [cliff, avalanche]:
+		var ours := func(paid: bool) -> Array:
+			return GateArt.plan(gate, paid)["pieces"].filter(func(piece: Dictionary) -> bool: return piece["sheet"] in ["gate", "glint"])
+		assert_eq(ours.call(true), ours.call(false), "%s is drawn the same without the pack" % gate["id"])
+	var rockfall: Array = GateArt.plan(cliff, false)["pieces"]
+	assert_eq(rockfall.map(func(piece: Dictionary) -> Array: return [piece["sprite"], piece["flat"]]), [["scree", true], ["rockfall", false]], "the scree lies flat before the heap")
+	for name: String in ["rockfall", "scree", "avalanche"]:
+		var image := GateArt.texture(name).get_image()
+		var alphas := {}
+		for y in image.get_height():
+			for x in image.get_width():
+				alphas[image.get_pixel(x, y).a] = true
+		var kinds := alphas.keys()
+		kinds.sort()
+		assert_eq(kinds, [0.0, 1.0], "%s is drawn in whole pixels" % name)
+	var heap := GateArt.texture("rockfall").get_image()
+	var top := heap.get_used_rect().position.y
+	var peak := range(heap.get_width()).filter(func(x: int) -> bool: return heap.get_pixel(x, top).a > 0.0)
+	assert_between(peak.reduce(func(sum: int, x: int) -> int: return sum + x, 0) / float(peak.size()), heap.get_width() / 3.0, heap.get_width() * 2 / 3.0, "the heap is tallest in its middle")
+	for i in GateArt.STONE_MOST.size() - 1:
+		assert_lt(GateArt.STONE_MOST[i].x, GateArt.STONE_LEAST[i + 1].x, "its stones come in three sizes")
+	var bank := GateArt.texture("avalanche").get_image()
+	var tones := {}
+	var light := [0.0, 0.0]
+	for y in bank.get_height():
+		for x in bank.get_width():
+			var pixel := bank.get_pixel(x, y)
+			if pixel.a > 0.0:
+				tones[pixel] = true
+				if x < bank.get_width() / 3 or x >= bank.get_width() * 2 / 3:
+					light[int(x >= bank.get_width() / 2)] += pixel.get_luminance()
+	assert_gte(tones.size(), 4, "the bank is shaded, not a flat white")
+	assert_lt(light[1], light[0], "its east side lies in shade")
+	for paid: bool in [true, false]:
+		var pieces: Array = GateArt.plan(avalanche, paid)["pieces"]
+		var pine: Array = pieces.filter(func(piece: Dictionary) -> bool: return piece.get("turn", false))
+		assert_eq(pine.map(func(piece: Dictionary) -> String: return piece["sheet"]), ["props", "props"] if paid else ["world"], "the pine lies on its side, the Medieval Age's or Shade's free one")
+		var drawn: Dictionary = pieces.filter(func(piece: Dictionary) -> bool: return piece["sprite"] == "avalanche")[0]
+		var lying: Vector2i = pine[0]["cell"]
+		var standing: Vector2i = drawn["cell"]
+		assert_lt(lying.y, standing.y, "the pine lies behind the bank's foot, half buried in it")
+		assert_eq(pieces.filter(func(piece: Dictionary) -> bool: return piece["sheet"] == "glint" and piece["day"]).size(), GateArt.GLINTS.size(), "sparkles on it by day")

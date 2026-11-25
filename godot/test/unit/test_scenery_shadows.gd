@@ -116,7 +116,8 @@ func test_the_dressing_casts() -> void:
 
 ## PIX-524: the Post's road casts too, its signposts and a waystation built
 ## (its hut, bench, post box and ember lamp), as flow waystation-bench sets
-## it up; and the Mirefen's stilt huts.
+## it up; the shut gates' heap and bank (PIX-556); and the Mirefen's stilt
+## huts.
 func test_the_roads_and_the_fen_cast() -> void:
 	var post := GameState.post
 	var projects := GameState.settlement.projects.duplicate()
@@ -137,6 +138,19 @@ func test_the_roads_and_the_fen_cast() -> void:
 	for piece: Dictionary in reach.routes["pieces"]:
 		var cells: Array = piece["cells"]
 		assert_true(cells.any(func(cell: Vector2i) -> bool: return feet.has(cell)), "the road's %s at %s casts" % [piece["kind"], piece["cell"]])
+	# PIX-556: the shut gates' heap and bank cast from their feet (the
+	# heap's in the cell below its own), and the snow's sparkles go at night.
+	var shut: Array = reach.gates.map(func(gate: Dictionary) -> String: return gate["id"])
+	assert_has(shut, "cliff", "the rockfall is shut")
+	assert_has(shut, "avalanche", "the avalanche is shut")
+	var sparkles := 0
+	for gate: Dictionary in reach.gates:
+		for piece: Dictionary in GateArt.plan(gate, PunyProps.available())["pieces"]:
+			var cell: Vector2i = piece["cell"]
+			if piece["sheet"] == "gate" and not piece["flat"]:
+				assert_true(feet.has(cell) or feet.has(cell + Vector2i.DOWN), "%s's %s casts" % [gate["id"], piece["sprite"]])
+			sparkles += int(piece.get("day", false))
+	assert_eq(reach.day_glows.size(), sparkles, "the avalanche's sparkles are the day's")
 	var fen := _feet(_draw("mirefen"))
 	for hut: Vector2i in MireDressing.HUTS:
 		assert_true(fen.has(hut) or fen.has(hut + Vector2i.RIGHT), "the Mirefen's stilt hut at %s casts" % hut)

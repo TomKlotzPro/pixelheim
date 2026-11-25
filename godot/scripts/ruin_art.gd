@@ -266,14 +266,14 @@ static func _mound(look: String, variant: int, dice: RandomNumberGenerator) -> I
 	for i in count:
 		var size := Vector2i(dice.randi_range(HEAP_SIZE[0].x, HEAP_SIZE[1].x), dice.randi_range(HEAP_SIZE[0].y, HEAP_SIZE[1].y))
 		var top := TILE - size.y - (count - 1 - i) * 3 - dice.randi_range(0, 1)
-		_stone(image, Rect2i(Vector2i(dice.randi_range(0, TILE - size.x), maxi(0, top)), size), STONE[look])
+		stone(image, Rect2i(Vector2i(dice.randi_range(0, TILE - size.x), maxi(0, top)), size), STONE[look])
 	_grow(image, dice, GROWTH[look], 2)
 	return image
 
 
-## A stone lying in `rect`: a rounded block in Shade's greys, lit from the
-## north-west, outlined.
-static func _stone(image: Image, rect: Rect2i, tint: Color) -> void:
+## A stone lying in `rect` of `image`: a rounded block in Shade's greys, lit
+## from the north-west, outlined (the rockfall's too, GateArt).
+static func stone(image: Image, rect: Rect2i, tint: Color) -> void:
 	var middle := Vector2(rect.position) + Vector2(rect.size - Vector2i.ONE) / 2.0
 	var radius := Vector2(rect.size) / 2.0
 	var inside := func(x: int, y: int) -> bool:
@@ -281,7 +281,7 @@ static func _stone(image: Image, rect: Rect2i, tint: Color) -> void:
 		return absf(off.x) ** 2.4 + absf(off.y) ** 2.4 < 1.05
 	for y in range(rect.position.y, rect.end.y):
 		for x in range(rect.position.x, rect.end.x):
-			if x < 0 or x >= TILE or y < 0 or y >= TILE or not inside.call(x, y):
+			if x < 0 or x >= image.get_width() or y < 0 or y >= image.get_height() or not inside.call(x, y):
 				continue
 			var edge: bool = not (inside.call(x - 1, y) and inside.call(x + 1, y) and inside.call(x, y - 1) and inside.call(x, y + 1))
 			var key := "J" if edge else ("L" if not inside.call(x, y - 2) else ("H" if y >= rect.end.y - 2 else "C"))
@@ -381,7 +381,7 @@ static func _ground_piece(look: String, shadow: int, litter: int, dice: RandomNu
 			var at := Vector2i(dice.randi_range(0, TILE - size.x), dice.randi_range(0, 7))
 			if shadow == 2:
 				at = Vector2i(dice.randi_range(0, 6), dice.randi_range(0, TILE - size.y))
-			_stone(image, Rect2i(at, size), tint)
+			stone(image, Rect2i(at, size), tint)
 	elif litter == TUFT_A or litter == TUFT_B:
 		var inks: Array = GROWTH[look]
 		var growth := {"d": inks[0], "m": inks[1], "l": inks[2]}

@@ -117,6 +117,8 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 		glint.centered = false
 		glint.material = Lights.unshaded()
 		glint.position = at - Vector2(0, TILE)
+		# Sparkles side by side don't catch the light together.
+		glint.frame = absi(hash(cell)) % glint.sprite_frames.get_frame_count("default")
 		glint.play()
 		var over := Node2D.new()
 		# Sorted a pixel past the door's own foot, so it shows on it.
@@ -124,6 +126,9 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 		over.add_to_group("decor")
 		over.add_child(glint)
 		view.actors.add_child(over)
+		# The snow's sparkles by day (PIX-556): gone with the sun.
+		if piece.get("day", false):
+			view.day_glows.append(over)
 		return
 	if piece["sheet"] == "torch":
 		_add_gate_torch(view, cell, at)
@@ -140,6 +145,8 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 			sprite.texture = AshArt.texture(piece["tile"])
 		"hamlet":
 			sprite.texture = HamletArt.texture(piece["sprite"])
+		"gate":
+			sprite.texture = GateArt.texture(String(piece["sprite"]))
 		_:
 			sprite.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
 	sprite.centered = false
@@ -158,9 +165,18 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 	var root := Node2D.new()
 	root.position = Vector2(cell * TILE) + Vector2(0, TILE + at.y)
 	root.add_to_group("decor")
-	sprite.position = Vector2(at.x, -TILE)
+	# A tile is a cell tall; ours (PIX-556) as tall as drawn.
+	var size := sprite.texture.get_size() if piece["sheet"] == "gate" else Vector2(TILE, TILE)
+	sprite.position = Vector2(at.x, -size.y)
+	if piece.get("turn", false):
+		# Laid on its side, its top to the west (the avalanche's pine).
+		sprite.rotation = -PI / 2.0
+		sprite.position.y = 0.0
 	root.add_child(sprite)
 	view.actors.add_child(root)
+	if piece["sheet"] == "gate":
+		# Ours cast the sun's shadow as the trees do (PIX-556).
+		cast(view, root.position + Vector2(at.x + size.x / 2.0, 0), size.x, size.y)
 
 
 ## A torch on a tower of the mountain's gatehouse (PIX-312): Shade's CC0
