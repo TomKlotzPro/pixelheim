@@ -388,6 +388,7 @@ static func _add_lantern_light(view: MapView, root: Node2D, cell: Vector2i, own_
 	view.night_glows.append(lit)
 	var at := Vector2(cell * TILE) + HamletArt.LANTERN_GLASS
 	var halo := view._add_halo(at, MapView.LAMP_HALO - 3, MapView.LAMP_HALO_PEAK)
+	ShopSign.light(view.door_signs, cell, halo)
 	if not own_light:
 		return
 	var light := Lights.make(at + Vector2(0, TILE * 0.75), LANTERN_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
