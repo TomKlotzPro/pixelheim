@@ -201,6 +201,13 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 		slices.add_each("kept_road_shape", ceili(shaping.draw_count() / float(ROWS_A_SLICE)), func(i: int) -> void:
 			shaping.draw_rows(i * ROWS_A_SLICE, (i + 1) * ROWS_A_SLICE)
 			kept.road_image = shaping.image)
+	# Saltmere's sand against its grass (PIX-551), a few rows a slice too.
+	var sanding: SandShape = SandShape.new(look, kept._beyond_read, data.size) if data.id in SandShape.MAPS else null
+	if sanding != null:
+		slices.add_each("kept_sand", ceili(sanding.read_count() / float(ROWS_A_SLICE)), func(i: int) -> void:
+			sanding.read_rows(i * ROWS_A_SLICE, (i + 1) * ROWS_A_SLICE))
+		slices.add_each("kept_sand_shape", ceili(sanding.draw_count() / float(ROWS_A_SLICE)), func(i: int) -> void:
+			sanding.draw_rows(i * ROWS_A_SLICE, (i + 1) * ROWS_A_SLICE))
 	# The Medieval Age's patches in the open land only: in Pixelheim's yards
 	# and gardens, a few cells across, one read as a rug laid on the lawn.
 	if PunyTown.available() and kept._plane:
@@ -224,7 +231,7 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 		kept.crown_map = null if kept.crown_image == null else (kept.tint_map if kept.crowns_toned else ImageTexture.create_from_image(kept.crown_image))
 		kept.shade_map = ImageTexture.create_from_image(kept.shade_image) if kept._shaded > 0 else null
 		kept.road_map = ImageTexture.create_from_image(kept.road_image) if kept.road_image != null else null
-		kept.sand_map = ImageTexture.create_from_image(SandShape.image_of(look, kept._beyond, data.size)) if data.id in SandShape.MAPS else null
+		kept.sand_map = ImageTexture.create_from_image(sanding.image) if sanding != null else null
 		# Done: kept, and what it was worked out from let go.
 		kept._data = null
 		kept._look = {}
@@ -323,6 +330,14 @@ func _beyond(cell: Vector2i) -> String:
 	if _plane:
 		return ReachPlane.tile(_origin + cell)
 	return _look.get(_clamped(cell), "")
+
+
+## The same, from the ring's tiles already read where they reach (asking the
+## plane again cost the sand's mask 5 ms: PIX-551's review).
+func _beyond_read(cell: Vector2i) -> String:
+	if cell.x < -_ring or cell.y < -_ring or cell.x >= _data.size.x + _ring or cell.y >= _data.size.y + _ring:
+		return _beyond(cell)
+	return _tiles[_index(cell)]
 
 
 ## Whether `cell` and its four neighbours are all rock (false at the ring's
