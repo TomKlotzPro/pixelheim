@@ -5429,6 +5429,10 @@ msgid "On the web the game starts about three times sooner: it loads 20 MB inste
 msgstr "Sur le web, le jeu démarre environ trois fois plus vite : il charge 20 Mo au lieu de 64 avant le titre"
 
 #: assets/data/changelog.json
+msgid "On the web the title plays its orchestral theme within a second or two: its track arrives first, ahead of the rest of the music"
+msgstr "Sur le web, l'écran titre joue son thème orchestral en une seconde ou deux : sa musique arrive en premier, avant le reste"
+
+#: assets/data/changelog.json
 msgid "On the web, the music now also fades out softly when a scene takes you somewhere new (the dawn after the Night of Ash, the morning after the Night of Bells, the ending) and when Lantern Night or a new building redraws the village, instead of stopping dead"
 msgstr "Sur le web, la musique s'efface désormais aussi en douceur quand une scène vous emmène ailleurs (l'aube après la Nuit des Cendres, le matin après la Nuit des Cloches, la fin) et quand la Nuit des Lanternes ou un nouveau bâtiment redessine le village, au lieu de s'arrêter net"
 
@@ -5587,6 +5591,10 @@ msgstr "Hors des murs, les terres de la Marche grandissent avec la ville : un 
 #: assets/data/changelog.json
 msgid "Over the Bog"
 msgstr "Au-dessus de la tourbière"
+
+#: assets/data/changelog.json
+msgid "Overture"
+msgstr "Ouverture"
 
 #: assets/data/changelog.json
 msgid "Owned businesses pay RENT: +2g each after every victory, straight into your purse with a line in the battle log"
@@ -8419,6 +8427,10 @@ msgstr "Quand toutes les voix sont prises, les sons qui comptent (une blessure, 
 #: assets/data/changelog.json
 msgid "When poison, a burn or a stun takes hold of you, a line says so, and your figure and health bar wear its colour while it lasts"
 msgstr "Quand un poison, une brûlure ou un étourdissement vous saisit, une ligne le dit, et votre silhouette et votre barre de vie en prennent la couleur tant qu'il dure"
+
+#: assets/data/changelog.json
+msgid "When the music arrives while another tune plays, it takes over in a soft crossfade instead of waiting for the next change of place"
+msgstr "Quand la musique arrive pendant qu'un autre air joue, elle prend le relais en fondu enchaîné au lieu d'attendre le prochain changement de lieu"
 
 #: assets/data/changelog.json
 msgid "Where It Leads"

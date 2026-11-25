@@ -959,30 +959,120 @@ func test_a_closed_window_waits_for_every_sound_to_be_let_go() -> void:
 
 
 ## PIX-518: the web build starts without the packs' audio and mounts it when
-## it lands. Until then a slot plays the game's own; the landing changes
-## nothing playing; after it the next take and the next change of track are
-## the packs', the bundle's track from its start.
-func test_the_packs_landing_change_nothing_playing() -> void:
-	var takes: Dictionary = Sound._paid
-	var music: Dictionary = Sound._paid_music
-	Sound.stop_music()
-	Sound._land({}, {})
+## it lands. Until then a slot plays the game's own; a pack landing with no
+## track for the music playing changes nothing playing; after it the next
+## take and the next change of track are the packs', the bundle's track from
+## its start.
+func test_a_pack_landing_without_the_playing_track_changes_nothing_playing() -> void:
+	var before := _before_the_packs()
 	assert_eq(Sound.heard_as("coast"), "world", "not here yet: the game's own")
 	assert_eq(Sound.takes_of("ui_tick"), ["blip/tick"])
 	Sound.play_track("world")
-	Sound._resume_at["world"] = 3.0
+	Sound._resume_at["town"] = 3.0
 	var playing := Sound._music
 	var stream := playing.stream
-	Sound._land({"ui_tick": ["sfx/hurt"]}, {"world": {"path": "res://none.ogg", "loopBegin": 0.0}, "coast": {"path": "res://none.ogg", "loopBegin": 0.0}})
+	Sound._land({"ui_tick": ["sfx/hurt"]}, {"town": LANDED})
 	assert_eq(Sound.takes_of("ui_tick"), ["sfx/hurt"], "the next take is the packs'")
-	assert_eq(Sound.heard_as("coast"), "coast", "the next change of track the bundle's")
 	assert_true(Sound._music == playing and playing.stream == stream and playing.playing, "what plays plays on")
-	Sound.play_track("world")
-	assert_true(Sound._music == playing and playing.stream == stream, "and isn't started over")
 	assert_eq(Sound.report()["music"], "world.wav")
-	assert_false(Sound._resume_at.has("world"), "the bundle's from its start")
-	assert_eq(Sound._heard, "", "a slot sharing the tune playing changes to its own")
+	assert_false(Sound._resume_at.has("town"), "the bundle's from its start")
+	Sound.play_track("town")
+	assert_eq(Sound.report()["music"], "landed.ogg", "the next change of track the bundle's")
 	assert_false(Sound.mount("user://no_such.pck"), "a pack that didn't come")
+	_after_the_packs(before)
+
+
+## PIX-552: the title began on the game's own tune, the bundle's landed
+## after it and no change of track followed, so the web's title played the
+## old theme for good. A pack landing with the track for the music playing
+## crossfades to it from its start, the old tune still under it: no cut.
+func test_a_landed_pack_crossfades_the_playing_slot_to_the_bundles_track() -> void:
+	var before := _before_the_packs()
+	Sound.play_track("title")
+	Sound._music.seek(5.0)
+	await wait_seconds(0.2)
+	var own := Sound._music
+	assert_gt(own.get_playback_position(), Sound.JUST_BEGUN_S, "the game's own title well begun")
+	Sound._land({}, {"title": LANDED})
+	assert_eq(Sound.report(), {"track": "title", "music": "landed.ogg", "fading": "title.wav", "paidEvents": 0, "paidTracks": 1}, "the bundle's over the game's own")
+	assert_true(Sound._music.stream is AudioStreamOggVorbis and (Sound._music.stream as AudioStreamOggVorbis).loop, "round and round, as a track")
+	assert_lt(Sound._music.get_playback_position(), 0.2, "from its start")
+	await wait_seconds(Sound.TAKEOVER_S - 0.5)
+	assert_true(own.playing, "still crossfading: about %.1f s" % Sound.TAKEOVER_S)
+	await wait_seconds(0.8)
+	assert_eq(Sound.report()["fading"], "", "then the bundle's alone")
+	# The other tracks' pack lands after: the title's is no longer new.
+	var bundled := Sound._music
+	Sound._land({}, {"title": LANDED, "town": LANDED})
+	assert_true(Sound._music == bundled and bundled.playing and Sound.report()["fading"] == "", "a later pack doesn't start it over")
+	_after_the_packs(before)
+
+
+## PIX-552: a tune that has only just begun is replaced in a plain fade, not
+## heard twice over.
+func test_a_tune_just_begun_gives_way_at_once() -> void:
+	var before := _before_the_packs()
+	Sound.play_track("title")
+	var own := Sound._music
+	Sound._land({}, {"title": LANDED})
+	assert_eq(Sound.report()["music"], "landed.ogg")
+	await wait_seconds(Sound.FADE_S + 0.3)
+	assert_false(own.playing, "the game's own gone in %.2f s" % Sound.FADE_S)
+	_after_the_packs(before)
+
+
+## PIX-552: any slot, a place heard as its fallback's and a story theme too.
+func test_a_landed_pack_takes_over_a_shared_tune_and_a_story_theme() -> void:
+	var before := _before_the_packs()
+	Sound.play_track("coast")
+	assert_eq(Sound.report()["music"], "world.wav", "the coast on the Reach's tune")
+	Sound._land({}, {"world": LANDED})
+	assert_eq([Sound.report()["music"], Sound._heard], ["landed.ogg", "world"], "the bundle's Reach under the coast")
+	var reach := Sound._music
+	Sound._land({}, {"world": LANDED, "coast": LANDED})
+	assert_true(Sound._music != reach and Sound._heard == "coast", "then the coast's own")
 	Sound.stop_music()
-	Sound._land(takes, music)
+	Sound._land({}, {})
+	Sound.play_theme("dawn", "town")
+	Sound._land({}, {"theme_dawn": LANDED})
+	assert_eq([Sound.track, Sound.report()["music"]], ["theme:dawn", "landed.ogg"], "the theme in the bundle's dress")
+	assert_false((Sound._music.stream as AudioStreamOggVorbis).loop, "once through")
+	assert_eq(Sound._after_theme, "town", "handing over as it would have")
+	_after_the_packs(before)
+
+
+## PIX-552: the desktop app has the tracks from the start: the title plays
+## the bundle's from the first note, nothing is fetched and nothing lands.
+func test_the_tracks_here_from_the_start_play_from_the_first_note() -> void:
+	var before := _before_the_packs()
+	Sound._paid_music = {"title": LANDED}
+	Sound.play_track("title")
+	assert_eq(Sound.report(), {"track": "title", "music": "landed.ogg", "fading": "", "paidEvents": 0, "paidTracks": 1}, "the bundle's at once, the game's own never started")
+	var playing := Sound._music
+	Sound._land({}, {"title": LANDED})
+	assert_true(Sound._music == playing and Sound.report()["fading"] == "", "the lists read again change nothing")
+	assert_null(Sound._pack_fetched, "no pack is fetched off the web")
+	assert_eq(Sound.PACKS[0], "title.pck", "on the web the title's track comes first")
+	_after_the_packs(before)
+
+
+## A track as a pack lands it: the test's own two seconds of Ogg.
+const LANDED := {"path": "res://test/fixtures/landed.ogg", "loopBegin": 0.0}
+
+
+## Sound as the web build starts, no pack landed and nothing held back;
+## what it had, for `_after_the_packs`.
+func _before_the_packs() -> Array:
+	var before := [Sound._paid, Sound._paid_music, Sound.withheld]
+	Sound.stop_music()
+	Sound.withheld = false
+	Sound._land({}, {})
+	return before
+
+
+func _after_the_packs(before: Array) -> void:
+	Sound.stop_music()
+	Sound._paid = before[0]
+	Sound._paid_music = before[1]
+	Sound.withheld = before[2]
 	Sound._resume_at.clear()

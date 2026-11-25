@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.403.0",
+      "date": "2026-11-25",
+      "codename": "Overture",
+      "notes": [
+        "On the web the title plays its orchestral theme within a second or two: its track arrives first, ahead of the rest of the music",
+        "When the music arrives while another tune plays, it takes over in a soft crossfade instead of waiting for the next change of place"
+      ]
+    },
+    {
       "version": "0.402.0",
       "date": "2026-11-24",
       "codename": "Fine Print",

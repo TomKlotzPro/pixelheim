@@ -5,7 +5,7 @@
 ## Setup, once per worktree
 
 1. Copy the private art in from the main checkout (`godot/assets/puny/{medieval,shade,gegx,animals}`, `godot/assets/audio/paid`). It is git-ignored: never commit it, `godot/export/` or a screenshot.
-2. `godot --headless --audio-driver Dummy --path godot --import`, then `mkdir -p godot/export/web && godot --headless --path godot --export-release Web export/web/index.html` (a fresh worktree has no `godot/export/web`, and the export won't make it). Export again after any change to the game. With the paid audio installed, also `godot --headless --audio-driver Dummy --path godot -s tools/audio_packs.gd` (PIX-518): the web export leaves that audio out, and without `export/web/sfx.pck` and `music.pck` beside it the page plays the game's own sounds (and logs a 404 for each).
+2. `godot --headless --audio-driver Dummy --path godot --import`, then `mkdir -p godot/export/web && godot --headless --path godot --export-release Web export/web/index.html` (a fresh worktree has no `godot/export/web`, and the export won't make it). Export again after any change to the game. With the paid audio installed, also `godot --headless --audio-driver Dummy --path godot -s tools/audio_packs.gd` (PIX-518): the web export leaves that audio out, and without `export/web/title.pck`, `sfx.pck` and `music.pck` beside it the page plays the game's own sounds (and logs a 404 for each).
 3. Playwright for Python in a venv in your scratch folder: `python3 -m venv <scratch>/pw && <scratch>/pw/bin/pip install playwright==1.56.0`. Run play.py with that python. It drives the installed Google Chrome, so there is no browser to download.
 
 ## Commands

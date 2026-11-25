@@ -42,11 +42,20 @@ extends Node
 ## in packs of their own beside the page (`PACKS`), fetched once the game
 ## runs and mounted as each lands (`mount`). Until then, and without them,
 ## every sound and track is the game's own.
+## PIX-552: the title sat on the game's own tune for good, the bundle's
+## landing after it began and no change of track following. The title's
+## track now comes first, in a small pack of its own, and a track landing
+## for the music playing takes over from it (`_take_over`).
 ## Autoload `Sound`.
 
 const FADE_S := 0.35
 ## The music's crossfade, the old track and the new one together (PIX-411).
 const CROSSFADE_S := 0.8
+## A landed pack's track taking over from the game's own (PIX-552): longer,
+## the same place's music in another dress. A tune that has played under
+## JUST_BEGUN_S is replaced in a plain FADE_S: nobody has heard it start.
+const TAKEOVER_S := 1.5
+const JUST_BEGUN_S := 1.5
 ## A stinger is never quite the same twice (PIX-212): its pitch a few
 ## percent either way, its level a decibel and a half. The same sound twice
 ## within SAME_GAP_MS sounds once (an area skill's hits, a sale's coin and
@@ -101,9 +110,11 @@ const PAID := "res://assets/audio/paid/takes.json"
 const PAID_MUSIC := "res://assets/audio/paid/music.json"
 const PAID_MUSIC_RATE := 44100.0
 ## The web's audio packs beside the page (tools/audio_packs.gd), in the order
-## they're fetched: the takes are a third of the tracks' size and heard at
-## every step, so they come first (PIX-518).
-const PACKS: Array[String] = ["sfx.pck", "music.pck"]
+## they're fetched, by how soon each is heard: the title's track alone
+## (under 2 MB, PIX-552: the title is the first thing playing), then the
+## takes, a seventh of the tracks' size and heard at every step (PIX-518),
+## then the other tracks.
+const PACKS: Array[String] = ["title.pck", "sfx.pck", "music.pck"]
 
 var _doc := {}
 var _streams := {}
@@ -271,22 +282,41 @@ func mount(pack: String) -> bool:
 	return true
 
 
-## The packs' audio read again, some of it newly here (PIX-518). Nothing
-## playing changes: the next take an event plays is the packs', and the next
-## change of track plays the bundle's, from its start (where the game's own
-## tune was left says nothing of the bundle's), even where the slot's
-## fallback is the tune playing now.
+## The packs' audio read again, some of it newly here (PIX-518). No sound
+## playing is cut: the next take an event plays is the packs', and a track
+## newly here plays from its start (where the game's own tune was left says
+## nothing of the bundle's), taking over at once from the music playing when
+## it is that slot's (PIX-552).
 func arrived() -> void:
 	_land(paid_takes(PAID), paid_music(PAID_MUSIC))
 
 
 func _land(takes: Dictionary, music: Dictionary) -> void:
 	_paid = takes
-	if music.size() != _paid_music.size():
-		_paid_music = music
-		_resume_at.clear()
-		if not track.begins_with("theme:"):
-			_heard = ""
+	var had := _paid_music
+	_paid_music = music
+	for key: String in music:
+		if not had.has(key):
+			_resume_at.erase(key)
+	_take_over(had)
+
+
+## The bundle's track for the music playing, newly landed (`had`: the tracks
+## here before), crossfades in from its start over the game's own
+## (PIX-552): the title's above all, which no change of track follows, a
+## place's (its own slot's, or its fallback's as before) and a story
+## theme's, once through like the one it replaces.
+func _take_over(had: Dictionary) -> void:
+	if released or track == "" or not _music.playing:
+		return
+	var theme := track.begins_with("theme:")
+	var key := "theme_" + track.trim_prefix("theme:") if theme else heard_as(track)
+	if had.has(key) or not _bundled(key):
+		return
+	if not theme:
+		_heard = key
+	var begun := _music.get_playback_position() < JUST_BEGUN_S
+	_crossfade(_music_of(key, not theme), _music_level(key), 0.0, FADE_S if begun else TAKEOVER_S)
 
 
 func _exit_tree() -> void:
@@ -833,7 +863,7 @@ func end_theme() -> void:
 ## The new theme comes in from `from` seconds as the old one goes, together,
 ## each on an equal-power curve: faded in dB, the two sat near -20 dB
 ## halfway, a dip of some 17 dB in every change of place.
-func _crossfade(stream: AudioStream, level: float, from := 0.0) -> void:
+func _crossfade(stream: AudioStream, level: float, from := 0.0, seconds := CROSSFADE_S) -> void:
 	if _fade != null:
 		_fade.kill()
 	var outgoing := _music
@@ -849,7 +879,7 @@ func _crossfade(stream: AudioStream, level: float, from := 0.0) -> void:
 	incoming.stream = stream
 	incoming.play(from)
 	_fade = create_tween()
-	_fade.tween_method(mix, 0.0, 1.0, CROSSFADE_S)
+	_fade.tween_method(mix, 0.0, 1.0, seconds)
 	_fade.tween_callback(outgoing.stop)
 
 
