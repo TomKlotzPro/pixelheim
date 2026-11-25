@@ -86,15 +86,6 @@ func test_only_the_lanterns_glass_lights_up() -> void:
 			assert_false(String(LampArt.POST[y])[x] in ["y", "Y", "a", "r"], "cold at (%d, %d)" % [x, y])
 
 
-func test_a_camp_torch_stands_on_a_stake() -> void:
-	var pixels := _drawn(LampArt.STAKE)
-	assert_eq(LampArt.stake().get_size(), Vector2(16, 16))
-	var top := pixels.map(func(at: Vector2i) -> int: return at.y).min() as int
-	assert_lte(top, 16 - LampArt.STAKE_LIFT - 2, "it reaches up to the raised torch's handle")
-	for at: Vector2i in pixels:
-		assert_between(at.x, 2, 13, "inside its cell")
-
-
 func test_a_windows_light_falls_on_the_ground_below_it() -> void:
 	for shape: Texture2D in [Lights.spill(), Lights.shaft()]:
 		assert_eq(shape.get_size(), Vector2(Lights.TEXTURE_PX, Lights.TEXTURE_PX), "a light's texture, so its reach is counted as every light's")

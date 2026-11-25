@@ -44,7 +44,9 @@ static func shown(world: WorldState, spawn_id: String) -> bool:
 ## stash, nor a mining country's workings (`worked`, MapView.worked, laid
 ## before this plan), nor where it would close a way on (Ways.kept_open:
 ## an opened stash stands for good). plan_camps keeps the first such cell
-## for it. A camp left without one says so (a prop over its whole ring).
+## for it (the camp's "stash", kept clear by what the plan lays after), so
+## it takes that one while it is open. A camp left without one says so (a
+## prop over its whole ring).
 static func plan_on(map: MapData, camps: Dictionary, worked := {}) -> Dictionary:
 	var out := {}
 	var taken := {}
@@ -64,6 +66,9 @@ static func plan_on(map: MapData, camps: Dictionary, worked := {}) -> Dictionary
 
 static func _beside(map: MapData, camps: Dictionary, home: Vector2i, tent: Vector2i, taken: Dictionary, worked: Dictionary) -> Vector2i:
 	var shut := taken.merged(camps)
+	var kept: Vector2i = camps[tent].get("stash", Vector2i(-1, -1))
+	if kept.x >= 0 and map.is_walkable(kept) and not shut.has(kept) and not worked.has(kept):
+		return kept
 	for cell: Vector2i in CampsLayer.stash_ring(home, tent):
 		if map.is_walkable(cell) and map.region_at(cell) == map.region_at(home) and not map.portals.has(cell) \
 				and not shut.has(cell) and not worked.has(cell) and Ways.kept_open(map, [cell], shut):

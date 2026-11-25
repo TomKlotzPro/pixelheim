@@ -7,10 +7,10 @@ class_name LampArt
 ## stands without the paid pack too): its glass cold by day, lit at night
 ## (`glass`, the only part the dark doesn't touch). A lit window is its own
 ## glass lit amber (`panes`), the frame left in the night, and a room's
-## windows by day are its glass full of the sky (`day_panes`). A camp's
-## torch stands on a stake (`stake`). Pixelheim's lamps come in two more
-## looks (PIX-524: every lamp was the one post): a lamp on a bracket for a
-## house's corner and the square's post with a lantern either side (`look`).
+## windows by day are its glass full of the sky (`day_panes`). Pixelheim's
+## lamps come in two more looks (PIX-524: every lamp was the one post): a
+## lamp on a bracket for a house's corner and the square's post with a
+## lantern either side (`look`).
 ## The hero's own Tin Lantern hangs in their hand (PIX-530, `hand`), its
 ## glass lit over it in the dark (`hand_glass`).
 ## Pictures are rows of characters, one a pixel, keyed in PALETTE: art made
@@ -149,27 +149,6 @@ const LOOKS := {
 }
 ## The middle of the glass, in the post's pixels: where its halo stands.
 const HALO_AT := Vector2(8.0, 10.0)
-## A camp torch's stake driven into the ground, a little earth round it:
-## the torch stands on it, raised STAKE_LIFT pixels.
-const STAKE := [
-	"................",
-	"................",
-	"................",
-	"................",
-	"................",
-	"................",
-	"................",
-	"................",
-	"................",
-	".......oo.......",
-	"......ocmo......",
-	"......ocmo......",
-	"......ocwo......",
-	".....oqcmqo.....",
-	"....oqPqqPqo....",
-	".....ooooooo....",
-]
-const STAKE_LIFT := 5
 ## A lit window's glass (the title's too): lamplight above, warmer below,
 ## the glazing bars' shadows amber.
 const PANE_TOP := Color("ffd27a")
@@ -196,7 +175,6 @@ static func picture(rows: Array) -> Image:
 
 
 static var _looks := {}
-static var _stake: ImageTexture
 static var _panes: ImageTexture
 static var _day_panes: ImageTexture
 static var _recess_panes: ImageTexture
@@ -271,13 +249,6 @@ static func look(name: String) -> Dictionary:
 			lit.add_frame("default", ImageTexture.create_from_image(image))
 		_looks[name] = {"cold": ImageTexture.create_from_image(picture(rows)), "lit": lit, "size": size, "halos": halos}
 	return _looks[name]
-
-
-## A camp torch's stake (STAKE).
-static func stake() -> ImageTexture:
-	if _stake == null:
-		_stake = ImageTexture.create_from_image(picture(STAKE))
-	return _stake
 
 
 ## The Tin Lantern in the hero's hand (HAND), cold.

@@ -121,7 +121,7 @@ static func plan_in(view: MapView) -> void:
 ## pack's own square or a door, nor further than CAMP_REACH from its home,
 ## nor where it would close a way on (Ways.kept_open: PIX-554), nor leave
 ## its stash (CampStashes, PIX-453) no cell by the tent closing none either:
-## the first such cell is kept from the camps after.
+## the first such cell is the tent's "stash", kept from the camps after.
 ## A night pack keeps none (PIX-252): it comes out of the dark, and a camp,
 ## drawn once for the visit, would stand empty all day.
 static func plan_camps(map: MapData) -> Dictionary:
@@ -197,8 +197,25 @@ static func plan_camps(map: MapData) -> Dictionary:
 				out[cell] = {"kind": part[1]}
 				camp[part[0]] = cell
 				shut[cell] = true
-		# Its stash's cell kept from the camps after.
-		shut[stash_at.call(stash_cells, {})] = true
+		# Its stash's cell kept from the camps after, and from what the plan
+		# lays after them (stash_cells).
+		var stash: Vector2i = stash_at.call(stash_cells, {})
+		if stash.x >= 0:
+			camp["stash"] = stash
+			shut[stash] = true
+	return out
+
+
+## The cells `camps` (plan_camps) keep for their stashes, {cell: true}: what
+## the plan lays after the camps (a hub's dressing, the Post's pieces, the
+## blocking scatter, the workings) keeps off them, so a camp's stash stands
+## where plan_camps found it a place that closes no way (PIX-554: a grown
+## hub's dressing took Saltmere's coast_3's, and it had none).
+static func stash_cells(camps: Dictionary) -> Dictionary:
+	var out := {}
+	for piece: Dictionary in camps.values():
+		if piece.has("stash"):
+			out[piece["stash"]] = true
 	return out
 
 
