@@ -44,8 +44,15 @@ static func _plan_gates(view: MapView) -> void:
 	view.deal_patches(Gathering.day_of(GameState.world.steps))
 
 
-## The gates, the ways in and the workings, drawn.
+## The gates, the ways in and the workings, drawn: our pictures first, a
+## unit each (PIX-556: drawn once a session, the bank some 3 ms headless and
+## the heap 1.5, together past Neighbours' budget in one frame).
 func build(view: MapView, slices: Slicer) -> void:
+	for gate: Dictionary in view.gates:
+		for piece: Dictionary in GateArt.plan(gate, PunyProps.available())["pieces"]:
+			if piece["sheet"] == "gate":
+				var name := String(piece["sprite"])
+				slices.add("decor_gate_art", func() -> void: GateArt.texture(name))
 	slices.add("decor_gates", func() -> void:
 		for gate: Dictionary in view.gates:
 			_add_gate(view, gate)
@@ -115,8 +122,12 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 		var glint := AnimatedSprite2D.new()
 		glint.sprite_frames = HamletArt.glint()
 		glint.centered = false
-		glint.material = Lights.unshaded()
+		# The snow's by day (PIX-556) dim with the hour as the snow does.
+		if not piece.get("day", false):
+			glint.material = Lights.unshaded()
 		glint.position = at - Vector2(0, TILE)
+		# Sparkles side by side don't catch the light together.
+		glint.frame = absi(hash(cell)) % glint.sprite_frames.get_frame_count("default")
 		glint.play()
 		var over := Node2D.new()
 		# Sorted a pixel past the door's own foot, so it shows on it.
@@ -124,6 +135,9 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 		over.add_to_group("decor")
 		over.add_child(glint)
 		view.actors.add_child(over)
+		# The snow's sparkles by day (PIX-556): gone with the sun.
+		if piece.get("day", false):
+			view.day_glows.append(over)
 		return
 	if piece["sheet"] == "torch":
 		_add_gate_torch(view, cell, at)
@@ -140,12 +154,12 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 			sprite.texture = AshArt.texture(piece["tile"])
 		"hamlet":
 			sprite.texture = HamletArt.texture(piece["sprite"])
+		"gate":
+			sprite.texture = GateArt.texture(String(piece["sprite"]))
 		_:
 			sprite.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
 	sprite.centered = false
 	match String(piece["tone"]):
-		"snow":
-			sprite.material = _snow()
 		"charred":
 			sprite.modulate = GateArt.CHARRED
 		"iron":
@@ -158,9 +172,19 @@ static func _add_gate_piece(view: MapView, piece: Dictionary) -> void:
 	var root := Node2D.new()
 	root.position = Vector2(cell * TILE) + Vector2(0, TILE + at.y)
 	root.add_to_group("decor")
-	sprite.position = Vector2(at.x, -TILE)
+	# A tile is a cell tall; ours (PIX-556) as tall as drawn.
+	var size := sprite.texture.get_size() if piece["sheet"] == "gate" else Vector2(TILE, TILE)
+	sprite.position = Vector2(at.x, -size.y)
+	if piece.get("turn", false):
+		# Laid on its side, its top to the west (the avalanche's pine).
+		sprite.rotation = -PI / 2.0
+		sprite.position.y = 0.0
 	root.add_child(sprite)
 	view.actors.add_child(root)
+	if piece.get("cast", false):
+		# Ours cast the sun's shadow as the trees do (PIX-556); the rockfall's
+		# never shows, the marsh round it under the mire's sky all cloud.
+		cast(view, root.position + Vector2(at.x + size.x / 2.0, 0), size.x, size.y)
 
 
 ## A torch on a tower of the mountain's gatehouse (PIX-312): Shade's CC0
@@ -196,19 +220,3 @@ static func _torch_frames() -> SpriteFrames:
 		for tile: int in GATE_TORCH:
 			_torch.add_frame("default", PunyDungeon.sheet().tile_texture(tile))
 	return _torch
-
-
-static var _snow_tone: ShaderMaterial
-
-
-## The Frostgate's snow on whatever wears it (PIX-254: the avalanche): the
-## region tint's whitening, everywhere.
-static func _snow() -> ShaderMaterial:
-	if _snow_tone == null:
-		var tint := Image.create(1, 1, false, Image.FORMAT_RGBA8)
-		tint.fill(PunyTerrain.TINTS["snow"])
-		_snow_tone = ShaderMaterial.new()
-		_snow_tone.shader = preload("res://shaders/region_tint.gdshader")
-		_snow_tone.set_shader_parameter("tint_map", ImageTexture.create_from_image(tint))
-		_snow_tone.set_shader_parameter("map_pixels", Vector2(TILE, TILE))
-	return _snow_tone

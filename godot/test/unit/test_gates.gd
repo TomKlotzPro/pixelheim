@@ -314,8 +314,142 @@ func test_each_gate_is_drawn_across_its_cells_in_art_the_game_has() -> void:
 			for piece: Dictionary in art["pieces"]:
 				var near := cells.any(func(cell: Vector2i) -> bool: return maxi(absi(cell.x - piece["cell"].x), absi(cell.y - piece["cell"].y)) <= 1)
 				assert_true(near, "%s's pieces stand on it" % gate["id"])
-				assert_true(String(piece["sheet"]) in ["world", "dungeon", "villager"] + (["props"] if paid else []), "%s: art the game has%s" % [gate["id"], "" if paid else ", without the paid pack"])
+				assert_true(String(piece["sheet"]) in ["world", "dungeon", "villager", "gate", "glint"] + (["props"] if paid else []), "%s: art the game has%s" % [gate["id"], "" if paid else ", without the paid pack"])
 	assert_eq(GateArt.plan(Gates.by_id("bridge"), true)["hides"], Gates.cells_of(Gates.by_id("bridge")), "the burnt bridge's planks are gone where it's shut")
 	var guards: Array = GateArt.plan(Gates.by_id("barricade"), false)["pieces"].filter(func(piece: Dictionary) -> bool: return piece["sheet"] == "villager")
 	assert_eq(guards.size(), 1, "one of Ulla's guard keeps the barricade")
 	assert_eq(guards[0]["sprite"], "guard")
+
+
+## PIX-556: the rockfall is a heap that fell (six round stones of a size
+## before) and the avalanche a bank of snow (a flat white plate), drawn by
+## us the same with the pack or without, but for the pine in it: in whole
+## pixels, never cut by their pictures' sides; the heap boulders fallen from
+## the cliff, not masonry (Tom's look at the ruins' cut stones): tallest in
+## its middle, in three sizes, big at its foot, each on a row of its own,
+## its foot wandering, a few fixed inks, its scree lying flat at its foot
+## and beside its flanks, never above them; the bank in four of snow's
+## tones, darker on its east side, a pine lying half buried on its crest,
+## sparkles by day.
+func test_the_rockfall_and_the_avalanche_look_like_they_fell() -> void:
+	var cliff := Gates.by_id("cliff")
+	var avalanche := Gates.by_id("avalanche")
+	for gate: Dictionary in [cliff, avalanche]:
+		var ours := func(paid: bool) -> Array:
+			return GateArt.plan(gate, paid)["pieces"].filter(func(piece: Dictionary) -> bool: return piece["sheet"] in ["gate", "glint"] and piece["sprite"] not in ["pine", "snag"])
+		assert_eq(ours.call(true), ours.call(false), "%s is drawn the same without the pack" % gate["id"])
+	var rockfall: Array = GateArt.plan(cliff, false)["pieces"]
+	assert_eq(rockfall.map(func(piece: Dictionary) -> Array: return [piece["sprite"], piece["flat"]]), [["scree", true], ["rockfall", false]], "the scree lies flat under the heap")
+	assert_eq(rockfall[0]["cell"], rockfall[1]["cell"], "round its foot")
+	for name: String in ["rockfall", "scree", "avalanche", "pine", "snag"]:
+		var image := GateArt.texture(name).get_image()
+		var alphas := {}
+		for y in image.get_height():
+			for x in image.get_width():
+				alphas[image.get_pixel(x, y).a] = true
+		var kinds := alphas.keys()
+		kinds.sort()
+		assert_eq(kinds, [0.0, 1.0], "%s is drawn in whole pixels" % name)
+		# A side drawn to the picture's edge reads as a straight cut.
+		for x: int in [0, image.get_width() - 1]:
+			var drawn := range(image.get_height()).filter(func(y: int) -> bool: return image.get_pixel(x, y).a > 0.0)
+			assert_eq(drawn, [], "%s keeps off its picture's column %d" % [name, x])
+	var heap := GateArt.texture("rockfall").get_image()
+	var inks := {}
+	for y in heap.get_height():
+		for x in heap.get_width():
+			if heap.get_pixel(x, y).a > 0.0:
+				inks[heap.get_pixel(x, y)] = true
+	assert_lte(inks.size(), 40, "the heap keeps a few fixed inks, as the ruins do")
+	var top := heap.get_used_rect().position.y
+	var peak := range(heap.get_width()).filter(func(x: int) -> bool: return heap.get_pixel(x, top).a > 0.0)
+	assert_between(peak.reduce(func(sum: int, x: int) -> int: return sum + x, 0) / float(peak.size()), heap.get_width() / 3.0, heap.get_width() * 2 / 3.0, "the heap is tallest in its middle")
+	# Boulders in three sizes, the big ones at its foot and the small up it,
+	# each sitting on a row of its own (no courses), drawn back to front.
+	var boulders := GateArt.BOULDERS
+	var small := boulders.filter(func(rect: Rect2i) -> bool: return rect.size.x <= 7)
+	var big := boulders.filter(func(rect: Rect2i) -> bool: return rect.size.x >= 13)
+	assert_true(small.size() > 0 and big.size() > 0 and small.size() + big.size() < boulders.size(), "its boulders come in three sizes")
+	var foot_of := func(rect: Rect2i) -> int: return rect.end.y
+	assert_lt(small.map(foot_of).max(), big.map(foot_of).min(), "big at its foot, smaller up it")
+	for i in range(1, boulders.size()):
+		assert_lt(boulders[i - 1].end.y, boulders[i].end.y, "each boulder on a row of its own, back to front: %s" % boulders[i])
+	# Its foot wanders: no row is the foot of more than a fifth of its columns.
+	var foot_rows := {}
+	for x in heap.get_width():
+		var lowest := range(heap.get_height()).filter(func(y: int) -> bool: return heap.get_pixel(x, y).a > 0.0)
+		if not lowest.is_empty():
+			foot_rows[lowest[-1]] = foot_rows.get(lowest[-1], 0) + 1
+	assert_lte(foot_rows.values().max() * 5, heap.get_width(), "no straight baseline along its foot: %s" % foot_rows)
+	# Its scree on the ground at its foot and beside its flanks: never above
+	# them, never under the heap, each pebble's shadow under it.
+	var scree := GateArt.texture("scree").get_image()
+	var flank := (scree.get_width() - heap.get_width()) / 2
+	var lies := {"front": 0, "west": 0, "east": 0}
+	for y in scree.get_height():
+		for x in scree.get_width():
+			var pixel := scree.get_pixel(x, y)
+			if pixel.a == 0.0:
+				continue
+			var shadow := pixel == GateArt.ROCK[-1]
+			var below := y + 1 < scree.get_height() and scree.get_pixel(x, y + 1).a > 0.0
+			assert_ne(shadow, below, "a pebble's pixel of shadow is its bottom at %d,%d" % [x, y])
+			assert_gte(y, heap.get_height() - GateArt.SCREE_RISE, "no scree up its flanks or above its crest at %d,%d" % [x, y])
+			var on := Vector2i(x - flank, y)
+			if y >= heap.get_height():
+				lies["front"] += 1
+				continue
+			assert_true(on.x < 0 or on.x >= heap.get_width() or heap.get_pixelv(on).a == 0.0, "no scree under the heap at %s" % on)
+			# Beside its flank on that row, or in front, under a boulder's curve.
+			var row := range(heap.get_width()).filter(func(column: int) -> bool: return heap.get_pixel(column, y).a > 0.0)
+			lies["west" if on.x < row[0] else ("east" if on.x > row[-1] else "front")] += 1
+	for side: String in lies:
+		assert_gt(lies[side], 0, "scree lies at its %s" % side)
+	# Its foot rounds in at both ends, not a dry-stone wall on the road (the
+	# review: its sides stood straight down to the foot).
+	var ends := Vector2i(heap.get_width(), -1)
+	var foot := ends
+	for y in heap.get_height():
+		for x in heap.get_width():
+			if heap.get_pixel(x, y).a > 0.0:
+				ends = Vector2i(mini(ends.x, x), maxi(ends.y, x))
+				if y == heap.get_height() - 1:
+					foot = Vector2i(mini(foot.x, x), maxi(foot.y, x))
+	assert_gte(foot.x - ends.x, 4, "the heap's foot rounds in at its west end")
+	assert_gte(ends.y - foot.y, 4, "and at its east end")
+	var bank := GateArt.texture("avalanche").get_image()
+	var tones := {}
+	var light := [0.0, 0.0]
+	for y in bank.get_height():
+		for x in bank.get_width():
+			var pixel := bank.get_pixel(x, y)
+			if pixel.a > 0.0:
+				tones[pixel] = true
+				if x < bank.get_width() / 3 or x >= bank.get_width() * 2 / 3:
+					light[int(x >= bank.get_width() / 2)] += pixel.get_luminance()
+	assert_gte(tones.size(), 4, "the bank is shaded, not a flat white")
+	assert_lt(light[1], light[0], "its east side lies in shade")
+	for paid: bool in [true, false]:
+		var pieces: Array = GateArt.plan(avalanche, paid)["pieces"]
+		var drawn: Dictionary = pieces.filter(func(piece: Dictionary) -> bool: return piece["sprite"] == "avalanche")[0]
+		var standing: Vector2i = drawn["cell"]
+		var pine: Array = pieces.filter(func(piece: Dictionary) -> bool:
+			var cell: Vector2i = piece["cell"]
+			return cell.y < standing.y)
+		assert_eq(pine.map(func(piece: Dictionary) -> Array: return [piece["sheet"], piece["sprite"], piece.get("turn", false)]), [["gate", "snag", false], ["props", "", true], ["props", "", true]] if paid else [["gate", "pine", false]], "the pine lies behind the bank's foot, half buried in it: the Medieval Age's on its side over our snapped trunk, or ours")
+		assert_eq(pieces.filter(func(piece: Dictionary) -> bool: return piece["sheet"] == "glint" and piece["day"]).size(), GateArt.GLINTS.size(), "sparkles on it by day")
+
+
+## PIX-556's review: our pictures are drawn once a session, a unit each
+## before the gates are laid, so the Reach streamed in beside the hero never
+## draws them all in one frame.
+func test_our_pictures_are_drawn_a_unit_each() -> void:
+	var view := MapView.new(MapData.load_by_id("overworld"), null)
+	view.gates = [Gates.by_id("cliff"), Gates.by_id("avalanche")]
+	var slices := Slicer.new()
+	slices.counted = true
+	GatesLayer.new().build(view, slices)
+	assert_eq(slices.left(), 5, "the heap, its scree, the bank and its pine, then the gates")
+	slices.run(4)
+	assert_eq(slices.totals.keys(), ["decor_gate_art"], "a unit each")
+	assert_eq(slices.left(), 1, "the gates laid after")
