@@ -5,9 +5,12 @@ class_name Motes
 ## (PIX-526), leaves falling in the forests, dust floating in a room's
 ## light, embers off forges, hearths and camp fires, dust and splashes under
 ## the hero's feet, sparks where steel meets armour. What glows (fireflies,
-## embers, sparks) ignores the dark and blooms at night; the rest takes the
-## scene's light. Pure: what each looks like and when it shows. The
-## Atmosphere node keeps them over the view and fires the bursts.
+## embers, sparks) ignores the dark and blooms at night, and takes no light
+## (light_mask 0, as the room's dust: PIX-559, the web compiled a lit
+## variant for the fireflies in the frame the lantern first reached them);
+## the rest takes the scene's light. Pure: what each looks like and when
+## it shows. The Atmosphere node keeps them over the view and fires the
+## bursts.
 
 ## What the hero's feet kick up from the ground: its dust's colour...
 const DUST := {
@@ -254,6 +257,7 @@ static func make_fireflies() -> CPUParticles2D:
 	node.tangential_accel_min = -6.0
 	node.tangential_accel_max = 6.0
 	node.material = Lights.glow()
+	node.light_mask = 0
 	return node
 
 
@@ -304,6 +308,7 @@ static func make_room_dust() -> CPUParticles2D:
 	drift.add_point(0.5, Color(1.0, 0.94, 0.8, 0.75))
 	node.color_ramp = drift
 	node.material = Lights.unshaded()
+	node.light_mask = 0
 	return node
 
 
@@ -325,6 +330,7 @@ static func make_embers(amount := 6) -> CPUParticles2D:
 	ramp.add_point(0.5, Color(1.0, 0.45, 0.12, 0.9))
 	node.color_ramp = ramp
 	node.material = Lights.glow()
+	node.light_mask = 0
 	return node
 
 
@@ -365,4 +371,5 @@ static func make_sparks() -> CPUParticles2D:
 	ramp.add_point(0.4, Color(1.0, 0.8, 0.35, 1.0))
 	node.color_ramp = ramp
 	node.material = Lights.glow()
+	node.light_mask = 0
 	return node

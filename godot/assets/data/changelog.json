@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.408.0",
+      "date": "2026-11-26",
+      "codename": "Steady Flame",
+      "notes": [
+        "No more hitch when the lantern lights up at dusk: the lit shaders are made ready while the map loads, and the lantern fades in over a second instead of popping"
+      ]
+    },
+    {
       "version": "0.407.0",
       "date": "2026-11-26",
       "codename": "Rock and Snow",

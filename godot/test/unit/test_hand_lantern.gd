@@ -115,6 +115,41 @@ func test_the_lantern_is_out_in_a_room_by_day_and_lit_there_at_night() -> void:
 	assert_true(rig.lantern.visible, "lit in the room at night")
 
 
+## PIX-559: it lit in one frame, a pop (and on the web a hitch). It fades
+## in over a second as the dark passes LANTERN_DARK and out as it lifts, at
+## once with Reduce motion.
+func test_the_lantern_fades_in_and_out() -> void:
+	var dark := Lights.LANTERN_DARK
+	assert_eq(LightRig.lantern_fade(0.0, dark - 0.01, 0.5, false), 0.0, "not dark enough yet")
+	assert_almost_eq(LightRig.lantern_fade(0.0, dark, 0.5, false), 0.5, 0.0001, "half lit half a second in")
+	assert_eq(LightRig.lantern_fade(0.5, dark, 0.5, false), 1.0, "whole a second in")
+	assert_almost_eq(LightRig.lantern_fade(1.0, dark - 0.01, 0.25, false), 0.75, 0.0001, "going out as the dark lifts")
+	assert_eq(LightRig.lantern_fade(0.0, dark, 1.0 / 60.0, true), 1.0, "at once with Reduce motion")
+
+
+## The rig: as lit as the dark says at once while a map is drawn (a door
+## into the night opens on it burning), then fading, its pool's energy
+## and the glass in hand with it.
+func test_the_rig_fades_the_lantern_after_the_map_is_drawn() -> void:
+	var still: bool = GameState.settings.reduce_motion
+	GameState.settings.reduce_motion = false
+	var rig := _lit_rig("seacave")
+	rig._process(1.0 / 60.0)
+	assert_eq(rig.lantern_lit, 1.0, "burning from the map's first frame")
+	for i in LightRig.WARM_FRAMES:
+		rig._process(1.0 / 60.0)
+	rig.lantern_lit = 0.0
+	for i in 30:
+		rig._process(1.0 / 60.0)
+	assert_almost_eq(rig.lantern_lit, 0.5, 0.01, "half lit half a second after the dark came")
+	assert_true(rig.lantern.visible)
+	assert_lt(rig.lantern.energy, Lights.LANTERN_ENERGY_UNDER * 0.6, "its pool at half, flicker and all")
+	for i in 31:
+		rig._process(1.0 / 60.0)
+	assert_eq(rig.lantern_lit, 1.0, "whole a second after")
+	GameState.settings.reduce_motion = still
+
+
 # --- The save ---------------------------------------------------------------
 
 func test_the_lantern_is_kept_in_the_save() -> void:

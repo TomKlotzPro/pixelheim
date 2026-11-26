@@ -5213,6 +5213,10 @@ msgid "No more half bridge south of the village"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "No more hitch when the lantern lights up at dusk: the lit shaders are made ready while the map loads, and the lantern fades in over a second instead of popping"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "No more lighter band across the ground at night along a map line: the woods' shade no longer takes the night's dark a second time, so wooded ground at night is as bright as its trees (Tom's playtest)"
 msgstr ""
 
@@ -6458,6 +6462,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Steady Camera"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Steady Flame"
 msgstr ""
 
 #: assets/data/changelog.json

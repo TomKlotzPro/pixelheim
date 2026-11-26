@@ -118,6 +118,9 @@ func _ready() -> void:
 	held_glass.texture = LampArt.hand_glass()
 	held_glass.centered = false
 	held_glass.material = Lights.unshaded()
+	# Unshaded, it takes no light, so no lit variant of it compiles in the
+	# frame its own light first reaches it (PIX-559).
+	held_glass.light_mask = 0
 	held.add_child(held_glass)
 	sprite.add_child(held)
 	gait = Gait.new(sprite, art)
@@ -918,6 +921,9 @@ func _hold_lantern() -> void:
 		# Down with the hand when the shader sinks the hero (Wading, PIX-548).
 		held.show_behind_parent = not hand["front"]
 		held_glass.visible = world != null and world.lights != null and is_instance_valid(world.lights.lantern) and world.lights.lantern.visible
+		# Fading in and out with its light (PIX-559).
+		if held_glass.visible:
+			held_glass.modulate.a = world.lights.lantern_lit
 
 
 ## This swing's arrow or bolt was drawn (PIX-396).
