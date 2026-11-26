@@ -2,17 +2,20 @@ class_name GateArt
 ## areas: travel story +overworld*
 ## What a shut gate looks like (PIX-254, Gates): the road still there and the
 ## land past it in sight, something drawn across it that blocks like any
-## prop. The cliff road's rockfall is a heap of fallen stone tallest in the
-## middle, the ruins' greys in three sizes with a broken trunk in it, its
-## scree fanned out flat on the road before it (PIX-556); the river bridge
+## prop. The cliff road's rockfall is a heap of boulders fallen from the
+## cliff, tallest in the middle, in the cliff's own rock, small up top and
+## big at its foot, a broken trunk across it, its scree lying on the road at
+## its foot and beside its flanks (PIX-556); the river bridge
 ## burnt on the Night of Ash is its planks gone in the middle, the ruins'
 ## charred posts standing in the water and a burnt log drifting; Ulla's
 ## barricade is a log fence and crates across the Greyhold road, one of her
 ## old guard in front of it; the avalanche on the Frostgate road is a bank of
 ## snow in lumps, shaded on its east side, a snowed pine snapped and lying
 ## half buried in its crest, sparkling by day (PIX-556). The heap, its scree
-## and the bank are drawn here in code in Shade's palette (RuinArt's stones,
-## HamletArt's inks), the same with or without the paid pack (PunyProps);
+## and the bank are drawn here in code in Shade's palette (his Puny World
+## rock, HamletArt's inks), the same with or without the paid pack
+## (PunyProps; Shade draws rocks a tile's size only, and a heap of them
+## read as a wall);
 ## the pine is the Medieval Age's with it and ours without, its snapped
 ## trunk ours in both; without it the fence and the crates are the
 ## dungeon's palisade; the rest is CC0.
@@ -43,46 +46,58 @@ const DUNGEON_POST := 512
 const CHARRED := Color(0.42, 0.34, 0.3)
 
 ## The rockfall (PIX-556): the heap's picture, a little wider than the road
-## so it lies against the cliffs, the ground it covers that deep along its
-## bottom and its foot this far below its cell's (it fills the pass's last
-## row too, a way on that nothing grows on); the scree's picture, flat
-## before it and no wider than the road's dirt, its bottom this far up from
-## the heap's foot, just under its crest, so its thickest band shows.
+## so it lies against the cliffs, its foot this far below its cell's (it
+## fills the pass's last row too, a way on that nothing grows on).
 const HEAP := Vector2i(54, 44)
-const HEAP_DEPTH := 18
 const HEAP_DROP := 12
-const SCREE := Vector2i(34, 20)
-const HEAP_BACK := 30
-## How far its foot reaches from its middle (px; a big stone's spill short
-## of the picture's sides), how tall it stands at its middle, how sharp its
-## peak (1 a cone), and how far its outline wanders in and out along its
-## front and back (a share of its reach; its ends stay in the picture).
-const HEAP_REACH := Vector2(24, 9.5)
-const HEAP_PEAK := 24
-const HEAP_POINT := 1.0
-const HEAP_WOBBLE := 0.12
-## Its stones in three sizes, small, middle and big (from the least to the
-## most of each): this many, smaller the higher they lie and toward its
-## ends, none taller than its crest stands over its outer side, so its
-## flanks slope to the road, sunk a third into the heap; each the ruins'
-## plain or sooty stone (RuinArt.STONE) in one of three lights, sunlit up
-## top, plain, darker on its east side, so the heap keeps a few fixed inks
-## as the ruins do.
-const STONE_LEAST: Array[Vector2i] = [Vector2i(4, 3), Vector2i(6, 5), Vector2i(9, 7)]
-const STONE_MOST: Array[Vector2i] = [Vector2i(5, 5), Vector2i(8, 7), Vector2i(12, 10)]
-const STONE_COUNT := 160
-const STONE_LIGHTS := [1.0, 0.88, 0.76]
-## Two big ones rolled to its foot, in front, on the picture, short of its
-## ends.
-const ROLLED: Array[Rect2i] = [Rect2i(11, 37, 10, 7), Rect2i(35, 38, 9, 6)]
+## Its boulders, each the box it's drawn in on the picture, from its crest
+## down: small up top, bigger down its sides, the biggest at its foot and
+## smaller toward its ends, so its foot rounds in; each sits on a row of its
+## own (no courses, as a wall's), its foot wandering a few pixels, and each
+## overlaps the ones behind it, so the heap reads as one mass.
+const BOULDERS: Array[Rect2i] = [
+	Rect2i(25, 5, 7, 6), Rect2i(19, 8, 6, 5), Rect2i(31, 9, 6, 5),
+	Rect2i(12, 11, 9, 7), Rect2i(21, 12, 12, 7), Rect2i(34, 12, 9, 8), Rect2i(41, 17, 7, 5),
+	Rect2i(6, 17, 9, 7), Rect2i(14, 16, 11, 9), Rect2i(25, 18, 9, 8), Rect2i(33, 18, 12, 9), Rect2i(44, 22, 7, 7),
+	Rect2i(3, 24, 7, 6), Rect2i(19, 23, 10, 8), Rect2i(28, 25, 8, 7),
+	Rect2i(2, 30, 8, 6), Rect2i(44, 30, 8, 7), Rect2i(8, 27, 15, 12), Rect2i(32, 29, 14, 12), Rect2i(20, 30, 14, 14),
+]
+## How round a boulder is (2 an ellipse, more a block; each a little more
+## or less), and how far its outline wanders in and out (a share of its
+## radius).
+const BOULDER_ROUND := 2.0
+const BOULDER_ROUNDS := 0.35
+const BOULDER_WOBBLE := 0.2
+## Shade's rock, the Puny World's cliffs and boulder, from the light to the
+## dark: a boulder's sunlit rim, its top, two shades of it, its face toward
+## us, its face's shade, and its outline, the cracks between them and a
+## pebble's shadow.
+const ROCK: Array[Color] = [
+	Color("c3cb8f"), Color("b2ba82"), Color("a6ae78"), Color("8a925d"), Color("787f4f"), Color("5c633a"), Color("4b4f2b"),
+]
+## A boulder as Shade draws one: its top lit from the north-west, its face
+## toward us darker under it. Where its face begins (a share of its radius
+## below its middle, its rim wandering), and how lit each tone is at least:
+## its top's (from ROCK's first, lit from the north-west), its face's (from
+## its fifth, lit from the west).
+const BOULDER_FACE := 0.15
+const TOP_LIT := [0.28, -0.08, -0.42]
+const FACE_LIT := [0.25]
 ## The broken trunk lying across its front: its splintered end (sticking out
 ## past the heap's west shoulder) and its root end, buried, on the picture,
-## laid among the stones on this row of the ground.
-const TRUNK_FROM := Vector2i(5, 19)
-const TRUNK_TO := Vector2i(27, 30)
-const TRUNK_ROW := 15
-## How many pebbles the scree has.
-const PEBBLES := 64
+## laid over the boulders behind it, under those sitting on this row or
+## lower.
+const TRUNK_FROM := Vector2i(6, 12)
+const TRUNK_TO := Vector2i(27, 26)
+const TRUNK_UNDER := 32
+## The scree, flat on the ground: the heap's picture widened this much each
+## side and down, its pebbles lying along the heap's foot and up its flanks
+## this far from its foot, thinning out away from it, none higher; this
+## many, each tried where it lies clear.
+const SCREE_FLANK := 6
+const SCREE_FRONT := 9
+const SCREE_RISE := 12
+const PEBBLES := 110
 
 ## The avalanche (PIX-556): the bank's picture, a little wider than the
 ## road, the ground it covers that deep along its bottom; the domes of snow
@@ -112,7 +127,7 @@ const EAST_SHADE := 0.25
 ## splintered end; with the pack its trunk and break alone lie under the
 ## Medieval Age's crown.
 const PINE_TOP := 2216
-const PINE_AT := Vector2(-15, 5)
+const PINE_AT := Vector2(-15, 0)
 const PINE := Vector2i(45, 16)
 const PINE_CROWN := 30
 const PINE_TIER := 6
@@ -153,12 +168,14 @@ static func _ours(cell: Vector2i, name: String, at: Vector2, flat := false) -> D
 	return piece
 
 
-## The heap across the middle of the road, its scree before it.
+## The heap across the middle of the road, its scree round its foot (its
+## picture the heap's, widened).
 static func _rockfall(cells: Array[Vector2i]) -> Array[Dictionary]:
 	var middle := cells[cells.size() / 2]
+	var at := Vector2((TILE - HEAP.x) / 2, HEAP_DROP)
 	return [
-		_ours(middle + Vector2i.UP, "scree", Vector2((TILE - SCREE.x) / 2, 2 * TILE + HEAP_DROP - SCREE.y - HEAP_BACK), true),
-		_ours(middle, "rockfall", Vector2((TILE - HEAP.x) / 2, HEAP_DROP)),
+		_ours(middle, "scree", Vector2(at.x - SCREE_FLANK, TILE + HEAP_DROP - HEAP.y), true),
+		_ours(middle, "rockfall", at),
 	]
 
 
@@ -240,60 +257,89 @@ static func texture(name: String) -> Texture2D:
 	return _drawn[name]
 
 
-## The rockfall's heap: a dark bed of grit raised tallest in the middle,
-## its stones lying on it back to front (small and sunlit up top, big at the
-## foot, the east side a shade darker), the broken trunk among them, two
-## boulders rolled to its foot.
+## The rockfall's heap: its boulders back to front, the broken trunk among
+## them, the cracks between them dark.
 static func _heap(dice: RandomNumberGenerator) -> Image:
 	var image := Image.create(HEAP.x, HEAP.y, false, Image.FORMAT_RGBA8)
-	var middle := Vector2(HEAP.x - 1, HEAP_DEPTH - 1) / 2.0
-	var height := func(x: int, y: int) -> float:
-		var off := (Vector2(x, y) - middle) / HEAP_REACH
-		var angle := off.angle()
-		# The wobble fades toward its ends (sin 0), so they stay inside.
-		var d := off.length() / (1.0 + HEAP_WOBBLE * absf(sin(angle)) * (sin(3.0 * angle + 1.3) + 0.6 * sin(5.0 * angle + 2.1)))
-		return HEAP_PEAK * pow(1.0 - d, HEAP_POINT) if d < 1.0 else 0.0
-	# Its stones by the row of the ground they lie on.
-	var stones := {}
-	var tints: Array = [Color.WHITE, RuinArt.STONE["ash"]]
-	for i in STONE_COUNT:
-		var at := Vector2i(dice.randi_range(0, HEAP.x - 1), dice.randi_range(0, HEAP_DEPTH - 1))
-		var h: float = height.call(at.x, at.y)
-		if h <= 0.0:
-			continue
-		var high := h / HEAP_PEAK
-		var kind := dice.rand_weighted(PackedFloat32Array([6, 4, 0] if high > 0.6 else ([3, 5, 2] if high > 0.3 else [1, 4, 5])))
-		var size := Vector2i(dice.randi_range(STONE_LEAST[kind].x, STONE_MOST[kind].x), dice.randi_range(STONE_LEAST[kind].y, STONE_MOST[kind].y))
-		# Toward its ends no taller than the crest over its outer side.
-		var outer := at.x + (size.x / 2 if at.x > middle.x else -size.x / 2)
-		var crest: float = height.call(outer, roundi(middle.y))
-		size = size.min(Vector2i(maxi(STONE_LEAST[0].x, roundi(crest * 1.3)), maxi(STONE_LEAST[0].y, roundi(crest))))
-		# On the heap, so its ends slope down to the road.
-		var west: float = height.call(at.x - size.x / 3, at.y)
-		var east: float = height.call(at.x + size.x / 3, at.y)
-		if west <= 0.0 or east <= 0.0:
-			continue
-		var bottom := HEAP.y - HEAP_DEPTH + at.y - roundi(h) + size.y / 3
-		var light: float = STONE_LIGHTS[2 if at.x > middle.x + HEAP_REACH.x / 3.0 else (0 if high > 0.6 else 1)]
-		var tint: Color = tints[dice.randi() % tints.size()] * light
-		var row: Array = stones.get(at.y, [])
-		row.append([Rect2i(at.x - size.x / 2, bottom - size.y + 1, size.x, size.y), Color(tint, 1.0)])
-		stones[at.y] = row
-	var grit := func(_x: int, _y: int, normal: Vector3) -> Color:
-		return RuinArt.INKS["F" if normal.x < -0.3 else ("J" if normal.x > 0.4 else "B")]
-	_raise(image, HEAP_DEPTH, height, grit, func(y: int) -> void:
-		for stone: Array in stones.get(y, []):
-			var rect: Rect2i = stone[0]
-			var tint: Color = stone[1]
-			RuinArt.stone(image, rect, tint)
-		if y == TRUNK_ROW:
-			_trunk(image, TRUNK_FROM, TRUNK_TO))
-	var sooty: Color = RuinArt.STONE["ash"]
-	for rolled: Rect2i in ROLLED:
-		RuinArt.stone(image, rolled, sooty if rolled.position.x > middle.x else Color.WHITE)
-	var outline: Color = RuinArt.INKS["J"]
-	_rim(image, outline, outline)
+	var trunk := true
+	for rect: Rect2i in BOULDERS:
+		if trunk and rect.end.y > TRUNK_UNDER:
+			_trunk(image, TRUNK_FROM, TRUNK_TO)
+			trunk = false
+		_boulder(image, rect, dice)
+	# The cracks between them: what's left open with the heap above and
+	# below it and either side.
+	var ends := _ends(image)
+	var tops: PackedInt32Array = ends[0]
+	var bottoms: PackedInt32Array = ends[1]
+	var wests: PackedInt32Array = ends[2]
+	var easts: PackedInt32Array = ends[3]
+	for y in HEAP.y:
+		for x in range(wests[y] + 1, easts[y]):
+			if tops[x] < y and y < bottoms[x] and image.get_pixel(x, y).a == 0.0:
+				image.set_pixel(x, y, ROCK[-1])
 	return image
+
+
+## Where `image` is drawn: each column's top and bottom pixel (its height
+## and -1 for none) and each row's west and east (its width and -1).
+static func _ends(image: Image) -> Array[PackedInt32Array]:
+	var size := image.get_size()
+	var tops := PackedInt32Array()
+	var bottoms := PackedInt32Array()
+	var wests := PackedInt32Array()
+	var easts := PackedInt32Array()
+	tops.resize(size.x)
+	tops.fill(size.y)
+	bottoms.resize(size.x)
+	bottoms.fill(-1)
+	wests.resize(size.y)
+	wests.fill(size.x)
+	easts.resize(size.y)
+	easts.fill(-1)
+	for y in size.y:
+		for x in size.x:
+			if image.get_pixel(x, y).a > 0.0:
+				tops[x] = mini(tops[x], y)
+				bottoms[x] = y
+				wests[y] = mini(wests[y], x)
+				easts[y] = x
+	return [tops, bottoms, wests, easts]
+
+
+## A boulder in `rect` of `image`: a rounded lump whose outline wanders,
+## its top lit from the north-west over its face in shade, outlined.
+static func _boulder(image: Image, rect: Rect2i, dice: RandomNumberGenerator) -> void:
+	var middle := Vector2(rect.position) + Vector2(rect.size - Vector2i.ONE) / 2.0
+	var radius := Vector2(rect.size) / 2.0
+	var phase := Vector2(dice.randf() * TAU, dice.randf() * TAU)
+	var roundness := BOULDER_ROUND + dice.randf_range(-BOULDER_ROUNDS, BOULDER_ROUNDS)
+	# How far out each point of its box (and a pixel round it) lies, 1 its edge.
+	var box := rect.grow(1)
+	var reach := PackedFloat32Array()
+	for y in range(box.position.y, box.end.y):
+		for x in range(box.position.x, box.end.x):
+			var off := (Vector2(x, y) - middle) / radius
+			var wobble := 1.0 + BOULDER_WOBBLE * (sin(2.0 * off.angle() + phase.x) + 0.6 * sin(3.0 * off.angle() + phase.y)) / 1.6
+			reach.append(pow(pow(absf(off.x), roundness) + pow(absf(off.y), roundness), 1.0 / roundness) / wobble)
+	for y in range(rect.position.y, rect.end.y):
+		for x in range(rect.position.x, rect.end.x):
+			var at := (y - box.position.y) * box.size.x + x - box.position.x
+			if reach[at] >= 1.0:
+				continue
+			var edge := reach[at - 1] >= 1.0 or reach[at + 1] >= 1.0 or reach[at - box.size.x] >= 1.0 or reach[at + box.size.x] >= 1.0
+			var tone := ROCK.size() - 1
+			if not edge:
+				var off := (Vector2(x, y) - middle) / radius
+				var top := off.y < BOULDER_FACE + 0.12 * sin(4.0 * off.x + phase.x)
+				var lit := -0.6 * off.x - (0.4 * off.y if top else 0.0)
+				var steps: Array = TOP_LIT if top else FACE_LIT
+				tone = 0 if top else 4
+				for step: float in steps:
+					if lit > step:
+						break
+					tone += 1
+			image.set_pixel(x, y, ROCK[tone])
 
 
 ## A pine's trunk lying from its splintered end `from` (the pale wood of
@@ -338,27 +384,63 @@ static func _pine(crown: bool) -> Image:
 	return image
 
 
-## The scree before the heap: pebbles and grit lying flat, thickest along
-## the picture's bottom (just under the heap's crest) and thinning out up
-## the road, in the ruins' greys.
+## The scree round the heap's foot, flat on the ground: pebbles spilt from
+## its foot down the road and from its flanks either side, up them no higher
+## than SCREE_RISE, fewer the further out, each lit on top with a pixel of
+## shadow under it, none under the heap (its picture is the heap's, widened).
 static func _scree(dice: RandomNumberGenerator) -> Image:
-	var image := Image.create(SCREE.x, SCREE.y, false, Image.FORMAT_RGBA8)
-	var inks := RuinArt.INKS
-	var lower: Color = inks["F"]
-	var shadow: Color = inks["B"]
+	var heap := texture("rockfall").get_image()
+	var size := HEAP + Vector2i(2 * SCREE_FLANK, SCREE_FRONT)
+	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
+	var ends := _ends(heap)
+	var bottoms: PackedInt32Array = ends[1]
+	var wests: PackedInt32Array = ends[2]
+	var easts: PackedInt32Array = ends[3]
+	# Where they spill from (on the heap's picture) and which way: down from
+	# its foot, out from its flanks.
+	var spills: Array[Array] = []
+	for x in HEAP.x:
+		if bottoms[x] >= HEAP.y - SCREE_RISE:
+			spills.append([Vector2i(x, bottoms[x]), Vector2i.DOWN])
+	for y in range(HEAP.y - SCREE_RISE, HEAP.y):
+		if easts[y] >= 0:
+			spills.append([Vector2i(wests[y], y), Vector2i.LEFT])
+			spills.append([Vector2i(easts[y], y), Vector2i.RIGHT])
+	var flank := Vector2i(SCREE_FLANK, 0)
+	# Clear: on the picture off its sides, under no heap, touching no pebble.
+	var clear := func(pixel: Vector2i) -> bool:
+		var under := pixel - flank
+		if pixel.x < 1 or pixel.x > size.x - 2 or pixel.y >= size.y:
+			return false
+		if Rect2i(Vector2i.ZERO, HEAP).has_point(under) and heap.get_pixelv(under).a > 0.0:
+			return false
+		for near: Vector2i in [Vector2i.ZERO, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			if Rect2i(Vector2i.ZERO, size).has_point(pixel + near) and image.get_pixelv(pixel + near).a > 0.0:
+				return false
+		return true
 	for i in PEBBLES:
-		var reach := pow(dice.randf(), 1.8)
-		var spread := (1.0 - 0.5 * reach) * (SCREE.x / 2.0 - 3)
-		var size := Vector2i(dice.randi_range(1, 3), dice.randi_range(1, 2))
-		var at := Vector2i(roundi(SCREE.x / 2.0 + dice.randf_range(-1.0, 1.0) * spread), SCREE.y - 3 - roundi(reach * (SCREE.y - 5)))
-		for x in size.x:
-			var top: Color = inks["L" if size.y == 2 else "CEI"[dice.randi() % 3]]
-			image.set_pixelv(at + Vector2i(x, 0), top)
-			if size.y == 2:
-				image.set_pixelv(at + Vector2i(x, 1), lower)
-		if size.x > 1:
-			# Its shadow on the ground.
-			image.set_pixelv(at + Vector2i(size.x - 1, size.y), shadow)
+		var spill: Array = spills[dice.randi() % spills.size()]
+		var from: Vector2i = spill[0]
+		var way: Vector2i = spill[1]
+		var out := 1 + roundi(pow(dice.randf(), 2.0) * (SCREE_FRONT if way == Vector2i.DOWN else SCREE_FLANK))
+		# One or two wide, or two tall and as wide as three near the heap.
+		var tall := dice.randi_range(1, 2 if out < 6 else 1)
+		var pebble := Vector2i(dice.randi_range(tall, 3 if tall == 2 and out < 4 else tall), tall)
+		var at := from + flank + way * out + (Vector2i(dice.randi_range(-1, 1), 0) if way == Vector2i.DOWN else Vector2i(0, dice.randi_range(0, 2)))
+		if way == Vector2i.LEFT:
+			at.x -= pebble.x - 1
+		# The pebble and its shadow under it.
+		var pixels: Array[Vector2i] = []
+		for y in pebble.y + 1:
+			for x in pebble.x:
+				# Three wide and two tall, its top's corners round off.
+				if y > 0 or pebble != Vector2i(3, 2) or x == 1:
+					pixels.append(at + Vector2i(x, y))
+		if not pixels.all(clear):
+			continue
+		for pixel: Vector2i in pixels:
+			var row := pixel.y - at.y
+			image.set_pixelv(pixel, ROCK[-1] if row == pebble.y else ROCK[4 if row == 1 else (1 if pebble.y == 2 else 2)])
 	return image
 
 
@@ -382,7 +464,7 @@ static func _bank() -> Image:
 			if lit > tone[0]:
 				return inks[tone[1]]
 		return inks["W"]
-	_raise(image, BANK_DEPTH, height, snow, func(_y: int) -> void: pass)
+	_raise(image, BANK_DEPTH, height, snow)
 	var rim: Color = inks["S"]
 	var lip: Color = inks["w"]
 	_rim(image, rim, lip)
@@ -392,9 +474,8 @@ static func _bank() -> Image:
 ## Ground `depth` px deep along `image`'s bottom raised to `height`
 ## (Callable(x, y) -> px, 0 off it), drawn back to front: each point a
 ## column from the ground up in `ink` (Callable(x, y, its normal) -> Color),
-## then `row` (Callable(y)) lays what lies on that row of the ground, so the
-## rows in front hide what they should.
-static func _raise(image: Image, depth: int, height: Callable, ink: Callable, row: Callable) -> void:
+## so the rows in front hide what they should.
+static func _raise(image: Image, depth: int, height: Callable, ink: Callable) -> void:
 	# Each point's height once, with a point's margin round them for slopes.
 	var wide := image.get_width() + 2
 	var heights := PackedFloat32Array()
@@ -413,7 +494,6 @@ static func _raise(image: Image, depth: int, height: Callable, ink: Callable, ro
 			var color: Color = ink.call(x, y, slope.normalized())
 			for up in range(maxi(0, ground - roundi(h)), ground + 1):
 				image.set_pixel(x, up, color)
-		row.call(y)
 
 
 ## Every drawn pixel of `image` beside an empty one in `side`, or in

@@ -45,8 +45,8 @@ static func _plan_gates(view: MapView) -> void:
 
 
 ## The gates, the ways in and the workings, drawn: our pictures first, a
-## unit each (PIX-556: drawn once a session, the heap some 5 ms headless and
-## the bank 2.5, together past Neighbours' budget in one frame).
+## unit each (PIX-556: drawn once a session, the bank some 3 ms headless and
+## the heap 1.5, together past Neighbours' budget in one frame).
 func build(view: MapView, slices: Slicer) -> void:
 	for gate: Dictionary in view.gates:
 		for piece: Dictionary in GateArt.plan(gate, PunyProps.available())["pieces"]:
