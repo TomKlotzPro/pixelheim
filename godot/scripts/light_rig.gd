@@ -292,7 +292,7 @@ func _tend_lantern() -> void:
 		lantern.set_meta("energy", lantern_energy(_under) if Lights.carried(GameState.pack.items) else 0.0)
 
 
-## A map was just drawn (World._enter_map): its lit shaders warmed under
+## A map was just drawn (World._draw_map): its lit shaders warmed under
 ## its build, and the lantern as lit as the dark there says.
 func warm() -> void:
 	_warm_frames = WARM_FRAMES
