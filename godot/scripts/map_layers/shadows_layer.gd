@@ -77,11 +77,16 @@ static func _cast_dressing(view: MapView) -> void:
 		var bottom := Vector2(piece["cell"] * TILE) + Vector2(0, TILE)
 		if piece.has("tile"):
 			cast(view, bottom + Vector2(TILE / 2.0, 0), TILE_INK, TILE * (2 if piece.has("top") else 1))
+		elif HubArt.built(piece.get("art", "")):
+			cast_built(view, bottom)
 		else:
 			cast_art(view, piece["art"], bottom)
 	for piece: Dictionary in view.routes["pieces"]:
-		if piece["kind"] != "lamp":
-			cast_art(view, "post_box" if piece["kind"] == "box" else String(piece["kind"]), Vector2(piece["cell"] * TILE) + Vector2(0, TILE))
+		var bottom := Vector2(piece["cell"] * TILE) + Vector2(0, TILE)
+		if piece["kind"] == "hut" and PunyTown.available():
+			cast_built(view, bottom)
+		elif piece["kind"] != "lamp":
+			cast_art(view, "post_box" if piece["kind"] == "box" else String(piece["kind"]), bottom)
 
 
 ## How wide a pack tile's piece is drawn, about: its shadow's width.
@@ -94,6 +99,13 @@ const TILE_INK := 12.0
 static func cast_art(view: MapView, art: String, bottom_left: Vector2) -> void:
 	var inked := HamletArt.inked(art)
 	cast(view, bottom_left + Vector2(inked.get_center().x, inked.end.y - HamletArt.size(art).y), inked.size.x, inked.size.y)
+
+
+## A small house of Shade's pieces (PunyTown.cottage, PIX-557), its
+## bottom-left at `bottom_left`, casts from its whole picture.
+static func cast_built(view: MapView, bottom_left: Vector2) -> void:
+	var drawn := Vector2(PunyTown.COTTAGE * TILE)
+	cast(view, bottom_left + Vector2(drawn.x / 2.0, 0), drawn.x, drawn.y)
 
 
 ## Gone at night, when the lamps take over: the sun's strength is none

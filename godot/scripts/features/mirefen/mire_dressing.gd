@@ -10,9 +10,9 @@ extends MapLayer
 ## south bridge, and will-o'-wisps drifting over the fen at night, each a
 ## soft light. The walks and huts are placed by hand (WALKS, HUTS), the
 ## trees and reeds by the cell's own dice (`lay`, pure). What stands blocks
-## only open ground off the paths, never a pack's home, a chest, a lair,
-## today's patches nor a walk (no patch grows under it after), and never so
-## as to close a way (Hamlet.fits); a walk and the shallows along its
+## only open ground off the paths, never a pack's home, a chest, a lair, a
+## walk nor (a tree) today's patches (no patch grows under it after), and
+## never so as to close a way (Hamlet.fits); a walk and the shallows along its
 ## sides block nothing and grow no patch, and are the same every day and
 ## arrival; reeds are walked through, as the woods are. The map
 ## itself is untouched. A walk is drawn as a bridge and its sides as water
@@ -35,8 +35,13 @@ const WALKS: Array[Rect2i] = [
 	Rect2i(5, 24, 7, 2), Rect2i(16, 26, 2, 10), Rect2i(26, 34, 4, 2), Rect2i(14, 14, 4, 2), Rect2i(14, 16, 2, 8),
 	Rect2i(44, 18, 2, 6),
 ]
-## The stilt huts, by their left cell (two cells wide, facing a walk).
+## The stilt huts, by their left cell (HUT_WIDE cells wide at Shade's
+## houses' scale, PIX-557; their door over a walk), each over a pool of
+## the fen's water.
 const HUTS: Array[Vector2i] = [Vector2i(5, 23), Vector2i(28, 33)]
+const HUT_WIDE := 3
+## Its window's light on the ground before it at night (one a hut, small).
+const HUT_REACH := 48.0
 ## The share (per mille) of the fen's open cells growing a dead tree, and a
 ## reed bed: by the water (within REEDS_NEAR cells of it) and out in the fen.
 const TREES := 60
@@ -60,14 +65,15 @@ const LAIR_CLEAR := 2
 
 
 ## What the Mirefen stands in, as it is laid: {"walks": [Rect2i], "wet":
-## [cells of shallows beside them], "huts": [cell], "trees": {cell:
+## [cells of shallows beside them and behind the huts], "huts": [cell], "trees": {cell:
 ## variant}, "reeds": {cell: variant}, "blocks": [cells]}. `kept`: cells
 ## nothing may stand on (Hamlet.kept_on without the patches' decks);
 ## `opened`: the field decor that blocks, which a walk and its shallows lift
 ## off their cells; `today`: today's patches and where the hero arrives,
-## kept clear of what stands but not of the shallows, the same every day
-## and arrival (PIX-519's review: a hero who quit wading came back on dry
-## fen in the middle of the water).
+## kept clear of the trees but not of the shallows nor the huts, the same
+## every day and arrival (PIX-519's review: a hero who quit wading came
+## back on dry fen in the middle of the water; PIX-557: a hut stood only on
+## the days no patch grew under it, and a patch under its pool is dropped).
 static func lay(map: MapData, kept: Dictionary, opened := {}, today := {}) -> Dictionary:
 	var blocks: Array[Vector2i] = []
 	var out := {"walks": [] as Array[Rect2i], "wet": [] as Array[Vector2i], "huts": [] as Array[Vector2i], "trees": {}, "reeds": {}, "blocks": blocks}
@@ -88,21 +94,29 @@ static func lay(map: MapData, kept: Dictionary, opened := {}, today := {}) -> Di
 				clear[cell] = true
 	var feet := {}
 	for hut in HUTS:
-		var foot: Array[Vector2i] = [hut, hut + Vector2i.RIGHT]
-		feet[hut] = true
-		feet[hut + Vector2i.RIGHT] = true
-		if Hamlet.fits(map, foot, held, blocks):
+		var foot := hut_cells(hut)
+		for cell in foot:
+			feet[cell] = true
+		if Hamlet.fits(map, foot, kept, blocks):
 			out["huts"].append(hut)
 			blocks.append_array(foot)
-			for cell in _cells(Rect2i(hut - Vector2i.ONE, Vector2i(4, 3))):
+			for cell in _cells(Rect2i(hut - Vector2i(1, 2), Vector2i(HUT_WIDE + 2, 4))):
 				clear[cell] = true
 	# The fen's shallows along each walk's sides, so it reads as planks over
-	# the bog (PIX-519: water only under them showed nowhere): waded through,
+	# the bog (PIX-519: water only under them showed nowhere), and behind each
+	# hut, its pool going on under its house (PIX-557: a pool a row deep was
+	# all bank, the water a thin line between its stilts): waded through,
 	# never on a way, a hut's foot or a kept cell.
+	var wades := func(cell: Vector2i) -> bool:
+		return (map.is_walkable(cell) or opened.has(cell)) and not Hamlet.is_way(map.id, map.tile_at(cell)) \
+				and not kept.has(cell) and not feet.has(cell) and not _on_walk(out["walks"], cell) and cell not in out["wet"]
 	for walk: Rect2i in out["walks"]:
 		for cell in _sides(walk):
-			if (map.is_walkable(cell) or opened.has(cell)) and not Hamlet.is_way(map.id, map.tile_at(cell)) \
-					and not kept.has(cell) and not feet.has(cell) and not _on_walk(out["walks"], cell):
+			if wades.call(cell):
+				out["wet"].append(cell)
+	for hut: Vector2i in out["huts"]:
+		for cell in hut_cells(hut + Vector2i.UP):
+			if wades.call(cell):
 				out["wet"].append(cell)
 	# Column by column, the order the cells sort in, without sorting them.
 	for x in map.size.x:
@@ -128,6 +142,11 @@ static func lay(map: MapData, kept: Dictionary, opened := {}, today := {}) -> Di
 			elif roll < REEDS_OUT or (roll < REEDS_BY_WATER and _by_water(map, cell)):
 				out["reeds"][cell] = (h >> 14) % MireArt.REED_BEDS
 	return out
+
+
+## The cells the hut whose left cell is `hut` stands on, its pool under it.
+static func hut_cells(hut: Vector2i) -> Array[Vector2i]:
+	return _cells(Rect2i(hut, Vector2i(HUT_WIDE, 1)))
 
 
 ## Whether every cell of `rect` is open ground, or only field decor stands
@@ -183,6 +202,11 @@ func plan(view: MapView, slices: Slicer) -> void:
 		for cell: Vector2i in laid["wet"]:
 			view.drawn_as[cell] = "water"
 			view.data.shallows[cell] = true
+		# Each hut over a pool of the fen's own water (PIX-557: its pool drawn
+		# in its picture was too faint to see, the hut stood on the grass).
+		for hut: Vector2i in laid["huts"]:
+			for cell in hut_cells(hut):
+				view.drawn_as[cell] = "water"
 		for cell: Vector2i in view.drawn_as:
 			view.bare[cell] = true
 			view.patches.erase(cell)
@@ -229,31 +253,50 @@ func build(view: MapView, slices: Slicer) -> void:
 		view.set_meta("mire_wisps", wisps))
 
 
-## A stilt hut on its two cells, its pool and ladder reaching down onto the
-## walk before it; its window lit from its evening minute (no light of its own).
+## A stilt hut on its cells over its pool, its ladder reaching down onto
+## the walk before it (Shade's house on our stilts with the pack, PIX-557);
+## its window lit from its evening minute, its light on the ground before
+## it (PIX-557: lit, it threw none).
 func _raise_hut(view: MapView, hut: Vector2i) -> void:
-	var at := Vector2(0, TILE + MireArt.HUT_BELOW - MireArt.HUT_SIZE.y)
-	var root := stand_on(view, _sprite(MireArt.texture("hut")), hut, at)
-	var lit := _sprite(MireArt.texture("hut_lit"))
+	var root: Node2D
+	var lit: Sprite2D
+	var glass: Vector2
+	var drawn: Vector2i
+	if PunyTown.available():
+		root = stand_on(view, MireArt.cottage(), hut, Vector2(0, TILE))
+		lit = _sprite(LampArt.panes())
+		lit.position = Vector2(MireArt.COTTAGE_FRONT.find(PunyTown.WINDOW) * TILE, -MireArt.RAISED - TILE)
+		# The middle of the window tile's glass (LampArt._glazed's rows 1-10).
+		glass = lit.position + Vector2(TILE / 2.0, 6)
+		drawn = PunyTown.COTTAGE * TILE + Vector2i(0, MireArt.RAISED)
+	else:
+		var at := Vector2(0, TILE + MireArt.HUT_BELOW - MireArt.HUT_SIZE.y)
+		root = stand_on(view, _sprite(MireArt.texture("hut")), hut, at)
+		lit = _sprite(MireArt.texture("hut_lit"))
+		lit.position = at - Vector2(0, TILE)
+		glass = lit.position + Vector2(MireArt.HUT_WINDOW.get_center())
+		drawn = MireArt.HUT_SIZE - Vector2i(0, MireArt.HUT_BELOW)
 	lit.material = Lights.unshaded()
-	lit.position = at - Vector2(0, TILE)
 	lit.visible = false
 	root.add_child(lit)
 	var halo := _sprite(MireArt.halo(MapView.HALO_TINT, MapView.LAMP_HALO - 3, MapView.LAMP_HALO_PEAK))
 	halo.centered = true
 	halo.material = Lights.glow()
-	halo.position = at - Vector2(0, TILE) + Vector2(MireArt.HUT_WINDOW.get_center())
+	halo.position = glass
 	halo.visible = false
 	root.add_child(halo)
+	var light := Lights.make(Vector2(hut * TILE) + Vector2(glass.x, TILE), HUT_REACH, Lights.WINDOW, Lights.WINDOW_ENERGY)
+	view.props.add_child(light)
+	halo.set_meta("light", light)
 	# Lit at its own minute of the evening, as the town's windows (PIX-535).
 	for glow: Node2D in [lit, halo]:
 		glow.set_meta("cell", hut)
 		view.hut_glows.append(glow)
-	for cell: Vector2i in [hut, hut + Vector2i.RIGHT]:
+	for cell in hut_cells(hut):
 		block(view, cell)
 	# It casts as the trees do (PIX-524), from its stilts' foot on its cells,
-	# not from its pool's.
-	cast(view, Vector2(hut * TILE) + Vector2(MireArt.HUT_SIZE.x / 2.0, TILE), MireArt.HUT_SIZE.x - 4, MireArt.HUT_SIZE.y - MireArt.HUT_BELOW)
+	# not from its ladder's.
+	cast(view, Vector2(hut * TILE) + Vector2(drawn.x / 2.0, TILE), drawn.x - 4, drawn.y)
 
 
 ## A will-o'-wisp over `cell`: its heart, its halo and a soft light, shown

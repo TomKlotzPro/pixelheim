@@ -21,12 +21,24 @@ const CATTAIL_LIT := Color("a1753f")
 const REED_BEDS := 4
 ## A reed bed's picture: a cell wide, this tall, its foot the bottom row.
 const REED_SIZE := Vector2i(16, 20)
-## The stilt hut: two cells wide; its picture this big, its stilts' feet in
-## its pool HUT_BELOW pixels under its cells (onto the boardwalk before it).
+## The stilt hut without the pack (on the left of its three cells): its
+## picture this big, its ladder's foot HUT_BELOW pixels under its cells
+## (onto the boardwalk before it).
 const HUT_SIZE := Vector2i(32, 44)
 const HUT_BELOW := 12
 ## Its window, lit at night: where in its picture.
 const HUT_WINDOW := Rect2i(6, 17, 4, 3)
+## With the pack the hut is Shade's own (PIX-557: the one drawn here stood
+## at 60% of his houses' scale, its door 9 pixels and the hero 14): his
+## moss-green hip roof over COTTAGE_FRONT (a plank end, his door over the
+## ladder, a window: PunyTown.cottage), its floor RAISED pixels over its
+## cells' foot on our deck and stilts (`stilts`), standing in its pool.
+const COTTAGE_FRONT := [Hamlet.PLANKS[0], PunyTown.DOOR, PunyTown.WINDOW]
+const RAISED := 14
+## The deck under it: how much of it lies behind its wall's foot (seen
+## under the door), and its front's rows.
+const DECK_BEHIND := 3
+const DECK_FRONT := 2
 ## A will-o'-wisp's glow: its pale green, its halo's radius and peak.
 const WISP := Color(0.66, 1.0, 0.78)
 const WISP_HALO := 14
@@ -36,7 +48,8 @@ static var _textures := {}
 
 
 ## A picture by name, made once a session: "snag_<n>", "reeds_<n>",
-## "hut", "hut_lit" (its window at night), "wisp" (the bright heart).
+## "hut", "hut_lit" (its window at night), "stilts" (under Shade's hut),
+## "wisp" (the bright heart).
 static func texture(name: String) -> Texture2D:
 	if not _textures.has(name):
 		_textures[name] = ImageTexture.create_from_image(draw(name))
@@ -54,6 +67,8 @@ static func draw(name: String) -> Image:
 			return hut()
 		"hut_lit":
 			return hut_window()
+		"stilts":
+			return stilts()
 		_:
 			return wisp()
 
@@ -163,6 +178,52 @@ static func hut() -> Image:
 				image.set_pixel(x, y, MUD.darkened(0.25) if d.length() < 0.8 else MUD)
 	image.blend_rect(body, Rect2i(Vector2i.ZERO, HUT_SIZE), Vector2i.ZERO)
 	return image
+
+
+## The stilt hut built of Shade's pieces, with the pack: on our
+## deck and stilts in its pool, its bottom-left at its cells' foot.
+static func cottage() -> Node2D:
+	var hut := Node2D.new()
+	var under := Sprite2D.new()
+	under.texture = texture("stilts")
+	under.centered = false
+	under.position = Vector2(0, -RAISED - DECK_BEHIND)
+	hut.add_child(under)
+	var house := PunyTown.cottage("roof_moss", COTTAGE_FRONT)
+	house.position = Vector2(0, -RAISED)
+	hut.add_child(house)
+	return hut
+
+
+## What Shade's stilt hut stands on (PIX-557), as wide as it: the deck's
+## planks (the strip behind its wall's foot showing under the door, then
+## its front), four stilts down into the pool (no brace: the pool shows
+## between them), and a ladder from under the door onto the walk,
+## HUT_BELOW pixels under its cells.
+static func stilts() -> Image:
+	var inks := HamletArt.INKS
+	var wide := PunyTown.COTTAGE.x * TILE
+	var front := DECK_BEHIND + DECK_FRONT
+	var foot := DECK_BEHIND + RAISED
+	var image := Image.create(wide, foot + HUT_BELOW, false, Image.FORMAT_RGBA8)
+	image.fill(Color(0, 0, 0, 0))
+	for x: int in [1, 12, 34, 45]:
+		for y in range(front, foot - 2):
+			image.set_pixel(x, y, inks["4"])
+			image.set_pixel(x + 1, y, inks["2"])
+	for x in range(1, wide - 1):
+		for y in DECK_BEHIND:
+			image.set_pixel(x, y, inks["2"] if x % 5 == 0 else inks["4"])
+		image.set_pixel(x, DECK_BEHIND, inks["5"])
+		image.set_pixel(x, DECK_BEHIND + 1, inks["3"])
+	var ladder: int = COTTAGE_FRONT.find(PunyTown.DOOR) * TILE
+	for y in range(front, image.get_height() - 1):
+		image.set_pixel(ladder + 4, y, inks["4"])
+		image.set_pixel(ladder + 11, y, inks["3"])
+		if y % 3 == 0:
+			for x in range(ladder + 5, ladder + 11):
+				image.set_pixel(x, y, inks["5"])
+	return _outlined(image)
 
 
 ## The hut's window lit (shown at night, the dark doesn't touch it).

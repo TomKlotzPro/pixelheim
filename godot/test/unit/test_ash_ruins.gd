@@ -81,7 +81,7 @@ func test_all_in_the_ash_off_every_road_spot_and_station() -> void:
 			if station.has(part):
 				var cell := Routes.cell_of(station[part])
 				for dy in range(-1, 2):
-					for dx in range(-1, 3 if part == "hut" else 2):
+					for dx in range(-1, 4 if part == "hut" else 2):
 						stations[cell + Vector2i(dx, dy)] = true
 	for fork: Dictionary in Routes.forks():
 		var cell := Routes.cell_of(fork["at"])

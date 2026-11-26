@@ -184,6 +184,9 @@ static func _decor_hamlet(view: MapView) -> void:
 					PropsLayer.add_puny_prop(view, PunyProps.plan({cell: "lamp"})["props"][0])
 					continue
 				var art: String = piece.get("art", "")
+				if HubArt.built(art):
+					_add_lodge(view, piece)
+					continue
 				var still := Sprite2D.new()
 				still.centered = false
 				# One of the pack's own stands a tile high (PIX-382, the town's
@@ -304,10 +307,19 @@ static func _decor_routes(view: MapView) -> void:
 			sprite.texture = HamletArt.texture("post_box")
 			view.post_boxes.append(sprite)
 			stand_on(view, sprite, cell, Vector2(0, TILE - HamletArt.size("post_box").y))
+		elif kind == "hut" and PunyTown.available():
+			# Shade's own hut stands instead (PIX-557), its window lit as the
+			# town's are.
+			sprite.free()
+			var hut := stand_on(view, RouteArt.cottage(), cell, Vector2(0, TILE))
+			_add_hut_window(view, hut, cell)
+			view.waystations.append(String(piece["place"]))
 		else:
 			# Each lamp in its kind's look (PIX-324).
 			sprite.texture = RouteArt.lamp(String(piece.get("lamp", "ember"))) if kind == "lamp" else RouteArt.texture(art)
-			var root := stand_on(view, sprite, cell, Vector2(0, TILE - RouteArt.size(art).y))
+			# The hut drawn here on the right of its cells, its door over the
+			# arrival (PIX-557).
+			var root := stand_on(view, sprite, cell, Vector2(TILE if kind == "hut" else 0, TILE - RouteArt.size(art).y))
 			if kind == "lamp":
 				_add_ember_lamp(view, root, cell, String(piece["place"]), cell in own_light, String(piece.get("lamp", "ember")))
 				PropsLayer.lamp_shadow(view, cell, RouteArt.size(art), 0)
@@ -324,7 +336,7 @@ static func _decor_routes(view: MapView) -> void:
 		elif kind == "hut":
 			view.door_signs.append({
 				"door": cell, "name": String(Routes.station(piece["place"])["name"]),
-				"about": Text.t("Halfway to %s") % Text.mid(Catalog.place_name(piece["place"])), "node": null, "over": RouteArt.size("hut").y - TILE + 4,
+				"about": Text.t("Halfway to %s") % Text.mid(Catalog.place_name(piece["place"])), "node": null, "over": RouteArt.hut_size().y - TILE + 4,
 			})
 	view.show_post_box()
 
@@ -361,14 +373,19 @@ static func _add_ember_lamp(view: MapView, root: Node2D, cell: Vector2i, place: 
 
 
 ## A waystation's window lit at night (PIX-322): its glass alone, the dark
-## not touching it; no light of its own, so the lamp keeps the budget. Lit
+## not touching it (Shade's window's as the town's, LampArt.panes, with the
+## pack: PIX-557); no light of its own, so the lamp keeps the budget. Lit
 ## at its own minute of the evening, as the town's (PIX-535, hut_glows).
 static func _add_hut_window(view: MapView, root: Node2D, cell: Vector2i) -> void:
 	var pane := Sprite2D.new()
-	pane.texture = RouteArt.lit_window()
 	pane.centered = false
 	pane.material = Lights.unshaded()
-	pane.position = Vector2(0, -RouteArt.size("hut").y)
+	if PunyTown.available():
+		pane.texture = LampArt.panes()
+		pane.position = Vector2(RouteArt.HUT_FRONT.find(PunyTown.WINDOW) * TILE, -TILE)
+	else:
+		pane.texture = RouteArt.lit_window()
+		pane.position = Vector2(TILE, -RouteArt.size("hut").y)
 	pane.visible = false
 	root.add_child(pane)
 	pane.set_meta("cell", cell)
@@ -423,6 +440,38 @@ static func _add_shine(view: MapView, root: Node2D, cell: Vector2i, art: String)
 	root.add_child(lit)
 	view.night_glows.append(lit)
 	var at := Vector2(cell * TILE) + Vector2(0, TILE - HamletArt.size(art).y) + HamletArt.shine_at(art)
+	var halo := view._add_halo(at, MapView.LAMP_HALO, MapView.LAMP_HALO_PEAK)
+	var light := Lights.make(at + Vector2(0, TILE * 0.5), MapView.LAMP_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
+	view.props.add_child(light)
+	halo.set_meta("light", light)
+
+
+## Gunnar's lodge with its walls up, Shade's own (PIX-557, HubArt.lodge),
+## standing on its cells and blocking them; lit (its fire in it, `lit`):
+## its windows' glass as the town's (LampArt.panes, the dark untouched),
+## a halo between them and its light on the ground before its door, as
+## the lodge drawn here had (_add_shine); smoke from its chimney's mouth.
+static func _add_lodge(view: MapView, piece: Dictionary) -> void:
+	var cell: Vector2i = piece["cell"]
+	var root := stand_on(view, HubArt.lodge(), cell, Vector2(0, TILE))
+	for taken: Vector2i in piece["cells"]:
+		block(view, taken)
+	if piece.has("smoke"):
+		_add_smoke_thread(view, Vector2(cell * TILE) + Vector2(HubArt.LODGE_CHIMNEY * TILE) + Vector2(0, TILE) + CHIMNEY_MOUTH)
+	if not piece.get("lit", false):
+		return
+	for x in HubArt.LODGE_FRONT.size():
+		if HubArt.LODGE_FRONT[x] != PunyTown.WINDOW:
+			continue
+		var pane := Sprite2D.new()
+		pane.texture = LampArt.panes()
+		pane.centered = false
+		pane.material = Lights.unshaded()
+		pane.position = Vector2(x * TILE, -TILE)
+		pane.visible = false
+		root.add_child(pane)
+		view.night_glows.append(pane)
+	var at := Vector2(cell * TILE) + Vector2(PunyTown.COTTAGE.x * TILE / 2.0, TILE / 2.0)
 	var halo := view._add_halo(at, MapView.LAMP_HALO, MapView.LAMP_HALO_PEAK)
 	var light := Lights.make(at + Vector2(0, TILE * 0.5), MapView.LAMP_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
 	view.props.add_child(light)

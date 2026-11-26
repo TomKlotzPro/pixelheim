@@ -12,6 +12,33 @@ class_name HubArt
 ## Made with a small drawing script (lines, tapers, an outline round what's
 ## drawn), so edit the rows by hand as any other piece's.
 
+## With the paid pack, Gunnar's lodge with its walls up is Shade's own
+## (PIX-557: the one drawn here stood at 60% of his houses' scale, its door
+## 10 pixels and the hero 14), as the Frostgate's houses are: his hip roof
+## under the snow over LODGE_FRONT (his door between two windows), a
+## chimney on the roof in the cell LODGE_CHIMNEY (from its bottom-left
+## cell; PunyTown.cottage). Its frame is still ours.
+const BUILT := ["lodge_walls", "lodge"]
+const LODGE_FRONT := [PunyTown.WINDOW, PunyTown.DOOR, PunyTown.WINDOW]
+const LODGE_CHIMNEY := Vector2i(2, -3)
+
+
+## Whether piece `art` is built of Shade's pieces (`lodge`): with the pack.
+static func built(art: String) -> bool:
+	return art in BUILT and PunyTown.available()
+
+
+## Gunnar's lodge built of Shade's pieces, its bottom-left at its origin.
+static func lodge() -> Node2D:
+	var house := PunyTown.cottage("roof_slate", LODGE_FRONT, true)
+	var chimney := Sprite2D.new()
+	chimney.texture = PunyProps.texture(PunyTown.CHIMNEY[1])
+	chimney.centered = false
+	chimney.position = Vector2(LODGE_CHIMNEY * 16)
+	house.add_child(chimney)
+	return house
+
+
 const PIECES := {
 	"lighthouse_dark": [
 		"............oookoooo............",

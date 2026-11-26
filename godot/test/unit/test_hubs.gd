@@ -258,8 +258,10 @@ func test_a_hub_drawn_burns_its_lit_pieces_at_night() -> void:
 			view.plan(map.spawn)
 			view.build(root)
 			lights[n] = root.find_children("*", "PointLight2D", true, false).size()
+			# Shade's lodge burns in its windows' glass, as the town's (PIX-557).
+			var art := String(Hubs.steps(place)[2]["pieces"][-1]["art"])
 			var burning := root.find_children("*", "Sprite2D", true, false).filter(func(sprite: Sprite2D) -> bool:
-				return sprite.texture == HamletArt.shine(String(Hubs.steps(place)[2]["pieces"][-1]["art"])))
+				return sprite.texture == HamletArt.shine(art) or (HubArt.built(art) and sprite.texture == LampArt.panes() and sprite.get_parent().get_parent() == view.actors))
 			shines[n] = burning.size()
 			# PIX-400's review: a lamp post's whole glass lit as the town's lamps'.
 			var glass := root.find_children("*", "AnimatedSprite2D", true, false).filter(func(flame: AnimatedSprite2D) -> bool:
@@ -272,7 +274,7 @@ func test_a_hub_drawn_burns_its_lit_pieces_at_night() -> void:
 			assert_true(burning.all(func(sprite: Sprite2D) -> bool: return sprite.visible), "%s: alight at night" % place)
 			assert_true(glass.all(func(flame: AnimatedSprite2D) -> bool: return flame.visible), "%s: its lamps' glass lit at night" % place)
 		assert_eq(shines[5], 0, "%s: nothing burns before its last step" % place)
-		assert_eq(shines[7], 1, "%s: its last step burns" % place)
+		assert_gt(shines[7], 0, "%s: its last step burns" % place)
 		var raised: int = Hubs.steps(place)[2]["pieces"].filter(func(piece: Dictionary) -> bool: return piece["art"] == "lamp_post").size()
 		assert_eq(posts[7], posts[5] + raised, "%s: each lamp post's glass lit as the town's lamps'" % place)
 		var lit: int = Hubs.steps(place)[2]["pieces"].filter(func(piece: Dictionary) -> bool: return piece.get("lit", false)).size()

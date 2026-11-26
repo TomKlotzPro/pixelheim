@@ -350,7 +350,8 @@ static func plan(map: MapData, post: PostState, settlement: SettlementState, kep
 	var stations := built(settlement)
 	for place: String in stations:
 		var hut := spot(place, "hut")
-		wanted.append({"kind": "hut", "cell": hut, "cells": [hut, hut + Vector2i.RIGHT], "place": place})
+		# Three cells wide, Shade's houses' scale (PIX-557).
+		wanted.append({"kind": "hut", "cell": hut, "cells": [hut, hut + Vector2i.RIGHT, hut + Vector2i(2, 0)], "place": place})
 		for part: String in ["lamp", "box", "bench"]:
 			wanted.append({"kind": part, "cell": spot(place, part), "cells": [spot(place, part)], "place": place})
 	# Each lamp of its kind (PIX-324), a lamp of its own among them.

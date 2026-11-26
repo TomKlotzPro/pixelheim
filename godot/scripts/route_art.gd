@@ -27,6 +27,12 @@ const EMBER_FPS := 3.0
 const HALO_AT := Vector2(8.0, 8.5)
 ## The hut's window's glass (its pixels, frame left out), lit at night.
 const WINDOW := Rect2i(20, 21, 5, 4)
+## With the paid pack the hut is Shade's own (PIX-557: the one drawn here,
+## two cells wide, stood at 60% of his houses' scale, its door 10 pixels
+## and the hero 14): his thatched hip roof over HUT_FRONT, his timber's
+## end, his door in the middle (over `arrival`, as before) and a window,
+## lit at night (PunyTown.cottage).
+const HUT_FRONT := [PunyTown.WALL_LEFT, PunyTown.DOOR, PunyTown.WINDOW]
 ## Each lamp's kind (PIX-324, Lamps.KINDS) is the ember lamp with its
 ## cage's inks swapped: sea glass panes round the shard (Saltmere's), a
 ## frost lily in it (the Frostgate's), its cage furred with grave moss (the
@@ -70,9 +76,10 @@ const PIECES := {
 		"....o233332o....",
 		"....oooooooo....",
 	],
-	## A waystation's hut, two cells wide: a thatched roof over plank walls on
-	## a stone footing, its door on the left under the Post's board (a letter
-	## drawn on it, sealed red), a window on the right.
+	## A waystation's hut without the pack, on the right of its three cells:
+	## a thatched roof over plank walls on a stone footing, its door on the
+	## left (over `arrival`) under the Post's board (a letter drawn on it,
+	## sealed red), a window on the right.
 	"hut": [
 		"................................",
 		"................................",
@@ -205,6 +212,16 @@ static func texture(name: String) -> Texture2D:
 static func size(name: String) -> Vector2i:
 	var rows: Array = PIECES[name]
 	return Vector2i(String(rows[0]).length(), rows.size())
+
+
+## The waystation's hut built of Shade's pieces, with the pack.
+static func cottage() -> Node2D:
+	return PunyTown.cottage("roof_thatch", HUT_FRONT)
+
+
+## How big the waystation's hut is drawn, in pixels: Shade's with the pack.
+static func hut_size() -> Vector2i:
+	return PunyTown.COTTAGE * 16 if PunyTown.available() else size("hut")
 
 
 ## A lamp of `kind` by day (PIX-324): the ember lamp, its cage's inks
