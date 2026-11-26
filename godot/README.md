@@ -567,7 +567,7 @@ script's doc there, then run `python3 godot/tools/layout.py`; CI and
 - `scripts/firebolt.gd` — A foe's shot in flight: a fireborn elite's firebolt (PIX-155), or a shooter's arrow, ball or flame (PIX-410, Reach.shot).
 - `scripts/gait.gd` — How the cast walks (PIX-243): the hero, the villagers, the monsters and the wagon all step through their sheet's walk (PunyArt.WALKS) by the ground they cover, not by the clock, so their feet keep pace with the ground at any speed
 - `scripts/game_clock.gd` — The game's own clock (PIX-276): the time the world has lived, counted in its physics ticks, sixty a second.
-- `scripts/gate_art.gd` — What a shut gate looks like (PIX-254, Gates), in art already in the game
+- `scripts/gate_art.gd` — What a shut gate looks like (PIX-254, Gates): the road still there and the land past it in sight, something drawn across it that blocks like any prop.
 - `scripts/ground_detail.gd` — The small things in the grass (PIX-305): tufts, clover, flowers, pebbles, twigs, and the mire's reeds and sedge, which Scatter.detail picks a cell at a time.
 - `scripts/hamlet.gd` — Each settlement beyond Pixelheim its own (PIX-313, the audit's « bare and all alike »: Saltmere's long thatch slabs on an empty lawn, the same slate cottage at Greyhold, the Frostgate, Blackiron and the mountain, no fence, garden, net or boat, no smoke by day, and barrels as tall as the villagers beside them), and Morvax's smithy at the top of the mountain road (PIX-312: the stock cottage, no chimney, no fire).
 - `scripts/hamlet_art.gd` — What the settlements beyond Pixelheim are dressed in that Shade's sheets don't draw (PIX-313), and the story's last set pieces (PIX-312)

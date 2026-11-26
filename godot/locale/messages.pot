@@ -6009,6 +6009,10 @@ msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Rock and Snow"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Room to Breathe"
 msgstr ""
 
@@ -7069,6 +7073,10 @@ msgid "The Frostgate"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Frostgate road's avalanche is a lumpy bank of snow shaded on its east side, a snapped pine half buried in it and a few sparkles by day"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Frostgate's lake is frozen for real now: cracked plates, polish and glints like the ice cave's, a rounded shore instead of square steps, a faint cold light over it at night, and the bushes in the snow are snowy too"
 msgstr ""
 
@@ -7386,6 +7394,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The chosen waypoint's ring and its marker share one centre at any window size"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The cliff road's rockfall is a heap of boulders fallen from the cliff, tallest in the middle, a broken trunk across it and scree spilled on the road"
 msgstr ""
 
 #: assets/data/changelog.json

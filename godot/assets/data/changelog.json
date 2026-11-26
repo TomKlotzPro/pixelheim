@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.407.0",
+      "date": "2026-11-26",
+      "codename": "Rock and Snow",
+      "notes": [
+        "The cliff road's rockfall is a heap of boulders fallen from the cliff, tallest in the middle, a broken trunk across it and scree spilled on the road",
+        "The Frostgate road's avalanche is a lumpy bank of snow shaded on its east side, a snapped pine half buried in it and a few sparkles by day"
+      ]
+    },
+    {
       "version": "0.406.0",
       "date": "2026-11-25",
       "codename": "Campfires",
