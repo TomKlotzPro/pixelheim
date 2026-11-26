@@ -17,10 +17,11 @@ class_name HubArt
 ## 10 pixels and the hero 14), as the Frostgate's houses are: his hip roof
 ## under the snow over LODGE_FRONT (his door between two windows), a
 ## chimney on the roof in the cell LODGE_CHIMNEY (from its bottom-left
-## cell; PunyTown.cottage). Its frame is still ours.
+## cell; PunyTown.cottage), off the roof's end as the town's narrow houses
+## put it (PunyTown's wing houses). Its frame is still ours.
 const BUILT := ["lodge_walls", "lodge"]
 const LODGE_FRONT := [PunyTown.WINDOW, PunyTown.DOOR, PunyTown.WINDOW]
-const LODGE_CHIMNEY := Vector2i(2, -3)
+const LODGE_CHIMNEY := Vector2i(1, -3)
 
 
 ## Whether piece `art` is built of Shade's pieces (`lodge`): with the pack.

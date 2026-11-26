@@ -85,6 +85,9 @@ static func _cast_dressing(view: MapView) -> void:
 		var bottom := Vector2(piece["cell"] * TILE) + Vector2(0, TILE)
 		if piece["kind"] == "hut" and PunyTown.available():
 			cast_built(view, bottom)
+		elif piece["kind"] == "hut":
+			# Ours stands on the right of its cells (SettlementsLayer).
+			cast_art(view, "hut", bottom + Vector2(TILE, 0))
 		elif piece["kind"] != "lamp":
 			cast_art(view, "post_box" if piece["kind"] == "box" else String(piece["kind"]), bottom)
 

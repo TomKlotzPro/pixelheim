@@ -37,9 +37,12 @@ const WALKS: Array[Rect2i] = [
 ]
 ## The stilt huts, by their left cell (HUT_WIDE cells wide at Shade's
 ## houses' scale, PIX-557; their door over a walk), each over a pool of
-## the fen's water.
+## the fen's water, its row and the one behind; HUT_DEEP rows blocked, its
+## own and those its raised house stands over (PIX-557's review: waded or
+## walked, a hero there was lost behind it).
 const HUTS: Array[Vector2i] = [Vector2i(5, 23), Vector2i(28, 33)]
 const HUT_WIDE := 3
+const HUT_DEEP := 4
 ## Its window's light on the ground before it at night (one a hut, small).
 const HUT_REACH := 48.0
 ## The share (per mille) of the fen's open cells growing a dead tree, and a
@@ -65,7 +68,7 @@ const LAIR_CLEAR := 2
 
 
 ## What the Mirefen stands in, as it is laid: {"walks": [Rect2i], "wet":
-## [cells of shallows beside them and behind the huts], "huts": [cell], "trees": {cell:
+## [cells of shallows beside them], "huts": [cell], "trees": {cell:
 ## variant}, "reeds": {cell: variant}, "blocks": [cells]}. `kept`: cells
 ## nothing may stand on (Hamlet.kept_on without the patches' decks);
 ## `opened`: the field decor that blocks, which a walk and its shallows lift
@@ -73,7 +76,7 @@ const LAIR_CLEAR := 2
 ## kept clear of the trees but not of the shallows nor the huts, the same
 ## every day and arrival (PIX-519's review: a hero who quit wading came
 ## back on dry fen in the middle of the water; PIX-557: a hut stood only on
-## the days no patch grew under it, and a patch under its pool is dropped).
+## the days no patch grew under it, and a patch under it is dropped).
 static func lay(map: MapData, kept: Dictionary, opened := {}, today := {}) -> Dictionary:
 	var blocks: Array[Vector2i] = []
 	var out := {"walks": [] as Array[Rect2i], "wet": [] as Array[Vector2i], "huts": [] as Array[Vector2i], "trees": {}, "reeds": {}, "blocks": blocks}
@@ -100,23 +103,15 @@ static func lay(map: MapData, kept: Dictionary, opened := {}, today := {}) -> Di
 		if Hamlet.fits(map, foot, kept, blocks):
 			out["huts"].append(hut)
 			blocks.append_array(foot)
-			for cell in _cells(Rect2i(hut - Vector2i(1, 2), Vector2i(HUT_WIDE + 2, 4))):
+			for cell in _cells(Rect2i(hut.x - 1, hut.y - HUT_DEEP, HUT_WIDE + 2, HUT_DEEP + 2)):
 				clear[cell] = true
 	# The fen's shallows along each walk's sides, so it reads as planks over
-	# the bog (PIX-519: water only under them showed nowhere), and behind each
-	# hut, its pool going on under its house (PIX-557: a pool a row deep was
-	# all bank, the water a thin line between its stilts): waded through,
-	# never on a way, a hut's foot or a kept cell.
-	var wades := func(cell: Vector2i) -> bool:
-		return (map.is_walkable(cell) or opened.has(cell)) and not Hamlet.is_way(map.id, map.tile_at(cell)) \
-				and not kept.has(cell) and not feet.has(cell) and not _on_walk(out["walks"], cell) and cell not in out["wet"]
+	# the bog (PIX-519: water only under them showed nowhere): waded through,
+	# never on a way, a hut's cells or a kept cell.
 	for walk: Rect2i in out["walks"]:
 		for cell in _sides(walk):
-			if wades.call(cell):
-				out["wet"].append(cell)
-	for hut: Vector2i in out["huts"]:
-		for cell in hut_cells(hut + Vector2i.UP):
-			if wades.call(cell):
+			if (map.is_walkable(cell) or opened.has(cell)) and not Hamlet.is_way(map.id, map.tile_at(cell)) \
+					and not kept.has(cell) and not feet.has(cell) and not _on_walk(out["walks"], cell):
 				out["wet"].append(cell)
 	# Column by column, the order the cells sort in, without sorting them.
 	for x in map.size.x:
@@ -144,9 +139,10 @@ static func lay(map: MapData, kept: Dictionary, opened := {}, today := {}) -> Di
 	return out
 
 
-## The cells the hut whose left cell is `hut` stands on, its pool under it.
+## The cells the hut whose left cell is `hut` blocks, top row first
+## (Hamlet.fits): its own row and the HUT_DEEP - 1 behind it.
 static func hut_cells(hut: Vector2i) -> Array[Vector2i]:
-	return _cells(Rect2i(hut, Vector2i(HUT_WIDE, 1)))
+	return _cells(Rect2i(hut.x, hut.y - HUT_DEEP + 1, HUT_WIDE, HUT_DEEP))
 
 
 ## Whether every cell of `rect` is open ground, or only field decor stands
@@ -192,6 +188,13 @@ func plan(view: MapView, slices: Slicer) -> void:
 		# under it nor on the planks and shallows (PatchesLayer.deal_patches).
 		var today := view.patches.duplicate()
 		today[view.arrival] = true
+		# The field decor that blocks gives way to the huts, which stand every
+		# day (PIX-557's review: a bush behind the west hut kept it down).
+		for hut in HUTS:
+			for cell in hut_cells(hut):
+				if view.solid_scatter.has(cell):
+					view.solid_scatter.erase(cell)
+					view.data.covered.erase(cell)
 		var laid := lay(view.data, Hamlet.kept_on(view.data, {}), view.solid_scatter, today)
 		view.drawn_as = {}
 		for walk: Rect2i in laid["walks"]:
@@ -203,10 +206,14 @@ func plan(view: MapView, slices: Slicer) -> void:
 			view.drawn_as[cell] = "water"
 			view.data.shallows[cell] = true
 		# Each hut over a pool of the fen's own water (PIX-557: its pool drawn
-		# in its picture was too faint to see, the hut stood on the grass).
+		# in its picture was too faint to see, the hut stood on the grass; a
+		# pool a row deep was all bank: its row and the one behind), and no
+		# patch of today's under it.
 		for hut: Vector2i in laid["huts"]:
 			for cell in hut_cells(hut):
-				view.drawn_as[cell] = "water"
+				if cell.y >= hut.y - 1:
+					view.drawn_as[cell] = "water"
+				view.patches.erase(cell)
 		for cell: Vector2i in view.drawn_as:
 			view.bare[cell] = true
 			view.patches.erase(cell)

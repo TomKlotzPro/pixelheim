@@ -375,7 +375,8 @@ static func sits(map: MapData, piece: Dictionary, blocks: Array[Vector2i] = []) 
 ## roads, no portal, nothing standing there yet (`blocks`, the map's
 ## covered cells), not a `kept` cell nor the step before a door; and
 ## blocking them all leaves the open ground round them one, so no way is
-## ever closed.
+## ever closed. `cells` run row by row from the top left to the bottom
+## right: a house's rows behind its wall too (PIX-557).
 static func fits(map: MapData, cells: Array[Vector2i], kept: Dictionary, blocks: Array[Vector2i]) -> bool:
 	var taken := {}
 	for cell: Vector2i in cells:
@@ -392,10 +393,12 @@ static func fits(map: MapData, cells: Array[Vector2i], kept: Dictionary, blocks:
 	var last: Vector2i = cells[-1]
 	for x in range(first.x - 1, last.x + 2):
 		ring.append(Vector2i(x, first.y - 1))
-	ring.append(Vector2i(last.x + 1, first.y))
+	for y in range(first.y, last.y + 1):
+		ring.append(Vector2i(last.x + 1, y))
 	for x in range(last.x + 1, first.x - 2, -1):
-		ring.append(Vector2i(x, first.y + 1))
-	ring.append(Vector2i(first.x - 1, first.y))
+		ring.append(Vector2i(x, last.y + 1))
+	for y in range(last.y, first.y - 1, -1):
+		ring.append(Vector2i(first.x - 1, y))
 	var open := ring.filter(func(cell: Vector2i) -> bool:
 		return map.is_walkable(cell) and not taken.has(cell) and cell not in blocks)
 	if open.is_empty():

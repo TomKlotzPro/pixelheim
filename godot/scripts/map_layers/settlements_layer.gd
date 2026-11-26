@@ -334,8 +334,9 @@ static func _decor_routes(view: MapView) -> void:
 				"about": Routes.fork_about(piece["fork"], GameState.post), "node": null, "over": RouteArt.size("signpost").y - TILE + 4,
 			})
 		elif kind == "hut":
+			# Its door the middle of its three cells, over the arrival (PIX-557).
 			view.door_signs.append({
-				"door": cell, "name": String(Routes.station(piece["place"])["name"]),
+				"door": cell + Vector2i.RIGHT, "name": String(Routes.station(piece["place"])["name"]),
 				"about": Text.t("Halfway to %s") % Text.mid(Catalog.place_name(piece["place"])), "node": null, "over": RouteArt.hut_size().y - TILE + 4,
 			})
 	view.show_post_box()

@@ -421,6 +421,12 @@ func test_a_waystation_is_drawn_with_its_ember_lamp_lit_at_night() -> void:
 	var plates: Array = view.door_signs.map(func(entry: Dictionary) -> String: return entry["name"])
 	assert_has(plates, "Bram's Corner", "the signposts' names on their plates")
 	assert_has(plates, "The Saltmere Waystation", "and the waystations'")
+	# Each over its hut's door, over where the hero arrives (PIX-557's
+	# review: it floated over the hut's left wall).
+	for place: String in Routes.built(GameState.settlement):
+		var name := String(Routes.station(place)["name"])
+		var doors: Array = view.door_signs.filter(func(entry: Dictionary) -> bool: return entry["name"] == name).map(func(entry: Dictionary) -> Vector2i: return entry["door"])
+		assert_eq(doors, [Routes.spot(place, "arrival") + Vector2i.UP], "%s's plate over its door" % place)
 	view.set_night(false)
 	assert_false((view.ember_lamps["saltmere"] as Node2D).visible, "dull by day")
 	view.set_night(true)

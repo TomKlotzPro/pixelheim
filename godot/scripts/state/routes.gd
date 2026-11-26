@@ -25,6 +25,8 @@ class_name Routes
 ## The map the routes run across: the Ashenreach, where every road out of
 ## Pixelheim's gate meets the others.
 const MAP := "overworld"
+## A waystation's hut, in cells across and up (PIX-557: PunyTown.COTTAGE).
+const HUT := Vector2i(3, 3)
 
 
 static func _data() -> Dictionary:
@@ -350,8 +352,7 @@ static func plan(map: MapData, post: PostState, settlement: SettlementState, kep
 	var stations := built(settlement)
 	for place: String in stations:
 		var hut := spot(place, "hut")
-		# Three cells wide, Shade's houses' scale (PIX-557).
-		wanted.append({"kind": "hut", "cell": hut, "cells": [hut, hut + Vector2i.RIGHT, hut + Vector2i(2, 0)], "place": place})
+		wanted.append({"kind": "hut", "cell": hut, "cells": hut_cells(map, hut), "place": place})
 		for part: String in ["lamp", "box", "bench"]:
 			wanted.append({"kind": part, "cell": spot(place, part), "cells": [spot(place, part)], "place": place})
 	# Each lamp of its kind (PIX-324), a lamp of its own among them.
@@ -372,6 +373,19 @@ static func plan(map: MapData, post: PostState, settlement: SettlementState, kep
 			continue
 		blocks.append_array(cells)
 		pieces.append(piece)
+	return out
+
+
+## The cells a waystation's hut whose left cell is `hut` blocks: three
+## wide at Shade's houses' scale, its wall's row and the open ground of the
+## two its roof stands over (PIX-557: a hero there was lost behind it), top
+## row first (Hamlet.fits).
+static func hut_cells(map: MapData, hut: Vector2i) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	for y in range(hut.y - HUT.y + 1, hut.y + 1):
+		for x in range(hut.x, hut.x + HUT.x):
+			if y == hut.y or map.is_walkable(Vector2i(x, y)):
+				out.append(Vector2i(x, y))
 	return out
 
 

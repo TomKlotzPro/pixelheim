@@ -3,7 +3,9 @@ extends GutTest
 ## Mirefen's stilt huts and Gunnar's lodge were drawn at 60% of Shade's
 ## houses' scale, their doors 9 or 10 pixels and the hero 14. Each stands
 ## on three cells, and with the paid pack is his house, built as the town's
-## narrow houses are, with his door in its wall: as tall as the hero.
+## narrow houses are, with his door in its wall: as tall as the hero. A
+## waystation's hut and a stilt hut block the open ground behind them their
+## roofs stand over (PIX-557's review: a hero there was lost behind them).
 
 
 func test_each_hut_stands_on_three_cells() -> void:
@@ -18,12 +20,19 @@ func test_each_hut_stands_on_three_cells() -> void:
 	var huts: Array = Routes.plan(reach, post, settlement, Hamlet.kept_on(reach, {}))["pieces"].filter(func(piece: Dictionary) -> bool: return piece["kind"] == "hut")
 	assert_eq(huts.size(), 4, "every waystation's hut stands")
 	for hut: Dictionary in huts:
-		assert_eq(hut["cells"], [hut["cell"], hut["cell"] + Vector2i.RIGHT, hut["cell"] + Vector2i(2, 0)], "%s's hut on three cells" % hut["place"])
+		var cell: Vector2i = hut["cell"]
+		var wall := [cell, cell + Vector2i.RIGHT, cell + Vector2i(2, 0)]
+		assert_eq(hut["cells"].slice(-3), wall, "%s's hut on three cells" % hut["place"])
+		for x in 3:
+			for y in [1, 2]:
+				var behind := cell + Vector2i(x, -y)
+				assert_eq(behind in hut["cells"], reach.is_walkable(behind), "%s's hut blocks the open ground under its roof at %s" % [hut["place"], behind])
 	var fen := MapData.load_by_id(MireDressing.MAP)
 	var laid := MireDressing.lay(fen, Hamlet.kept_on(fen, {}))
 	assert_eq(laid["huts"], MireDressing.HUTS, "every stilt hut stands")
 	for hut: Vector2i in laid["huts"]:
-		assert_eq(MireDressing.hut_cells(hut).size(), 3, "the stilt hut at %s on three cells" % hut)
+		assert_eq(MireDressing.hut_cells(hut).size(), 3 * MireDressing.HUT_DEEP, "the stilt hut at %s three cells wide, blocking the rows its raised house stands over" % hut)
+		assert_eq(MireDressing.hut_cells(hut).slice(-3), [hut, hut + Vector2i.RIGHT, hut + Vector2i(2, 0)], "its wall's row last")
 		for cell in MireDressing.hut_cells(hut):
 			assert_has(laid["blocks"], cell, "and blocks %s" % cell)
 	for art: String in ["lodge_frame", "lodge_walls", "lodge"]:

@@ -115,6 +115,17 @@ func test_a_standing_piece_never_closes_a_corridor() -> void:
 	assert_false(Hamlet.fits(map, [Vector2i(2, 2)] as Array[Vector2i], {Vector2i(2, 2): true}, none), "never on a kept cell")
 	map.grid[Vector2i(2, 2)] = "path"
 	assert_false(Hamlet.fits(map, [Vector2i(2, 2)] as Array[Vector2i], {}, none), "never on a path")
+	# A house two rows deep (PIX-557) in open ground fits; across a strip
+	# between two waters it would cut it in two.
+	var house: Array[Vector2i] = [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2)]
+	for y in 4:
+		for x in 5:
+			map.grid[Vector2i(x, y)] = "grass"
+	assert_true(Hamlet.fits(map, house, {}, none), "a house two rows deep fits in the open")
+	for y in [1, 2]:
+		for x in [0, 3, 4]:
+			map.grid[Vector2i(x, y)] = "water"
+	assert_false(Hamlet.fits(map, house, {}, none), "its rows behind never close a way")
 
 
 ## A ware laid `on` what stands (PIX-382 step 4: a stall's counter, a
