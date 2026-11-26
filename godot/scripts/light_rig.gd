@@ -87,6 +87,24 @@ const LANTERN_REACH := 96.0
 const LANTERN_REACH_UNDER := 144.0
 ## Whether the lantern is tended for a map under the ground now.
 var _under := false
+## How much of its light the lantern gives now (PIX-559): it fades in over
+## LANTERN_FADE seconds as the dark passes LANTERN_DARK, and out as it
+## falls back, at once with Reduce motion and as a map is drawn
+## (lantern_fade).
+var lantern_lit := 0.0
+const LANTERN_FADE := 1.0
+## A light of no energy over everything for the first frames of a map
+## drawn (PIX-559, warm()): the web's WebGL compiles a shader's lit variant
+## the first frame a light touches what it draws, and the frame waits for
+## it (the town's eleven made a frame of 110 ms as the lantern lit). Shown
+## under the map's build, it compiles them there; then it goes, and the day
+## is drawn unlit as before. With it, one clear instance at the hero's feet
+## drawn as particles are (`_probe`): the walk's dust, which no map shows
+## as it is drawn, was the last to compile as the lantern lit.
+var _warm: DirectionalLight2D
+var _probe: MultiMeshInstance2D
+var _warm_frames := WARM_FRAMES
+const WARM_FRAMES := 3
 ## The lights casting shadows now (PIX-490, NightShadows): the lamps
 ## nearest the hero, up to the cap, never the lantern; and how many of the
 ## flames burning could (the report's nightshadows=).
@@ -106,6 +124,19 @@ func _ready() -> void:
 	# (Cutscene's world stage, PIX-253 step 9).
 	darkness.add_to_group(&"world_light")
 	world.add_child(darkness)
+	_warm = DirectionalLight2D.new()
+	_warm.energy = 0.0
+	_warm.color = Color.BLACK
+	world.add_child(_warm)
+	var many := MultiMesh.new()
+	many.transform_format = MultiMesh.TRANSFORM_2D
+	many.use_colors = true
+	many.mesh = QuadMesh.new()
+	many.instance_count = 1
+	many.set_instance_color(0, Color.TRANSPARENT)
+	_probe = MultiMeshInstance2D.new()
+	_probe.multimesh = many
+	_warm.add_child(_probe)
 	# Its own layer, under the HUD's: only the world blooms.
 	var layer := CanvasLayer.new()
 	layer.layer = GLOW_LAYER
@@ -261,6 +292,20 @@ func _tend_lantern() -> void:
 		lantern.set_meta("energy", lantern_energy(_under) if Lights.carried(GameState.pack.items) else 0.0)
 
 
+## A map was just drawn (World._enter_map): its lit shaders warmed under
+## its build, and the lantern as lit as the dark there says.
+func warm() -> void:
+	_warm_frames = WARM_FRAMES
+
+
+## The lantern's share lit `delta` seconds on from `lit` when it is
+## `dark_now` dark: toward whole in the real dark (Lights.LANTERN_DARK),
+## toward out under it, LANTERN_FADE seconds from one to the other; there
+## at once when `snap`.
+static func lantern_fade(lit: float, dark_now: float, delta: float, snap: bool) -> float:
+	return move_toward(lit, 1.0 if dark_now >= Lights.LANTERN_DARK else 0.0, INF if snap else delta / LANTERN_FADE)
+
+
 ## Seamless soft noise for the clouds: big puffs with ragged rims.
 static func cloud_noise() -> NoiseTexture2D:
 	var noise := FastNoiseLite.new()
@@ -361,6 +406,11 @@ func _process(delta: float) -> void:
 	# And rim what stands on its side facing them, in the dark (PIX-531).
 	RenderingServer.global_shader_parameter_set("light_rim", rim_strength(dark))
 	var still: bool = GameState.settings.reduce_motion
+	_warm.visible = _warm_frames > 0
+	if _warm.visible and is_instance_valid(lantern):
+		_probe.global_position = lantern.global_position
+	lantern_lit = lantern_fade(lantern_lit, dark, delta, still or _warm.visible)
+	_warm_frames = maxi(_warm_frames - 1, 0)
 	var t := GameClock.seconds()
 	# The day through a room's window follows the sky, not the room's dark
 	# (PIX-311), and dims under rain.
@@ -371,12 +421,15 @@ func _process(delta: float) -> void:
 		if lamp.has_meta("tint"):
 			lamp.color = DesktopLook.canvas_color(lamp.get_meta("tint"), DesktopLook.linear)
 		var energy := float(lamp.get_meta("energy", 1.0)) * (day if lamp.get_meta("by_day", false) else dark)
-		# The hero's lantern burns only in the real dark, and goes out as the
-		# fallen hero puts it away (PIX-530): the glass in their hand is lit
-		# by this (lantern.visible), so the pool never burns round a cold one.
+		# The hero's lantern burns only in the real dark, fading in and out
+		# (lantern_lit, PIX-559), and goes out at once as the fallen hero puts
+		# it away (PIX-530): the glass in their hand is lit by this
+		# (lantern.visible), so the pool never burns round a cold one.
 		# A lamp's or a window's pool waits for its glass (MapView._show, PIX-526).
-		if lamp.get_meta("unlit", false) or (lamp == lantern and (dark < Lights.LANTERN_DARK or (lantern.get_parent() as Player).dead)):
+		if lamp.get_meta("unlit", false) or (lamp == lantern and (lantern.get_parent() as Player).dead):
 			energy = 0.0
+		elif lamp == lantern:
+			energy *= lantern_lit
 		if lamp.get_meta("flicker", false) and not still:
 			energy *= Lights.flicker(t, float(lamp.get_meta("phase", 0.0)), lamp.get_meta("blaze", false))
 		# A way out breathes (PIX-292), held still with reduced motion.

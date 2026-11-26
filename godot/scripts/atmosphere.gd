@@ -447,6 +447,7 @@ static func _embers() -> CPUParticles2D:
 	node.scale_amount_min = 1.0
 	node.scale_amount_max = 2.0
 	node.material = Lights.unshaded()
+	node.light_mask = 0
 	return node
 
 
