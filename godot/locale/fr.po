@@ -6009,6 +6009,10 @@ msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr "Les routes et la ville restent dégagées parce qu'elles SONT sûres"
 
 #: assets/data/changelog.json
+msgid "Rock and Snow"
+msgstr "Roche et neige"
+
+#: assets/data/changelog.json
 msgid "Room to Breathe"
 msgstr "De l'air"
 
@@ -7069,6 +7073,10 @@ msgid "The Frostgate"
 msgstr "La Porte-Givre"
 
 #: assets/data/changelog.json
+msgid "The Frostgate road's avalanche is a lumpy bank of snow shaded on its east side, a snapped pine half buried in it and a few sparkles by day"
+msgstr "L'avalanche de la route de la Porte-Givre est un banc de neige bosselé, ombré côté est, un sapin cassé à moitié enseveli et quelques scintillements le jour"
+
+#: assets/data/changelog.json
 msgid "The Frostgate's lake is frozen for real now: cracked plates, polish and glints like the ice cave's, a rounded shore instead of square steps, a faint cold light over it at night, and the bushes in the snow are snowy too"
 msgstr "Le lac de la Porte-Givre est vraiment gelé désormais : des plaques fendues, du poli et des reflets comme dans la grotte de glace, une rive arrondie au lieu de marches carrées, une faible lueur froide la nuit, et les buissons dans la neige sont enneigés eux aussi"
 
@@ -7387,6 +7395,10 @@ msgstr "Le nom du relais choisi ne cache plus votre repère sur la carte"
 #: assets/data/changelog.json
 msgid "The chosen waypoint's ring and its marker share one centre at any window size"
 msgstr "L'anneau du relais choisi et son repère partagent le même centre, quelle que soit la taille de la fenêtre"
+
+#: assets/data/changelog.json
+msgid "The cliff road's rockfall is a heap of boulders fallen from the cliff, tallest in the middle, a broken trunk across it and scree spilled on the road"
+msgstr "L'éboulement de la route de la falaise est un tas de rochers tombés de la falaise, plus haut au milieu, un tronc brisé en travers et des éboulis répandus sur la route"
 
 #: assets/data/changelog.json
 msgid "The codex's bestiary turns its pages instead of running off the screen, the pause card stays centred in French, and the phone's tap bar shows real arrows"
