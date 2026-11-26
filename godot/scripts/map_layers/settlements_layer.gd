@@ -317,9 +317,7 @@ static func _decor_routes(view: MapView) -> void:
 		else:
 			# Each lamp in its kind's look (PIX-324).
 			sprite.texture = RouteArt.lamp(String(piece.get("lamp", "ember"))) if kind == "lamp" else RouteArt.texture(art)
-			# The hut drawn here on the right of its cells, its door over the
-			# arrival (PIX-557).
-			var root := stand_on(view, sprite, cell, Vector2(TILE if kind == "hut" else 0, TILE - RouteArt.size(art).y))
+			var root := stand_on(view, sprite, cell, Vector2(0, TILE - RouteArt.size(art).y))
 			if kind == "lamp":
 				_add_ember_lamp(view, root, cell, String(piece["place"]), cell in own_light, String(piece.get("lamp", "ember")))
 				PropsLayer.lamp_shadow(view, cell, RouteArt.size(art), 0)
@@ -334,9 +332,9 @@ static func _decor_routes(view: MapView) -> void:
 				"about": Routes.fork_about(piece["fork"], GameState.post), "node": null, "over": RouteArt.size("signpost").y - TILE + 4,
 			})
 		elif kind == "hut":
-			# Its door the middle of its three cells, over the arrival (PIX-557).
+			# Its door its left cell, over the arrival (PIX-557).
 			view.door_signs.append({
-				"door": cell + Vector2i.RIGHT, "name": String(Routes.station(piece["place"])["name"]),
+				"door": cell, "name": String(Routes.station(piece["place"])["name"]),
 				"about": Text.t("Halfway to %s") % Text.mid(Catalog.place_name(piece["place"])), "node": null, "over": RouteArt.hut_size().y - TILE + 4,
 			})
 	view.show_post_box()
@@ -386,7 +384,7 @@ static func _add_hut_window(view: MapView, root: Node2D, cell: Vector2i) -> void
 		pane.position = Vector2(RouteArt.HUT_FRONT.find(PunyTown.WINDOW) * TILE, -TILE)
 	else:
 		pane.texture = RouteArt.lit_window()
-		pane.position = Vector2(TILE, -RouteArt.size("hut").y)
+		pane.position = Vector2(0, -RouteArt.size("hut").y)
 	pane.visible = false
 	root.add_child(pane)
 	pane.set_meta("cell", cell)
@@ -449,9 +447,9 @@ static func _add_shine(view: MapView, root: Node2D, cell: Vector2i, art: String)
 
 ## Gunnar's lodge with its walls up, Shade's own (PIX-557, HubArt.lodge),
 ## standing on its cells and blocking them; lit (its fire in it, `lit`):
-## its windows' glass as the town's (LampArt.panes, the dark untouched),
-## a halo between them and its light on the ground before its door, as
-## the lodge drawn here had (_add_shine); smoke from its chimney's mouth.
+## its window's glass as the town's (LampArt.panes, the dark untouched),
+## a halo over its front and its light on the ground before it, as the
+## lodge drawn here had (_add_shine); smoke from its chimney's mouth.
 static func _add_lodge(view: MapView, piece: Dictionary) -> void:
 	var cell: Vector2i = piece["cell"]
 	var root := stand_on(view, HubArt.lodge(), cell, Vector2(0, TILE))

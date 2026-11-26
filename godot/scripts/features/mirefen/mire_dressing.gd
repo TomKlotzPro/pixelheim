@@ -28,11 +28,13 @@ const MAP := "mirefen"
 ## from, landing at both ends on a road, a bridge, a door, a hut or another
 ## walk (PIX-519): the middle road's west end to the west hut's ladder;
 ## down the river's west bank from the middle road to the south bridge;
-## from the south bridge's east end to the south hut's; from the north
-## bridge's west end over the fen, then down to the middle road (two runs);
+## from the south bridge's east end under the south hut's ladder and on
+## under its east end (PIX-557's review: its pool's east cell stood on the
+## grass, all bank); from the north bridge's west end over the fen, then
+## down to the middle road (two runs);
 ## the ruin's doorway down to the road.
 const WALKS: Array[Rect2i] = [
-	Rect2i(5, 24, 7, 2), Rect2i(16, 26, 2, 10), Rect2i(26, 34, 4, 2), Rect2i(14, 14, 4, 2), Rect2i(14, 16, 2, 8),
+	Rect2i(5, 24, 7, 2), Rect2i(16, 26, 2, 10), Rect2i(26, 34, 5, 2), Rect2i(14, 14, 4, 2), Rect2i(14, 16, 2, 8),
 	Rect2i(44, 18, 2, 6),
 ]
 ## The stilt huts, by their left cell (HUT_WIDE cells wide at Shade's

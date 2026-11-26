@@ -126,6 +126,16 @@ func test_a_standing_piece_never_closes_a_corridor() -> void:
 		for x in [0, 3, 4]:
 			map.grid[Vector2i(x, y)] = "water"
 	assert_false(Hamlet.fits(map, house, {}, none), "its rows behind never close a way")
+	# Its top-left left out (no open ground: Routes.hut_cells), the ring
+	# still goes round its bounds (PIX-557's review): the pocket west of it,
+	# walled by water but for the house's cell, is seen closing.
+	for y in 4:
+		for x in 5:
+			map.grid[Vector2i(x, y)] = "grass"
+	for cell: Vector2i in [Vector2i(1, 1), Vector2i(0, 0), Vector2i(0, 3)]:
+		map.grid[cell] = "water"
+	var roofed: Array[Vector2i] = [Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2)]
+	assert_false(Hamlet.fits(map, roofed, {}, none), "a way closing west of a house missing its top-left is seen")
 
 
 ## A ware laid `on` what stands (PIX-382 step 4: a stall's counter, a

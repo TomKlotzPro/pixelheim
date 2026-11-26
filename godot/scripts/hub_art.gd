@@ -15,12 +15,13 @@ class_name HubArt
 ## With the paid pack, Gunnar's lodge with its walls up is Shade's own
 ## (PIX-557: the one drawn here stood at 60% of his houses' scale, its door
 ## 10 pixels and the hero 14), as the Frostgate's houses are: his hip roof
-## under the snow over LODGE_FRONT (his door between two windows), a
-## chimney on the roof in the cell LODGE_CHIMNEY (from its bottom-left
-## cell; PunyTown.cottage), off the roof's end as the town's narrow houses
-## put it (PunyTown's wing houses). Its frame is still ours.
+## under the snow over LODGE_FRONT (his door on the camp's side, a window,
+## his timber's end: PunyTown.cottage), a chimney on its ridge in the cell
+## LODGE_CHIMNEY (from its bottom-left cell), a column in from its east end
+## as the town's narrow houses put it (PunyTown._building). Its frame is
+## still ours.
 const BUILT := ["lodge_walls", "lodge"]
-const LODGE_FRONT := [PunyTown.WINDOW, PunyTown.DOOR, PunyTown.WINDOW]
+const LODGE_FRONT := [PunyTown.DOOR, PunyTown.WINDOW, PunyTown.WALL_RIGHT]
 const LODGE_CHIMNEY := Vector2i(1, -3)
 
 

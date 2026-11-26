@@ -226,12 +226,14 @@ static func wing_house(rect: Rect2i, door_x: int, kind: String) -> Dictionary:
 ## A small house standing on its own among the actors (PIX-557: a
 ## waystation's hut, a Mirefen stilt hut, Gunnar's lodge; ours stood at
 ## 60% of these houses' scale, the hero taller than their doors): COTTAGE
-## cells of the hip-roofed wing's pieces, its top (its outline shows
-## against the ground) and its eave in roof `kind`'s colour, over a wall of
-## `front`'s tiles left to right; its roof under the Frostgate's snow when
-## `snow` (as the houses' layers lay it). Drawn as the houses are, its roof
-## taking the light, its bottom-left at the node's origin. Only with the
-## pack.
+## cells, a narrow house as the town's three tall are (_wing): the
+## hip-roofed wing's ridge over its eave in roof `kind`'s colour (its top
+## and eave alone were a flat slab: PIX-557's review), over a wall of
+## `front`'s tiles left to right, closed at its ends as _wing closes it
+## (a door or a wall's end, the window beside the door); its roof under the
+## Frostgate's snow when `snow` (as the houses' layers lay it). Drawn as
+## the houses are, its roof taking the light, its bottom-left at the node's
+## origin. Only with the pack.
 static func cottage(kind: String, front: Array, snow := false) -> Node2D:
 	var house := Node2D.new()
 	var walls := MapView.tile_layer_of(tileset())
@@ -247,7 +249,7 @@ static func cottage(kind: String, front: Array, snow := false) -> Node2D:
 	var shift: int = ROOF_ROWS[kind] * COLUMNS
 	for x in COTTAGE.x:
 		var end := 0 if x == 0 else (2 if x == COTTAGE.x - 1 else 1)
-		place(roof, Vector2i(x, -3), _tint(WING_TOP[end], shift))
+		place(roof, Vector2i(x, -3), _tint(WING_RIDGE[end], shift))
 		place(roof, Vector2i(x, -2), _tint(WING_EAVE[end], shift))
 		place(walls, Vector2i(x, -1), front[x])
 	return house

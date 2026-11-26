@@ -29,10 +29,10 @@ const HALO_AT := Vector2(8.0, 8.5)
 const WINDOW := Rect2i(20, 21, 5, 4)
 ## With the paid pack the hut is Shade's own (PIX-557: the one drawn here,
 ## two cells wide, stood at 60% of his houses' scale, its door 10 pixels
-## and the hero 14): his thatched hip roof over HUT_FRONT, his timber's
-## end, his door in the middle (over `arrival`, as before) and a window,
-## lit at night (PunyTown.cottage).
-const HUT_FRONT := [PunyTown.WALL_LEFT, PunyTown.DOOR, PunyTown.WINDOW]
+## and the hero 14): his thatched hip roof over HUT_FRONT, his door on the
+## left over `arrival` as ours has it, a window lit at night, and his
+## timber's end (PunyTown.cottage).
+const HUT_FRONT := [PunyTown.DOOR, PunyTown.WINDOW, PunyTown.WALL_RIGHT]
 ## Each lamp's kind (PIX-324, Lamps.KINDS) is the ember lamp with its
 ## cage's inks swapped: sea glass panes round the shard (Saltmere's), a
 ## frost lily in it (the Frostgate's), its cage furred with grave moss (the
@@ -76,10 +76,10 @@ const PIECES := {
 		"....o233332o....",
 		"....oooooooo....",
 	],
-	## A waystation's hut without the pack, on the right of its three cells:
-	## a thatched roof over plank walls on a stone footing, its door on the
-	## left (over `arrival`) under the Post's board (a letter drawn on it,
-	## sealed red), a window on the right.
+	## A waystation's hut without the pack, on the left two of its three
+	## cells: a thatched roof over plank walls on a stone footing, its door
+	## on the left (over `arrival`) under the Post's board (a letter drawn on
+	## it, sealed red), a window on the right.
 	"hut": [
 		"................................",
 		"................................",

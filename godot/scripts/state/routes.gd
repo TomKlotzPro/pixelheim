@@ -379,7 +379,8 @@ static func plan(map: MapData, post: PostState, settlement: SettlementState, kep
 ## The cells a waystation's hut whose left cell is `hut` blocks: three
 ## wide at Shade's houses' scale, its wall's row and the open ground of the
 ## two its roof stands over (PIX-557: a hero there was lost behind it), top
-## row first (Hamlet.fits).
+## row first (Hamlet.fits); Gunnar's lodge of Shade's pieces blocks the same
+## (Hamlet.plan).
 static func hut_cells(map: MapData, hut: Vector2i) -> Array[Vector2i]:
 	var out: Array[Vector2i] = []
 	for y in range(hut.y - HUT.y + 1, hut.y + 1):

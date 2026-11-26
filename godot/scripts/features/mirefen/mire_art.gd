@@ -30,10 +30,10 @@ const HUT_BELOW := 12
 const HUT_WINDOW := Rect2i(6, 17, 4, 3)
 ## With the pack the hut is Shade's own (PIX-557: the one drawn here stood
 ## at 60% of his houses' scale, its door 9 pixels and the hero 14): his
-## moss-green hip roof over COTTAGE_FRONT (a plank end, his door over the
-## ladder, a window: PunyTown.cottage), its floor RAISED pixels over its
+## moss-green hip roof over COTTAGE_FRONT (his door over the ladder, a
+## window, a plank end: PunyTown.cottage), its floor RAISED pixels over its
 ## cells' foot on our deck and stilts (`stilts`), standing in its pool.
-const COTTAGE_FRONT := [Hamlet.PLANKS[0], PunyTown.DOOR, PunyTown.WINDOW]
+const COTTAGE_FRONT := [PunyTown.DOOR, PunyTown.WINDOW, Hamlet.PLANKS[2]]
 const RAISED := 14
 ## The deck under it: how much of it lies behind its wall's foot (seen
 ## under the door), and its front's rows.
