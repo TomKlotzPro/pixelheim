@@ -58,6 +58,10 @@ var selected := 0
 var resting := true
 ## Where each tab's choice stood: Buy and Sell keep theirs across A/D.
 var _chosen := {}
+## What each tab's choice was, by its row's `key` (PIX-570): a sale shelves
+## a buy-back row over the goods, and the place alone then lit another
+## thing, which the next E bought. The place serves once the thing is gone.
+var _kept := {}
 var rows: Array[Dictionary] = []
 var tab_buttons: Array[Button] = []
 var footer: HBoxContainer
@@ -127,8 +131,8 @@ func _open() -> void:
 	purse.position = Vector2(1060, 20)
 	add_child(purse)
 
-	# Clear of the pages' corners, as the pack's (PIX-388): `_place` stands
-	# each on a page's top edge (`tab_spots`).
+	# One strip from the first page's corner (PIX-565), where `_place` stands
+	# them, the same on every tab.
 	var tab_row := Control.new()
 	tab_row.position.y = GOODS.position.y - TAB_HEIGHT
 	tab_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -366,6 +370,7 @@ func _select(index: int) -> void:
 	if rows.is_empty():
 		return
 	selected = clampi(index, 0, rows.size() - 1)
+	_kept.erase(tabs[tab])
 	resting = false
 	about.scroll_vertical = 0
 	amount = 0
@@ -394,8 +399,9 @@ static func junk_tag(junk: int, count: int) -> String:
 	return Text.t("junk") if junk >= count else Text.t("%d junk") % junk
 
 
-## Rows for a tab: {label, cost or price, detail or card words, action,
-## enabled}; at Buy and Sell also the item and piece the card shows.
+## Rows for a tab: {key, label, cost or price, detail or card words, action,
+## enabled}; at Buy and Sell also the item and piece the card shows. `key`
+## names the thing whatever its place in the list (PIX-570).
 func _rows_for(tab_name: String) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	var pack := GameState.pack
@@ -409,6 +415,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				var name: String = _gear_label(piece) if not piece.is_empty() else Catalog.item_name(entry["item_id"])
 				var cost := int(entry["each"]) * int(entry["count"])
 				out.append({
+					"key": "sold:" + str(piece.get("uid", entry["item_id"])) + ":" + str(int(entry["each"])),
 					"label": name, "count": int(entry["count"]), "cost": cost, "icon": entry["item_id"], "item_id": entry["item_id"],
 					"piece": piece, "tag": Text.t("sold"), "verb": "Buy back", "enabled": pack.gold >= cost,
 					"action": func() -> void: _after(trade.buy_back(index), Text.t("Bought back %s.") % name, "Not enough gold."),
@@ -426,6 +433,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 						Text.t("\nThe forge's own, since Pixelheim became a %s.") if shop_id == "smith" else Text.t("\nThe workshop's own, since Pixelheim became a %s."))
 					words += since % String(Town.tier(Economy.age_of(shop_id, item_id))["name"]).to_lower()
 				out.append({
+					"key": "ware:" + str(item_id),
 					"label": Catalog.item_name(item_id), "cost": price, "icon": item_id, "item_id": item_id,
 					# What the card measures and draws: the piece as the shop sells it.
 					"piece": {"itemId": item_id, "rarity": "common", "bonus": 0} if Catalog.item(item_id).has("slot") else {},
@@ -441,6 +449,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 			if not deed.is_empty():
 				var owned := map_id in GameState.settlement.properties
 				var row := {
+					"key": "deed:" + map_id,
 					"label": Text.t("Deed: %s") % deed["name"], "icon": "deed",
 					"detail": Text.t("%s\nOwn this business: its till fills with %dg a day, and you pay a tenth less here.") % [deed["name"], Town.daily_rent(map_id, false, GameState.town_tier())],
 					"verb": "Buy the deed", "enabled": not owned and pack.gold >= int(deed["cost"]),
@@ -455,6 +464,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 			var bigger := Town.next_house_tier(GameState.household.owns_house(), int(GameState.settlement.house.get("tier", 1)))
 			if shop_id == "odo" and not bigger.is_empty():
 				out.append({
+					"key": "house",
 					"label": Text.t("Deed: %s") % bigger["name"], "icon": "deed", "cost": int(bigger["cost"]),
 					"detail": Text.t("%s\nA bigger house: its new rooms wait the next time you walk in.") % bigger["name"],
 					"verb": "Sign the deed", "enabled": pack.gold >= int(bigger["cost"]),
@@ -467,6 +477,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 			var lot := trade.junk()
 			if int(lot["gold"]) > 0:
 				out.append({
+					"key": "junk",
 					"label": Text.t("Sell all junk"), "cost": int(lot["gold"]), "lot": lot, "verb": "Sell all junk", "enabled": true,
 					"action": func() -> void: asking_junk = true,
 				})
@@ -477,6 +488,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				var count: int = pack.items[item_id]
 				var junk: int = lot["items"].get(item_id, 0)
 				out.append({
+					"key": "stack:" + item_id,
 					"label": Catalog.item_name(item_id), "count": count, "cost": trade.item_pays(item_id), "icon": item_id, "item_id": item_id,
 					"tag": junk_tag(junk, count),
 					"junk": (Text.t("Junk: nothing needs it.") if junk == count else Text.t("Junk: %d past what crafting keeps.") % junk) if junk > 0 else "",
@@ -494,6 +506,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				var uid: String = instance["uid"]
 				var junk := trade.junk_piece(instance)
 				out.append({
+					"key": uid,
 					"label": _gear_label(instance), "cost": trade.gear_pays(instance), "icon": instance["itemId"], "item_id": instance["itemId"],
 					"piece": instance, "tag": Text.t("junk") if junk else "", "junk": Text.t("Junk: worse than what you wear.") if junk else "",
 					"words": String(Catalog.item(instance["itemId"]).get("description", "")), "verb": "Sell", "enabled": true,
@@ -508,6 +521,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				var maxed: bool = past and not Economy.masterwork_open(smithing, instance["bonus"])
 				var cost := trade.forge_price(instance, smithing, past)
 				var row := {
+					"key": uid,
 					"label": _gear_label(instance), "tag": Text.t("  (worn)").strip_edges() if pack.is_equipped(uid) else "", "icon": instance["itemId"],
 					"detail": _describe(instance["itemId"], instance) + ("" if maxed else _tempered(instance)), "verb": "Temper +1",
 					"enabled": not maxed and pack.gold >= cost,
@@ -527,6 +541,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				var uid: String = instance["uid"]
 				var cost := Economy.quench_cost(instance)
 				out.append({
+					"key": uid,
 					"label": _gear_label(instance), "tag": Text.t("  (worn)").strip_edges() if pack.is_equipped(uid) else "", "icon": instance["itemId"],
 					"cost": cost, "price": Text.t("+ gem"),
 					"detail": _describe(instance["itemId"], instance) + "\n\n" + Text.t("Quenching adds +1 %s, for gold and a gem; each time costs half again.") % Text.t(Skills.ABBR[Economy.quench_stat(instance)]),
@@ -548,6 +563,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				for item_id: String in back:
 					parts.append(Text.count(int(back[item_id]), Catalog.item_name(item_id)))
 				out.append({
+					"key": uid,
 					"label": _gear_label(instance), "icon": instance["itemId"], "price": ", ".join(parts),
 					"detail": _describe(instance["itemId"], instance), "verb": "Salvage", "enabled": true,
 					"action": func() -> void: status.text = trade.salvage_gear(uid),
@@ -557,6 +573,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				var uid: String = instance["uid"]
 				var cost := Economy.reforge_cost(instance)
 				out.append({
+					"key": uid,
 					"label": _gear_label(instance), "tag": Text.t("  (worn)").strip_edges() if pack.is_equipped(uid) else "", "icon": instance["itemId"],
 					"cost": cost, "detail": _describe(instance["itemId"], instance), "verb": "Reforge",
 					"enabled": pack.gold >= cost,
@@ -575,6 +592,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 			for entry: Dictionary in entries:
 				var recipe_id: String = entry["id"]
 				out.append({
+					"key": recipe_id,
 					"label": Catalog.item_name(entry["itemId"]), "icon": entry["itemId"],
 					"price": "%s %d" % [Economy.job_name(entry["job"]["id"]), entry["job"]["level"]],
 					# Written when the row is chosen, not for every row each move (PIX-207).
@@ -594,7 +612,10 @@ func _refresh() -> void:
 	UiStyle.purse_set(purse, GameState.pack.gold)
 	_place()
 	rows = _rows_for(tabs[tab])
-	selected = clampi(selected, 0, maxi(0, rows.size() - 1))
+	var kept := rows.find_custom(func(row: Dictionary) -> bool: return row["key"] == _kept.get(tabs[tab], ""))
+	selected = kept if kept >= 0 else clampi(selected, 0, maxi(0, rows.size() - 1))
+	if not resting and not rows.is_empty():
+		_kept[tabs[tab]] = rows[selected]["key"]
 	# The chosen tab's list, and at Buy and Sell the other beside it.
 	var side := 1 if tabs[tab] == "Sell" else 0
 	_fill(side, tabs[tab], rows, -1 if resting else selected)
@@ -620,38 +641,19 @@ static func _reveal(id: int, side: int, index: int) -> void:
 	screen.scrolls[side].ensure_control_visible(screen.lists[side].get_child(index) as Control)
 
 
-## Where each tab starts (PIX-543), given their `widths` and the `pages`
-## whose top edges they stand on: touching the one before, INSET clear of a
-## page's corners, a tab that would pass a page's right corner starting on
-## the next page (Hilda's fifth, Craft, stood over the card's corner).
-static func tab_spots(widths: Array[float], pages: Array[Rect2]) -> Array[float]:
-	var spots: Array[float] = []
-	var page := 0
-	var x := pages[0].position.x + INSET
-	for width in widths:
-		while x + width > pages[page].end.x - INSET and page + 1 < pages.size():
-			page += 1
-			x = pages[page].position.x + INSET
-		spots.append(x)
-		x += width + TAB_GAP
-	return spots
-
-
 ## The pages, lists and card where this tab has them: Buy and Sell three
 ## columns, the others a wide list and the card.
 func _place() -> void:
 	var paired := _paired()
 	var rects := [GOODS, PACK] if paired else [WIDE, SIDE]
-	var widths: Array[float] = []
+	# One strip, each tab touching the one before, whatever pages lie under
+	# it (PIX-565: kept to a page's edge at Buy and Sell, PIX-543, Hilda's
+	# five broke in two there and jumped sideways from tab to tab).
+	var x := GOODS.position.x + INSET
 	for button in tab_buttons:
-		widths.append(button.get_combined_minimum_size().x)
-	var edges: Array[Rect2] = [GOODS, CARD, PACK]
-	if not paired:
-		edges = [WIDE, SIDE]
-	var spots := tab_spots(widths, edges)
-	for index in tab_buttons.size():
-		tab_buttons[index].position = Vector2(spots[index], 0)
-		tab_buttons[index].size = Vector2(widths[index], TAB_HEIGHT)
+		button.position = Vector2(x, 0)
+		button.size = Vector2(button.get_combined_minimum_size().x, TAB_HEIGHT)
+		x += button.size.x + TAB_GAP
 	for side in 2:
 		var rect: Rect2 = rects[side]
 		pages[side].position = rect.position
