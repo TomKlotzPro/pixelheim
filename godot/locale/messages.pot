@@ -3113,6 +3113,10 @@ msgid "CURRENT WORDS: Loras wants his lute back from the troll and Mirelle two g
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Cabins"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Campfires"
 msgstr ""
 
@@ -8030,6 +8034,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The waystation huts' and the Mirefen stilt huts' windows light one by one in the evening, like the town's"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The waystations, the Mirefen's stilt huts and Gunnar's lodge are cabins at the houses' scale: a pitched roof, log or plank walls and a door the hero fits, the Post's board back over the waystation's door"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -21,12 +21,101 @@ const CATTAIL_LIT := Color("a1753f")
 const REED_BEDS := 4
 ## A reed bed's picture: a cell wide, this tall, its foot the bottom row.
 const REED_SIZE := Vector2i(16, 20)
-## The stilt hut: two cells wide; its picture this big, its stilts' feet in
-## its pool HUT_BELOW pixels under its cells (onto the boardwalk before it).
-const HUT_SIZE := Vector2i(32, 44)
+## The stilt hut at the houses' scale (PIX-557: it stood two cells wide,
+## its door 9 pixels and the hero 14): three cells wide, its picture this
+## big, its stilts' feet on its cells' foot and its ladder's HUT_BELOW
+## pixels under them (onto the boardwalk before it).
+const HUT_SIZE := Vector2i(48, 78)
 const HUT_BELOW := 12
-## Its window, lit at night: where in its picture.
-const HUT_WINDOW := Rect2i(6, 17, 4, 3)
+## Its window's glass, lit at night; its door with its frame and the row
+## its wall starts on: where in its picture.
+const HUT_WINDOW := Rect2i(27, 31, 10, 8)
+const HUT_DOOR := Rect2i(4, 32, 12, 19)
+const HUT_WALL := 19
+## Its picture, a character a pixel in HamletArt's inks: a pitched reed
+## roof gone to moss over plank walls two cells tall, a plank door (fish
+## drying on a line over it) and a window, on a deck on four stilts, a
+## ladder down the front. The fen's water under it is the map's (MireDressing).
+const HUT := [
+	"...........oooooooooooooooooooooooooo...........",
+	"..........oKKKKKKKKKKKKKKKKKKKKKKKKKKo..........",
+	".........oKDDDDDDDDDDDDDDDDDDDDDDDDDDDo.........",
+	".........oKDFFFDDDFFFKKDFFvvFFFvFvFvFFo.........",
+	"........oKDDFFvDDDFFFKDDFFvFFvvFFvFvFFvo........",
+	"........oKDKDKdDDDDDDKDDDdDDDDdDDDDDddXo........",
+	".......oFdDKdKdDDDDDDKDDDDDDDDdDDDdddDdXo.......",
+	"......oKKdDKdDdFFFvFFDdDDDDDDDdDdFFvDDDFFo......",
+	"......oKdXXdXXdvFFFFvXXdXXdXXdXXdvFFXXdvFo......",
+	".....oFvFdDDvFFKKDFFFDdDKdDFFFdDddDDFFFFFFo.....",
+	".....oFFFdDDFFvKKDFFFdKDKdDFFvdKDdDDvvFFFFo.....",
+	"....oKDDDDDKDDdvvFvFvdKDKddFFvdKDDDDDDDdDdFo....",
+	"....oKDdDDDKdDdFvFFFFdKDDDdFFFdKDDDdDDDdddFo....",
+	"...oFFDdDDDKdDdvvFDKdDDDDDdDDdvFFDDdKKDddDdXo...",
+	"..oFFvXXdXXdXXdvFvXXdXXdXXdXXdXXdXXdXXdXXdXdXo..",
+	"..oKDDDDDDDDKDdvFFFFvFFvFFFdDddDdDDDKKDdKDFFFo..",
+	".oKDDDDDDDDDKKdFFFFvFFFvFFFdDDdKDDDDDDKDKDvvvXo.",
+	".oKdXdXdXdXdXdXFFFXdXdXdXdXdXdXdXFvFXdXFFFFFFXo.",
+	"oKdXdXdXdXdXdXdFvFdXdXdXdXdXdXdXdvFvdXdvFFvvvdXo",
+	".oo322221222212222122221222212222122221222212oo.",
+	"..o322221222212222122221222212222122221222212o..",
+	"..o55444233332444423333254442333X244442333322o..",
+	"..o55444233332444423333254442333X244442333322o..",
+	"..o55444233332444423333254442333X244442333322o..",
+	"..o554442333325444233X3244442333324X442333X22o..",
+	"..o551111111111144233X3244442333324X442333X22o..",
+	"..o554h423h332h444233X3244442333324X442333X22o..",
+	"..o55ll42ll33ll444233X3244442333324X442333X22o..",
+	"..o55hh42hh33hh444233332444X23333244442333X22o..",
+	"..o554l423l332l444233332444X23333244442333X22o..",
+	"..o554442333325444233332546666666666662333X22o..",
+	"..o554442333325444233332545ZZZZ22ZZZZ32333X22o..",
+	"..o566666666666544233332545zZZz22zzzz32333322o..",
+	"..o551111111111344233332545ZZzz22zzzz32333322o..",
+	"..o553222132221344233332545222222222232333322o..",
+	"..o553333333333344233332545zzzz22zzzz32333322o..",
+	"..o55111111111134423X332445zzzz22zzzz32X33322o..",
+	"..o55322213222134423X332445zzzz22zzzz32X33322o..",
+	"..o55322213222134423X332445zzzz22zzzz32X33322o..",
+	"..o55322213222134423X332445555555555532X33322o..",
+	"..o5532221322213442X3332455555555555555333322o..",
+	"..o5532221322213442X3332422222222222222333322o..",
+	"..o553222132jh13442X3332444423333254442333322o..",
+	"..o553222132hi13442X3332444423333254442333322o..",
+	"..o5532221322213442333324444233332544X2333322o..",
+	"..o5532221322213442333324444233332544X2333322o..",
+	"..o5533333333333442333324444233332544X2333322o..",
+	"..o5511111111113442333324444233332544X2333322o..",
+	"..o553222132221344233332444423333254442333322o..",
+	"..o553222132221344233332444423333254442333322o..",
+	".oo553222132221322222222222222222222222222222oo.",
+	"o5555555555555555555555555555555555555555555555o",
+	"o4444244442444424444244442444424444244442444424o",
+	"o3333333333333333333333333333333333333333333333o",
+	".o42oo45555553oo42o3ooooooooooo42ooooooooooo42o.",
+	".o42oo4oooooo3oo42oo3o........o42o.........o42o.",
+	".o42oo4oooooo3oo42o.o3o.......o42o.........o42o.",
+	".o42oo45555553oo42o..o3o......o42o.........o42o.",
+	".o42oo4oooooo3oo42o...o3o.....o42o.........o42o.",
+	".o42oo4oooooo3oo42o....o3o....o42o.........o42o.",
+	".o42oo45555553oo42o.....o3o...o42o.........o42o.",
+	".o42oo4oooooo3oo42o......o3o..o42o.........o42o.",
+	".o42oo4oooooo3oo42o.......o3o.o42o.........o42o.",
+	".o42oo45555553oo42o........o3oo42o.........o42o.",
+	".o42oo4oooooo3oo42o.........o.o42o.........o42o.",
+	".o42oo4oooooo3oo42o...........o42o.........o42o.",
+	"..oo.o45555553o.oo.............oo...........oo..",
+	".....o4oooooo3o.................................",
+	".....o4oooooo3o.................................",
+	".....o45555553o.................................",
+	".....o4oooooo3o.................................",
+	".....o4oooooo3o.................................",
+	".....o45555553o.................................",
+	".....o4oooooo3o.................................",
+	".....o4oooooo3o.................................",
+	".....o45555553o.................................",
+	".....o4oooooo3o.................................",
+	"......o......o..................................",
+]
 ## A will-o'-wisp's glow: its pale green, its halo's radius and peak.
 const WISP := Color(0.66, 1.0, 0.78)
 const WISP_HALO := 14
@@ -103,65 +192,14 @@ static func reeds(n: int) -> Image:
 	return _outlined(image)
 
 
-## The stilt hut: a thatched roof over plank walls, a dark door and a
-## window, on a platform on four stilts standing in its pool, a ladder down
-## the front.
+## The stilt hut (HUT's rows drawn).
 static func hut() -> Image:
-	var inks := HamletArt.INKS
-	var body := Image.create(HUT_SIZE.x, HUT_SIZE.y, false, Image.FORMAT_RGBA8)
-	body.fill(Color(0, 0, 0, 0))
-	# The stilts and a brace between two.
-	for x: int in [4, 12, 19, 27]:
-		for y in range(27, 41):
-			body.set_pixel(x, y, inks["4"])
-			body.set_pixel(x + 1, y, inks["2"])
-	for i in 7:
-		body.set_pixel(6 + i, 29 + i, inks["3"])
-	# The platform's planks.
-	for x in range(1, 31):
-		body.set_pixel(x, 25, inks["5"])
-		body.set_pixel(x, 26, inks["2"] if x % 4 == 0 else inks["4"])
-		body.set_pixel(x, 27, inks["3"])
-	# The walls' planks, a seam every third pixel.
-	for y in range(14, 25):
-		for x in range(4, 28):
-			body.set_pixel(x, y, inks["2"] if x % 3 == 0 else (inks["4"] if (x / 3) % 2 == 0 else inks["3"]))
-	# The door and the window.
-	for y in range(16, 25):
-		for x in range(13, 19):
-			body.set_pixel(x, y, inks["1"] if x == 13 or x == 18 or y == 16 else inks["z"])
-	for y in range(HUT_WINDOW.position.y, HUT_WINDOW.end.y):
-		for x in range(HUT_WINDOW.position.x, HUT_WINDOW.end.x):
-			body.set_pixel(x, y, inks["z"])
-	for x in range(HUT_WINDOW.position.x - 1, HUT_WINDOW.end.x + 1):
-		body.set_pixel(x, HUT_WINDOW.end.y, inks["5"])
-	# The thatch: wider as it falls, strands of straw, the eaves ragged.
-	for y in range(1, 16):
-		var half := 2 + int(y * 1.05)
-		for x in range(15 - half, 17 + half):
-			if x < 0 or x >= HUT_SIZE.x:
-				continue
-			var straw: Color = inks["6"] if (x + y * 2) % 5 == 0 else (inks["5"] if (x + y) % 3 != 0 else inks["4"])
-			if y >= 14:
-				straw = inks["4"] if (x + y) % 2 == 0 else inks["3"]
-			body.set_pixel(x, y, straw)
-	# The ladder down the front, onto the boardwalk.
-	for y in range(28, HUT_SIZE.y - 1):
-		body.set_pixel(14, y, inks["4"])
-		body.set_pixel(17, y, inks["3"])
-		if y % 3 == 0:
-			body.set_pixel(15, y, inks["5"])
-			body.set_pixel(16, y, inks["5"])
-	_outlined(body)
-	# Its pool under it, flat on the ground, the stilts standing in it.
 	var image := Image.create(HUT_SIZE.x, HUT_SIZE.y, false, Image.FORMAT_RGBA8)
-	image.fill(Color(0, 0, 0, 0))
-	for y in range(HUT_SIZE.y - 9, HUT_SIZE.y - 2):
-		for x in HUT_SIZE.x:
-			var d := Vector2((x + 0.5 - HUT_SIZE.x / 2.0) / 15.5, (y + 0.5 - (HUT_SIZE.y - 5.5)) / 3.6)
-			if d.length() < 1.0:
-				image.set_pixel(x, y, MUD.darkened(0.25) if d.length() < 0.8 else MUD)
-	image.blend_rect(body, Rect2i(Vector2i.ZERO, HUT_SIZE), Vector2i.ZERO)
+	for y in HUT.size():
+		var row := String(HUT[y])
+		for x in row.length():
+			if row[x] != ".":
+				image.set_pixel(x, y, HamletArt.INKS[row[x]])
 	return image
 
 
@@ -171,7 +209,9 @@ static func hut_window() -> Image:
 	image.fill(Color(0, 0, 0, 0))
 	for y in range(HUT_WINDOW.position.y, HUT_WINDOW.end.y):
 		for x in range(HUT_WINDOW.position.x, HUT_WINDOW.end.x):
-			image.set_pixel(x, y, HamletArt.INKS["a"] if y > HUT_WINDOW.position.y else HamletArt.INKS["Y"])
+			# Its glass alone: the bars stay in the night.
+			if String(HUT[y])[x] in ["z", "Z"]:
+				image.set_pixel(x, y, HamletArt.INKS["a"] if y > HUT_WINDOW.position.y + 3 else HamletArt.INKS["Y"])
 	return image
 
 

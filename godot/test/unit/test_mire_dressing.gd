@@ -100,8 +100,8 @@ func test_every_walk_lands_at_both_ends() -> void:
 	var map := _map()
 	var huts := {}
 	for hut: Vector2i in MireDressing.HUTS:
-		huts[hut] = true
-		huts[hut + Vector2i.RIGHT] = true
+		for cell in MireDressing.hut_cells(hut):
+			huts[cell] = true
 	for walk: Rect2i in MireDressing.WALKS:
 		var along := Vector2i.RIGHT if walk.size.x >= walk.size.y else Vector2i.DOWN
 		var length := walk.size.x if along == Vector2i.RIGHT else walk.size.y
@@ -126,21 +126,25 @@ func test_every_walk_lands_at_both_ends() -> void:
 
 ## Each walk runs over water (PIX-519: water under its planks alone showed
 ## nowhere, a deck lying in the grass): the fen's laid beside it, or the
-## map's own, along three quarters of its sides that aren't another walk
-## at least (a stilt hut takes two).
+## map's own, or a stilt hut's pool (PIX-557), along three quarters of its
+## sides that aren't another walk at least.
 func test_every_walk_over_water() -> void:
 	var map := _map()
 	var laid := _laid(map)
+	var pools := {}
+	for hut: Vector2i in laid["huts"]:
+		for cell in MireDressing.hut_cells(hut):
+			pools[cell] = true
 	for walk: Rect2i in laid["walks"]:
 		var sides := MireDressing._sides(walk).filter(func(cell: Vector2i) -> bool: return not MireDressing._on_walk(laid["walks"], cell))
-		var wet := sides.filter(func(cell: Vector2i) -> bool: return cell in laid["wet"] or map.tile_at(cell) in ["water", "bridge"])
+		var wet := sides.filter(func(cell: Vector2i) -> bool: return cell in laid["wet"] or pools.has(cell) or map.tile_at(cell) in ["water", "bridge"])
 		assert_gte(wet.size() * 4, sides.size() * 3, "the walk %s over water: %d of its %d sides" % [walk, wet.size(), sides.size()])
 
 
 ## The shallows are the same whatever the day's patches and wherever the
 ## hero arrives (PIX-519's review: one who quit wading came back on dry fen
-## in the water, and the ground was worked out again), and what stands
-## still keeps off today's.
+## in the water, and the ground was worked out again), and so are the huts;
+## what else stands still keeps off today's.
 func test_the_shallows_the_same_every_day_and_arrival() -> void:
 	var map := _map()
 	var kept := Hamlet.kept_on(map, {})
@@ -153,8 +157,30 @@ func test_the_shallows_the_same_every_day_and_arrival() -> void:
 	var other := MireDressing.lay(map, kept, {}, today)
 	assert_true(laid["wet"].has(Vector2i(9, 26)), "the shallows the flow wades into")
 	assert_eq(other["wet"], laid["wet"], "the same shallows")
+	# And the huts the same every day (PIX-557: one stood only on the days no
+	# patch grew under it); nothing else stands on today's patch or arrival.
+	assert_eq(other["huts"], laid["huts"], "the same huts")
+	var huts := {}
+	for hut: Vector2i in other["huts"]:
+		for cell in MireDressing.hut_cells(hut):
+			huts[cell] = true
 	for cell: Vector2i in other["blocks"]:
-		assert_false(today.has(cell), "nothing stands on today's patch or arrival at %s" % cell)
+		assert_true(huts.has(cell) or not today.has(cell), "nothing stands on today's patch or arrival at %s" % cell)
+
+
+## Both huts stand on the fen drawn, the field decor that blocks giving way
+## to them (PIX-557's review: a bush behind the west hut, with the hero
+## south of its walk, kept it down).
+func test_the_huts_stand_whatever_the_field_decor() -> void:
+	var map := _map()
+	var actors := Node2D.new()
+	add_child_autofree(actors)
+	var view := MapView.new(map, actors)
+	view.plan(Vector2i(8, 26))
+	assert_eq(view.get_meta("mire")["huts"], MireDressing.HUTS, "every hut stands")
+	for hut: Vector2i in MireDressing.HUTS:
+		for cell in MireDressing.hut_cells(hut):
+			assert_false(view.solid_scatter.has(cell), "no field decor under the hut at %s" % cell)
 
 
 func test_wisps_float_over_the_fen_apart() -> void:
@@ -201,6 +227,22 @@ func test_the_fen_drawn() -> void:
 		assert_true(map.shallows.has(cell), "waded at %s" % cell)
 		assert_eq(roundi(view.kept.water_image.get_pixelv(cell).a * 255.0), PunyTerrain.WATER_SHALLOWS * PunyTerrain.TONE_BIT, "drawn shallow at %s" % cell)
 	assert_eq(map.shallows.size(), laid["wet"].size(), "the shallows are the walks' sides alone")
+	# Each stilt hut over a pool of the fen's own water, its row and the one
+	# behind, not its shallows (PIX-557: the pool drawn in its picture was too
+	# faint to see); every cell its raised house stands over blocked, never
+	# waded (its review: a hero there was lost behind it); and at night a
+	# small light under its window, one a hut.
+	for hut: Vector2i in laid["huts"]:
+		for cell in MireDressing.hut_cells(hut):
+			assert_true(map.covered.has(cell), "blocked under the hut at %s" % cell)
+			assert_false(map.shallows.has(cell), "not waded at %s" % cell)
+			if cell.y < hut.y - 1:
+				assert_ne(String(look[cell]), "water", "the fen under its roof at %s" % cell)
+				continue
+			assert_eq(String(look[cell]), "water", "the hut's pool at %s" % cell)
+			assert_eq(roundi(view.kept.water_image.get_pixelv(cell).a * 255.0) / PunyTerrain.TONE_BIT, PunyTerrain.WATER_MIRE, "the mire's own water at %s" % cell)
+	var windows := view.props.find_children("*", "PointLight2D", true, false).filter(func(light: Node) -> bool: return light.get_meta("tint") == Lights.WINDOW)
+	assert_eq(windows.size(), laid["huts"].size(), "a light under each hut's window")
 	# Never waded on a way, a walk's planks nor the fen's own pools, which
 	# keep the mire's water.
 	for cell: Vector2i in map.grid:

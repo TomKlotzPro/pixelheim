@@ -316,6 +316,11 @@ static func plan(map: MapData, kept: Dictionary, grown: Array[Dictionary] = [], 
 		var piece := entry.duplicate()
 		piece["kind"] = kind_of(entry)
 		piece["cells"] = cells_of(entry)
+		# Gunnar's lodge with its walls up blocks the open ground under its
+		# roof too, as a waystation's hut (PIX-557's review: a hero behind it
+		# was lost, a barrel hidden).
+		if entry.get("art", "") in HubArt.BUILT:
+			piece["cells"] = Routes.hut_cells(map, entry["cell"])
 		if TOPS.has(entry.get("tile", -1)):
 			piece["top"] = TOPS[entry["tile"]]
 		if piece["kind"] == "stand":
@@ -375,7 +380,8 @@ static func sits(map: MapData, piece: Dictionary, blocks: Array[Vector2i] = []) 
 ## roads, no portal, nothing standing there yet (`blocks`, the map's
 ## covered cells), not a `kept` cell nor the step before a door; and
 ## blocking them all leaves the open ground round them one, so no way is
-## ever closed.
+## ever closed. `cells` may be several rows: a house's rows behind its wall
+## too (PIX-557), the ring going round their bounds.
 static func fits(map: MapData, cells: Array[Vector2i], kept: Dictionary, blocks: Array[Vector2i]) -> bool:
 	var taken := {}
 	for cell: Vector2i in cells:
@@ -388,14 +394,21 @@ static func fits(map: MapData, cells: Array[Vector2i], kept: Dictionary, blocks:
 			return false
 	# The open cells round the piece, joined to one another round it.
 	var ring: Array[Vector2i] = []
+	# Round the cells' bounds: a house's roof rows may leave out a cell that
+	# isn't open ground, its top-left among them (PIX-557's review).
 	var first: Vector2i = cells[0]
-	var last: Vector2i = cells[-1]
+	var last: Vector2i = cells[0]
+	for cell: Vector2i in cells:
+		first = first.min(cell)
+		last = last.max(cell)
 	for x in range(first.x - 1, last.x + 2):
 		ring.append(Vector2i(x, first.y - 1))
-	ring.append(Vector2i(last.x + 1, first.y))
+	for y in range(first.y, last.y + 1):
+		ring.append(Vector2i(last.x + 1, y))
 	for x in range(last.x + 1, first.x - 2, -1):
-		ring.append(Vector2i(x, first.y + 1))
-	ring.append(Vector2i(first.x - 1, first.y))
+		ring.append(Vector2i(x, last.y + 1))
+	for y in range(last.y, first.y - 1, -1):
+		ring.append(Vector2i(first.x - 1, y))
 	var open := ring.filter(func(cell: Vector2i) -> bool:
 		return map.is_walkable(cell) and not taken.has(cell) and cell not in blocks)
 	if open.is_empty():

@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.409.0",
+      "date": "2026-11-27",
+      "codename": "Cabins",
+      "notes": [
+        "The waystations, the Mirefen's stilt huts and Gunnar's lodge are cabins at the houses' scale: a pitched roof, log or plank walls and a door the hero fits, the Post's board back over the waystation's door"
+      ]
+    },
+    {
       "version": "0.408.0",
       "date": "2026-11-26",
       "codename": "Steady Flame",
