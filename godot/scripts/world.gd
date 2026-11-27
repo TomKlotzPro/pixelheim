@@ -481,6 +481,9 @@ func _draw_map(next: MapData, arrival: Vector2i) -> Vector2i:
 	arrival = view.plan(arrival)
 	view.build(self)
 	_set_plane()
+	# Its lit shaders compiled now, under the build, not as a light first
+	# reaches them (PIX-559).
+	lights.warm()
 	return arrival
 
 
