@@ -19,7 +19,7 @@ If one step holds you more than six looks, report it and go past it: `stop`, the
 
 Stop when your looks run out, or when you have handed in two quests outside the village.
 
-Steps 5 and 6 are this page's gap: no newcomer run has handed in a quest outside the village or fallen. In a run with a focus, play your share of it from the plain start, then go for a quest whose place is outside the gate.
+On 2026-11-27 the newcomer handed in its first quest outside the gate (Sela's Slime Trouble) and fell at the Sunken Marsh, the first run to reach either. The gap now: a second quest outside the village handed in, then Saltmere, the sea cave and Old Hessa. Until PIX-560 is fixed, if Marsh Reed holds you more than six looks, report it and go past it: it is the Sunken Marsh's material, west of the gate, grown in its patches and left by its fights.
 
 ## Check, all along
 

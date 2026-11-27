@@ -1,6 +1,6 @@
 # Lessons from each playtest
 
-After each run, the orchestrator (Opus, the main session) adds what the run taught, newest first, and changes the rules it points at. **A lesson here overrules `SKILL.md` and the players' pages** until it is folded into them.
+After each run, the orchestrator (Opus, the main session) adds what the run taught, newest first, and changes the rules it points at. **A lesson here overrules `SKILL.md` and the players' pages** until it is folded into them. Check every claim a lesson makes about the game against the code before you fold it in.
 
 Each entry holds:
 - the date, the game version, the players and their models;
@@ -9,6 +9,213 @@ Each entry holds:
 - the rule it changed, and where.
 
 ## Runs
+
+### 2026-11-27, v0.408.0 (the sixth run: a focus on v0.399 to v0.408)
+
+**Players:** all five on Fable, 70 looks each, with no comparison. The focus covered v0.399 to v0.408, with each point given to the one or two players whose page it fits. The Focus step checked it against the code first and made 20 corrections, each with a file:line. Two of its points were Tom's and were not findings: the title's orchestral theme, and whether the lantern hitches as it lights. Triage and the 7 replays ran on Opus, and filing ran on Sonnet.
+
+**Findings:** 62 sent. They merged into 44 held and 12 dropped (14 drops counted per session), all dropped on judgment. Triage replayed 7 bugs (5 at S3 and 2 at S4), and all 7 were confirmed: none was flaky and none was lost. Two were re-rated to S4: the dungeon's floor plate "shows for a moment after you leave", and the 'p_elem->_root' error, which so far only a harness preset brings on. Filed:
+- S2, judged: PIX-560. Nothing on the main path says where Marsh Reed grows, and the card's places aren't on the map (newcomer, french). The main story's next step needs 4 reeds.
+- S3, confirmed by replay:
+  - PIX-566: camp foes stand in the campfire, and one stays stuck there chasing (newcomer, explorer, fighter). These are two faults. plan_camps puts the fire straight behind a pack's cell. And a foe pushed into a HAMLET_FOOT blocker from the north never gets out (enemy.gd _way, Packs.walks_straight). That second fault is not limited to camps.
+  - PIX-567: Bram says "Have you seen the hilda's forge?" (holdings.gd:79 lower-cases the name and cuts the article).
+  - PIX-568: the hero stops dead in the sea cave's first passage. A gunner's knockback leaves the hero's feet box on a wall corner, and move_and_slide doesn't slip past corners.
+  - PIX-569: Talk / interact can be bound to R, and then the pack's sort key is lost (controls.gd fixed_use; inventory_screen.gd:651).
+  - PIX-570: after a sale, the Buy tab's chosen row moves by itself, and the next E buys another item (shop_screen.gd switch() restores an index).
+- S3, judged:
+  - PIX-561: Iva asks for reeds under a "!", then gives no quest.
+  - PIX-562: loot floats freeze behind an open screen. It is the same family as PIX-536.
+  - PIX-563: the mountain road camp's fire and log lie across the road. New with PIX-554.
+  - PIX-564: a language change from the pause menu flashes daylight at night.
+  - PIX-565: Hilda's tab strip breaks in two. It came back after PIX-543.
+- S4: PIX-571 lists 33 nits. Two of them were confirmed by replay: the floor plate, and the 'p_elem->_root' error. Three came back after older tickets: the marsh patches after PIX-555, the Night of Ash block at 63,11 (a second run), and the hand-in talk.
+
+| session | looks | sent | held | dropped |
+|---|---|---|---|---|
+| newcomer (fable) | 70 | 16 | 14 (560, 561, 562; 566, 567 confirmed; 9 nits) | 3 |
+| fighter (fable) | 68 | 10 | 5 (566, 568 confirmed; 3 nits) | 6 |
+| explorer (fable) | 70 | 11 | 9 (563; 566 confirmed; 7 nits, 1 confirmed) | 3 |
+| french (fable) | 69 | 9 | 8 (560; 7 nits, 1 confirmed) | 1 |
+| menus (fable) | 70 | 16 | 15 (564, 565; 569, 570 confirmed; 11 nits, 1 confirmed) | 1 |
+
+**False alarms, and the rule that stops each:**
+- Two drops came from our own rules, which are wrong against the code. "One paladin swing hits two orcs" and "foes bite from a diagonal the hero's blow can't reach" (fighter) both believed SKILL.md:75 ("never a diagonal"), SKILL.md:127 ("reaches only the cell in front") and fighter.md:34. In the code, melee is "the cell in front and its corners" (combat.json `reach`): Reach.lands takes a 90° arc and widens it by the foe's body. The 2026-11-23 lesson turned two E drops into "E and a melee blow act on the one cell the hero faces", and nobody checked the melee half against the code. Rule: E acts on the faced cell, and a blade lands on the cell in front and its two front corners. A lesson's claim about the game is checked against the code before it is folded into a page.
+- Three drops were game rules that no page states (fighter):
+  - "A skill pressed soon after Berserk does nothing" is PIX-484's 1 s skills' turn: a press with more than 0.5 s of it left is refused, and its slot flashes (player.gd SKILL_TURN, _not_ready).
+  - "At the fall, skill 3 goes dim with full energy" is Berserk's 8 HP cost (combat.json hpCost).
+  - "The lantern hint shows twice" is one hint: it gives way to a place's name card, then comes back.
+  - The newcomer's "hints sit in a plate at the far left" is PIX-433's design.
+  - Rule: fighter.md gets the skills' turn and the HP costs, and SKILL.md's don't-report list gets the hint's place and how it gives way.
+- Two drops were design doubts sent as findings. The focus had stated both correctly:
+  - "Crabs, slimes, wolves and ghosts keep a tent" (explorer).
+  - "The east bridge's froth is only a few pixels" (explorer).
+  - The newcomer answered the same camp question the right way, as a verdict ("read as a traveller's camp the slimes had overrun").
+  - Rule: what a focus states as built is not a finding. A doubt about that design goes in the summary's verdicts.
+- One drop by design: « Guerrier » as the warrior's second rank (french). Every role's rank 2 is the role's own name (progression.json rankTitles). Rule: french.md says so.
+- One drop was too weak: a skeleton standing in a cave pool for six seconds (fighter), seen once. PIX-566's replay then proved that a foe can stick on a blocker's foot strip, and the fault is not limited to camps. So look at seacave 15,25 again next run.
+- The newcomer stood diagonal to Sela and pressed E, which the E rule already covers.
+- Summary lines not kept:
+  - The hay cart at greyhold 27,13 (explorer): the Focus step gave that cell in its camp list, and it is blocked.
+  - The 15 g bought on a language reload (menus): the `shop` preset ran again.
+  - The newcomer's own double E, which used two potions.
+- The Focus step worked: no drop came from a wrong claim in the focus, against 5 drops on 2026-11-23. Its gaps cost looks instead:
+  - The sea-cave lantern line put a level-10 rogue against the Lv 3 crab, which ran (combat.json fleeLevels 6).
+  - One of its `--at` cells was blocked by a prop (the hay cart).
+  - It named floats with no way to make them show: « NIVEAU SUPÉRIEUR » and « Interrompu ! » never came, and « esquivé » took the French reader 4 looks.
+  - Its pair of looks at the signs' sway came while the camera was still easing.
+  - Rule: the Focus step checks a fight preset's levels against fleeLevels, checks each `--at` against the props as well as the tiles, gives a trigger for every float or effect it names, and says to let the camera settle before a pair of looks.
+
+**Stuck or wasted looks:**
+- No step held anyone more than six looks.
+  - Marsh Reed held the newcomer for 4 looks, unsolved. That is PIX-560 itself. The newcomer was never unsure for more than two looks before it.
+- Captions:
+  - The newcomer pressed E on an empty card between two opening captions and may have skipped one. That makes three runs with a caption lost to an E (french 2026-11-13, newcomer 2026-11-23, now).
+  - Cause: a caption moves on by itself once its hold runs out (story.json `hold`, 2.4 to 8.2 s from the moment it starts typing; cutscene.gd _caption, _linger). So an E after a look can land on the next caption, and a `wait:3` can carry a short caption past unread.
+  - The French reader found that polling `wait:0.6` reads every caption.
+  - Rule: SKILL.md:44 and french.md.
+- Short holds of 0.12 s sometimes moved no cell (newcomer), and a one-tick hold never reaches the hero (triage).
+- The fighter:
+  - Level-10 presets made the wolves (Lv 4), the slimes, the cave's skeletons and the crab run away. It moved to level 5 for the cave.
+  - Its page names no id for the ghost, the wolf or the skeleton, so it left the ghost alone rather than risk a nameless foe. The ids are the kinds' own names (combat.json tricks).
+  - A start at 93,33 with `night fight pack` answered before the Deepwood beside it was stitched.
+  - `pack` put an orc on the camp fire's cell (63,36).
+- The explorer:
+  - It played 30 short sessions for seven focus points and its route.
+  - It guessed `--map shafts`. The shafts' way in is at blackiron 26,4.
+  - Its hero took damage with no `fight`. That is right (harness_steps/combat.gd:92 and story.gd:35 make the hero untouchable only under `fight` or `--bells` without `hurt`), but playtest.md:20 says the harness hero is "untouchable otherwise".
+  - It could not judge the signs' sway, because the camera was still easing between the paired looks.
+- The French reader:
+  - Ana and Bram wander off between two commands, so talking to them took a chase loop.
+  - Its greedy walker stuck on houses four times.
+  - It never found Joss. While the thatched cottage is the building age's unbuilt project, which it is in the harness's Hamlet, he stands at town 11,33 (town.gd sites, site_workers; test_sites.gd).
+  - The fall's message was gone by the time `keys` answered.
+- The menu tester:
+  - It miscounted A/D on Options twice and rebound keys by accident. Its page already says to read `focus` before each E.
+  - In a preset session, a language reload or Quit to title runs the preset again.
+  - `keys` carries no `errors`.
+- About 22 looks went on start pictures nobody read: fighter 7, french 6, menus 6, explorer 3. None is cited, but those looks bought nothing.
+- Good habits:
+  - Every player kept a logging wrapper.
+  - The French reader's script checked 637 strings.
+  - The fighter measured the lantern's pool and the dusk fade with luminance scripts (lum.py, diff.py) over three looks.
+  - The explorer reached all ten camps.
+
+**Checklist items nobody reached:**
+- newcomer:
+  - a second quest outside the village handed in (Marsh Reed blocked it);
+  - Saltmere, the sea cave and any dungeon;
+  - Old Hessa, and Hilda's forge inside.
+  - Reached at last: a quest outside the gate handed in (Slime Trouble, at the camp) and a fall (at the ghosts' camp, waking beside Sela's tent, 10 gold lighter). No newcomer run had reached either before.
+- fighter:
+  - a ghost that fades, and a skill on it;
+  - the wolves' and the goblins' tricks (at level 10 they run);
+  - the paladin against a shooter;
+  - a role at level 20.
+  - Reached at last: the paladin and the necromancer (unreached in all five earlier fighter runs), and the mage and the rogue against a pack and a shooter.
+- explorer:
+  - the ice cave, and floors 2 and 3 of any dungeon;
+  - the hall and shop doors;
+  - a whole river bank;
+  - the Reach's rim where no map lies beyond;
+  - a flame-barred doorway.
+  - Reached at last: stairs down and back up (the cellars, the shafts, the sea cave) and the inn, smithy and alchemist doors, all unreached since 2026-11-07.
+- french:
+  - Joss and a plain level-up;
+  - the notice board and Odo's counter (session 3);
+  - Maren and the dawn (session 2);
+  - a dungeon;
+  - « NIVEAU SUPÉRIEUR » and « Interrompu ! ».
+  - Reached: Ana, the dog, the cat, buckets 2 and 3, hero creation with large text, the first caption read whole, and Hilda's and Vex's tabs.
+- menus:
+  - Reduce motion, toggled but never judged in play.
+  - Everything else on its page was reached: Clear warnings, the Saves keys D, X, C, V and R, Language, Salvage and Vex's Craft.
+
+**Fable, against its last run (no comparison this run):**
+
+| player | 2026-11-23 | 2026-11-27 |
+|---|---|---|
+| newcomer | 69 looks, 17 sent, 14 held | 70 looks, 16 sent, 14 held (alone on the S2, PIX-560) |
+| fighter | 70, 11, 9 | 68, 10, 5 (6 dropped: 2 from our wrong reach lines, 3 from game rules not on its page, 1 weak) |
+| explorer | on Sonnet: 63, 5, 2 | 70, 11, 9 (alone on PIX-563 and on the floor plate's red card) |
+| french | 70, 16, 15 | 69, 9, 8 |
+| menus | 70, 18, 13 | 70, 16, 15 (alone on PIX-569 and PIX-570, both confirmed) |
+
+- The explorer's first run on Fable confirms the 2026-11-23 move: 9 of 11 held, against Sonnet's 2 of 5.
+- The fighter's lower hold rate traces to the rules, not the model. Its measured verdicts (the lantern's pool in luminance numbers, the fade over three looks, the crits and Ghostwalk) were exactly what the focus asked for.
+- Filing on Sonnet filed all 12 issues.
+- **Verdict:** all five players stay on Fable. The Focus, merge, replay and lessons steps stay on the main session's model, and filing stays on Sonnet.
+
+**Verdicts for Tom (the summaries', not findings):**
+- Title theme: `sound` read track "title", music "music_title.ogg" at `start`'s first look and again after `wait:8` (paidEvents 228, paidTracks 23). It went to "music_ashnight.ogg" as the night began.
+- Floats: every one was Nunito with its outline. The numbers matched `foes[].hp`. The rogue at level 10 crit "65!" and "59!" in gold with a spark, and the strike after a roll was a crit both times (Ghostwalk). There was no crit in about 40 blows at level 5.
+- Camps:
+  - The newcomer noticed the slimes' camp at once, but read it as a traveller's camp the slimes had overrun, not their home.
+  - The skeletons' camp read better: two sat by the fire, and its chest held "The skeletons' rota".
+  - The explorer found every tent's colour as the brief says. Dens or nests for beasts are Tom's call.
+  - The fire's pool reaches four to five cells at night.
+- The rim: seen only in a crop. It is a tan edge on the hero's, the orc's, a slime's, the bedroll's and the log's side facing the fire, and never on the feet. There was none with `--rim off`, none by day and none in the inn by day. It can't be made out at the picture's size.
+- The sea-cave lantern: +20 of 255 at the hero, +13 at 144 px and +5 at 240 px. It is a soft lift, not a pool a player notices. On the surface the pool is about three cells.
+- Dusk: the fade is there (+8.4 after 0.42 s, +10.5 after 1.42 s), and the glass brightens with it. With Reduce motion it lights at once. At dawn it is still fading at 03:41, and it goes out in the frame the hero falls.
+- The world:
+  - The rockfall and the avalanche read well and block.
+  - Saltmere's wandering edges read well.
+  - The Mirefen's shallows wade, though no foe was seen wading.
+  - The east bridge's froth is present but faint.
+  - All six signs show by day, and the town tiers light the right ones.
+- French: 637 strings came out clean on typography. Every What's new note and every Options line is in French. « paré », « esquivé », « -2 or » and the loot row read well.
+- Options: built as the focus says, in English and French, from the title and from the pause menu.
+
+**Seen but not sent (a look next run):**
+- A skeleton standing in the sea cave's pool at 15,25 (fighter). It may be PIX-566's second fault.
+- The hero stopped at the Ash Fields ruin, overworld 31,22, on what looked like the fallen log's cell (explorer, with no look left).
+- A chapter card opened behind the journal and took two C presses (menus s1, never pictured).
+- The mountain road's Ash Hound through 25,9 (not replayed for PIX-566).
+
+**Tool (lines for one play.py ticket):**
+- `keys` should carry `errors`. This is the third run to ask (fighter 2026-11-23; newcomer and menus now).
+- `start` should be able to skip its picture for a scripted session: about 22 start pictures went unread.
+- A start at overworld 93,33 with `night fight pack` answered before the map beside it was stitched, against playtest.md's promise.
+- The harness's `pack` can put a foe on a blocked cell (an orc on the camp fire, 63,36).
+- A language reload or Quit to title runs the start's presets again (the counter reopens, the gold back to 500).
+- A one-tick hold never reaches the hero, and 0.12 s sometimes moves no cell.
+- After a fall, the wake's message can be gone by the time `keys` answers the fade.
+- Still open from 2026-11-23: an unknown id boots anyway, and `keys` can't type « é ».
+
+**Rules changed:**
+- SKILL.md:
+  - E acts on the faced cell, and a blade lands on the cell in front and its two front corners (:75, :127);
+  - captions move on by themselves: poll them, and press no E on an empty card (:44);
+  - a hold under 0.15 s may move nothing (:47);
+  - let the camera settle before a pair of looks at something that moves (:114);
+  - hints: where they show, and how one gives way to a name card (don't-report);
+  - what a focus states as built is a verdict, not a finding (:118);
+  - the focus checks levels against fleeLevels, `--at` cells against the props, a trigger for every float, and a settled camera (:18).
+- players/fighter.md:
+  - the reach fixed;
+  - the trick foes' ids;
+  - foes six or more levels below the hero run, so fight them at level 5;
+  - the skills' turn, HP costs and "Interrupted!";
+  - the route starts with the ghost, the tricks at level 5, the paladin against a shooter and level 20.
+- players/explorer.md:
+  - dungeon ids and cells;
+  - the harness hero can be hurt;
+  - the route starts with the ice cave, floors 2 and 3, the hall and shop doors, a river bank, the rim and a flame-barred door.
+- players/french.md:
+  - captions polled, with no E;
+  - Joss's cell;
+  - how « NIVEAU SUPÉRIEUR », « Interrompu ! » and « esquivé » show;
+  - rank 2 is the role's name;
+  - a chase loop for wandering villagers;
+  - the route updated.
+- players/menus.md:
+  - presets run again on a reload or Quit to title;
+  - the route starts with Reduce motion judged in play.
+- players/newcomer.md: the gap moves to a second outside quest, Saltmere, the sea cave and Old Hessa, with a way past Marsh Reed until PIX-560 is fixed.
+- triage.md: a long plain-launch log drifts on random loot, so reach the place by a preset.
+- pixelheim-godot/playtest.md:20: the hero is untouchable only under `fight` or `--bells` without `hurt`.
+- pixelheim-playtest.js:
+  - the Focus step's new checks;
+  - the lessons step gets the filed issues.
 
 ### 2026-11-23, v0.398.0 (the fifth run: a focus on v0.373 to v0.398, the newcomer compared)
 
@@ -514,7 +721,7 @@ Each entry holds:
 - The fighter knows the tricks as built and starts with its page's gaps (since 2026-11-23: the paladin and the necromancer, then the mage and the rogue): folded into `players/fighter.md`.
 - A focus is checked claim by claim, in a workflow step of its own before the players get it: what blocks, the exact moment, lists of exceptions from the code's callers. Each point has a place, the setting it needs, and one or two players: folded into `SKILL.md` and `.claude/workflows/pixelheim-playtest.js`.
 - Right after a door, `fading` misses the door's dissolve: wait it out before you report the picture: folded into `SKILL.md`.
-- E and a melee blow act on the one cell the hero faces, and a turn tapped inside a swing is lost: wait 0.3 s after a swing: folded into `SKILL.md`.
+- E acts on the faced cell; a blade lands on the cell in front and its front corners; a turn tapped inside a swing is lost, so wait 0.3 s after a swing (2026-11-27): folded into `SKILL.md`.
 - Presets live in the core's flags file and in each feature's, and a wrong id boots anyway: folded into `SKILL.md`.
 - Judge at the picture's own size, turn the hero before calling a layering fault on them, and press E on a lone cap: folded into `SKILL.md`.
 - Read `open` before typing after the captions, and `keys`' `cell` before a look: folded into `SKILL.md`.
@@ -522,3 +729,8 @@ Each entry holds:
 - A console error is always replayed, with `errors` as its proof, and replay helpers stay in each replay's own folder: folded into `triage.md` and `.claude/workflows/pixelheim-playtest.js`.
 - The code, not the focus, decides what is by design: folded into `triage.md` and `.claude/workflows/pixelheim-playtest.js`.
 - Each player starts with what the last runs left unreached: folded into `players/*.md`.
+- Captions move on by themselves: poll them, press no E: folded into `SKILL.md` and `players/french.md`.
+- A foe six or more levels below the hero runs: fight presets keep within five levels: folded into `SKILL.md` and `players/fighter.md`.
+- What a focus states as built is a verdict, not a finding: folded into `SKILL.md`.
+- The Focus step checks levels, `--at` props, float triggers and a settled camera: folded into `SKILL.md` and `.claude/workflows/pixelheim-playtest.js`.
+- A lesson's claim about the game is checked against the code before it is folded into a page: folded into this page's intro.

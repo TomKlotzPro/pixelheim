@@ -3,7 +3,7 @@
 **Goal:** play the game in French and find every word that's wrong. Cut-off or overflowing text, English left untranslated, mistakes, and typography that breaks the game's rules.
 
 **Start:** three sessions, each a fresh profile. Stop each before starting the next.
-1. `start --lang fr`: the title, Options, hero creation and the opening scene, up to the first fight on the road. Wait out each caption before you press E (`SKILL.md`), so none goes by unread.
+1. `start --lang fr`: the title, Options, hero creation and the opening scene, up to the first fight on the road. The captions move on by themselves (`SKILL.md`): read them by polling `wait:0.6`, and press no E in the opening.
 2. `start --lang fr --map town --at 11,8 --flags "--prologue 5"`, then `keys "w, e"`: Maren and the dawn's boxes. For the night's earlier steps, `--prologue 2` to `4` start on the square, a long walk away: add an `--at` beside that step's place (the caller on Upper Street, Sela's tent, the well and the burning homes). Then `start --lang fr --role warrior --map town`: the village's people by day.
 3. `start --lang fr --role warrior --map town_shop --flags shop`: a shop's goods.
 
@@ -13,7 +13,7 @@ Quote the words from `look`'s `text` and `hud` when they show them, so the quote
 
 ## Route
 
-Start with what the last runs left: Ana, Joss, the dog and the cat; buckets 2 and 3 with the caller's later lines; the Sell and Craft tabs; a level-up; hero creation with « Texte de lecture agrandi » on; the first caption read whole.
+Start with what the last runs left: Builder Joss (in the harness's Hamlet he stands at town 11,33 by the thatched cottage's plot: `start --lang fr --role warrior --map town --at 12,33`), a plain level-up (« NIVEAU SUPÉRIEUR » comes from a plain launch's Night of Ash fights; `rankup` plays the ascension instead), Maren and the dawn (session 2), the notice board and Odo's counter (session 3), and a dungeon.
 
 1. **The title and its menu**, then the options screen.
 2. **Making a hero**: choose each role in turn and read its description before you type the name. play.py can't type « é »: don't test an accented name.
@@ -23,6 +23,7 @@ Start with what the last runs left: Ana, Joss, the dog and the cat; buckets 2 an
 
 ## Check
 
+- **Floats and ranks.** « esquivé » floats only when a blow lands during the roll: roll into the foe or against a wall, since a roll away on open ground leaves the blow's reach and shows nothing. « Interrompu ! » floats when a stun takes hold during a foe's tell: `--role warrior --level 5 --flags "fight --foe orc"`, then « Coup de bouclier » (key 2) while `foes[].mode` reads `bite`; it stuns about one time in two. Each role's second rank bears the role's own name (« Guerrier », « Mage »), as in English. Villagers wander: walk to one with a loop that reads `npcs` and taps toward them before E.
 - **Words only.** Colours, greyed rows and the way through a map belong to the other players.
 - **Text that doesn't fit**: cut off, running out of its frame or button, overlapping other text. French runs about a third longer than English.
 - **English left over**: any English word on a French screen, apart from names.
