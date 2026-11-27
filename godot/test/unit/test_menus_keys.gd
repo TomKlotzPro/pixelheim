@@ -238,6 +238,64 @@ func test_the_counters_footer_is_the_questions_while_it_asks_how_many() -> void:
 	assert_does_not_have(_says(counter.footer), "sell a stack", "no Z where nothing sells")
 
 
+## PIX-570: a sale shelves a buy-back row at the top of Buy, and the tab
+## came back on the place its choice had stood at, now another thing's: with
+## the deed chosen, one sale lit the rug above it, and the next E bought
+## the rug. The thing chosen is kept, and E buys it.
+func test_after_a_sale_e_buys_the_row_left_chosen() -> void:
+	var counter := _counter("Buy")
+	GameState.pack.gold = 500
+	counter._select(3)
+	var chosen: Dictionary = counter.rows[3]
+	counter.switch(1)
+	counter._select(counter.rows.find_custom(func(row: Dictionary) -> bool: return row.get("stack", "") == "forest_herb"))
+	counter._ask(3)
+	counter._command(_action("interact")).call()
+	assert_eq(GameState.trade.sold_here.size(), 1, "three herbs sold, on the shelf")
+	counter.switch(0)
+	assert_eq(counter.rows[0]["tag"], "sold", "the buy-back row over the goods")
+	assert_eq(counter.selected, 4, "a row down, with the thing")
+	assert_eq(counter.rows[counter.selected]["key"], chosen["key"], "the thing chosen before the sale")
+	var lit: Array = counter.lists[0].get_children().filter(func(row: PanelContainer) -> bool:
+		return (row.get_theme_stylebox("panel") as StyleBoxTexture).texture == (UiStyle.box(UiStyle.CARD, UiStyle.LAMP, 8) as StyleBoxTexture).texture)
+	assert_eq(lit, [counter.lists[0].get_child(4)], "and it is the row drawn chosen")
+	var gold := GameState.pack.gold
+	counter._command(_action("interact")).call()
+	assert_eq(GameState.pack.gold, gold - int(chosen["cost"]), "E buys it, at its price")
+	assert_eq(counter.status.text, "Bought %s." % chosen["label"])
+	assert_eq(counter.rows[counter.selected]["key"], chosen["key"], "still chosen after")
+
+
+## PIX-570: the choice is the thing on every tab, across A/D and through a
+## list that changes under it. Selling the last junk of a stack takes the
+## "Sell all junk" row from over it: the stack stays chosen (the place
+## alone chose the thing under it, which the next E sold). Once the thing
+## is gone, the place it stood at.
+func test_the_chosen_thing_is_kept_across_tabs_and_a_changed_list() -> void:
+	var counter := _counter("Sell")
+	var herbs := func() -> int: return counter.rows.find_custom(func(row: Dictionary) -> bool: return row.get("stack", "") == "forest_herb")
+	assert_eq(counter.rows[0]["key"], "junk", "four herbs past what crafting keeps")
+	var at: int = herbs.call()
+	counter._select(at)
+	counter._ask(4)
+	counter._act()
+	assert_ne(counter.rows[0]["key"], "junk", "the lot's row gone")
+	assert_eq(herbs.call(), at - 1, "the herbs a row up")
+	assert_eq(counter.selected, at - 1, "and chosen still")
+	counter.switch(0)
+	counter._select(2)
+	var ware: String = counter.rows[2]["key"]
+	counter.switch(1)
+	assert_eq(counter.rows[counter.selected].get("stack", ""), "forest_herb", "Sell kept its own across A/D")
+	counter.switch(0)
+	assert_eq(counter.rows[counter.selected]["key"], ware, "and Buy its own")
+	counter.switch(1)
+	counter._ask(6)
+	counter._act()
+	assert_eq(herbs.call(), -1, "the last herbs sold")
+	assert_eq(counter.selected, mini(at - 1, counter.rows.size() - 1), "the place, once the thing is gone")
+
+
 func test_the_packs_craft_tab_offers_what_a_recipe_takes() -> void:
 	var pack := InventoryScreen.new()
 	pack.tab = InventoryScreen.TABS.size() - 1

@@ -2269,6 +2269,10 @@ msgid "A burnt stead's door now shows a steady pale star while something waits i
 msgstr "La porte d'une ferme brûlée montre désormais une petite étoile pâle et fixe tant qu'un objet attend dans sa cendre"
 
 #: assets/data/changelog.json
+msgid "A camp's fire stands in front of its pack, never where the foes stand, and no foe stays stuck in a fire or against anything that stands"
+msgstr "Le feu d'un campement se tient devant sa meute, jamais là où les ennemis se postent, et aucun ennemi ne reste coincé dans un feu ni contre un obstacle"
+
+#: assets/data/changelog.json
 msgid "A chosen row in Options keeps its words clear of the frame"
 msgstr "La ligne choisie dans les Options garde ses mots à distance du cadre"
 
@@ -2801,6 +2805,10 @@ msgid "At a Glance"
 msgstr "En un coup d'œil"
 
 #: assets/data/changelog.json
+msgid "At a counter, E always buys or sells the row you see chosen: after a sale the choice stays on its item"
+msgstr "À un comptoir, E achète ou vend toujours la ligne que vous voyez choisie : après une vente, le choix reste sur son objet"
+
+#: assets/data/changelog.json
 msgid "At dawn Morvax comes down the mountain road, the collar comes off, and the dragon leaves a scale in the fountain and flies home, free"
 msgstr "À l'aube, Morvax descend la route de la montagne, le collier tombe, et le dragon laisse une écaille dans la fontaine avant de rentrer chez lui, libre"
 
@@ -3187,6 +3195,10 @@ msgstr "Encre nette"
 #: assets/data/changelog.json
 msgid "Clear Map"
 msgstr "Carte nette"
+
+#: assets/data/changelog.json
+msgid "Clear Paths"
+msgstr "Chemins dégagés"
 
 #: assets/data/changelog.json
 msgid "Clear Rooms"
@@ -4391,6 +4403,10 @@ msgstr "Les chartes supérieures demandent plus que de l'or : le Bourg veut qu
 #: assets/data/changelog.json
 msgid "Hilda quenches deep pieces: gold and a gem for +1 to their strongest stat, half again dearer each time"
 msgstr "Hilda trempe les pièces des profondeurs : de l'or et une gemme pour +1 à leur meilleure caractéristique, moitié plus cher à chaque fois"
+
+#: assets/data/changelog.json
+msgid "Hilda's tabs stand in one strip in the same place on every tab"
+msgstr "Les onglets de Hilda forment une seule bande, à la même place sur chaque onglet"
 
 #: assets/data/changelog.json
 msgid "Hints wait their turn: never over a boss's entrance or a title card, one at a time, and the dodge is taught on the first road out to where packs roam, before any boss"
@@ -7707,6 +7723,10 @@ msgstr "Au lendemain de la Nuit des Cloches, Morvax attend près de la fontaine 
 #: assets/data/changelog.json
 msgid "The mountain gate opens onto the mountain road, ash and dead pines, ash hounds and wyverns, up to Morvax's forge"
 msgstr "La porte de la montagne s'ouvre sur la route de la montagne, cendres et pins morts, chiens de cendre et wyvernes, jusqu'à la forge de Morvax"
+
+#: assets/data/changelog.json
+msgid "The mountain road's camp keeps off the road: no fire or log lies across the way any more"
+msgstr "Le campement de la route de la montagne laisse la route libre : plus de feu ni de bûche en travers du chemin"
 
 #: assets/data/changelog.json
 msgid "The music and the sound effects arrive just after, in the background; until then you hear the game's own sounds"

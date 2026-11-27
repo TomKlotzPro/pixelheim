@@ -16,7 +16,7 @@ The triage runs on Opus. A player can be wrong; nothing they report reaches Line
   - Seen again: **confirmed**.
   - Seen once in two tries: **flaky**. Keep it, and say so in the ticket.
   - Not seen: **dropped**. Keep a line about it for `lessons.md`, since a false alarm teaches the rules something.
-  - The steps can't be replayed (the player's log was incomplete): try once to reach the same place another way, else drop it.
+  - The steps can't be replayed (the player's log was incomplete), or they drift (a long plain-launch log meets random loot in the fights, so a different item gets chosen): try once to reach the same place another way, by a preset, else drop it.
 - **A console error is a bug whose proof is `errors`, not the picture.** Replay it whatever its severity, and keep it if `errors` shows it again.
 - **Keep your helper scripts in your own replay folder**, never in a shared one: two replays run at once.
 - **A finding with no screenshot** (only the state's words, or the code) gets one replay for its picture before it is kept. Without a picture, drop it.

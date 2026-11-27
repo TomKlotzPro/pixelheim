@@ -114,6 +114,59 @@ func test_a_chasing_foe_walks_round_the_well_to_the_hero() -> void:
 	assert_lt(stood, 0.2, "never standing against the well")
 
 
+## PIX-566: a prop blocks its foot, not its cell (MapView.HAMLET_FOOT), so a
+## foe shoved against it from above stands with its feet's middle in the
+## prop's own cell: every straight line from there starts shut, and its way
+## round began at the middle of that cell, inside the prop. An orc stood
+## chasing in a camp's fire for as long as the hero stayed. From each side
+## it now walks out and round.
+func test_a_foe_pushed_into_a_props_foot_from_each_side_walks_out() -> void:
+	var prop := Vector2i(8, 8)
+	var foot := MapView.HAMLET_FOOT
+	var body := StaticBody2D.new()
+	var shape := CollisionShape2D.new()
+	shape.shape = RectangleShape2D.new()
+	shape.shape.size = foot.size
+	shape.position = Vector2(prop) * MapView.TILE + foot.get_center()
+	body.add_child(shape)
+	_world.add_child(body)
+	_world.map.covered[prop] = true
+	var half := Packs.FEET / 2.0
+	var at := Vector2(prop) * MapView.TILE
+	# Its feet against the foot's edge on each side, and the hero three
+	# cells off on the other.
+	var sides := {
+		Vector2i.UP: at + Vector2(8, foot.position.y - half.y),
+		Vector2i.DOWN: at + Vector2(8, foot.end.y + half.y),
+		Vector2i.LEFT: at + Vector2(foot.position.x - half.x, 10),
+		Vector2i.RIGHT: at + Vector2(foot.end.x + half.x, 10),
+	}
+	assert_eq(Packs.cell_of(sides[Vector2i.UP]), prop, "from above, its feet's middle is in the prop's cell")
+	for side: Vector2i in sides:
+		var hero := MapView.center(prop - side * 3)
+		_world.player.global_position = hero
+		var foe := _goblin()
+		foe.global_position = sides[side]
+		var stood := await _run(foe, 5.0, hero, foe.edge + 2.0)
+		assert_lte(foe.global_position.distance_to(hero), foe.edge + 2.0, "from %s: at the hero within a few seconds" % side)
+		assert_lt(stood, 0.2, "from %s: never standing against the prop" % side)
+		foe.free()
+
+
+## Packs.way_out: none on open ground; from a shut cell, to the open cell
+## beside it nearest by, up when it is as near as any.
+func test_the_way_out_of_a_shut_cell_is_the_nearest_open_one() -> void:
+	var prop := Vector2i(8, 8)
+	_world.map.covered[prop] = true
+	var at := Vector2(prop) * MapView.TILE
+	assert_eq(Packs.way_out(_world.map, MapView.center(FOE)), Vector2.ZERO, "none on open ground")
+	assert_eq(Packs.way_out(_world.map, at + Vector2(8, 1)), Vector2(0, -9), "up out of the top strip")
+	assert_eq(Packs.way_out(_world.map, at + Vector2(8, 8)).normalized(), Vector2.UP, "up from the middle")
+	assert_eq(Packs.way_out(_world.map, at + Vector2(15, 8)), Vector2(9, 0), "to the side nearest by")
+	_world.map.covered[prop + Vector2i.UP] = true
+	assert_eq(Packs.way_out(_world.map, at + Vector2(8, 1)), Vector2(-16, 7), "the cell above shut: by the side")
+
+
 func test_a_foe_walks_round_the_well_to_its_place_in_the_ring() -> void:
 	_stand(WELL)
 	var foe := _goblin()

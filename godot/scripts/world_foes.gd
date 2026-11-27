@@ -14,7 +14,7 @@ extends Node
 var world: World
 ## Monsters at each of the web's visible spawn points: a small pack of the
 ## species that lives there, so the real-time fight has bodies to swing at.
-const PACK_SIZE := 3
+const PACK_SIZE := Packs.SIZE
 ## Fight music holds this long after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
 ## What can wait out a fight (PIX-334: a kill's gold and XP, a quest's
@@ -421,13 +421,7 @@ func _spawn_pack(data: MapData, spawn: Dictionary, asleep := false) -> void:
 	var home := Vector2i(spawn["x"], spawn["y"])
 	var region := data.region_at(home)
 	var elite_chance := float(Bestiary.region(region)["eliteChance"])
-	var cells: Array[Vector2i] = [home]
-	for offset: Vector2i in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]:
-		var cell: Vector2i = home + offset
-		if cells.size() < PACK_SIZE and data.is_walkable(cell) and data.region_at(cell) != "" and not data.portals.has(cell):
-			cells.append(cell)
-	# A spawn may name its size: one captain, not three (PIX-165).
-	cells.resize(mini(cells.size(), int(spawn.get("size", PACK_SIZE))))
+	var cells := Packs.stands(data, spawn)
 	# Each floor of a region's dungeon a little harder than the one above (PIX-255).
 	var lift := Depths.lift(data.id)
 	for i in cells.size():
