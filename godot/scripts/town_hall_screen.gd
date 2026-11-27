@@ -60,6 +60,17 @@ func _info() -> String:
 	return "\n".join(lines)
 
 
+## Under the card, where what the chosen row asks grows while the pack is
+## short of it (PIX-560: the board named the reed and nowhere to find it).
+## On the status line: a line more in the card ran the inn's past its box
+## in the Ashes, in both languages (PIX-488: the card holds whole).
+func _select(index: int) -> void:
+	super._select(index)
+	var cost: Variant = _chosen_project().get("cost", {})
+	# A commission's cost is gold alone.
+	status.text = " ".join(Economy.growing_lines((cost as Dictionary).get("items", {}), GameState.pack.items)) if cost is Dictionary else ""
+
+
 ## Who has come to live here, and what each brings (PIX-148), and what
 ## the hero owns (PIX-178): on the page, under the projects.
 func _refresh() -> void:

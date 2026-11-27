@@ -568,6 +568,20 @@ func field_gate() -> String:
 	return world.interaction.gate_said
 
 
+func field_gather() -> String:
+	var lead: Dictionary = world.hud.bearing
+	if String(lead.get("gather", "")) == "":
+		return ""
+	var patch: Dictionary = world.view.patches.get(lead["cell"], {})
+	var mark := "none" if lead["cell"] == Bearing.NOWHERE else "bare"
+	if patch.get("item", "") == lead["gather"] and Gathering.is_ready(GameState.world, patch["id"]):
+		mark = "patch"
+	var screen := _map_screen()
+	if screen != null:
+		mark += " named" if String(lead["place"]) in screen.painting.names() else " unnamed"
+	return "%s @%s" % [Bearing.line(lead), mark]
+
+
 func field_hall() -> String:
 	var view: MapView = world.view
 	if view == null:
@@ -1070,6 +1084,14 @@ func field_standoff() -> String:
 		if not villager.away and off.length() < nearest.length():
 			nearest = off
 	return "%d,%d" % [roundi(nearest.x), roundi(nearest.y)] if nearest.length() <= 2.0 * world.TILE else ""
+
+
+func field_status() -> String:
+	for node in world.get_children():
+		var hall := node as TownHallScreen
+		if hall != null:
+			return hall.status.text
+	return ""
 
 
 func field_stood() -> String:

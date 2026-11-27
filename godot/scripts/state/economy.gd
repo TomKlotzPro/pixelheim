@@ -290,7 +290,61 @@ static func place_stage(map_id: String, region_id := "") -> float:
 static func _region_names(regions: Array) -> String:
 	var sorted := regions.duplicate()
 	sorted.sort_custom(func(a: String, b: String) -> bool: return place_stage("", a) < place_stage("", b))
-	return ", ".join(sorted.slice(0, 3).map(func(region_id: String) -> String: return Bestiary.region(region_id)["name"]))
+	return ", ".join(sorted.slice(0, 3).map(func(region_id: String) -> String: return Lamps.said(region_id)))
+
+
+static var _growing := {}
+static var _decks := {}
+
+
+## Where a material is gathered (PIX-560: nothing on the main path said
+## where Marsh Reed grows): {"mapId", "region", "cell"} for the nearest
+## region whose patches grow it, on the map that holds that region, at the
+## growing ground nearest the region's middle; {} for what no patch grows.
+## A quest that asks for it points there (Bearing), and the map names it.
+static func grows_at(item_id: String) -> Dictionary:
+	if _growing.has(item_id):
+		return _growing[item_id]
+	var out := {}
+	var materials := Bestiary.region_materials()
+	var ground: Dictionary = Bestiary.gathering_rules()["ground"]
+	var homes: Array = materials.keys().filter(func(region_id: String) -> bool: return materials[region_id] == item_id and ground.has(region_id))
+	homes.sort_custom(func(a: String, b: String) -> bool: return place_stage("", a) < place_stage("", b))
+	var maps: Array = MAP_STAGE.keys().filter(func(map_id: String) -> bool: return not Depths.is_planned(map_id))
+	for region_id: String in homes:
+		for map_id: String in maps:
+			# No map but its own holds a region: look no further than a cell of it.
+			if region_id not in _map(map_id).regions.values():
+				continue
+			# A map's decks worked out once, whatever is asked for (14 ms each).
+			if not _decks.has(map_id):
+				_decks[map_id] = Gathering.decks(_map(map_id))
+			var cells: Array = _decks[map_id].get(region_id, [])
+			if cells.is_empty():
+				continue
+			var middle := Vector2.ZERO
+			for cell: Vector2i in cells:
+				middle += Vector2(cell)
+			middle /= cells.size()
+			var best: Vector2i = cells[0]
+			for cell: Vector2i in cells:
+				if Vector2(cell).distance_squared_to(middle) < Vector2(best).distance_squared_to(middle):
+					best = cell
+			out = {"mapId": map_id, "region": region_id, "cell": best}
+			break
+		if not out.is_empty():
+			break
+	_growing[item_id] = out
+	return out
+
+
+## The name of the region grows_at sends the hero to for `item_id`, as the
+## map writes it today (Atlas.region_title on its map: the Ash Fields are
+## the Greening once a lamp's ring is whole), so the line above the dock and
+## the map say one name; "" for what no patch grows.
+static func grown_name(item_id: String) -> String:
+	var home := grows_at(item_id)
+	return "" if home.is_empty() else Atlas.region_title(home["region"], _map(home["mapId"]))
 
 
 static func _lead(kind: String, text: String, stage: float) -> Dictionary:
@@ -350,7 +404,9 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 			var region_id: String = _map(chest["mapId"]).region_at(Vector2i(chest["x"], chest["y"]))
 			if Depths.is_planned(chest["mapId"]):
 				region_id = String(Depths.dungeon(Depths.floor_of(chest["mapId"])["dungeon"])["region"])
-			var where: String = Bestiary.region(region_id).get("name", Text.mid(Catalog.place_name(chest["mapId"])))
+			var where := Lamps.said(region_id)
+			if where == "":
+				where = Text.mid(Catalog.place_name(chest["mapId"]))
 			out.append(_lead("chest", Text.t("in a chest in %s") % where, place_stage(chest["mapId"], region_id)))
 	var waters: Array[String] = []
 	var water_stage := 99.0
@@ -418,6 +474,18 @@ static func _monster_stage(monster_id: String) -> float:
 	return nearest
 
 
+## Where what a project asks (`asked`: item -> how many) grows, a line for
+## each the pack is short of: "Marsh Reed: the Sunken Marsh." (PIX-560: the
+## board named the reed and nowhere to find it). The place alone, by the
+## map's name for it: the line under the board's card (TownHallScreen).
+static func growing_lines(asked: Dictionary, items: Dictionary) -> Array[String]:
+	var out: Array[String] = []
+	for item_id: String in asked:
+		if Catalog.held(items, item_id) < int(asked[item_id]) and not grows_at(item_id).is_empty():
+			out.append(Text.t("%s: %s") % [Catalog.item_name(item_id), Lamps.said(grows_at(item_id)["region"])] + ".")
+	return out
+
+
 ## The materials a recipe still lacks, as "2 × Marsh Reed".
 static func missing_names(entry: Dictionary, items: Dictionary) -> Array[String]:
 	var out: Array[String] = []
@@ -433,7 +501,8 @@ static func where_to_find(item_id: String, town_tier := 4, stock_stage := 99) ->
 	var sources := material_sources(item_id, town_tier, stock_stage)
 	if sources.is_empty():
 		return ""
-	return "%s: %s" % [Catalog.item_name(item_id), sources[0]["text"]]
+	# The colon as the language writes it (PIX-560: « Roseau des marais: »).
+	return Text.t("%s: %s") % [Catalog.item_name(item_id), sources[0]["text"]]
 
 
 ## Alchemy: 6% per level to brew a second one free, capped at 50%.

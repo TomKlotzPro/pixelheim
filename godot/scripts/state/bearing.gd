@@ -93,13 +93,17 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 		"questDone":
 			var quest := Quests.by_id(when["questId"])
 			if progression.quests.has(quest["id"]):
-				var way := of_quest(quest, progression, settlement, items)
-				for key: String in ["place", "map_id", "cell", "who", "progress", "quest_id"]:
-					lead[key] = way[key]
+				_follow(lead, of_quest(quest, progression, settlement, items))
 			else:
 				_at_giver(lead, quest, settlement)
 		"project", "townTier":
 			_at(lead, "town", Town.project_board())
+			# What the board asks that the pack lacks, where it grows
+			# (PIX-560: the inn's reeds, and no word of the marsh).
+			var asked: Dictionary = Town.project(String(when.get("projectId", ""))).get("cost", {}).get("items", {})
+			var lacking := _at_growth(lead, asked, items)
+			if lacking != "":
+				lead["step"] = Text.t("For the board on the square: %s") % Catalog.item_name(lacking)
 		"hunted":
 			_at_lair(lead, Hunts.named(when["named"]))
 		"seen":
@@ -119,9 +123,7 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 			# while the tin still waits, or for one she has yet to give.
 			var letter := Quests.by_id(when["questId"])
 			if progression.quests.has(letter["id"]):
-				var way := of_quest(letter, progression, settlement, items)
-				for key: String in ["place", "map_id", "cell", "who", "progress", "quest_id"]:
-					lead[key] = way[key]
+				_follow(lead, of_quest(letter, progression, settlement, items))
 			else:
 				_at_tin(lead, progression, settlement)
 		"chosen":
@@ -135,6 +137,18 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 		var map_id := String(step["mapId"])
 		_at(lead, map_id, Town.square() if map_id == "town" else NOWHERE)
 	return lead
+
+
+## A main step waiting on a quest in hand goes that quest's way (`way`,
+## of_quest's): its place, mark and count under the step's own words, and
+## where the way is to gather something first (PIX-560: A First Brew said
+## to brew at Vex's while its mark stood in the marsh), the way's words
+## too, with what tells the HUD and the map it is a patch's.
+static func _follow(lead: Dictionary, way: Dictionary) -> void:
+	for key: String in ["place", "map_id", "cell", "who", "progress", "quest_id", "gather", "region"]:
+		lead[key] = way[key]
+	if way["gather"] != "":
+		lead["step"] = way["step"]
 
 
 ## A taken quest's lead: what's left to do, where, and how far along; once
@@ -169,9 +183,16 @@ static func of_quest(quest: Dictionary, progression: ProgressionState, settlemen
 				if chest.get("loot", {}).get("itemId", "") == objective["itemId"]:
 					_at(lead, chest["mapId"], Vector2i(int(chest["x"]), int(chest["y"])))
 					break
+			if lead["map_id"] == "":
+				_at_growth(lead, {objective["itemId"]: count}, items)
 		"craft":
 			for entry: Dictionary in Economy.recipes():
 				if entry["itemId"] == objective["itemId"]:
+					# What it's made of first, where that grows (PIX-560).
+					var lacking := _at_growth(lead, entry["needs"], items)
+					if lacking != "":
+						lead["step"] = Text.t("To gather: %s") % Catalog.item_name(lacking)
+						break
 					var station: Dictionary = Economy.job_station(entry["job"]["id"])
 					var keeper := Npcs.keeper_of(String(station.get("mapId", "")))
 					if not keeper.is_empty() and Npcs.at_stall(keeper, Town.done_projects(settlement)):
@@ -199,7 +220,7 @@ static func board_floors(progression: ProgressionState, settlement: SettlementSt
 
 
 static func _blank(title: String, step: String) -> Dictionary:
-	return {"title": title, "step": step, "place": "", "map_id": "", "cell": NOWHERE, "who": "", "progress": "", "quest_id": "", "named": "", "main": false}
+	return {"title": title, "step": step, "place": "", "map_id": "", "cell": NOWHERE, "who": "", "progress": "", "quest_id": "", "named": "", "main": false, "gather": "", "region": ""}
 
 
 ## At `cell` of `map_id` (NOWHERE: somewhere on that map), named by its place.
@@ -207,6 +228,27 @@ static func _at(lead: Dictionary, map_id: String, cell: Vector2i) -> void:
 	lead["map_id"] = map_id
 	lead["cell"] = cell
 	lead["place"] = Catalog.place_name(map_id)
+
+
+## At where the first of `needs` (item -> how many) the pack is short of
+## grows (PIX-560), named by its region as the map names it, with how many
+## are in hand: the item, or "" when the pack has them all or no patch
+## grows what's short. `gather` and `region` say so to the HUD, which leads
+## to today's nearest patch, and to the map, which names the region.
+static func _at_growth(lead: Dictionary, needs: Dictionary, items: Dictionary) -> String:
+	for item_id: String in needs:
+		var have := Catalog.held(items, item_id)
+		var home := Economy.grows_at(item_id)
+		if have >= int(needs[item_id]) or home.is_empty():
+			continue
+		_at(lead, home["mapId"], home["cell"])
+		# As the map writes it today (the ash healed is the Greening there).
+		lead["place"] = Economy.grown_name(item_id)
+		lead["progress"] = "%d/%d" % [have, int(needs[item_id])]
+		lead["gather"] = item_id
+		lead["region"] = home["region"]
+		return item_id
+	return ""
 
 
 static func _at_giver(lead: Dictionary, quest: Dictionary, settlement: SettlementState) -> void:

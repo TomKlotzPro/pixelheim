@@ -98,6 +98,10 @@ func test_the_first_brew_leads_to_vex_where_she_works() -> void:
 	state.questing.resolve_quests(VEX)
 	state.progression.tracked = "herbs_for_vex"
 	var lead := Bearing.active(state.progression, state.settlement, state.pack.items)
+	# With nothing to brew from, to where the first of it grows (PIX-560).
+	assert_eq([lead["map_id"], lead["gather"], lead["place"]], ["overworld", "forest_herb", "The Whispering Forest"], "the herb first")
+	state.pack.items.merge({"forest_herb": 1, "marsh_reed": 1})
+	lead = Bearing.active(state.progression, state.settlement, state.pack.items)
 	assert_eq([lead["map_id"], lead["cell"], lead["who"]], ["town", Vector2i(34, 27), VEX], "brewed at her stall")
 	state.settlement.projects.assign(["vexs_brewery"])
 	lead = Bearing.active(state.progression, state.settlement, state.pack.items)

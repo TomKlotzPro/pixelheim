@@ -7577,6 +7577,10 @@ msgid "The ice cave now goes three floors down: the frosted galleries with Gunna
 msgstr "La Grotte de glace descend désormais sur trois étages : les galeries givrées avec le coffre de Gunnar, un lac gelé que l'on peut traverser, et la Salle de verre où Crocgivre dort sur la lanterne de Liane"
 
 #: assets/data/changelog.json
+msgid "The inn asks for 3 marsh reeds, as many as the marsh grows in a day"
+msgstr "L'auberge demande 3 roseaux des marais, autant que le marais en fait pousser en une journée"
+
+#: assets/data/changelog.json
 msgid "The inventory doll wears your gear live - equip a piece and watch your character change right there in the preview"
 msgstr "Le mannequin de l'inventaire porte votre équipement en direct - équipez une pièce et regardez votre personnage changer dans l'aperçu même"
 
@@ -7675,6 +7679,10 @@ msgstr "La carte montre la Marche des Cendres et chaque région découverte sur 
 #: assets/data/changelog.json
 msgid "The map key is rebindable like everything else"
 msgstr "La touche de la carte se réassigne comme tout le reste"
+
+#: assets/data/changelog.json
+msgid "The map names the regions where things grow before you have walked them, and the board's card says where what it asks grows"
+msgstr "La carte nomme les régions où les choses poussent avant même que vous les ayez parcourues, et la fiche du tableau d'avis dit où pousse ce qu'elle demande"
 
 #: assets/data/changelog.json
 msgid "The map screen reads cleanly: its legend sits under the map, the HUD steps aside while it's open, and keys like the comma show as their mark instead of their name"
@@ -8481,6 +8489,10 @@ msgid "What's new turns a page at a time with A and D, and leaves out the behind
 msgstr "« Quoi de neuf » se feuillette désormais page par page avec A et D, et laisse de côté les notes des coulisses"
 
 #: assets/data/changelog.json
+msgid "Whatever the story or a quest asks you to gather, the Next line, the journal, the arrow and the map lead you to where it grows, and say when the day's patches are all picked"
+msgstr "Tout ce que l'histoire ou une quête vous demande de cueillir, la ligne À suivre, le journal, la flèche et la carte vous mènent là où ça pousse, et disent quand tout est cueilli pour la journée"
+
+#: assets/data/changelog.json
 msgid "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it"
 msgstr "Quand un boss tombe loin de sa porte, une sortie s'ouvre juste là où il est tombé, éclairée et facile à repérer, et la flèche la montre"
 
@@ -8507,6 +8519,10 @@ msgstr "Quand un poison, une brûlure ou un étourdissement vous saisit, une lig
 #: assets/data/changelog.json
 msgid "When the music arrives while another tune plays, it takes over in a soft crossfade instead of waiting for the next change of place"
 msgstr "Quand la musique arrive pendant qu'un autre air joue, elle prend le relais en fondu enchaîné au lieu d'attendre le prochain changement de lieu"
+
+#: assets/data/changelog.json
+msgid "Where It Grows"
+msgstr "Là où ça pousse"
 
 #: assets/data/changelog.json
 msgid "Where It Leads"
@@ -19981,12 +19997,20 @@ msgid "stun"
 msgstr "étourdissement"
 
 #: scripts/state/bearing.gd
+msgid "For the board on the square: %s"
+msgstr "Pour le tableau d'avis : %s"
+
+#: scripts/state/bearing.gd
 msgid "Hand it in to %s."
 msgstr "Remettez-la à %s."
 
 #: scripts/state/bearing.gd
 msgid "Slay %s in its lair"
 msgstr "Abattez %s dans son repaire"
+
+#: scripts/state/bearing.gd
+msgid "To gather: %s"
+msgstr "À cueillir : %s"
 
 #: scripts/state/bells.gd
 msgid "(dawn in %d:%02d)"
@@ -20935,6 +20959,10 @@ msgstr "Victoire"
 #: scripts/world_fx.gd
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
+
+#: scripts/world_hud.gd
+msgid "%s: all picked today, more grows tomorrow"
+msgstr "%s : tout est cueilli, il en repousse demain"
 
 #: scripts/world_hud.gd
 msgid "Boss slayer +%d%%  %d:%02d"

@@ -196,6 +196,24 @@ static func is_ready(world: WorldState, spot_id: String) -> bool:
 	return day_of(float(world.gathered_at[spot_id])) < day_of(world.steps)
 
 
+## Of a map's `patches` today (cell -> {"id", "item"}), those of `item_id`:
+## {"cell": the one ready to pick nearest `from` (Bearing.NOWHERE for none),
+## "grew": whether the day dealt any here}. With none ready, the HUD says
+## all are picked only where some grew (PIX-560: a frost lily's two homes
+## take turns, and the pass said so on the ice cave's day).
+static func nearest_ready(patches: Dictionary, item_id: String, world: WorldState, from: Vector2i) -> Dictionary:
+	var out := {"cell": Bearing.NOWHERE, "grew": false}
+	for cell: Vector2i in patches:
+		var patch: Dictionary = patches[cell]
+		if patch["item"] != item_id:
+			continue
+		out["grew"] = true
+		var nearest: Vector2i = out["cell"]
+		if is_ready(world, patch["id"]) and (nearest == Bearing.NOWHERE or (cell - from).length_squared() < (nearest - from).length_squared()):
+			out["cell"] = cell
+	return out
+
+
 ## Cells no patch grows on, around what stands on `map`: cell -> true.
 static func _kept_clear(map: MapData) -> Dictionary:
 	var out := {}
