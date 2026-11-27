@@ -93,9 +93,7 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 		"questDone":
 			var quest := Quests.by_id(when["questId"])
 			if progression.quests.has(quest["id"]):
-				var way := of_quest(quest, progression, settlement, items)
-				for key: String in ["place", "map_id", "cell", "who", "progress", "quest_id"]:
-					lead[key] = way[key]
+				_follow(lead, of_quest(quest, progression, settlement, items))
 			else:
 				_at_giver(lead, quest, settlement)
 		"project", "townTier":
@@ -125,9 +123,7 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 			# while the tin still waits, or for one she has yet to give.
 			var letter := Quests.by_id(when["questId"])
 			if progression.quests.has(letter["id"]):
-				var way := of_quest(letter, progression, settlement, items)
-				for key: String in ["place", "map_id", "cell", "who", "progress", "quest_id"]:
-					lead[key] = way[key]
+				_follow(lead, of_quest(letter, progression, settlement, items))
 			else:
 				_at_tin(lead, progression, settlement)
 		"chosen":
@@ -141,6 +137,18 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 		var map_id := String(step["mapId"])
 		_at(lead, map_id, Town.square() if map_id == "town" else NOWHERE)
 	return lead
+
+
+## A main step waiting on a quest in hand goes that quest's way (`way`,
+## of_quest's): its place, mark and count under the step's own words, and
+## where the way is to gather something first (PIX-560: A First Brew said
+## to brew at Vex's while its mark stood in the marsh), the way's words
+## too, with what tells the HUD and the map it is a patch's.
+static func _follow(lead: Dictionary, way: Dictionary) -> void:
+	for key: String in ["place", "map_id", "cell", "who", "progress", "quest_id", "gather", "region"]:
+		lead[key] = way[key]
+	if way["gather"] != "":
+		lead["step"] = way["step"]
 
 
 ## A taken quest's lead: what's left to do, where, and how far along; once
@@ -234,7 +242,8 @@ static func _at_growth(lead: Dictionary, needs: Dictionary, items: Dictionary) -
 		if have >= int(needs[item_id]) or home.is_empty():
 			continue
 		_at(lead, home["mapId"], home["cell"])
-		lead["place"] = Atlas.region_title(home["region"])
+		# As the map writes it today (the ash healed is the Greening there).
+		lead["place"] = Economy.grown_name(item_id)
 		lead["progress"] = "%d/%d" % [have, int(needs[item_id])]
 		lead["gather"] = item_id
 		lead["region"] = home["region"]

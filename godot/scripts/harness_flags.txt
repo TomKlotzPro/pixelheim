@@ -107,6 +107,7 @@ launch |  | with --slots: the run opens the folder's slot 1 as a plain launch op
 --talk-to | <villager> | a conversation with that villager, wherever they stand, then --keys | talk_to | 500
 talk |  | below the map's first villager, facing them, E pressed, then --keys | talk | 510
 near |  | below the map's first villager, facing them (the prompt) | near | 520
+picked |  | every patch on the map picked today and what it gave spent (the pack as it was), and the line above the dock looked at again (PIX-560: none left to pick today) | picked | 125
 chest |  | with --map town: the nook chest faced and opened | chest | 530
 station |  | the room's first station (a cauldron, a forge), or the one above --at's cell (PIX-402: the smithy's coal bed), faced and E pressed; the report adds tab= (PIX-234) | station | 540
 sleep |  | with --map town_inn: the room's first bed faced and E pressed, a night slept; the report adds clock= (PIX-246) | sleep | 550

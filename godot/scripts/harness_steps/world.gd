@@ -65,6 +65,14 @@ func step_lineup() -> void:
 	await h.get_tree().create_timer(0.5).timeout
 
 
+func step_picked() -> void:
+	# The day's patches all picked (PIX-560) and what they gave spent: the
+	# pack is as short as it was.
+	for cell: Vector2i in world.view.patches:
+		GameState.world.gathered_at[world.view.patches[cell]["id"]] = int(GameState.world.steps)
+	world.hud.look_again()
+
+
 func step_chest() -> void:
 	# Pair with `--map town`: warp beside the nook chest, face it, open it.
 	world.player.position = MapView.center(Vector2i(79, 4))

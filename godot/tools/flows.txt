@@ -1013,6 +1013,14 @@ look-vault | --map vault_3 | map=vault_3 dressed=vault:banners\d+,rugs\d+ | dung
 patches | --map overworld --day 2 | day=2 patches=14,37;21,49;30,48;63,39;66,52;70,26;75,45 | gathering field
 regrown | --map overworld --day 3 | day=3 patches=19,51;22,36;22,60;29,25;45,14;77,44;79,53;86,36 | gathering field
 forage | --map overworld --day 2 --at 75,46 --walk u | cell=\(75, 45\) day=2 patches=14,37;21,49;30,48;63,39;66,52;70,26 | gathering field
+# The inn asks four Marsh Reeds (PIX-560): past the gate the line above the
+# dock names the marsh and the mark stands on a patch of reed ready today;
+# the map's page writes the marsh's name though it was never walked; and
+# with the day's patches picked the line says none is left and no mark
+# leads to an empty spot.
+reed-lead | --map overworld --town-tier 0 --seen maren_tin --delivered slime_trouble --day 2 --lang en | next=rebuild gather=For the board on the square: Marsh Reed.- The Sunken Marsh \(0/4\) @patch | gathering quest hud field
+reed-map | --map overworld --town-tier 0 --seen maren_tin --delivered slime_trouble --day 2 worldmap --lang en | next=rebuild gather=For the board on the square: Marsh Reed.- The Sunken Marsh \(0/4\) @patch named | gathering quest screen field
+reed-none | --map overworld --town-tier 0 --seen maren_tin --delivered slime_trouble --day 2 picked --lang en | next=rebuild patches=none gather=Marsh Reed: none left to pick today.- The Sunken Marsh \(0/4\) @none | gathering quest hud field
 # The treasure on the ground is picked as the hero steps on it, though
 # the CC0 art draws no herb and no pouch (PIX-380: a script error).
 herb-patch | --map overworld --at 56,59 --walk u --wait 0.5 | cell=\(56, 58\) floats=.+ x3 logged=0 | gathering field

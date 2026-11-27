@@ -708,6 +708,10 @@ class Painting extends Control:
 			boxes.append(Rect2(label["at"], label["size"]).grow_individual(PLATE.x, PLATE.y, PLATE.x, PLATE.y))
 		return boxes
 
+	## The names the page writes, as placed (the harness's gather= reads them).
+	func names() -> Array:
+		return _labels.map(func(label: Dictionary) -> String: return label["text"])
+
 	## The page's names (Atlas.page_labels) placed on it, in the labels'
 	## type, by Atlas.label_at's solver (PIX-403): each plate clear of every
 	## mark and of the plates placed before it, inside the map it names where

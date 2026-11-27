@@ -105,8 +105,8 @@ func _assert_leads_to_where_it_grows(lead: Dictionary, item_id: String, what: St
 	if not _decks.has(map.id):
 		_decks[map.id] = Gathering.decks(map)
 	assert_has(_decks[map.id].get(region, []), lead["cell"], "%s: on ground a patch may grow on" % what)
-	assert_eq(lead["place"], Atlas.region_title(region), "%s: the place is its region" % what)
-	assert_string_contains(Bearing.line(lead), Atlas.region_title(region, map), "%s: by the name the map gives it" % what)
+	assert_eq(lead["place"], Atlas.region_title(region, map), "%s: the place is its region, by the name the map gives it" % what)
+	assert_string_contains(Bearing.line(lead), lead["place"], "%s: the line names it" % what)
 
 
 ## PIX-560: the newcomer needed four Marsh Reeds for the inn and nothing on
@@ -138,7 +138,17 @@ func test_what_asks_for_a_gathered_thing_leads_to_where_it_grows() -> void:
 			continue
 		_assert_leads_to_where_it_grows(Bearing.of_step(step, state.progression, state.settlement, {}), asked[0], step["id"])
 		checked.append(step["id"])
-	for id: String in ["herbs_for_vex", "iva_reeds", "hildas_buckler", "rebuild"]:
+	# A main step that waits on such a quest, the quest in hand and not
+	# followed (A First Brew said to brew at Vex's, its mark in the marsh).
+	for step: Dictionary in MainQuest.steps():
+		if step["when"]["kind"] != "questDone" or step["when"]["questId"] not in checked:
+			continue
+		var quest := Quests.by_id(step["when"]["questId"])
+		state.progression.quests = {quest["id"]: {"progress": 0, "done": false}}
+		var lead := Bearing.of_step(step, state.progression, state.settlement, {})
+		_assert_leads_to_where_it_grows(lead, Bearing.of_quest(quest, state.progression, state.settlement, {})["gather"], step["id"])
+		checked.append(step["id"])
+	for id: String in ["herbs_for_vex", "iva_reeds", "hildas_buckler", "rebuild", "first_brew"]:
 		assert_has(checked, id, "the reeds' askers are among them")
 
 
@@ -153,3 +163,38 @@ func test_the_reeds_lead_to_the_marsh_until_the_pack_has_them() -> void:
 	assert_eq([lead["map_id"], lead["cell"], lead["gather"]], ["town", Town.project_board(), ""], "with the reeds, to the board")
 	assert_eq(lead["step"], inn["text"])
 	assert_true(Economy.grows_at("wolf_pelt").is_empty(), "no patch grows a pelt")
+
+
+## A First Brew on the main path, taken and not followed: the herb, then
+## the reed, each by name and place, and only then Vex's cauldron.
+func test_the_first_brew_says_what_to_gather_before_it_says_to_brew() -> void:
+	var state: Node = autofree(GameStateScript.new())
+	state.new_game("Robin", "warrior")
+	state.progression.quests["herbs_for_vex"] = {"progress": 0, "done": false}
+	var brew := MainQuest.step("first_brew")
+	var lead := Bearing.of_step(brew, state.progression, state.settlement, {})
+	assert_eq(Bearing.line(lead), "To gather: Forest Herb\u00a0- The Whispering Forest (0/1)")
+	lead = Bearing.of_step(brew, state.progression, state.settlement, {"forest_herb": 1})
+	assert_eq(Bearing.line(lead), "To gather: Marsh Reed\u00a0- The Sunken Marsh (0/1)")
+	assert_eq([lead["gather"], lead["region"], lead["main"]], ["marsh_reed", "marsh", true], "the HUD and the map are told")
+	lead = Bearing.of_step(brew, state.progression, state.settlement, {"forest_herb": 1, "marsh_reed": 1})
+	assert_eq([lead["step"], lead["gather"], lead["map_id"]], [brew["text"], "", "town"], "with both, to Vex")
+
+
+## The ash healed round a lamp is the Greening on the map (PIX-325): the
+## line of what grows there says the Greening too.
+func test_healed_ash_is_named_as_the_map_names_it() -> void:
+	var saved := [GameState.settlement.projects.duplicate(), GameState.post, GameState.world.steps]
+	GameState.post = PostState.new()
+	GameState.world.steps = 20 * DayNight.DAY_CYCLE_STEPS + 100.0
+	GameState.settlement.projects.assign(Town.done_projects(GameState.settlement) + ["waystation_blackiron"])
+	GameState.post.lit["blackiron"] = Gathering.day_of(GameState.world.steps) - Lamps.REACH
+	var reach := MapData.load_by_id(Routes.MAP)
+	assert_gte(Lamps.healed_on(reach), 50, "a whole ring healed")
+	var lead := Bearing._blank("", "")
+	assert_eq(Bearing._at_growth(lead, {"ember_shard": 2}, {}), "ember_shard")
+	assert_eq([lead["place"], Atlas.region_title("ash", reach)], ["The Greening", "The Greening"])
+	assert_string_contains(Bearing.line(lead), "The Greening")
+	GameState.settlement.projects.assign(saved[0])
+	GameState.post = saved[1]
+	GameState.world.steps = saved[2]

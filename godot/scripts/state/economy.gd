@@ -294,6 +294,7 @@ static func _region_names(regions: Array) -> String:
 
 
 static var _growing := {}
+static var _decks := {}
 
 
 ## Where a material is gathered (PIX-560: nothing on the main path said
@@ -315,7 +316,10 @@ static func grows_at(item_id: String) -> Dictionary:
 			# No map but its own holds a region: look no further than a cell of it.
 			if region_id not in _map(map_id).regions.values():
 				continue
-			var cells: Array = Gathering.decks(_map(map_id)).get(region_id, [])
+			# A map's decks worked out once, whatever is asked for (14 ms each).
+			if not _decks.has(map_id):
+				_decks[map_id] = Gathering.decks(_map(map_id))
+			var cells: Array = _decks[map_id].get(region_id, [])
 			if cells.is_empty():
 				continue
 			var middle := Vector2.ZERO
@@ -332,6 +336,15 @@ static func grows_at(item_id: String) -> Dictionary:
 			break
 	_growing[item_id] = out
 	return out
+
+
+## The name of the region grows_at sends the hero to for `item_id`, as the
+## map writes it today (Atlas.region_title on its map: the Ash Fields are
+## the Greening once a lamp's ring is whole), so the line above the dock and
+## the map say one name; "" for what no patch grows.
+static func grown_name(item_id: String) -> String:
+	var home := grows_at(item_id)
+	return "" if home.is_empty() else Atlas.region_title(home["region"], _map(home["mapId"]))
 
 
 static func _lead(kind: String, text: String, stage: float) -> Dictionary:
