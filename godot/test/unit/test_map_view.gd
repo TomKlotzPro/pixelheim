@@ -135,7 +135,7 @@ func test_packs_camp_beside_their_homes() -> void:
 			assert_eq(_apart(seat, fire), 1, "%s: its log by its fire" % who)
 			# PIX-563: off the road, its stash too.
 			for cell: Vector2i in [tent, tent + Vector2i.RIGHT, fire, bed, seat, camp.get("stash", tent)]:
-				assert_false(map.tile_at(cell) in CampsLayer.ROADS, "%s at %s off the road" % [who, cell])
+				assert_false(Hamlet.is_way(map.id, map.tile_at(cell)), "%s at %s off the road" % [who, cell])
 			for cell: Vector2i in [tent, tent + Vector2i.RIGHT, fire, bed, seat]:
 				assert_eq(map.region_at(cell), region, "%s at %s on its region" % [who, cell])
 				assert_lte(_apart(cell, home), CampsLayer.CAMP_REACH, "%s at %s near its home" % [who, cell])

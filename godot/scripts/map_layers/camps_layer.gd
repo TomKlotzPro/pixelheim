@@ -34,10 +34,6 @@ const CAMP_COALS := 0.6
 ## patches further off).
 const PACK_SQUARE := [Vector2i.ZERO, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
 const CAMP_REACH := 3
-## The ground a camp leaves clear (PIX-563: the mountain road's first camp
-## had its fire on the road's bend and its log across it, and the road
-## looked shut): the roads and what carries them over water.
-const ROADS := ["path", "bridge", "dock"]
 ## Where a camp's bedroll lies by its tent (from the tent's left cell): in
 ## front, then at its sides; and its log by its fire: at its sides, in
 ## front and behind, then at its corners.
@@ -123,8 +119,10 @@ static func plan_in(view: MapView) -> void:
 ## two of it; its bedroll by the tent and its log by the fire. The tent's
 ## left cell holds the spawn and where its fire, bedroll and log lie
 ## ("fire", "bed", "log"), its right cell is "beside" it. Nothing on the
-## pack's own square or where its foes stand (Packs.stands), a road (ROADS)
-## or a door, nor the fire straight behind one of those cells (PIX-566: a
+## pack's own square or where its foes stand (Packs.stands), a way
+## (Hamlet.is_way; PIX-563: the mountain road's first camp had its fire on
+## the road's bend and its log across it, and the road looked shut) or a
+## door, nor the fire straight behind one of those cells (PIX-566: a
 ## foe at rest on its cell stood in the fire's ring, the flame at its
 ## head), nor further than CAMP_REACH from its home,
 ## nor where it would close a way on (Ways.kept_open: PIX-554), nor leave
@@ -160,7 +158,7 @@ static func plan_camps(map: MapData) -> Dictionary:
 		var fits := func(cell: Vector2i) -> bool:
 			var off := cell - home
 			return not stood.has(cell) and maxi(absi(off.x), absi(off.y)) <= CAMP_REACH and map.is_walkable(cell) \
-					and map.tile_at(cell) not in ROADS and map.region_at(cell) == region and not map.portals.has(cell) and not rails.has(cell) and not shut.has(cell)
+					and not Hamlet.is_way(map.id, map.tile_at(cell)) and map.region_at(cell) == region and not map.portals.has(cell) and not rails.has(cell) and not shut.has(cell)
 		# The first of the stash's cells (`by`, stash_ring) open and closing
 		# no way on, with `also` covered too.
 		var stash_at := func(by: Array[Vector2i], also: Dictionary) -> Vector2i:
@@ -187,9 +185,6 @@ static func plan_camps(map: MapData) -> Dictionary:
 				for x in range(-reach, reach + 1):
 					if maxi(absi(x), absi(y)) == reach and home + Vector2i(x, y) not in lefts:
 						lefts.append(home + Vector2i(x, y))
-		var tents := lefts.filter(func(left: Vector2i) -> bool:
-			var both: Array[Vector2i] = [left, left + Vector2i.RIGHT]
-			return fits.call(left) and fits.call(left + Vector2i.RIGHT) and takes.call(both, stash_ring(home, left)))
 		# The fire, bedroll and log ("fire", "bed", "log") that find a place
 		# round a tent at `tent`; `shut` left as it was.
 		var lay := func(tent: Vector2i) -> Dictionary:
@@ -231,7 +226,13 @@ static func plan_camps(map: MapData) -> Dictionary:
 		var tent := Vector2i(-1, -1)
 		var laid := {}
 		var best := -1
-		for left: Vector2i in tents:
+		for left: Vector2i in lefts:
+			# Asked here, a tent at a time: the first that fits is nearly
+			# always the one kept, and asking all of them first made
+			# entering a map four times slower (Ways.kept_open, #606).
+			var both: Array[Vector2i] = [left, left + Vector2i.RIGHT]
+			if not (fits.call(left) and fits.call(left + Vector2i.RIGHT) and takes.call(both, stash_ring(home, left))):
+				continue
 			var round: Dictionary = lay.call(left)
 			var whole := 0 if round.size() < 3 else 2 if _apart(round["fire"], left) == 2 else 1
 			if whole > best:
