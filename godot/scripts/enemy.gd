@@ -953,6 +953,12 @@ func _toward(to_target: Vector2, delta: float) -> Vector2:
 ## once it stands stuck; ZERO when there is none. Stuck, it keeps to a way
 ## round for HELD_SECONDS, and round whoever it stood against (_in_the_way).
 func _way(to_target: Vector2, delta: float) -> Vector2:
+	# Shoved into a blocker's open strip (PIX-566): out of it first, its way
+	# found anew from the open cell.
+	var out := Packs.way_out(world.map, global_position)
+	if out != Vector2.ZERO:
+		_route_left = 0.0
+		return out
 	var here := Packs.cell_of(global_position)
 	var there := Packs.cell_of(global_position + to_target)
 	var now := GameClock.seconds()
@@ -1133,6 +1139,12 @@ func _wander(delta: float) -> void:
 		wander_time = randf_range(0.8, 2.0)
 		var dirs := [Vector2.ZERO, Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]
 		wander_dir = Packs.wander_dir(home, global_position, dirs.pick_random())
+	# Wandered into a blocker's open strip (PIX-566: a slime stood in a
+	# camp's fire): the rest of this stretch back out of it, the dice
+	# thrown as ever.
+	var out := Packs.way_out(world.map, global_position)
+	if out != Vector2.ZERO:
+		wander_dir = out.normalized()
 	velocity = wander_dir * WANDER_SPEED
 
 

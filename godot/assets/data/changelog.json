@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.410.0",
+      "date": "2026-11-27",
+      "codename": "Clear Paths",
+      "notes": [
+        "A camp's fire stands in front of its pack, never where the foes stand, and no foe stays stuck in a fire or against anything that stands",
+        "The mountain road's camp keeps off the road: no fire or log lies across the way any more"
+      ]
+    },
+    {
       "version": "0.409.0",
       "date": "2026-11-27",
       "codename": "Cabins",
