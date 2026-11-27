@@ -19961,12 +19961,20 @@ msgid "stun"
 msgstr "étourdissement"
 
 #: scripts/state/bearing.gd
+msgid "For the board on the square: %s"
+msgstr "Pour le tableau d'avis : %s"
+
+#: scripts/state/bearing.gd
 msgid "Hand it in to %s."
 msgstr "Remettez-la à %s."
 
 #: scripts/state/bearing.gd
 msgid "Slay %s in its lair"
 msgstr "Abattez %s dans son repaire"
+
+#: scripts/state/bearing.gd
+msgid "To gather: %s"
+msgstr "À cueillir : %s"
 
 #: scripts/state/bells.gd
 msgid "(dawn in %d:%02d)"
@@ -20915,6 +20923,10 @@ msgstr "Victoire"
 #: scripts/world_fx.gd
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
+
+#: scripts/world_hud.gd
+msgid "%s: none left to pick today"
+msgstr "%s : plus rien à cueillir aujourd'hui"
 
 #: scripts/world_hud.gd
 msgid "Boss slayer +%d%%  %d:%02d"

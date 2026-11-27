@@ -535,6 +535,19 @@ func look_again() -> void:
 	bearing = Bearing.active(GameState.progression, GameState.settlement, GameState.pack.items, GameState.world.discovered)
 	if GameState.progression.prologue == Prologue.FIRES and world.map.id == "town" and world.interaction.prologue_bucket:
 		bearing["cell"] = Prologue.nearest_fire(world.player_cell, Town.ruins(Town.done_projects(GameState.settlement)), GameState.progression.prologue_doused)
+	# Something to gather (PIX-560): to today's nearest patch of it here.
+	if String(bearing.get("gather", "")) != "" and bearing["map_id"] == world.map.id:
+		var nearest := Bearing.NOWHERE
+		for cell: Vector2i in world.view.patches:
+			var patch: Dictionary = world.view.patches[cell]
+			if patch["item"] == bearing["gather"] and Gathering.is_ready(GameState.world, patch["id"]) and (nearest == Bearing.NOWHERE or (cell - world.player_cell).length_squared() < (nearest - world.player_cell).length_squared()):
+				nearest = cell
+		if nearest != Bearing.NOWHERE:
+			bearing["cell"] = nearest
+		elif world.view.patch_day == Gathering.day_of(GameState.world.steps):
+			# Today's are picked: say so, and lead to no empty spot.
+			bearing["step"] = Text.t("%s: none left to pick today") % Catalog.item_name(bearing["gather"])
+			bearing["cell"] = Bearing.NOWHERE
 	story = Bearing.behind(bearing, GameState.progression, GameState.settlement, GameState.pack.items, GameState.world.discovered)
 	leads_story = Bearing.tells_story(bearing)
 

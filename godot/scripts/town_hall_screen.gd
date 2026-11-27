@@ -35,6 +35,12 @@ func _info() -> String:
 		# What it brings for good (PIX-206): an age's project alone has one.
 		if chosen.has("perk"):
 			lines.append(Text.t("Once built: %s.") % chosen["perk"])
+		# Where what it asks grows, while the pack is short of it (PIX-560:
+		# the board named the reed and nowhere to find it), as Vex's card does.
+		var asked: Dictionary = chosen.get("cost", {}).get("items", {})
+		for item_id: String in asked:
+			if Catalog.held(GameState.pack.items, item_id) < int(asked[item_id]) and not Economy.grows_at(item_id).is_empty():
+				lines.append(Economy.where_to_find(item_id, GameState.town_tier(), GameState.trade.stock_stage()) + ".")
 		lines.append("")
 	var now := Town.tier(GameState.town_tier())
 	lines.append_array([

@@ -85,3 +85,71 @@ func test_the_fountains_age_says_it_wants_the_scale() -> void:
 			if project["cost"].get("items", {}).has("dragon_scale"):
 				var line: String = age["requires"][0]["line"]
 				assert_string_contains(line, "scale", "age %d tells of the scale" % age["tier"])
+
+
+var _decks := {}
+
+
+## The lead of something that asks for `item_id`, a thing patches grow
+## (PIX-560): it sends the hero to a map with a page of its own, to ground
+## its patches grow on, in a region that grows some every day, under the
+## name the map writes over that region, and the line above the dock says so.
+func _assert_leads_to_where_it_grows(lead: Dictionary, item_id: String, what: String) -> void:
+	assert_eq(lead["gather"], item_id, "%s: it says what to gather" % what)
+	assert_has(Atlas.ORDER, lead["map_id"], "%s: on a map with a page" % what)
+	var map := MapData.load_by_id(lead["map_id"])
+	var region := map.region_at(lead["cell"])
+	assert_eq(lead["region"], region, "%s: the mark stands in the region it names" % what)
+	assert_eq(Bestiary.region_materials().get(region, ""), item_id, "%s: where it grows" % what)
+	assert_gt(Gathering.daily_in(region), 0.0, "%s: some of it every day" % what)
+	if not _decks.has(map.id):
+		_decks[map.id] = Gathering.decks(map)
+	assert_has(_decks[map.id].get(region, []), lead["cell"], "%s: on ground a patch may grow on" % what)
+	assert_eq(lead["place"], Atlas.region_title(region), "%s: the place is its region" % what)
+	assert_string_contains(Bearing.line(lead), Atlas.region_title(region, map), "%s: by the name the map gives it" % what)
+
+
+## PIX-560: the newcomer needed four Marsh Reeds for the inn and nothing on
+## the main path said where they grow. Every quest that asks for something
+## a patch grows (to hand over, or to craft with), and every project of the
+## main story that does, leads to where it grows while the pack lacks it.
+func test_what_asks_for_a_gathered_thing_leads_to_where_it_grows() -> void:
+	var state: Node = autofree(GameStateScript.new())
+	state.new_game("Robin", "warrior")
+	var grown := func(item_id: String) -> bool: return not Economy.grows_at(item_id).is_empty()
+	var checked: Array[String] = []
+	for quest: Dictionary in Quests.all():
+		var objective: Dictionary = quest["objective"]
+		var needs := {}
+		if objective["kind"] == "deliver" and not Interactables._data()["chests"].any(func(chest: Dictionary) -> bool: return chest.get("loot", {}).get("itemId", "") == objective["itemId"]):
+			needs = {objective["itemId"]: 1}
+		elif objective["kind"] == "craft":
+			needs = Economy.recipes().filter(func(entry: Dictionary) -> bool: return entry["itemId"] == objective["itemId"])[0]["needs"]
+		var asked: Array = needs.keys().filter(grown)
+		if asked.is_empty():
+			continue
+		_assert_leads_to_where_it_grows(Bearing.of_quest(quest, state.progression, state.settlement, {}), asked[0], quest["id"])
+		checked.append(quest["id"])
+	for step: Dictionary in MainQuest.steps():
+		if step["when"]["kind"] != "project":
+			continue
+		var asked: Array = Town.project(step["when"]["projectId"])["cost"]["items"].keys().filter(grown)
+		if asked.is_empty():
+			continue
+		_assert_leads_to_where_it_grows(Bearing.of_step(step, state.progression, state.settlement, {}), asked[0], step["id"])
+		checked.append(step["id"])
+	for id: String in ["herbs_for_vex", "iva_reeds", "hildas_buckler", "rebuild"]:
+		assert_has(checked, id, "the reeds' askers are among them")
+
+
+func test_the_reeds_lead_to_the_marsh_until_the_pack_has_them() -> void:
+	var state: Node = autofree(GameStateScript.new())
+	state.new_game("Robin", "warrior")
+	var inn := MainQuest.step("rebuild")
+	var lead := Bearing.of_step(inn, state.progression, state.settlement, {"marsh_reed": 1})
+	assert_eq(Bearing.line(lead), "For the board on the square: Marsh Reed - The Sunken Marsh (1/4)")
+	assert_eq(lead["map_id"], "overworld", "the marsh west of the gate")
+	lead = Bearing.of_step(inn, state.progression, state.settlement, {"marsh_reed": 4})
+	assert_eq([lead["map_id"], lead["cell"], lead["gather"]], ["town", Town.project_board(), ""], "with the reeds, to the board")
+	assert_eq(lead["step"], inn["text"])
+	assert_true(Economy.grows_at("wolf_pelt").is_empty(), "no patch grows a pelt")

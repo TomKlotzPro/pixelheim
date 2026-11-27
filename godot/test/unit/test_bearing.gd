@@ -47,6 +47,9 @@ func test_the_slimes_lead_to_their_fields_and_count() -> void:
 func test_a_followed_quest_leads_and_then_says_to_hand_it_in() -> void:
 	state.questing.resolve_quests("alchemist_vex")
 	state.progression.tracked = "herbs_for_vex"
+	# With what the potion is made of in the pack (PIX-560: without, the
+	# quest leads to where it grows first, test_leads).
+	state.pack.items.merge({"forest_herb": 1, "marsh_reed": 1})
 	var lead := _lead()
 	assert_false(lead["main"], "the followed quest leads, not the story")
 	assert_eq(lead["title"], "A First Brew")

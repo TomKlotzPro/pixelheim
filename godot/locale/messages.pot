@@ -19961,11 +19961,19 @@ msgid "stun"
 msgstr ""
 
 #: scripts/state/bearing.gd
+msgid "For the board on the square: %s"
+msgstr ""
+
+#: scripts/state/bearing.gd
 msgid "Hand it in to %s."
 msgstr ""
 
 #: scripts/state/bearing.gd
 msgid "Slay %s in its lair"
+msgstr ""
+
+#: scripts/state/bearing.gd
+msgid "To gather: %s"
 msgstr ""
 
 #: scripts/state/bells.gd
@@ -20914,6 +20922,10 @@ msgstr ""
 
 #: scripts/world_fx.gd
 msgid "LEVEL UP"
+msgstr ""
+
+#: scripts/world_hud.gd
+msgid "%s: none left to pick today"
 msgstr ""
 
 #: scripts/world_hud.gd

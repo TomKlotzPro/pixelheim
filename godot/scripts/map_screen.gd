@@ -721,7 +721,16 @@ class Painting extends Control:
 		var named: Array[Dictionary] = []
 		for gate: Dictionary in _gates:
 			named.append({"text": Gates.mark(gate["gate"]), "at": Vector2(gate["cell"]) + Vector2(0.5, 0.5), "way": true})
-		for label: Dictionary in named + Atlas.page_labels(_on_page(), GameState.world.discovered):
+		# Then the region the goal sends the hero to gather in (PIX-560),
+		# seen or not: the line above the dock names it, so the map does.
+		var lead := _lead("bearing")
+		var goal := goal_cell()
+		var growing := ""
+		if String(lead.get("region", "")) != "" and holds(String(lead["map_id"])) and goal != Bearing.NOWHERE:
+			growing = Atlas.region_title(lead["region"], _map_of(String(lead["map_id"])))
+			named.append({"text": growing, "at": Vector2(goal) + Vector2(0.5, 0.5), "way": false})
+		var others := Atlas.page_labels(_on_page(), GameState.world.discovered).filter(func(label: Dictionary) -> bool: return label["text"] != growing)
+		for label: Dictionary in named + others:
 			var within := _sheet_box(Vector2i(label["at"].floor()))
 			# One line inside its map where it fits there, then two; only then
 			# mostly over it (PIX-403: never on the next map's ground), or off.

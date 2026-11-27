@@ -293,6 +293,47 @@ static func _region_names(regions: Array) -> String:
 	return ", ".join(sorted.slice(0, 3).map(func(region_id: String) -> String: return Bestiary.region(region_id)["name"]))
 
 
+static var _growing := {}
+
+
+## Where a material is gathered (PIX-560: nothing on the main path said
+## where Marsh Reed grows): {"mapId", "region", "cell"} for the nearest
+## region whose patches grow it, on the map that holds that region, at the
+## growing ground nearest the region's middle; {} for what no patch grows.
+## A quest that asks for it points there (Bearing), and the map names it.
+static func grows_at(item_id: String) -> Dictionary:
+	if _growing.has(item_id):
+		return _growing[item_id]
+	var out := {}
+	var materials := Bestiary.region_materials()
+	var ground: Dictionary = Bestiary.gathering_rules()["ground"]
+	var homes: Array = materials.keys().filter(func(region_id: String) -> bool: return materials[region_id] == item_id and ground.has(region_id))
+	homes.sort_custom(func(a: String, b: String) -> bool: return place_stage("", a) < place_stage("", b))
+	var maps: Array = MAP_STAGE.keys().filter(func(map_id: String) -> bool: return not Depths.is_planned(map_id))
+	for region_id: String in homes:
+		for map_id: String in maps:
+			# No map but its own holds a region: look no further than a cell of it.
+			if region_id not in _map(map_id).regions.values():
+				continue
+			var cells: Array = Gathering.decks(_map(map_id)).get(region_id, [])
+			if cells.is_empty():
+				continue
+			var middle := Vector2.ZERO
+			for cell: Vector2i in cells:
+				middle += Vector2(cell)
+			middle /= cells.size()
+			var best: Vector2i = cells[0]
+			for cell: Vector2i in cells:
+				if Vector2(cell).distance_squared_to(middle) < Vector2(best).distance_squared_to(middle):
+					best = cell
+			out = {"mapId": map_id, "region": region_id, "cell": best}
+			break
+		if not out.is_empty():
+			break
+	_growing[item_id] = out
+	return out
+
+
 static func _lead(kind: String, text: String, stage: float) -> Dictionary:
 	return {"kind": kind, "text": text, "stage": stage}
 
@@ -433,7 +474,8 @@ static func where_to_find(item_id: String, town_tier := 4, stock_stage := 99) ->
 	var sources := material_sources(item_id, town_tier, stock_stage)
 	if sources.is_empty():
 		return ""
-	return "%s: %s" % [Catalog.item_name(item_id), sources[0]["text"]]
+	# The colon as the language writes it (PIX-560: « Roseau des marais: »).
+	return Text.t("%s: %s") % [Catalog.item_name(item_id), sources[0]["text"]]
 
 
 ## Alchemy: 6% per level to brew a second one free, capped at 50%.
