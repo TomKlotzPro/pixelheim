@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.412.0",
+      "date": "2026-11-27",
+      "codename": "Where It Grows",
+      "notes": [
+        "Whatever the story or a quest asks you to gather, the Next line, the journal, the arrow and the map lead you to where it grows, and say when the day's patches are all picked",
+        "The map names the regions where things grow before you have walked them, and the board's card says where what it asks grows",
+        "The inn asks for 3 marsh reeds, as many as the marsh grows in a day"
+      ]
+    },
+    {
       "version": "0.411.0",
       "date": "2026-11-27",
       "codename": "Fair Trade",

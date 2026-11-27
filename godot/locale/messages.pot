@@ -7577,6 +7577,10 @@ msgid "The ice cave now goes three floors down: the frosted galleries with Gunna
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The inn asks for 3 marsh reeds, as many as the marsh grows in a day"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The inventory doll wears your gear live - equip a piece and watch your character change right there in the preview"
 msgstr ""
 
@@ -7674,6 +7678,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The map key is rebindable like everything else"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The map names the regions where things grow before you have walked them, and the board's card says where what it asks grows"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8481,6 +8489,10 @@ msgid "What's new turns a page at a time with A and D, and leaves out the behind
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Whatever the story or a quest asks you to gather, the Next line, the journal, the arrow and the map lead you to where it grows, and say when the day's patches are all picked"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it"
 msgstr ""
 
@@ -8506,6 +8518,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "When the music arrives while another tune plays, it takes over in a soft crossfade instead of waiting for the next change of place"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Where It Grows"
 msgstr ""
 
 #: assets/data/changelog.json
