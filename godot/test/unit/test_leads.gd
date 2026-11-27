@@ -157,9 +157,9 @@ func test_the_reeds_lead_to_the_marsh_until_the_pack_has_them() -> void:
 	state.new_game("Robin", "warrior")
 	var inn := MainQuest.step("rebuild")
 	var lead := Bearing.of_step(inn, state.progression, state.settlement, {"marsh_reed": 1})
-	assert_eq(Bearing.line(lead), "For the board on the square: Marsh Reed - The Sunken Marsh (1/4)")
+	assert_eq(Bearing.line(lead), "For the board on the square: Marsh Reed - The Sunken Marsh (1/3)")
 	assert_eq(lead["map_id"], "overworld", "the marsh west of the gate")
-	lead = Bearing.of_step(inn, state.progression, state.settlement, {"marsh_reed": 4})
+	lead = Bearing.of_step(inn, state.progression, state.settlement, {"marsh_reed": 3})
 	assert_eq([lead["map_id"], lead["cell"], lead["gather"]], ["town", Town.project_board(), ""], "with the reeds, to the board")
 	assert_eq(lead["step"], inn["text"])
 	assert_true(Economy.grows_at("wolf_pelt").is_empty(), "no patch grows a pelt")
@@ -210,7 +210,7 @@ func test_healed_ash_is_named_as_the_map_names_it() -> void:
 func test_the_boards_card_names_where_its_reeds_grow() -> void:
 	var asked: Dictionary = Town.project("the_inn")["cost"]["items"]
 	assert_eq(Economy.growing_lines(asked, {}), ["Marsh Reed: the Sunken Marsh."] as Array[String])
-	assert_eq(Economy.growing_lines(asked, {"marsh_reed": 4}), [] as Array[String], "with the reeds, nothing more to say")
+	assert_eq(Economy.growing_lines(asked, {"marsh_reed": 3}), [] as Array[String], "with the reeds, nothing more to say")
 	assert_eq(Economy.growing_lines({"wolf_pelt": 1}, {}), [] as Array[String], "no patch grows a pelt")
 
 
