@@ -2805,6 +2805,10 @@ msgid "At a Glance"
 msgstr "En un coup d'œil"
 
 #: assets/data/changelog.json
+msgid "At a counter, E always buys or sells the row you see chosen: after a sale the choice stays on its item"
+msgstr "À un comptoir, E achète ou vend toujours la ligne que vous voyez choisie : après une vente, le choix reste sur son objet"
+
+#: assets/data/changelog.json
 msgid "At dawn Morvax comes down the mountain road, the collar comes off, and the dragon leaves a scale in the fountain and flies home, free"
 msgstr "À l'aube, Morvax descend la route de la montagne, le collier tombe, et le dragon laisse une écaille dans la fontaine avant de rentrer chez lui, libre"
 
@@ -4399,6 +4403,10 @@ msgstr "Les chartes supérieures demandent plus que de l'or : le Bourg veut qu
 #: assets/data/changelog.json
 msgid "Hilda quenches deep pieces: gold and a gem for +1 to their strongest stat, half again dearer each time"
 msgstr "Hilda trempe les pièces des profondeurs : de l'or et une gemme pour +1 à leur meilleure caractéristique, moitié plus cher à chaque fois"
+
+#: assets/data/changelog.json
+msgid "Hilda's tabs stand in one strip in the same place on every tab"
+msgstr "Les onglets de Hilda forment une seule bande, à la même place sur chaque onglet"
 
 #: assets/data/changelog.json
 msgid "Hints wait their turn: never over a boss's entrance or a title card, one at a time, and the dodge is taught on the first road out to where packs roam, before any boss"

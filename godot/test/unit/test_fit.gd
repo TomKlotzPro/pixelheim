@@ -303,22 +303,47 @@ func test_tabs_stand_apart_on_their_pages_edge() -> void:
 	UiStyle.withheld = withheld
 
 
-## PIX-543: Hilda's fifth tab stood over the card's corner at Buy, where
-## the goods' page is too narrow for five: each tab stands whole on one page's
-## edge, clear of its corners, in either language.
-func test_the_smithys_tabs_keep_to_a_page_at_buy() -> void:
-	for language in LANGUAGES:
-		Text.apply(language)
-		GameState.trade.stall_shop = Economy.shop_at("town_smith")
-		var counter := ShopScreen.new()
-		add_child_autofree(counter)
-		await wait_process_frames(3)
-		assert_gt(counter.tab_buttons.size(), 4, language)
-		for button in counter.tab_buttons:
-			var tab := button.get_global_rect()
-			var on := [ShopScreen.GOODS, ShopScreen.CARD, ShopScreen.PACK].filter(func(page: Rect2) -> bool:
-				return tab.position.x >= page.position.x + UiStyle.INSET and tab.end.x <= page.end.x - UiStyle.INSET)
-			assert_eq(on.size(), 1, "%s: %s on one page's edge, %s" % [language, button.text, tab])
+## PIX-565: Hilda's tabs are one strip, in one place whatever tab is open,
+## at both text sizes and in either language: each on the pages' top edge
+## and touching the one before, the last ending inside the pages. Kept each
+## to one page's edge at Buy and Sell (PIX-543: the fifth stood over the
+## card's corner), five broke in two there, three over the goods and two
+## over the card, and came together again at Forge. All seven here: a
+## smith of level 8 reforges, a piece from the deep is quenched.
+func test_the_smithys_tabs_are_one_strip_on_every_tab() -> void:
+	var before: bool = GameState.settings.large_text
+	GameState.hero.jobs["smithing"]["level"] = 8
+	var deep := InventoryState.create_gear("iron_sword")
+	deep["deep"] = 1
+	GameState.pack.gear.append(deep)
+	GameState.trade.stall_shop = Economy.shop_at("town_smith")
+	for large: bool in [false, true]:
+		GameState.settings.large_text = large
+		for language in LANGUAGES:
+			Text.apply(language)
+			var counter := ShopScreen.new()
+			add_child_autofree(counter)
+			await wait_process_frames(3)
+			assert_eq(counter.tabs.size(), 7, "every tab Hilda has: %s" % [counter.tabs])
+			var first: Array[Rect2] = []
+			for at in counter.tabs.size():
+				counter.switch(at)
+				await wait_process_frames(2)
+				var said := "%s%s, on %s" % [language, " large" if large else "", counter.tabs[at]]
+				var strip: Array[Rect2] = []
+				for button in counter.tab_buttons:
+					strip.append(button.get_global_rect())
+				for index in strip.size():
+					assert_almost_eq(strip[index].end.y, ShopScreen.GOODS.position.y, 0.01, "%s: tab %d on the pages' top edge" % [said, index])
+					if index > 0:
+						assert_almost_eq(strip[index].position.x, strip[index - 1].end.x + ShopScreen.TAB_GAP, 0.01, "%s: tab %d touching the one before" % [said, index])
+				assert_almost_eq(strip[0].position.x, ShopScreen.GOODS.position.x + UiStyle.INSET, 0.01, "%s: from the first page's corner" % said)
+				assert_true(strip[-1].end.x <= ShopScreen.PACK.end.x - UiStyle.INSET, "%s: ends inside the pages, %s" % [said, strip[-1]])
+				if at == 0:
+					first = strip
+				else:
+					assert_eq(strip, first, "%s: where it stood on %s" % [said, counter.tabs[0]])
+	GameState.settings.large_text = before
 	Text.apply("en")
 
 

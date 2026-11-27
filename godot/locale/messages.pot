@@ -2805,6 +2805,10 @@ msgid "At a Glance"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "At a counter, E always buys or sells the row you see chosen: after a sale the choice stays on its item"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "At dawn Morvax comes down the mountain road, the collar comes off, and the dragon leaves a scale in the fountain and flies home, free"
 msgstr ""
 
@@ -4398,6 +4402,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Hilda quenches deep pieces: gold and a gem for +1 to their strongest stat, half again dearer each time"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Hilda's tabs stand in one strip in the same place on every tab"
 msgstr ""
 
 #: assets/data/changelog.json
