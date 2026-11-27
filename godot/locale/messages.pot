@@ -2269,6 +2269,10 @@ msgid "A burnt stead's door now shows a steady pale star while something waits i
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A camp's fire stands in front of its pack, never where the foes stand, and no foe stays stuck in a fire or against anything that stands"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A chosen row in Options keeps its words clear of the frame"
 msgstr ""
 
@@ -3186,6 +3190,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Clear Map"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Clear Paths"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7706,6 +7714,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The mountain gate opens onto the mountain road, ash and dead pines, ash hounds and wyverns, up to Morvax's forge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The mountain road's camp keeps off the road: no fire or log lies across the way any more"
 msgstr ""
 
 #: assets/data/changelog.json

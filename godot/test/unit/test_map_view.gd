@@ -87,8 +87,16 @@ func test_packs_camp_beside_their_homes() -> void:
 		view.plan(map.spawn)
 		for spawn: Dictionary in Bestiary.spawns_on(map_id):
 			var home := Vector2i(spawn["x"], spawn["y"])
-			assert_false(view.camps.has(home), "%s's home stays open" % spawn["id"])
 			assert_true(map.is_walkable(home))
+			# PIX-566: nor on any cell its foes stand on, nor a fire straight
+			# behind one (a foe at rest stood in its ring, the flame at its head).
+			# Where they stand on the bare map, and with everything laid.
+			var stands := Packs.stands(MapData.load_by_id(map_id), spawn) + Packs.stands(map, spawn)
+			for offset: Vector2i in CampsLayer.PACK_SQUARE:
+				stands.append(home + offset)
+			for cell: Vector2i in stands:
+				assert_false(view.camps.has(cell), "%s's square stays open at %s" % [spawn["id"], cell])
+				assert_ne(view.camps.get(cell + Vector2i.UP, {}).get("kind", ""), "fire", "no fire straight behind %s's foe at %s" % [spawn["id"], cell])
 		var fires := 0
 		var rails: Array[Vector2i] = []
 		for working: Dictionary in AshLand.WORKINGS.get(map_id, []):
@@ -125,6 +133,9 @@ func test_packs_camp_beside_their_homes() -> void:
 			casting += int(apart == 2)
 			assert_true(_apart(bed, tent) <= 1 or _apart(bed, tent + Vector2i.RIGHT) <= 1, "%s: its bedroll by its tent" % who)
 			assert_eq(_apart(seat, fire), 1, "%s: its log by its fire" % who)
+			# PIX-563: off the road, its stash too.
+			for cell: Vector2i in [tent, tent + Vector2i.RIGHT, fire, bed, seat, camp.get("stash", tent)]:
+				assert_false(Hamlet.is_way(map.id, map.tile_at(cell)), "%s at %s off the road" % [who, cell])
 			for cell: Vector2i in [tent, tent + Vector2i.RIGHT, fire, bed, seat]:
 				assert_eq(map.region_at(cell), region, "%s at %s on its region" % [who, cell])
 				assert_lte(_apart(cell, home), CampsLayer.CAMP_REACH, "%s at %s near its home" % [who, cell])

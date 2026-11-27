@@ -193,6 +193,27 @@ static func cell_of(at: Vector2) -> Vector2i:
 	return Vector2i((at / TILE).floor())
 
 
+## How many foes a wild pack is, and where they stand round its home, the
+## home first, each on the first of these that is open.
+const SIZE := 3
+const STANDS: Array[Vector2i] = [Vector2i.ZERO, Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]
+
+
+## The cells the pack of `spawn` stands on, its home first: up to SIZE (or
+## the spawn's own "size": one captain, not three, PIX-165) open cells of a
+## region, never a way out. Foes puts the pack there, and its camp keeps
+## off them (CampsLayer.plan_camps, PIX-566).
+static func stands(map: MapData, spawn: Dictionary) -> Array[Vector2i]:
+	var home := Vector2i(spawn["x"], spawn["y"])
+	var cells: Array[Vector2i] = [home]
+	for offset: Vector2i in STANDS.slice(1):
+		var cell: Vector2i = home + offset
+		if cells.size() < SIZE and map.is_walkable(cell) and map.region_at(cell) != "" and not map.portals.has(cell):
+			cells.append(cell)
+	cells.resize(mini(cells.size(), int(spawn.get("size", SIZE))))
+	return cells
+
+
 ## A foe's feet, centred on its position (enemy.gd's collision box).
 const FEET := Vector2(10, 8)
 
@@ -212,6 +233,31 @@ static func walks_straight(map: MapData, from: Vector2, to: Vector2) -> bool:
 			if not map.is_walkable(cell_of(at + corner)):
 				return false
 	return true
+
+
+## The step out for a foe whose feet's middle, `at`, lies in a shut cell
+## (PIX-566), ZERO on open ground: to the middle of the open cell beside it
+## nearest by. A blocker's foot leaves a strip of its cell open (the top 5 px
+## of a prop's, MapView.HAMLET_FOOT), and a foe shoved in there, by its pack
+## or its own wander, walks straight nowhere (every line starts shut) and
+## its way round started from the middle of its own cell, inside the
+## blocker: an orc stood chasing in a camp's fire for as long as the hero
+## stayed. Up first: a foot's open strip is its top.
+static func way_out(map: MapData, at: Vector2) -> Vector2:
+	var here := cell_of(at)
+	if map.is_walkable(here):
+		return Vector2.ZERO
+	var out := Vector2.ZERO
+	var nearest := INF
+	for step: Vector2i in [Vector2i.UP, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.DOWN]:
+		if not map.is_walkable(here + step) or map.portals.has(here + step):
+			continue
+		var cell := Rect2(Vector2(here + step) * TILE, Vector2(TILE, TILE))
+		var off := at.distance_to(at.clamp(cell.position, cell.end))
+		if off < nearest:
+			nearest = off
+			out = middle(here + step) - at
+	return out
 
 
 ## The open ground of `map` within `area` (cells), to route a foe over:
