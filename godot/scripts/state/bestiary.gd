@@ -305,9 +305,17 @@ static var _homes := {}
 static func where_found(monster_id: String) -> Array[String]:
 	_learn_places()
 	var out: Array[String] = []
-	out.assign(_found.get(monster_id, []))
-	out.append_array(_found_at_night.get(monster_id, []))
+	# Named as read, by the map's name today (PIX-560: the ash healed).
+	for region_id: String in _found.get(monster_id, []):
+		out.append(_said(region_id))
+	for region_id: String in _found_at_night.get(monster_id, []):
+		out.append(Text.t("%s by night") % _said(region_id))
 	return out
+
+
+static func _said(region_id: String) -> String:
+	var name := Lamps.said(region_id)
+	return name if name != "" else region_id
 
 
 ## The first spawn in the wild whose pack is of `monster_id`: {mapId, x, y},
@@ -324,7 +332,7 @@ static func _learn_places() -> void:
 	if not _found.is_empty():
 		return
 	var maps := {}
-	# kind -> region name -> whether a pack of it is out there by day.
+	# kind -> region -> whether a pack of it is out there by day.
 	var by_day := {}
 	var home_rank := {}
 	for spawn: Dictionary in _data()["spawns"]:
@@ -332,9 +340,8 @@ static func _learn_places() -> void:
 			maps[spawn["mapId"]] = MapData.load_by_id(spawn["mapId"])
 		var region_id: String = maps[spawn["mapId"]].region_at(Vector2i(spawn["x"], spawn["y"]))
 		var species := species_of(spawn, region_id)
-		var name: String = region(region_id).get("name", region_id)
 		var seen: Dictionary = by_day.get(species, {})
-		seen[name] = seen.get(name, false) or Packs.is_out(spawn, false)
+		seen[region_id] = seen.get(region_id, false) or Packs.is_out(spawn, false)
 		by_day[species] = seen
 		var rank: int = {"": 0, "day": 1}.get(String(spawn.get("hours", "")), 2)
 		if rank < int(home_rank.get(species, 99)):
@@ -343,11 +350,11 @@ static func _learn_places() -> void:
 	for species: String in by_day:
 		var places: Array[String] = []
 		var at_night: Array[String] = []
-		for name: String in by_day[species]:
-			if by_day[species][name]:
-				places.append(name)
+		for region_id: String in by_day[species]:
+			if by_day[species][region_id]:
+				places.append(region_id)
 			else:
-				at_night.append(Text.t("%s by night") % name)
+				at_night.append(region_id)
 		_found[species] = places
 		_found_at_night[species] = at_night
 

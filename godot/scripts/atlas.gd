@@ -260,7 +260,8 @@ static func color(tile: String) -> Color:
 ## (`way`); then each wild region of a map that has several, over the middle
 ## of what has been seen of it (`seen`: cell -> true), once at least
 ## REGION_SEEN of its cells have been (a corner glimpsed from a pass isn't
-## the marsh). Doors into the village's rooms aren't ways to another place,
+## the marsh), and until then over its own middle when something is
+## gathered there (_growing_middles). Doors into the village's rooms aren't ways to another place,
 ## and the gates down into a dungeon have their waypoints standing there. A
 ## door into a room with a stair down (PIX-256: Liane's room, Captain Hale's
 ## hall) is named for the cave below it, which is where it leads on to. A
@@ -290,11 +291,48 @@ static func labels(map: MapData, seen: Dictionary, drawn: Array = []) -> Array[D
 			continue
 		sums[region] = sums.get(region, Vector2.ZERO) + Vector2(cell)
 		counts[region] = int(counts.get(region, 0)) + 1
+	var growing := _growing_middles(map)
 	var regions: Array = sums.keys()
+	for region: String in growing:
+		if region not in regions:
+			regions.append(region)
 	regions.sort()
 	for region: String in regions:
-		if int(counts[region]) >= REGION_SEEN:
+		if int(counts.get(region, 0)) >= REGION_SEEN:
 			out.append({"text": region_title(region, map), "at": sums[region] / counts[region] + Vector2(0.5, 0.5), "way": false})
+		elif growing.has(region):
+			out.append({"text": region_title(region, map), "at": growing[region] + Vector2(0.5, 0.5), "way": false})
+	return out
+
+
+static var _middles := {}
+
+
+## The cell of each region of `map` that something is gathered in
+## (combat.json's gathering ground) nearest its middle: region -> cell. A
+## card says where a thing grows by the region's name (PIX-560: « le Marais
+## englouti », and the map wrote no such name before the marsh was walked),
+## so the map names those regions seen or not; the fog still hides the ground.
+static func _growing_middles(map: MapData) -> Dictionary:
+	if _middles.has(map.id):
+		return _middles[map.id]
+	var ground: Dictionary = Bestiary.gathering_rules()["ground"]
+	var sums := {}
+	var counts := {}
+	for cell: Vector2i in map.regions:
+		var region: String = map.regions[cell]
+		if ground.has(region):
+			sums[region] = sums.get(region, Vector2.ZERO) + Vector2(cell)
+			counts[region] = int(counts.get(region, 0)) + 1
+	var out := {}
+	for cell: Vector2i in map.regions:
+		var region: String = map.regions[cell]
+		if not sums.has(region):
+			continue
+		var middle: Vector2 = sums[region] / counts[region]
+		if not out.has(region) or Vector2(cell).distance_squared_to(middle) < Vector2(out[region]).distance_squared_to(middle):
+			out[region] = Vector2(cell)
+	_middles[map.id] = out
 	return out
 
 

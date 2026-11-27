@@ -290,7 +290,7 @@ static func place_stage(map_id: String, region_id := "") -> float:
 static func _region_names(regions: Array) -> String:
 	var sorted := regions.duplicate()
 	sorted.sort_custom(func(a: String, b: String) -> bool: return place_stage("", a) < place_stage("", b))
-	return ", ".join(sorted.slice(0, 3).map(func(region_id: String) -> String: return Bestiary.region(region_id)["name"]))
+	return ", ".join(sorted.slice(0, 3).map(func(region_id: String) -> String: return Lamps.said(region_id)))
 
 
 static var _growing := {}
@@ -404,7 +404,9 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 			var region_id: String = _map(chest["mapId"]).region_at(Vector2i(chest["x"], chest["y"]))
 			if Depths.is_planned(chest["mapId"]):
 				region_id = String(Depths.dungeon(Depths.floor_of(chest["mapId"])["dungeon"])["region"])
-			var where: String = Bestiary.region(region_id).get("name", Text.mid(Catalog.place_name(chest["mapId"])))
+			var where := Lamps.said(region_id)
+			if where == "":
+				where = Text.mid(Catalog.place_name(chest["mapId"]))
 			out.append(_lead("chest", Text.t("in a chest in %s") % where, place_stage(chest["mapId"], region_id)))
 	var waters: Array[String] = []
 	var water_stage := 99.0
@@ -470,6 +472,18 @@ static func _monster_stage(monster_id: String) -> float:
 		if Bestiary.species_of(spawn, region_id) == monster_id:
 			nearest = minf(nearest, place_stage(spawn["mapId"], region_id))
 	return nearest
+
+
+## Where what a project asks (`asked`: item -> how many) grows, a line for
+## each the pack is short of: "Marsh Reed: the Sunken Marsh." (PIX-560: the
+## board named the reed and nowhere to find it). The place alone, by the
+## map's name for it: the line under the board's card (TownHallScreen).
+static func growing_lines(asked: Dictionary, items: Dictionary) -> Array[String]:
+	var out: Array[String] = []
+	for item_id: String in asked:
+		if Catalog.held(items, item_id) < int(asked[item_id]) and not grows_at(item_id).is_empty():
+			out.append(Text.t("%s: %s") % [Catalog.item_name(item_id), Lamps.said(grows_at(item_id)["region"])] + ".")
+	return out
 
 
 ## The materials a recipe still lacks, as "2 × Marsh Reed".

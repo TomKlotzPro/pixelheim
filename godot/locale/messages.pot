@@ -20925,7 +20925,7 @@ msgid "LEVEL UP"
 msgstr ""
 
 #: scripts/world_hud.gd
-msgid "%s: none left to pick today"
+msgid "%s: all picked today, more grows tomorrow"
 msgstr ""
 
 #: scripts/world_hud.gd

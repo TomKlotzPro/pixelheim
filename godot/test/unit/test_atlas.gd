@@ -179,7 +179,12 @@ func test_regions_are_named_only_where_a_map_has_several() -> void:
 
 func test_a_page_names_its_regions_and_ways_out_once_seen() -> void:
 	var overworld := MapData.load_by_id("overworld")
-	assert_eq(Atlas.labels(overworld, {}), [] as Array[Dictionary], "nothing seen, nothing named")
+	# Where something is gathered is named before it is seen (PIX-560: a
+	# card says the reed grows in the Sunken Marsh), each on its own ground.
+	var unseen := Atlas.labels(overworld, {})
+	assert_eq(_texts(unseen, true), [], "nothing seen, no way named")
+	assert_eq(_texts(unseen, false), ["The Ash Fields", "The Whispering Forest", "The Sunken Marsh"], "its three regions grow something")
+	assert_eq(unseen.map(func(label: Dictionary) -> String: return overworld.region_at(Vector2i(label["at"].floor()))), ["ash", "forest", "marsh"])
 	var everything := Atlas.labels(overworld, _seen_all(overworld))
 	var ways := _texts(everything, true)
 	for map_id: String in ["town", "mirefen", "deepwood", "saltmere", "blackiron", "greyhold", "frostgate", "mountain_road"]:
@@ -191,13 +196,14 @@ func test_a_page_names_its_regions_and_ways_out_once_seen() -> void:
 	Discovery.discover_around(by_the_pass, overworld, Vector2i(2, 32))
 	var glimpsed := Atlas.labels(overworld, by_the_pass["overworld"])
 	assert_eq(_texts(glimpsed, true), [Catalog.place_name("mirefen")])
-	assert_eq(_texts(glimpsed, false), [], "a corner of the marsh isn't the marsh")
+	var marsh: Dictionary = glimpsed.filter(func(label: Dictionary) -> bool: return label["text"] == "The Sunken Marsh")[0]
+	assert_eq(marsh["at"], unseen[2]["at"], "a corner of the marsh isn't the marsh: named over its middle still")
 	# A region is named over what's been seen of it.
 	var road := {}
 	for x in range(30, 60):
 		for y in range(8, 14):
 			road[Vector2i(x, y)] = true
-	var ash: Dictionary = Atlas.labels(overworld, road).filter(func(label: Dictionary) -> bool: return not label["way"])[0]
+	var ash: Dictionary = Atlas.labels(overworld, road).filter(func(label: Dictionary) -> bool: return label["text"] == "The Ash Fields")[0]
 	assert_true(Rect2(30, 8, 30, 6).has_point(ash["at"]), "the Ash Fields named where they were walked")
 
 

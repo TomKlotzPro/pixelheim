@@ -537,16 +537,14 @@ func look_again() -> void:
 		bearing["cell"] = Prologue.nearest_fire(world.player_cell, Town.ruins(Town.done_projects(GameState.settlement)), GameState.progression.prologue_doused)
 	# Something to gather (PIX-560): to today's nearest patch of it here.
 	if String(bearing.get("gather", "")) != "" and bearing["map_id"] == world.map.id:
-		var nearest := Bearing.NOWHERE
-		for cell: Vector2i in world.view.patches:
-			var patch: Dictionary = world.view.patches[cell]
-			if patch["item"] == bearing["gather"] and Gathering.is_ready(GameState.world, patch["id"]) and (nearest == Bearing.NOWHERE or (cell - world.player_cell).length_squared() < (nearest - world.player_cell).length_squared()):
-				nearest = cell
-		if nearest != Bearing.NOWHERE:
-			bearing["cell"] = nearest
-		elif world.view.patch_day == Gathering.day_of(GameState.world.steps):
-			# Today's are picked: say so, and lead to no empty spot.
-			bearing["step"] = Text.t("%s: none left to pick today") % Catalog.item_name(bearing["gather"])
+		var today := Gathering.nearest_ready(world.view.patches, bearing["gather"], GameState.world, world.player_cell)
+		if today["cell"] != Bearing.NOWHERE:
+			bearing["cell"] = today["cell"]
+		elif today["grew"] and world.view.patch_day == Gathering.day_of(GameState.world.steps):
+			# Today's are picked: say so and when more grows, and lead to no
+			# empty spot. Not on a day this map grew none (a frost lily's two
+			# homes take turns): the other home has today's.
+			bearing["step"] = Text.t("%s: all picked today, more grows tomorrow") % Catalog.item_name(bearing["gather"])
 			bearing["cell"] = Bearing.NOWHERE
 	story = Bearing.behind(bearing, GameState.progression, GameState.settlement, GameState.pack.items, GameState.world.discovered)
 	leads_story = Bearing.tells_story(bearing)

@@ -35,12 +35,6 @@ func _info() -> String:
 		# What it brings for good (PIX-206): an age's project alone has one.
 		if chosen.has("perk"):
 			lines.append(Text.t("Once built: %s.") % chosen["perk"])
-		# Where what it asks grows, while the pack is short of it (PIX-560:
-		# the board named the reed and nowhere to find it), as Vex's card does.
-		var asked: Dictionary = chosen.get("cost", {}).get("items", {})
-		for item_id: String in asked:
-			if Catalog.held(GameState.pack.items, item_id) < int(asked[item_id]) and not Economy.grows_at(item_id).is_empty():
-				lines.append(Economy.where_to_find(item_id, GameState.town_tier(), GameState.trade.stock_stage()) + ".")
 		lines.append("")
 	var now := Town.tier(GameState.town_tier())
 	lines.append_array([
@@ -64,6 +58,17 @@ func _info() -> String:
 	# whole, the list said "odo pays", "hilda forges").
 	lines.append(Text.t("When it's done: %s.") % Text.listed(Town.tier(building)["perks"]))
 	return "\n".join(lines)
+
+
+## Under the card, where what the chosen row asks grows while the pack is
+## short of it (PIX-560: the board named the reed and nowhere to find it).
+## On the status line: a line more in the card ran the inn's past its box
+## in the Ashes, in both languages (PIX-488: the card holds whole).
+func _select(index: int) -> void:
+	super._select(index)
+	var cost: Variant = _chosen_project().get("cost", {})
+	# A commission's cost is gold alone.
+	status.text = " ".join(Economy.growing_lines((cost as Dictionary).get("items", {}), GameState.pack.items)) if cost is Dictionary else ""
 
 
 ## Who has come to live here, and what each brings (PIX-148), and what

@@ -168,6 +168,21 @@ static func region_name(region: Dictionary, healed_cells: int) -> String:
 	return name
 
 
+static var _reach: MapData
+
+
+## A wild region's name inside a sentence as the map writes it today
+## (PIX-560: the board's card and Vex's said the Ash Fields beside a map
+## that wrote the Greening); "" for no region. Only the Reach's ash heals.
+static func said(region_id: String) -> String:
+	var region := Bestiary.region(region_id)
+	if not region.has("renamed"):
+		return String(region.get("name", ""))
+	if _reach == null:
+		_reach = MapData.load_by_id(Routes.MAP)
+	return region_name(region, healed_on(_reach))
+
+
 ## The last count of healed cells, by the map and its rings today.
 static var _counted := {}
 

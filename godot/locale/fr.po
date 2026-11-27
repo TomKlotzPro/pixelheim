@@ -20925,8 +20925,8 @@ msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
 #: scripts/world_hud.gd
-msgid "%s: none left to pick today"
-msgstr "%s : plus rien à cueillir aujourd'hui"
+msgid "%s: all picked today, more grows tomorrow"
+msgstr "%s : tout est cueilli, il en repousse demain"
 
 #: scripts/world_hud.gd
 msgid "Boss slayer +%d%%  %d:%02d"

@@ -1086,6 +1086,14 @@ func field_standoff() -> String:
 	return "%d,%d" % [roundi(nearest.x), roundi(nearest.y)] if nearest.length() <= 2.0 * world.TILE else ""
 
 
+func field_status() -> String:
+	for node in world.get_children():
+		var hall := node as TownHallScreen
+		if hall != null:
+			return hall.status.text
+	return ""
+
+
 func field_stood() -> String:
 	return str(world.foes.stood) if world.foes.stood > 0 else ""
 

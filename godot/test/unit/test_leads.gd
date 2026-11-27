@@ -195,6 +195,68 @@ func test_healed_ash_is_named_as_the_map_names_it() -> void:
 	assert_eq(Bearing._at_growth(lead, {"ember_shard": 2}, {}), "ember_shard")
 	assert_eq([lead["place"], Atlas.region_title("ash", reach)], ["The Greening", "The Greening"])
 	assert_string_contains(Bearing.line(lead), "The Greening")
+	# And so do the cards (the board's, Vex's, the bestiary's): one name.
+	assert_eq(Economy.growing_lines({"ember_shard": 8}, {}), ["Ember Shard: the Greening."] as Array[String])
+	assert_string_contains(Economy.where_to_find("ember_shard"), "in the Greening")
+	assert_has(Bestiary.where_found("wolf"), "the Greening by night")
 	GameState.settlement.projects.assign(saved[0])
 	GameState.post = saved[1]
 	GameState.world.steps = saved[2]
+
+
+## The board's card says where what it asks grows, the place alone (the
+## inn's card in French ran past its box with the whole sentence), while
+## the pack is short of it.
+func test_the_boards_card_names_where_its_reeds_grow() -> void:
+	var asked: Dictionary = Town.project("the_inn")["cost"]["items"]
+	assert_eq(Economy.growing_lines(asked, {}), ["Marsh Reed: the Sunken Marsh."] as Array[String])
+	assert_eq(Economy.growing_lines(asked, {"marsh_reed": 4}), [] as Array[String], "with the reeds, nothing more to say")
+	assert_eq(Economy.growing_lines({"wolf_pelt": 1}, {}), [] as Array[String], "no patch grows a pelt")
+
+
+## A place a card names can be found on the map (PIX-560): every region a
+## material's leads can name for what grows is one its map's page writes,
+## walked or not - a region of the Ashenreach by its own name there, any
+## other as its map, which the page names or is titled (« la côte de
+## Saltmere » on Saltmere).
+func test_every_region_a_card_names_for_what_grows_is_on_the_map() -> void:
+	var ground: Dictionary = Bestiary.gathering_rules()["ground"]
+	var materials: Dictionary = Bestiary.region_materials()
+	for region: String in ground:
+		var forage: Array = Economy.material_sources(materials[region]).filter(func(lead: Dictionary) -> bool: return lead["kind"] == "forage")
+		assert_eq(forage.size(), 1, "%s's material is foraged" % region)
+		var said := Lamps.said(region)
+		assert_string_contains(forage[0]["text"], said, "%s named on the card" % region)
+		var home := Economy.grows_at(materials[region])
+		var map := MapData.load_by_id(home["mapId"])
+		for map_id: String in Economy.MAP_STAGE:
+			if not Depths.is_planned(map_id) and region in MapData.load_by_id(map_id).regions.values():
+				map = MapData.load_by_id(map_id)
+				break
+		if Atlas.names_regions(map):
+			var written: Array = Atlas.labels(map, {}).map(func(label: Dictionary) -> String: return Text.mid(label["text"]))
+			assert_has(written, said, "%s written on a page never walked" % region)
+		else:
+			var place := Text.mid(Catalog.place_name(map.id)).trim_prefix("the ").to_lower()
+			assert_string_contains(said.to_lower(), place, "%s is its map, by the page's name" % region)
+
+
+## A material with two homes grows in one a day (frost lily: the pass, then
+## the ice cave). On the pass's off day nothing grew there, which isn't
+## "all picked"; on its day the patch leads, and picked, it is.
+func test_a_day_that_grew_none_here_is_not_all_picked() -> void:
+	var decks := Gathering.decks(MapData.load_by_id("frostgate"))
+	var world := WorldState.new()
+	var seen := {}
+	for day in range(2, 4):
+		world.steps = day * DayNight.DAY_CYCLE_STEPS + 1.0
+		world.gathered_at = {}
+		var patches := Gathering.patches_on(decks, day)
+		var today := Gathering.nearest_ready(patches, "frost_lily", world, Vector2i.ZERO)
+		seen[today["grew"]] = true
+		assert_eq(today["cell"] != Bearing.NOWHERE, today["grew"], "day %d: a patch leads where one grew" % day)
+		for cell: Vector2i in patches:
+			world.gathered_at[patches[cell]["id"]] = int(world.steps)
+		today = Gathering.nearest_ready(patches, "frost_lily", world, Vector2i.ZERO)
+		assert_eq(today["cell"], Bearing.NOWHERE, "day %d: picked, none leads" % day)
+	assert_eq(seen.size(), 2, "one of two days grows none on the pass")
