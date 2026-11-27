@@ -25,7 +25,7 @@ class_name Routes
 ## The map the routes run across: the Ashenreach, where every road out of
 ## Pixelheim's gate meets the others.
 const MAP := "overworld"
-## A waystation's hut, in cells across and up (PIX-557: PunyTown.COTTAGE).
+## A waystation's hut, in cells across and up (PIX-557: its picture's, RouteArt's).
 const HUT := Vector2i(3, 3)
 
 
@@ -377,9 +377,9 @@ static func plan(map: MapData, post: PostState, settlement: SettlementState, kep
 
 
 ## The cells a waystation's hut whose left cell is `hut` blocks: three
-## wide at Shade's houses' scale, its wall's row and the open ground of the
-## two its roof stands over (PIX-557: a hero there was lost behind it), top
-## row first (Hamlet.fits); Gunnar's lodge of Shade's pieces blocks the same
+## wide at the houses' scale, its wall's row and the open ground of the
+## two its picture stands over (PIX-557: a hero there was lost behind it), top
+## row first (Hamlet.fits); Gunnar's lodge with its walls up blocks the same
 ## (Hamlet.plan).
 static func hut_cells(map: MapData, hut: Vector2i) -> Array[Vector2i]:
 	var out: Array[Vector2i] = []

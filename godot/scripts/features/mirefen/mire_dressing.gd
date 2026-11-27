@@ -263,28 +263,16 @@ func build(view: MapView, slices: Slicer) -> void:
 
 
 ## A stilt hut on its cells over its pool, its ladder reaching down onto
-## the walk before it (Shade's house on our stilts with the pack, PIX-557);
+## the walk before it;
 ## its window lit from its evening minute, its light on the ground before
 ## it (PIX-557: lit, it threw none).
 func _raise_hut(view: MapView, hut: Vector2i) -> void:
-	var root: Node2D
-	var lit: Sprite2D
-	var glass: Vector2
-	var drawn: Vector2i
-	if PunyTown.available():
-		root = stand_on(view, MireArt.cottage(), hut, Vector2(0, TILE))
-		lit = _sprite(LampArt.panes())
-		lit.position = Vector2(MireArt.COTTAGE_FRONT.find(PunyTown.WINDOW) * TILE, -MireArt.RAISED - TILE)
-		# The middle of the window tile's glass (LampArt._glazed's rows 1-10).
-		glass = lit.position + Vector2(TILE / 2.0, 6)
-		drawn = PunyTown.COTTAGE * TILE + Vector2i(0, MireArt.RAISED)
-	else:
-		var at := Vector2(0, TILE + MireArt.HUT_BELOW - MireArt.HUT_SIZE.y)
-		root = stand_on(view, _sprite(MireArt.texture("hut")), hut, at)
-		lit = _sprite(MireArt.texture("hut_lit"))
-		lit.position = at - Vector2(0, TILE)
-		glass = lit.position + Vector2(MireArt.HUT_WINDOW.get_center())
-		drawn = MireArt.HUT_SIZE - Vector2i(0, MireArt.HUT_BELOW)
+	var at := Vector2(0, TILE + MireArt.HUT_BELOW - MireArt.HUT_SIZE.y)
+	var root := stand_on(view, _sprite(MireArt.texture("hut")), hut, at)
+	var lit := _sprite(MireArt.texture("hut_lit"))
+	lit.position = at - Vector2(0, TILE)
+	var glass := lit.position + Vector2(MireArt.HUT_WINDOW.get_center())
+	var drawn := MireArt.HUT_SIZE - Vector2i(0, MireArt.HUT_BELOW)
 	lit.material = Lights.unshaded()
 	lit.visible = false
 	root.add_child(lit)

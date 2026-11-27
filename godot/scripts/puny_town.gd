@@ -60,8 +60,6 @@ const WALL := 945
 const WALL_RIGHT := 949
 const WINDOW := 3659
 const DOOR := 4095
-## A small house standing on its own (cottage, PIX-557): cells across and up.
-const COTTAGE := Vector2i(3, 3)
 
 ## Which slope a roof piece lies on, for the roof's light (PIX-523,
 ## shaders/roof_light.gdshader): a gable's west and east, a wing's north
@@ -221,38 +219,6 @@ static func wing_house(rect: Rect2i, door_x: int, kind: String) -> Dictionary:
 	var pieces := {}
 	_wing(rect.position.x, rect.end.x - 1, rect.position.y, rect.end.y - 1, door_x, "", ROOF_ROWS.get(kind, 0) * COLUMNS, pieces)
 	return pieces
-
-
-## A small house standing on its own among the actors (PIX-557: a
-## waystation's hut, a Mirefen stilt hut, Gunnar's lodge; ours stood at
-## 60% of these houses' scale, the hero taller than their doors): COTTAGE
-## cells, a narrow house as the town's three tall are (_wing): the
-## hip-roofed wing's ridge over its eave in roof `kind`'s colour (its top
-## and eave alone were a flat slab: PIX-557's review), over a wall of
-## `front`'s tiles left to right, closed at its ends as _wing closes it
-## (a door or a wall's end, the window beside the door); its roof under the
-## Frostgate's snow when `snow` (as the houses' layers lay it). Drawn as
-## the houses are, its roof taking the light, its bottom-left at the node's
-## origin. Only with the pack.
-static func cottage(kind: String, front: Array, snow := false) -> Node2D:
-	var house := Node2D.new()
-	var walls := MapView.tile_layer_of(tileset())
-	walls.material = roof_light()
-	house.add_child(walls)
-	var roof := walls
-	if snow:
-		roof = MapView.tile_layer_of(tileset())
-		var snowed := ShaderMaterial.new()
-		snowed.shader = preload("res://shaders/snowed_roof.gdshader")
-		roof.material = snowed
-		house.add_child(roof)
-	var shift: int = ROOF_ROWS[kind] * COLUMNS
-	for x in COTTAGE.x:
-		var end := 0 if x == 0 else (2 if x == COTTAGE.x - 1 else 1)
-		place(roof, Vector2i(x, -3), _tint(WING_RIDGE[end], shift))
-		place(roof, Vector2i(x, -2), _tint(WING_EAVE[end], shift))
-		place(walls, Vector2i(x, -1), front[x])
-	return house
 
 
 static func _building(blob: Array, grid: Dictionary, pieces: Dictionary, decor: Dictionary, chimney := false) -> void:

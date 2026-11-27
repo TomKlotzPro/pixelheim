@@ -316,10 +316,10 @@ static func plan(map: MapData, kept: Dictionary, grown: Array[Dictionary] = [], 
 		var piece := entry.duplicate()
 		piece["kind"] = kind_of(entry)
 		piece["cells"] = cells_of(entry)
-		# Gunnar's lodge built of Shade's pieces blocks the open ground under
-		# its roof too, as a waystation's hut (PIX-557's review: a hero
-		# behind it was lost, a barrel hidden).
-		if paid and entry.get("art", "") in HubArt.BUILT:
+		# Gunnar's lodge with its walls up blocks the open ground under its
+		# roof too, as a waystation's hut (PIX-557's review: a hero behind it
+		# was lost, a barrel hidden).
+		if entry.get("art", "") in HubArt.BUILT:
 			piece["cells"] = Routes.hut_cells(map, entry["cell"])
 		if TOPS.has(entry.get("tile", -1)):
 			piece["top"] = TOPS[entry["tile"]]

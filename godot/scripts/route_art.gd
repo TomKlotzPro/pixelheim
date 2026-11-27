@@ -26,13 +26,11 @@ const EMBER_FPS := 3.0
 ## The middle of the shard, in the lamp's pixels: where its halo stands.
 const HALO_AT := Vector2(8.0, 8.5)
 ## The hut's window's glass (its pixels, frame left out), lit at night.
-const WINDOW := Rect2i(20, 21, 5, 4)
-## With the paid pack the hut is Shade's own (PIX-557: the one drawn here,
-## two cells wide, stood at 60% of his houses' scale, its door 10 pixels
-## and the hero 14): his thatched hip roof over HUT_FRONT, his door on the
-## left over `arrival` as ours has it, a window lit at night, and his
-## timber's end (PunyTown.cottage).
-const HUT_FRONT := [PunyTown.DOOR, PunyTown.WINDOW, PunyTown.WALL_RIGHT]
+const WINDOW := Rect2i(25, 35, 12, 9)
+## Its door with its frame and the row its wall starts on, in its pixels
+## (PIX-557: the hero fits the door, the wall stands two cells tall).
+const HUT_DOOR := Rect2i(4, 36, 12, 19)
+const HUT_WALL := 23
 ## Each lamp's kind (PIX-324, Lamps.KINDS) is the ember lamp with its
 ## cage's inks swapped: sea glass panes round the shard (Saltmere's), a
 ## frost lily in it (the Frostgate's), its cage furred with grave moss (the
@@ -76,43 +74,69 @@ const PIECES := {
 		"....o233332o....",
 		"....oooooooo....",
 	],
-	## A waystation's hut without the pack, on the left two of its three
-	## cells: a thatched roof over plank walls on a stone footing, its door
-	## on the left (over `arrival`) under the Post's board (a letter drawn on
-	## it, sealed red), a window on the right.
+	## A waystation's hut at the houses' scale (PIX-557: it stood two cells
+	## wide, its door 10 pixels and the hero 14), three cells wide, `hut` its
+	## left cell: a pitched thatched roof, its front slope in three skirts
+	## down to a ragged eave, over log walls two cells tall on a stone footing;
+	## its plank door on the left (over `arrival`) under the Post's board (a
+	## letter drawn on it, sealed red), a window on the right.
 	"hut": [
-		"................................",
-		"................................",
-		"................................",
-		".........oooooooooooooo.........",
-		"..........oooooooooooo..........",
-		".........oo4444444444oo.........",
-		"........o64565555455554o........",
-		".......o6555554555555454o.......",
-		".......o6554555565455554o.......",
-		"......o645555554556555454o......",
-		".....o65565545555554655554o.....",
-		"....o6555456555545555564554o....",
-		"...o654555555455555545556554o...",
-		"..o66555554555565455555545654o..",
-		".o6555645555554556555455555544o.",
-		"o333333333333333333333333333333o",
-		".oooooooooooooooooooooooooooooo.",
-		"..11ooooooooo11111111111111111..",
-		"..o2oBoBBBoBo3333333333333332o..",
-		"..o2oBBoRoBBo4444444444444442o..",
-		"..o24ooooooo4444444ooooooo442o..",
-		"..o23o11111o3333333oUU2UUo332o..",
-		"..o24o12121o4444444o22222o442o..",
-		"..o24o12121o4444444ouu2uuo442o..",
-		"..o23o12121o3333333ouu2uuo332o..",
-		"..o24o121j1o4444444ooooooo442o..",
-		"..o24o121h1o44444433333333342o..",
-		"..o23o12121o33333333333333332o..",
-		"..o24o12121o44444444444444442o..",
-		"..o24o12121o44444444444444442o..",
-		".ollihhhhhhhilllilllilllilllilo.",
-		".oooooooooooooooooooooooooooooo.",
+		".............oooooooooooooooooooooo.............",
+		"............o6666666666666666666666o............",
+		"...........o655555555555555555555555o...........",
+		"...........o655554555556566655466443o...........",
+		"..........o64555545545565665544664543o..........",
+		"..........o64556545545565665544665543o..........",
+		".........o6545465556455655655466454443o.........",
+		".........o6555465556455645645465454443o.........",
+		"........o645564445564556454464654544543o........",
+		".......o63433433433433433433433433433443o.......",
+		".......o64464644455555555544645455454543o.......",
+		"......o6545645455555555555544454544545543o......",
+		"......o6545645555555544555544444446545443o......",
+		".....o655555555555556445455545454465654543o.....",
+		".....o655565555545556445454555454565654543o.....",
+		"....o66555655555445465554445555555546555443o....",
+		"...o6343343343343343343343343343343343343343o...",
+		"...o6455554454555454555654545656555455555643o...",
+		"..o654545544544554465556545456565545555556543o..",
+		"..o654545545544554465555545456545545555555543o..",
+		".o65544455655645544655555454465454455655455643o.",
+		".o64343434343434343434343434343434343434343443o.",
+		"o6434343434343434343434343434343434343434343443o",
+		".oo222222222222222222222222222222222222222222oo.",
+		"..o221111111111111111111111111111111111111122o..",
+		"..o543i333333i3333333333333333333333333333354o..",
+		"..o2oooooooooooo22222222222222222222222222222o..",
+		"..o3oBBBBBBBBBBo55555555544444444445555555533o..",
+		"..o6oBbBBBBBBbBo33444444444444444444444444465o..",
+		"..o5oBBbBBBBbBBo33333333333333333333333333354o..",
+		"..o2oBBBbRRbBBBo22222222222222222222222222222o..",
+		"..o3oBBBBRRBBBBo44444444455555555554444455533o..",
+		"..o6oBBBBBBBBBBo44444444444444444444444444465o..",
+		"..o5obbbbbbbbbbo33333333333333333333333333354o..",
+		"..o2oooooooooooo22222222666666666666662222222o..",
+		"..o3355555444444444455555UUUUU22UUUUU35555533o..",
+		"..o6666666666665444444445uUUuu22uuuuu34444465o..",
+		"..o5511111111113333333335UUuuu22uuuuu33333354o..",
+		"..o2532221322213222222225Uuuuu22uuuuu32222222o..",
+		"..o353333333333355555555522222222222234455533o..",
+		"..o6511111111113444444445uuuuu22uuuuu34444465o..",
+		"..o5532221322213333333335uuuuu22uuuuu33333354o..",
+		"..o2532221322213222222225uuuuu22uuuuu32222222o..",
+		"..o3532221322213444444445uuuuu22uuuuu35544433o..",
+		"..o653222132221333333444555555555555534444465o..",
+		"..o553222132221333333335555555555555555333354o..",
+		"..o253222132jh1322222222222222222222222222222o..",
+		"..o353222132hi1355555555544444444444444444433o..",
+		"..o653222132221333444444444444444444444444365o..",
+		"..o553222132221333333333333333333333333333354o..",
+		"..o253333333333322222222222222222222222222222o..",
+		"..o351111111111344444444455555444444444444433o..",
+		"..o653222132221344444444444444444444444333465o..",
+		".oih532221322213llihllihllihhlihllihllihhlihllo.",
+		".oii532221322213kiiikiiikiiikiiikiiikiiikiiikio.",
+		"..oooooooooooooooooooooooooooooooooooooooooooo..",
 	],
 	## A bench by the hut, to sit a moment: its back, its seat, its legs.
 	"bench": [
@@ -214,16 +238,6 @@ static func size(name: String) -> Vector2i:
 	return Vector2i(String(rows[0]).length(), rows.size())
 
 
-## The waystation's hut built of Shade's pieces, with the pack.
-static func cottage() -> Node2D:
-	return PunyTown.cottage("roof_thatch", HUT_FRONT)
-
-
-## How big the waystation's hut is drawn, in pixels: Shade's with the pack.
-static func hut_size() -> Vector2i:
-	return PunyTown.COTTAGE * 16 if PunyTown.available() else size("hut")
-
-
 ## A lamp of `kind` by day (PIX-324): the ember lamp, its cage's inks
 ## swapped for its kind's.
 static func lamp(kind: String) -> Texture2D:
@@ -267,6 +281,6 @@ static func lit_window() -> ImageTexture:
 		for y in range(WINDOW.position.y, WINDOW.end.y):
 			for x in range(WINDOW.position.x, WINDOW.end.x):
 				if String(rows[y])[x] in ["u", "U"]:
-					image.set_pixel(x, y, PANE if y < WINDOW.position.y + 2 else PANE_LOW)
+					image.set_pixel(x, y, PANE if y < WINDOW.position.y + 5 else PANE_LOW)
 		_pane = ImageTexture.create_from_image(image)
 	return _pane

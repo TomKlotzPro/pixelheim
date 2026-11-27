@@ -129,7 +129,7 @@
         "grows": [
           {"news": "Timber for a lodge at Gunnar's camp on the Frostgate.", "line": "Gunnar says the horses chose the spot.", "pieces": [{"art": "woodpile_snow", "cell": [32, 39]}, {"art": "lodge_frame", "cell": [37, 38]}]},
           {"news": "The lodge's walls are up at Gunnar's camp.", "line": "Logs from the pass, and snow on the roof by nightfall.", "pieces": [{"art": "sledge_wood", "cell": [33, 41]}, {"art": "lodge_walls", "cell": [37, 38]}]},
-          {"news": "Gunnar's lodge is open, a fire in it.", "line": "Linnea swears the stew is hers. Gunnar swears a lot.", "pieces": [{"art": "lamp_post", "cell": [34, 39], "lit": true}, {"art": "lodge", "cell": [37, 38], "lit": true, "smoke": [35, 2]}]}
+          {"news": "Gunnar's lodge is open, a fire in it.", "line": "Linnea swears the stew is hers. Gunnar swears a lot.", "pieces": [{"art": "lamp_post", "cell": [34, 39], "lit": true}, {"art": "lodge", "cell": [37, 38], "lit": true, "smoke": [36, 1]}]}
         ]
       },
       {
