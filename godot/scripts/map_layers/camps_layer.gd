@@ -34,6 +34,10 @@ const CAMP_COALS := 0.6
 ## patches further off).
 const PACK_SQUARE := [Vector2i.ZERO, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
 const CAMP_REACH := 3
+## The ground a camp leaves clear (PIX-563: the mountain road's first camp
+## had its fire on the road's bend and its log across it, and the road
+## looked shut): the roads and what carries them over water.
+const ROADS := ["path", "bridge", "dock"]
 ## Where a camp's bedroll lies by its tent (from the tent's left cell): in
 ## front, then at its sides; and its log by its fire: at its sides, in
 ## front and behind, then at its corners.
@@ -51,7 +55,7 @@ const POST_HOUSE_FOOT := Rect2(2, 5, 28, 11)
 ## Where a camp's pieces may stand around its home, best first: behind it,
 ## then beside, then in front (the pack itself takes the home and its sides).
 const CAMP_RING := [
-	Vector2i(-1, -1), Vector2i(1, -1), Vector2i(-2, 0), Vector2i(2, 0), Vector2i(-1, 1), Vector2i(1, 1),
+	Vector2i(-1, -1), Vector2i(1, -1), Vector2i(-2, 0), Vector2i(2, 0), Vector2i(1, 1), Vector2i(-1, 1),
 	Vector2i(-2, -1), Vector2i(2, -1), Vector2i(-1, 2), Vector2i(1, 2), Vector2i(0, 2), Vector2i(-2, 1),
 	Vector2i(2, 1), Vector2i(0, -2),
 ]
@@ -112,13 +116,17 @@ static func plan_in(view: MapView) -> void:
 
 
 ## Where each wild pack's camp stands (PIX-554): its tent across two cells
-## of its region, its left on the first of CAMP_RING with room for both;
+## of its region, its left on the first of CAMP_RING (then of any cell
+## near enough) with room for both and for the rest of the camp round it;
 ## its fire on the next with a cell clear between it and the tent, so the
 ## fire's light casts the tent's shadow (NightShadows.AGAINST), else within
 ## two of it; its bedroll by the tent and its log by the fire. The tent's
 ## left cell holds the spawn and where its fire, bedroll and log lie
 ## ("fire", "bed", "log"), its right cell is "beside" it. Nothing on the
-## pack's own square or a door, nor further than CAMP_REACH from its home,
+## pack's own square or where its foes stand (Packs.stands), a road (ROADS)
+## or a door, nor the fire straight behind one of those cells (PIX-566: a
+## foe at rest on its cell stood in the fire's ring, the flame at its
+## head), nor further than CAMP_REACH from its home,
 ## nor where it would close a way on (Ways.kept_open: PIX-554), nor leave
 ## its stash (CampStashes, PIX-453) no cell by the tent closing none either:
 ## the first such cell is the tent's "stash", kept from the camps after.
@@ -134,6 +142,14 @@ static func plan_camps(map: MapData) -> Dictionary:
 	for working: Dictionary in AshLand.WORKINGS.get(map.id, []):
 		for cell: Vector2i in AshLand.rail_cells(working["rails"] as Array):
 			rails[cell] = true
+	# The map's packs' own squares, and where their foes stand (the same
+	# cells, but where a square is hemmed in).
+	var stood := {}
+	for spawn: Dictionary in Bestiary.spawns_on(map.id):
+		for offset: Vector2i in PACK_SQUARE:
+			stood[Vector2i(spawn["x"], spawn["y"]) + offset] = true
+		for cell: Vector2i in Packs.stands(map, spawn):
+			stood[cell] = true
 	# What the camps cover, their stashes' cells with them.
 	var shut := {}
 	for spawn: Dictionary in Bestiary.spawns_on(map.id):
@@ -143,8 +159,8 @@ static func plan_camps(map: MapData) -> Dictionary:
 		var region := map.region_at(home)
 		var fits := func(cell: Vector2i) -> bool:
 			var off := cell - home
-			return off not in PACK_SQUARE and maxi(absi(off.x), absi(off.y)) <= CAMP_REACH and map.is_walkable(cell) \
-					and map.region_at(cell) == region and not map.portals.has(cell) and not rails.has(cell) and not shut.has(cell)
+			return not stood.has(cell) and maxi(absi(off.x), absi(off.y)) <= CAMP_REACH and map.is_walkable(cell) \
+					and map.tile_at(cell) not in ROADS and map.region_at(cell) == region and not map.portals.has(cell) and not rails.has(cell) and not shut.has(cell)
 		# The first of the stash's cells (`by`, stash_ring) open and closing
 		# no way on, with `also` covered too.
 		var stash_at := func(by: Array[Vector2i], also: Dictionary) -> Vector2i:
@@ -164,9 +180,66 @@ static func plan_camps(map: MapData) -> Dictionary:
 		for offset: Vector2i in CAMP_RING:
 			ring.append(home + offset)
 			lefts.append_array([home + offset, home + offset + Vector2i.LEFT])
-		var tent := _first(lefts, func(left: Vector2i) -> bool:
+		# Then any cell near enough, the nearest first: a pack hemmed in by
+		# its road (the mountain road's bend) camps in the pocket beside it.
+		for reach in range(1, CAMP_REACH + 1):
+			for y in range(-reach, reach + 1):
+				for x in range(-reach, reach + 1):
+					if maxi(absi(x), absi(y)) == reach and home + Vector2i(x, y) not in lefts:
+						lefts.append(home + Vector2i(x, y))
+		var tents := lefts.filter(func(left: Vector2i) -> bool:
 			var both: Array[Vector2i] = [left, left + Vector2i.RIGHT]
 			return fits.call(left) and fits.call(left + Vector2i.RIGHT) and takes.call(both, stash_ring(home, left)))
+		# The fire, bedroll and log ("fire", "bed", "log") that find a place
+		# round a tent at `tent`; `shut` left as it was.
+		var lay := func(tent: Vector2i) -> Dictionary:
+			var laid := {}
+			var mine: Array[Vector2i] = [tent, tent + Vector2i.RIGHT]
+			shut[tent] = true
+			shut[tent + Vector2i.RIGHT] = true
+			var stash_cells := stash_ring(home, tent)
+			var clear := func(cell: Vector2i) -> bool:
+				var one: Array[Vector2i] = [cell]
+				return takes.call(one, stash_cells)
+			var burns := func(cell: Vector2i) -> bool: return not stood.has(cell + Vector2i.DOWN) and clear.call(cell)
+			var fire := _first(ring, func(cell: Vector2i) -> bool: return _apart(cell, tent) == 2 and burns.call(cell))
+			if fire.x < 0:
+				fire = _first(ring, func(cell: Vector2i) -> bool: return _apart(cell, tent) <= 2 and burns.call(cell))
+			if fire.x >= 0:
+				laid["fire"] = fire
+				shut[fire] = true
+				mine.append(fire)
+			for part: Array in [["bed", tent, BEDROLL_AT], ["log", fire, LOG_AT]]:
+				var by: Vector2i = part[1]
+				if by.x < 0:
+					continue
+				var near: Array[Vector2i] = []
+				for offset: Vector2i in part[2]:
+					near.append(by + offset)
+				var cell := _first(near, clear)
+				if cell.x >= 0:
+					laid[part[0]] = cell
+					shut[cell] = true
+					mine.append(cell)
+			for cell: Vector2i in mine:
+				shut.erase(cell)
+			return laid
+		# The first tent with the whole camp round it and its fire a cell
+		# clear of it (2), else with the whole camp (1), else the first
+		# (PIX-566: off the pack's cells and the road, the first tent that
+		# fits no longer leaves room for the rest everywhere).
+		var tent := Vector2i(-1, -1)
+		var laid := {}
+		var best := -1
+		for left: Vector2i in tents:
+			var round: Dictionary = lay.call(left)
+			var whole := 0 if round.size() < 3 else 2 if _apart(round["fire"], left) == 2 else 1
+			if whole > best:
+				best = whole
+				tent = left
+				laid = round
+			if best == 2:
+				break
 		if tent.x < 0:
 			continue
 		var camp := {"kind": "camp", "art": TENTS.get(region, TENT), "spawn": spawn["id"]}
@@ -175,28 +248,11 @@ static func plan_camps(map: MapData) -> Dictionary:
 		shut[tent] = true
 		shut[tent + Vector2i.RIGHT] = true
 		var stash_cells := stash_ring(home, tent)
-		var clear := func(cell: Vector2i) -> bool:
-			var one: Array[Vector2i] = [cell]
-			return takes.call(one, stash_cells)
-		var fire := _first(ring, func(cell: Vector2i) -> bool: return _apart(cell, tent) == 2 and clear.call(cell))
-		if fire.x < 0:
-			fire = _first(ring, func(cell: Vector2i) -> bool: return _apart(cell, tent) <= 2 and clear.call(cell))
-		if fire.x >= 0:
-			out[fire] = {"kind": "fire"}
-			camp["fire"] = fire
-			shut[fire] = true
-		for part: Array in [["bed", "bedroll", tent, BEDROLL_AT], ["log", "log", fire, LOG_AT]]:
-			var by: Vector2i = part[2]
-			if by.x < 0:
-				continue
-			var near: Array[Vector2i] = []
-			for offset: Vector2i in part[3]:
-				near.append(by + offset)
-			var cell := _first(near, clear)
-			if cell.x >= 0:
-				out[cell] = {"kind": part[1]}
-				camp[part[0]] = cell
-				shut[cell] = true
+		for part: Array in [["fire", "fire"], ["bed", "bedroll"], ["log", "log"]]:
+			if laid.has(part[0]):
+				out[laid[part[0]]] = {"kind": part[1]}
+				camp[part[0]] = laid[part[0]]
+				shut[laid[part[0]]] = true
 		# Its stash's cell kept from the camps after, and from what the plan
 		# lays after them (stash_cells).
 		var stash: Vector2i = stash_at.call(stash_cells, {})
