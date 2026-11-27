@@ -103,6 +103,7 @@ if (focus) {
     `(never "the next day"), each trick's rest, and any list of exceptions, taken from the code's callers rather than the notes.\n` +
     `- Give each point a place to see it (map and cell, or a play.py preset from playtest.md) and the setting it needs, if any. ` +
     `For a subtle effect, say how to see it (a crop, or a pair of looks with and without it), or leave it to Tom.\n` +
+    `- Check each fight preset against combat.json packs.fleeLevels (a foe six or more levels below the hero runs; an elite counts fleeEliteLevels more), each --at against the map's props as well as its tiles (carts, camp pieces), give a way to trigger each float or effect named, and say to let the camera settle (wait:1) before a pair of looks at a motion.\n` +
     `- Questions of taste (fair, fun, too long) stay summary verdicts, not findings.\n` +
     `- Keep each point where it was given. A point in \`all\` that fits only one or two players' pages moves to theirs (this run's players: ${chosen.join(', ')}).\n\n` +
     `The focus, as given (JSON):\n${JSON.stringify(focus, null, 1)}`,
@@ -313,7 +314,8 @@ const lessons = await agent(
     `The Focus step's corrections: ${JSON.stringify(corrections)}\n\n` : '') +
   `Per session: ${JSON.stringify(stats)}\n\nPlayers' summaries:\n${reports.map((r) => `- ${r.label}: ${r.summary}`).join('\n')}\n\n` +
   `Held: ${JSON.stringify(held.map((f) => ({ title: f.title, kind: f.kind, severity: f.severity, players: f.players, note: f.note })))}\n\n` +
-  `Dropped: ${JSON.stringify([...merged.dropped, ...replayDrops])}`,
+  `Dropped: ${JSON.stringify([...merged.dropped, ...replayDrops])}\n\n` +
+  `Filed: ${JSON.stringify(filed.map((i) => ({ id: i.id, title: i.title, severity: i.severity })))}`,
   { label: 'lessons', phase: 'Lessons', schema: LESSONS },
 )
 

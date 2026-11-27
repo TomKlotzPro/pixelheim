@@ -4,13 +4,15 @@
 
 **Start:** one session per place, each with a level 10 hero standing there, so the wild doesn't kill you while you look. For example `--role warrior --level 10 --map overworld --at 93,33`, or `--map town --at 40,4` for the village gate. Add `--flags night` for the night, or `--flags "--town-tier 0"` for the village in its ashes. Stop each session before starting the next.
 
+Dungeons by id, at floor 1's way in: `--map cellars --at 4,27` (reached from the Greyhold keep), `--map shafts --at 4,28` (its way in is at blackiron 26,4), `--map seacave --at 5,25`, `--map icecave --at 4,25` (reached from the Frostgate's observatory). A harness hero with no `fight` can be hurt by wild foes, so a level 10 hero is what keeps you standing.
+
 Give `--at` an open cell. On a solid one (overworld 2,2), the harness shoves the hero about and leaves it stuck: start again elsewhere, and don't report it.
 
 **Model:** Fable (`lessons.md`, 2026-11-23). A seam or a layering fault takes a careful eye on the picture.
 
 ## Route
 
-Begin with stairs down and back up (the Greyhold cellars, the Blackiron shafts) and the inn, smithy and alchemist doors: no run has reached them since 2026-11-07. Then the Reach's rim, a map's edges, and any other place the last entry in `lessons.md` says nobody reached. After that, pick until you have five or six places, about 12 looks each, rather than many short visits:
+Begin with what 2026-11-27 left: the ice cave, floors 2 and 3 of a dungeon (the stairs down on floor 1), the hall and shop doors, a whole river bank, the Reach's rim where no map lies beyond, and a flame-barred doorway seen up close. Then the Reach's rim, a map's edges, and any other place the last entry in `lessons.md` says nobody reached. After that, pick until you have five or six places, about 12 looks each, rather than many short visits:
 
 - **The village and its gate**: the bridge, the river banks, the walls, the gate out to the overworld.
 - **The lines between maps**, which you walk over with no door:

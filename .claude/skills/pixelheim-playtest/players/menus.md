@@ -2,7 +2,7 @@
 
 **Goal:** go through every screen and every setting with the keyboard only, and find what doesn't open, doesn't close, loses its focus or lies about its keys.
 
-**Start:** a plain launch: `start` with no option, in English. A fresh profile. The title's intro runs about 8 s before its menu shows: send `wait:8` before the first look. The state's `focus` says which row is chosen: read it before each E on a setting rather than counting presses.
+**Start:** a plain launch: `start` with no option, in English. A fresh profile. The title's intro runs about 8 s before its menu shows: send `wait:8` before the first look. The state's `focus` says which row is chosen: read it before each E on a setting rather than counting presses. In a preset session, a language reload or Quit to title runs the presets again (a counter reopens, the gold back to 500): try title flows and Language from a plain launch only.
 
 Then one session per preset, for what the plain launch doesn't reach. Stop each before starting the next:
 * `start --role mage --level 10 --flags skills` and `start --role warrior --flags stats`: 3 skill points and 5 stat points to spend ("E do it" and the path chooser). A `--level` hero alone arrives with none;
@@ -14,7 +14,7 @@ Then one session per preset, for what the plain launch doesn't reach. Stop each 
 
 ## Route
 
-Start with what the last runs left: Clear warnings, the Saves keys (D, X, C, and V on an empty clipboard), Language, Reduce motion, Salvage, and Vex's Craft tab.
+Every item the last runs left was reached on 2026-11-27. Start with Reduce motion judged in play: by day at town 30,12, `wait:1`, then two looks a second apart at the GOODS sign, with Reduce motion off and then on (it sways, then hangs still).
 
 1. **The title's menu**: every entry. Go in and come back out with Esc.
 2. **Options**: change every setting and change it back, Language too (it reloads the game). Skip Fullscreen, since the headless browser shows nothing of it. Rebind one key, use the new key in the game, then set it back. Try Reduce motion on, then off.
